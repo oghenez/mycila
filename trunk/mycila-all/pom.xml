@@ -17,6 +17,7 @@
 
     <name>mycila-all</name>
     <description>All Mycila API</description>
+    <url>http://old.mycila.com/p/mycila/${project.artifactId}</url>
 
     <!--
         Distributions
