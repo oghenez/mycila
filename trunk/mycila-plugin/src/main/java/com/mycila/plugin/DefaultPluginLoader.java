@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2008 Mathieu Carbou <mathieu.carbou@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *         http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,19 +27,19 @@ import static java.util.Collections.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class ClasspathPluginRepository<T> implements PluginRepository<T> {
+public class DefaultPluginLoader<T> implements PluginLoader<T> {
 
     private final Class<T> pluginsType;
     private final String descriptor;
     private Set<String> exclusions = Collections.emptySet();
     private ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
-    ClasspathPluginRepository(Class<T> pluginsType, String descriptor) {
+    public DefaultPluginLoader(Class<T> pluginsType, String descriptor) {
         this.pluginsType = pluginsType;
         this.descriptor = descriptor.startsWith("/") ? descriptor.substring(1) : descriptor;
     }
 
-    public Map<String, T> loadPlugins() throws PluginRepositoryException {
+    public SortedMap<String, T> loadPlugins() throws PluginRepositoryException {
         SortedMap<String, T> plugins = new TreeMap<String, T>();
         Enumeration<URL> configs = loadDescriptors();
         while (configs.hasMoreElements()) {
@@ -55,7 +55,7 @@ public class ClasspathPluginRepository<T> implements PluginRepository<T> {
                 }
             }
         }
-        return unmodifiableSortedMap(plugins);
+        return plugins;
     }
 
     protected Enumeration<URL> loadDescriptors() {
