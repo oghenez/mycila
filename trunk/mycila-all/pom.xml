@@ -37,18 +37,6 @@
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>mycila-all</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
@@ -57,8 +45,12 @@
                         <configuration>
                             <tasks>
                                 <jar update="true" file="${project.build.directory}/${project.build.finalName}.jar">
-                                    <zipfileset src="${project.build.directory}/dependency/mycila-plugin-${project.version}.jar"/>
-                                    <zipfileset src="${project.build.directory}/dependency/mycila-testing-${project.version}.jar"/>
+                                    <zipfileset src="${basedir}/../mycila-plugin/target/mycila-plugin-${project.version}.jar"/>
+                                    <zipfileset src="${basedir}/../mycila-testing/target/mycila-testing-${project.version}.jar"/>
+                                </jar>
+                                <jar update="true" file="${project.build.directory}/${project.build.finalName}-sources.jar">
+                                    <zipfileset src="${basedir}/../mycila-plugin/target/mycila-plugin-${project.version}-sources.jar"/>
+                                    <zipfileset src="${basedir}/../mycila-testing/target/mycila-testing-${project.version}-sources.jar"/>
                                 </jar>
                             </tasks>
                         </configuration>

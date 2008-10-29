@@ -39,8 +39,8 @@
      -->
 
     <organization>
-        <name>Mathieu Carbou</name>
-        <url>http://mathieu.carbou.free.fr/</url>
+        <name>Mycila</name>
+        <url>http://www.mycila.com/</url>
     </organization>
 
     <licenses>
@@ -56,8 +56,9 @@
             <id>mathieu.carbou</id>
             <name>Mathieu Carbou</name>
             <email>mathieu.carbou@gmail.com</email>
-            <organization>Mathieu Carbou</organization>
-            <organizationUrl>http://mathieu.carbou.free.fr/</organizationUrl>
+            <url>http://mathieu.carbou.free.fr/</url>
+            <organization>Mycila</organization>
+            <organizationUrl>http://www.mycila.com/</organizationUrl>
             <timezone>-5</timezone>
             <roles>
                 <role>project owner</role>
@@ -215,6 +216,7 @@
                 </executions>
             </plugin>
             <plugin>
+                <inherited>false</inherited>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptors>
@@ -252,11 +254,14 @@
                 </configuration>
             </plugin>
             <plugin>
+                <inherited>false</inherited>
                 <groupId>com.google.code.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
+                <version>1.4.0-SNAPSHOT</version>
                 <configuration>
                     <header>${basedir}/etc/header.txt</header>
                     <failIfMissing>true</failIfMissing>
+                    <aggregate>true</aggregate>
                     <properties>
                         <owner>Mathieu Carbou</owner>
                         <year>${project.inceptionYear}</year>
@@ -264,11 +269,14 @@
                     </properties>
                     <excludes>
                         <exclude>LICENSE.txt</exclude>
-                        <exclude>src/test/resources/**</exclude>
+                        <exclude>**/src/test/resources/**</exclude>
+                        <exclude>**/src/test/data/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
                     <execution>
+                        <id>check-headers</id>
+                        <phase>verify</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>
@@ -454,5 +462,22 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <repositories>
+        <repository>
+            <id>mc-releases</id>
+            <url>http://mc-repo.googlecode.com/svn/maven2/releases</url>
+        </repository>
+        <repository>
+            <id>mc-snapshots</id>
+            <url>http://mc-repo.googlecode.com/svn/maven2/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 </project>

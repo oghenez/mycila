@@ -30,9 +30,9 @@
                 <exclude>**/target/**</exclude>
                 <exclude>**/.clover/**</exclude>
                 <exclude>**/test-output/**</exclude>
-                <exclude>*.iml</exclude>
-                <exclude>*.ipr</exclude>
-                <exclude>*.iws</exclude>
+                <exclude>**/*.iml</exclude>
+                <exclude>**/*.ipr</exclude>
+                <exclude>**/*.iws</exclude>
             </excludes>
         </fileSet>
     </fileSets>
