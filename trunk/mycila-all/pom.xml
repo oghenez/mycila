@@ -1,0 +1,90 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+         POM settings
+     -->
+
+    <parent>
+        <groupId>com.google.code.mycila</groupId>
+        <artifactId>mycila</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>mycila-all</artifactId>
+    <packaging>jar</packaging>
+
+    <name>mycila-all</name>
+    <description>All Mycila API</description>
+
+    <!--
+        Distributions
+    -->
+
+    <distributionManagement>
+        <site>
+            <id>website</id>
+            <name>website</name>
+            <url>file://${basedir}/target/dist/site</url>
+        </site>
+    </distributionManagement>
+
+    <!--
+        BUILD
+    -->
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>mycila-all</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>mycila-all</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                                <jar update="true" file="${project.build.directory}/${project.build.finalName}.jar">
+                                    <zipfileset src="${project.build.directory}/dependency/mycila-plugin-${project.version}.jar"/>
+                                    <zipfileset src="${project.build.directory}/dependency/mycila-testing-${project.version}.jar"/>
+                                </jar>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!--
+         LIBS
+    -->
+
+    <dependencies>
+        <!-- mycila -->
+        <dependency>
+            <groupId>com.google.code.mycila</groupId>
+            <artifactId>mycila-plugin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.mycila</groupId>
+            <artifactId>mycila-testing</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
