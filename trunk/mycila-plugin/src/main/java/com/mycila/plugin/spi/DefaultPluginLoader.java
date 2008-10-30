@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
+package com.mycila.plugin.spi;
+
+import com.mycila.plugin.api.*;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -27,19 +29,19 @@ import static java.util.Collections.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class DefaultPluginLoader<T> implements PluginLoader<T> {
+final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
 
-    private final Class<T> pluginsType;
-    private final String descriptor;
-    private Set<String> exclusions = Collections.emptySet();
-    private ClassLoader loader = Thread.currentThread().getContextClassLoader();
+    final Class<T> pluginsType;
+    final String descriptor;
+    Set<String> exclusions = Collections.emptySet();
+    ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
-    public DefaultPluginLoader(Class<T> pluginsType, String descriptor) {
+    DefaultPluginLoader(Class<T> pluginsType, String descriptor) {
         this.pluginsType = pluginsType;
         this.descriptor = descriptor.startsWith("/") ? descriptor.substring(1) : descriptor;
     }
 
-    public SortedMap<String, T> loadPlugins() throws PluginRepositoryException {
+    public SortedMap<String, T> loadPlugins() {
         SortedMap<String, T> plugins = new TreeMap<String, T>();
         Enumeration<URL> configs = loadDescriptors();
         while (configs.hasMoreElements()) {
@@ -47,7 +49,7 @@ public class DefaultPluginLoader<T> implements PluginLoader<T> {
             Properties p = loadDescriptor(descriptor);
             for (Map.Entry<Object, Object> entry : p.entrySet()) {
                 String name = entry.getKey().toString();
-                if (!getExclusions().contains(name)) {
+                if (!exclusions.contains(name)) {
                     if (plugins.containsKey(name)) {
                         throw new DuplicatePluginException(descriptor, name);
                     }
@@ -58,33 +60,33 @@ public class DefaultPluginLoader<T> implements PluginLoader<T> {
         return plugins;
     }
 
-    protected Enumeration<URL> loadDescriptors() {
+    Enumeration<URL> loadDescriptors() {
         try {
-            return getLoader().getResources(getDescriptor());
+            return loader.getResources(descriptor);
         } catch (IOException e) {
-            throw new PluginRepositoryException(e, "Cannot read plugin descriptors '%s' in classloader '%s'", getDescriptor(), getLoader());
+            throw new PluginReadException(e, "Cannot read plugin descriptors '%s' in classloader '%s'", descriptor, loader);
         }
     }
 
-    protected T load(URL descriptor, String name, String clazz) {
+    T load(URL descriptor, String name, String clazz) {
         Class<?> c;
         try {
-            c = getLoader().loadClass(clazz);
+            c = loader.loadClass(clazz);
         } catch (Exception e) {
-            throw new PluginLoadException("Cannot load the plugin class", descriptor, name, clazz, getPluginsType(), e);
+            throw new PluginCreationException("Cannot load the plugin class", descriptor, name, clazz, pluginsType, e);
         }
-        if (!getPluginsType().isAssignableFrom(c)) {
-            throw new PluginLoadException("Loaded plugin class does not match expected plugin type", descriptor, name, clazz, getPluginsType());
+        if (!pluginsType.isAssignableFrom(c)) {
+            throw new PluginCreationException("Loaded plugin class does not match expected plugin type", descriptor, name, clazz, pluginsType);
         }
         try {
             //noinspection unchecked
             return (T) c.newInstance();
         } catch (Exception e) {
-            throw new PluginLoadException("Plugin instanciation error", descriptor, name, clazz, getPluginsType(), e);
+            throw new PluginCreationException("Plugin instanciation error", descriptor, name, clazz, pluginsType, e);
         }
     }
 
-    protected Properties loadDescriptor(URL url) {
+    Properties loadDescriptor(URL url) {
         InputStream is = null;
         try {
             is = new BufferedInputStream(url.openStream());
@@ -92,7 +94,7 @@ public class DefaultPluginLoader<T> implements PluginLoader<T> {
             p.load(is);
             return p;
         } catch (IOException e) {
-            throw new PluginRepositoryException(e, "Cannot read plugin descriptor '%s'", url);
+            throw new PluginReadException(e, "Cannot read plugin descriptor '%s'", url);
         } finally {
             if (is != null) {
                 try {
@@ -115,19 +117,4 @@ public class DefaultPluginLoader<T> implements PluginLoader<T> {
         this.loader = loader;
     }
 
-    public Set<String> getExclusions() {
-        return exclusions;
-    }
-
-    public ClassLoader getLoader() {
-        return loader;
-    }
-
-    public Class<T> getPluginsType() {
-        return pluginsType;
-    }
-
-    public String getDescriptor() {
-        return descriptor;
-    }
 }

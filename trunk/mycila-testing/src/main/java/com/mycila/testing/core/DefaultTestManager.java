@@ -16,7 +16,7 @@
 
 package com.mycila.testing.core;
 
-import com.mycila.plugin.PluginManager;
+import com.mycila.plugin.api.PluginResolver;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -32,7 +32,7 @@ public final class DefaultTestManager implements TestManager {
         return this;
     }
 
-    public PluginManager getPluginManager() {
+    public PluginResolver getPluginManager() {
         return null;
     }
 

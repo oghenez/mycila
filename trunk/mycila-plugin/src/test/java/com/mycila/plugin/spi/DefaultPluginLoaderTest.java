@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
+package com.mycila.plugin.spi;
 
+import com.mycila.plugin.api.DuplicatePluginException;
+import com.mycila.plugin.api.PluginCreationException;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
@@ -31,40 +33,40 @@ public final class DefaultPluginLoaderTest {
     @Test
     public void test_load_inexisting() {
         DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/inexisting.properties");
-        assertEquals(repo.getDescriptor(), "inexisting.properties");
+        assertEquals(repo.descriptor, "inexisting.properties");
         assertEquals(repo.loadPlugins().size(), 0);
-        repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/empty.properties");
+        repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/spi/empty.properties");
         assertEquals(repo.loadPlugins().size(), 0);
     }
 
     @Test
     public void test_load_ok() {
-        DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/two.properties");
+        DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/spi/two.properties");
         assertEquals(repo.loadPlugins().size(), 2);
     }
 
     @Test
     public void test_load_other_cp() {
-        DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/two.properties");
+        DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/spi/two.properties");
         repo.setLoader(new URLClassLoader(new URL[0], null));
         assertEquals(repo.loadPlugins().size(), 0);
     }
 
-    @Test(expectedExceptions = PluginLoadException.class)
+    @Test(expectedExceptions = PluginCreationException.class)
     public void test_bad_class() {
-        DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/badClass.properties");
+        DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/spi/badClass.properties");
         repo.loadPlugins();
     }
 
-    @Test(expectedExceptions = PluginLoadException.class)
+    @Test(expectedExceptions = PluginCreationException.class)
     public void test_not_plugin_class() {
-        DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "com/mycila/plugin/notPlugin.properties");
+        DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/spi/notPlugin.properties");
         repo.loadPlugins();
     }
 
-    @Test(expectedExceptions = PluginLoadException.class)
+    @Test(expectedExceptions = PluginCreationException.class)
     public void test_cannot_instanciate() {
-        DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "com/mycila/plugin/instance.properties");
+        DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/spi/instance.properties");
         repo.loadPlugins();
     }
 
@@ -83,7 +85,7 @@ public final class DefaultPluginLoaderTest {
         DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "duplicate.properties");
         repo.setLoader(new URLClassLoader(new URL[]{
                 new File("src/test/data").toURI().toURL(),
-                new File("src/test/resources/com/mycila/plugin").toURI().toURL(),
+                new File("src/test/resources/com/mycila/plugin/spi").toURI().toURL(),
         }));
         repo.setExclusions("plugin1");
         assertEquals(repo.loadPlugins().size(), 1);

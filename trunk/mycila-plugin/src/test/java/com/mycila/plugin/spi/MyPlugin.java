@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2008 Mathieu Carbou <mathieu.carbou@gmail.com>
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *         http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
+package com.mycila.plugin.spi;
 
-import java.util.Collection;
-import java.util.SortedMap;
+import com.mycila.plugin.api.Plugin;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface PluginLoader<T> {
-
-    SortedMap<String, T> loadPlugins() throws PluginRepositoryException;
-
-    void setExclusions(String... exclusions);
-
-    void setExclusions(Collection<String> exclusions);
-
-    void setLoader(ClassLoader loader);
+public interface MyPlugin extends Plugin {
 }

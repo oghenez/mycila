@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
+package com.mycila.plugin.spi;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class MyPlugin2 implements MyPlugin {
+final class MyPlugin1 implements MyPlugin {
+    public String[] getDependencies() {
+        return new String[0];
+    }
 }

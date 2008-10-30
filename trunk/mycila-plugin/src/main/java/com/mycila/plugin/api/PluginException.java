@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2008 Mathieu Carbou <mathieu.carbou@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *         http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
+package com.mycila.plugin.api;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class MyPlugin3 implements MyPlugin {
-    private MyPlugin3() {}
+public abstract class PluginException extends RuntimeException {
+
+    private static final long serialVersionUID = -35690073735188474L;
+
+    public PluginException(String message) {
+        super(message);
+    }
+
+    public PluginException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

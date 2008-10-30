@@ -16,14 +16,14 @@
 
 package com.mycila.testing.core;
 
-import com.mycila.plugin.PluginManager;
+import com.mycila.plugin.api.PluginResolver;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface TestManager {
 
-    PluginManager getPluginManager();
+    PluginResolver getPluginManager();
 
     TestManager prepare(Object testInstance);
 

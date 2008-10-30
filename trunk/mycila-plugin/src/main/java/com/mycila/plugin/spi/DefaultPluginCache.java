@@ -1,4 +1,8 @@
-package com.mycila.plugin;
+package com.mycila.plugin.spi;
+
+import com.mycila.plugin.api.Plugin;
+import com.mycila.plugin.api.PluginCache;
+import com.mycila.plugin.api.PluginLoader;
 
 import java.util.Collections;
 import java.util.Map;
@@ -8,13 +12,13 @@ import java.util.TreeMap;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class DefaultPluginCache<T> implements PluginCache<T> {
+final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
 
-    private final SortedMap<String, T> plugins = new TreeMap<String, T>();
-    private final PluginLoader<T> loader;
-    private boolean loaded;
+    final SortedMap<String, T> plugins = new TreeMap<String, T>();
+    final PluginLoader<T> loader;
+    boolean loaded;
 
-    public DefaultPluginCache(PluginLoader<T> loader) {
+    DefaultPluginCache(PluginLoader<T> loader) {
         this.loader = loader;
     }
 
@@ -25,27 +29,29 @@ public class DefaultPluginCache<T> implements PluginCache<T> {
         }
     }
 
-    public void setPlugin(String name, T plugin) {
+    public void registerPlugin(String name, T plugin) {
         plugins.put(name, plugin);
     }
 
-    public void setPlugins(Map<String, T> plugins) {
+    public void registerPlugins(Map<String, T> plugins) {
         this.plugins.putAll(plugins);
+    }
+
+    public void removePlugins(String... pluginNames) {
+        for (String name : pluginNames) {
+            this.plugins.remove(name);
+        }
     }
 
     public SortedMap<String, T> getPlugins() {
         if (!loaded) {
             synchronized (plugins) {
                 if (!loaded) {
-                    plugins.putAll(getLoader().loadPlugins());
+                    registerPlugins(loader.loadPlugins());
                     loaded = true;
                 }
             }
         }
         return Collections.unmodifiableSortedMap(plugins);
-    }
-
-    public PluginLoader<T> getLoader() {
-        return loader;
     }
 }

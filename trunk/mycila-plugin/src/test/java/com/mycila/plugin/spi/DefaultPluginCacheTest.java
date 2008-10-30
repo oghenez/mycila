@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
+package com.mycila.plugin.spi;
 
+import com.mycila.plugin.api.PluginCache;
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -32,13 +33,13 @@ public final class DefaultPluginCacheTest {
 
     @BeforeMethod
     public void resetAndGet() {
-        cache = new DefaultPluginCache<MyPlugin>(new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/two.properties"));
+        cache = new DefaultPluginCache<MyPlugin>(new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/spi/two.properties"));
         assertEquals(cache.getPlugins().size(), 2);
     }
 
     @Test
     public void test_setPlugins() {
-        cache.setPlugins(new HashMap<String, MyPlugin>() {
+        cache.registerPlugins(new HashMap<String, MyPlugin>() {
             {
                 put("AAA", new MyPlugin1());
                 put("BBB", new MyPlugin1());
@@ -49,16 +50,22 @@ public final class DefaultPluginCacheTest {
 
     @Test
     public void test_setPlugin() {
-        cache.setPlugin("aaaa", new MyPlugin1());
+        cache.registerPlugin("aaaa", new MyPlugin1());
         assertEquals(cache.getPlugins().size(), 3);
     }
 
     @Test
     public void test_clear() {
-        cache.setPlugin("aaaa", new MyPlugin1());
+        cache.registerPlugin("aaaa", new MyPlugin1());
         assertEquals(cache.getPlugins().size(), 3);
         cache.clear();
         assertEquals(cache.getPlugins().size(), 2);
+    }
+
+    @Test
+    public void test_remove() {
+        cache.removePlugins("plugin1", "plugin2");
+        assertEquals(cache.getPlugins().size(), 0);
     }
 
     @Test

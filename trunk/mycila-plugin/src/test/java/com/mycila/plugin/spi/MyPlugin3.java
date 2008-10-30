@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
-
-import java.util.Map;
-import java.util.SortedMap;
+package com.mycila.plugin.spi;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface PluginCache<T> {
+final class MyPlugin3 implements MyPlugin {
+    private MyPlugin3() {
+    }
 
-    SortedMap<String, T> getPlugins();
-
-    void clear();
-
-    void setPlugin(String name, T plugin);
-
-    void setPlugins(Map<String, T> plugins);
-
+    public String[] getDependencies() {
+        return new String[0];
+    }
 }
