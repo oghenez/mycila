@@ -64,7 +64,7 @@ final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
         try {
             return loader.getResources(descriptor);
         } catch (IOException e) {
-            throw new PluginReadException(e, "Cannot read plugin descriptors '%s' in classloader '%s'", descriptor, loader);
+            throw new PluginIOException(e, "Cannot read plugin descriptors '%s' in classloader '%s'", descriptor, loader);
         }
     }
 
@@ -94,7 +94,7 @@ final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
             p.load(is);
             return p;
         } catch (IOException e) {
-            throw new PluginReadException(e, "Cannot read plugin descriptor '%s'", url);
+            throw new PluginIOException(e, "Cannot read plugin descriptor '%s'", url);
         } finally {
             if (is != null) {
                 try {

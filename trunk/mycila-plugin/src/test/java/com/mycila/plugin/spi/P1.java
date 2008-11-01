@@ -22,11 +22,8 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class MyPlugin3 implements MyPlugin {
-    private MyPlugin3() {
-    }
-
+final class P1 implements MyPlugin {
     public List<String> getExecutionOrder() {
-        return Arrays.asList();
+        return Arrays.asList("p2", "p3");
     }
 }

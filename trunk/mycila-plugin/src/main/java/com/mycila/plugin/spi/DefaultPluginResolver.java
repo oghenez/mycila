@@ -1,14 +1,8 @@
 package com.mycila.plugin.spi;
 
-import com.mycila.plugin.api.InexistingPluginException;
-import com.mycila.plugin.api.Plugin;
-import com.mycila.plugin.api.PluginCache;
-import com.mycila.plugin.api.PluginResolver;
+import com.mycila.plugin.api.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.SortedSet;
+import java.util.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -45,17 +39,54 @@ final class DefaultPluginResolver<T extends Plugin> implements PluginResolver<T>
         return plugins;
     }
 
-    // ???
-
-    public SortedSet<String> getMissingDependencies() {
-        return null;
-    }
-
-    public List<String> getResolvedDependencies() {
-        return null;
+    public SortedMap<String, List<String>> getMissingDependencies() {
+        SortedMap<String, T> plugins = getPlugins();
+        SortedMap<String, List<String>> allMiss = new TreeMap<String, List<String>>();
+        for (Map.Entry<String, T> entry : plugins.entrySet()) {
+            List<String> pluginMiss = new ArrayList<String>(entry.getValue().getExecutionOrder().size());
+            for (String dependency : entry.getValue().getExecutionOrder()) {
+                if (!plugins.containsKey(dependency)) {
+                    pluginMiss.add(dependency);
+                }
+            }
+            if (!pluginMiss.isEmpty()) {
+                allMiss.put(entry.getKey(), pluginMiss);
+            }
+        }
+        return allMiss;
     }
 
     public List<T> getResolvedPlugins() {
-        return null;
+        List<String> names = getResolvedPluginsName();
+        return getPlugins(names.toArray(new String[names.size()]));
     }
+
+    public List<String> getResolvedPluginsName() {
+        SortedMap<String, T> plugins = getPlugins();
+        List<String> resolved = new ArrayList<String>(plugins.size());
+        for (Map.Entry<String, T> entry : plugins.entrySet()) {
+            String name = null;
+            for (String dep : resolved) {
+                if (entry.getValue().getExecutionOrder().contains(dep)) {
+                    name = dep;
+                    break;
+                }
+            }
+            if (name == null) {
+                resolved.add(resolved.size(), entry.getKey());
+            } else {
+                resolved.add(resolved.indexOf(entry.getKey()) - 1, name);
+            }
+        }
+        for (int i = 0; i < resolved.size(); i++) {
+            String module = resolved.get(i);
+            for (int j = i; j < resolved.size(); j++) {
+                if (plugins.get(resolved.get(j)).getExecutionOrder().contains(module)) {
+                    throw new CyclicDependencyException();
+                }
+            }
+        }
+        return resolved;
+    }
+
 }
