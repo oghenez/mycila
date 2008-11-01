@@ -22,8 +22,12 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class MyPlugin5 implements MyPlugin {
-    public List<String> getExecutionOrder() {
-        return Arrays.asList("plugin1", "plugin4");
+final class MyPlugin5 extends MyAbstractPlugin {
+    public List<String> getBefore() {
+        return Arrays.asList("plugin1", "inexisting");
+    }
+
+    public List<String> getAfter() {
+        return Arrays.asList("plugin4");
     }
 }

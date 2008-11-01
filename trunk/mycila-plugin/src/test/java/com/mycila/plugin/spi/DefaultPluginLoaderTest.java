@@ -87,7 +87,7 @@ public final class DefaultPluginLoaderTest {
             repo.loadPlugins();
             fail("must throw PluginCreationException");
         } catch (PluginCreationException e) {
-            assertEquals(e.getClazz(), "com.mycila.plugin.spi.MyPlugin3");
+            assertEquals(e.getClazz(), "com.mycila.plugin.spi.PrivatePlugin");
             assertEquals(e.getDescriptor(), getClass().getResource("/com/mycila/plugin/spi/instance.properties"));
             assertEquals(e.getPlugin(), "plugin3");
             assertEquals(e.getPluginType(), MyPlugin.class);

@@ -80,15 +80,16 @@ public final class DefaultPluginResolverTest {
     }
 
     @Test
-    public void test_getMissingDependencies() {
-        setupResolver("/com/mycila/plugin/spi/two.properties");
-        assertFalse(resolver.getMissingDependencies().isEmpty());
+    public void test_getMissingDependenciesByPlugin() {
+        setupResolver("/com/mycila/plugin/spi/noMiss.properties");
+        assertTrue(resolver.getMissingDependenciesByPlugin().isEmpty());
 
-        setupResolver("/com/mycila/plugin/spi/missing.properties");
-        assertEquals(resolver.getMissingDependencies().size(), 2);
-        assertEquals(resolver.getMissingDependencies().firstKey(), "plugin2");
-        assertEquals(resolver.getMissingDependencies().get("plugin2").get(0), "inexisting");
-        assertEquals(resolver.getMissingDependencies().get("plugin4").get(0), "inexisting");
+        setupResolver("/com/mycila/plugin/spi/two.properties");
+        assertFalse(resolver.getMissingDependenciesByPlugin().isEmpty());
+        assertEquals(resolver.getMissingDependenciesByPlugin().size(), 2);
+        assertEquals(resolver.getMissingDependenciesByPlugin().firstKey(), "plugin1");
+        assertEquals(resolver.getMissingDependenciesByPlugin().get("plugin1").first(), "plugin3");
+        assertEquals(resolver.getMissingDependenciesByPlugin().get("plugin2").first(), "inexisting");
     }
 
     @Test
@@ -98,41 +99,49 @@ public final class DefaultPluginResolverTest {
     }
 
     @Test
-    public void test_getResolvedPluginsName() {
+    public void test_getResolvedPluginsName_simple() {
         setupResolver("/com/mycila/plugin/spi/two.properties");
         assertEquals(resolver.getResolvedPluginsName().size(), 2);
         assertListEquals(resolver.getResolvedPluginsName(), "plugin2", "plugin1");
     }
 
     @Test
+    public void test_getResolvedPluginsName_simple_noMiss() {
+        setupResolver("/com/mycila/plugin/spi/noMiss.properties");
+        assertEquals(resolver.getResolvedPluginsName().size(), 4);
+        assertListEquals(resolver.getResolvedPluginsName(), "inexisting", "plugin2", "plugin1", "plugin3");
+    }
+
+    @Test
     public void test_getResolvedPluginsName_complex() {
         setupResolver("/com/mycila/plugin/spi/complex.properties");
-        assertEquals(resolver.getMissingDependencies().firstKey(), "plugin4");
-        assertEquals(resolver.getMissingDependencies().values().iterator().next().get(0), "inexisting");
-        assertEquals(resolver.getResolvedPluginsName().size(), 4);
-        assertListEquals(resolver.getResolvedPluginsName(), "plugin5", "plugin4", "plugin2", "plugin1");
+        List<String> list = resolver.getResolvedPluginsName();
+        assertEquals(list.size(), 6);
+        assertListEquals(list, "plugin2", "plugin1", "plugin5", "plugin6", "plugin4", "plugin3");
     }
 
     @Test
     public void test_getResolvedPluginsName_cyclomatic() {
         try {
             setupResolver("/com/mycila/plugin/spi/cyclo.properties");
-            resolver.getResolvedPluginsName();
-            fail("must throw CyclicDependencyException");
+            List<String> list = resolver.getResolvedPluginsName();
+            fail("must throw CyclicDependencyException. Actual: " + list);
         } catch (CyclicDependencyException e) {
-            assertEquals(e, "");
+            assertEquals(e.getPluginName(), "plugin7");
+            assertEquals(e.getPluginsNames().toString(), "[plugin2, plugin1, plugin5, plugin6, plugin3]");
+            assertEquals(e.getInsertionIndex(), 3);
+            assertEquals(e.getPlugin().getClass(), MyPlugin7.class);
         }
     }
 
     @Test
     public void test_getResolvedPlugins() {
-        setupResolver("/com/mycila/plugin/spi/four.properties");
-        assertListEquals(resolver.getResolvedPluginsName(), "plugin5", "plugin4", "plugin2", "plugin1");
+        setupResolver("/com/mycila/plugin/spi/noMiss.properties");
         List<MyPlugin> plugins = resolver.getResolvedPlugins();
-        assertEquals(plugins.get(0).getClass(), MyPlugin5.class);
-        assertEquals(plugins.get(2).getClass(), MyPlugin4.class);
-        assertEquals(plugins.get(3).getClass(), MyPlugin2.class);
-        assertEquals(plugins.get(4).getClass(), MyPlugin1.class);
+        assertEquals(plugins.get(0).getClass(), MyPlugin4.class);
+        assertEquals(plugins.get(1).getClass(), MyPlugin2.class);
+        assertEquals(plugins.get(2).getClass(), MyPlugin1.class);
+        assertEquals(plugins.get(3).getClass(), MyPlugin3.class);
     }
 
     private void setupResolver(String descriptor) {
@@ -140,7 +149,10 @@ public final class DefaultPluginResolverTest {
     }
 
     private void assertListEquals(List<String> plugins, String... names) {
-        for (int i = 0; i < names.length; i++) {
+        if (plugins.size() != names.length) {
+            fail("Sizes differs.\nResolved: " + plugins + "\nExpected: " + Arrays.deepToString(names));
+        }
+        for (int i = 0; i < plugins.size() && i < names.length; i++) {
             assertEquals(plugins.get(i), names[i], "\nResolved: " + plugins + "\nExpected: " + Arrays.deepToString(names));
         }
     }

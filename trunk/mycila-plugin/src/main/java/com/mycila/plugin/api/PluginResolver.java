@@ -18,6 +18,7 @@ package com.mycila.plugin.api;
 
 import java.util.List;
 import java.util.SortedMap;
+import java.util.SortedSet;
 
 /**
  * The PluginResolver is responsible of checking for module dependencies to resolve missing dependencies,
@@ -61,26 +62,30 @@ public interface PluginResolver<T extends Plugin> {
     boolean contains(String name);
 
     /**
-     * Get the list of plugin names that have been declared as dependencies in {@link Plugin#getExecutionOrder()}
-     * but that have not been loaded (not found, inexisting, ...)
+     * Get the list of plugin names that have been declared as dependencies in {@link Plugin#getBefore()}
+     * and {@link com.mycila.plugin.api.Plugin#getAfter()} but that have not been loaded (because not
+     * found, inexisting, ...)
      *
-     * @return The list of the missing dependencies. The key is the plugin name and the array is the list of
-     *         dependencies not found for this plugin
+     * @return The list of the missing dependencies. The key is the plugin name and the value is the set of
+     *         dependencies not found for this plugin.
      */
-    SortedMap<String, List<String>> getMissingDependencies();
+    SortedMap<String, SortedSet<String>> getMissingDependenciesByPlugin();
 
     /**
-     * List all plugin names, in order of dependencies / execution order, thanks to {@link Plugin#getExecutionOrder()}
+     * Returns all dependencies missing, regardless of all plugins
+     *
+     * @return A set of plugin names missing
+     */
+    SortedSet<String> getMissingDependencies();
+
+    /**
+     * List all plugin names, in order of dependencies / execution, thanks to {@link Plugin#getBefore()} and
+     * {@link Plugin#getAfter()}.
      * <p/>
-     * I.E. If a plugin A declares to be dependant of plugins B and C, plugins B and C will be listed before plugin A.
-     * <p/>
-     * Notes:
-     * <p/>
+     * Notes:<br/>
      * - cyclic dependencies (i.e. plugin A depend on B, B on C, and C on A) are detected and an exception is thrown.<br/>
-     * - this method also returns the name of the plugins for which some dependencies have not beed found in the execution order.
-     * But the missing dependencies are not returned.<br/>
-     * I.E.: If plugin A depends on inexisting plugin B, plugin A is returned in the list, but not plugin B. Plugin B will be
-     * returned when calling {@link #getMissingDependencies()}.
+     * - this method only returns plugin names that have been loaded and can be used. So if a plugin A depends on a plugin B
+     * in its getBefore declaration, and the plugin B is not loaded, A will be returned in this list but not B.
      *
      * @return A list of plugin names, in dependency order
      * @throws CyclicDependencyException A cyclic dependency has been found
@@ -88,7 +93,7 @@ public interface PluginResolver<T extends Plugin> {
     List<String> getResolvedPluginsName();
 
     /**
-     * Get the list of plugins in order of dependencies, resolved by {@link #getResolvedPluginsName()}
+     * Get the list of plugins in order of dependencies, resolved by {@link #getResolvedPluginsName()}.
      *
      * @return the list of plugin instances in order of execution
      */

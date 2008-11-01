@@ -22,11 +22,12 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class MyPlugin3 implements MyPlugin {
-    private MyPlugin3() {
+final class MyPlugin3 extends MyAbstractPlugin {
+    public List<String> getBefore() {
+        return Arrays.asList("plugin1", "inexisting");
     }
 
-    public List<String> getExecutionOrder() {
-        return Arrays.asList();
+    public List<String> getAfter() {
+        return Arrays.asList("");
     }
 }

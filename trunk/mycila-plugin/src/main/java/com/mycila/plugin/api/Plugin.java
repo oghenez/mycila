@@ -10,15 +10,16 @@ import java.util.List;
 public interface Plugin {
 
     /**
-     * Get the execution order needed for this plugin to work.
-     * This order is needed by the {@link com.mycila.plugin.api.PluginResolver} to be able to provides
-     * a sorted list of plugins, that can be processed in order to meet their dependencies.
-     * <p/>
-     * I.E.:<br/>
-     * If a plugin A must be executed after a plugin B, the execution order will be B, A<br/>
-     * If a plugin A depends on another plugin B, the execution order will be B, A<br/>
+     * Get the list of plugins that should be executed before this one
      *
-     * @return empty string, or a list of plugin names representing the dependencies or execution order needed for this plugin
+     * @return empty list, or a list of plugin names
      */
-    List<String> getExecutionOrder();
+    List<String> getBefore();
+
+    /**
+     * Get the list of plugins that should be executed after this one
+     *
+     * @return empty list, or a list of plugin names
+     */
+    List<String> getAfter();
 }
