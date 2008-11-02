@@ -7,12 +7,12 @@
      -->
 
     <parent>
-        <groupId>com.google.code.mycila</groupId>
-        <artifactId>mycila</artifactId>
+        <groupId>com.google.code.mycila.testing</groupId>
+        <artifactId>mycila-testing</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>mycila-testing</artifactId>
+    <artifactId>mycila-testing-api</artifactId>
     <packaging>jar</packaging>
 
     <name>mycila-testing</name>

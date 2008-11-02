@@ -7,15 +7,15 @@
      -->
 
     <parent>
-        <groupId>com.google.code.mycila</groupId>
-        <artifactId>mycila</artifactId>
+        <groupId>com.google.code.mycila.testing</groupId>
+        <artifactId>mycila-testing</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>mycila-all</artifactId>
+    <artifactId>mycila-testing-all</artifactId>
     <packaging>jar</packaging>
 
-    <name>mycila-all</name>
+    <name>mycila-testing-all</name>
     <description>All Mycila API</description>
     <url>http://old.mycila.com/p/mycila/${project.artifactId}</url>
 
@@ -75,8 +75,8 @@
             <artifactId>mycila-plugin</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.code.mycila</groupId>
-            <artifactId>mycila-testing</artifactId>
+            <groupId>com.google.code.mycila.testing</groupId>
+            <artifactId>mycila-testing-api</artifactId>
         </dependency>
     </dependencies>
 

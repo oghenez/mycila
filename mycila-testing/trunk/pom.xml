@@ -6,12 +6,12 @@
          POM settings
      -->
 
-    <groupId>com.google.code.mycila</groupId>
-    <artifactId>mycila</artifactId>
+    <groupId>com.google.code.mycila.testing</groupId>
+    <artifactId>mycila-testing</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>mycila</name>
+    <name>mycila-testing</name>
     <description>Mycila parent POM</description>
     <url>http://old.mycila.com/p/mycila</url>
     <inceptionYear>2008</inceptionYear>
@@ -29,9 +29,9 @@
     -->
 
     <scm>
-        <connection>scm:svn:https://mycila.googlecode.com/svn/trunk</connection>
-        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/trunk</developerConnection>
-        <url>http://mycila.googlecode.com/svn/trunk</url>
+        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-testing/trunk</connection>
+        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-testing/trunk</developerConnection>
+        <url>http://mycila.googlecode.com/svn/mycila-testing/trunk</url>
     </scm>
 
     <!--
@@ -107,9 +107,9 @@
     </distributionManagement>
 
     <modules>
-        <module>mycila-plugin</module>
-        <module>mycila-testing</module>
-        <module>mycila-all</module>
+        <module>testing-api</module>
+        <module>testing-plugins</module>
+        <module>testing-all</module>
     </modules>
 
     <!--
@@ -243,7 +243,7 @@
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
                 <configuration>
-                    <tagBase>https://mycila.googlecode.com/svn/tags</tagBase>
+                    <tagBase>https://mycila.googlecode.com/svn/mycila-testing/tags</tagBase>
                 </configuration>
             </plugin>
             <!-- documentation -->
@@ -351,13 +351,8 @@
         <dependencies>
             <!-- mycila -->
             <dependency>
-                <groupId>com.google.code.mycila</groupId>
-                <artifactId>mycila-plugin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.code.mycila</groupId>
-                <artifactId>mycila-testing</artifactId>
+                <groupId>com.google.code.mycila.testing</groupId>
+                <artifactId>testing-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!-- ioc supports -->
