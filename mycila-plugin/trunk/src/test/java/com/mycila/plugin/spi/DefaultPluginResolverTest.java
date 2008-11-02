@@ -209,7 +209,7 @@ public final class DefaultPluginResolverTest {
     }
 
     @Test
-    public void test_getResolvedPluginsName_cyclomatic() {
+    public void test_getResolvedPluginsName_cyclic() {
         try {
             setupResolver();
 
@@ -220,13 +220,13 @@ public final class DefaultPluginResolverTest {
             List<String> list = resolver.getResolvedPluginsName();
             fail("must throw CyclicDependencyException. Actual: " + list);
         } catch (CyclicDependencyException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             assertEquals(e.getCyclics().keySet().toString(), "[plugin0, plugin1, plugin2]");
         }
     }
 
     @Test
-    public void test_getResolvedPluginsName_cyclomatic2() {
+    public void test_getResolvedPluginsName_cyclic2() {
         try {
             setupResolver();
 
@@ -238,7 +238,7 @@ public final class DefaultPluginResolverTest {
             List<String> list = resolver.getResolvedPluginsName();
             fail("must throw CyclicDependencyException. Actual: " + list);
         } catch (CyclicDependencyException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             assertEquals(e.getCyclics().keySet().toString(), "[plugin0, plugin1, plugin2, plugin3]");
         }
     }
