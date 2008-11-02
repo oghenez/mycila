@@ -16,7 +16,7 @@
     <packaging>jar</packaging>
 
     <name>mycila-testing-all</name>
-    <description>All Mycila API</description>
+    <description>All Mycila testing framework and plugins</description>
     <url>http://old.mycila.com/p/mycila/${project.artifactId}</url>
 
     <!--

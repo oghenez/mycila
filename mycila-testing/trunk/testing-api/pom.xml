@@ -15,7 +15,7 @@
     <artifactId>mycila-testing-api</artifactId>
     <packaging>jar</packaging>
 
-    <name>mycila-testing</name>
+    <name>mycila-testing-api</name>
     <description>Testing API</description>
     <url>http://old.mycila.com/p/mycila/${project.artifactId}</url>
 

@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
 
     <name>mycila-testing</name>
-    <description>Mycila parent POM</description>
+    <description>Mycila testing parent POM</description>
     <url>http://old.mycila.com/p/mycila</url>
     <inceptionYear>2008</inceptionYear>
 
