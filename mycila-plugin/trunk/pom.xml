@@ -167,7 +167,7 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <parallel>true</parallel>
+                    <parallel>false</parallel>
                     <threadCount>5</threadCount>
                 </configuration>
             </plugin>
