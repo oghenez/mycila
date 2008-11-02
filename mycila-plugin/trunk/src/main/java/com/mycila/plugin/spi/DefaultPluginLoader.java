@@ -41,6 +41,10 @@ final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
         this.descriptor = descriptor.startsWith("/") ? descriptor.substring(1) : descriptor;
     }
 
+    DefaultPluginLoader(Class<T> pluginsType) {
+        this(pluginsType, "^%&:;-.`~!@#"); // just to be sure a resource with this name does not exist ;)
+    }
+
     public SortedMap<String, T> loadPlugins() {
         SortedMap<String, T> plugins = new TreeMap<String, T>();
         Enumeration<URL> configs = loadDescriptors();
@@ -93,7 +97,7 @@ final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
             Properties p = new Properties();
             p.load(is);
             return p;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new PluginIOException(e, "Cannot read plugin descriptor '%s'", url);
         } finally {
             if (is != null) {
