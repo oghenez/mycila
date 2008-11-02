@@ -86,7 +86,7 @@
     <!--
         Distributions
     -->
-    
+
     <distributionManagement>
         <repository>
             <id>mc-release</id>
@@ -208,6 +208,49 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <silent>true</silent>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" />
+                                <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
+                                    <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5-0.7.3.jar" />
+                                    <rule pattern="org.jgrapht.**" result="com.mycila.plugin.spi.org.jgrapht.@1" />
+                                </jarjar>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>jarjar</groupId>
+                        <artifactId>jarjar</artifactId>
+                        <version>1.0rc8.jar</version>
+                        <scope>system</scope>
+                        <systemPath>${basedir}/etc/jarjar-1.0rc8.jar</systemPath>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <inherited>false</inherited>
@@ -348,6 +391,12 @@
     -->
 
     <dependencies>
+        <dependency>
+            <groupId>org.jgrapht</groupId>
+            <artifactId>jgrapht-jdk1.5</artifactId>
+            <version>0.7.3</version>
+            <scope>provided</scope>
+        </dependency>
         <!-- test frameworks -->
         <dependency>
             <groupId>org.testng</groupId>
@@ -363,22 +412,5 @@
             </exclusions>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>mc-releases</id>
-            <url>http://mc-repo.googlecode.com/svn/maven2/releases</url>
-        </repository>
-        <repository>
-            <id>mc-snapshots</id>
-            <url>http://mc-repo.googlecode.com/svn/maven2/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 
 </project>

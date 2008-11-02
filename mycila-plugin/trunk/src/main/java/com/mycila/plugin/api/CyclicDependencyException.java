@@ -1,7 +1,9 @@
 package com.mycila.plugin.api;
 
 import static java.lang.String.*;
-import java.util.List;
+import java.util.Collections;
+import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -9,47 +11,25 @@ import java.util.List;
 public final class CyclicDependencyException extends PluginException {
     private static final long serialVersionUID = -6644476561325060279L;
 
-    private final List<String> pluginsNames;
-    private final String pluginName;
-    private final Plugin plugin;
-    private final int insertionIndex;
+    private final SortedMap<String, Plugin> cyclics;
 
-    public CyclicDependencyException(List<String> pluginsNames, String pluginName, Plugin plugin, int insertionIndex) {
-        super(format("Cyclic dependencies found when ordering loaded plugins\n%s", info(pluginsNames, pluginName, plugin, insertionIndex)));
-        this.pluginsNames = pluginsNames;
-        this.pluginName = pluginName;
-        this.plugin = plugin;
-        this.insertionIndex = insertionIndex;
+    public CyclicDependencyException(SortedMap<String, Plugin> cyclics) {
+        super(format("Cyclic dependencies have been found amongst these plugins:\n%s", info(cyclics)));
+        this.cyclics = Collections.unmodifiableSortedMap(cyclics);
     }
 
-    public int getInsertionIndex() {
-        return insertionIndex;
+    public SortedMap<String, Plugin> getCyclics() {
+        return cyclics;
     }
 
-    public Plugin getPlugin() {
-        return plugin;
-    }
-
-    public String getPluginName() {
-        return pluginName;
-    }
-
-    public List<String> getPluginsNames() {
-        return pluginsNames;
-    }
-
-    private static String info(List<String> pluginsNames, String pluginName, Plugin plugin, int insertionIndex) {
-        StringBuilder sb = new StringBuilder()
-                .append("- currently resolved execution order: ").append(pluginsNames).append("\n")
-                .append("- plugin name: ").append(pluginName).append("\n")
-                .append("- plugin before dependencies: ").append(plugin.getBefore()).append("\n")
-                .append("- plugin after dependencies: ").append(plugin.getAfter()).append("\n")
-                .append("- insertion position: ").append(insertionIndex);
-        if (insertionIndex == pluginsNames.size()) {
-            sb.append(" (at the end)");
-        } else {
-            sb.append(" (before ").append(pluginsNames.get(insertionIndex)).append(")");
+    private static String info(SortedMap<String, Plugin> cyclics) {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Plugin> entry : cyclics.entrySet()) {
+            sb.append("- Plugin '").append(entry.getKey()).append("'").append("\n");
+            sb.append("    - befores: ").append(entry.getValue().getBefore()).append("\n");
+            sb.append("    - afters: ").append(entry.getValue().getAfter()).append("\n");
         }
-        return sb.append("\n").toString();
+        return sb.toString();
     }
+
 }
