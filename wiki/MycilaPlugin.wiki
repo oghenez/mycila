@@ -12,7 +12,23 @@ Mycila Plugin Framework is a really little (4 classes) plugin framework that ena
  * from our [http://code.google.com/p/mc-repo/ alternate maven repository]
  * and maybe (if deployed) in the central maven repository
 
+== Documentation ==
+
+Javadoc, Source XREF, Test reports, Coverages, ...
+
+http://old.mycila.com/p/mycila/mycila-plugin/
+
 == Usage ==
+
+First you need to define what is a plugin in your project. The abstract class or interface should extend the Plugin interface.
+
+{{{
+package my.sample;
+import com.mycila.plugin.api.Plugin;
+public interface MyPlugin extends Plugin {
+    void execute();
+}
+}}}
 
 The usage is very easy. It works nearly like the JDK [http://java.sun.com/javase/6/docs/api/index.html?java/util/ServiceLoader.html ServiceLoader] class:
 
@@ -38,3 +54,16 @@ for (MyPlugin plugin : manager.getResolver().getResolvedPlugins()) {
     plugin.execute();
 }
 }}}
+
+At runtime, you can add, remove plugins, reload all plugins, ... 
+
+== The PluginManager ==
+
+From the PluginManager, you have access to three components:
+
+ * The PluginLoader: responsible of loading the plugins
+ * The PluginCache: responsible of caching in memory available plugins
+ * The PluginResolver: responsible of resolving the plugins and their order of execution
+
+== PluginLoader ==
+
