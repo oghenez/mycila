@@ -111,7 +111,7 @@ public interface Plugin {
 }
 }}}
 
-Your implementation has to return two set of dependencies: 
+Your implementation has to return two lists of dependencies: 
  * Through `getBefore`, this is the list of dependencies that should be executed before this plugin. You can return en empty list of you do not have such dependency.
  * Through `getAfter`, this is the list of dependencies that should be executed after this plugin. You can return en empty list of you do not have such dependency.
 
