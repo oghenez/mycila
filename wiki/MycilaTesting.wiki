@@ -1,4 +1,6 @@
+#summary Mycila Testing Framework
 #labels Featured
+
 == Testing ==
 
 Integration of Guice Testing in your app is as simple a knowing only two annotations:
