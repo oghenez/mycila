@@ -57,13 +57,27 @@ for (MyPlugin plugin : manager.getResolver().getResolvedPlugins()) {
 
 At runtime, you can add, remove plugins, reload all plugins, ... 
 
-== The PluginManager ==
+=== The PluginManager ===
 
-From the PluginManager, you have access to three components:
+From the [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/spi/PluginManager.java PluginManager], you have access to three components:
 
- * The PluginLoader: responsible of loading the plugins
- * The PluginCache: responsible of caching in memory available plugins
- * The PluginResolver: responsible of resolving the plugins and their order of execution
+ * The [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginLoader.java PluginLoader]: responsible of loading the plugins
+ * The [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginCache.java PluginCache]: responsible of caching in memory available plugins
+ * The [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginResolver.java PluginResolver]: responsible of resolving the plugins and their order of execution
 
-== PluginLoader ==
+=== PluginLoader ===
+
+The plugin loader enables you to reload all plugins from the descriptor you specified in the plugin manager. You can also exclude some plugins from loading: this is useful if a third party provides a plugin that crashes.
+
+=== PluginCache ===
+
+When you retreive the list of plugins, you get it from the plugin cache, which lazily load them with a laoder. Once loaded, you can add / remove / clear plugins loaded in memory with the PluginCache.
+
+=== PluginResolver ===
+
+The plugin resolver is the access point of your plugins. It contains basic getters (get, getAll, contains, ...) methods. 
+
+The main interest of this interface is to resolve *plugin dependencies* and returns you the list of plugin names of plugin dependencies in order of execution. See methods `getResolvedPluginsName` and `getResolvedPlugins`
+
+== Plugin dependencies ==
 
