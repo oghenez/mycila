@@ -18,9 +18,23 @@ The usage is very easy. It works nearly like the JDK [http://java.sun.com/javase
 
 {{{
 PluginManager<MyPlugin> manager = new PluginManager<MyPlugin>(MyPlugin.class, "META-INF/myapp/plugins.properties");
+
 for (MyPlugin plugin : manager.getResolver().getResolvedPlugins()) {
     plugin.execute();
 }
 }}}
 
 You just have to provide your plugin type (which implement the Plugin interface as we will see later), and also provide the resources to check on the classpath. The PluginManager will load all the plugins found in all `META-INF/myapp/plugins.properties` resources.
+
+And is you want to control your self which plugin to add, you could also use this way of buidling a plugin manager:
+
+{{{
+PluginManager<MyPlugin> manager = new PluginManager<MyPlugin>(MyPlugin.class);
+
+manager.getCache().registerPlugin("myPlugin1", new MyPluginInstance1());
+manager.getCache().registerPlugin("myPlugin2", new MyPluginInstance2());
+
+for (MyPlugin plugin : manager.getResolver().getResolvedPlugins()) {
+    plugin.execute();
+}
+}}}
