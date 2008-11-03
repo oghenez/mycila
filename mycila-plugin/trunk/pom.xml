@@ -122,6 +122,30 @@
                 <version>1.0-beta-2</version>
             </extension>
         </extensions>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <inherited>false</inherited>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <dependencies>
+                        <dependency>
+                            <groupId>jarjar</groupId>
+                            <artifactId>jarjar</artifactId>
+                            <version>1.0rc8</version>
+                            <scope>system</scope>
+                            <systemPath>${basedir}/etc/jarjar-1.0rc8.jar</systemPath>
+                        </dependency>
+                        <dependency>
+                            <groupId>googlecode-uploader</groupId>
+                            <artifactId>googlecode-uploader</artifactId>
+                            <version>0.0.1</version>
+                            <scope>system</scope>
+                            <systemPath>${basedir}/etc/ant-googlecode-0.0.1.jar</systemPath>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <!-- for maven plugins -->
             <plugin>
@@ -224,16 +248,18 @@
                 </executions>
             </plugin>
             <plugin>
+                <inherited>false</inherited>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>jarjar</id>
                         <phase>package</phase>
                         <configuration>
                             <tasks>
-                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" />
+                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"/>
                                 <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
-                                    <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5-0.7.3.jar" />
-                                    <rule pattern="org.jgrapht.**" result="com.mycila.plugin.spi.org.jgrapht.@1" />
+                                    <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5-0.7.3.jar"/>
+                                    <rule pattern="org.jgrapht.**" result="com.mycila.plugin.spi.org.jgrapht.@1"/>
                                 </jarjar>
                             </tasks>
                         </configuration>
@@ -242,28 +268,19 @@
                         </goals>
                     </execution>
                 </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>jarjar</groupId>
-                        <artifactId>jarjar</artifactId>
-                        <version>1.0rc8.jar</version>
-                        <scope>system</scope>
-                        <systemPath>${basedir}/etc/jarjar-1.0rc8.jar</systemPath>
-                    </dependency>
-                </dependencies>
             </plugin>
             <plugin>
                 <inherited>false</inherited>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptors>
-                        <descriptor>${basedir}/etc/project.xml</descriptor>
-                    </descriptors>
-                </configuration>
                 <executions>
                     <execution>
                         <id>make-assembly</id>
                         <phase>package</phase>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>${basedir}/etc/project.xml</descriptor>
+                            </descriptors>
+                        </configuration>
                         <goals>
                             <goal>attached</goal>
                         </goals>
@@ -276,6 +293,49 @@
                 <configuration>
                     <updateReleaseInfo>true</updateReleaseInfo>
                 </configuration>
+            </plugin>
+            <plugin>
+                <inherited>false</inherited>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>gcupload</id>
+                        <phase>deploy</phase>
+                        <configuration>
+                            <tasks>
+                                <taskdef name="gcupload" classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask"/>
+                                <input message="Google code upload username:"
+                                       addproperty="gcupload.username"/>
+                                <input message="Google code upload password:"
+                                       addproperty="gcupload.password"/>
+                                <gcupload username="${gcupload.username}"
+                                          password="${gcupload.password}"
+                                          projectname="mycila"
+                                          filename="${project.build.directory}/${project.build.finalName}.jar"
+                                          targetfilename="${project.build.finalName}.jar"
+                                          summary="jar"
+                                          labels="Featured"/>
+                                <gcupload username="${gcupload.username}"
+                                          password="${gcupload.password}"
+                                          projectname="mycila"
+                                          filename="${project.build.directory}/${project.build.finalName}-sources.jar"
+                                          targetfilename="${project.build.finalName}-sources.jar"
+                                          summary="sources"
+                                          labels="Featured"/>
+                                <gcupload username="${gcupload.username}"
+                                          password="${gcupload.password}"
+                                          projectname="mycila"
+                                          filename="${project.build.directory}/${project.build.finalName}-project.jar"
+                                          targetfilename="${project.build.finalName}-project.jar"
+                                          summary="project"
+                                          labels="Featured"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
