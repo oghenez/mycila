@@ -18,7 +18,7 @@ Javadoc, Source XREF, Test reports, Coverages, ...
 
 http://old.mycila.com/p/mycila/mycila-plugin/
 
-== Usage ==
+== Manual ==
 
 First you need to define what is a plugin in your project. The abstract class or interface should extend the Plugin interface.
 
@@ -80,4 +80,3 @@ The plugin resolver is the access point of your plugins. It contains basic gette
 The main interest of this interface is to resolve *plugin dependencies* and returns you the list of plugin names of plugin dependencies in order of execution. See methods `getResolvedPluginsName` and `getResolvedPlugins`
 
 == Plugin dependencies ==
-
