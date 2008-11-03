@@ -21,6 +21,10 @@ package com.mycila.plugin.spi;
  */
 abstract class MyAbstractPlugin implements MyPlugin {
 
+    public void execute() {
+        System.out.println("hello world from plugin " + getClass().getSimpleName());
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() + ": " + getBefore() + " | " + getAfter();

@@ -22,4 +22,7 @@ import com.mycila.plugin.api.Plugin;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface MyPlugin extends Plugin {
+
+    void execute();
+
 }
