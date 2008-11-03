@@ -67,7 +67,7 @@ From the [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com
 
 === PluginLoader ===
 
-The plugin loader enables you to reload all plugins from the descriptor you specified in the plugin manager. You can also exclude some plugins from loading: this is useful if a third party provides a plugin that crashes.
+The plugin loader enables you to reload all plugins from the descriptor you specified in the plugin manager. You can also exclude some plugins from loading: this is useful if a third party provides a plugin that crashes. The PluginLoader also accept a classloader to use for loading the plugins. This can be useful for example if the jars are not in your classpath but online for exemple ;) Otherwise. if you want to isolate the plugin classloader from your application classloader...
 
 === PluginCache ===
 
