@@ -81,7 +81,7 @@ The main interest of this interface is to resolve *plugin dependencies* and retu
 
 == Plugin dependencies ==
 
-Mycila Plugin Frameowrk supports plugin dependencies. When you declare a plugin, you have to implement the Plugin ineterface:
+Mycila Plugin Frameowrk supports plugin dependencies. When you declare a plugin, you have to implement the Plugin interface:
 
 {{{
 package com.mycila.plugin.api;
@@ -110,3 +110,9 @@ public interface Plugin {
     List<String> getAfter();
 }
 }}}
+
+Your implementation has to return two set of dependencies: 
+ * Through `getBefore`, this is the list of dependencies that should be executed before this plugin. You can return en empty list of you do not have such dependency.
+ * Through `getAfter`, this is the list of dependencies that should be executed after this plugin. You can return en empty list of you do not have such dependency.
+
+The PluginResolver resolves all the dependencies of all plugins and returns an execution list. If cyclic dependencies are found, an exception is thrown.
