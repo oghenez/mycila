@@ -1,0 +1,13 @@
+#summary Mycila Plugin Framework
+#labels Featured
+
+= Introduction =
+
+Mycila Plugin Framework is a really little (4 classes) plugin framework that enables you to build quickly a plugin architecture in your application, supporting dependencies.
+
+= Download =
+
+*mycila-plugin* is available
+ * from the [http://code.google.com/p/mycila/downloads/list download section]
+ * from our [http://code.google.com/p/mc-repo/ alternate maven repository]
+ * and maybe (if deployed) in the central maven repository
