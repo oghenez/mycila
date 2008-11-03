@@ -325,8 +325,8 @@
                                 <gcupload username="${gcupload.username}"
                                           password="${gcupload.password}"
                                           projectname="mycila"
-                                          filename="${project.build.directory}/${project.build.finalName}-project.jar"
-                                          targetfilename="${project.build.finalName}-project.jar"
+                                          filename="${project.build.directory}/${project.build.finalName}-project.zip"
+                                          targetfilename="${project.build.finalName}-project.zip"
                                           summary="project"
                                           labels="Featured"/>
                             </tasks>
