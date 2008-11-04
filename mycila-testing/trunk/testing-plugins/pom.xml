@@ -14,11 +14,11 @@
 
     <groupId>com.google.code.mycila.testing.plugins</groupId>
     <artifactId>mycila-testing-plugins</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>mycila-testing-plugins</name>
     <description>All Mycila testing plugins</description>
-    <url>http://old.mycila.com/p/mycila/${project.artifactId}</url>
+    <url>http://old.mycila.com/p/mycila/mycila-testing/plugins/</url>
 
     <!--
         Distributions
@@ -28,8 +28,15 @@
         <site>
             <id>website</id>
             <name>website</name>
-            <url>file://${basedir}/../target/dist/site/${project.artifactId}</url>
+            <url>file://${basedir}/../target/dist/site/mycila-testing/plugins/</url>
         </site>
     </distributionManagement>
+
+    <modules>
+        <module>jmock</module>
+        <module>easymock</module>
+        <module>guice</module>
+        <module>spring</module>
+    </modules>
 
 </project>

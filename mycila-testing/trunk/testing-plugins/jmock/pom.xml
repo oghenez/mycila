@@ -12,12 +12,12 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>mycila-testing-guice</artifactId>
+    <artifactId>mycila-testing-jmock</artifactId>
     <packaging>jar</packaging>
 
-    <name>mycila-testing-guice</name>
-    <description>Guice plugin</description>
-    <url>http://old.mycila.com/p/mycila/mycila-testing/plugins/mycila-testing-guice/</url>
+    <name>mycila-testing-jmock</name>
+    <description>JMock plugin</description>
+    <url>http://old.mycila.com/p/mycila/mycila-testing/plugins/mycila-testing-jmock/</url>
 
     <!--
         Distributions
@@ -27,7 +27,7 @@
         <site>
             <id>website</id>
             <name>website</name>
-            <url>file://${basedir}/../../target/dist/site/mycila-testing/plugins/mycila-testing-guice/</url>
+            <url>file://${basedir}/../../target/dist/site/mycila-testing/plugins/mycila-testing-jmock/</url>
         </site>
     </distributionManagement>
 

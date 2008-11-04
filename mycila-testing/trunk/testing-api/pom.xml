@@ -17,7 +17,7 @@
 
     <name>mycila-testing-api</name>
     <description>Testing API</description>
-    <url>http://old.mycila.com/p/mycila/${project.artifactId}</url>
+    <url>http://old.mycila.com/p/mycila/mycila-testing/mycila-testing-api/</url>
 
     <!--
         Distributions
@@ -27,7 +27,7 @@
         <site>
             <id>website</id>
             <name>website</name>
-            <url>file://${basedir}/../target/dist/site/${project.artifactId}</url>
+            <url>file://${basedir}/../target/dist/site/mycila-testing/mycila-testing-api/</url>
         </site>
     </distributionManagement>
 
