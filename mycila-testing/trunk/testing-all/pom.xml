@@ -104,7 +104,6 @@
                                 </jar>
                                 <jar update="true" file="${project.build.directory}/${project.build.finalName}-sources.jar">
                                     <zipfileset src="${project.build.directory}/dependency/mycila-plugin-sources.jar"/>
-                                    <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5-sources.jar"/>
                                     <zipfileset src="${basedir}/../testing-api/target/mycila-testing-api-${project.version}-sources.jar"/>
                                     <zipfileset src="${basedir}/../testing-plugins/guice/target/mycila-testing-guice-${project.version}-sources.jar"/>
                                     <zipfileset src="${basedir}/../testing-plugins/spring/target/mycila-testing-spring-${project.version}-sources.jar"/>
@@ -113,6 +112,10 @@
                                 </jar>
                                 <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
                                     <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5.jar"/>
+                                    <rule pattern="org.jgrapht.**" result="com.mycila.plugin.spi.org.jgrapht.@1"/>
+                                </jarjar>
+                                <jarjar destfile="${project.build.directory}/${project.build.finalName}-sources.jar" update="true">
+                                    <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5-sources.jar"/>
                                     <rule pattern="org.jgrapht.**" result="com.mycila.plugin.spi.org.jgrapht.@1"/>
                                 </jarjar>
                             </tasks>
