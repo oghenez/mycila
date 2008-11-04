@@ -12,6 +12,30 @@ Mycila Plugin Framework is a really little (4 classes) plugin framework that ena
  * from our [http://code.google.com/p/mc-repo/ alternate maven repository]
  * and maybe (if deployed) in the central maven repository
 
+== Maven dependency ==
+
+To add mycila-plugin in your pom, just add this dependency (with of course the good version number your want):
+
+{{{
+<dependency>
+    <groupId>com.google.code.mycila</groupId>
+    <artifactId>mycila-plugin</artifactId>
+    <version>X.Y</version>
+</dependency>
+}}}
+
+We also provides a JARJAR version packaged with [http://www.jgrapht.org/ JGraphT]. By using this version, you will have in one jar all the dependencies you need, and they won't clash with your jars.
+
+{{{
+<dependency>
+    <groupId>com.google.code.mycila</groupId>
+    <artifactId>mycila-plugin</artifactId>
+    <version>X.Y</version>
+    <classifier>full</classifier>
+</dependency>
+}}}
+
+
 == Documentation ==
 
 Javadoc, Source XREF, Test reports, Coverages, ...
