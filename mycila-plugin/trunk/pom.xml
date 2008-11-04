@@ -328,7 +328,7 @@
                                           projectname="mycila"
                                           filename="${project.build.directory}/${project.build.finalName}-full.jar"
                                           targetfilename="${project.build.finalName}-full.jar"
-                                          summary="jar"
+                                          summary="full jar"
                                           labels="Featured"/>
                                 <gcupload username="${gcupload.username}"
                                           password="${gcupload.password}"
