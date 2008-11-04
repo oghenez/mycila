@@ -14,31 +14,30 @@
  * limitations under the License.
  */
 
-package com.mycila.testing;
+package old;
 
-import com.mycila.testing.core.DefaultTestManager;
-import com.mycila.testing.core.TestManager;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Testing {
+public final class ClassUtils {
 
-    private static final Testing instance = new Testing();
-
-    private final TestManager manager;
-
-    public Testing() {
-        
-        manager = new DefaultTestManager();
+    public static List<Field> getFields(Class<?> c, Class<? extends Annotation> annot) {
+        List<Field> fields = new ArrayList<Field>();
+        do {
+            for (Field field : c.getDeclaredFields()) {
+                if (field.getAnnotation(annot) != null) {
+                    field.setAccessible(true);
+                    fields.add(field);
+                }
+            }
+            c = c.getSuperclass();
+        }
+        while (c != null);
+        return fields;
     }
-
-    public static void excludeLoading(String... plugins) {
-        
-    }
-
-    public static void prepare(Object testInstance) {
-        instance.manager.prepare(testInstance);
-    }
-
 }

@@ -16,14 +16,14 @@
 
 package old;
 
-import org.junit.runners.BlockJUnit4ClassRunner;
-import org.junit.runners.model.InitializationError;
+/*import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.InitializationError;*/
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class GuiceTestRunner extends BlockJUnit4ClassRunner {
-    public GuiceTestRunner(Class<?> klass) throws InitializationError {
+public final class GuiceTestRunner /*extends BlockJUnit4ClassRunner */{
+    /*public GuiceTestRunner(Class<?> klass) throws InitializationError {
         super(klass);
     }
 
@@ -32,5 +32,5 @@ public final class GuiceTestRunner extends BlockJUnit4ClassRunner {
         Object test = super.createTest();
         TestContext.setup(test);
         return test;
-    }
+    }*/
 }

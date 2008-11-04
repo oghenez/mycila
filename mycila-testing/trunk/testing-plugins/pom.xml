@@ -39,4 +39,11 @@
         <module>spring</module>
     </modules>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.mycila.testing</groupId>
+            <artifactId>mycila-testing-api</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

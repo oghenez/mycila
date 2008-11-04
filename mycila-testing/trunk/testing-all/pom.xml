@@ -38,6 +38,20 @@
     <build>
         <plugins>
             <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <silent>true</silent>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
@@ -77,6 +91,22 @@
         <dependency>
             <groupId>com.google.code.mycila.testing</groupId>
             <artifactId>mycila-testing-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.mycila.testing.plugins</groupId>
+            <artifactId>mycila-testing-guice</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.mycila.testing.plugins</groupId>
+            <artifactId>mycila-testing-spring</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.mycila.testing.plugins</groupId>
+            <artifactId>mycila-testing-jmock</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.mycila.testing.plugins</groupId>
+            <artifactId>mycila-testing-easymock</artifactId>
         </dependency>
     </dependencies>
 

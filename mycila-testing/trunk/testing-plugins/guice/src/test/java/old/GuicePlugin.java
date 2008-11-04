@@ -16,12 +16,12 @@
 
 package old;
 
-import com.mycila.testing.plugin.guice.Bind;
-import com.mycila.testing.plugin.guice.GuiceContext;
-import com.mycila.testing.plugin.guice.ModuleProvider;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 import com.google.inject.Stage;
+import com.mycila.testing.plugin.guice.Bind;
+import com.mycila.testing.plugin.guice.GuiceContext;
+import com.mycila.testing.plugin.guice.ModuleProvider;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

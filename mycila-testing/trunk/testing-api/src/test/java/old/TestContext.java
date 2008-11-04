@@ -16,10 +16,6 @@
 
 package old;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import org.jmock.Mockery;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +26,7 @@ public final class TestContext {
 
     private static final Map<Class<?>, TestContext> contexts = new HashMap<Class<?>, TestContext>();
 
-    private final Injector injector;
+    /*private final Injector injector;
     private final Mockery mockery;
 
     @SuppressWarnings({"unchecked"})
@@ -48,12 +44,13 @@ public final class TestContext {
 
     public Mockery mockery() {
         return mockery;
-    }
+    }*/
 
     public static TestContext setup(Object testInstance) {
-        TestContext ctx = new TestContext(testInstance);
-        contexts.put(testInstance.getClass(), ctx);
-        return ctx;
+        //TestContext ctx = new TestContext(testInstance);
+        //contexts.put(testInstance.getClass(), ctx);
+        //return ctx;
+        return null;
     }
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
