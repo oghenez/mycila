@@ -125,7 +125,6 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <inherited>false</inherited>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <dependencies>
                         <dependency>
@@ -147,10 +146,6 @@
             </plugins>
         </pluginManagement>
         <plugins>
-            <!-- for maven plugins -->
-            <plugin>
-                <artifactId>maven-plugin-plugin</artifactId>
-            </plugin>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
                 <configuration>
@@ -185,14 +180,6 @@
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
-                </configuration>
-            </plugin>
-            <!-- testing -->
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <parallel>false</parallel>
-                    <threadCount>5</threadCount>
                 </configuration>
             </plugin>
             <!-- packaging -->
@@ -248,7 +235,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <inherited>false</inherited>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
@@ -257,7 +243,9 @@
                         <configuration>
                             <tasks>
                                 <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"/>
-                                <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
+                                <copy file="${project.build.directory}/${project.build.finalName}.jar"
+                                      tofile="${project.build.directory}/${project.build.finalName}-full.jar" />
+                                <jarjar destfile="${project.build.directory}/${project.build.finalName}-full.jar" update="true">
                                     <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5-0.7.3.jar"/>
                                     <rule pattern="org.jgrapht.**" result="com.mycila.plugin.spi.org.jgrapht.@1"/>
                                 </jarjar>
@@ -270,7 +258,28 @@
                 </executions>
             </plugin>
             <plugin>
-                <inherited>false</inherited>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>full-version</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>${project.build.directory}/${project.build.finalName}-full.jar</file>
+                                    <type>jar</type>
+                                    <classifier>full</classifier>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
@@ -295,7 +304,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <inherited>false</inherited>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
@@ -337,12 +345,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <configuration>
-                    <!-- <tagBase>https://mycila.googlecode.com/svn/mycila-plugin/tags</tagBase> -->
-                </configuration>
-            </plugin>
             <!-- documentation -->
             <plugin>
                 <artifactId>maven-site-plugin</artifactId>
@@ -351,7 +353,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <inherited>false</inherited>
                 <groupId>com.google.code.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
                 <version>1.4.0-beta1</version>
@@ -467,7 +468,6 @@
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-jdk1.5</artifactId>
             <version>0.7.3</version>
-            <scope>provided</scope>
         </dependency>
         <!-- test frameworks -->
         <dependency>
