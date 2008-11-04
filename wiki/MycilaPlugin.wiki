@@ -24,7 +24,7 @@ To add mycila-plugin in your pom, just add this dependency (with of course the g
 </dependency>
 }}}
 
-We also provides a JARJAR version packaged with [http://www.jgrapht.org/ JGraphT]. By using this version, you will have in one jar all the dependencies you need, and they won't clash with your jars.
+We also provides a [http://code.google.com/p/jarjar/ JarJar] version packaged with [http://www.jgrapht.org/ JGraphT]. By using this version, you will have in one jar all the dependencies you need, and they won't clash with your jars.
 
 {{{
 <dependency>
