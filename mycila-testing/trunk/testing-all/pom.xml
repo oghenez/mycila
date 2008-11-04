@@ -36,15 +36,49 @@
     -->
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <configuration>
+                        <overWriteIfNewer>true</overWriteIfNewer>
+                        <overWriteReleases>true</overWriteReleases>
+                        <overWriteSnapshots>true</overWriteSnapshots>
+                        <includeGroupIds>com.google.code.mycila</includeGroupIds>
+                        <includeArtifactIds>mycila-plugin</includeArtifactIds>
+                        <stripVersion>true</stripVersion>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
+                <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
-                    <silent>true</silent>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>copy-jars</id>
                         <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>copy-sources</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <classifier>sources</classifier>
+                        </configuration>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
@@ -60,12 +94,20 @@
                         <configuration>
                             <tasks>
                                 <jar update="true" file="${project.build.directory}/${project.build.finalName}.jar">
-                                    <zipfileset src="${basedir}/../mycila-plugin/target/mycila-plugin-${project.version}.jar"/>
-                                    <zipfileset src="${basedir}/../mycila-testing/target/mycila-testing-${project.version}.jar"/>
+                                    <zipfileset src="${basedir}/target/dependency/mycila-plugin.jar"/>
+                                    <zipfileset src="${basedir}/../testing-api/target/mycila-testing-api-${project.version}.jar"/>
+                                    <zipfileset src="${basedir}/../testing-plugins/guice/target/mycila-testing-guice-${project.version}.jar"/>
+                                    <zipfileset src="${basedir}/../testing-plugins/spring/target/mycila-testing-spring-${project.version}.jar"/>
+                                    <zipfileset src="${basedir}/../testing-plugins/jmock/target/mycila-testing-jmock-${project.version}.jar"/>
+                                    <zipfileset src="${basedir}/../testing-plugins/easymock/target/mycila-testing-easymock-${project.version}.jar"/>
                                 </jar>
                                 <jar update="true" file="${project.build.directory}/${project.build.finalName}-sources.jar">
-                                    <zipfileset src="${basedir}/../mycila-plugin/target/mycila-plugin-${project.version}-sources.jar"/>
-                                    <zipfileset src="${basedir}/../mycila-testing/target/mycila-testing-${project.version}-sources.jar"/>
+                                    <zipfileset src="${basedir}/target/dependency/mycila-plugin-sources.jar"/>
+                                    <zipfileset src="${basedir}/../testing-api/target/mycila-testing-api-${project.version}-sources.jar"/>
+                                    <zipfileset src="${basedir}/../testing-plugins/guice/target/mycila-testing-guice-${project.version}-sources.jar"/>
+                                    <zipfileset src="${basedir}/../testing-plugins/spring/target/mycila-testing-spring-${project.version}-sources.jar"/>
+                                    <zipfileset src="${basedir}/../testing-plugins/jmock/target/mycila-testing-jmock-${project.version}-sources.jar"/>
+                                    <zipfileset src="${basedir}/../testing-plugins/easymock/target/mycila-testing-easymock-${project.version}-sources.jar"/>
                                 </jar>
                             </tasks>
                         </configuration>
@@ -87,26 +129,37 @@
         <dependency>
             <groupId>com.google.code.mycila</groupId>
             <artifactId>mycila-plugin</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.mycila</groupId>
+            <artifactId>mycila-plugin</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.mycila.testing</groupId>
             <artifactId>mycila-testing-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.mycila.testing.plugins</groupId>
             <artifactId>mycila-testing-guice</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.mycila.testing.plugins</groupId>
             <artifactId>mycila-testing-spring</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.mycila.testing.plugins</groupId>
             <artifactId>mycila-testing-jmock</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.mycila.testing.plugins</groupId>
             <artifactId>mycila-testing-easymock</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

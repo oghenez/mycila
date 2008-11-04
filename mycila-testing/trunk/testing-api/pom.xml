@@ -22,7 +22,7 @@
     <!--
         Distributions
     -->
-    
+
     <distributionManagement>
         <site>
             <id>website</id>
@@ -31,12 +31,26 @@
         </site>
     </distributionManagement>
 
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <!--
          LIBS
     -->
 
     <dependencies>
-        <!-- mycila -->
         <dependency>
             <groupId>com.google.code.mycila</groupId>
             <artifactId>mycila-plugin</artifactId>

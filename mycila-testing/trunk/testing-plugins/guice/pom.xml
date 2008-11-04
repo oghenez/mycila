@@ -39,7 +39,6 @@
         <dependency>
             <groupId>com.google.code.guice</groupId>
             <artifactId>guice</artifactId>
-            <version>1.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
