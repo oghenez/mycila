@@ -326,6 +326,13 @@
                                 <gcupload username="${gcupload.username}"
                                           password="${gcupload.password}"
                                           projectname="mycila"
+                                          filename="${project.build.directory}/${project.build.finalName}-full.jar"
+                                          targetfilename="${project.build.finalName}-full.jar"
+                                          summary="jar"
+                                          labels="Featured"/>
+                                <gcupload username="${gcupload.username}"
+                                          password="${gcupload.password}"
+                                          projectname="mycila"
                                           filename="${project.build.directory}/${project.build.finalName}-sources.jar"
                                           targetfilename="${project.build.finalName}-sources.jar"
                                           summary="sources"
