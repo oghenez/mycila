@@ -14,10 +14,23 @@
  * limitations under the License.
  */
 
-package com.mycila.testing.core;
+package com.mycila.testing.junit;
+
+/*import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.InitializationError;*/
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface A {
+public final class GuiceTestRunner /*extends BlockJUnit4ClassRunner */{
+    /*public GuiceTestRunner(Class<?> klass) throws InitializationError {
+        super(klass);
+    }
+
+    @Override
+    protected Object createTest() throws Exception {
+        Object test = super.createTest();
+        TestSetup.setup(test);
+        return test;
+    }*/
 }
