@@ -32,7 +32,7 @@ public interface PluginCache<T extends Plugin> {
      *
      * @return The plugins as an unmodifiable map
      */
-    SortedMap<String, T> getPlugins();
+    SortedMap<String, PluginBinding<T>> getBindings();
 
     /**
      * Clear the plugin cache, forcing a reload at next getPlugins() call

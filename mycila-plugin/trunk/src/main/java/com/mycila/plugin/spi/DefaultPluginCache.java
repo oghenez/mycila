@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2008 Mathieu Carbou <mathieu.carbou@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *         http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +17,7 @@
 package com.mycila.plugin.spi;
 
 import com.mycila.plugin.api.Plugin;
+import com.mycila.plugin.api.PluginBinding;
 import com.mycila.plugin.api.PluginCache;
 import com.mycila.plugin.api.PluginLoader;
 
@@ -30,7 +31,7 @@ import java.util.TreeMap;
  */
 final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
 
-    final SortedMap<String, T> plugins = new TreeMap<String, T>();
+    final SortedMap<String, PluginBinding<T>> plugins = new TreeMap<String, PluginBinding<T>>();
     final PluginLoader<T> loader;
     boolean loaded;
 
@@ -46,11 +47,16 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
     }
 
     public void registerPlugin(String name, T plugin) {
-        plugins.put(name, plugin);
+        if (!isPlugin(name)) {
+            throw new IllegalArgumentException("Not a valid plugin name: must not be empty");
+        }
+        plugins.put(name, new Binding<T>(name).withPlugin(plugin));
     }
 
     public void registerPlugins(Map<String, T> plugins) {
-        this.plugins.putAll(plugins);
+        for (Map.Entry<String, T> entry : plugins.entrySet()) {
+            registerPlugin(entry.getKey(), entry.getValue());
+        }
     }
 
     public void removePlugins(String... pluginNames) {
@@ -59,15 +65,22 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
         }
     }
 
-    public SortedMap<String, T> getPlugins() {
+    public SortedMap<String, PluginBinding<T>> getBindings() {
         if (!loaded) {
             synchronized (plugins) {
                 if (!loaded) {
-                    registerPlugins(loader.loadPlugins());
+                    for (PluginBinding<T> binding : loader.loadPlugins()) {
+                        plugins.put(binding.getName(), binding);
+                    }
                     loaded = true;
                 }
             }
         }
         return Collections.unmodifiableSortedMap(plugins);
     }
+
+    private boolean isPlugin(String name) {
+        return name != null && name.trim().length() > 0;
+    }
+
 }

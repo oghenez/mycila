@@ -17,7 +17,7 @@
 package com.mycila.plugin.api;
 
 import java.util.Collection;
-import java.util.SortedMap;
+import java.util.SortedSet;
 
 /**
  * The PluginLoader is responsible of loading all plugins found. Default implementation is from the filesystem, but is could be
@@ -33,9 +33,9 @@ public interface PluginLoader<T extends Plugin> {
      * @return a map of plugins by their name, or an empty map
      * @throws DuplicatePluginException If a plugin has been found twice
      * @throws PluginCreationException  If a plugin cannot be created (i.e. bad plugin class)
-     * @throws PluginIOException      If errors occured while IO operations
+     * @throws PluginIOException        If errors occured while IO operations
      */
-    SortedMap<String, T> loadPlugins();
+    SortedSet<PluginBinding<T>> loadPlugins();
 
     /**
      * Set which plugin names should not be loaded

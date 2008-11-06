@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2008 Mathieu Carbou <mathieu.carbou@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *         http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,51 +36,47 @@ final class DefaultPluginResolver<T extends Plugin> implements PluginResolver<T>
         this.cache = cache;
     }
 
-    public SortedMap<String, T> getPlugins() {
-        return cache.getPlugins();
+    public SortedSet<PluginBinding<T>> getPlugins() {
+        return Collections.unmodifiableSortedSet(new TreeSet<PluginBinding<T>>(cache.getBindings().values()));
     }
 
     public T getPlugin(String name) {
-        T plugin = getPlugins().get(name);
-        if (plugin == null) {
+        PluginBinding<T> binding = cache.getBindings().get(name);
+        if (binding == null) {
             throw new InexistingPluginException(name);
         }
-        return plugin;
+        return binding.getPlugin();
     }
 
     public boolean contains(String name) {
-        return getPlugins().containsKey(name);
-    }
-
-    public List<T> getPlugins(String... names) {
-        List<T> plugins = new ArrayList<T>(names.length);
-        for (String name : names) {
-            plugins.add(getPlugin(name));
-        }
-        return plugins;
+        return getPlugins().contains(new Binding<T>(name));
     }
 
     public SortedMap<String, SortedSet<String>> getMissingDependenciesByPlugin() {
-        SortedMap<String, T> plugins = getPlugins();
         SortedMap<String, SortedSet<String>> allMiss = new TreeMap<String, SortedSet<String>>();
-        for (Map.Entry<String, T> entry : plugins.entrySet()) {
+        SortedSet<PluginBinding<T>> plugins = getPlugins();
+        Set<String> loadedPlugins = new HashSet<String>(plugins.size());
+        for (PluginBinding<T> plugin : plugins) {
+            loadedPlugins.add(plugin.getName());
+        }
+        for (PluginBinding<T> binding : plugins) {
             SortedSet<String> pluginDependencies = new TreeSet<String>();
-            for (String dep : entry.getValue().getBefore()) {
+            for (String dep : binding.getPlugin().getBefore()) {
                 if (isPlugin(dep)) {
                     pluginDependencies.add(dep);
                 }
             }
-            for (String dep : entry.getValue().getAfter()) {
+            for (String dep : binding.getPlugin().getAfter()) {
                 if (isPlugin(dep)) {
                     pluginDependencies.add(dep);
                 }
             }
-            pluginDependencies.removeAll(plugins.keySet());
+            pluginDependencies.removeAll(loadedPlugins);
             if (!pluginDependencies.isEmpty()) {
-                allMiss.put(entry.getKey(), pluginDependencies);
+                allMiss.put(binding.getName(), Collections.unmodifiableSortedSet(pluginDependencies));
             }
         }
-        return allMiss;
+        return Collections.unmodifiableSortedMap(allMiss);
     }
 
     public SortedSet<String> getMissingDependencies() {
@@ -89,29 +85,33 @@ final class DefaultPluginResolver<T extends Plugin> implements PluginResolver<T>
         for (SortedSet<String> plugins : allMiss.values()) {
             misses.addAll(plugins);
         }
-        return misses;
+        return Collections.unmodifiableSortedSet(misses);
     }
 
-    public List<T> getResolvedPlugins() {
+    public List<PluginBinding<T>> getResolvedPlugins() {
         List<String> names = getResolvedPluginsName();
-        return getPlugins(names.toArray(new String[names.size()]));
+        List<PluginBinding<T>> plugins = new ArrayList<PluginBinding<T>>(names.size());
+        for (String name : names) {
+            plugins.add(cache.getBindings().get(name));
+        }
+        return Collections.unmodifiableList(plugins);
     }
 
     public List<String> getResolvedPluginsName() {
         SortedSet<String> missingPlugins = getMissingDependencies();
         DirectedGraph<String, DefaultEdge> graph = new DefaultDirectedWeightedGraph<String, DefaultEdge>(DefaultEdge.class);
-        for (Map.Entry<String, T> entry : getPlugins().entrySet()) {
-            graph.addVertex(entry.getKey());
-            for (String before : entry.getValue().getBefore()) {
+        for (PluginBinding<T> binding : getPlugins()) {
+            graph.addVertex(binding.getName());
+            for (String before : binding.getPlugin().getBefore()) {
                 if (isPlugin(before) && !missingPlugins.contains(before)) {
                     graph.addVertex(before);
-                    graph.addEdge(before, entry.getKey());
+                    graph.addEdge(before, binding.getName());
                 }
             }
-            for (String after : entry.getValue().getAfter()) {
+            for (String after : binding.getPlugin().getAfter()) {
                 if (isPlugin(after) && !missingPlugins.contains(after)) {
                     graph.addVertex(after);
-                    graph.addEdge(entry.getKey(), after);
+                    graph.addEdge(binding.getName(), after);
                 }
             }
         }

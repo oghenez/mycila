@@ -16,10 +16,7 @@
 
 package com.mycila.plugin.spi;
 
-import com.mycila.plugin.api.CyclicDependencyException;
-import com.mycila.plugin.api.InexistingPluginException;
-import com.mycila.plugin.api.PluginCache;
-import com.mycila.plugin.api.PluginResolver;
+import com.mycila.plugin.api.*;
 import static com.mycila.plugin.spi.Builder.*;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
@@ -52,23 +49,6 @@ public final class DefaultPluginResolverTest {
         try {
             setupResolver("/com/mycila/plugin/spi/two.properties");
             resolver.getPlugin("plugin3");
-            fail("must throw InexistingPluginException");
-        } catch (InexistingPluginException e) {
-            assertEquals(e.getPlugin(), "plugin3");
-        }
-    }
-
-    @Test
-    public void test_getPlugins_name() {
-        setupResolver("/com/mycila/plugin/spi/two.properties");
-        assertEquals(resolver.getPlugins("plugin1", "plugin1").size(), 2);
-    }
-
-    @Test
-    public void test_getPlugins_error() {
-        try {
-            setupResolver("/com/mycila/plugin/spi/two.properties");
-            resolver.getPlugins("plugin1", "plugin2", "plugin3");
             fail("must throw InexistingPluginException");
         } catch (InexistingPluginException e) {
             assertEquals(e.getPlugin(), "plugin3");
@@ -246,11 +226,11 @@ public final class DefaultPluginResolverTest {
     @Test
     public void test_getResolvedPlugins() {
         setupResolver("/com/mycila/plugin/spi/noMiss.properties");
-        List<MyPlugin> plugins = resolver.getResolvedPlugins();
-        assertEquals(plugins.get(0).getClass(), MyPlugin4.class);
-        assertEquals(plugins.get(1).getClass(), MyPlugin2.class);
-        assertEquals(plugins.get(2).getClass(), MyPlugin1.class);
-        assertEquals(plugins.get(3).getClass(), MyPlugin3.class);
+        List<PluginBinding<MyPlugin>> plugins = resolver.getResolvedPlugins();
+        assertEquals(plugins.get(0).getPlugin().getClass(), MyPlugin4.class);
+        assertEquals(plugins.get(1).getPlugin().getClass(), MyPlugin2.class);
+        assertEquals(plugins.get(2).getPlugin().getClass(), MyPlugin1.class);
+        assertEquals(plugins.get(3).getPlugin().getClass(), MyPlugin3.class);
     }
 
     private void setupResolver(String descriptor) {

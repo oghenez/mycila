@@ -45,23 +45,23 @@ final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
         this(pluginsType, "^%&:;-.`~!@#"); // just to be sure a resource with this name does not exist ;)
     }
 
-    public SortedMap<String, T> loadPlugins() {
-        SortedMap<String, T> plugins = new TreeMap<String, T>();
+    public SortedSet<PluginBinding<T>> loadPlugins() {
+        SortedSet<PluginBinding<T>> plugins = new TreeSet<PluginBinding<T>>();
         Enumeration<URL> configs = loadDescriptors();
         while (configs.hasMoreElements()) {
             URL descriptor = configs.nextElement();
             Properties p = loadDescriptor(descriptor);
             for (Map.Entry<Object, Object> entry : p.entrySet()) {
-                String name = entry.getKey().toString();
-                if (!exclusions.contains(name)) {
-                    if (plugins.containsKey(name)) {
-                        throw new DuplicatePluginException(descriptor, name);
+                Binding<T> binding = new Binding<T>(entry.getKey().toString());
+                if (!exclusions.contains(binding.getName())) {
+                    if (plugins.contains(binding)) {
+                        throw new DuplicatePluginException(descriptor, binding.getName());
                     }
-                    plugins.put(name, load(descriptor, name, entry.getValue().toString()));
+                    plugins.add(load(descriptor, binding, entry.getValue().toString()));
                 }
             }
         }
-        return plugins;
+        return Collections.unmodifiableSortedSet(plugins);
     }
 
     Enumeration<URL> loadDescriptors() {
@@ -72,21 +72,21 @@ final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
         }
     }
 
-    T load(URL descriptor, String name, String clazz) {
+    Binding<T> load(URL descriptor, Binding<T> binding, String clazz) {
         Class<?> c;
         try {
             c = loader.loadClass(clazz);
         } catch (Exception e) {
-            throw new PluginCreationException("Cannot load the plugin class", descriptor, name, clazz, pluginsType, e);
+            throw new PluginCreationException("Cannot load the plugin class", descriptor, binding.getName(), clazz, pluginsType, e);
         }
         if (!pluginsType.isAssignableFrom(c)) {
-            throw new PluginCreationException("Loaded plugin class does not match expected plugin type", descriptor, name, clazz, pluginsType);
+            throw new PluginCreationException("Loaded plugin class does not match expected plugin type", descriptor, binding.getName(), clazz, pluginsType);
         }
         try {
             //noinspection unchecked
-            return (T) c.newInstance();
+            return binding.withPlugin((T) c.newInstance());
         } catch (Exception e) {
-            throw new PluginCreationException("Plugin instanciation error", descriptor, name, clazz, pluginsType, e);
+            throw new PluginCreationException("Plugin instanciation error", descriptor, binding.getName(), clazz, pluginsType, e);
         }
     }
 

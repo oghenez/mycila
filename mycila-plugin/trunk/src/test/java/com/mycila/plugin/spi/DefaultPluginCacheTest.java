@@ -34,7 +34,7 @@ public final class DefaultPluginCacheTest {
     @BeforeMethod
     public void resetAndGet() {
         cache = new DefaultPluginCache<MyPlugin>(new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/spi/two.properties"));
-        assertEquals(cache.getPlugins().size(), 2);
+        assertEquals(cache.getBindings().size(), 2);
     }
 
     @Test
@@ -45,27 +45,44 @@ public final class DefaultPluginCacheTest {
                 put("BBB", new MyPlugin1());
             }
         });
-        assertEquals(cache.getPlugins().size(), 4);
+        assertEquals(cache.getBindings().size(), 4);
     }
 
     @Test
     public void test_setPlugin() {
         cache.registerPlugin("aaaa", new MyPlugin1());
-        assertEquals(cache.getPlugins().size(), 3);
+        cache.registerPlugin("aaaa", new MyPlugin1());
+        cache.registerPlugin("aaaa", new MyPlugin1());
+        assertEquals(cache.getBindings().size(), 3);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_setPlugin_invalid() {
+        cache.registerPlugin(null, new MyPlugin1());
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_setPlugin_invalid1() {
+        cache.registerPlugin("", new MyPlugin1());
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_setPlugin_invalid2() {
+        cache.registerPlugin("", new MyPlugin1());
     }
 
     @Test
     public void test_clear() {
         cache.registerPlugin("aaaa", new MyPlugin1());
-        assertEquals(cache.getPlugins().size(), 3);
+        assertEquals(cache.getBindings().size(), 3);
         cache.clear();
-        assertEquals(cache.getPlugins().size(), 2);
+        assertEquals(cache.getBindings().size(), 2);
     }
 
     @Test
     public void test_remove() {
         cache.removePlugins("plugin1", "plugin2");
-        assertEquals(cache.getPlugins().size(), 0);
+        assertEquals(cache.getBindings().size(), 0);
     }
 
     @Test
@@ -83,7 +100,7 @@ public final class DefaultPluginCacheTest {
         for (int i = 0; i < 100; ++i)
             new Thread(new Worker(startSignal, doneSignal) {
                 void execute() {
-                    cache.getPlugins();
+                    cache.getBindings();
                 }
             }, "Worker-Clear").start();
 

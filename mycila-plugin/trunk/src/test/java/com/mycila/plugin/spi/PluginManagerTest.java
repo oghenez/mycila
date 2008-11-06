@@ -37,6 +37,13 @@ public final class PluginManagerTest {
         assertListEquals(list, "plugin2", "plugin1", "plugin5", "plugin6", "plugin3", "plugin4");
     }
 
+    @Test
+    public void test_create2() {
+        PluginManager<MyPlugin> manager = new PluginManager<MyPlugin>(MyPlugin.class);
+        List<String> list = manager.getResolver().getResolvedPluginsName();
+        assertEquals(list.size(), 0);
+    }
+
     private void assertListEquals(List<String> plugins, String... names) {
         if (plugins.size() != names.length) {
             fail("Sizes differs.\nResolved: " + plugins + "\nExpected: " + Arrays.deepToString(names));

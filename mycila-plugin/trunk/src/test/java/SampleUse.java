@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import com.mycila.plugin.api.PluginBinding;
 import com.mycila.plugin.spi.MyPlugin;
 import com.mycila.plugin.spi.PluginManager;
 
@@ -25,8 +26,8 @@ import java.util.List;
 final class SampleUse {
     public static void main(String[] args) {
         PluginManager<MyPlugin> manager = new PluginManager<MyPlugin>(MyPlugin.class, "META-INF/myapp/plugins.properties");
-        for (MyPlugin plugin : manager.getResolver().getResolvedPlugins()) {
-            plugin.execute();
+        for (PluginBinding<MyPlugin> binding : manager.getResolver().getResolvedPlugins()) {
+            binding.getPlugin().execute();
         }
     }
 
@@ -34,8 +35,8 @@ final class SampleUse {
         PluginManager<MyPlugin> manager = new PluginManager<MyPlugin>(MyPlugin.class);
         manager.getCache().registerPlugin("myPlugin1", new MyPluginInstance1());
         manager.getCache().registerPlugin("myPlugin2", new MyPluginInstance2());
-        for (MyPlugin plugin : manager.getResolver().getResolvedPlugins()) {
-            plugin.execute();
+        for (PluginBinding<MyPlugin> binding : manager.getResolver().getResolvedPlugins()) {
+            binding.getPlugin().execute();
         }
     }
 

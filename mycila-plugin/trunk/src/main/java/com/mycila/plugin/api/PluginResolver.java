@@ -42,16 +42,7 @@ public interface PluginResolver<T extends Plugin> {
      *
      * @return A map of plugins sorted by their name
      */
-    SortedMap<String, T> getPlugins();
-
-    /**
-     * Get a list of plugins by their name. Ensure the returned list size is equals to the argument lenth.
-     *
-     * @param names The names of the plugins (array list)
-     * @return A list of plugins, where the plugin name in names[i] matches the plugin at list<T>.get(i)
-     * @throws InexistingPluginException A plugin name has not been found
-     */
-    List<T> getPlugins(String... names);
+    SortedSet<PluginBinding<T>> getPlugins();
 
     /**
      * Check if a plugin name exist
@@ -97,6 +88,6 @@ public interface PluginResolver<T extends Plugin> {
      *
      * @return the list of plugin instances in order of execution
      */
-    List<T> getResolvedPlugins();
+    List<PluginBinding<T>> getResolvedPlugins();
 
 }
