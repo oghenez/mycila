@@ -1,4 +1,5 @@
 #summary Release notes
+#labels Featured
 
 Issues are logged at http://code.google.com/p/mycila/issues/list?can=1
 
