@@ -6,3 +6,4 @@ Issues are logged at http://code.google.com/p/mycila/issues/list?can=1
 == 1.0 (Coming soon...) ==
 
 || *ID* || *Description* ||
+|| - || First release ||
