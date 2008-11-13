@@ -321,28 +321,28 @@
                                           projectname="mycila"
                                           filename="${project.build.directory}/${project.build.finalName}.jar"
                                           targetfilename="${project.build.finalName}.jar"
-                                          summary="jar"
+                                          summary="${project.build.finalName} jar"
                                           labels="Featured"/>
                                 <gcupload username="${gcupload.username}"
                                           password="${gcupload.password}"
                                           projectname="mycila"
                                           filename="${project.build.directory}/${project.build.finalName}-full.jar"
                                           targetfilename="${project.build.finalName}-full.jar"
-                                          summary="full jar"
+                                          summary="${project.build.finalName} jar with deps"
                                           labels="Featured"/>
                                 <gcupload username="${gcupload.username}"
                                           password="${gcupload.password}"
                                           projectname="mycila"
                                           filename="${project.build.directory}/${project.build.finalName}-sources.jar"
                                           targetfilename="${project.build.finalName}-sources.jar"
-                                          summary="sources"
+                                          summary="${project.build.finalName} sources"
                                           labels="Featured"/>
                                 <gcupload username="${gcupload.username}"
                                           password="${gcupload.password}"
                                           projectname="mycila"
                                           filename="${project.build.directory}/${project.build.finalName}-project.zip"
                                           targetfilename="${project.build.finalName}-project.zip"
-                                          summary="project"
+                                          summary="${project.build.finalName} project"
                                           labels="Featured"/>
                             </tasks>
                         </configuration>
