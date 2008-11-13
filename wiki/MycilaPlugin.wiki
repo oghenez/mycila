@@ -140,3 +140,64 @@ Your implementation has to return two lists of dependencies:
  * Through `getAfter`, this is the list of dependencies that should be executed after this plugin. You can return en empty list of you do not have such dependency.
 
 The PluginResolver resolves all the dependencies of all plugins and returns an execution list. If cyclic dependencies are found, an exception is thrown.
+
+== Complete Sample Usage ==
+
+Supposed you developed or you were provided with the following `MyPlugin` API:
+
+{{{
+import com.mycila.plugin.api.Plugin;
+
+public interface MyPlugin extends Plugin {
+    void execute();
+}
+}}}
+
+Then you want to provide a library with your two plugins:
+
+{{{
+public class MyPluginA implements MyPlugin {
+    public void execute() {
+        Systen.out.println("Executing Plugin A...");
+    }
+
+    public List<String> getBefore() {
+        return Arrays.asList("pluginB");
+    }
+
+    public List<String> getAfter() {return null;}
+}
+
+public class MyPluginB implements MyPlugin {
+    public void execute() {
+        Systen.out.println("Executing Plugin B...");
+    }
+
+    public List<String> getBefore() {return null;}
+    public List<String> getAfter() {return null;}
+}
+}}}
+
+In your jar, you have to package with your two files the resource that is checked by the plugin manager. I.E `META-INF/mycompany/plugins.properties`
+
+{{{
+pluginA=MyPluginA
+pluginB=MyPluginB
+}}}
+
+Now in the code where the plugins are loaded used, we could probably find:
+
+{{{
+PluginManager<MyPlugin> manager = new PluginManager<MyPlugin>(MyPlugin.class, "META-INF/mycompany/plugins.properties");
+
+for (MyPlugin plugin : manager.getResolver().getResolvedPlugins()) {
+    plugin.execute();
+}
+}}}
+
+which will give as output:
+
+{{{
+Executing Plugin B...
+Executing Plugin A...
+}}}
