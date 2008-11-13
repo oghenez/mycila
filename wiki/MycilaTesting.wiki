@@ -1,6 +1,8 @@
 #summary Mycila Testing Framework
 #labels Featured
 
+//TODO: page per Plugin + Migration Guide
+
 == Testing ==
 
 Integration of Guice Testing in your app is as simple a knowing only two annotations:
