@@ -62,14 +62,18 @@ final class DefaultPluginResolver<T extends Plugin> implements PluginResolver<T>
         }
         for (PluginBinding<T> binding : plugins) {
             SortedSet<String> pluginDependencies = new TreeSet<String>();
-            for (String dep : binding.getPlugin().getBefore()) {
-                if (!isEmpty(dep)) {
-                    pluginDependencies.add(dep);
+            if (binding.getPlugin().getBefore() != null) {
+                for (String dep : binding.getPlugin().getBefore()) {
+                    if (!isEmpty(dep)) {
+                        pluginDependencies.add(dep);
+                    }
                 }
             }
-            for (String dep : binding.getPlugin().getAfter()) {
-                if (!isEmpty(dep)) {
-                    pluginDependencies.add(dep);
+            if (binding.getPlugin().getAfter() != null) {
+                for (String dep : binding.getPlugin().getAfter()) {
+                    if (!isEmpty(dep)) {
+                        pluginDependencies.add(dep);
+                    }
                 }
             }
             pluginDependencies.removeAll(loadedPlugins);
@@ -103,16 +107,20 @@ final class DefaultPluginResolver<T extends Plugin> implements PluginResolver<T>
         DirectedGraph<String, DefaultEdge> graph = new DefaultDirectedWeightedGraph<String, DefaultEdge>(DefaultEdge.class);
         for (PluginBinding<T> binding : getPlugins()) {
             graph.addVertex(binding.getName());
-            for (String before : binding.getPlugin().getBefore()) {
-                if (!isEmpty(before) && !missingPlugins.contains(before)) {
-                    graph.addVertex(before);
-                    graph.addEdge(before, binding.getName());
+            if (binding.getPlugin().getBefore() != null) {
+                for (String before : binding.getPlugin().getBefore()) {
+                    if (!isEmpty(before) && !missingPlugins.contains(before)) {
+                        graph.addVertex(before);
+                        graph.addEdge(before, binding.getName());
+                    }
                 }
             }
-            for (String after : binding.getPlugin().getAfter()) {
-                if (!isEmpty(after) && !missingPlugins.contains(after)) {
-                    graph.addVertex(after);
-                    graph.addEdge(binding.getName(), after);
+            if (binding.getPlugin().getAfter() != null) {
+                for (String after : binding.getPlugin().getAfter()) {
+                    if (!isEmpty(after) && !missingPlugins.contains(after)) {
+                        graph.addVertex(after);
+                        graph.addEdge(binding.getName(), after);
+                    }
                 }
             }
         }

@@ -44,6 +44,25 @@ public final class PluginManagerTest {
         assertEquals(list.size(), 0);
     }
 
+    @Test
+    public void test_with_null() {
+        PluginManager<MyPlugin> manager = new PluginManager<MyPlugin>(MyPlugin.class);
+        manager.getCache().registerPlugin("heho", new MyPlugin() {
+            public void execute() {
+            }
+
+            public List<String> getBefore() {
+                return null;
+            }
+
+            public List<String> getAfter() {
+                return null;
+            }
+        });
+        List<String> list = manager.getResolver().getResolvedPluginsName();
+        assertEquals(list.size(), 1);
+    }
+
     private void assertListEquals(List<String> plugins, String... names) {
         if (plugins.size() != names.length) {
             fail("Sizes differs.\nResolved: " + plugins + "\nExpected: " + Arrays.deepToString(names));
