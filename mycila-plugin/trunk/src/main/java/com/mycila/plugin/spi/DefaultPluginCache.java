@@ -47,7 +47,7 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
     }
 
     public void registerPlugin(String name, T plugin) {
-        if (!isPlugin(name)) {
+        if (PluginUtils.isEmpty(name)) {
             throw new IllegalArgumentException("Not a valid plugin name: must not be empty");
         }
         plugins.put(name, new Binding<T>(name).withPlugin(plugin));
@@ -78,9 +78,4 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
         }
         return Collections.unmodifiableSortedMap(plugins);
     }
-
-    private boolean isPlugin(String name) {
-        return name != null && name.trim().length() > 0;
-    }
-
 }

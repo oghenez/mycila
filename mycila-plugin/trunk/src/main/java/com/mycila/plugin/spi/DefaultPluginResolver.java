@@ -17,6 +17,7 @@
 package com.mycila.plugin.spi;
 
 import com.mycila.plugin.api.*;
+import static com.mycila.plugin.spi.PluginUtils.*;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
@@ -62,12 +63,12 @@ final class DefaultPluginResolver<T extends Plugin> implements PluginResolver<T>
         for (PluginBinding<T> binding : plugins) {
             SortedSet<String> pluginDependencies = new TreeSet<String>();
             for (String dep : binding.getPlugin().getBefore()) {
-                if (isPlugin(dep)) {
+                if (!isEmpty(dep)) {
                     pluginDependencies.add(dep);
                 }
             }
             for (String dep : binding.getPlugin().getAfter()) {
-                if (isPlugin(dep)) {
+                if (!isEmpty(dep)) {
                     pluginDependencies.add(dep);
                 }
             }
@@ -103,13 +104,13 @@ final class DefaultPluginResolver<T extends Plugin> implements PluginResolver<T>
         for (PluginBinding<T> binding : getPlugins()) {
             graph.addVertex(binding.getName());
             for (String before : binding.getPlugin().getBefore()) {
-                if (isPlugin(before) && !missingPlugins.contains(before)) {
+                if (!isEmpty(before) && !missingPlugins.contains(before)) {
                     graph.addVertex(before);
                     graph.addEdge(before, binding.getName());
                 }
             }
             for (String after : binding.getPlugin().getAfter()) {
-                if (isPlugin(after) && !missingPlugins.contains(after)) {
+                if (!isEmpty(after) && !missingPlugins.contains(after)) {
                     graph.addVertex(after);
                     graph.addEdge(binding.getName(), after);
                 }
@@ -133,9 +134,4 @@ final class DefaultPluginResolver<T extends Plugin> implements PluginResolver<T>
         }
         return Collections.unmodifiableList(order);
     }
-
-    private boolean isPlugin(String name) {
-        return name != null && name.trim().length() > 0;
-    }
-
 }
