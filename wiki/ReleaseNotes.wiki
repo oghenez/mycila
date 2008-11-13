@@ -3,7 +3,19 @@
 
 Issues are logged at http://code.google.com/p/mycila/issues/list?can=1
 
-== 1.0 (Coming soon...) ==
+= Mycila Plugin Framework =
+
+== 1.1 (2008-11-12) ==
+
+|| *ID* || *Description* ||
+|| - || Fixing potential NPE if third parties provided bad dependencies ||
+
+== 1.0 (2008-11-12) ==
+
+|| *ID* || *Description* ||
+|| - || First release ||
+
+= Mycila Testing Framework =
 
 || *ID* || *Description* ||
 || - || First release ||
