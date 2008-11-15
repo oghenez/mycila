@@ -22,5 +22,5 @@ import com.mycila.plugin.api.Plugin;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface TestPlugin extends Plugin {
-    void prepare(Context context);
+    void prepareTestInstance(Context context);
 }

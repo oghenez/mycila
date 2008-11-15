@@ -44,8 +44,8 @@
                         <overWriteIfNewer>true</overWriteIfNewer>
                         <overWriteReleases>true</overWriteReleases>
                         <overWriteSnapshots>true</overWriteSnapshots>
-                        <includeGroupIds>com.google.code.mycila,org.jgrapht</includeGroupIds>
-                        <includeArtifactIds>mycila-plugin,jgrapht-jdk1.5</includeArtifactIds>
+                        <includeGroupIds>com.google.code.mycila</includeGroupIds>
+                        <includeArtifactIds>mycila-plugin</includeArtifactIds>
                         <stripVersion>true</stripVersion>
                     </configuration>
                 </plugin>
@@ -93,9 +93,8 @@
                         <phase>package</phase>
                         <configuration>
                             <tasks>
-                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"/>
                                 <jar update="true" file="${project.build.directory}/${project.build.finalName}.jar">
-                                    <zipfileset src="${project.build.directory}/dependency/mycila-plugin.jar"/>
+                                    <zipfileset src="${project.build.directory}/dependency/mycila-plugin-full.jar"/>
                                     <zipfileset src="${basedir}/../testing-api/target/mycila-testing-api-${project.version}.jar"/>
                                     <zipfileset src="${basedir}/../testing-plugins/guice/target/mycila-testing-guice-${project.version}.jar"/>
                                     <zipfileset src="${basedir}/../testing-plugins/spring/target/mycila-testing-spring-${project.version}.jar"/>
@@ -110,14 +109,6 @@
                                     <zipfileset src="${basedir}/../testing-plugins/jmock/target/mycila-testing-jmock-${project.version}-sources.jar"/>
                                     <zipfileset src="${basedir}/../testing-plugins/easymock/target/mycila-testing-easymock-${project.version}-sources.jar"/>
                                 </jar>
-                                <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
-                                    <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5.jar"/>
-                                    <rule pattern="org.jgrapht.**" result="com.mycila.plugin.spi.org.jgrapht.@1"/>
-                                </jarjar>
-                                <jarjar destfile="${project.build.directory}/${project.build.finalName}-sources.jar" update="true">
-                                    <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5-sources.jar"/>
-                                    <rule pattern="org.jgrapht.**" result="com.mycila.plugin.spi.org.jgrapht.@1"/>
-                                </jarjar>
                             </tasks>
                         </configuration>
                         <goals>
@@ -125,15 +116,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>jarjar</groupId>
-                        <artifactId>jarjar</artifactId>
-                        <version>1.0rc8</version>
-                        <scope>system</scope>
-                        <systemPath>${basedir}/etc/jarjar-1.0rc8.jar</systemPath>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>
@@ -147,36 +129,7 @@
         <dependency>
             <groupId>com.google.code.mycila</groupId>
             <artifactId>mycila-plugin</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.mycila</groupId>
-            <artifactId>mycila-plugin</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.mycila.testing</groupId>
-            <artifactId>mycila-testing-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.mycila.testing.plugins</groupId>
-            <artifactId>mycila-testing-guice</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.mycila.testing.plugins</groupId>
-            <artifactId>mycila-testing-spring</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.mycila.testing.plugins</groupId>
-            <artifactId>mycila-testing-jmock</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.code.mycila.testing.plugins</groupId>
-            <artifactId>mycila-testing-easymock</artifactId>
+            <classifier>full</classifier>
             <scope>provided</scope>
         </dependency>
     </dependencies>

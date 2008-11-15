@@ -16,8 +16,8 @@
 
 package com.mycila.testing.plugin.jmock;
 
-import com.mycila.testing.core.TestPlugin;
 import com.mycila.testing.core.Context;
+import com.mycila.testing.core.TestPlugin;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ import java.util.List;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class JMockTestPlugin implements TestPlugin {
-    public void prepare(Context context) {
+    public void prepareTestInstance(Context context) {
     }
 
     public List<String> getAfter() {

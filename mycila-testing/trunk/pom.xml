@@ -303,6 +303,9 @@
             </plugin>
             <plugin>
                 <artifactId>maven-changelog-plugin</artifactId>
+                <configuration>
+                    <displayFileDetailUrl>http://mycila.googlecode.com/svn%FILE%</displayFileDetailUrl>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-pmd-plugin</artifactId>
@@ -362,31 +365,17 @@
                 <artifactId>mycila-testing-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <dependency>
-                <groupId>com.google.code.mycila.testing.plugins</groupId>
-                <artifactId>mycila-testing-guice</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.code.mycila.testing.plugins</groupId>
-                <artifactId>mycila-testing-spring</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.code.mycila.testing.plugins</groupId>
-                <artifactId>mycila-testing-jmock</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.code.mycila.testing.plugins</groupId>
-                <artifactId>mycila-testing-easymock</artifactId>
-                <version>${project.version}</version>
-            </dependency>
             <!-- mycila plugin -->
             <dependency>
                 <groupId>com.google.code.mycila</groupId>
                 <artifactId>mycila-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.mycila</groupId>
+                <artifactId>mycila-plugin</artifactId>
+                <classifier>full</classifier>
+                <version>1.1</version>
             </dependency>
             <!-- test frameworks -->
             <dependency>

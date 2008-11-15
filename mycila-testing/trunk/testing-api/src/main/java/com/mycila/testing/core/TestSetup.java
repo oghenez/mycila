@@ -21,11 +21,22 @@ import com.mycila.plugin.spi.PluginManager;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class TestSetup {
+public class TestSetup {
 
-    private static TestSetup defaultTestSetup;
+    public static String DEFAULT_PLUGIN_DESCRIPTOR = "META-INF/mycila/testing/plugins.properties";
+    protected static TestSetup testSetup;
 
-    private final PluginManager<TestPlugin> pluginManager = new PluginManager<TestPlugin>(TestPlugin.class, "META-INF/mycila/testing/plugins.properties");
+    private final PluginManager<TestPlugin> pluginManager;
+
+    public TestSetup() {
+        testSetup = this;
+        pluginManager = new PluginManager<TestPlugin>(TestPlugin.class);
+    }
+
+    public TestSetup(String descriptor) {
+        testSetup = this;
+        pluginManager = new PluginManager<TestPlugin>(TestPlugin.class, descriptor);
+    }
 
     public PluginManager<TestPlugin> getPluginManager() {
         return pluginManager;
@@ -37,10 +48,10 @@ public final class TestSetup {
     }
 
     public static TestSetup get() {
-        if (defaultTestSetup == null) {
-            defaultTestSetup = new TestSetup();
+        if (testSetup == null) {
+            return new TestSetup(DEFAULT_PLUGIN_DESCRIPTOR);
         }
-        return defaultTestSetup;
+        return testSetup;
     }
 
     public static void set(Object testInstance) {

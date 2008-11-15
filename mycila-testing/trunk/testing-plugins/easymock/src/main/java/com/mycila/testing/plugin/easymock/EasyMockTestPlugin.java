@@ -25,7 +25,7 @@ import java.util.List;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class EasyMockTestPlugin implements TestPlugin {
-    public void prepare(Context context) {
+    public void prepareTestInstance(Context context) {
     }
 
     public List<String> getAfter() {

@@ -32,6 +32,8 @@ public interface Context {
 
     boolean hasAttribute(String name);
 
+    void removeAttribute(String name);
+
     Map<String, Object> getAttributes();
 
     PluginResolver<TestPlugin> getPluginResolver();

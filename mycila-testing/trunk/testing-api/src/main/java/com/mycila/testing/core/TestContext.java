@@ -28,7 +28,11 @@ final class TestContext implements Context {
 
     public <T> T getAttribute(String name) {
         //noinspection unchecked
-        return (T) attributes.get(name);
+        T att = (T) attributes.get(name);
+        if (att == null) {
+            throw new TestPluginException("Inexisting attribute: '%s'", name);
+        }
+        return att;
     }
 
     public Map<String, Object> getAttributes() {
@@ -47,9 +51,13 @@ final class TestContext implements Context {
         attributes.put(name, value);
     }
 
+    public void removeAttribute(String name) {
+        attributes.remove(name);
+    }
+
     void execute() {
         for (PluginBinding<TestPlugin> binding : getPluginResolver().getResolvedPlugins()) {
-            binding.getPlugin().prepare(this);
+            binding.getPlugin().prepareTestInstance(this);
         }
     }
 }
