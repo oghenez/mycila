@@ -235,50 +235,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>jarjar</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <tasks>
-                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" />
-                                <copy file="${project.build.directory}/${project.build.finalName}.jar" tofile="${project.build.directory}/${project.build.finalName}-full.jar" />
-                                <jarjar destfile="${project.build.directory}/${project.build.finalName}-full.jar" update="true">
-                                    <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5-0.7.3.jar" />
-                                    <rule pattern="org.jgrapht.**" result="com.mycila.plugin.spi.org.jgrapht.@1" />
-                                </jarjar>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>full-version</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <artifacts>
-                                <artifact>
-                                    <file>${project.build.directory}/${project.build.finalName}-full.jar</file>
-                                    <type>jar</type>
-                                    <classifier>full</classifier>
-                                </artifact>
-                            </artifacts>
-                        </configuration>
-                        <goals>
-                            <goal>attach-artifact</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
@@ -312,7 +268,7 @@
             <plugin>
                 <groupId>com.google.code.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
-                <version>1.4.0-beta1</version>
+                <version>1.4.0-SNAPSHOT</version>
                 <configuration>
                     <header>${basedir}/etc/header.txt</header>
                     <failIfMissing>true</failIfMissing>
