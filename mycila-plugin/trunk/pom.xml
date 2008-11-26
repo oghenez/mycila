@@ -122,29 +122,6 @@
                 <version>1.0-beta-2</version>
             </extension>
         </extensions>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                    <dependencies>
-                        <dependency>
-                            <groupId>jarjar</groupId>
-                            <artifactId>jarjar</artifactId>
-                            <version>1.0rc8</version>
-                            <scope>system</scope>
-                            <systemPath>${basedir}/etc/jarjar-1.0rc8.jar</systemPath>
-                        </dependency>
-                        <dependency>
-                            <groupId>googlecode-uploader</groupId>
-                            <artifactId>googlecode-uploader</artifactId>
-                            <version>0.0.1</version>
-                            <scope>system</scope>
-                            <systemPath>${basedir}/etc/ant-googlecode-0.0.1.jar</systemPath>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
