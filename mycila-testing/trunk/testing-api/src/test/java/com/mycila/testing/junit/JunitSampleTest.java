@@ -15,17 +15,20 @@
  */
 package com.mycila.testing.junit;
 
-import static com.mycila.testing.core.TestSetup.*;
-import org.junit.BeforeClass;
+import com.mycila.testing.MyPlugin;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class AbstractMycilaJunit4Test {
+public final class JunitSampleTest extends AbstractMycilaJunitTest {
 
-    @BeforeClass
-    protected void setupTest() {
-        setup(this);
+    static {
+        assertFalse(MyPlugin.executed);
+    }
+
+    public void test_dummy_test() {
+        assertTrue(MyPlugin.executed);
+        MyPlugin.executed = false;
     }
 
 }

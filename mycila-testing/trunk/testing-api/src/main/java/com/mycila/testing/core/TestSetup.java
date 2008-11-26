@@ -38,11 +38,11 @@ public class TestSetup {
         pluginManager = new PluginManager<TestPlugin>(TestPlugin.class, descriptor);
     }
 
-    public PluginManager<TestPlugin> getPluginManager() {
+    public PluginManager<TestPlugin> pluginManager() {
         return pluginManager;
     }
 
-    public void setup(Object testInstance) {
+    public void prepare(Object testInstance) {
         TestContext context = new TestContext(pluginManager, testInstance);
         context.execute();
     }
@@ -54,7 +54,7 @@ public class TestSetup {
         return testSetup;
     }
 
-    public static void set(Object testInstance) {
-        get().setup(testInstance);
+    public static void setup(Object testInstance) {
+        get().prepare(testInstance);
     }
 }

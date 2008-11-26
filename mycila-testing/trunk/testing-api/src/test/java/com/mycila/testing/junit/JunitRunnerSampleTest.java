@@ -15,17 +15,25 @@
  */
 package com.mycila.testing.junit;
 
-import static com.mycila.testing.core.TestSetup.*;
-import org.junit.BeforeClass;
+import com.mycila.testing.MyPlugin;
+import static org.junit.Assert.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class AbstractMycilaJunit4Test {
+@RunWith(MycilaJunitRunner.class)
+public final class JunitRunnerSampleTest {
 
-    @BeforeClass
-    protected void setupTest() {
-        setup(this);
+    static {
+        assertFalse(MyPlugin.executed);
+    }
+
+    @Test
+    public void dummy_test() {
+        assertTrue(MyPlugin.executed);
+        MyPlugin.executed = false;
     }
 
 }

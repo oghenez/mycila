@@ -13,19 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.testing.junit;
+package com.mycila.testing.testng;
 
-import static com.mycila.testing.core.TestSetup.*;
-import org.junit.BeforeClass;
+import com.mycila.testing.MyPlugin;
+import com.mycila.testing.core.TestSetup;
+import static org.testng.Assert.*;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class AbstractMycilaJunit4Test {
+public final class TestNGSample2Test {
+
+    static {
+        assertFalse(MyPlugin.executed);
+    }
 
     @BeforeClass
-    protected void setupTest() {
-        setup(this);
+    public void setup() {
+        TestSetup.setup(this);
+    }
+
+    @Test
+    public void dummy_test() {
+        assertTrue(MyPlugin.executed);
+        MyPlugin.executed = false;
     }
 
 }

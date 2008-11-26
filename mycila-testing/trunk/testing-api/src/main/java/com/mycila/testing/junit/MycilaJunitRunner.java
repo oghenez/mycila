@@ -16,7 +16,7 @@
 
 package com.mycila.testing.junit;
 
-import com.mycila.testing.core.TestSetup;
+import static com.mycila.testing.core.TestSetup.*;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 
@@ -31,7 +31,7 @@ public class MycilaJunitRunner extends BlockJUnit4ClassRunner {
     @Override
     protected Object createTest() throws Exception {
         Object test = super.createTest();
-        TestSetup.set(test);
+        setup(test);
         return test;
     }
 }
