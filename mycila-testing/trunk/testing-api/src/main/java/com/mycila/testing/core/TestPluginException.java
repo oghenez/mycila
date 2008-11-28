@@ -21,11 +21,19 @@ package com.mycila.testing.core;
 public class TestPluginException extends RuntimeException {
     private static final long serialVersionUID = -7772706327921003956L;
 
-    public TestPluginException(String message, Object... args) {
+    public TestPluginException(String message) {
+        super(message);
+    }
+
+    public TestPluginException(String message, Object arg, Object... args) {
         super(String.format(message, args));
     }
 
-    public TestPluginException(String message, Throwable cause, Object... args) {
+    public TestPluginException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public TestPluginException(Throwable cause, String message, Object... args) {
         super(String.format(message, args), cause);
     }
 }

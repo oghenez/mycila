@@ -47,7 +47,7 @@ public final class TestContextTest {
 
     @Test
     public void test_instance() throws Exception {
-        assertEquals(test.getTestInstance(), this);
+        assertEquals(test.getTest().getTarget(), this);
     }
 
     @Test(expectedExceptions = TestPluginException.class)

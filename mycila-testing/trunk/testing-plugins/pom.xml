@@ -59,6 +59,12 @@
             <groupId>com.google.code.mycila.testing</groupId>
             <artifactId>mycila-testing-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <classifier>jdk15</classifier>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 </project>

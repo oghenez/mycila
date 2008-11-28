@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2008 Mathieu Carbou <mathieu.carbou@gmail.com>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *         http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,30 +14,19 @@
  * limitations under the License.
  */
 
-package old;
+package com.mycila.testing.plugin.jmock;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.annotation.*;
 
 /**
+ * This annotation should be placed on a field of type {@link org.jmock.Mockery} if you want to get the Mockery
+ * used to create mocks to add excpectations
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ClassUtils {
-
-    public static List<Field> getFields(Class<?> c, Class<? extends Annotation> annot) {
-        List<Field> fields = new ArrayList<Field>();
-        do {
-            for (Field field : c.getDeclaredFields()) {
-                if (field.getAnnotation(annot) != null) {
-                    field.setAccessible(true);
-                    fields.add(field);
-                }
-            }
-            c = c.getSuperclass();
-        }
-        while (c != null);
-        return fields;
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD})
+@Inherited
+@Documented
+public @interface MockContext {
 }

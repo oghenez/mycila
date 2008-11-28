@@ -19,14 +19,14 @@ package com.mycila.testing.plugin.jmock;
 import java.lang.annotation.*;
 
 /**
- * This annotation marks a field that will be injected by a JMock mock.
- * It can be an interface of a class. If using class, the JMock class imposterizer will be used.
+ * This annotations marks a field of a method that provides the {@link org.jmock.Mockery}
+ * to use to create mocks, instead using a default one.
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.METHOD})
 @Inherited
 @Documented
-public @interface Mock {
+public @interface MockContextProvider {
 }

@@ -24,7 +24,7 @@ import java.util.Map;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface Context {
-    Object getTestInstance();
+    TestInstance getTest();
 
     <T> T getAttribute(String name);
 

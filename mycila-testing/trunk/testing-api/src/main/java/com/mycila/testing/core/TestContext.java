@@ -28,12 +28,12 @@ import java.util.Map;
  */
 final class TestContext implements Context {
 
-    private final Object testInstance;
+    private final TestInstance testInstance;
     private final Map<String, Object> attributes = new HashMap<String, Object>();
     private final PluginManager<TestPlugin> pluginManager;
 
     TestContext(PluginManager<TestPlugin> pluginManager, Object testInstance) {
-        this.testInstance = testInstance;
+        this.testInstance = new TestInstance(testInstance);
         this.pluginManager = pluginManager;
     }
 
@@ -54,7 +54,7 @@ final class TestContext implements Context {
         return Collections.unmodifiableMap(attributes);
     }
 
-    public Object getTestInstance() {
+    public TestInstance getTest() {
         return testInstance;
     }
 
@@ -75,7 +75,7 @@ final class TestContext implements Context {
             try {
                 binding.getPlugin().prepareTestInstance(this);
             } catch (Exception e) {
-                throw new TestPluginException("An error occured while executing plugin '%s': %s", e, binding.getName(), e.getMessage());
+                throw new TestPluginException(e, "An error occured while executing plugin '%s': %s", binding.getName(), e.getMessage());
             }
         }
     }
