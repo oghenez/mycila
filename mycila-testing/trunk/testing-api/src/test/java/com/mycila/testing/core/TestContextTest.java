@@ -50,17 +50,17 @@ public final class TestContextTest {
         assertEquals(test.getTestInstance(), this);
     }
 
-    @Test
-    public void test_execute() throws Exception {
-        plugins.getCache().removePlugins("failing");
-        assertFalse(MyPlugin.executed);
-        test.execute();
-        assertTrue(MyPlugin.executed);
-    }
-
     @Test(expectedExceptions = TestPluginException.class)
     public void test_execute_exception() throws Exception {
         plugins.getCache().registerPlugin("failing", new FailingPlugin());
         test.execute();
     }
+
+    @Test
+    public void test_execute() throws Exception {
+        assertFalse(MyPlugin.executed);
+        test.execute();
+        assertTrue(MyPlugin.executed);
+    }
+    
 }
