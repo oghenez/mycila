@@ -52,6 +52,7 @@ public final class TestContextTest {
 
     @Test
     public void test_execute() throws Exception {
+        plugins.getCache().removePlugins("failing");
         assertFalse(MyPlugin.executed);
         test.execute();
         assertTrue(MyPlugin.executed);
