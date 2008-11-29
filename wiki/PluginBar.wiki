@@ -1,6 +1,6 @@
 #summary Plugin Sidebar
 
-* [ModuleList Module list]
-* [TestingAPI Mycila Testing API]
-*Plugins*
+* [ModuleList Module list]<br>
+* [TestingAPI Mycila Testing API]<br>
+*Plugins*<br>
 * [PluginJMock2 JMock Plugin]
