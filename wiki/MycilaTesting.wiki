@@ -34,7 +34,7 @@ To use the full jar with all plugins plus the API, just add this dependency (wit
 
 `mycila-testing-all` contains also necessary dependencies (mycila-plugin and [http://www.jgrapht.org/ JGraphT] embedded with [http://code.google.com/p/jarjar/ JarJar])
 
-If you prefer to use only the plugins you want, i.e. Guice and JMock, just add these dependencies to your POM:
+If you prefer to use only the plugins you want, i.e. Guice and JMock, just add these dependencies to your POM (the API and required dependencies comes transitively):
 
 {{{
 <dependency>
