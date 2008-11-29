@@ -51,10 +51,9 @@ If you prefer to use only the plugins you want, i.e. Guice and JMock, just add t
 
 == Documentation ==
 
- * [http://old.mycila.com/p/mycila/mycila-testing/ Reports: Javadoc, Source XREF, Test reports, Coverages, ...]
- * [ModuleList Complete list of available modules (API and plugins)]
- * [PluginDevelopment How to create your own plugins]
- * [PluginDevelopment How to create new plugins]
+ * [http://old.mycila.com/p/mycila/mycila-testing/ Reports]: Javadoc, Source XREF, Test reports, Coverages, ...
+ * Complete list of [ModuleList available modules] (API and plugins) and their documentation
+ * How to [PluginDevelopment create your own plugins]
 
 == Evolution - Participate ==
 
