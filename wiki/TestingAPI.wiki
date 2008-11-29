@@ -3,6 +3,12 @@
 
 == Junit integration ==
 
+You have the choice of:
+ * Extend AbstractMycilaJunitTest
+ * Extend AbstractMycilaJunit4Test
+ * Use MycilaJunitRunner
+ * Or just setup the test by yourself if you want to have more control, like described below.
+
 *Junit 3*
 
 {{{
@@ -39,6 +45,11 @@ public final class MyTest {
 
 == TestNG integration ==
 
+You have the choice of:
+ * Extend AbstractMycilaTestNGTest
+ * Or just setup the test by yourself if you want to have more control, like described below.
+
+
 {{{
 public final class MyTest extends AbstractMycilaTestNGTest {
     @Test
@@ -48,7 +59,7 @@ public final class MyTest extends AbstractMycilaTestNGTest {
 }
 }}}
 
-== For any testing framework (also working for Junit and TestNG) ==
+== Setup the test yourself (also work for Junit and TestNG) ==
 
 If your framework support @BeforeClass, like Junit and TestNG, you can use it to setup your test like this:
 
