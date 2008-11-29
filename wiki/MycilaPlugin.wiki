@@ -36,7 +36,7 @@ We also provides a [http://code.google.com/p/jarjar/ JarJar] version packaged wi
 }}}
 
 
-== Documentation ==
+== Reports ==
 
 Javadoc, Source XREF, Test reports, Coverages, ...
 
