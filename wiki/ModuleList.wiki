@@ -6,6 +6,7 @@
 
 TODO:
 * *[PluginGuice1 Guice 1 Plugin]*: Guice integration
-* *[PluginSpring Spring Plugin]*: Spring integration
-* *[PluginEasyMock EasyMock Plugin]*: EasyMock integration
 
+* *[PluginSpring Spring Plugin]*: Spring integration
+
+* *[PluginEasyMock EasyMock Plugin]*: EasyMock integration
