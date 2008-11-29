@@ -3,4 +3,4 @@
 *[ModuleList Module list]*<br>
 *[TestingAPI Mycila Testing API]*<br>
 *Plugins*<br>
-  [PluginJMock2 JMock Plugin]
+[PluginJMock2 JMock Plugin]
