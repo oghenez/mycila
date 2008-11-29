@@ -83,9 +83,9 @@ for (PluginBinding<TestPlugin> binding : manager.getResolver().getResolvedPlugin
 
 At runtime, you can add, remove plugins, reload all plugins, ... 
 
-=== [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginManager.java PluginManager] ===
+=== [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/spi/PluginManager.java PluginManager] ===
 
-From the [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginManager.java PluginManager], you have access to three components:
+From the [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/spi/PluginManager.java PluginManager], you have access to three components:
 
  * The [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginLoader.java PluginLoader]: responsible of loading the plugins
  * The [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginCache.java PluginCache]: responsible of caching in memory available plugins
