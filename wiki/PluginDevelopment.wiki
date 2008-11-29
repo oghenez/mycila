@@ -1,3 +1,4 @@
 #summary How to create your own plugins
+#labels TODO
 
 TODO
