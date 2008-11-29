@@ -83,23 +83,23 @@ for (PluginBinding<TestPlugin> binding : manager.getResolver().getResolvedPlugin
 
 At runtime, you can add, remove plugins, reload all plugins, ... 
 
-=== The PluginManager ===
+=== [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginManager.java PluginManager] ===
 
-From the [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/spi/PluginManager.java PluginManager], you have access to three components:
+From the [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginManager.java PluginManager], you have access to three components:
 
  * The [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginLoader.java PluginLoader]: responsible of loading the plugins
  * The [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginCache.java PluginCache]: responsible of caching in memory available plugins
  * The [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginResolver.java PluginResolver]: responsible of resolving the plugins and their order of execution
 
-=== PluginLoader ===
+=== [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginLoader.java PluginLoader] ===
 
 The plugin loader enables you to reload all plugins from the descriptor you specified in the plugin manager. You can also exclude some plugins from loading: this is useful if a third party provides a plugin that crashes. The PluginLoader also accept a classloader to use for loading the plugins. This can be useful for example if the jars are not in your classpath but online for exemple ;) Otherwise. if you want to isolate the plugin classloader from your application classloader...
 
-=== PluginCache ===
+=== [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginCache.java PluginCache] ===
 
 When you retreive the list of plugins, you get it from the plugin cache, which lazily load them with a laoder. Once loaded, you can add / remove / clear plugins loaded in memory with the PluginCache.
 
-=== PluginResolver ===
+=== [http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginResolver.java PluginResolver] ===
 
 The plugin resolver is the access point of your plugins. It contains basic getters (get, getAll, contains, ...) methods. 
 
