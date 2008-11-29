@@ -28,7 +28,7 @@ import java.lang.reflect.Method;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class JMockTestPlugin extends AbstractTestPlugin {
+public final class JMock2TestPlugin extends AbstractTestPlugin {
 
     public void prepareTestInstance(Context context) {
         Field[] mocks = context.getTest().getFieldsAnnotatedWith(Mock.class);
@@ -42,11 +42,11 @@ public final class JMockTestPlugin extends AbstractTestPlugin {
                 }
             }
         }
-        for (Field field : context.getTest().getFieldsAnnotatedWith(MockContext.class)) {
-            context.getTest().set(field, mockery.mock(field.getType(), field.getName()));
+        for (Field field : context.getTest().getFieldsOfTypeAnnotatedWith(Mockery.class, MockContext.class)) {
+            context.getTest().set(field, mockery);
         }
         for (Field field : mocks) {
-            context.getTest().set(field, mockery.mock(field.getType(), field.getName()));
+            context.getTest().set(field, mockery.mock(field.getType(), field.getDeclaringClass().getName() + "." + field.getName()));
         }
     }
 

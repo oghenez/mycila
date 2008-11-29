@@ -1,0 +1,211 @@
+package com.mycila.testing.plugin.jmock;
+
+import com.mycila.testing.core.Context;
+import com.mycila.testing.core.TestInstance;
+import com.mycila.testing.core.TestPluginException;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import static org.testng.Assert.*;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+/**
+ * @author Mathieu Carbou (mathieu.carbou@gmail.com)
+ */
+public final class JMock2TestPluginTest {
+
+    Mockery mockery;
+    Mockery mockery3 = new Mockery();
+    Context ctx;
+    JMock2TestPlugin plugin = new JMock2TestPlugin();
+
+    @BeforeMethod
+    public void setup() {
+        mockery = new Mockery();
+        ctx = mockery.mock(Context.class);
+    }
+
+    @AfterMethod
+    public void verify() {
+        mockery.assertIsSatisfied();
+    }
+
+    @Test
+    public void test_do_not_override_non_annotated_mockery() throws Exception {
+        mockery.checking(new Expectations() {{
+            allowing(ctx).getTest();
+            will(returnValue(new TestInstance(JMock2TestPluginTest.this)));
+        }});
+        Mockery current = mockery;
+        plugin.prepareTestInstance(ctx);
+        assertEquals(mockery, current);
+    }
+
+    @Test
+    public void test_inject_mockery() throws Exception {
+        final Test5 test = new Test5();
+        mockery.checking(new Expectations() {{
+            allowing(ctx).getTest();
+            will(returnValue(new TestInstance(test)));
+        }});
+        assertNotNull(test.mockery1);
+        assertNull(test.mockery2);
+        Mockery current = test.mockery1;
+        plugin.prepareTestInstance(ctx);
+        assertNotNull(test.mockery1);
+        assertNotNull(test.mockery2);
+        assertFalse(current.equals(test.mockery1));
+    }
+
+    @Test
+    public void test_mock_interface() throws Exception {
+        final Test1 test = new Test1();
+        mockery.checking(new Expectations() {{
+            allowing(ctx).getTest();
+            will(returnValue(new TestInstance(test)));
+        }});
+        assertNull(test.ctx);
+        plugin.prepareTestInstance(ctx);
+        assertNotNull(test.ctx);
+    }
+
+    @Test
+    public void test_mock_class() throws Exception {
+        final Test2 test = new Test2();
+        mockery.checking(new Expectations() {{
+            allowing(ctx).getTest();
+            will(returnValue(new TestInstance(test)));
+        }});
+        assertNull(test.ti);
+        plugin.prepareTestInstance(ctx);
+        assertNotNull(test.ti);
+    }
+
+    @Test
+    public void test_enhance_superclasses() throws Exception {
+        final Test4 test = new Test4();
+        mockery.checking(new Expectations() {{
+            allowing(ctx).getTest();
+            will(returnValue(new TestInstance(test)));
+        }});
+        assertNull(test.getTi3());
+        assertNull(test.getTi4());
+        plugin.prepareTestInstance(ctx);
+        assertNotNull(test.getTi3());
+        assertNotNull(test.getTi4());
+    }
+
+    @Test
+    public void test_provider_field() throws Exception {
+        final ProviderTest test = new ProviderTest() {
+            @MockContextProvider
+            private Mockery m = new Mockery();
+        };
+        mockery.checking(new Expectations() {{
+            allowing(ctx).getTest();
+            will(returnValue(new TestInstance(test)));
+        }});
+        assertNull(test.get());
+        plugin.prepareTestInstance(ctx);
+        assertNotNull(test.get());
+    }
+
+    @Test(expectedExceptions = TestPluginException.class)
+    public void test_provider_field_null() throws Exception {
+        final ProviderTest test = new ProviderTest() {
+            @MockContextProvider
+            private Mockery m;
+        };
+        mockery.checking(new Expectations() {{
+            allowing(ctx).getTest();
+            will(returnValue(new TestInstance(test)));
+        }});
+        assertNull(test.get());
+        plugin.prepareTestInstance(ctx);
+    }
+
+    @Test(expectedExceptions = TestPluginException.class)
+    public void test_provider_field_type_bad() throws Exception {
+        final ProviderTest test = new ProviderTest() {
+            @MockContextProvider
+            private String m = "a string";
+        };
+        mockery.checking(new Expectations() {{
+            allowing(ctx).getTest();
+            will(returnValue(new TestInstance(test)));
+        }});
+        assertNull(test.get());
+        plugin.prepareTestInstance(ctx);
+    }
+
+    @Test
+    public void test_provider_method() throws Exception {
+        final ProviderTest test = new ProviderTest() {
+            @MockContextProvider
+            private Mockery build() {
+                return new Mockery();
+            }
+        };
+        mockery.checking(new Expectations() {{
+            allowing(ctx).getTest();
+            will(returnValue(new TestInstance(test)));
+        }});
+        assertNull(test.get());
+        plugin.prepareTestInstance(ctx);
+        assertNotNull(test.get());
+    }
+
+    @Test(expectedExceptions = TestPluginException.class)
+    public void test_provider_method_null() throws Exception {
+        final ProviderTest test = new ProviderTest() {
+            @MockContextProvider
+            private Mockery build() {
+                return null;
+            }
+        };
+        mockery.checking(new Expectations() {{
+            allowing(ctx).getTest();
+            will(returnValue(new TestInstance(test)));
+        }});
+        assertNull(test.get());
+        plugin.prepareTestInstance(ctx);
+    }
+
+    @Test(expectedExceptions = TestPluginException.class)
+    public void test_provider_method_bad() throws Exception {
+        final ProviderTest test = new ProviderTest() {
+            @MockContextProvider
+            private String build() {
+                return "a string";
+            }
+        };
+        mockery.checking(new Expectations() {{
+            allowing(ctx).getTest();
+            will(returnValue(new TestInstance(test)));
+        }});
+        assertNull(test.get());
+        plugin.prepareTestInstance(ctx);
+    }
+
+    @Test
+    public void test_provider_method_before_field() throws Exception {
+        final ProviderTest test = new ProviderTest() {
+            @MockContextProvider
+            private Mockery m = new Mockery();
+
+            @MockContextProvider
+            private Mockery build() {
+                return JMock2TestPluginTest.this.mockery3;
+            }
+        };
+        mockery.checking(new Expectations() {{
+            allowing(ctx).getTest();
+            will(returnValue(new TestInstance(test)));
+        }});
+        assertNull(test.get());
+        plugin.prepareTestInstance(ctx);
+        assertNotNull(test.get());
+        assertEquals(test.get(), mockery3);
+    }
+}
