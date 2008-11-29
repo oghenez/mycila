@@ -107,9 +107,9 @@
     </distributionManagement>
 
     <modules>
-        <module>testing-api</module>
-        <module>testing-plugins</module>
-        <module>testing-all</module>
+        <module>mycila-testing-api</module>
+        <module>mycila-testing-plugins</module>
+        <module>mycila-testing-all</module>
     </modules>
 
     <!--

@@ -33,10 +33,10 @@
     </distributionManagement>
 
     <modules>
-        <module>jmock</module>
-        <module>easymock</module>
-        <module>guice</module>
-        <module>spring</module>
+        <module>mycila-testing-jmock</module>
+        <module>mycila-testing-easymock</module>
+        <module>mycila-testing-guice</module>
+        <module>mycila-testing-spring</module>
     </modules>
 
     <build>
