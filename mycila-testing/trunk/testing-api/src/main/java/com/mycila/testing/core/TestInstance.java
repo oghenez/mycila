@@ -112,7 +112,7 @@ public final class TestInstance {
         } catch (IllegalAccessException e) {
             throw new TestPluginException(e, "Cannot invoke method '%s' on test class '%s'", method, getTargetClass().getName());
         } catch (InvocationTargetException e) {
-            throw new TestPluginException(e.getTargetException().getMessage(), e.getTargetException());
+            throw new TestPluginException(e.getTargetException().getClass().getSimpleName() + ": " + e.getTargetException().getMessage(), e.getTargetException());
         }
     }
 

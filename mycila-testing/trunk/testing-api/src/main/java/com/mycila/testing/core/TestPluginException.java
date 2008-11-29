@@ -25,12 +25,12 @@ public class TestPluginException extends RuntimeException {
         super(message);
     }
 
-    public TestPluginException(String message, Object arg, Object... args) {
-        super(String.format(message, args));
-    }
-
     public TestPluginException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    public TestPluginException(String message, Object arg, Object... args) {
+        super(String.format(message, arg, args));
     }
 
     public TestPluginException(Throwable cause, String message, Object... args) {
