@@ -1,4 +1,5 @@
 #summary List of available modules
+#sidebar PluginBar
 
  * *mycila-testing-all*: Contains all plugins plus the API, and embedded dependencies (mycila-plugin and JGraphT). Does not contain any dependencies relative to plugins. It is up to you t decide what you want to use.
 
