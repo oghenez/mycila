@@ -1,4 +1,4 @@
-#summary Plugin sidebar
+#summary Plugin Sidebar
 
 * [ModuleList Module list]
 * [TestingAPI Mycila Testing API]
