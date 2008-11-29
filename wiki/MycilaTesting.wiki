@@ -55,7 +55,3 @@ If you prefer to use only the plugins you want, i.e. Guice and JMock, just add t
  * Complete list of [ModuleList available modules] (API and plugins) and their documentation
  * How to [PluginDevelopment create your own plugins]
  * How to [TestingAPI use the test enhancer in the API]
-
-== Evolution - Participate ==
-
-If you think of useful methods to add, want to contribute, provides ideas, please post an *issue* so that we implement it.
