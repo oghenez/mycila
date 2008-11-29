@@ -4,7 +4,7 @@
 
 *[ModuleList Module list]*
 
-*[TestingAPI Mycila Testing API]*
+*[TestingAPI Mycila Testing Usage]*
 
 *[PluginDevelopment How to Create Plugins]*
 
