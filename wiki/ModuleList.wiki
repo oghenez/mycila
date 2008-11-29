@@ -1,3 +1,11 @@
 #summary List of available modules
 
-TODO
+* *[TestingAPI Plugin API]*: The plugin API is the module used by all plugins, and also to enhance tests.
+
+* *[PluginJMock2 JMock 2 Plugin]*: JMock integration
+
+TODO:
+* *[PluginGuice1 Guice 1 Plugin]*: Guice integration
+* *[PluginSpring Spring Plugin]*: Spring integration
+* *[PluginEasyMock EasyMock Plugin]*: EasyMock integration
+
