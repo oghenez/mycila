@@ -3,7 +3,9 @@
 
 == Introduction ==
 
-Mycila Plugin Framework is a really little (4 classes) plugin framework that enables you to build quickly a plugin architecture in your application, supporting dependencies.
+Mycila Testing Framework is not yet another testing framework. There are already plenty of them (Spring, Junit, TestNG, JMock, EasyMock, Mockito, JMock, DbUnit, Powermock, ...). 
+
+Mycila Testing Framework is an *integration framework*. Which means that instead of coupling the setup of your test to these frameworks, you can just setup your test with Mycila. Mycila uses a plugin infrastructure to detect which plugin should enhance your test. This way, you have only one setup to do for all your tests, whether you use jmock, easymock, guice, spring, ... Mycila also provides annotation facilities thanks to plugins, to use IOCs and Mock frameworks easier when they do not have already some annotations.
 
 == Download ==
 
