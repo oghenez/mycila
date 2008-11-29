@@ -21,7 +21,7 @@
 </dependency>
 }}}
 
- * *[PluginJMock2 JMock 2 Plugin]*: JMock integration
+ * *[PluginJMock2 JMock Plugin]*: JMock integration
 
 {{{
 <dependency>
@@ -31,10 +31,33 @@
 </dependency>
 }}}
 
+ * *[PluginEasyMock2 EasyMock Plugin]*: EasyMock integration
 
-TODO:
- * *[PluginGuice1 Guice 1 Plugin]*: Guice integration
+{{{
+<dependency>
+    <groupId>com.google.code.mycila.testing.plugins</groupId>
+    <artifactId>mycila-testing-easymock</artifactId>
+    <version>X.Y</version>
+</dependency>
+}}}
+
+
+ * *[PluginGuice1 Guice Plugin]*: Guice integration
+
+{{{
+<dependency>
+    <groupId>com.google.code.mycila.testing.plugins</groupId>
+    <artifactId>mycila-testing-guice</artifactId>
+    <version>X.Y</version>
+</dependency>
+}}}
 
  * *[PluginSpring Spring Plugin]*: Spring integration
 
- * *[PluginEasyMock EasyMock Plugin]*: EasyMock integration
+{{{
+<dependency>
+    <groupId>com.google.code.mycila.testing.plugins</groupId>
+    <artifactId>mycila-testing-spring</artifactId>
+    <version>X.Y</version>
+</dependency>
+}}}
