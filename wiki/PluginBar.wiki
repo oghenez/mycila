@@ -1,5 +1,7 @@
 #summary Plugin Sidebar
 
+*[http://code.google.com/p/mycila/ Home]*
+
 *[ModuleList Module list]*
 
 *[TestingAPI Mycila Testing API]*
