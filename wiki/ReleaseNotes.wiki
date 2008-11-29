@@ -5,6 +5,11 @@ Issues are logged at http://code.google.com/p/mycila/issues/list?can=1
 
 = Mycila Plugin Framework =
 
+== 1.2 (2008-11-29) ==
+
+|| *ID* || *Description* ||
+|| - || Added bindings in API ||
+
 == 1.1 (2008-11-12) ==
 
 || *ID* || *Description* ||
