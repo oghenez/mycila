@@ -29,7 +29,7 @@
     -->
 
     <scm>
-        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-testing/trunk</connection>
+        <connection>scm:svn:http://mycila.googlecode.com/svn/mycila-testing/trunk</connection>
         <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-testing/trunk</developerConnection>
         <url>http://mycila.googlecode.com/svn/mycila-testing/trunk</url>
     </scm>
