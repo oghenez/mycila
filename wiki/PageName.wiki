@@ -1,0 +1,6 @@
+#sidebar PluginBar
+
+[ModuleList Module list]
+[TestingAPI Mycila Testing API]
+*Plugins*
+[PluginJMock2 JMock Plugin]
