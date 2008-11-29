@@ -6,4 +6,4 @@
 
 *Plugins*
 
-[PluginJMock2 JMock Plugin]
+* [PluginJMock2 JMock Plugin]
