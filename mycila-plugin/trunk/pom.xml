@@ -245,7 +245,7 @@
             <plugin>
                 <groupId>com.google.code.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
-                <version>1.4.0-SNAPSHOT</version>
+                <version>1.4.0-rc2</version>
                 <configuration>
                     <header>${basedir}/etc/header.txt</header>
                     <failIfMissing>true</failIfMissing>
