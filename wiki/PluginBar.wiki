@@ -7,3 +7,6 @@
 *Plugins*
 
  * [PluginJMock2 JMock Plugin]
+ * [PluginEasyMock2 EasyMock Plugin]
+ * [PluginGuice1 Guice Plugin]
+ * [PluginSpring Spring Plugin]
