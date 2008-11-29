@@ -59,8 +59,9 @@ The usage is very easy. It works nearly like the JDK [http://java.sun.com/javase
 {{{
 PluginManager<MyPlugin> manager = new PluginManager<MyPlugin>(MyPlugin.class, "META-INF/myapp/plugins.properties");
 
-for (MyPlugin plugin : manager.getResolver().getResolvedPlugins()) {
-    plugin.execute();
+for (PluginBinding<TestPlugin> binding : getPluginResolver().getResolvedPlugins()) {
+    System.out.printl("Plugin name: " + binding.getName());
+    binding.getPlugin().execute();
 }
 }}}
 
@@ -74,8 +75,9 @@ PluginManager<MyPlugin> manager = new PluginManager<MyPlugin>(MyPlugin.class);
 manager.getCache().registerPlugin("myPlugin1", new MyPluginInstance1());
 manager.getCache().registerPlugin("myPlugin2", new MyPluginInstance2());
 
-for (MyPlugin plugin : manager.getResolver().getResolvedPlugins()) {
-    plugin.execute();
+for (PluginBinding<TestPlugin> binding : manager.getResolver().getResolvedPlugins()) {
+    System.out.printl("Plugin name: " + binding.getName());
+    binding.getPlugin().execute();
 }
 }}}
 
@@ -190,8 +192,8 @@ Now in the code where the plugins are loaded used, we could probably find:
 {{{
 PluginManager<MyPlugin> manager = new PluginManager<MyPlugin>(MyPlugin.class, "META-INF/mycompany/plugins.properties");
 
-for (MyPlugin plugin : manager.getResolver().getResolvedPlugins()) {
-    plugin.execute();
+for (PluginBinding<TestPlugin> binding : manager.getResolver().getResolvedPlugins()) {
+    binding.getPlugin().execute();
 }
 }}}
 
