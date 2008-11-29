@@ -102,8 +102,7 @@ public final class TestInstanceTest {
     @Test
     public void test_getMethodsOfType() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getMethodsOfType(int.class).length, 3); // also Object.hashCode()
-        assertEquals(ti.getMethodsOfType(int.class)[0].getName(), "method");
+        assertEquals(ti.getMethodsOfType(int.class).length, 2); // also Object.hashCode()
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -127,8 +126,7 @@ public final class TestInstanceTest {
     @Test
     public void test_getMethodsOfTypeAnnotatedWith() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getMethodsOfTypeAnnotatedWith(int.class, Annot.class).length, 2);
-        assertEquals(ti.getMethodsOfTypeAnnotatedWith(int.class, Annot.class)[0].getName(), "method");
+        assertEquals(ti.getMethodsOfTypeAnnotatedWith(int.class, Annot.class).length, 1);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -146,22 +144,22 @@ public final class TestInstanceTest {
     @Test
     public void test_invoke() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getMethodsAnnotatedWith(Annot.class).length, 2);
-        assertEquals(ti.invoke(ti.getMethodsAnnotatedWith(Annot.class)[0]), 10);
+        assertEquals(ti.getMethodsOfTypeAnnotatedWith(String.class, Annot.class).length, 1);
+        assertEquals(ti.invoke(ti.getMethodsOfTypeAnnotatedWith(String.class, Annot.class)[0]), "10");
     }
 
     @Test(expectedExceptions = TestPluginException.class)
     public void test_invoke_exc() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getMethodsAnnotatedWith(Annot.class).length, 2);
-        ti.invoke(ti.getMethodsAnnotatedWith(Annot.class)[1]);
+        assertEquals(ti.getMethodsOfTypeAnnotatedWith(int.class, Annot.class).length, 1);
+        ti.invoke(ti.getMethodsOfTypeAnnotatedWith(int.class, Annot.class)[0]);
     }
 
     @Test(expectedExceptions = TestPluginException.class)
     public void test_invoke_bad_args() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getMethodsAnnotatedWith(Annot.class).length, 2);
-        ti.invoke(ti.getMethodsAnnotatedWith(Annot.class)[0], 10, 20);
+        assertEquals(ti.getMethodsOfTypeAnnotatedWith(String.class, Annot.class).length, 1);
+        ti.invoke(ti.getMethodsOfTypeAnnotatedWith(String.class, Annot.class)[0], 10, 20);
     }
 
     @Test
@@ -173,8 +171,8 @@ public final class TestInstanceTest {
     }
 
     @Annot
-    private int method() throws Exception {
-        return 10;
+    private String method() throws Exception {
+        return "10";
     }
 
     @Annot
