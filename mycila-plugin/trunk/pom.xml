@@ -6,7 +6,7 @@
          POM settings
      -->
 
-    <groupId>com.google.code.mycila</groupId>
+    <groupId>com.mycila</groupId>
     <artifactId>mycila-plugin</artifactId>
     <version>1.3-SNAPSHOT</version>
     <packaging>jar</packaging>
