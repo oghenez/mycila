@@ -1,3 +1,5 @@
 #summary EasyMock Plugin
 #labels TODO
 #sidebar PluginBar
+
+*EasyMock [http://www.easymock.org/ official website]*
