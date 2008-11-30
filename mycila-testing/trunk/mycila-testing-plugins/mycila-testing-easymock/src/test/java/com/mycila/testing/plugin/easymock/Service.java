@@ -13,26 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mycila.testing.plugin.easymock;
-
-import com.mycila.testing.core.Context;
-import com.mycila.testing.core.TestPlugin;
-
-import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class EasyMockTestPlugin implements TestPlugin {
-    public void prepareTestInstance(Context context) {
-    }
-
-    public List<String> getAfter() {
-        return null;
-    }
-
-    public List<String> getBefore() {
-        return null;
-    }
+public interface Service {
+    String go();
+    String go2();
 }

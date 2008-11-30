@@ -19,6 +19,9 @@ package com.mycila.testing.plugin.easymock;
 import java.lang.annotation.*;
 
 /**
+ * This annotation marks a field that will be injected by an EasyMock mock.
+ * It can be an interface of a class.
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -26,4 +29,9 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface Mock {
+    public static enum TYPE {
+        STANDARD, NICE, STRICT
+    }
+
+    TYPE value() default TYPE.STANDARD;
 }
