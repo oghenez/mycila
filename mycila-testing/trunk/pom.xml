@@ -6,7 +6,7 @@
          POM settings
      -->
 
-    <groupId>com.google.code.mycila.testing</groupId>
+    <groupId>com.mycila.testing</groupId>
     <artifactId>mycila-testing</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
@@ -361,21 +361,15 @@
         <dependencies>
             <!-- mycila testing -->
             <dependency>
-                <groupId>com.google.code.mycila.testing</groupId>
+                <groupId>com.mycila.testing</groupId>
                 <artifactId>mycila-testing-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <!-- mycila plugin -->
             <dependency>
-                <groupId>com.google.code.mycila</groupId>
+                <groupId>com.mycila</groupId>
                 <artifactId>mycila-plugin</artifactId>
-                <version>1.2</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.code.mycila</groupId>
-                <artifactId>mycila-plugin</artifactId>
-                <classifier>full</classifier>
-                <version>1.1</version>
+                <version>1.3</version>
             </dependency>
             <!-- test frameworks -->
             <dependency>
