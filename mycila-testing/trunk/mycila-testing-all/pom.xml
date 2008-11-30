@@ -7,7 +7,7 @@
      -->
 
     <parent>
-        <groupId>com.google.code.mycila.testing</groupId>
+        <groupId>com.mycila.testing</groupId>
         <artifactId>mycila-testing</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
@@ -44,7 +44,7 @@
                         <overWriteIfNewer>true</overWriteIfNewer>
                         <overWriteReleases>true</overWriteReleases>
                         <overWriteSnapshots>true</overWriteSnapshots>
-                        <includeGroupIds>com.google.code.mycila,org.jgrapht</includeGroupIds>
+                        <includeGroupIds>com.mycila,org.jgrapht</includeGroupIds>
                         <includeArtifactIds>mycila-plugin,jgrapht-jdk1.5</includeArtifactIds>
                         <stripVersion>true</stripVersion>
                     </configuration>
@@ -142,7 +142,7 @@
     <dependencies>
         <!-- mycila -->
         <dependency>
-            <groupId>com.google.code.mycila</groupId>
+            <groupId>com.mycila</groupId>
             <artifactId>mycila-plugin</artifactId>
             <scope>provided</scope>
         </dependency>
