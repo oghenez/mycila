@@ -1,6 +1,8 @@
 #summary JMock 2 Plugin
 #sidebar PluginBar
 
+*JMock [http://www.jmock.org/ official website]*
+
 Here is a sample test using JMock Plugin:
 
 {{{
