@@ -62,7 +62,7 @@ In example, suppose we have a Spring plugin that checks for beans to include in 
 
 The [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/core/Context.java Context] enables the plugin to access the test instance to enhance, and also sharing data with other plugins through context attributes. A plugin can also access the plugin resolver, which provides the plugin execution flow. To have more information about the plugin infrastructure, please see [http://code.google.com/p/mycila/wiki/MycilaPlugin Mycila Plugin Framework] documentation.
 
-=== Let's code our plugin! ===
+=== Let's code our plugin ! ===
 
 First, we need to have two annotations:
 
@@ -81,7 +81,7 @@ public @interface MockContext {
 Then, we prepare our plugin class:
 
 {{{
-public final class JMock2TestPlugin implements TestPlugin {
+public final class MyPlugin implements TestPlugin {
     public List<String> getBefore() {
         return null;
     }
@@ -110,3 +110,17 @@ for (Field field : mocks) {
     context.getTest().set(field, mockery.mock(field.getType()));
 }
 }}}
+
+=== Package and distribute ===
+
+Now that we have a working and testable plugin, it would be nice if it could be loaded automatically if our plugin jar is in the classpath. To detect plugins, Mycila Plugin Framework reads all property files in the classpath named:
+
+*META-INF/mycila/testing/plugins.properties*
+
+So we just have to include a `plugins.properties` files in our jar, with the following content:
+
+{{{
+jmock=MyPlugin
+}}}
+
+Et voila ! We've made with 3 classes (two annotation and a plugin class) and a property file, a JMock plugin for Mycila Testing, that can be automatically loaded and executed to enhance your tests.
