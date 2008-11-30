@@ -1,0 +1,2 @@
+#summary Mockito Plugin
+#sidebar PluginBar
