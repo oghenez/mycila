@@ -36,8 +36,77 @@ public final class MyTest {
 }}}
 
  * *@Mock* defines a mock to create and inject
- * *MockContext* defines a place where to inject the mockery
+ * *@MockContext* defines a place where to inject the mockery
 
-=== Let's code ! ===
+=== The Plugin API ===
 
-We need to have two annotations:
+Plugins must implement [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/core/TestPlugin.java TestPlugin]. For convenience, an abstract class is also provided: [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/core/AbstractTestPlugin.java AbstractTestPlugin].
+
+A basic implementation would be:
+
+{{{
+public final class MyPlugin implements TestPlugin {
+    public List<String> getBefore() {
+        return null;
+    }
+    public List<String> getAfter() {
+        return null;
+    }
+    public void prepareTestInstance(Context context) {
+    }
+}
+}}}
+
+`getBefore` and `getAfter` comes from [http://code.google.com/p/mycila/wiki/MycilaPlugin Mycila Plugin Framework]. If provided, they help defined the order of execution of the plugins. 
+In example, suppose we have a Spring plugin that checks for beans to include in the Application Context. If we execute the JMock Plugin before the Spring plugin, we will be able to create the Spring Application Context base on created mocks.
+
+The [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/core/Context.java Context] enables the plugin to access the test instance to enhance, and also sharing data with other plugins through context attributes. A plugin can also access the plugin resolver, which provides the plugin execution flow. To have more information about the plugin infrastructure, please see [http://code.google.com/p/mycila/wiki/MycilaPlugin Mycila Plugin Framework] documentation.
+
+=== Let's code our plugin! ===
+
+First, we need to have two annotations:
+
+{{{
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD})
+public @interface Mock {
+}
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD})
+public @interface MockContext {
+}
+}}}
+
+Then, we prepare our plugin class:
+
+{{{
+public final class JMock2TestPlugin implements TestPlugin {
+    public List<String> getBefore() {
+        return null;
+    }
+    public List<String> getAfter() {
+        return Arrays.asList("guice1", "spring");
+    }
+    public void prepareTestInstance(Context context) {
+    }
+}
+}}}
+
+The implementation is quite simple:
+
+ # Get the mocks to create (by listing fields annotated by @Mock)
+ # Create a mockery
+ # If @MockContext annotated fields are found, inject the Mockery
+ # Create and inject mocks
+
+{{{
+Field[] mocks = context.getTest().getFieldsAnnotatedWith(Mock.class);
+Mockery mockery = new Mockery();
+for (Field field : context.getTest().getFieldsOfTypeAnnotatedWith(Mockery.class, MockContext.class)) {
+    context.getTest().set(field, mockery);
+}
+for (Field field : mocks) {
+    context.getTest().set(field, mockery.mock(field.getType()));
+}
+}}}
