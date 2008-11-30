@@ -12,7 +12,7 @@
 
  * [PluginJMock2 JMock Plugin]
  * [PluginEasyMock2 EasyMock Plugin]
- * [PluginGuice1 Guice Plugin]
- * [PluginSpring Spring Plugin]
+ * [PluginGuice1 Google Guice Plugin]
+ * [PluginSpring Spring Framework Plugin]
  * [PluginMockito Mockito Plugin]
  * [PowerMockPlugin PowerMock Plugin]
