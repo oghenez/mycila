@@ -1,3 +1,5 @@
-#summary Guice Plugin
+#summary Google Guice Plugin
 #labels TODO
 #sidebar PluginBar
+
+*Google Guice [http://code.google.com/p/google-guice/ official website]*
