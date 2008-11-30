@@ -19,7 +19,7 @@ You can also use the *mycila-testing-all* jar, which contains the API and all pl
 You can download or get the modules:
  * from the [http://code.google.com/p/mycila/downloads/list download section]
  * from our [http://code.google.com/p/mc-repo/ alternate maven repository]
- * from the [http://repo1.maven.org/maven2/com/google/code/mycila ventral maven repository] (if deployed)
+ * from the [http://repo1.maven.org/maven2/com/google/code/mycila central maven repository] (if deployed)
 
 == Maven dependency ==
 
