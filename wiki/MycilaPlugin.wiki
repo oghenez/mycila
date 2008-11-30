@@ -18,7 +18,7 @@ To add mycila-plugin in your pom, just add this dependency (with of course the g
 
 {{{
 <dependency>
-    <groupId>com.google.code.mycila</groupId>
+    <groupId>com.mycila</groupId>
     <artifactId>mycila-plugin</artifactId>
     <version>X.Y</version>
 </dependency>
