@@ -1,3 +1,5 @@
 #summary Mockito Plugin
 #labels TODO
 #sidebar PluginBar
+
+*Mockito [http://code.google.com/p/mockito/ official website]*
