@@ -1,3 +1,5 @@
-#summary Spring Plugin
+#summary Spring Framework Plugin
 #labels TODO
 #sidebar PluginBar
+
+*Spring Framework [http://www.springframework.org/ official website]*
