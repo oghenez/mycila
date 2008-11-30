@@ -32,23 +32,21 @@ public final class JMock2TestPlugin extends AbstractTestPlugin {
 
     public void prepareTestInstance(Context context) {
         Field[] mocks = context.getTest().getFieldsAnnotatedWith(Mock.class);
-        if (mocks.length > 0) {
-            Mockery mockery = findProvidedMockery(context);
-            if (mockery == null) {
-                mockery = new Mockery();
-                for (Field mock : mocks) {
-                    if (!mock.getType().isInterface()) {
-                        mockery.setImposteriser(ClassImposteriser.INSTANCE);
-                        break;
-                    }
+        Mockery mockery = findProvidedMockery(context);
+        if (mockery == null) {
+            mockery = new Mockery();
+            for (Field mock : mocks) {
+                if (!mock.getType().isInterface()) {
+                    mockery.setImposteriser(ClassImposteriser.INSTANCE);
+                    break;
                 }
             }
-            for (Field field : context.getTest().getFieldsOfTypeAnnotatedWith(Mockery.class, MockContext.class)) {
-                context.getTest().set(field, mockery);
-            }
-            for (Field field : mocks) {
-                context.getTest().set(field, mockery.mock(field.getType(), field.getDeclaringClass().getName() + "." + field.getName()));
-            }
+        }
+        for (Field field : context.getTest().getFieldsOfTypeAnnotatedWith(Mockery.class, MockContext.class)) {
+            context.getTest().set(field, mockery);
+        }
+        for (Field field : mocks) {
+            context.getTest().set(field, mockery.mock(field.getType(), field.getDeclaringClass().getName() + "." + field.getName()));
         }
     }
 
