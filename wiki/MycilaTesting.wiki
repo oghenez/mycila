@@ -56,3 +56,11 @@ If you prefer to use only the plugins you want, i.e. Guice and JMock, just add t
  * Complete list of [ModuleList available modules] (API and plugins) and their documentation
  * How to [PluginDevelopment create your own plugins]
  * How to [TestingAPI use the test enhancer in the API]
+
+== Test Sample ==
+
+Here is an example of a unit test using Mycila Testing Framework. In our project, we use [http://code.google.com/p/google-guice/ Google Guice] and [http://code.google.com/p/mockito/ Mockito].
+
+{{{
+
+}}}
