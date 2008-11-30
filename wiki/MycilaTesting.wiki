@@ -19,7 +19,7 @@ You can also use the *mycila-testing-all* jar, which contains the API and all pl
 You can download or get the modules:
  * from the [http://code.google.com/p/mycila/downloads/list download section]
  * from our [http://code.google.com/p/mc-repo/ alternate maven repository]
- * from the [http://repo1.maven.org/maven2/com/google/code/mycila central maven repository] (if deployed)
+ * from the [http://repo1.maven.org/maven2/com/mycila central maven repository] (if deployed)
 
 == Maven dependency ==
 
@@ -27,7 +27,7 @@ To use the full jar with all plugins plus the API, just add this dependency (wit
 
 {{{
 <dependency>
-    <groupId>com.google.code.mycila.testing</groupId>
+    <groupId>com.mycila.testing</groupId>
     <artifactId>mycila-testing-all</artifactId>
     <version>X.Y</version>
 </dependency>
@@ -39,12 +39,12 @@ If you prefer to use only the plugins you want, i.e. Guice and JMock, just add t
 
 {{{
 <dependency>
-    <groupId>com.google.code.mycila.testing.plugins</groupId>
+    <groupId>com.mycila.testing.plugins</groupId>
     <artifactId>mycila-testing-jmock</artifactId>
     <version>X.Y</version>
 </dependency>
 <dependency>
-    <groupId>com.google.code.mycila.testing.plugins</groupId>
+    <groupId>com.mycila.testing.plugins</groupId>
     <artifactId>mycila-testing-guice</artifactId>
     <version>X.Y</version>
 </dependency>
