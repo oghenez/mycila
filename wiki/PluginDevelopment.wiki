@@ -1,3 +1,43 @@
 #summary How to create your own plugins
-#labels TODO
 #sidebar PluginBar
+
+Creating your own plugins for Mycila Testing Framework is very easy. As an example is better than many words, let's start by a tutorial on how to write a JMock Plugin.
+
+=== First, What do we want for our plugin ? ===
+
+ * Create and inject mock
+ * Be able to access the mockery to verify expectations
+
+We would like to be able to write tests using JMock like this:
+
+{{{
+public final class MyTest {
+
+    @MockContext
+    Mockery mockery;
+
+    @Mock
+    Service service;
+
+    @BeforeClass
+    public void setup() {
+        TestSetup.setup(this);
+    }
+
+    @Test
+    public void test_go() {
+        mockery.checking(new Expectations() {{
+            // some expectations
+        }});
+        // execute test
+        mockery.assertIsSatisfied();
+    }
+}
+}}}
+
+ * *@Mock* defines a mock to create and inject
+ * *MockContext* defines a place where to inject the mockery
+
+=== Let's code ! ===
+
+We need to have two annotations:
