@@ -30,10 +30,8 @@ public final class EasyMock2TestPlugin extends AbstractTestPlugin {
 
     public void prepareTestInstance(Context context) {
         Field[] mocks = context.getTest().getFieldsAnnotatedWith(Mock.class);
-        if (mocks.length > 0) {
-            for (Field field : mocks) {
-                context.getTest().set(field, mock(field));
-            }
+        for (Field field : mocks) {
+            context.getTest().set(field, mock(field));
         }
     }
 

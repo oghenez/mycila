@@ -99,6 +99,8 @@
                                     <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-spring/target/mycila-testing-spring-${project.version}.jar"/>
                                     <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-jmock/target/mycila-testing-jmock-${project.version}.jar"/>
                                     <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-easymock/target/mycila-testing-easymock-${project.version}.jar"/>
+                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-powermock/target/mycila-testing-powermock-${project.version}.jar"/>
+                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-mockito/target/mycila-testing-mockito-${project.version}.jar"/>
                                 </jar>
                                 <jar update="true" file="${project.build.directory}/${project.build.finalName}-sources.jar">
                                     <zipfileset src="${basedir}/../mycila-testing-api/target/mycila-testing-api-${project.version}-sources.jar"/>
@@ -106,6 +108,8 @@
                                     <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-spring/target/mycila-testing-spring-${project.version}-sources.jar"/>
                                     <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-jmock/target/mycila-testing-jmock-${project.version}-sources.jar"/>
                                     <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-easymock/target/mycila-testing-easymock-${project.version}-sources.jar"/>
+                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-mockito/target/mycila-testing-mockito-${project.version}-sources.jar"/>
+                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-powermock/target/mycila-testing-powermock-${project.version}-sources.jar"/>
                                 </jar>
                                 <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"/>
                                 <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
