@@ -61,3 +61,13 @@
     <version>X.Y</version>
 </dependency>
 }}}
+
+ * *[PluginMockito Mockito Plugin]*: Mockito integration
+
+{{{
+<dependency>
+    <groupId>com.google.code.mycila.testing.plugins</groupId>
+    <artifactId>mycila-testing-mockito</artifactId>
+    <version>X.Y</version>
+</dependency>
+}}}
