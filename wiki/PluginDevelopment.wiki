@@ -3,6 +3,30 @@
 
 Creating your own plugins for Mycila Testing Framework is very easy. As an example is better than many words, let's start by a tutorial on how to write a JMock Plugin.
 
+=== The Plugin API ===
+
+Plugins must implement [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/core/TestPlugin.java TestPlugin]. For convenience, an abstract class is also provided: [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/core/AbstractTestPlugin.java AbstractTestPlugin].
+
+A basic implementation would be:
+
+{{{
+public final class MyPlugin implements TestPlugin {
+    public List<String> getBefore() {
+        return null;
+    }
+    public List<String> getAfter() {
+        return null;
+    }
+    public void prepareTestInstance(Context context) {
+    }
+}
+}}}
+
+`getBefore` and `getAfter` comes from [http://code.google.com/p/mycila/wiki/MycilaPlugin Mycila Plugin Framework]. If provided, they help defined the order of execution of the plugins. 
+In example, suppose we have a Spring plugin that checks for beans to include in the Application Context. If we execute the JMock Plugin before the Spring plugin, we will be able to create the Spring Application Context base on created mocks.
+
+The [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/core/Context.java Context] enables the plugin to access the test instance to enhance, and also sharing data with other plugins through context attributes. A plugin can also access the plugin resolver, which provides the plugin execution flow. To have more information about the plugin infrastructure, please see [http://code.google.com/p/mycila/wiki/MycilaPlugin Mycila Plugin Framework] documentation.
+
 === First, What do we want for our plugin ? ===
 
  * Create and inject mock
@@ -37,30 +61,6 @@ public final class MyTest {
 
  * *@Mock* defines a mock to create and inject
  * *@MockContext* defines a place where to inject the mockery
-
-=== The Plugin API ===
-
-Plugins must implement [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/core/TestPlugin.java TestPlugin]. For convenience, an abstract class is also provided: [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/core/AbstractTestPlugin.java AbstractTestPlugin].
-
-A basic implementation would be:
-
-{{{
-public final class MyPlugin implements TestPlugin {
-    public List<String> getBefore() {
-        return null;
-    }
-    public List<String> getAfter() {
-        return null;
-    }
-    public void prepareTestInstance(Context context) {
-    }
-}
-}}}
-
-`getBefore` and `getAfter` comes from [http://code.google.com/p/mycila/wiki/MycilaPlugin Mycila Plugin Framework]. If provided, they help defined the order of execution of the plugins. 
-In example, suppose we have a Spring plugin that checks for beans to include in the Application Context. If we execute the JMock Plugin before the Spring plugin, we will be able to create the Spring Application Context base on created mocks.
-
-The [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/core/Context.java Context] enables the plugin to access the test instance to enhance, and also sharing data with other plugins through context attributes. A plugin can also access the plugin resolver, which provides the plugin execution flow. To have more information about the plugin infrastructure, please see [http://code.google.com/p/mycila/wiki/MycilaPlugin Mycila Plugin Framework] documentation.
 
 === Let's code our plugin ! ===
 
