@@ -14,3 +14,4 @@
  * [PluginEasyMock2 EasyMock Plugin]
  * [PluginGuice1 Guice Plugin]
  * [PluginSpring Spring Plugin]
+ * [PluginMockito Mockito Plugin]
