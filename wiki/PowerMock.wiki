@@ -1,5 +1,0 @@
-#summary PowerMock Plugin
-#labels TODO
-#sidebar PluginBar
-
-*PowerMock [http://code.google.com/p/powermock/ official website]*
