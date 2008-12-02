@@ -12,6 +12,6 @@
 
  * [PluginJMock2 JMock Plugin]
  * [PluginEasyMock2 EasyMock Plugin]
+ * [PluginMockito Mockito Plugin]
  * [PluginGuice1 Google Guice Plugin]
  * [PluginSpring Spring Framework Plugin]
- * [PluginMockito Mockito Plugin]
