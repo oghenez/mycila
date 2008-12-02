@@ -15,4 +15,3 @@
  * [PluginGuice1 Google Guice Plugin]
  * [PluginSpring Spring Framework Plugin]
  * [PluginMockito Mockito Plugin]
- * [PowerMockPlugin PowerMock Plugin]
