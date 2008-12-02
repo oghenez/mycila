@@ -29,7 +29,6 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface GuiceContext {
-    Stage stage() default Stage.DEVELOPMENT;
-
-    Class<? extends Module>[] modules() default {};
+    Class<? extends Module>[] value() default {};
+    Stage stage() default Stage.DEVELOPMENT;    
 }
