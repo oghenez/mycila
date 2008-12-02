@@ -71,13 +71,3 @@
     <version>X.Y</version>
 </dependency>
 }}}
-
- * *[PowerMockPlugin PowerMock Plugin]*: PowerMock integration
-
-{{{
-<dependency>
-    <groupId>com.mycila.testing.plugins</groupId>
-    <artifactId>mycila-testing-powermock</artifactId>
-    <version>X.Y</version>
-</dependency>
-}}}
