@@ -1,4 +1,4 @@
-package com.mycila.testing.plugin;
+package com.mycila.testing.plugin.mockito;
 
 import com.mycila.testing.core.TestSetup;
 import org.mockito.MockitoAnnotations;
