@@ -49,7 +49,7 @@ public final class GuicePlugin {
         // if the test class declares some static module to instanciate
         GuiceContext guiceTest = testClass.getAnnotation(GuiceContext.class);
         if (guiceTest != null) {
-            for (Class<? extends Module> moduleClass : guiceTest.modules()) {
+            for (Class<? extends Module> moduleClass : guiceTest.value()) {
                 try {
                     modules.add(moduleClass.newInstance());
                 } catch (Exception e) {
