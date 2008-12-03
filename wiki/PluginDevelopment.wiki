@@ -5,7 +5,7 @@ Creating your own plugins for Mycila Testing Framework is very easy. As an examp
 
 === The Plugin API ===
 
-Plugins must implement [http://code.mycila.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/core/TestPlugin.java TestPlugin]. For convenience, an abstract class is also provided: [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/core/AbstractTestPlugin.java AbstractTestPlugin].
+Plugins must implement [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/core/TestPlugin.java TestPlugin]. For convenience, an abstract class is also provided: [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/core/AbstractTestPlugin.java AbstractTestPlugin].
 
 A basic implementation would be:
 
