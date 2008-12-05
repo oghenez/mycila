@@ -22,7 +22,7 @@ import java.lang.annotation.*;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.METHOD})
 @Inherited
 @Documented
 public @interface Bind {

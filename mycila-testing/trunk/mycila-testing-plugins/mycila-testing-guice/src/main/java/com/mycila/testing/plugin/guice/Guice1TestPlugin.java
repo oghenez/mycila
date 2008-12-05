@@ -24,7 +24,9 @@ import com.mycila.testing.core.AbstractTestPlugin;
 import com.mycila.testing.core.Context;
 import com.mycila.testing.core.TestPluginException;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -38,6 +40,7 @@ public final class Guice1TestPlugin extends AbstractTestPlugin {
         // build module list
         List<Module> modules = new ArrayList<Module>();
         modules.addAll(contextualModules(ctx));
+        modules.addAll(providedModules(context));
         if (context.getTest().getTarget() instanceof Module) {
             modules.add((Module) context.getTest().getTarget());
         }
@@ -46,6 +49,23 @@ public final class Guice1TestPlugin extends AbstractTestPlugin {
         Injector injector = Guice.createInjector(findStage(ctx), modules);
         context.setAttribute("com.google.inject.Injector", injector);
         injector.injectMembers(context.getTest().getTarget());
+    }
+
+    private List<Module> providedModules(Context ctx) {
+        List<Module> modules = new ArrayList<Module>();
+        for (Method method : ctx.getTest().getMethodsOfTypeAnnotatedWith(Module.class, ModuleProvider.class)) {
+            modules.add((Module) ctx.getTest().invoke(method));
+        }
+        for (Method method : ctx.getTest().getMethodsOfTypeAnnotatedWith(Module[].class, ModuleProvider.class)) {
+            modules.addAll(Arrays.asList((Module[]) ctx.getTest().invoke(method)));
+        }
+        for (Method method : ctx.getTest().getMethodsOfTypeAnnotatedWith(Iterable.class, ModuleProvider.class)) {
+            //noinspection unchecked
+            for (Module module : (Iterable<Module>) ctx.getTest().invoke(method)) {
+                modules.add(module);
+            }
+        }
+        return modules;
     }
 
     private Stage findStage(GuiceContext ctx) {
