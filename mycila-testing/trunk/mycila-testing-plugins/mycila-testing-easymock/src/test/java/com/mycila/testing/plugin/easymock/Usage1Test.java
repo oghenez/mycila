@@ -50,6 +50,7 @@ public final class Usage1Test {
 
     @Test
     public void test_mock_strict_ok() {
+        resetToStrict(service3);
         expect(service3.go()).andReturn("Hello World 1 !");
         expect(service3.go2()).andReturn("Hello World 2 !");
         replay(service3);
@@ -60,6 +61,7 @@ public final class Usage1Test {
 
     @Test(expectedExceptions = AssertionError.class)
     public void test_mock_strict_bad() {
+        resetToStrict(service3);
         expect(service3.go()).andReturn("Hello World 1 !");
         expect(service3.go2()).andReturn("Hello World 2 !");
         replay(service3);
