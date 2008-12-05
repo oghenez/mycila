@@ -1,5 +1,4 @@
 #summary AtUnit Plugin
-#labels TODO
 #sidebar PluginBar
 
 *AtUnit [http://code.google.com/p/atunit/ official website]*
@@ -7,6 +6,38 @@
 Here is a sample test using AtUnit Plugin:
 
 {{{
+@Container(Container.Option.GUICE)
+@MockFramework(MockFramework.Option.JMOCK)
+public class ExampleGuiceAndJMockTest {
+
+    @Inject
+    @Unit
+    GuiceUserManager manager;
+
+    @Inject
+    User emptyUser;
+
+    Mockery mockery;
+
+    @Mock
+    UserDao dao;
+    @Stub
+    Logger ignoredLogger;
+
+    @BeforeClass
+    public void setup() {
+        TestSetup.setup(this);
+    }
+    
+    @Test
+    public void testGetUser() {
+        mockery.checking(new Expectations() {{
+            one(dao).load(with(equal(500)));
+            will(returnValue(emptyUser));
+        }});
+        assertSame(manager.getUser(500), emptyUser);
+    }
+}
 }}}
 
 With AtUnit, you have the responsibility to provide yourself the required dependencies in your pom, since AtUnit is not in the central maven repository.
