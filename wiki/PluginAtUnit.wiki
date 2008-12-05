@@ -72,11 +72,16 @@ public class ExampleSpringEasyMockTest {
 }
 }}}
 
-With AtUnit integration, you have to use AtUnit *@ContainerClass* and *@MockFrameworkClass* annotations instead of using default ones. Also, you must specify implementations provided by Mycila:
+With AtUnit integration, you have to use AtUnit *@ContainerClass* and *@MockFrameworkClass* annotations instead of using default ones (@Container and @MockFramework). Also, you must specify implementations provided by Mycila:
+
+For @ContainerClass:
 
  * com.mycila.testing.plugin.atunit.container.GuiceContainer
  * com.mycila.testing.plugin.atunit.container.SpringContainer
  * com.mycila.testing.plugin.atunit.container.NoContainer
+
+For @MockFrameworkClass
+
  * com.mycila.testing.plugin.atunit.mocker.EasyMockFramework
  * com.mycila.testing.plugin.atunit.mocker.JMockFramework
 
