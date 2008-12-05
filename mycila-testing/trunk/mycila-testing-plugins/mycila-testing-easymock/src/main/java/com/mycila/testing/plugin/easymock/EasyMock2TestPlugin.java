@@ -22,11 +22,18 @@ import com.mycila.testing.core.TestPluginException;
 import org.easymock.classextension.EasyMock;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class EasyMock2TestPlugin extends AbstractTestPlugin {
+
+    @Override
+    public List<String> getAfter() {
+        return Arrays.asList("spring", "guice1");
+    }
 
     public void prepareTestInstance(Context context) {
         Field[] mocks = context.getTest().getFieldsAnnotatedWith(Mock.class);

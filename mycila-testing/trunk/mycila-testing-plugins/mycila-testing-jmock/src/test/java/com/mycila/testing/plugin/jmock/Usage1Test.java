@@ -25,7 +25,7 @@ import org.testng.annotations.Test;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Usage1 {
+public final class Usage1Test {
 
     @MockContext
     Mockery mockery;

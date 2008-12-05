@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @GuiceContext(AModule.class)
-public final class Usage1 {
+public final class Usage1Test {
 
     @Inject
     @Named("service1")

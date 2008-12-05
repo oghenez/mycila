@@ -71,6 +71,7 @@ final class TestContext implements Context {
     }
 
     void execute() throws TestPluginException {
+        ContextHolder.set(this);
         for (PluginBinding<TestPlugin> binding : getPluginResolver().getResolvedPlugins()) {
             try {
                 binding.getPlugin().prepareTestInstance(this);
@@ -78,5 +79,6 @@ final class TestContext implements Context {
                 throw new TestPluginException(e, "An error occured while executing plugin '%s': %s", binding.getName(), e.getMessage());
             }
         }
+        ContextHolder.unset();
     }
 }
