@@ -3,3 +3,10 @@
 #sidebar PluginBar
 
 *AtUnit [http://code.google.com/p/atunit/ official website]*
+
+Here is a sample test using AtUnit Plugin:
+
+{{
+}}}
+
+With AtUnit, you have the responsibility to provide yourself the required dependencies in your pom, since AtUnit is not in the central maven repository.
