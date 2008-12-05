@@ -16,9 +16,9 @@
 package com.mycila.testing.plugin.guice;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import com.mycila.testing.core.TestSetup;
+import static org.testng.Assert.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -32,28 +32,6 @@ public final class Usage1Test {
     @Named("service1")
     Service service1;
 
-    @Inject
-    Service service2;
-
-    @Bind
-    Provider<Service> service2Provider = new Provider<Service>() {
-        public Service get() {
-            return new Service() {
-                public String go() {
-                    return "go2";
-                }
-            };
-        }
-    };
-
-    @Bind
-    String parameter1 = "parameter";
-
-    @Inject
-    String injectedParameter1;
-
-    
-
     @BeforeClass
     public void setup() {
         TestSetup.setup(this);
@@ -61,6 +39,6 @@ public final class Usage1Test {
 
     @Test
     public void test_inject() {
-
+        assertEquals(service1.go(), "go1");
     }
 }
