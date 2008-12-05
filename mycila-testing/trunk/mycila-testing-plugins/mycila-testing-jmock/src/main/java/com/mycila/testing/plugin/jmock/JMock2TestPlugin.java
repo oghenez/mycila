@@ -24,11 +24,18 @@ import org.jmock.lib.legacy.ClassImposteriser;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class JMock2TestPlugin extends AbstractTestPlugin {
+
+    @Override
+    public List<String> getAfter() {
+        return Arrays.asList("spring", "guice1");
+    }
 
     public void prepareTestInstance(Context context) {
         Field[] mocks = context.getTest().getFieldsAnnotatedWith(Mock.class);
@@ -42,6 +49,7 @@ public final class JMock2TestPlugin extends AbstractTestPlugin {
                 }
             }
         }
+        context.setAttribute("org.jmock.Mockery", mockery);
         for (Field field : context.getTest().getFieldsOfTypeAnnotatedWith(Mockery.class, MockContext.class)) {
             context.getTest().set(field, mockery);
         }

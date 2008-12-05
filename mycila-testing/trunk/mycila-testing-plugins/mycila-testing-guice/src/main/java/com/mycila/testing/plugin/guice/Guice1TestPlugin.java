@@ -25,17 +25,12 @@ import com.mycila.testing.core.Context;
 import com.mycila.testing.core.TestPluginException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class Guice1TestPlugin extends AbstractTestPlugin {
-    @Override
-    public List<String> getBefore() {
-        return Arrays.asList("jmock2", "easymock2", "mockito");
-    }
 
     public void prepareTestInstance(Context context) {
         GuiceContext ctx = context.getTest().getTargetClass().getAnnotation(GuiceContext.class);
@@ -49,6 +44,7 @@ public final class Guice1TestPlugin extends AbstractTestPlugin {
 
         // build injector
         Injector injector = Guice.createInjector(findStage(ctx), modules);
+        context.setAttribute("com.google.inject.Injector", injector);
         injector.injectMembers(context.getTest().getTarget());
     }
 

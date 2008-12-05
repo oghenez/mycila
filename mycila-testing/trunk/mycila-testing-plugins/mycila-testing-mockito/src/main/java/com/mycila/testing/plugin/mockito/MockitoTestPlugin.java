@@ -20,10 +20,18 @@ import com.mycila.testing.core.AbstractTestPlugin;
 import com.mycila.testing.core.Context;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class MockitoTestPlugin extends AbstractTestPlugin {
+
+    @Override
+    public List<String> getAfter() {
+        return Arrays.asList("spring", "guice1");
+    }
 
     public void prepareTestInstance(Context context) {
         MockitoAnnotations.initMocks(context.getTest().getTarget());
