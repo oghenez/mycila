@@ -10,3 +10,5 @@ Here is a sample test using AtUnit Plugin:
 }}}
 
 With AtUnit, you have the responsibility to provide yourself the required dependencies in your pom, since AtUnit is not in the central maven repository.
+
+Since AtUnit is already an integration framework for testing Guice+Spring+JMock+EasyMock, we let you refer to AtUnit documentation to see how to write tests. This integration let AtUnit users use it with other testing framework like TestNG.
