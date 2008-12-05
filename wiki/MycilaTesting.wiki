@@ -59,7 +59,13 @@ If you prefer to use only the plugins you want, i.e. Guice and JMock, just add t
 
 == Test Sample ==
 
-Here is an example of a unit test using Mycila Testing Framework. In our project, we use [http://code.google.com/p/google-guice/ Google Guice] and [http://code.google.com/p/mockito/ Mockito].
+Here is an example of a unit test using Mycila Testing Framework. In this sample, we use [http://code.google.com/p/google-guice/ Google Guice] and [http://code.google.com/p/mockito/ Mockito].
+
+{{{
+
+}}}
+
+Here is an example of a unit test using Mycila Testing Framework. In this sample, we use Spring and JMock.
 
 {{{
 
