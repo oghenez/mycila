@@ -19,10 +19,29 @@ package com.mycila.testing.plugin.guice;
 import java.lang.annotation.*;
 
 /**
+ * Specify a method that provides Guice module instances.
+ * If a module needs to be instanciated with a specific
+ * logic, you can add methods that provide Modules.
+ * Supported method return type is any type extending:
+ * Module, Module[] and Iterable&lt;Module>. Example:
+ * <pre>
+ * Module[] buildModules() {
+ *     return ...;
+ * }
+ *
+ * Module buildModule() {
+ *     return ...;
+ * }
+ *
+ * List&lt;Module> moduleList() {
+ *     return ...;
+ * }
+ * </pre>
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.TYPE})
+@Target(ElementType.METHOD)
 @Inherited
 @Documented
 public @interface ModuleProvider {
