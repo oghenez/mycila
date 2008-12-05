@@ -115,6 +115,7 @@
                                 <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
                                     <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5.jar"/>
                                     <zipfileset src="${project.build.directory}/dependency/mycila-plugin.jar"/>
+                                    <fileset dir="${basedir}/src/main/resources"/>
                                     <rule pattern="org.jgrapht.**" result="com.mycila.testing.internal.org.jgrapht.@1"/>
                                     <rule pattern="com.mycila.plugin.**" result="com.mycila.testing.internal.com.mycila.plugin.@1"/>
                                     <keep pattern="com.mycila.testing.**"/>
