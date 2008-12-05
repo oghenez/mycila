@@ -6,8 +6,8 @@
 Here is a sample test using AtUnit Plugin:
 
 {{{
-@Container(Container.Option.GUICE)
-@MockFramework(MockFramework.Option.JMOCK)
+@ContainerClass(GuiceContainer.class)
+@MockFrameworkClass(JMockFramework.class)
 public class ExampleGuiceAndJMockTest {
 
     @Inject
@@ -36,9 +36,49 @@ public class ExampleGuiceAndJMockTest {
             will(returnValue(emptyUser));
         }});
         assertSame(manager.getUser(500), emptyUser);
+        mockery.assertIsSatisfied();
     }
 }
 }}}
+
+here is another sample with Spring and EasyMock
+
+{{{
+@ContainerClass(SpringContainer.class)
+@MockFrameworkClass(EasyMockFramework.class)
+public class ExampleSpringEasyMockTest {
+
+    @Bean
+    @Unit
+    UserManagerImpl manager;
+
+    @Bean("fred")
+    User fred;
+
+    @Bean("userDao")
+    @Mock
+    UserDao dao;
+    @Bean("log")
+    @Stub
+    Logger log;
+
+    @Test
+    public void testGetUser() {
+        expect(dao.load(1)).andReturn(fred);
+        replay(dao);
+        assertSame(fred, manager.getUser(1));
+        verify(dao);
+    }
+}
+}}}
+
+With AtUnit integration, you have to use AtUnit *@ContainerClass* and *@MockFrameworkClass* annotations instead of using default ones. Also, you must specify implementations provided by Mycila:
+
+ * com.mycila.testing.plugin.atunit.container.GuiceContainer
+ * com.mycila.testing.plugin.atunit.container.SpringContainer
+ * com.mycila.testing.plugin.atunit.container.NoContainer
+ * com.mycila.testing.plugin.atunit.mocker.EasyMockFramework
+ * com.mycila.testing.plugin.atunit.mocker.JMockFramework
 
 With AtUnit, you have the responsibility to provide yourself the required dependencies in your pom, since AtUnit is not in the central maven repository.
 
