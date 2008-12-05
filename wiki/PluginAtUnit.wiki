@@ -76,14 +76,14 @@ With AtUnit integration, you have to use AtUnit *@ContainerClass* and *@MockFram
 
 For @ContainerClass:
 
- * com.mycila.testing.plugin.atunit.container.GuiceContainer
- * com.mycila.testing.plugin.atunit.container.SpringContainer
- * com.mycila.testing.plugin.atunit.container.NoContainer
+ * [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-plugins/mycila-testing-atunit/src/main/java/com/mycila/testing/plugin/atunit/container/GuiceContainer.java com.mycila.testing.plugin.atunit.container.GuiceContainer]
+ * [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-plugins/mycila-testing-atunit/src/main/java/com/mycila/testing/plugin/atunit/container/SpringContainer.java com.mycila.testing.plugin.atunit.container.SpringContainer]
+ * [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-plugins/mycila-testing-atunit/src/main/java/com/mycila/testing/plugin/atunit/container/NoContainer.java com.mycila.testing.plugin.atunit.container.NoContainer]
 
 For @MockFrameworkClass
 
- * com.mycila.testing.plugin.atunit.mocker.EasyMockFramework
- * com.mycila.testing.plugin.atunit.mocker.JMockFramework
+ * [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-plugins/mycila-testing-atunit/src/main/java/com/mycila/testing/plugin/atunit/mocker/EasyMockFramework.java com.mycila.testing.plugin.atunit.mocker.EasyMockFramework]
+ * [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-plugins/mycila-testing-atunit/src/main/java/com/mycila/testing/plugin/atunit/mocker/JMockFramework.java com.mycila.testing.plugin.atunit.mocker.JMockFramework]
 
 With AtUnit, you have the responsibility to provide yourself the required dependencies in your pom, since AtUnit is not in the central maven repository.
 
