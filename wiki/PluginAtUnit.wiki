@@ -1,0 +1,5 @@
+#summary AtUnit Plugin
+#labels TODO
+#sidebar PluginBar
+
+*AtUnit [http://code.google.com/p/atunit/ official website]*
