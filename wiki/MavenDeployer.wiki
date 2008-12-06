@@ -1,0 +1,6 @@
+#summary Maven Deployer GUI
+#labels Featured
+
+Download: [http://mycila.googlecode.com/files/maven-deployer-dist.zip maven-deployer-dist.zip]
+
+[http://mycila.googlecode.com/files/maven-deployer.png]
