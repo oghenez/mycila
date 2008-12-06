@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mycila.testing.plugin.guice;
-
-import java.lang.annotation.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD})
-@Inherited
-@Documented
-public @interface Bind {
-    Class<?> value() default Default.NoType.class;
-    Class<? extends Annotation> annotatedBy() default Default.NoAnnotation.class;
+final class ServiceImpl2 implements Service {
+
+    private final String s;
+
+    ServiceImpl2(String s) {
+        this.s = s;
+    }
+
+    public String go() {
+        return s;
+    }
 }

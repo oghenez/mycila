@@ -13,19 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mycila.testing.plugin.guice;
 
-import java.lang.annotation.*;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.mycila.testing.core.TestSetup;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD})
-@Inherited
-@Documented
-public @interface Bind {
-    Class<?> value() default Default.NoType.class;
-    Class<? extends Annotation> annotatedBy() default Default.NoAnnotation.class;
+@GuiceContext(AModule.class)
+public final class BindTest {
+
+    @Bind
+    String a = "hello";
+
+    @Bind(Service.class)
+    ServiceImpl2 impl1 = new ServiceImpl2("impl1");
+
+    @Bind(value = Service.class, annotatedBy = Test.class)
+    Service impl2 = new ServiceImpl2("impl2");
+
+    @Inject
+    Injector injector;
+
+    @Test
+    public void test_bind() {
+        TestSetup.setup(this);
+        assertEquals(injector.getBinding(Key.get(String.class)), "hello");
+    }
 }
