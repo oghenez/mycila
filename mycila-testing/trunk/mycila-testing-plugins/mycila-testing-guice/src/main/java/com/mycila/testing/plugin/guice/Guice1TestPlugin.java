@@ -16,14 +16,12 @@
 
 package com.mycila.testing.plugin.guice;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.Stage;
+import com.google.inject.*;
 import com.mycila.testing.core.AbstractTestPlugin;
 import com.mycila.testing.core.Context;
 import com.mycila.testing.core.TestPluginException;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +39,8 @@ public final class Guice1TestPlugin extends AbstractTestPlugin {
         List<Module> modules = new ArrayList<Module>();
         modules.addAll(contextualModules(ctx));
         modules.addAll(providedModules(context));
+        modules.add(bindings(context));
+        modules.add(providedBindings(context));
         if (context.getTest().getTarget() instanceof Module) {
             modules.add((Module) context.getTest().getTarget());
         }
@@ -49,6 +49,21 @@ public final class Guice1TestPlugin extends AbstractTestPlugin {
         Injector injector = Guice.createInjector(findStage(ctx), modules);
         context.setAttribute("com.google.inject.Injector", injector);
         injector.injectMembers(context.getTest().getTarget());
+    }
+
+    private Module bindings(final Context context) {
+        return new AbstractModule() {
+            @Override
+            protected void configure() {
+                for (Field field : context.getTest().getFieldsAnnotatedWith(Bind.class)) {
+                    bind(Key.get())
+                }
+            }
+        };
+    }
+
+    private Module providedBindings(Context context) {
+        return null;
     }
 
     private List<Module> providedModules(Context ctx) {
