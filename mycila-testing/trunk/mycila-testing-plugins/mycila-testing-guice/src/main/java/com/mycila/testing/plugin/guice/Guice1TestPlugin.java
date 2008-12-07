@@ -38,8 +38,6 @@ public final class Guice1TestPlugin extends AbstractTestPlugin {
 
     public void prepareTestInstance(Context context) {
         GuiceContext ctx = context.getTest().getTargetClass().getAnnotation(GuiceContext.class);
-
-        // build module list
         List<Module> modules = new ArrayList<Module>();
         modules.addAll(contextualModules(ctx));
         modules.addAll(providedModules(context));
@@ -48,8 +46,6 @@ public final class Guice1TestPlugin extends AbstractTestPlugin {
         if (context.getTest().getTarget() instanceof Module) {
             modules.add((Module) context.getTest().getTarget());
         }
-
-        // build injector
         Injector injector = Guice.createInjector(findStage(ctx), modules);
         context.setAttribute("com.google.inject.Injector", injector);
         injector.injectMembers(context.getTest().getTarget());
