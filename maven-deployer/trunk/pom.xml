@@ -8,7 +8,7 @@
 
     <groupId>maven.maven-deployer</groupId>
     <artifactId>maven-deployer</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
 
     <name>maven-deployer</name>
@@ -29,9 +29,9 @@
     -->
 
     <scm>
-        <connection>scm:svn:http://mycila.googlecode.com/svn/maven-deployer/trunk</connection>
-        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/maven-deployer/trunk</developerConnection>
-        <url>http://mycila.googlecode.com/svn/maven-deployer/trunk</url>
+        <connection>scm:svn:http://mycila.googlecode.com/svn/maven-deployer/tags/maven-deployer-1.1</connection>
+        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/maven-deployer/tags/maven-deployer-1.1</developerConnection>
+        <url>http://mycila.googlecode.com/svn/maven-deployer/tags/maven-deployer-1.1</url>
     </scm>
 
     <!--
