@@ -43,7 +43,7 @@ public final class GuiceContextTest {
 
 Provider methods are really useful when your module do not have a default constructor to be automatically instantiated.
 
-Methods returning modules must have one of the following return types: Module, Module[] or Iterable<Module> or any subtypes of these.
+Methods returning modules must have one of the following return types: Module, Module[] or Iterable`<Module>` or any subtypes of these.
 
 {{{
 public final class ModuleProviderTest {
