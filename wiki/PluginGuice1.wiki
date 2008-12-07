@@ -38,3 +38,40 @@ public final class GuiceContextTest {
     }
 }
 }}}
+
+
+*Example 2: providing some additional modules*
+
+Provider methods are really useful when your module do not have a default constructor to be automatically instantiated.
+
+{{{
+public final class ModuleProviderTest {
+
+    @Inject
+    Injector injector;
+
+    @Test
+    public void setup() {
+        TestSetup.setup(this);
+    }
+
+    @ModuleProvider
+    private Module providesOneModule() {
+        return new MyModule1WithParams("hello", 6);
+    }
+
+    @ModuleProvider
+    Module[] providesAnArrayOfModules() {
+        return new Module[]{new MyModule2WithParams("hello", 6), new MyModule3WithParams("hello", 6)};
+    }
+
+    @ModuleProvider
+    public Iterable<Module> provides3() {
+        return new ArrayList<Module>() {{
+            add(new MyModule4WithParams("hello", 6));
+            add(new MyModule5WithParams("hello", 6));
+        }};
+    }
+
+}
+}}}
