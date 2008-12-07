@@ -26,6 +26,6 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface Bind {
-    Class<?> value() default Default.NoType.class;
-    Class<? extends Annotation> annotatedBy() default Default.NoAnnotation.class;
+    Class<? extends Annotation> annotatedBy() default NoAnnotation.class;
+    Class<? extends Annotation> scope() default NoAnnotation.class;
 }

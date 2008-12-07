@@ -18,6 +18,8 @@ package com.mycila.testing.plugin.guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
 import com.mycila.testing.core.TestSetup;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
@@ -26,23 +28,44 @@ import org.testng.annotations.Test;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @GuiceContext(AModule.class)
-public final class BindTest {
+public final class BindMethodTest {
 
-    @Bind
-    String a = "hello";
-
-    @Bind(Service.class)
-    ServiceImpl2 impl1 = new ServiceImpl2("impl1");
-
-    @Bind(value = Service.class, annotatedBy = Test.class)
-    Service impl2 = new ServiceImpl2("impl2");
+    String a = "helloa";
+    String b = "hellob";
 
     @Inject
     Injector injector;
 
+    @Bind
+    String a() {
+        return a;
+    }
+
+    @Bind(annotatedBy = Named.class, scope = Singleton.class)
+    String b() {
+        return b;
+    }
+
+    @Bind
+    ServiceImpl2 impl1() {
+        return new ServiceImpl2("impl1");
+    }
+
+    @Bind(annotatedBy = Named.class)
+    Service impl2() {
+        return new ServiceImpl2("impl2");
+    }
+
     @Test
     public void test_bind() {
         TestSetup.setup(this);
-        assertEquals(injector.getBinding(Key.get(String.class)), "hello");
+        assertEquals(injector.getInstance(String.class), "helloa");
+        assertEquals(injector.getInstance(Key.get(String.class, Named.class)), "hellob");
+        b = "changedb";
+        a = "changeda";
+        assertEquals(injector.getInstance(String.class), "changeda");
+        assertEquals(injector.getInstance(Key.get(String.class, Named.class)), "hellob");
+        assertEquals(injector.getInstance(ServiceImpl2.class).go(), "impl1");
+        assertEquals(injector.getInstance(Key.get(Service.class, Named.class)).go(), "impl2");
     }
 }
