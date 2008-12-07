@@ -18,11 +18,50 @@ package com.mycila.testing.plugin.spring;
 
 import com.mycila.testing.core.AbstractTestPlugin;
 import com.mycila.testing.core.Context;
+import org.springframework.test.context.TestContext;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class SpringTestPlugin extends AbstractTestPlugin {
     public void prepareTestInstance(Context context) {
+        try {
+            final TestContextManager manager = new TestContextManager(context.getTest().getTargetClass());
+            final TestContext ctx = manager.testContext();
+            context.setAttribute("org.springframework.test.context.TestContextManager", manager);
+            context.setAttribute("org.springframework.test.context.TestContext", ctx);
+            setupContextLoader(ctx, new MycilaContextLoader(context));
+            manager.prepareTestInstance(context.getTest().getTarget());
+            context.setAttribute("org.springframework.context.ApplicationContext", manager.testContext().getApplicationContext());
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    private void setupContextLoader(TestContext ctx, MycilaContextLoader loader) throws Exception {
+        Field locations = ctx.getClass().getDeclaredField("locations");
+        locations.setAccessible(true);
+        locations.set(ctx, loader.contextLocations());
+        Field contextLoader = ctx.getClass().getDeclaredField("contextLoader");
+        contextLoader.setAccessible(true);
+        contextLoader.set(ctx, loader);
+        Field contextCache = ctx.getClass().getDeclaredField("contextCache");
+        contextCache.setAccessible(true);
+        Constructor ctor = Class.forName("org.springframework.test.context.ContextCache").getDeclaredConstructor();
+        ctor.setAccessible(true);
+        contextCache.set(ctx, ctor.newInstance());
+    }
+
+    private static class TestContextManager extends org.springframework.test.context.TestContextManager {
+        public TestContextManager(Class<?> testClass) {
+            super(testClass);
+        }
+
+        public TestContext testContext() {
+            return super.getTestContext();
+        }
     }
 }

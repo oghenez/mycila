@@ -19,6 +19,8 @@ package com.mycila.testing.plugin.spring;
 import java.lang.annotation.*;
 
 /**
+ * Specify spring context locations to load
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
@@ -26,5 +28,11 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface SpringContext {
-
+    /**
+     * The resource locations to use for loading an
+     * {@link org.springframework.context.ApplicationContext ApplicationContext}.
+     *
+     * @return location list
+     */
+    String[] locations() default {};
 }

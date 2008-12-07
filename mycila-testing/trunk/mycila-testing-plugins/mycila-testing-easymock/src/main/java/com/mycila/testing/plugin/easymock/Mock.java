@@ -29,9 +29,9 @@ import java.lang.annotation.*;
 @Inherited
 @Documented
 public @interface Mock {
-    public static enum TYPE {
+    public static enum Type {
         STANDARD, NICE, STRICT
     }
 
-    TYPE value() default TYPE.STANDARD;
+    Type value() default Type.STANDARD;
 }

@@ -13,38 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mycila.testing.plugin.spring;
 
-import org.springframework.beans.factory.config.BeanDefinition;
-
-import java.lang.annotation.*;
+import com.mycila.testing.core.TestSetup;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import static org.testng.Assert.*;
+import org.testng.annotations.Test;
 
 /**
- * Use this annotation to define a Bean, optionnaly giving a name and a scope.
- *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD})
-@Inherited
-@Documented
-public @interface Bean {
-    enum Scope {
-        SINGLETON(BeanDefinition.SCOPE_SINGLETON),
-        PROTOTYPE(BeanDefinition.SCOPE_PROTOTYPE);
-        private final String value;
+public final class NoContextTest {
 
-        private Scope(String value) {
-            this.value = value;
-        }
+    @Autowired
+    ApplicationContext beanFactory;
 
-        public String value() {
-            return value;
-        }
+    @Test
+    public void test_setup() {
+        assertNull(beanFactory);
+        TestSetup.setup(this);
+        assertNotNull(beanFactory);
+        assertFalse(beanFactory.containsBean("myBean"));
     }
-
-    String name();
-
-    Scope scope() default Scope.SINGLETON;
 }
