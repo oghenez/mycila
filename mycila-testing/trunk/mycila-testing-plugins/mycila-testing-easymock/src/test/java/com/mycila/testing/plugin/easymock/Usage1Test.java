@@ -29,10 +29,10 @@ public final class Usage1Test {
     @Mock
     Service service1;
 
-    @Mock(Mock.TYPE.NICE)
+    @Mock(Mock.Type.NICE)
     Service service2;
 
-    @Mock(Mock.TYPE.STRICT)
+    @Mock(Mock.Type.STRICT)
     Service service3;
 
     @BeforeClass

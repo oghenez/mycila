@@ -52,7 +52,7 @@ public class SpringContainer implements Container {
 				BeanDefinitionReaderUtils.registerWithGeneratedName(beandef, ctx);
 			}
 		}
-
+        
 		loadBeanDefinitions(testClass, ctx);
 
 		fillInMissingFieldBeans(testClass, ctx);
