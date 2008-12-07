@@ -1,5 +1,16 @@
 #summary Google Guice Plugin
-#labels TODO
 #sidebar PluginBar
 
 *Google Guice [http://code.google.com/p/google-guice/ official website]*
+
+Guice integration enables you to automatically create the injector with the module and even with the bindings you provide.
+
+*Annotations*
+
+ * [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-plugins/mycila-testing-guice/src/main/java/com/mycila/testing/plugin/guice/GuiceContext.java @GuiceContext]
+ * [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-plugins/mycila-testing-guice/src/main/java/com/mycila/testing/plugin/guice/ModuleProvider.java @ModuleProvider]
+ * [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-plugins/mycila-testing-guice/src/main/java/com/mycila/testing/plugin/guice/Bind.java @Bind]
+
+*Loading Guice modules and injecting dependencies*
+
+**
