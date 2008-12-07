@@ -17,12 +17,16 @@
 package com.mycila.testing.plugin.guice;
 
 import com.google.inject.*;
+import com.google.inject.binder.AnnotatedBindingBuilder;
+import com.google.inject.binder.LinkedBindingBuilder;
+import com.google.inject.binder.ScopedBindingBuilder;
 import com.mycila.testing.core.AbstractTestPlugin;
 import com.mycila.testing.core.Context;
 import com.mycila.testing.core.TestPluginException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,18 +56,42 @@ public final class Guice1TestPlugin extends AbstractTestPlugin {
     }
 
     private Module bindings(final Context context) {
-        return new AbstractModule() {
-            @Override
-            protected void configure() {
-                for (Field field : context.getTest().getFieldsAnnotatedWith(Bind.class)) {
-                    bind(Key.get())
+        return new Module() {
+            public void configure(Binder binder) {
+                for (final Field field : context.getTest().getFieldsAnnotatedWith(Bind.class)) {
+                    Guice1TestPlugin.this.configure(binder, field.getGenericType(), field.getAnnotation(Bind.class), new Provider<Object>() {
+                        public Object get() {
+                            return context.getTest().get(field);
+                        }
+                    });
+
                 }
             }
         };
     }
 
-    private Module providedBindings(Context context) {
-        return null;
+    private Module providedBindings(final Context context) {
+        return new Module() {
+            public void configure(Binder binder) {
+                for (final Method method : context.getTest().getMethodsAnnotatedWith(Bind.class)) {
+                    Guice1TestPlugin.this.configure(binder, method.getGenericReturnType(), method.getAnnotation(Bind.class), new Provider<Object>() {
+                        public Object get() {
+                            return context.getTest().invoke(method);
+                        }
+                    });
+
+                }
+            }
+        };
+    }
+
+    private <T> void configure(Binder binder, Type type, Bind annotation, Provider<T> provider) {
+        @SuppressWarnings({"unchecked"}) AnnotatedBindingBuilder<T> builder1 = (AnnotatedBindingBuilder<T>) binder.bind(TypeLiteral.get(type));
+        LinkedBindingBuilder<T> builder2 = annotation.annotatedBy().equals(NoAnnotation.class) ? builder1 : builder1.annotatedWith(annotation.annotatedBy());
+        ScopedBindingBuilder builder3 = builder2.toProvider(provider);
+        if (!annotation.scope().equals(NoAnnotation.class)) {
+            builder3.in(annotation.scope());
+        }
     }
 
     private List<Module> providedModules(Context ctx) {
