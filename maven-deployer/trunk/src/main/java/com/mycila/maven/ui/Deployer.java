@@ -39,12 +39,6 @@ final class Deployer extends SwingWorker<Void, Void> {
         this.gui = gui;
     }
 
-    @Override
-    protected void done() {
-        gui.deploy.setEnabled(true);
-        gui.cancel.setEnabled(false);
-    }
-
     protected Void doInBackground() throws Exception {
         try {
             java.util.List<String> cmd = buildCommands();
@@ -81,9 +75,14 @@ final class Deployer extends SwingWorker<Void, Void> {
             reader.start();
             deploy.waitFor();
         }
-        catch(InterruptedException ignored) {done();}
+        catch (InterruptedException ignored) {
+        }
         catch (Exception e) {
             gui.console.setText(ExceptionUtils.asText(e));
+        }
+        finally {
+            gui.deploy.setEnabled(true);
+            gui.cancel.setEnabled(false);
         }
         return null;
     }
