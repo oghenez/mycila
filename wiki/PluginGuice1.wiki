@@ -39,10 +39,11 @@ public final class GuiceContextTest {
 }
 }}}
 
-
 *Example 2: providing some additional modules*
 
 Provider methods are really useful when your module do not have a default constructor to be automatically instantiated.
+
+Methods returning modules must have one of the following return types: Module, Module[] or Iterable<Module> or any subtypes of these.
 
 {{{
 public final class ModuleProviderTest {
@@ -73,5 +74,75 @@ public final class ModuleProviderTest {
         }};
     }
 
+}
+}}}
+
+*Example 3: providing some additional bindings*
+
+You can add specific bindings directly by annotating fields or method. A provider is used to access there value or execute them.
+
+The @Bind annotation supports two optional parameters:
+
+ * An annotation used to precise the binding (used for bind(...).annotatedBy(...))
+ * A scope if you want for example to precise the scope
+
+Here is an example using @Bind on fields. As you can see, you can use a trick: since bindings by default are not singletons, you can change the value of the field, and it will change the binding. But if you put the Singleton scope, the first value is always returned.
+
+{{{
+public final class BindFieldTest {
+
+    @Bind
+    String a = "helloa";
+
+    @Bind(annotatedBy = Named.class, scope = Singleton.class)
+    String b = "hellob";
+
+    @Inject
+    Injector injector;
+
+    @Test
+    public void test_bind() {
+        TestSetup.setup(this);
+        assertEquals(injector.getInstance(String.class), "helloa");
+        assertEquals(injector.getInstance(Key.get(String.class, Named.class)), "hellob");
+        b = "changedb";
+        a = "changeda";
+        assertEquals(injector.getInstance(String.class), "changeda");
+        assertEquals(injector.getInstance(Key.get(String.class, Named.class)), "hellob");
+    }
+}
+}}}
+
+Here is now an example using method. Like before, the returned values of the methods that are binded can change.
+
+{{{
+public final class BindMethodTest {
+
+    String a = "helloa";
+    String b = "hellob";
+
+    @Inject
+    Injector injector;
+
+    @Bind
+    String a() {
+        return a;
+    }
+
+    @Bind(annotatedBy = Named.class, scope = Singleton.class)
+    String b() {
+        return b;
+    }
+
+    @Test
+    public void test_bind() {
+        TestSetup.setup(this);
+        assertEquals(injector.getInstance(String.class), "helloa");
+        assertEquals(injector.getInstance(Key.get(String.class, Named.class)), "hellob");
+        b = "changedb";
+        a = "changeda";
+        assertEquals(injector.getInstance(String.class), "changeda");
+        assertEquals(injector.getInstance(Key.get(String.class, Named.class)), "hellob");
+    }
 }
 }}}
