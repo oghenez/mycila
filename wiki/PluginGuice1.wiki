@@ -27,7 +27,7 @@ public final class GuiceContextTest {
     @Inject
     Injector injector;
 
-    @Test
+    @BeforeClass
     public void setup() {
         TestSetup.setup(this);
     }
@@ -51,7 +51,7 @@ public final class ModuleProviderTest {
     @Inject
     Injector injector;
 
-    @Test
+    @BeforeClass
     public void setup() {
         TestSetup.setup(this);
     }
