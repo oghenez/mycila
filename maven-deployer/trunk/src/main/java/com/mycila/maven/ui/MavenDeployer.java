@@ -66,6 +66,21 @@ public final class MavenDeployer {
             }
         });
 
+        gui.clear.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                gui.console.setText("");
+            }
+        });
+
+        gui.cancel.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (deployer != null) {
+                    deployer.stop();
+                    deployer = null;
+                }
+            }
+        });
+
         gui.loadPOM.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 File pom = pomChooser.chooseFrom(currentDir);
@@ -114,23 +129,6 @@ public final class MavenDeployer {
                         gui.console.setText(ExceptionUtils.asText(ee));
                     }
                 }
-            }
-        });
-
-        gui.clear.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                gui.console.setText("");
-            }
-        });
-
-        gui.cancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (deployer != null) {
-                    deployer.stop();
-                    deployer = null;
-                }
-                gui.deploy.setEnabled(false);
-                gui.cancel.setEnabled(true);
             }
         });
 
