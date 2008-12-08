@@ -302,12 +302,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-changelog-plugin</artifactId>
-                <configuration>
-                    <displayFileDetailUrl>http://mycila.googlecode.com/svn%FILE%</displayFileDetailUrl>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-pmd-plugin</artifactId>
                 <configuration>
                     <linkXref>true</linkXref>
