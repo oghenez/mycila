@@ -3,10 +3,10 @@
 
 *Mockito [http://code.google.com/p/mockito/ official website]*
 
-Here is a sample test using EasyMock Plugin:
+Here is a sample test using Mockito Plugin:
 
 {{{
-import org.mockito.MockitoAnnotations;
+import static org.mockito.MockitoAnnotations.*;
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -14,7 +14,7 @@ import com.mycila.testing.core.TestSetup;
 
 public final class MyTest {
 
-    @MockitoAnnotations.Mock
+    @Mock
     Service standardMock;
 
     @BeforeClass
