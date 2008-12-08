@@ -81,8 +81,9 @@ public final class Guice1TestPlugin extends AbstractTestPlugin {
         };
     }
 
+    @SuppressWarnings({"unchecked"})
     private <T> void configure(Binder binder, Type type, Bind annotation, Provider<T> provider) {
-        @SuppressWarnings({"unchecked"}) AnnotatedBindingBuilder<T> builder1 = (AnnotatedBindingBuilder<T>) binder.bind(TypeLiteral.get(type));
+        AnnotatedBindingBuilder<T> builder1 = (AnnotatedBindingBuilder<T>) binder.bind(TypeLiteral.get(type));
         LinkedBindingBuilder<T> builder2 = annotation.annotatedBy().equals(NoAnnotation.class) ? builder1 : builder1.annotatedWith(annotation.annotatedBy());
         ScopedBindingBuilder builder3 = builder2.toProvider(provider);
         if (!annotation.scope().equals(NoAnnotation.class)) {
