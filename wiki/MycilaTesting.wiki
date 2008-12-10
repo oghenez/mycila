@@ -14,8 +14,6 @@ Mycila Testing Framework is composed of:
  * *mycila-testing-api*: The plugin API and test enhancer
  * *mycila-plugin-XXX*: The plugins. IE. mycila-plugin-jmock
 
-You can also use the *mycila-testing-all* jar, which contains the API and all plugins. If you use mycila-testing-all, you are responsible to put in your project the jars you need. They won't transitively come to your project.
-
 You can download or get the modules:
  * from the [http://code.google.com/p/mycila/downloads/list download section]
  * from our [http://code.google.com/p/mc-repo/ alternate maven repository]
