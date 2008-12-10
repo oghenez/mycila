@@ -9,7 +9,7 @@
     <parent>
         <groupId>com.mycila.testing</groupId>
         <artifactId>mycila-testing</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0-rc1</version>
     </parent>
 
     <artifactId>mycila-testing-all</artifactId>
@@ -94,31 +94,31 @@
                         <configuration>
                             <tasks>
                                 <jar update="true" file="${project.build.directory}/${project.build.finalName}.jar">
-                                    <zipfileset src="${basedir}/../mycila-testing-api/target/mycila-testing-api-${project.version}.jar"/>
-                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-guice/target/mycila-testing-guice-${project.version}.jar"/>
-                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-spring/target/mycila-testing-spring-${project.version}.jar"/>
-                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-jmock/target/mycila-testing-jmock-${project.version}.jar"/>
-                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-easymock/target/mycila-testing-easymock-${project.version}.jar"/>
-                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-mockito/target/mycila-testing-mockito-${project.version}.jar"/>
-                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-atunit/target/mycila-testing-atunit-${project.version}.jar"/>
+                                    <zipfileset src="${basedir}/../mycila-testing-api/target/mycila-testing-api-${project.version}.jar" />
+                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-guice/target/mycila-testing-guice-${project.version}.jar" />
+                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-spring/target/mycila-testing-spring-${project.version}.jar" />
+                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-jmock/target/mycila-testing-jmock-${project.version}.jar" />
+                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-easymock/target/mycila-testing-easymock-${project.version}.jar" />
+                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-mockito/target/mycila-testing-mockito-${project.version}.jar" />
+                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-atunit/target/mycila-testing-atunit-${project.version}.jar" />
                                 </jar>
                                 <jar update="true" file="${project.build.directory}/${project.build.finalName}-sources.jar">
-                                    <zipfileset src="${basedir}/../mycila-testing-api/target/mycila-testing-api-${project.version}-sources.jar"/>
-                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-guice/target/mycila-testing-guice-${project.version}-sources.jar"/>
-                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-spring/target/mycila-testing-spring-${project.version}-sources.jar"/>
-                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-jmock/target/mycila-testing-jmock-${project.version}-sources.jar"/>
-                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-easymock/target/mycila-testing-easymock-${project.version}-sources.jar"/>
-                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-mockito/target/mycila-testing-mockito-${project.version}-sources.jar"/>
-                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-atunit/target/mycila-testing-atunit-${project.version}-sources.jar"/>
+                                    <zipfileset src="${basedir}/../mycila-testing-api/target/mycila-testing-api-${project.version}-sources.jar" />
+                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-guice/target/mycila-testing-guice-${project.version}-sources.jar" />
+                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-spring/target/mycila-testing-spring-${project.version}-sources.jar" />
+                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-jmock/target/mycila-testing-jmock-${project.version}-sources.jar" />
+                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-easymock/target/mycila-testing-easymock-${project.version}-sources.jar" />
+                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-mockito/target/mycila-testing-mockito-${project.version}-sources.jar" />
+                                    <zipfileset src="${basedir}/../mycila-testing-plugins/mycila-testing-atunit/target/mycila-testing-atunit-${project.version}-sources.jar" />
                                 </jar>
-                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"/>
+                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" />
                                 <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
-                                    <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5.jar"/>
-                                    <zipfileset src="${project.build.directory}/dependency/mycila-plugin.jar"/>
-                                    <fileset dir="${basedir}/src/main/resources"/>
-                                    <rule pattern="org.jgrapht.**" result="com.mycila.testing.internal.org.jgrapht.@1"/>
-                                    <rule pattern="com.mycila.plugin.**" result="com.mycila.testing.internal.com.mycila.plugin.@1"/>
-                                    <keep pattern="com.mycila.testing.**"/>
+                                    <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5.jar" />
+                                    <zipfileset src="${project.build.directory}/dependency/mycila-plugin.jar" />
+                                    <fileset dir="${basedir}/src/main/resources" />
+                                    <rule pattern="org.jgrapht.**" result="com.mycila.testing.internal.org.jgrapht.@1" />
+                                    <rule pattern="com.mycila.plugin.**" result="com.mycila.testing.internal.com.mycila.plugin.@1" />
+                                    <keep pattern="com.mycila.testing.**" />
                                 </jarjar>
                             </tasks>
                         </configuration>
