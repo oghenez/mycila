@@ -1,0 +1,51 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+         POM settings
+     -->
+
+    <parent>
+        <groupId>com.mycila.testing.plugins</groupId>
+        <artifactId>mycila-testing-plugins</artifactId>
+        <version>1.0-rc1</version>
+    </parent>
+
+    <artifactId>mycila-testing-guice</artifactId>
+    <packaging>jar</packaging>
+
+    <name>mycila-testing-guice</name>
+    <description>Guice plugin</description>
+    <url>http://old.mycila.com/p/mycila/mycila-testing/plugins/mycila-testing-guice/</url>
+
+    <!--
+        Distributions
+    -->
+
+    <distributionManagement>
+        <site>
+            <id>website</id>
+            <name>website</name>
+            <url>file://${basedir}/../../target/dist/site/mycila-testing/plugins/mycila-testing-guice/</url>
+        </site>
+    </distributionManagement>
+
+    <!--
+         LIBS
+    -->
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.guice</groupId>
+            <artifactId>guice</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+
+</project>
