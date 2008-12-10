@@ -109,7 +109,6 @@
     <modules>
         <module>mycila-testing-api</module>
         <module>mycila-testing-plugins</module>
-        <module>mycila-testing-all</module>
     </modules>
 
     <!--
