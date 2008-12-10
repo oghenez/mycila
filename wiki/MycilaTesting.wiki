@@ -23,19 +23,9 @@ You can download or get the modules:
 
 == Maven dependency ==
 
-To use the full jar with all plugins plus the API, just add this dependency (with of course the good version number your want):
+Just add these dependencies to your POM (the API and required dependencies comes transitively), with the plugins you want. See the Module page for a complete list of module.
 
-{{{
-<dependency>
-    <groupId>com.mycila.testing</groupId>
-    <artifactId>mycila-testing-all</artifactId>
-    <version>X.Y</version>
-</dependency>
-}}}
-
-`mycila-testing-all` contains also necessary dependencies (mycila-plugin and [http://www.jgrapht.org/ JGraphT] embedded with [http://code.google.com/p/jarjar/ JarJar])
-
-If you prefer to use only the plugins you want, i.e. Guice and JMock, just add these dependencies to your POM (the API and required dependencies comes transitively):
+*Example:*
 
 {{{
 <dependency>
