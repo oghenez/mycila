@@ -50,26 +50,25 @@ Just add these dependencies to your POM (the API and required dependencies comes
 Here is an example of a unit test using Mycila Testing Framework. In this sample, we use [http://code.google.com/p/google-guice/ Google Guice] and [http://code.google.com/p/mockito/ Mockito].
 
 {{{
+import com.google.inject.Inject;
 import com.mycila.testing.core.TestSetup;
-import org.apache.activemq.command.ActiveMQMapMessage;
-import org.apache.activemq.command.ActiveMQObjectMessage;
-import org.apache.activemq.command.ActiveMQTextMessage;
+import com.mycila.testing.plugin.guice.GuiceContext;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import javax.jms.JMSException;
-import java.io.Serializable;
+import java.util.UUID;
 
-/**
- * @author Mathieu Carbou (mathieu.carbou@gmail.com)
- */
-public final class MessageListenerDelegateTest {
+@GuiceContext(ClusterModule.class)
+public final class ClusterNodeListenerTest {
+
+    @Inject
+    ClusterFactory factory;
 
     @Mock
-    JMSMessageListener listener1;
+    ClusterNodeListener listener;
 
     @BeforeClass
     public void setup() {
@@ -77,19 +76,18 @@ public final class MessageListenerDelegateTest {
     }
 
     @Test
-    public void test_onMessage() throws JMSException {
-        MessageListenerDelegate delegate = new MessageListenerDelegate(null);
-
-        delegate.addListener(Serializable.class, listener1);
-
-        delegate.onMessage(new ActiveMQMapMessage());
-        delegate.onMessage(new ActiveMQTextMessage());
-        ActiveMQObjectMessage msg = new ActiveMQObjectMessage();
-        delegate.onMessage(msg);
-        msg.setObject(new Integer(5));
-        delegate.onMessage(msg);
-
-        verify(listener1, times(3)).onMessage(Mockito.<JMSMessageImpl>anyObject());
+    public void test_ClusterNodeListener() throws Exception {
+        ClusterState agent1 = factory.createClusterState("states");
+        agent1.addListener(listener);
+        ClusterState agent2 = factory.createClusterState("testatoo-states");
+        ClusterState agent3 = factory.createClusterState("testatoo-states");
+        Thread.sleep(4000);
+        agent2.close();
+        agent3.close();
+        Thread.sleep(4000);
+        agent1.close();
+        verify(listener, times(2)).onJoin(Mockito.<UUID[]>anyObject());
+        verify(listener, times(2)).onLeave(Mockito.<UUID[]>anyObject());
     }
 }
 }}}
