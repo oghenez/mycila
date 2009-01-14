@@ -47,7 +47,7 @@ public final class GuiceContextTest {
         TestSetup.setup(this);
         assertNotNull(service1);
         assertNotNull(service1Provider);
-        assertEquals(injector.getBindings().size(), 4);
+        assertEquals(injector.getBindings().size(), 5);
     }
 
     @Test
@@ -56,7 +56,7 @@ public final class GuiceContextTest {
         assertNull(instance.injector);
         TestSetup.setup(instance);
         assertNotNull(instance.injector);
-        assertEquals(instance.injector.getBindings().size(), 3);
+        assertEquals(instance.injector.getBindings().size(), 4);
     }
 
     @GuiceContext()

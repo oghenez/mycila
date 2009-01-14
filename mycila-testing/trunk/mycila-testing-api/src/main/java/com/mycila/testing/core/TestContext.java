@@ -41,8 +41,8 @@ final class TestContext implements Context {
         return pluginManager.getResolver();
     }
 
+    @SuppressWarnings({"unchecked"})
     public <T> T getAttribute(String name) {
-        //noinspection unchecked
         T att = (T) attributes.get(name);
         if (att == null) {
             throw new TestPluginException("Inexisting attribute: '%s'", name);
@@ -66,8 +66,9 @@ final class TestContext implements Context {
         attributes.put(name, value);
     }
 
-    public void removeAttribute(String name) {
-        attributes.remove(name);
+    @SuppressWarnings({"unchecked"})
+    public <T> T removeAttribute(String name) {
+        return (T) attributes.remove(name);
     }
 
     void execute() throws TestPluginException {

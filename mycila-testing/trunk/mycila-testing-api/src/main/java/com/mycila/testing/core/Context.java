@@ -32,7 +32,7 @@ public interface Context {
 
     boolean hasAttribute(String name);
 
-    void removeAttribute(String name);
+    <T> T removeAttribute(String name);
 
     Map<String, Object> getAttributes();
 

@@ -16,7 +16,15 @@
 
 package com.mycila.testing.plugin.guice;
 
-import com.google.inject.*;
+import com.google.inject.AbstractModule;
+import com.google.inject.Binder;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.Provider;
+import com.google.inject.Stage;
+import com.google.inject.TypeLiteral;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.binder.ScopedBindingBuilder;
@@ -36,9 +44,25 @@ import java.util.List;
  */
 public final class Guice1TestPlugin extends AbstractTestPlugin {
 
-    public void prepareTestInstance(Context context) {
+    public void prepareTestInstance(final Context context) {
+        context.setAttribute("guice.providers", new ArrayList<Provider<?>>());
         GuiceContext ctx = context.getTest().getTargetClass().getAnnotation(GuiceContext.class);
+
+        // create modules
         List<Module> modules = new ArrayList<Module>();
+        modules.add(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(ProviderSetup.class).toInstance(new ProviderSetup() {
+                    @Inject
+                    void inject(Injector injector) {
+                        for (Provider<?> provider : context.<List<Provider<?>>>removeAttribute("guice.providers")) {
+                            injector.injectMembers(provider);
+                        }
+                    }
+                });
+            }
+        });
         modules.addAll(contextualModules(ctx));
         modules.addAll(providedModules(context));
         modules.add(bindings(context));
@@ -46,8 +70,11 @@ public final class Guice1TestPlugin extends AbstractTestPlugin {
         if (context.getTest().getTarget() instanceof Module) {
             modules.add((Module) context.getTest().getTarget());
         }
+
+        // create injector
         Injector injector = Guice.createInjector(findStage(ctx), modules);
         context.setAttribute("com.google.inject.Injector", injector);
+
         injector.injectMembers(context.getTest().getTarget());
     }
 
@@ -55,8 +82,8 @@ public final class Guice1TestPlugin extends AbstractTestPlugin {
         return new Module() {
             public void configure(Binder binder) {
                 for (final Field field : context.getTest().getFieldsAnnotatedWith(Bind.class)) {
-                    Guice1TestPlugin.this.configure(binder, field.getGenericType(), field.getAnnotation(Bind.class), new Provider<Object>() {
-                        public Object get() {
+                    Guice1TestPlugin.this.configure(context, binder, field.getGenericType(), field.getAnnotation(Bind.class), new InjectedProvider<Object>() {
+                        public Object getInternal() {
                             return context.getTest().get(field);
                         }
                     });
@@ -70,8 +97,8 @@ public final class Guice1TestPlugin extends AbstractTestPlugin {
         return new Module() {
             public void configure(Binder binder) {
                 for (final Method method : context.getTest().getMethodsAnnotatedWith(Bind.class)) {
-                    Guice1TestPlugin.this.configure(binder, method.getGenericReturnType(), method.getAnnotation(Bind.class), new Provider<Object>() {
-                        public Object get() {
+                    Guice1TestPlugin.this.configure(context, binder, method.getGenericReturnType(), method.getAnnotation(Bind.class), new InjectedProvider<Object>() {
+                        public Object getInternal() {
                             return context.getTest().invoke(method);
                         }
                     });
@@ -82,15 +109,17 @@ public final class Guice1TestPlugin extends AbstractTestPlugin {
     }
 
     @SuppressWarnings({"unchecked"})
-    private <T> void configure(Binder binder, Type type, Bind annotation, Provider<T> provider) {
+    private <T> void configure(Context context, Binder binder, Type type, Bind annotation, InjectedProvider<T> provider) {
         AnnotatedBindingBuilder<T> builder1 = (AnnotatedBindingBuilder<T>) binder.bind(TypeLiteral.get(type));
         LinkedBindingBuilder<T> builder2 = annotation.annotatedBy().equals(NoAnnotation.class) ? builder1 : builder1.annotatedWith(annotation.annotatedBy());
         ScopedBindingBuilder builder3 = builder2.toProvider(provider);
         if (!annotation.scope().equals(NoAnnotation.class)) {
             builder3.in(annotation.scope());
         }
+        context.<List<InjectedProvider<T>>>getAttribute("guice.providers").add(provider);
     }
 
+    @SuppressWarnings({"unchecked"})
     private List<Module> providedModules(Context ctx) {
         List<Module> modules = new ArrayList<Module>();
         for (Method method : ctx.getTest().getMethodsOfTypeAnnotatedWith(Module.class, ModuleProvider.class)) {
@@ -100,7 +129,6 @@ public final class Guice1TestPlugin extends AbstractTestPlugin {
             modules.addAll(Arrays.asList((Module[]) ctx.getTest().invoke(method)));
         }
         for (Method method : ctx.getTest().getMethodsOfTypeAnnotatedWith(Iterable.class, ModuleProvider.class)) {
-            //noinspection unchecked
             for (Module module : (Iterable<Module>) ctx.getTest().invoke(method)) {
                 modules.add(module);
             }
@@ -125,4 +153,22 @@ public final class Guice1TestPlugin extends AbstractTestPlugin {
         }
         return modules;
     }
+
+    private static interface ProviderSetup {
+    }
+
+    private static abstract class InjectedProvider<T> implements Provider<T> {
+
+        @Inject
+        Injector injector;
+
+        public final T get() {
+            T t = getInternal();
+            injector.injectMembers(t);
+            return t;
+        }
+
+        protected abstract T getInternal();
+    }
+
 }
