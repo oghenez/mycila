@@ -72,7 +72,7 @@
         <url>http://code.google.com/p/mycila/issues/list</url>
     </issueManagement>
 
-    <ciManagement />
+    <ciManagement/>
 
     <mailingLists>
         <mailingList>
@@ -210,14 +210,14 @@
                     <execution>
                         <id>make-assembly</id>
                         <phase>package</phase>
+                        <goals>
+                            <goal>attached</goal>
+                        </goals>
                         <configuration>
                             <descriptors>
                                 <descriptor>${basedir}/etc/project.xml</descriptor>
                             </descriptors>
                         </configuration>
-                        <goals>
-                            <goal>attached</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -233,18 +233,6 @@
                 <configuration>
                     <tagBase>https://mycila.googlecode.com/svn/mycila-testing/tags</tagBase>
                 </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-repository-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>bundle-create</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>bundle-create</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <!-- documentation -->
             <plugin>
