@@ -221,7 +221,7 @@
                                 <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" />
                                 <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
                                     <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5-0.7.3.jar" />
-                                    <rule pattern="org.jgrapht.**" result="com.mycila.plugin.spi.internal.@1" />
+                                    <rule pattern="org.jgrapht.**" result="com.mycila.plugin.spi.internal.org.jgrapht.@1" />
                                     <keep pattern="com.mycila.plugin.**" />
                                 </jarjar>
                             </tasks>
