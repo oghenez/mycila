@@ -147,7 +147,7 @@ public final class BindMethodTest {
 }
 }}}
 
-*Example 4: *
+*Example 4: Getting newly created instances injected automatically *
 
 Inject in binded instances automatically. Suppose you want to create bindings: the only way is to provide direct instances through fields (like A and B) or methods (like C in the test below). 
 
