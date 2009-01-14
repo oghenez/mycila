@@ -1,0 +1,19 @@
+#summary Release notes
+#labels Featured
+
+Issues are logged at http://code.google.com/p/mycila/issues/list?can=1
+
+= Mycila Testing Framework =
+
+== 1.0 (2009-01-14) ==
+
+|| *ID* || *Description* ||
+|| - || added guice injection in binded instance ||
+|| - || fixed packaging ||
+
+== 1.0-rc1 (2008-12-09) ==
+
+|| *ID* || *Description* ||
+|| - || release candidate ||
+
+ 
