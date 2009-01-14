@@ -3,6 +3,8 @@
 
 Issues are logged at http://code.google.com/p/mycila/issues/list?can=1
 
+Relese notes for Mycila Plugin Framework and Mycila Testing Framework
+
 = Mycila Plugin Framework =
 
 == 1.4 (2009-01-13)  ==
