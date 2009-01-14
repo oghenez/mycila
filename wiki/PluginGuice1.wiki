@@ -160,6 +160,7 @@ bind(D.class).toInstance(new D(new C(new A())));
 and be forced to setup yourself dependencies, you can instead provide your dependencies as bindings with @Bind and they will be automatically added to the injector and their members injected.
 
 {{{
+// You can optionnaly specify some modules to be loaded, with a stage
 @GuiceContext(InjectInBeanTest.MyModule.class)
 public final class InjectInBeanTest {
 
