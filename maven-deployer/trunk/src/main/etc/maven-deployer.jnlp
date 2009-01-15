@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<jnlp spec="1.5+" codebase="http://mycila.googlecode.com/files/" href="maven-deployer.jnlp">
+<jnlp spec="1.5+" codebase="http://www.mycila.com/pub/maven-deployer" href="maven-deployer.jnlp">
     <information>
         <title>Maven Deployer UI</title>
         <vendor>Mycila.com</vendor>
@@ -8,7 +8,7 @@
         <offline-allowed/>
         <shortcut online="false">
             <desktop/>
-            <menu/>
+            <menu submenu="Mycila"/>
         </shortcut>
     </information>
     <security>
@@ -16,7 +16,7 @@
     </security>
     <resources>
         <j2se version="1.5+"/>
-        <jar href="maven-deployer-with-deps.jar"/>
+        <jar href="maven-deployer.jar"/>
     </resources>
     <application-desc main-class="com.mycila.maven.ui.MavenDeployer"/>
 </jnlp>
