@@ -30,7 +30,7 @@ public final class MockitoTestPlugin extends AbstractTestPlugin {
 
     @Override
     public List<String> getAfter() {
-        return Arrays.asList("spring", "guice1");
+        return Arrays.asList("spring", "guice1", "guice2");
     }
 
     public void prepareTestInstance(Context context) {
