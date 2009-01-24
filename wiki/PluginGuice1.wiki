@@ -5,7 +5,7 @@
 
 Guice integration enables you to automatically create the injector with the module and even with the bindings you provide.
 
-There is two version of Google Guice Plugin: one for Guice 1 and one for Guice 2. But the annotations works the same for both. Guice 2 supports new features such as binding overrides. So with Guice 2 you will be able to bind your mocks directly in the runtime modules even if a binding already exist.
+There is two version of Google Guice Plugin: one for Guice 1 and one for Guice 2. But the annotations works the same for both. [PluginGuice2 Guice 2 Plugin] supports new features such as binding overrides. So with Guice 2 you will be able to bind your mocks directly in the runtime modules even if a binding already exist.
 
 *Annotations*
 
