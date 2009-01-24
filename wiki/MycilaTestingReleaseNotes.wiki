@@ -5,7 +5,7 @@ Issues are logged at http://code.google.com/p/mycila/issues/list?can=1
 
 = Mycila Testing Framework =
 
-== 1.1 (2009-01-24) ==
+== 1.2 (2009-01-24) ==
 
 || *ID* || *Description* ||
 || - || added guice 2 plugin which supports binding overrids ||
