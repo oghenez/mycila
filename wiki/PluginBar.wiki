@@ -1,25 +1,24 @@
 #summary Plugin Sidebar
 
-*[MycilaTesting Home]*
+ * *[MycilaTesting Home]*
 
-*[MycilaTestingReleaseNotes Release notes]*
+ * *[MycilaTestingReleaseNotes Release notes]*
 
-*[ModuleList Module list]*
+ * *[ModuleList Module list]*
 
-*[TestingAPI Mycila Testing Usage]*
+ * *[TestingAPI Mycila Testing Usage]*
 
-*[PluginDevelopment How to Create Plugins]*
+ * *[PluginDevelopment How to Create Plugins]*
 
-*Plugins*
+ * *Plugins*
+  * [PluginJMock2 JMock Plugin]
+  * [PluginEasyMock2 EasyMock Plugin]
+  * [PluginMockito Mockito Plugin]
+  * [PluginGuice1 Google Guice Plugin]
+  * [PluginSpring Spring Framework Plugin]
+  * [PluginAtUnit AtUnit]
 
- * [PluginJMock2 JMock Plugin]
- * [PluginEasyMock2 EasyMock Plugin]
- * [PluginMockito Mockito Plugin]
- * [PluginGuice1 Google Guice Plugin]
- * [PluginSpring Spring Framework Plugin]
- * [PluginAtUnit AtUnit]
-
-*Coming soon*
- * [PluginDbUnit DbUnit Plugin]
- * Custom assertions, Extensions, ...
- * ...
+ * *Coming soon*
+  * [PluginDbUnit DbUnit Plugin]
+  * Custom assertions, Extensions, ...
+  * ...
