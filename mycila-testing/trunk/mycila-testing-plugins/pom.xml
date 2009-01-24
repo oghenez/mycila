@@ -36,6 +36,7 @@
         <module>mycila-testing-jmock</module>
         <module>mycila-testing-easymock</module>
         <module>mycila-testing-guice</module>
+        <module>mycila-testing-guice2</module>
         <module>mycila-testing-spring</module>
         <module>mycila-testing-mockito</module>
         <module>mycila-testing-atunit</module>
