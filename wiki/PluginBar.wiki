@@ -15,6 +15,7 @@
  * [PluginEasyMock2 EasyMock Plugin]
  * [PluginMockito Mockito Plugin]
  * [PluginGuice1 Google Guice Plugin]
+ * [PluginGuice2 Google Guice 2 Plugin]
  * [PluginSpring Spring Framework Plugin]
  * [PluginAtUnit AtUnit]
 
