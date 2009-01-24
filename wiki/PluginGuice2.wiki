@@ -3,4 +3,4 @@
 
 *Google Guice [http://code.google.com/p/google-guice/ official website]*
 
-The plugin works exaclty like the [PLuginGuice1 Guice 1 Plugin], but since it uses Guice 2, you can benefits of [http://code.google.com/p/google-guice/wiki/Changes20 all improvements] such as binding overrides. So with the Guice 2 Plugin you will be able to bind your mocks directly in the runtime modules even if a binding already exist.
+The plugin works exaclty like the [PluginGuice1 Guice 1 Plugin], but since it uses Guice 2, you can benefits of [http://code.google.com/p/google-guice/wiki/Changes20 all improvements] such as binding overrides. So with the Guice 2 Plugin you will be able to bind your mocks directly in the runtime modules even if a binding already exist.
