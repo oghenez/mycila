@@ -18,7 +18,7 @@
   * [PluginSpring Spring Framework Plugin]
   * [PluginAtUnit AtUnit]
 
-* *Coming soon*
-  * [PluginDbUnit DbUnit Plugin]
+ * *Coming soon*
+  * DbUnit Plugin
   * Custom assertions, Extensions, ...
   * ...
