@@ -16,7 +16,7 @@
 package com.mycila.testing.plugin.mockito;
 
 import com.mycila.testing.core.TestSetup;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mock;
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  */
 public class InjectTest extends TestBase {
 
-    @MockitoAnnotations.Mock
+    @Mock
     Service service;
 
     @BeforeClass

@@ -15,14 +15,14 @@
  */
 package com.mycila.testing.plugin.mockito;
 
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mock;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public abstract class TestBase {
 
-    @MockitoAnnotations.Mock
+    @Mock
     Service service;
 
 }
