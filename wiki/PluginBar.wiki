@@ -11,6 +11,7 @@
 *[PluginDevelopment How to Create Plugins]*
 
 *Plugins*
+
  * [PluginJMock2 JMock Plugin]
  * [PluginEasyMock2 EasyMock Plugin]
  * [PluginMockito Mockito Plugin]
@@ -20,6 +21,7 @@
  * [PluginAtUnit AtUnit]
 
 *Coming soon*
+ 
  * DbUnit Plugin
  * Custom assertions, Extensions, ...
  * ...
