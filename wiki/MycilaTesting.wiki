@@ -64,7 +64,7 @@ import org.testng.annotations.Test;
 import java.util.UUID;
 
 @GuiceContext(ClusterModule.class)
-public final class ClusterNodeListenerTest {
+public final class ClusterNodeListenerTest extends AbstractMycilaTestNGTest {
 
     @Inject
     ClusterFactory factory;
@@ -75,11 +75,6 @@ public final class ClusterNodeListenerTest {
     @Mock
     @Bind(scope = Singleton.class)
     ClusterService service;
-
-    @BeforeClass
-    public void setup() {
-        TestSetup.setup(this);
-    }
 
     @Test
     public void test_ClusterNodeListener() throws Exception {
@@ -92,8 +87,8 @@ public final class ClusterNodeListenerTest {
         agent3.close();
         Thread.sleep(4000);
         agent1.close();
-        verify(listener, times(2)).onJoin(Mockito.<UUID[]>anyObject());
-        verify(listener, times(2)).onLeave(Mockito.<UUID[]>anyObject());
+        verify(listener, times(2)).onJoin(any(UUID.class));
+        verify(listener, times(2)).onLeave(any(UUID.class));
     }
 }
 }}}
