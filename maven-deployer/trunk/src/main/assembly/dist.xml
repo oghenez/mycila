@@ -26,7 +26,7 @@
             <directory>target</directory>
             <outputDirectory>maven-deployer</outputDirectory>
             <includes>
-                <include>*with-deps.jar</include>
+                <include>*.jar</include>
             </includes>
         </fileSet>
         <fileSet>
