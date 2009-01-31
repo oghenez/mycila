@@ -14,4 +14,4 @@
 @REM limitations under the License.
 @REM
 @echo off
-start javaw -jar maven-deployer-with-deps.jar
+start javaw -jar maven-deployer.jar
