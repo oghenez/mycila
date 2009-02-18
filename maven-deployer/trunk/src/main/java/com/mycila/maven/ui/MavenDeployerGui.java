@@ -146,7 +146,7 @@ final class MavenDeployerGui {
         repositoryURL = new JTextField();
         repositoryURL.setEditable(true);
         repositoryURL.setFont(new Font(repositoryURL.getFont().getName(), Font.PLAIN, repositoryURL.getFont().getSize()));
-        repositoryURL.setToolTipText("URL where the artifact will be deployed.\nie ( file://C:\\m2-repo or scp://host.com/path/to/repo ) ");
+        repositoryURL.setToolTipText("URL where the artifact will be deployed.\nExample: file://C:\\m2-repo, scp://host.com/path/to/repo, dav:https://mycompany.com/repo ) ");
         gbc = new GridBagConstraints();
         gbc.gridx = 1;
         gbc.gridy = 5;

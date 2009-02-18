@@ -104,7 +104,7 @@
             <properties>
               <editable value="true"/>
               <font style="0"/>
-              <toolTipText value="URL where the artifact will be deployed.&#10;ie ( file://C:\m2-repo or scp://host.com/path/to/repo ) " noi18n="true"/>
+              <toolTipText value="URL where the artifact will be deployed.&#10;Example: file://C:\m2-repo, scp://host.com/path/to/repo, dav:https://mycompany.com/repo ) " noi18n="true"/>
             </properties>
           </component>
           <component id="a6208" class="javax.swing.JButton" binding="repositoryBrowser">
