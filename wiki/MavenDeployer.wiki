@@ -1,6 +1,6 @@
 #summary Maven Deployer GUI
 #labels Featured
 
-=== Maven Deployer UI: [http://mycila.googlecode.com/files/maven-deployer-dist.zip Download] - [http://www.mycila.com/pub/maven-deployer/maven-deployer.jnlp Java Web Start] ===
+=== Maven Deployer UI: [http://mycila.googlecode.com/files/maven-deployer-dist.zip Download] - [http://repo.mycila.com/pub/maven-deployer/maven-deployer.jnlp Java Web Start] ===
 
 [http://mycila.googlecode.com/files/maven-deployer.png]
