@@ -16,8 +16,8 @@
 
 package com.mycila.testing.plugin.spring;
 
-import com.mycila.testing.core.AbstractTestPlugin;
 import com.mycila.testing.core.Context;
+import com.mycila.testing.core.DefaultTestPlugin;
 import org.springframework.test.context.TestContext;
 
 import java.lang.reflect.Constructor;
@@ -26,7 +26,9 @@ import java.lang.reflect.Field;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class SpringTestPlugin extends AbstractTestPlugin {
+public final class SpringTestPlugin extends DefaultTestPlugin {
+
+    @Override
     public void prepareTestInstance(Context context) {
         try {
             final TestContextManager manager = new TestContextManager(context.getTest().getTargetClass());
