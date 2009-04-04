@@ -11,7 +11,13 @@ You have the choice of:
 
 *Junit 3*
 
-Junit 3 is not more supported. Mycila Testing rely heaviliy on JDK 5 features like annotations, thus you are advised to use Junit 4 with Mycila Testing.
+{{{
+public final class MyTest extends AbstractMycilaJunitTest {
+    public void test_something() {
+        // test something
+    }
+}
+}}}
 
 *Junit 4*
 
