@@ -44,7 +44,7 @@ public class TestSetup {
 
     public void prepare(Object testInstance) {
         TestContext context = new TestContext(pluginManager, testInstance);
-        context.execute();
+        context.prepare();
     }
 
     public static TestSetup get() {
