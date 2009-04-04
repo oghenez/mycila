@@ -20,10 +20,14 @@ import atunit.Mock;
 import atunit.NoUnitException;
 import atunit.TooManyUnitsException;
 import atunit.Unit;
-import atunit.core.*;
+import atunit.core.Container;
+import atunit.core.IncompatibleAnnotationException;
+import atunit.core.MockFramework;
+import atunit.core.NoContainer;
+import atunit.core.NoMockFramework;
 import atunit.lib.com.google.common.collect.Sets;
-import com.mycila.testing.core.AbstractTestPlugin;
 import com.mycila.testing.core.Context;
+import com.mycila.testing.core.DefaultTestPlugin;
 import com.mycila.testing.core.TestPluginException;
 
 import java.lang.annotation.Annotation;
@@ -35,7 +39,9 @@ import java.util.Set;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class AtUnitTestPlugin extends AbstractTestPlugin {
+public final class AtUnitTestPlugin extends DefaultTestPlugin {
+
+    @Override
     public void prepareTestInstance(Context context) {
 
         try {

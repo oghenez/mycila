@@ -16,24 +16,16 @@
 package com.mycila.testing;
 
 import com.mycila.testing.core.Context;
-import com.mycila.testing.core.TestPlugin;
-
-import java.util.List;
+import com.mycila.testing.core.DefaultTestPlugin;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class FailingPlugin implements TestPlugin {
+public class FailingPlugin extends DefaultTestPlugin {
 
+    @Override
     public void prepareTestInstance(Context context) {
         throw new IllegalArgumentException("my exception");
     }
-
-    public List<String> getBefore() {
-        return null;
-    }
-
-    public List<String> getAfter() {
-        return null;
-    }
+    
 }

@@ -39,11 +39,6 @@ public final class TestContextTest {
     }
 
     @Test
-    public void test_resolver() throws Exception {
-        assertEquals(test.getPluginResolver(), plugins.getResolver());
-    }
-
-    @Test
     public void test_attributes() throws Exception {
         assertFalse(test.getAttributes().containsKey("yo"));
         assertFalse(test.hasAttribute("yo"));

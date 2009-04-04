@@ -15,17 +15,33 @@
  */
 package com.mycila.testing.core;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
+ * Adapter implementation of a Test Plugin which does nothing.
+ * <strong>It is strongly adviced that plugins extends this class
+ * instead of implementing directly {@link com.mycila.testing.core.TestPlugin} interfaces</strong>,
+ * to avoid any code break when changing or enhancing the API.
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class AbstractTestPlugin implements TestPlugin {
+public class DefaultTestPlugin implements TestPlugin {
+    public void prepareTestInstance(Context context) throws TestPluginException{
+    }
+
     public List<String> getBefore() {
         return null;
     }
 
     public List<String> getAfter() {
         return null;
+    }
+
+    public boolean beforeTest(Context context, Method method) {
+        return true;
+    }
+
+    public void afterTest(Context context, Method method, Throwable throwable) {
     }
 }

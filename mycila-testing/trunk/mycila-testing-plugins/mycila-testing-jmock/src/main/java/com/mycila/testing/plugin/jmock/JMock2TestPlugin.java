@@ -16,8 +16,8 @@
 
 package com.mycila.testing.plugin.jmock;
 
-import com.mycila.testing.core.AbstractTestPlugin;
 import com.mycila.testing.core.Context;
+import com.mycila.testing.core.DefaultTestPlugin;
 import com.mycila.testing.core.TestPluginException;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -30,13 +30,14 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class JMock2TestPlugin extends AbstractTestPlugin {
+public final class JMock2TestPlugin extends DefaultTestPlugin {
 
     @Override
     public List<String> getAfter() {
         return Arrays.asList("spring", "guice1", "guice2");
     }
 
+    @Override
     public void prepareTestInstance(Context context) {
         Field[] mocks = context.getTest().getFieldsAnnotatedWith(Mock.class);
         Mockery mockery = findProvidedMockery(context);

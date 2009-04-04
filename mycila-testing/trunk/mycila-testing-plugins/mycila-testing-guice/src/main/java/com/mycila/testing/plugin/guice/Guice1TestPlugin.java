@@ -28,8 +28,8 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.binder.ScopedBindingBuilder;
-import com.mycila.testing.core.AbstractTestPlugin;
 import com.mycila.testing.core.Context;
+import com.mycila.testing.core.DefaultTestPlugin;
 import com.mycila.testing.core.TestPluginException;
 
 import java.lang.reflect.Field;
@@ -42,8 +42,9 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Guice1TestPlugin extends AbstractTestPlugin {
+public final class Guice1TestPlugin extends DefaultTestPlugin {
 
+    @Override
     public void prepareTestInstance(final Context context) {
         context.setAttribute("guice.providers", new ArrayList<Provider<?>>());
         GuiceContext ctx = context.getTest().getTargetClass().getAnnotation(GuiceContext.class);
