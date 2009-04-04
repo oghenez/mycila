@@ -56,7 +56,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>1.6</version>
+            <version>1.7</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.hamcrest</groupId>
