@@ -15,18 +15,30 @@
  */
 package com.mycila.testing.testng;
 
+import com.mycila.testing.core.TestHandler;
 import static com.mycila.testing.core.TestSetup.*;
 import org.testng.Assert;
+import org.testng.IHookCallBack;
+import org.testng.IHookable;
+import org.testng.ITestResult;
 import org.testng.annotations.BeforeClass;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class AbstractMycilaTestNGTest extends Assert {
+public abstract class AbstractMycilaTestNGTest extends Assert implements IHookable {
 
-    @BeforeClass
-    public void setupTest() {
-        setup(this);
+    private TestHandler testHandler;
+
+    @BeforeClass(alwaysRun = true)
+    protected void prepareTestInstance() {
+        testHandler = setup(this);
     }
-    
+
+    public void run(IHookCallBack callBack, ITestResult testResult) {
+        testHandler.beforeTest(testResult.getMethod().getMethod());
+        callBack.runTestMethod(testResult);
+        //noinspection ThrowableResultOfMethodCallIgnored
+        testHandler.afterTest(testResult.getMethod().getMethod(), testResult.getThrowable());
+    }
 }

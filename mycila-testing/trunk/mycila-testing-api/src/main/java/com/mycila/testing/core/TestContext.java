@@ -16,9 +16,9 @@
 package com.mycila.testing.core;
 
 import com.mycila.plugin.api.PluginBinding;
-import com.mycila.plugin.api.PluginResolver;
 import com.mycila.plugin.spi.PluginManager;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class TestContext implements Context {
+final class TestContext implements Context, TestHandler {
 
     private final TestInstance testInstance;
     private final Map<String, Object> attributes = new HashMap<String, Object>();
@@ -35,10 +35,6 @@ final class TestContext implements Context {
     TestContext(PluginManager<TestPlugin> pluginManager, Object testInstance) {
         this.testInstance = new TestInstance(testInstance);
         this.pluginManager = pluginManager;
-    }
-
-    public PluginResolver<TestPlugin> getPluginResolver() {
-        return pluginManager.getResolver();
     }
 
     @SuppressWarnings({"unchecked"})
@@ -72,14 +68,40 @@ final class TestContext implements Context {
     }
 
     void prepare() throws TestPluginException {
-        ContextHolder.set(this);
-        for (PluginBinding<TestPlugin> binding : getPluginResolver().getResolvedPlugins()) {
-            try {
-                binding.getPlugin().prepareTestInstance(this);
-            } catch (Exception e) {
-                throw new TestPluginException(e, "An error occured while executing plugin '%s': %s", binding.getName(), e.getMessage());
+        try {
+            ContextHolder.set(this);
+            for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
+                try {
+                    binding.getPlugin().prepareTestInstance(this);
+                } catch (Exception e) {
+                    throw new TestPluginException(e, "An error occured while executing 'prepareTestInstance' on plugin '%s': %s", binding.getName(), e.getMessage());
+                }
             }
+        } finally {
+            ContextHolder.unset();
         }
-        ContextHolder.unset();
     }
+
+    public void beforeTest(Method method) {
+        try {
+            ContextHolder.set(this);
+            for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
+                binding.getPlugin().beforeTest(this, method);
+            }
+        } finally {
+            ContextHolder.unset();
+        }
+    }
+
+    public void afterTest(Method method, Throwable throwable) {
+        try {
+            ContextHolder.set(this);
+            for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
+                binding.getPlugin().afterTest(this, method, throwable);
+            }
+        } finally {
+            ContextHolder.unset();
+        }
+    }
+
 }
