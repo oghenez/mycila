@@ -42,9 +42,10 @@ public class TestSetup {
         return pluginManager;
     }
 
-    public void prepare(Object testInstance) {
+    public TestHandler prepare(Object testInstance) throws TestPluginException {
         TestContext context = new TestContext(pluginManager, testInstance);
         context.prepare();
+        return context;
     }
 
     public static TestSetup get() {
@@ -54,7 +55,7 @@ public class TestSetup {
         return testSetup;
     }
 
-    public static void setup(Object testInstance) {
-        get().prepare(testInstance);
+    public static TestHandler setup(Object testInstance) {
+        return get().prepare(testInstance);
     }
 }
