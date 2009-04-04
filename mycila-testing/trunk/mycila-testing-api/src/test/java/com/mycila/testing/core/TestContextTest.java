@@ -68,13 +68,13 @@ public final class TestContextTest {
     @Test(expectedExceptions = TestPluginException.class)
     public void test_execute_exception() throws Exception {
         plugins.getCache().registerPlugin("failing", new FailingPlugin());
-        test.execute();
+        test.prepare();
     }
 
     @Test
     public void test_execute() throws Exception {
         assertFalse(MyPlugin.executed);
-        test.execute();
+        test.prepare();
         assertTrue(MyPlugin.executed);
     }
     

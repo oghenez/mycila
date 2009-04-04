@@ -71,7 +71,7 @@ final class TestContext implements Context {
         return (T) attributes.remove(name);
     }
 
-    void execute() throws TestPluginException {
+    void prepare() throws TestPluginException {
         ContextHolder.set(this);
         for (PluginBinding<TestPlugin> binding : getPluginResolver().getResolvedPlugins()) {
             try {
