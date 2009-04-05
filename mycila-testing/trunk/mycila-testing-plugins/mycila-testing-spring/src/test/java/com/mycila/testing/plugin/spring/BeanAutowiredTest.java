@@ -42,7 +42,7 @@ public final class BeanAutowiredTest {
 
     @Test
     public void test_bind() {
-        TestSetup.setup(this);
+        TestSetup.staticDefaultSetup().prepare(this);
         assertEquals(injector.getBean("abean"), "helloa");
         assertEquals(injector.getBean("bbean"), "hellob");
         assertEquals(injector.getBean("myBean").toString(), "toto");

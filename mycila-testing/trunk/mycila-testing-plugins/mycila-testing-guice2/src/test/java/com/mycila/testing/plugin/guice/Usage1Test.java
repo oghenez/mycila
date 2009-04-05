@@ -34,7 +34,7 @@ public final class Usage1Test {
 
     @BeforeClass
     public void setup() {
-        TestSetup.setup(this);
+        TestSetup.staticDefaultSetup().prepare(this);
     }
 
     @Test

@@ -16,13 +16,14 @@
 
 package com.mycila.testing.junit;
 
-import static com.mycila.testing.core.TestSetup.*;
+import com.mycila.testing.core.TestSetup;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
+//TODO: FORE BEFORE AND AFTER  - see how spring does it
 public class MycilaJunitRunner extends BlockJUnit4ClassRunner {
     public MycilaJunitRunner(Class<?> klass) throws InitializationError {
         super(klass);
@@ -31,7 +32,7 @@ public class MycilaJunitRunner extends BlockJUnit4ClassRunner {
     @Override
     protected Object createTest() throws Exception {
         Object test = super.createTest();
-        setup(test);
+        TestSetup.staticDefaultSetup().prepare(test);
         return test;
     }
 }

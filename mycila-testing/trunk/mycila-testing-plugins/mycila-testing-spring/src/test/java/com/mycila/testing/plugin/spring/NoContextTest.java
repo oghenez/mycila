@@ -32,7 +32,7 @@ public final class NoContextTest {
     @Test
     public void test_setup() {
         assertNull(beanFactory);
-        TestSetup.setup(this);
+        TestSetup.staticDefaultSetup().prepare(this);
         assertNotNull(beanFactory);
         assertFalse(beanFactory.containsBean("myBean"));
     }

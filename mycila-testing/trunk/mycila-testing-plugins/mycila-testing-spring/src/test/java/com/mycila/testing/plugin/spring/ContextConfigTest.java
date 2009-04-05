@@ -56,7 +56,7 @@ public final class ContextConfigTest {
         assertNull(b);
         assertNull(beanFactory);
         assertNull(testContext);
-        TestSetup.setup(this);
+        TestSetup.staticDefaultSetup().prepare(this);
         assertNotNull(a);
         assertNotNull(b);
         assertNotNull(testContext);

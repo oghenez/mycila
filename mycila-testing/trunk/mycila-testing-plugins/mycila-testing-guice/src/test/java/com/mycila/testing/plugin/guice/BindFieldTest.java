@@ -47,7 +47,7 @@ public final class BindFieldTest {
 
     @Test
     public void test_bind() {
-        TestSetup.setup(this);
+        TestSetup.staticDefaultSetup().prepare(this);
         assertEquals(injector.getInstance(Key.get(String.class)), "helloa");
         assertEquals(injector.getInstance(Key.get(String.class, Named.class)), "hellob");
         b = "changedb";

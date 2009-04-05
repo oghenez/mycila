@@ -38,7 +38,7 @@ public final class BeanFieldTest {
 
     @Test
     public void test_bind() {
-        TestSetup.setup(this);
+        TestSetup.staticDefaultSetup().prepare(this);
         assertEquals(injector.getBean("abean"), "helloa");
         assertEquals(injector.getBean("bbean"), "hellob");
         a = "changeda";

@@ -31,7 +31,7 @@ public class InjectTest extends TestBase {
 
     @BeforeClass
     public void setup() {
-        TestSetup.setup(this);
+        TestSetup.staticDefaultSetup().prepare(this);
     }
 
     @Test

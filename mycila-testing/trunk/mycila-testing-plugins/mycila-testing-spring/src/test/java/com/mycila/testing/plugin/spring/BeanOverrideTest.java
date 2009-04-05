@@ -39,7 +39,7 @@ public final class BeanOverrideTest {
 
     @Test
     public void test_bind() {
-        TestSetup.setup(this);
+        TestSetup.staticDefaultSetup().prepare(this);
         assertEquals(injector.getBean("myBean1").toString(), "toto");
         assertEquals(injector.getBean("myBean2").toString(), "tata");
     }

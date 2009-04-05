@@ -135,7 +135,7 @@ public final class TestInstanceTest {
     @Test
     public void test_getMethodsAnnotatedWith() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getMethodsAnnotatedWith(Test.class).length, 21);
+        assertEquals(ti.getMethodsAnnotatedWith(Test.class).length, 23);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)

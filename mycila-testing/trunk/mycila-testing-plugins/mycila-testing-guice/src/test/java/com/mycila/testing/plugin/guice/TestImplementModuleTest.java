@@ -43,7 +43,7 @@ public final class TestImplementModuleTest extends AbstractModule {
     public void test_setup() {
         assertNull(service1);
         assertNull(service2);
-        TestSetup.setup(this);
+        TestSetup.staticDefaultSetup().prepare(this);
         assertNotNull(service1);
         assertNotNull(service2);
         assertEquals(service2.go(), "impl");
