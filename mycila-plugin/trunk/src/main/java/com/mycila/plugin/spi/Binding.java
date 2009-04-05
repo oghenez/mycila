@@ -22,7 +22,7 @@ import com.mycila.plugin.api.PluginBinding;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class Binding<T extends Plugin> implements PluginBinding<T> {
+final class Binding<T extends Plugin> implements PluginBinding<T>, Comparable<PluginBinding<T>> {
 
     private final String name;
     private T plugin;

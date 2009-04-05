@@ -17,7 +17,7 @@
 package com.mycila.plugin.api;
 
 import java.util.Collection;
-import java.util.SortedSet;
+import java.util.Set;
 
 /**
  * The PluginLoader is responsible of loading all plugins found. Default implementation is from the filesystem, but is could be
@@ -35,7 +35,7 @@ public interface PluginLoader<T extends Plugin> {
      * @throws PluginCreationException  If a plugin cannot be created (i.e. bad plugin class)
      * @throws PluginIOException        If errors occured while IO operations
      */
-    SortedSet<PluginBinding<T>> loadPlugins();
+    Set<PluginBinding<T>> loadPlugins();
 
     /**
      * Set which plugin names should not be loaded

@@ -16,7 +16,12 @@
 
 package com.mycila.plugin.spi;
 
-import com.mycila.plugin.api.*;
+import com.mycila.plugin.api.CyclicDependencyException;
+import com.mycila.plugin.api.InexistingPluginException;
+import com.mycila.plugin.api.Plugin;
+import com.mycila.plugin.api.PluginBinding;
+import com.mycila.plugin.api.PluginCache;
+import com.mycila.plugin.api.PluginResolver;
 import static com.mycila.plugin.spi.PluginUtils.*;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.CycleDetector;
@@ -24,7 +29,17 @@ import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -50,12 +65,12 @@ final class DefaultPluginResolver<T extends Plugin> implements PluginResolver<T>
     }
 
     public boolean contains(String name) {
-        return getPlugins().contains(new Binding<T>(name));
+        return cache.contains(name);
     }
 
     public SortedMap<String, SortedSet<String>> getMissingDependenciesByPlugin() {
         SortedMap<String, SortedSet<String>> allMiss = new TreeMap<String, SortedSet<String>>();
-        SortedSet<PluginBinding<T>> plugins = getPlugins();
+        Collection<PluginBinding<T>> plugins = cache.getBindings().values();
         Set<String> loadedPlugins = new HashSet<String>(plugins.size());
         for (PluginBinding<T> plugin : plugins) {
             loadedPlugins.add(plugin.getName());
@@ -105,7 +120,7 @@ final class DefaultPluginResolver<T extends Plugin> implements PluginResolver<T>
     public List<String> getResolvedPluginsName() {
         SortedSet<String> missingPlugins = getMissingDependencies();
         DirectedGraph<String, DefaultEdge> graph = new DefaultDirectedWeightedGraph<String, DefaultEdge>(DefaultEdge.class);
-        for (PluginBinding<T> binding : getPlugins()) {
+        for (PluginBinding<T> binding : cache.getBindings().values()) {
             graph.addVertex(binding.getName());
             if (binding.getPlugin().getBefore() != null) {
                 for (String before : binding.getPlugin().getBefore()) {
