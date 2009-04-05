@@ -15,7 +15,7 @@
  */
 package com.mycila.testing.plugin.spring;
 
-import com.mycila.testing.core.TestSetup;
+import com.mycila.testing.core.MycilaTesting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import static org.testng.Assert.*;
@@ -32,7 +32,7 @@ public final class NoContextTest {
     @Test
     public void test_setup() {
         assertNull(beanFactory);
-        TestSetup.staticDefaultSetup().prepare(this);
+        MycilaTesting.from(getClass()).handle(this).prepare();
         assertNotNull(beanFactory);
         assertFalse(beanFactory.containsBean("myBean"));
     }

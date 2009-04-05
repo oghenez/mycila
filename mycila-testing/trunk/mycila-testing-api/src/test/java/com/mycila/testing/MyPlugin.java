@@ -27,10 +27,10 @@ public class MyPlugin extends DefaultTestPlugin {
     @TestInstanceTest.Annot
     private Integer field3;
 
-    public static boolean executed = false;
+    public static boolean prepared = false;
 
     @Override
     public void prepareTestInstance(Context context) {
-        executed = true;
+        prepared = true;
     }
 }

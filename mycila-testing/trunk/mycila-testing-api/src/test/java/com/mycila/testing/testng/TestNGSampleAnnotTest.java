@@ -13,21 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.testing.junit;
+package com.mycila.testing.testng;
 
-import com.mycila.testing.core.TestSetup;
-import junit.framework.TestCase;
+import com.mycila.testing.MyPlugin;
+import com.mycila.testing.core.Cache;
+import com.mycila.testing.core.MycilaPlugins;
+import org.testng.annotations.Test;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-//TODO: FORE BEFORE AND AFTER  - see how spring does it
-public abstract class AbstractMycilaJunitTest extends TestCase {
+@MycilaPlugins(cache = Cache.PER_TEST, descriptor = "/plugins.properties")
+public final class TestNGSampleAnnotTest extends AbstractMycilaTestNGTest {
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        TestSetup.staticDefaultSetup().prepare(this);
+    static {
+        assertFalse(MyPlugin.prepared);
     }
-    
+
+    @Test
+    public void dummy_test() {
+        assertTrue(MyPlugin.prepared);
+        MyPlugin.prepared = false;
+    }
+
 }

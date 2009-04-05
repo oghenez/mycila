@@ -27,7 +27,7 @@ import java.util.List;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public class DefaultTestPlugin implements TestPlugin {
-    public void prepareTestInstance(Context context) throws TestPluginException{
+    public void prepareTestInstance(Context context) throws Exception {
     }
 
     public List<String> getBefore() {
@@ -38,10 +38,13 @@ public class DefaultTestPlugin implements TestPlugin {
         return null;
     }
 
-    public boolean beforeTest(Context context, Method method) {
+    public boolean beforeTest(Context context, Method method) throws Exception {
         return true;
     }
 
-    public void afterTest(Context context, Method method, Throwable throwable) {
+    public void afterTest(Context context, Method method, Throwable throwable) throws Exception {
+    }
+
+    public void afterClass(Context context) throws Exception {
     }
 }

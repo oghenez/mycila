@@ -18,7 +18,6 @@ package com.mycila.testing.plugin.jmock;
 
 import com.mycila.testing.core.Context;
 import com.mycila.testing.core.DefaultTestPlugin;
-import com.mycila.testing.core.TestPluginException;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 
@@ -69,7 +68,7 @@ public final class JMock2TestPlugin extends DefaultTestPlugin {
                 if (o != null && o instanceof Mockery) {
                     return (Mockery) o;
                 }
-                throw new TestPluginException("Method '%s' annotated with @MockContextProvider did not returned a valid Mockery object: %s", methods[0], o);
+                throw new IllegalArgumentException(String.format("Method '%s' annotated with @MockContextProvider did not returned a valid Mockery object: %s", methods[0], o));
             }
         }
         {
@@ -79,7 +78,7 @@ public final class JMock2TestPlugin extends DefaultTestPlugin {
                 if (o != null && o instanceof Mockery) {
                     return (Mockery) o;
                 }
-                throw new TestPluginException("Field '%s' annotated with @MockContextProvider does not have a valid Mockery object: %s", fields[0], o);
+                throw new IllegalArgumentException(String.format("Field '%s' annotated with @MockContextProvider does not have a valid Mockery object: %s", fields[0], o));
             }
         }
         return null;

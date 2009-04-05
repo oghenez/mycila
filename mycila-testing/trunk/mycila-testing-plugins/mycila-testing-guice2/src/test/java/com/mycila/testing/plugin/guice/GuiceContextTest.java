@@ -19,7 +19,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
-import com.mycila.testing.core.TestSetup;
+import com.mycila.testing.core.MycilaTesting;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
@@ -44,7 +44,7 @@ public final class GuiceContextTest {
     public void test_setup() {
         assertNull(service1);
         assertNull(service1Provider);
-        TestSetup.staticDefaultSetup().prepare(this);
+        MycilaTesting.from(getClass()).handle(this).prepare();
         assertNotNull(service1);
         assertNotNull(service1Provider);
         assertEquals(injector.getBindings().size(), 5);
@@ -54,7 +54,7 @@ public final class GuiceContextTest {
     public void test_no_modules() {
         AClass instance = new AClass();
         assertNull(instance.injector);
-        TestSetup.staticDefaultSetup().prepare(instance);
+        MycilaTesting.from(getClass()).handle(instance).prepare();
         assertNotNull(instance.injector);
         assertEquals(instance.injector.getBindings().size(), 4);
     }

@@ -35,9 +35,9 @@ public interface TestPlugin extends Plugin {
      * all tests begin to be executed.
      *
      * @param context The test context, relative to one test instance
-     * @throws TestPluginException If anything wrong occurs during initalization, plugins should throw this exception
+     * @throws Exception If anything wrong occurs in plugin execution. Exception will be catched by the testing API.
      */
-    void prepareTestInstance(Context context) throws TestPluginException;
+    void prepareTestInstance(Context context) throws Exception;
 
     /**
      * This method will be called on each plugin in order of dependency to execute code required before a test method can run.
@@ -46,8 +46,9 @@ public interface TestPlugin extends Plugin {
      * @param method  The method that is going to be executed
      * @return A flag indicating wheter the test method will be executed or not. By default, majority of plugins would return true.
      *         But this flag could be used in situations where you would like to skip some tests
+     * @throws Exception If anything wrong occurs in plugin execution. Exception will be catched by the testing API.
      */
-    boolean beforeTest(Context context, Method method);
+    boolean beforeTest(Context context, Method method) throws Exception;
 
     /**
      * This method will be called on each plugin in order of dependency after each test method has finished, even if the method failed.
@@ -55,6 +56,15 @@ public interface TestPlugin extends Plugin {
      * @param context   The context of this test
      * @param method    The method that has been executed
      * @param throwable If the test failed, the exception is passed to the method. If the test succeed, the throwable will be null.
+     * @throws Exception If anything wrong occurs in plugin execution. Exception will be catched by the testing API.
      */
-    void afterTest(Context context, Method method, Throwable throwable);
+    void afterTest(Context context, Method method, Throwable throwable) throws Exception;
+
+    /**
+     * This method will be called on each plugin in order of dependency after all test method of a test instance have finished.
+     *
+     * @param context The context of this test
+     * @throws Exception If anything wrong occurs in plugin execution. Exception will be catched by the testing API.
+     */
+    void afterClass(Context context) throws Exception;
 }

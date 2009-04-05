@@ -16,7 +16,6 @@
 package com.mycila.testing.junit;
 
 import com.mycila.testing.MyPlugin;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -25,13 +24,13 @@ import org.junit.Test;
 public final class Junit4SampleTest extends AbstractMycilaJunit4Test {
 
     static {
-        assertFalse(MyPlugin.executed);
+        assertFalse(MyPlugin.prepared);
     }
 
     @Test
     public void dummy_test() {
-        assertTrue(MyPlugin.executed);
-        MyPlugin.executed = false;
+        assertTrue(MyPlugin.prepared);
+        MyPlugin.prepared = false;
     }
 
 }

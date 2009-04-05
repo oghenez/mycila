@@ -15,7 +15,7 @@
  */
 package com.mycila.testing.plugin.spring;
 
-import com.mycila.testing.core.TestSetup;
+import com.mycila.testing.core.MycilaTesting;
 import static com.mycila.testing.plugin.spring.Bean.Scope.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -39,7 +39,7 @@ public final class BeanOverrideTest {
 
     @Test
     public void test_bind() {
-        TestSetup.staticDefaultSetup().prepare(this);
+        MycilaTesting.from(getClass()).handle(this).prepare();
         assertEquals(injector.getBean("myBean1").toString(), "toto");
         assertEquals(injector.getBean("myBean2").toString(), "tata");
     }

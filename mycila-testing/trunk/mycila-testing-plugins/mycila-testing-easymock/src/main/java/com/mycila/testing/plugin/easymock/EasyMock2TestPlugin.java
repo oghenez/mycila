@@ -18,7 +18,6 @@ package com.mycila.testing.plugin.easymock;
 
 import com.mycila.testing.core.Context;
 import com.mycila.testing.core.DefaultTestPlugin;
-import com.mycila.testing.core.TestPluginException;
 import org.easymock.classextension.EasyMock;
 
 import java.lang.reflect.Field;
@@ -53,6 +52,6 @@ public final class EasyMock2TestPlugin extends DefaultTestPlugin {
             case STRICT:
                 return EasyMock.createStrictMock(name, field.getType());
         }
-        throw new TestPluginException("Invalid mock type for field '%s': %s", field, field.getAnnotation(Mock.class).value());
+        throw new IllegalStateException(String.format("Invalid mock type for field '%s': %s", field, field.getAnnotation(Mock.class).value()));
     }
 }

@@ -15,7 +15,7 @@
  */
 package com.mycila.testing.plugin.easymock;
 
-import com.mycila.testing.core.TestSetup;
+import com.mycila.testing.core.MycilaTesting;
 import static org.easymock.classextension.EasyMock.*;
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeClass;
@@ -37,7 +37,7 @@ public final class Usage1Test {
 
     @BeforeClass
     public void setup() {
-        TestSetup.staticDefaultSetup().prepare(this);
+        MycilaTesting.from(getClass()).handle(this).prepare();
     }
 
     @Test

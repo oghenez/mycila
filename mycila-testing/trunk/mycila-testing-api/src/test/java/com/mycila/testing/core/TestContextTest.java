@@ -35,7 +35,7 @@ public final class TestContextTest {
         plugins = new PluginManager<TestPlugin>(TestPlugin.class);
         plugins.getCache().registerPlugin("myPlugin", new MyPlugin());
         test = new TestContext(plugins, this);
-        MyPlugin.executed = false;
+        MyPlugin.prepared = false;
     }
 
     @Test
@@ -68,9 +68,9 @@ public final class TestContextTest {
 
     @Test
     public void test_execute() throws Exception {
-        assertFalse(MyPlugin.executed);
+        assertFalse(MyPlugin.prepared);
         test.prepare();
-        assertTrue(MyPlugin.executed);
+        assertTrue(MyPlugin.prepared);
     }
     
 }

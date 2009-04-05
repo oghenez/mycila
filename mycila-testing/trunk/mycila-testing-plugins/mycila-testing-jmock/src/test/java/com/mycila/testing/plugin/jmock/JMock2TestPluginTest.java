@@ -17,7 +17,6 @@ package com.mycila.testing.plugin.jmock;
 
 import com.mycila.testing.core.Context;
 import com.mycila.testing.core.TestInstance;
-import com.mycila.testing.core.TestPluginException;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import static org.testng.Assert.*;
@@ -132,7 +131,7 @@ public final class JMock2TestPluginTest {
         assertNotNull(test.get());
     }
 
-    @Test(expectedExceptions = TestPluginException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_provider_field_null() throws Exception {
         final ProviderTest test = new ProviderTest() {
             @MockContextProvider
@@ -146,7 +145,7 @@ public final class JMock2TestPluginTest {
         plugin.prepareTestInstance(ctx);
     }
 
-    @Test(expectedExceptions = TestPluginException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_provider_field_type_bad() throws Exception {
         final ProviderTest test = new ProviderTest() {
             @MockContextProvider
@@ -178,7 +177,7 @@ public final class JMock2TestPluginTest {
         assertNotNull(test.get());
     }
 
-    @Test(expectedExceptions = TestPluginException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_provider_method_null() throws Exception {
         final ProviderTest test = new ProviderTest() {
             @MockContextProvider
@@ -194,7 +193,7 @@ public final class JMock2TestPluginTest {
         plugin.prepareTestInstance(ctx);
     }
 
-    @Test(expectedExceptions = TestPluginException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_provider_method_bad() throws Exception {
         final ProviderTest test = new ProviderTest() {
             @MockContextProvider

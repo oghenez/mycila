@@ -24,42 +24,31 @@ import java.util.Map;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class TestSetup {
+public final class MycilaTesting {
 
     public static final String DEFAULT_PLUGIN_DESCRIPTOR = "META-INF/mycila/testing/plugins.properties";
-    private static final Map<String, TestSetup> instances = new HashMap<String, TestSetup>();
-    private static TestSetup customTestSetup;
+
+    private static final Map<String, MycilaTesting> instances = new HashMap<String, MycilaTesting>();
+    private static MycilaTesting customTestHandler;
+
     private final PluginManager<TestPlugin> pluginManager;
 
-    private TestSetup() {
+    private MycilaTesting() {
         pluginManager = new PluginManager<TestPlugin>(TestPlugin.class);
     }
 
 
-    private TestSetup(String descriptor) {
+    private MycilaTesting(String descriptor) {
         pluginManager = new PluginManager<TestPlugin>(TestPlugin.class, descriptor);
     }
 
-    /**
-     * Get the plugin manager used by this test setup instance.
-     *
-     * @return {@link com.mycila.plugin.spi.PluginManager} instance
-     */
+
     public PluginManager<TestPlugin> pluginManager() {
         return pluginManager;
     }
 
-    /**
-     * Prepare a test
-     *
-     * @param testInstance The test instance to prepare
-     * @return A Test handler that can be used to fire test events such as before and after text executions
-     * @throws TestPluginException If the test preparation by plugins fail
-     */
-    public TestHandler prepare(Object testInstance) throws TestPluginException {
-        TestContext context = new TestContext(pluginManager, testInstance);
-        context.prepare();
-        return context;
+    public TestHandler handle(Object testInstance) {
+        return new TestContext(pluginManager, testInstance);
     }
 
     /**
@@ -68,7 +57,7 @@ public final class TestSetup {
      * @return a TestSetup instance which can be used to prepare a test with plugins.
      *         This instance is registered statically to avoid reloading plugins each time
      */
-    public static TestSetup staticDefaultSetup() {
+    public static MycilaTesting staticDefaultSetup() {
         return staticSetup(DEFAULT_PLUGIN_DESCRIPTOR);
     }
 
@@ -77,7 +66,7 @@ public final class TestSetup {
      *
      * @return a TestSetup instance which can be used to prepare a test with plugins
      */
-    public static TestSetup newDefaultSetup() {
+    public static MycilaTesting newDefaultSetup() {
         return newSetup(DEFAULT_PLUGIN_DESCRIPTOR);
     }
 
@@ -90,8 +79,8 @@ public final class TestSetup {
      * @return a TestSetup instance which can be used to prepare a test with plugins.
      *         This instance is registered statically to avoid reloading plugins each time
      */
-    public static TestSetup staticSetup(String pluginDescriptor) {
-        TestSetup testSetup = instances.get(pluginDescriptor);
+    public static MycilaTesting staticSetup(String pluginDescriptor) {
+        MycilaTesting testSetup = instances.get(pluginDescriptor);
         if (testSetup == null) {
             testSetup = newSetup(pluginDescriptor);
             instances.put(pluginDescriptor, testSetup);
@@ -107,8 +96,8 @@ public final class TestSetup {
      *                         {@link #DEFAULT_PLUGIN_DESCRIPTOR}
      * @return a TestSetup instance which can be used to prepare a test with plugins
      */
-    public static TestSetup newSetup(String pluginDescriptor) {
-        return new TestSetup(pluginDescriptor);
+    public static MycilaTesting newSetup(String pluginDescriptor) {
+        return new MycilaTesting(pluginDescriptor);
     }
 
     /**
@@ -118,11 +107,11 @@ public final class TestSetup {
      * @return a TestSetup instance which can be used to prepare a test with plugins.
      *         This instance is registered statically to avoid reloading and recreating plugins each time.
      */
-    public static TestSetup staticCustomSetup() {
-        if (customTestSetup == null) {
-            customTestSetup = newCustomSetup();
+    public static MycilaTesting staticCustomSetup() {
+        if (customTestHandler == null) {
+            customTestHandler = newCustomSetup();
         }
-        return customTestSetup;
+        return customTestHandler;
     }
 
     /**
@@ -131,8 +120,39 @@ public final class TestSetup {
      *
      * @return a TestSetup instance which can be used to prepare a test with plugins
      */
-    public static TestSetup newCustomSetup() {
-        return new TestSetup();
+    public static MycilaTesting newCustomSetup() {
+        return new MycilaTesting();
+    }
+
+    /**
+     * Get a MycilaTesting instance using the strategy defined for this class potentially annotated by
+     * {@link com.mycila.testing.core.MycilaPlugins}.
+     *
+     * @param c test class
+     * @return a TestSetup instance which can be used to prepare a test with plugins
+     */
+    public static MycilaTesting from(Class<?> c) {
+        return from(c == null ? null : c.getAnnotation(MycilaPlugins.class));
+    }
+
+    /**
+     * Get a MycilaTesting instance using the strategy defined in the provided annotation.
+     *
+     * @param mycilaPlugins the annotation
+     * @return a TestSetup instance which can be used to prepare a test with plugins
+     */
+    public static MycilaTesting from(MycilaPlugins mycilaPlugins) {
+        if(mycilaPlugins == null) {
+            return staticDefaultSetup();
+        }
+        boolean descBlank = mycilaPlugins.descriptor() == null || mycilaPlugins.descriptor().trim().length() == 0;
+        switch (mycilaPlugins.cache()) {
+            case SHARED:
+                return descBlank ? staticCustomSetup() : staticSetup(mycilaPlugins.descriptor());
+            case PER_TEST:
+                return descBlank ? newCustomSetup() : newSetup(mycilaPlugins.descriptor());
+        }
+        throw new AssertionError("Use case not defined for value of enum Cache: " + mycilaPlugins.cache());
     }
 
 }

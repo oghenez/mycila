@@ -15,18 +15,13 @@
  */
 package com.mycila.testing.junit;
 
-import com.mycila.testing.core.TestSetup;
-import org.junit.BeforeClass;
+import org.junit.Assert;
+import org.junit.runner.RunWith;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-//TODO: FORE BEFORE AND AFTER - see how spring does it
-public abstract class AbstractMycilaJunit4Test {
-
-    @BeforeClass
-    protected void setupTest() {
-        TestSetup.newDefaultSetup().prepare(this);
-    }
-
+@RunWith(MycilaJunit4Runner.class)
+public abstract class AbstractMycilaJunit4Test extends Assert {
+    
 }

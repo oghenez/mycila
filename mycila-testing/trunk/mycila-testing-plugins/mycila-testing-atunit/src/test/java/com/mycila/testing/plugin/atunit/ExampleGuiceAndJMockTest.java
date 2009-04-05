@@ -25,7 +25,7 @@ import atunit.example.subjects.Logger;
 import atunit.example.subjects.User;
 import atunit.example.subjects.UserDao;
 import com.google.inject.Inject;
-import com.mycila.testing.core.TestSetup;
+import com.mycila.testing.core.MycilaTesting;
 import com.mycila.testing.plugin.atunit.container.GuiceContainer;
 import com.mycila.testing.plugin.atunit.mocker.JMockFramework;
 import org.jmock.Expectations;
@@ -57,7 +57,7 @@ public class ExampleGuiceAndJMockTest {
 
     @BeforeClass
     public void setup() {
-        TestSetup.staticDefaultSetup().prepare(this);
+        MycilaTesting.from(getClass()).handle(this).prepare();
     }
     
     @Test

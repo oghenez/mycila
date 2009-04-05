@@ -16,7 +16,7 @@
 package com.mycila.testing.testng;
 
 import com.mycila.testing.MyPlugin;
-import com.mycila.testing.core.TestSetup;
+import com.mycila.testing.core.MycilaTesting;
 import org.testng.annotations.Test;
 
 /**
@@ -25,15 +25,15 @@ import org.testng.annotations.Test;
 public final class TestNGSampleTest extends AbstractMycilaTestNGTest {
 
     static {
-        assertFalse(MyPlugin.executed);
+        assertFalse(MyPlugin.prepared);
     }
 
     @Test
     public void dummy_test() {
-        assertTrue(MyPlugin.executed);
-        MyPlugin.executed = false;
+        assertTrue(MyPlugin.prepared);
+        MyPlugin.prepared = false;
 
-        assertTrue(TestSetup.newDefaultSetup().pluginManager().getResolver().contains("myplugin"));
+        assertTrue(MycilaTesting.newDefaultSetup().pluginManager().getResolver().contains("myplugin"));
     }
 
 }
