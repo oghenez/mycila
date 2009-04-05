@@ -40,6 +40,7 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
 
     public void clear() {
         plugins.clear();
+        loaded = false;
     }
 
     public void registerPlugin(String name, T plugin) {
@@ -62,10 +63,14 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
     }
 
     public boolean contains(String pluginName) {
-        return plugins.contains(pluginName);
+        return bindings().containsKey(pluginName);
     }
 
     public Map<String, PluginBinding<T>> getBindings() {
+        return Collections.unmodifiableMap(bindings());
+    }
+
+    private Map<String, PluginBinding<T>> bindings() {
         if (!loaded) {
             synchronized (this) {
                 if (!loaded) {
@@ -76,6 +81,6 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
                 }
             }
         }
-        return Collections.unmodifiableMap(plugins);
+        return plugins;
     }
 }
