@@ -23,27 +23,23 @@ import com.mycila.plugin.api.PluginLoader;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
 
-    final SortedMap<String, PluginBinding<T>> plugins = new TreeMap<String, PluginBinding<T>>();
+    final ConcurrentHashMap<String, PluginBinding<T>> plugins = new ConcurrentHashMap<String, PluginBinding<T>>();
     final PluginLoader<T> loader;
-    boolean loaded;
+    volatile boolean loaded;
 
     DefaultPluginCache(PluginLoader<T> loader) {
         this.loader = loader;
     }
 
     public void clear() {
-        synchronized (plugins) {
-            plugins.clear();
-            loaded = false;
-        }
+        plugins.clear();
     }
 
     public void registerPlugin(String name, T plugin) {
@@ -65,9 +61,13 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
         }
     }
 
-    public SortedMap<String, PluginBinding<T>> getBindings() {
+    public boolean contains(String pluginName) {
+        return plugins.contains(pluginName);
+    }
+
+    public Map<String, PluginBinding<T>> getBindings() {
         if (!loaded) {
-            synchronized (plugins) {
+            synchronized (this) {
                 if (!loaded) {
                     for (PluginBinding<T> binding : loader.loadPlugins()) {
                         plugins.put(binding.getName(), binding);
@@ -76,6 +76,6 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
                 }
             }
         }
-        return Collections.unmodifiableSortedMap(plugins);
+        return Collections.unmodifiableMap(plugins);
     }
 }

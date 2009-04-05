@@ -17,7 +17,6 @@
 package com.mycila.plugin.api;
 
 import java.util.Map;
-import java.util.SortedMap;
 
 /**
  * The PluginCache is responsible of caching all plugins loaded and add / modify them at runtime.
@@ -27,12 +26,14 @@ import java.util.SortedMap;
  */
 public interface PluginCache<T extends Plugin> {
 
+    boolean contains(String pluginName);
+
     /**
      * Load the plugins if not done and returns an unmodifiable map of plugins sorted by their names
      *
      * @return The plugins as an unmodifiable map
      */
-    SortedMap<String, PluginBinding<T>> getBindings();
+    Map<String, PluginBinding<T>> getBindings();
 
     /**
      * Clear the plugin cache, forcing a reload at next getPlugins() call

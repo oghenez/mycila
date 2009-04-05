@@ -16,15 +16,27 @@
 
 package com.mycila.plugin.spi;
 
-import com.mycila.plugin.api.*;
+import com.mycila.plugin.api.DuplicatePluginException;
+import com.mycila.plugin.api.Plugin;
+import com.mycila.plugin.api.PluginBinding;
+import com.mycila.plugin.api.PluginCreationException;
+import com.mycila.plugin.api.PluginIOException;
+import com.mycila.plugin.api.PluginLoader;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import static java.util.Arrays.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
 import static java.util.Collections.*;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -36,17 +48,17 @@ final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
     Set<String> exclusions = Collections.emptySet();
     ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
+    DefaultPluginLoader(Class<T> pluginsType) {
+        this(pluginsType, "^%&:;-.`~!@#"); // just to be sure a resource with this name does not exist ;)
+    }
+
     DefaultPluginLoader(Class<T> pluginsType, String descriptor) {
         this.pluginsType = pluginsType;
         this.descriptor = descriptor.startsWith("/") ? descriptor.substring(1) : descriptor;
     }
 
-    DefaultPluginLoader(Class<T> pluginsType) {
-        this(pluginsType, "^%&:;-.`~!@#"); // just to be sure a resource with this name does not exist ;)
-    }
-
-    public SortedSet<PluginBinding<T>> loadPlugins() {
-        SortedSet<PluginBinding<T>> plugins = new TreeSet<PluginBinding<T>>();
+    public Set<PluginBinding<T>> loadPlugins() {
+        Set<PluginBinding<T>> plugins = new HashSet<PluginBinding<T>>();
         Enumeration<URL> configs = loadDescriptors();
         while (configs.hasMoreElements()) {
             URL descriptor = configs.nextElement();
@@ -61,7 +73,7 @@ final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
                 }
             }
         }
-        return Collections.unmodifiableSortedSet(plugins);
+        return Collections.unmodifiableSet(plugins);
     }
 
     Enumeration<URL> loadDescriptors() {
@@ -103,7 +115,7 @@ final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
             if (is != null) {
                 try {
                     is.close();
-                } catch (IOException e) {
+                } catch (IOException ignored) {
                 }
             }
         }
