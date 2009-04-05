@@ -16,11 +16,19 @@
 package com.mycila.testing.core;
 
 /**
+ * Holds the current test context. The context holder contains the current test instance used for each call to
+ * plugin methods for preparing instance, before and after test execution.<p/>
+ * <p/>
+ * You can safely use in your plugin this class to get from anywhere the current test {@link com.mycila.testing.core.Context}
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class ContextHolder {
+public final class ContextHolder {
 
     private static final ThreadLocal<Context> ctx = new InheritableThreadLocal<Context>();
+
+    private ContextHolder() {
+    }
 
     static void set(Context c) {
         ctx.set(c);
@@ -30,6 +38,9 @@ public abstract class ContextHolder {
         ctx.remove();
     }
 
+    /**
+     * @return The test context
+     */
     public static Context get() {
         Context c = ctx.get();
         if (c == null) {
