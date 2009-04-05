@@ -23,6 +23,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Method;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -103,6 +104,26 @@ public final class TestInstanceTest {
     public void test_getMethodsOfType() throws Exception {
         TestInstance ti = new TestInstance(this);
         assertEquals(ti.getMethodsOfType(int.class).length, 2); // also Object.hashCode()
+    }
+
+    @Test
+    public void test_getMethodsOfType2() throws Exception {
+        TestInstance ti = new TestInstance(this);
+        Method[] m = ti.getMethodsOfType(String.class);
+        for (Method method : m) {
+            System.out.println("- " + method.getName());
+        }
+        assertEquals(m.length, 2);
+    }
+
+    @Test
+    public void test_getMethodsOfType3() throws Exception {
+        TestInstance ti = new TestInstance(this);
+        Method[] m = ti.getMethodsOfType(CharSequence.class);
+        for (Method method : m) {
+            System.out.println("- " + method.getName());
+        }
+        assertEquals(m.length, 2);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
