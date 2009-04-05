@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Handles a test instance
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class TestInstance {
@@ -35,10 +37,16 @@ public final class TestInstance {
         this.instance = instance;
     }
 
+    /**
+     * @return The test instance
+     */
     public Object getTarget() {
         return instance;
     }
 
+    /**
+     * @return The test instance's class
+     */
     public Class<?> getTargetClass() {
         return instance.getClass();
     }
@@ -123,7 +131,7 @@ public final class TestInstance {
         Class<?> c = getTargetClass();
         do {
             for (Method method : c.getDeclaredMethods()) {
-                if (method.getReturnType().isAssignableFrom(type)) {
+                if (type.isAssignableFrom(method.getReturnType())) {
                     methods.add(accessible(method));
                 }
             }
@@ -162,6 +170,13 @@ public final class TestInstance {
         return a;
     }
 
+    /**
+     * Returns all methods annotated with the given annotation and returning the given type
+     *
+     * @param type  Type of method's return
+     * @param annot Annotation on methods
+     * @return A list of all methods annotated with the annotation, even non visible ones.
+     */
     public Method[] getMethodsOfTypeAnnotatedWith(Class<?> type, Class<? extends Annotation> annot) {
         notNull(type, "Return type cannot be null");
         notNull(annot, "Annotation cannot be null");
@@ -169,7 +184,7 @@ public final class TestInstance {
         Class<?> c = getTargetClass();
         do {
             for (Method method : c.getDeclaredMethods()) {
-                if (method.getReturnType().isAssignableFrom(type) && method.isAnnotationPresent(annot)) {
+                if (type.isAssignableFrom(method.getReturnType()) && method.isAnnotationPresent(annot)) {
                     methods.add(accessible(method));
                 }
             }
