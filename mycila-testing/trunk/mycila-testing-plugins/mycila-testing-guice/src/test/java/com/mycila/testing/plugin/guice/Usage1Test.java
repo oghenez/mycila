@@ -17,7 +17,7 @@ package com.mycila.testing.plugin.guice;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import com.mycila.testing.core.TestSetup;
+import com.mycila.testing.core.MycilaTesting;
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -34,7 +34,7 @@ public final class Usage1Test {
 
     @BeforeClass
     public void setup() {
-        TestSetup.staticDefaultSetup().prepare(this);
+        MycilaTesting.from(getClass()).handle(this).prepare();
     }
 
     @Test

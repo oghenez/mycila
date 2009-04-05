@@ -15,7 +15,7 @@
  */
 package com.mycila.testing.plugin.mockito;
 
-import com.mycila.testing.core.TestSetup;
+import com.mycila.testing.core.MycilaTesting;
 import org.mockito.Mock;
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeClass;
@@ -31,7 +31,7 @@ public class InjectTest extends TestBase {
 
     @BeforeClass
     public void setup() {
-        TestSetup.staticDefaultSetup().prepare(this);
+        MycilaTesting.from(getClass()).handle(this).prepare();
     }
 
     @Test

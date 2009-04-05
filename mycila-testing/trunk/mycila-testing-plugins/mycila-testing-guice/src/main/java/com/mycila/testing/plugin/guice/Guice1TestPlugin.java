@@ -30,7 +30,6 @@ import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.binder.ScopedBindingBuilder;
 import com.mycila.testing.core.Context;
 import com.mycila.testing.core.DefaultTestPlugin;
-import com.mycila.testing.core.TestPluginException;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -148,7 +147,7 @@ public final class Guice1TestPlugin extends DefaultTestPlugin {
                 try {
                     modules.add(moduleClass.newInstance());
                 } catch (Exception e) {
-                    throw new TestPluginException(e, "Error instanciating module class '%s': %s", moduleClass.getName(), e.getMessage());
+                    throw new IllegalStateException(String.format("Error instanciating module class '%s': %s", moduleClass.getName(), e.getMessage()), e);
                 }
             }
         }

@@ -20,7 +20,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Module;
-import com.mycila.testing.core.TestSetup;
+import com.mycila.testing.core.MycilaTesting;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
@@ -37,7 +37,7 @@ public final class ModuleProviderTest {
 
     @Test
     public void test_setup() {
-        TestSetup.staticDefaultSetup().prepare(this);
+        MycilaTesting.from(getClass()).handle(this).prepare();
         assertNotNull(injector.getBinding(Key.get(String.class)));
         assertNotNull(injector.getBinding(Key.get(int.class)));
         assertNotNull(injector.getBinding(Key.get(float.class)));

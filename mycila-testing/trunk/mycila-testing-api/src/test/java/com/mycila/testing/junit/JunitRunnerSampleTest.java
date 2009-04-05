@@ -23,17 +23,17 @@ import org.junit.runner.RunWith;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@RunWith(MycilaJunitRunner.class)
+@RunWith(MycilaJunit4Runner.class)
 public final class JunitRunnerSampleTest {
 
     static {
-        assertFalse(MyPlugin.executed);
+        assertFalse(MyPlugin.prepared);
     }
 
     @Test
     public void dummy_test() {
-        assertTrue(MyPlugin.executed);
-        MyPlugin.executed = false;
+        assertTrue(MyPlugin.prepared);
+        MyPlugin.prepared = false;
     }
 
 }

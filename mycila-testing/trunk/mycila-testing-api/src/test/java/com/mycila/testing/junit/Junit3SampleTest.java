@@ -13,26 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mycila.testing.junit;
 
-import com.mycila.testing.core.TestSetup;
-import org.junit.runners.BlockJUnit4ClassRunner;
-import org.junit.runners.model.InitializationError;
+import com.mycila.testing.MyPlugin;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-//TODO: FORE BEFORE AND AFTER  - see how spring does it
-public class MycilaJunitRunner extends BlockJUnit4ClassRunner {
-    public MycilaJunitRunner(Class<?> klass) throws InitializationError {
-        super(klass);
+public final class Junit3SampleTest extends AbstractMycilaJunit3Test {
+
+    static {
+        assertFalse(MyPlugin.prepared);
     }
 
-    @Override
-    protected Object createTest() throws Exception {
-        Object test = super.createTest();
-        TestSetup.staticDefaultSetup().prepare(test);
-        return test;
+    public void test_dummy_test() {
+        assertTrue(MyPlugin.prepared);
+        MyPlugin.prepared = false;
     }
+
 }

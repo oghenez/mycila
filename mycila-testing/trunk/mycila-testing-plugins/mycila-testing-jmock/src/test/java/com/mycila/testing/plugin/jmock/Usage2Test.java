@@ -15,7 +15,7 @@
  */
 package com.mycila.testing.plugin.jmock;
 
-import com.mycila.testing.core.TestSetup;
+import com.mycila.testing.core.MycilaTesting;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.lib.LastWordNamingScheme;
@@ -37,7 +37,7 @@ public final class Usage2Test {
 
     @BeforeClass
     public void setup() {
-        TestSetup.staticDefaultSetup().prepare(this);
+        MycilaTesting.from(getClass()).handle(this).prepare();
     }
 
     @Test

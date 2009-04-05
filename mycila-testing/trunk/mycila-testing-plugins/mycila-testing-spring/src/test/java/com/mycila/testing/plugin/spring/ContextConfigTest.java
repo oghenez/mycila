@@ -15,7 +15,7 @@
  */
 package com.mycila.testing.plugin.spring;
 
-import com.mycila.testing.core.TestSetup;
+import com.mycila.testing.core.MycilaTesting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
@@ -56,7 +56,7 @@ public final class ContextConfigTest {
         assertNull(b);
         assertNull(beanFactory);
         assertNull(testContext);
-        TestSetup.staticDefaultSetup().prepare(this);
+        MycilaTesting.from(getClass()).handle(this).prepare();
         assertNotNull(a);
         assertNotNull(b);
         assertNotNull(testContext);

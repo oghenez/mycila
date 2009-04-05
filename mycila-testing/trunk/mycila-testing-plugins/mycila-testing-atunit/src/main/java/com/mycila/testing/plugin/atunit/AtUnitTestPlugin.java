@@ -28,7 +28,6 @@ import atunit.core.NoMockFramework;
 import atunit.lib.com.google.common.collect.Sets;
 import com.mycila.testing.core.Context;
 import com.mycila.testing.core.DefaultTestPlugin;
-import com.mycila.testing.core.TestPluginException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -71,7 +70,7 @@ public final class AtUnitTestPlugin extends DefaultTestPlugin {
                 }
             }
         } catch (Exception e) {
-            throw new TestPluginException("AtUnit configuration error: " + e.getMessage(), e);
+            throw new RuntimeException("AtUnit configuration error: " + e.getMessage(), e);
         }
     }
 

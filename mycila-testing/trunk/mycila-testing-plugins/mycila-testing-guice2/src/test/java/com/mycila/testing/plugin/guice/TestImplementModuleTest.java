@@ -18,7 +18,7 @@ package com.mycila.testing.plugin.guice;
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import com.mycila.testing.core.TestSetup;
+import com.mycila.testing.core.MycilaTesting;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
@@ -43,7 +43,7 @@ public final class TestImplementModuleTest extends AbstractModule {
     public void test_setup() {
         assertNull(service1);
         assertNull(service2);
-        TestSetup.staticDefaultSetup().prepare(this);
+        MycilaTesting.from(getClass()).handle(this).prepare();
         assertNotNull(service1);
         assertNotNull(service2);
         assertEquals(service2.go(), "impl");

@@ -25,7 +25,7 @@ import atunit.example.subjects.User;
 import atunit.example.subjects.UserDao;
 import atunit.example.subjects.UserManagerImpl;
 import atunit.spring.Bean;
-import com.mycila.testing.core.TestSetup;
+import com.mycila.testing.core.MycilaTesting;
 import com.mycila.testing.plugin.atunit.container.SpringContainer;
 import com.mycila.testing.plugin.atunit.mocker.EasyMockFramework;
 import static org.easymock.EasyMock.*;
@@ -56,7 +56,7 @@ public class ExampleSpringEasyMockTest {
 
     @BeforeClass
     public void setup() {
-        TestSetup.staticDefaultSetup().prepare(this);
+        MycilaTesting.from(getClass()).handle(this).prepare();
     }
     
     @Test

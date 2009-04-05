@@ -21,6 +21,35 @@ import java.lang.reflect.Method;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface TestHandler {
-    void beforeTest(Method method);
-    void afterTest(Method method, Throwable throwable);
+    /**
+     * Ask for a test preparation
+     *
+     * @throws TestPluginException If a plugin failed enhancing the test instance
+     */
+    void prepare() throws TestPluginException;
+
+    /**
+     * Fires a before test exection event to all plugins
+     *
+     * @param method Test method that will be executed
+     * @return True of the execution should be done, false otherwise. The decision is taken by the plugins
+     * @throws TestPluginException If a plugin failed in its execution
+     */
+    boolean beforeTest(Method method) throws TestPluginException;
+
+    /**
+     * Must be fired after the execution of a test method, even if the test method was skipped because if a return of false of the beforeTest method.
+     *
+     * @param method    Method that has been executed
+     * @param throwable Exception that this mehod thrown, null if none.
+     * @throws TestPluginException If a plugin failed in its execution
+     */
+    void afterTest(Method method, Throwable throwable) throws TestPluginException;
+
+    /**
+     * Fires an event telling plugins that all tests of this class have ended
+     *
+     * @throws TestPluginException If a plugin failed in its execution
+     */
+    void end() throws TestPluginException;
 }

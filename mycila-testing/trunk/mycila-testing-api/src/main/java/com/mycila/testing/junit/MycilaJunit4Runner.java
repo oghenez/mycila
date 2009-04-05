@@ -13,22 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.mycila.testing.junit;
 
-import com.mycila.testing.MyPlugin;
+import com.mycila.testing.core.MycilaTesting;
+import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.InitializationError;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class JunitSampleTest extends AbstractMycilaJunitTest {
+//TODO: IMPLEMENT
+public class MycilaJunit4Runner extends BlockJUnit4ClassRunner {
 
-    static {
-        assertFalse(MyPlugin.executed);
+
+    
+    public MycilaJunit4Runner(Class<?> klass) throws InitializationError {
+        super(klass);
     }
 
-    public void test_dummy_test() {
-        assertTrue(MyPlugin.executed);
-        MyPlugin.executed = false;
+    @Override
+    protected Object createTest() throws Exception {
+        Object test = super.createTest();
+        MycilaTesting.from(getClass()).handle(test);
+        return test;
     }
-
 }
