@@ -50,7 +50,7 @@ public final class InjectInBeanTest {
 
     @BeforeClass
     public void setup() {
-        TestSetup.setup(this);
+        TestSetup.staticDefaultSetup().prepare(this);
     }
 
     @Test

@@ -33,7 +33,7 @@ public final class TestNGSampleTest extends AbstractMycilaTestNGTest {
         assertTrue(MyPlugin.executed);
         MyPlugin.executed = false;
 
-        assertTrue(TestSetup.get().pluginManager().getResolver().contains("myplugin"));
+        assertTrue(TestSetup.newDefaultSetup().pluginManager().getResolver().contains("myplugin"));
     }
 
 }

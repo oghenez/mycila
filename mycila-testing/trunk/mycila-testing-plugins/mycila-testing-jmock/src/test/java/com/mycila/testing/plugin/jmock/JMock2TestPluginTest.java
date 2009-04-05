@@ -51,7 +51,7 @@ public final class JMock2TestPluginTest {
         mockery.checking(new Expectations() {{
             allowing(ctx).getTest();
             will(returnValue(new TestInstance(JMock2TestPluginTest.this)));
-            one(ctx).setAttribute(with("org.jmock.Mockery"), with(any(Mockery.class)));
+            one(ctx).setAttribute(with(JMock2TestPlugin.CTX_MOCKERY), with(any(Mockery.class)));
         }});
         Mockery current = mockery;
         plugin.prepareTestInstance(ctx);
@@ -64,7 +64,7 @@ public final class JMock2TestPluginTest {
         mockery.checking(new Expectations() {{
             allowing(ctx).getTest();
             will(returnValue(new TestInstance(test)));
-            one(ctx).setAttribute(with("org.jmock.Mockery"), with(any(Mockery.class)));
+            one(ctx).setAttribute(with(JMock2TestPlugin.CTX_MOCKERY), with(any(Mockery.class)));
         }});
         assertNotNull(test.mockery1);
         assertNull(test.mockery2);

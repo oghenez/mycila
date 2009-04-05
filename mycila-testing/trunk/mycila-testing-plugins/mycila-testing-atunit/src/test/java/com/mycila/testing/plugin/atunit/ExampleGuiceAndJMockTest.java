@@ -15,7 +15,11 @@
  */
 package com.mycila.testing.plugin.atunit;
 
-import atunit.*;
+import atunit.ContainerClass;
+import atunit.Mock;
+import atunit.MockFrameworkClass;
+import atunit.Stub;
+import atunit.Unit;
 import atunit.example.subjects.GuiceUserManager;
 import atunit.example.subjects.Logger;
 import atunit.example.subjects.User;
@@ -53,7 +57,7 @@ public class ExampleGuiceAndJMockTest {
 
     @BeforeClass
     public void setup() {
-        TestSetup.setup(this);
+        TestSetup.staticDefaultSetup().prepare(this);
     }
     
     @Test

@@ -44,7 +44,7 @@ public final class GuiceContextTest {
     public void test_setup() {
         assertNull(service1);
         assertNull(service1Provider);
-        TestSetup.setup(this);
+        TestSetup.staticDefaultSetup().prepare(this);
         assertNotNull(service1);
         assertNotNull(service1Provider);
         assertEquals(injector.getBindings().size(), 5);
@@ -54,7 +54,7 @@ public final class GuiceContextTest {
     public void test_no_modules() {
         AClass instance = new AClass();
         assertNull(instance.injector);
-        TestSetup.setup(instance);
+        TestSetup.staticDefaultSetup().prepare(instance);
         assertNotNull(instance.injector);
         assertEquals(instance.injector.getBindings().size(), 4);
     }

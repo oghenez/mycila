@@ -15,16 +15,16 @@
  */
 package com.mycila.testing.plugin.jmock;
 
-import com.mycila.testing.core.TestSetup;
+import javax.swing.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 class Test3 {
     @Mock
-    private TestSetup ti;
+    private JButton ti;
 
-    public TestSetup getTi3() {
+    public JButton getTi3() {
         return ti;
     }
 }

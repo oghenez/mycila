@@ -16,7 +16,7 @@
 package com.mycila.testing.testng;
 
 import com.mycila.testing.core.TestHandler;
-import static com.mycila.testing.core.TestSetup.*;
+import com.mycila.testing.core.TestSetup;
 import org.testng.Assert;
 import org.testng.IHookCallBack;
 import org.testng.IHookable;
@@ -32,7 +32,7 @@ public abstract class AbstractMycilaTestNGTest extends Assert implements IHookab
 
     @BeforeClass(alwaysRun = true)
     protected void prepareTestInstance() {
-        testHandler = setup(this);
+        testHandler = TestSetup.staticDefaultSetup().prepare(this);
     }
 
     public void run(IHookCallBack callBack, ITestResult testResult) {

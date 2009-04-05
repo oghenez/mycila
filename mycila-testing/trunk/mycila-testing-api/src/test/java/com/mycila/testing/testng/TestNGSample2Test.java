@@ -32,7 +32,7 @@ public final class TestNGSample2Test {
 
     @BeforeClass
     public void setup() {
-        TestSetup.setup(this);
+        TestSetup.staticDefaultSetup().prepare(this);
     }
 
     @Test

@@ -58,7 +58,7 @@ public final class BindMethodTest {
 
     @Test
     public void test_bind() {
-        TestSetup.setup(this);
+        TestSetup.staticDefaultSetup().prepare(this);
         assertEquals(injector.getInstance(String.class), "helloa");
         assertEquals(injector.getInstance(Key.get(String.class, Named.class)), "hellob");
         b = "changedb";

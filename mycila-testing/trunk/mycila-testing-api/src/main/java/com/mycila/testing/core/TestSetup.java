@@ -18,44 +18,121 @@ package com.mycila.testing.core;
 
 import com.mycila.plugin.spi.PluginManager;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class TestSetup {
+public final class TestSetup {
 
-    public static String DEFAULT_PLUGIN_DESCRIPTOR = "META-INF/mycila/testing/plugins.properties";
-    protected static TestSetup testSetup;
-
+    public static final String DEFAULT_PLUGIN_DESCRIPTOR = "META-INF/mycila/testing/plugins.properties";
+    private static final Map<String, TestSetup> instances = new HashMap<String, TestSetup>();
+    private static TestSetup customTestSetup;
     private final PluginManager<TestPlugin> pluginManager;
 
-    public TestSetup() {
-        testSetup = this;
+    private TestSetup() {
         pluginManager = new PluginManager<TestPlugin>(TestPlugin.class);
     }
 
-    public TestSetup(String descriptor) {
-        testSetup = this;
+
+    private TestSetup(String descriptor) {
         pluginManager = new PluginManager<TestPlugin>(TestPlugin.class, descriptor);
     }
 
+    /**
+     * Get the plugin manager used by this test setup instance.
+     *
+     * @return {@link com.mycila.plugin.spi.PluginManager} instance
+     */
     public PluginManager<TestPlugin> pluginManager() {
         return pluginManager;
     }
 
+    /**
+     * Prepare a test
+     *
+     * @param testInstance The test instance to prepare
+     * @return A Test handler that can be used to fire test events such as before and after text executions
+     * @throws TestPluginException If the test preparation by plugins fail
+     */
     public TestHandler prepare(Object testInstance) throws TestPluginException {
         TestContext context = new TestContext(pluginManager, testInstance);
         context.prepare();
         return context;
     }
 
-    public static TestSetup get() {
+    /**
+     * Get a static TestSetup with the default plugin descriptor which is {@link #DEFAULT_PLUGIN_DESCRIPTOR}
+     *
+     * @return a TestSetup instance which can be used to prepare a test with plugins.
+     *         This instance is registered statically to avoid reloading plugins each time
+     */
+    public static TestSetup staticDefaultSetup() {
+        return staticSetup(DEFAULT_PLUGIN_DESCRIPTOR);
+    }
+
+    /**
+     * Creates a new TestSetup the default plugin descriptor which is {@link #DEFAULT_PLUGIN_DESCRIPTOR}
+     *
+     * @return a TestSetup instance which can be used to prepare a test with plugins
+     */
+    public static TestSetup newDefaultSetup() {
+        return newSetup(DEFAULT_PLUGIN_DESCRIPTOR);
+    }
+
+    /**
+     * Get a static TestSetup instance using a specific plugin descriptor to loads plugins.
+     * Default plugin descriptor is {@link #DEFAULT_PLUGIN_DESCRIPTOR}
+     *
+     * @param pluginDescriptor The plugin descriptort to use. It is a property files containing a list of plugins to load. Default plugin descriptor is
+     *                         {@link #DEFAULT_PLUGIN_DESCRIPTOR}
+     * @return a TestSetup instance which can be used to prepare a test with plugins.
+     *         This instance is registered statically to avoid reloading plugins each time
+     */
+    public static TestSetup staticSetup(String pluginDescriptor) {
+        TestSetup testSetup = instances.get(pluginDescriptor);
         if (testSetup == null) {
-            return new TestSetup(DEFAULT_PLUGIN_DESCRIPTOR);
+            testSetup = newSetup(pluginDescriptor);
+            instances.put(pluginDescriptor, testSetup);
         }
         return testSetup;
     }
 
-    public static TestHandler setup(Object testInstance) {
-        return get().prepare(testInstance);
+    /**
+     * Creates a new TestSetup instance using a specific plugin descriptor to loads plugins.
+     * Default plugin descriptor is {@link #DEFAULT_PLUGIN_DESCRIPTOR}
+     *
+     * @param pluginDescriptor The plugin descriptort to use. It is a property files containing a list of plugins to load. Default plugin descriptor is
+     *                         {@link #DEFAULT_PLUGIN_DESCRIPTOR}
+     * @return a TestSetup instance which can be used to prepare a test with plugins
+     */
+    public static TestSetup newSetup(String pluginDescriptor) {
+        return new TestSetup(pluginDescriptor);
     }
+
+    /**
+     * Get a static custom TestSetup instance with an empty {@link com.mycila.plugin.spi.PluginManager}.
+     * It will be up to you to add your own plugins at runtime
+     *
+     * @return a TestSetup instance which can be used to prepare a test with plugins.
+     *         This instance is registered statically to avoid reloading and recreating plugins each time.
+     */
+    public static TestSetup staticCustomSetup() {
+        if (customTestSetup == null) {
+            customTestSetup = newCustomSetup();
+        }
+        return customTestSetup;
+    }
+
+    /**
+     * Creates a new custom TestSetup with an empty {@link com.mycila.plugin.spi.PluginManager}.
+     * It will be up to you to add your own plugins at runtime
+     *
+     * @return a TestSetup instance which can be used to prepare a test with plugins
+     */
+    public static TestSetup newCustomSetup() {
+        return new TestSetup();
+    }
+
 }

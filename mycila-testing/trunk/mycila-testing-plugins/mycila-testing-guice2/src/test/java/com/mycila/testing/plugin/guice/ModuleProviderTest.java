@@ -37,7 +37,7 @@ public final class ModuleProviderTest {
 
     @Test
     public void test_setup() {
-        TestSetup.setup(this);
+        TestSetup.staticDefaultSetup().prepare(this);
         assertNotNull(injector.getBinding(Key.get(String.class)));
         assertNotNull(injector.getBinding(Key.get(int.class)));
         assertNotNull(injector.getBinding(Key.get(float.class)));

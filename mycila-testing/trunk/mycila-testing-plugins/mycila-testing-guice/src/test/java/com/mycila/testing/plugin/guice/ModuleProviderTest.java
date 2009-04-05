@@ -15,7 +15,11 @@
  */
 package com.mycila.testing.plugin.guice;
 
-import com.google.inject.*;
+import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.Module;
 import com.mycila.testing.core.TestSetup;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
@@ -33,7 +37,7 @@ public final class ModuleProviderTest {
 
     @Test
     public void test_setup() {
-        TestSetup.setup(this);
+        TestSetup.staticDefaultSetup().prepare(this);
         assertNotNull(injector.getBinding(Key.get(String.class)));
         assertNotNull(injector.getBinding(Key.get(int.class)));
         assertNotNull(injector.getBinding(Key.get(float.class)));
