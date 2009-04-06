@@ -39,7 +39,7 @@ public final class BeanOverrideTest {
 
     @Test
     public void test_bind() {
-        MycilaTesting.from(getClass()).handle(this).prepare();
+        MycilaTesting.from(getClass()).createNotifier(this).prepare();
         assertEquals(injector.getBean("myBean1").toString(), "toto");
         assertEquals(injector.getBean("myBean2").toString(), "tata");
     }

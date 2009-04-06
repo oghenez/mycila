@@ -362,7 +362,7 @@
             <dependency>
                 <groupId>com.mycila</groupId>
                 <artifactId>mycila-plugin</artifactId>
-                <version>1.4</version>
+                <version>1.5</version>
             </dependency>
             <!-- test frameworks -->
             <dependency>

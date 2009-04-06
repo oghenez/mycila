@@ -58,7 +58,7 @@ public final class BindMethodTest {
 
     @Test
     public void test_bind() {
-        MycilaTesting.from(getClass()).handle(this).prepare();
+        MycilaTesting.from(getClass()).createNotifier(this).prepare();
         assertEquals(injector.getInstance(String.class), "helloa");
         assertEquals(injector.getInstance(Key.get(String.class, Named.class)), "hellob");
         b = "changedb";

@@ -56,7 +56,7 @@ public final class ContextConfigTest {
         assertNull(b);
         assertNull(beanFactory);
         assertNull(testContext);
-        MycilaTesting.from(getClass()).handle(this).prepare();
+        MycilaTesting.from(getClass()).createNotifier(this).prepare();
         assertNotNull(a);
         assertNotNull(b);
         assertNotNull(testContext);
