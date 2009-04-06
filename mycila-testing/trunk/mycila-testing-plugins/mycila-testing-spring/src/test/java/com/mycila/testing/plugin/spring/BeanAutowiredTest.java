@@ -42,7 +42,7 @@ public final class BeanAutowiredTest {
 
     @Test
     public void test_bind() {
-        MycilaTesting.from(getClass()).handle(this).prepare();
+        MycilaTesting.from(getClass()).createNotifier(this).prepare();
         assertEquals(injector.getBean("abean"), "helloa");
         assertEquals(injector.getBean("bbean"), "hellob");
         assertEquals(injector.getBean("myBean").toString(), "toto");

@@ -50,7 +50,7 @@ public final class InjectInBeanTest {
 
     @BeforeClass
     public void setup() {
-        MycilaTesting.from(getClass()).handle(this).prepare();
+        MycilaTesting.from(getClass()).createNotifier(this).prepare();
     }
 
     @Test

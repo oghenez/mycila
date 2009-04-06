@@ -47,7 +47,7 @@ public final class BindFieldTest {
 
     @Test
     public void test_bind() {
-        MycilaTesting.from(getClass()).handle(this).prepare();
+        MycilaTesting.from(getClass()).createNotifier(this).prepare();
         assertEquals(injector.getInstance(Key.get(String.class)), "helloa");
         assertEquals(injector.getInstance(Key.get(String.class, Named.class)), "hellob");
         b = "changedb";

@@ -35,7 +35,7 @@ public final class Usage1Test {
 
     @BeforeClass
     public void setup() {
-        MycilaTesting.from(getClass()).handle(this).prepare();
+        MycilaTesting.from(getClass()).createNotifier(this).prepare();
     }
 
     @Test

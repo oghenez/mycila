@@ -32,7 +32,7 @@ public final class NoContextTest {
     @Test
     public void test_setup() {
         assertNull(beanFactory);
-        MycilaTesting.from(getClass()).handle(this).prepare();
+        MycilaTesting.from(getClass()).createNotifier(this).prepare();
         assertNotNull(beanFactory);
         assertFalse(beanFactory.containsBean("myBean"));
     }

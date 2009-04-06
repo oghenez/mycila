@@ -43,7 +43,7 @@ public final class TestImplementModuleTest extends AbstractModule {
     public void test_setup() {
         assertNull(service1);
         assertNull(service2);
-        MycilaTesting.from(getClass()).handle(this).prepare();
+        MycilaTesting.from(getClass()).createNotifier(this).prepare();
         assertNotNull(service1);
         assertNotNull(service2);
         assertEquals(service2.go(), "impl");
