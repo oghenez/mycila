@@ -5,6 +5,11 @@ Issues are logged at http://code.google.com/p/mycila/issues/list?can=1
 
 = Mycila Plugin Framework =
 
+== 1.5 (2009-04-04)  ==
+
+|| *ID* || *Description* ||
+|| - || Added contains() method on PluginCache ||
+
 == 1.4 (2009-01-13)  ==
 
 || *ID* || *Description* ||
