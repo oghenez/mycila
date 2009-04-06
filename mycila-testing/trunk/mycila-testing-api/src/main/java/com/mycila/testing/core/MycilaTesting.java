@@ -47,7 +47,7 @@ public final class MycilaTesting {
         return pluginManager;
     }
 
-    public TestHandler handle(Object testInstance) {
+    public TestNotifier createNotifier(Object testInstance) {
         return new TestContext(pluginManager, testInstance);
     }
 
@@ -142,14 +142,14 @@ public final class MycilaTesting {
      * @return a TestSetup instance which can be used to prepare a test with plugins
      */
     public static MycilaTesting from(MycilaPlugins mycilaPlugins) {
-        if(mycilaPlugins == null) {
+        if(mycilaPlugins == null || mycilaPlugins.cache() == null) {
             return staticDefaultSetup();
         }
         boolean descBlank = mycilaPlugins.descriptor() == null || mycilaPlugins.descriptor().trim().length() == 0;
         switch (mycilaPlugins.cache()) {
             case SHARED:
                 return descBlank ? staticCustomSetup() : staticSetup(mycilaPlugins.descriptor());
-            case PER_TEST:
+            case UNSHARED:
                 return descBlank ? newCustomSetup() : newSetup(mycilaPlugins.descriptor());
         }
         throw new AssertionError("Use case not defined for value of enum Cache: " + mycilaPlugins.cache());

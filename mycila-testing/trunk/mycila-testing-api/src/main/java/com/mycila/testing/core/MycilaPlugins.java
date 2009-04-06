@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 public @interface MycilaPlugins {
 
     /**
-     * Specify if this test instance should use the plugins shared statically amongst all instance
+     * Specify if this test instance should use the plugins shared statically amongst all test instance
      * or if the plugins should be reloaded for this test.
      *
      * @return The cache strategy to use for plugins

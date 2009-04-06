@@ -17,17 +17,20 @@
 package com.mycila.testing.junit;
 
 import com.mycila.testing.core.MycilaTesting;
+import com.mycila.testing.core.TestExecution;
+import com.mycila.testing.core.TestNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
+import org.junit.runners.model.Statement;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-//TODO: IMPLEMENT
 public class MycilaJunit4Runner extends BlockJUnit4ClassRunner {
 
+    private TestNotifier testNotifier;
 
-    
     public MycilaJunit4Runner(Class<?> klass) throws InitializationError {
         super(klass);
     }
@@ -35,7 +38,29 @@ public class MycilaJunit4Runner extends BlockJUnit4ClassRunner {
     @Override
     protected Object createTest() throws Exception {
         Object test = super.createTest();
-        MycilaTesting.from(getClass()).handle(test);
+        testNotifier = MycilaTesting.from(getTestClass().getJavaClass()).createNotifier(test);
         return test;
     }
+
+    @Override
+    protected Statement methodInvoker(final FrameworkMethod method, final Object test) {
+        return new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                TestExecution testExecution = testNotifier.fireBeforeTest(method.getMethod());
+                if (!testExecution.mustSkip()) {
+                    try {
+                        MycilaJunit4Runner.super.methodInvoker(method, test).evaluate();
+                    } catch (Throwable t) {
+                        testExecution.setThrowable(t);
+                    }
+                }
+                testNotifier.fireAfterTest(testExecution);
+                if (testExecution.hasFailed()) {
+                    throw testExecution.getThrowable();
+                }
+            }
+        };
+    }
+
 }

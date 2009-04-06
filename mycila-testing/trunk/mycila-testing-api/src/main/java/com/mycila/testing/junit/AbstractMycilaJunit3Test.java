@@ -16,7 +16,8 @@
 package com.mycila.testing.junit;
 
 import com.mycila.testing.core.MycilaTesting;
-import com.mycila.testing.core.TestHandler;
+import com.mycila.testing.core.TestExecution;
+import com.mycila.testing.core.TestNotifier;
 import junit.framework.TestCase;
 
 import java.lang.reflect.Method;
@@ -27,7 +28,7 @@ import java.lang.reflect.Modifier;
  */
 public abstract class AbstractMycilaJunit3Test extends TestCase {
 
-    private TestHandler testHandler;
+    private TestNotifier testNotifier;
 
     public AbstractMycilaJunit3Test() {
         super();
@@ -39,32 +40,29 @@ public abstract class AbstractMycilaJunit3Test extends TestCase {
 
     @Override
     public final void runBare() throws Throwable {
-        testHandler = getTestHandler();
-        testHandler.prepare();
+        testNotifier = getTestHandler();
+        testNotifier.prepare();
         try {
             super.runBare();
         } finally {
-            testHandler.end();
+            testNotifier.fireAfterClass();
         }
     }
 
     @Override
     protected final void runTest() throws Throwable {
-        Method runMethod = getTestMethod();
-        Throwable throwable = null;
-        try {
-            if (testHandler.beforeTest(runMethod)) {
-                try {
-                    super.runTest();
-                } catch (Throwable t) {
-                    throwable = t;
-                    throw t;
-                }
+        TestExecution testExecution = testNotifier.fireBeforeTest(getTestMethod());
+        if (!testExecution.mustSkip()) {
+            try {
+                super.runTest();
+            } catch (Throwable t) {
+                testExecution.setThrowable(t);
             }
-        } finally {
-            testHandler.afterTest(runMethod, throwable);
         }
-
+        testNotifier.fireAfterTest(testExecution);
+        if (testExecution.hasFailed()) {
+            throw testExecution.getThrowable();
+        }
     }
 
     private Method getTestMethod() {
@@ -87,8 +85,8 @@ public abstract class AbstractMycilaJunit3Test extends TestCase {
      *
      * @return A TestHandler to fire test events (before and after execution)
      */
-    protected TestHandler getTestHandler() {
-        return MycilaTesting.from(getClass()).handle(this);
+    protected TestNotifier getTestHandler() {
+        return MycilaTesting.from(getClass()).createNotifier(this);
     }
 
 }

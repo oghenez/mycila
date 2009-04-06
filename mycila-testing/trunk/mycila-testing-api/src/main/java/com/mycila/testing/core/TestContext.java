@@ -18,7 +18,6 @@ package com.mycila.testing.core;
 import com.mycila.plugin.api.PluginBinding;
 import com.mycila.plugin.spi.PluginManager;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,7 +26,7 @@ import java.util.Map;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class TestContext implements Context, TestHandler {
+final class TestContext implements Context, TestNotifier {
 
     private final TestInstance testInstance;
     private final Map<String, Object> attributes = new HashMap<String, Object>();
@@ -83,42 +82,46 @@ final class TestContext implements Context, TestHandler {
         }
     }
 
-    public boolean beforeTest(Method method) throws TestPluginException {
-        boolean b = true;
+    public TestExecution fireBeforeTest(Method method) throws TestPluginException {
+        TestExecutionImpl testExecution = new TestExecutionImpl(this, method);
         try {
             ContextHolder.set(this);
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
-                    b &= binding.getPlugin().beforeTest(this, method);
+                    binding.getPlugin().beforeTest(testExecution);
                 } catch (Exception e) {
                     throw new TestPluginException(e, "An error occured while executing 'beforeTest' on plugin '%s': %s: %s", binding.getName(), e.getClass().getSimpleName(), e.getMessage());
                 }
             }
+            return testExecution;
         } finally {
             ContextHolder.unset();
+            testExecution.state = TestExecutionImpl.State.TEST;
         }
-        return b;
     }
 
-    public void afterTest(Method method, Throwable throwable) throws TestPluginException {
+    public void fireAfterTest(TestExecution testExecution) throws TestPluginException {
+        if (testExecution instanceof TestExecutionImpl) {
+            ((TestExecutionImpl) testExecution).state = TestExecutionImpl.State.AFTER_TEST;
+        }
         try {
-            if (throwable != null && throwable instanceof InvocationTargetException) {
-                throwable = ((InvocationTargetException) throwable).getTargetException();
-            }
             ContextHolder.set(this);
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
-                    binding.getPlugin().afterTest(this, method, throwable);
+                    binding.getPlugin().afterTest(testExecution);
                 } catch (Exception e) {
                     throw new TestPluginException(e, "An error occured while executing 'afterTest' on plugin '%s': %s: %s", binding.getName(), e.getClass().getSimpleName(), e.getMessage());
                 }
             }
         } finally {
             ContextHolder.unset();
+            if (testExecution instanceof TestExecutionImpl) {
+                ((TestExecutionImpl) testExecution).state = TestExecutionImpl.State.FINISHED;
+            }
         }
     }
 
-    public void end() throws TestPluginException {
+    public void fireAfterClass() throws TestPluginException {
         try {
             ContextHolder.set(this);
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {

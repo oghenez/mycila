@@ -72,5 +72,49 @@ public final class TestContextTest {
         test.prepare();
         assertTrue(MyPlugin.prepared);
     }
-    
+
+    @Test
+    public void test_fireEvents() throws Exception {
+        assertFalse(MyPlugin.befores.contains("test_fireEvents"));
+        assertFalse(MyPlugin.afters.contains("test_fireEvents"));
+        assertFalse(MyPlugin.ends.contains("com.mycila.testing.core.TestContextTest"));
+
+        TestExecution testExecution = test.fireBeforeTest(getClass().getMethod("test_fireEvents"));
+        assertTrue(MyPlugin.befores.contains("test_fireEvents"));
+        assertFalse(MyPlugin.afters.contains("test_fireEvents"));
+        assertFalse(MyPlugin.ends.contains("com.mycila.testing.core.TestContextTest"));
+
+        test.fireAfterTest(testExecution);
+        assertTrue(MyPlugin.befores.contains("test_fireEvents"));
+        assertTrue(MyPlugin.afters.contains("test_fireEvents"));
+        assertFalse(MyPlugin.ends.contains("com.mycila.testing.core.TestContextTest"));
+
+        test.fireAfterClass();
+        assertTrue(MyPlugin.befores.contains("test_fireEvents"));
+        assertTrue(MyPlugin.afters.contains("test_fireEvents"));
+        assertTrue(MyPlugin.ends.contains("com.mycila.testing.core.TestContextTest"));
+    }
+
+    @Test
+    public void test_fireEvents_Exceptions1() throws Exception {
+        try {
+            test.fireBeforeTest(getClass().getMethod("test_fireEvents_Exceptions1"));
+            fail();
+        } catch (TestPluginException e) {
+            e.printStackTrace();
+            assertEquals(e.getCause().getMessage(), "Hello 1");
+        }
+
+        TestExecution testExecution = test.fireBeforeTest(getClass().getMethod("test_fireEvents_Exceptions2"));
+        try {
+            test.fireAfterTest(testExecution);
+            fail();
+        } catch (TestPluginException e) {
+            e.printStackTrace();
+            assertEquals(e.getCause().getMessage(), "Hello 2");
+        }
+    }
+
+    public void test_fireEvents_Exceptions2() {
+    }
 }
