@@ -18,11 +18,10 @@ package com.mycila.testing.testng;
 import com.mycila.testing.core.Context;
 import com.mycila.testing.core.DefaultTestPlugin;
 import com.mycila.testing.core.MycilaTesting;
-import com.mycila.testing.core.TestHandler;
+import com.mycila.testing.core.TestExecution;
+import com.mycila.testing.core.TestNotifier;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
-
-import java.lang.reflect.Method;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -61,29 +60,30 @@ public final class TestNGSample3Test extends AbstractMycilaTestNGTest {
     }
 
     @Override
-    protected TestHandler getTestHandler() {
+    protected TestNotifier getTestHandler() {
         MycilaTesting testSetup = MycilaTesting.newCustomSetup();
         testSetup.pluginManager().getCache().registerPlugin("custom", new DefaultTestPlugin() {
             @Override
-            public boolean beforeTest(Context context, Method method) {
+            public void beforeTest(TestExecution testExecution) {
                 System.out.println("before");
                 assertTrue(prepared);
                 assertFalse(before);
                 before = true;
-                return !method.getName().equals("test_skip");
+                testExecution.setSkip(testExecution.getMethod().getName().equals("test_skip"));
             }
 
             @Override
-            public void afterTest(Context context, Method method, Throwable throwable) {
+            public void afterTest(TestExecution testExecution) {
                 System.out.println("after");
                 assertTrue(prepared);
                 assertTrue(before);
                 assertFalse(after);
-                if (method.getName().equals("test_fail")) {
-                    assertNotNull(throwable);
-                    assertEquals(throwable.getClass(), IllegalArgumentException.class);
+                if (testExecution.getMethod().getName().equals("test_fail")) {
+                    System.out.println("=> exception");
+                    assertNotNull(testExecution.getThrowable());
+                    assertEquals(testExecution.getThrowable().getClass(), IllegalArgumentException.class);
                 } else {
-                    assertNull(throwable);
+                    assertNull(testExecution.getThrowable());
                 }
             }
 
@@ -102,6 +102,6 @@ public final class TestNGSample3Test extends AbstractMycilaTestNGTest {
                 assertTrue(test_fail);
             }
         });
-        return testSetup.handle(this);
+        return testSetup.createNotifier(this);
     }
 }

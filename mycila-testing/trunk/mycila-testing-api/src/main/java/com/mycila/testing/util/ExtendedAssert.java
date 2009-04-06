@@ -104,12 +104,12 @@ public final class ExtendedAssert {
 
     public static URL resource(String classPath) {
         URL u = Thread.currentThread().getContextClassLoader().getResource(classPath);
-        if(u == null) {
+        if (u == null) {
             throw new IllegalArgumentException("Resource not found in classpath: " + classPath);
         }
         return u;
     }
-    
+
     public static String readString(String classPath) {
         return readString(classPath, "UTF-8");
     }
@@ -134,7 +134,7 @@ public final class ExtendedAssert {
                 BufferedInputStream bis = new BufferedInputStream(url.openStream());
                 data = new byte[8192];
                 int count;
-                while((count = bis.read(data)) != -1) {
+                while ((count = bis.read(data)) != -1) {
                     baos.write(data, 0, count);
                 }
                 bis.close();
@@ -147,43 +147,40 @@ public final class ExtendedAssert {
         return data == NULL ? null : data;
     }
 
-    public static AssertException assertThrow(Class<? extends Throwable> exceptionClass) {
-        return new AssertException(exceptionClass);
-    }
+    public static AssertException assertThrow(final Class<? extends Throwable> exceptionClass) {
+        return new AssertException() {
+            String message;
 
-    public static class AssertException {
-        private final Class<? extends Throwable> exceptionClass;
-        private String message;
+            public AssertException withMessage(String message) {
+                this.message = message;
+                return this;
+            }
 
-        private AssertException(Class<? extends Throwable> exceptionClass) {
-            this.exceptionClass = exceptionClass;
-        }
-
-        public AssertException withMessage(String message) {
-            this.message = message;
-            return this;
-        }
-
-        public void whenRunning(Code code) {
-            try {
-                code.run();
-                fail(String.format("Should have thrown Exception class '%s'%s", exceptionClass.getName(), message == null ? "" : String.format(" with message '%s'", message)));
-            } catch (Throwable throwable) {
-                if (!exceptionClass.isAssignableFrom(throwable.getClass())) {
-                    fail("Received bad exception class. Exception is:\n" + asString(throwable), throwable.getClass().getName(), exceptionClass.getName());
+            public void whenRunning(Code code) {
+                boolean failed = false;
+                try {
+                    code.run();
+                    failed = true;
+                } catch (Throwable throwable) {
+                    if (!exceptionClass.isAssignableFrom(throwable.getClass())) {
+                        fail("Received bad exception class. Exception is:\n" + asString(throwable), throwable.getClass().getName(), exceptionClass.getName());
+                    }
+                    if (message == null && throwable.getMessage() != null || message != null && !message.equals(throwable.getMessage())) {
+                        fail("Received bad exception message. Exception is:\n" + asString(throwable), throwable.getMessage(), message);
+                    }
                 }
-                if (message == null && throwable.getMessage() != null || message != null && !message.equals(throwable.getMessage())) {
-                    fail("Received bad exception message. Exception is:\n" + asString(throwable), throwable.getMessage(), message);
+                if(failed) {
+                    fail(String.format("Should have thrown Exception class '%s'%s", exceptionClass.getName(), message == null ? "" : String.format(" with message '%s'", message)));
                 }
             }
-        }
+        };
+    }
 
-        private String asString(Throwable t) {
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            t.printStackTrace(pw);
-            return sw.toString();
-        }
+    private static String asString(Throwable t) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        t.printStackTrace(pw);
+        return sw.toString();
     }
 
     private static String format(String message, Object actual, Object expected) {
@@ -214,4 +211,9 @@ public final class ExtendedAssert {
         throw new AssertionError(message == null ? "" : message);
     }
 
+    public static interface AssertException {
+        AssertException withMessage(String message);
+
+        void whenRunning(Code code);
+    }
 }

@@ -18,8 +18,6 @@ package com.mycila.testing.core;
 
 import com.mycila.plugin.api.Plugin;
 
-import java.lang.reflect.Method;
-
 /**
  * This interface should be implemented by all plugins.
  * <strong>It is strongly adviced that plugins extends {@link DefaultTestPlugin}
@@ -42,23 +40,20 @@ public interface TestPlugin extends Plugin {
     /**
      * This method will be called on each plugin in order of dependency to execute code required before a test method can run.
      *
-     * @param context The context of this test
-     * @param method  The method that is going to be executed
-     * @return A flag indicating wheter the test method will be executed or not. By default, majority of plugins would return true.
-     *         But this flag could be used in situations where you would like to skip some tests
+     * @param testExecution The test execution context of this test method. The text execution enables plugins to control whethere the test method
+     *                      should be skipped or not
      * @throws Exception If anything wrong occurs in plugin execution. Exception will be catched by the testing API.
      */
-    boolean beforeTest(Context context, Method method) throws Exception;
+    void beforeTest(TestExecution testExecution) throws Exception;
 
     /**
      * This method will be called on each plugin in order of dependency after each test method has finished, even if the method failed.
      *
-     * @param context   The context of this test
-     * @param method    The method that has been executed
-     * @param throwable If the test failed, the exception is passed to the method. If the test succeed, the throwable will be null.
+     * @param testExecution The test execution context of this test method. The test execution context enables the plugins to handle what to do
+     *                      in case of a failed test, with the provided exception in the context
      * @throws Exception If anything wrong occurs in plugin execution. Exception will be catched by the testing API.
      */
-    void afterTest(Context context, Method method, Throwable throwable) throws Exception;
+    void afterTest(TestExecution testExecution) throws Exception;
 
     /**
      * This method will be called on each plugin in order of dependency after all test method of a test instance have finished.

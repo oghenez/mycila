@@ -16,7 +16,8 @@
 package com.mycila.testing.testng;
 
 import com.mycila.testing.core.MycilaTesting;
-import com.mycila.testing.core.TestHandler;
+import com.mycila.testing.core.TestExecution;
+import com.mycila.testing.core.TestNotifier;
 import org.testng.Assert;
 import org.testng.IHookCallBack;
 import org.testng.IHookable;
@@ -29,27 +30,29 @@ import org.testng.annotations.BeforeClass;
  */
 public abstract class AbstractMycilaTestNGTest extends Assert implements IHookable {
 
-    private TestHandler testHandler;
+    private TestNotifier testNotifier;
 
     @BeforeClass(alwaysRun = true)
     protected final void prepareTestInstance() {
-        testHandler = getTestHandler();
-        testHandler.prepare();
+        testNotifier = getTestHandler();
+        testNotifier.prepare();
     }
 
     public final void run(IHookCallBack callBack, ITestResult testResult) {
-        if (testHandler.beforeTest(testResult.getMethod().getMethod())) {
-            callBack.runTestMethod(testResult);
-        } else {
+        TestExecution testExecution = testNotifier.fireBeforeTest(testResult.getMethod().getMethod());
+        if (testExecution.mustSkip()) {
             testResult.setStatus(ITestResult.SKIP);
+        } else {
+            callBack.runTestMethod(testResult);
         }
+        testExecution.setThrowable(testResult.getThrowable());
         //noinspection ThrowableResultOfMethodCallIgnored
-        testHandler.afterTest(testResult.getMethod().getMethod(), testResult.getThrowable());
+        testNotifier.fireAfterTest(testExecution);
     }
 
     @AfterClass(alwaysRun = true)
     protected final void end() {
-        testHandler.end();
+        testNotifier.fireAfterClass();
     }
 
     /**
@@ -57,8 +60,8 @@ public abstract class AbstractMycilaTestNGTest extends Assert implements IHookab
      *
      * @return A TestHandler to fire test events (before and after execution)
      */
-    protected TestHandler getTestHandler() {
-        return MycilaTesting.from(getClass()).handle(this);
+    protected TestNotifier getTestHandler() {
+        return MycilaTesting.from(getClass()).createNotifier(this);
     }
 
 }

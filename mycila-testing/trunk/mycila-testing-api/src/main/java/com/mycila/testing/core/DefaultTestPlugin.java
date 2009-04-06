@@ -15,7 +15,6 @@
  */
 package com.mycila.testing.core;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -38,11 +37,10 @@ public class DefaultTestPlugin implements TestPlugin {
         return null;
     }
 
-    public boolean beforeTest(Context context, Method method) throws Exception {
-        return true;
+    public void beforeTest(TestExecution testExecution) throws Exception {
     }
 
-    public void afterTest(Context context, Method method, Throwable throwable) throws Exception {
+    public void afterTest(TestExecution testExecution) throws Exception {
     }
 
     public void afterClass(Context context) throws Exception {
