@@ -10,14 +10,10 @@ Mycila Testing Framework is an *integration framework*. Which means that instead
 
 == Download ==
 
-Mycila Testing Framework is composed of:
- * *mycila-testing-api*: The plugin API and test enhancer
- * *mycila-plugin-XXX*: The plugins. IE. mycila-plugin-jmock
+Versions can downloaded from Maven Repositories here:
 
-You can download or get the modules:
- * from the [http://code.google.com/p/mycila/downloads/list download section]
- * from our [http://code.google.com/p/mc-repo/ alternate maven repository]
- * from the [http://repo1.maven.org/maven2/com/mycila central maven repository] automatically sync from our alternate repository)
+*Releases*: http://repo2.maven.org/maven2/com/mycila/testing/
+*Snapshots*: http://mc-repo.googlecode.com/svn/maven2/snapshots/com/mycila/testing/
 
 == Maven dependency ==
 
