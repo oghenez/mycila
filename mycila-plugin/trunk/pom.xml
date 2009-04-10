@@ -155,6 +155,8 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
                 </configuration>
@@ -387,6 +389,11 @@
     -->
 
     <dependencies>
+        <dependency>
+            <groupId>com.mycila</groupId>
+            <artifactId>mycila-log</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-jdk1.5</artifactId>

@@ -16,6 +16,8 @@
 
 package com.mycila.plugin.spi;
 
+import com.mycila.log.Logger;
+import com.mycila.log.Loggers;
 import com.mycila.plugin.api.CyclicDependencyException;
 import com.mycila.plugin.api.InexistingPluginException;
 import com.mycila.plugin.api.Plugin;
@@ -45,6 +47,8 @@ import java.util.TreeSet;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 final class DefaultPluginResolver<T extends Plugin> implements PluginResolver<T> {
+
+    private static final Logger LOGGER = Loggers.get(DefaultPluginResolver.class);
 
     final PluginCache<T> cache;
 
@@ -155,6 +159,7 @@ final class DefaultPluginResolver<T extends Plugin> implements PluginResolver<T>
         while (it.hasNext()) {
             order.add(it.next());
         }
+        LOGGER.debug("Resolved plugins: {0}", order);
         return Collections.unmodifiableList(order);
     }
 }

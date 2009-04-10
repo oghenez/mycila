@@ -16,6 +16,8 @@
 
 package com.mycila.plugin.spi;
 
+import com.mycila.log.Logger;
+import com.mycila.log.Loggers;
 import com.mycila.plugin.api.Plugin;
 import com.mycila.plugin.api.PluginCache;
 import com.mycila.plugin.api.PluginLoader;
@@ -29,17 +31,21 @@ import com.mycila.plugin.api.PluginResolver;
  */
 public final class PluginManager<T extends Plugin> {
 
+    private static final Logger LOGGER = Loggers.get(PluginManager.class);
+
     private final PluginLoader<T> loader;
     private final PluginResolver<T> resolver;
     private final PluginCache<T> cache;
 
     public PluginManager(Class<T> pluginType) {
+        LOGGER.debug("Creating new empty PluginManager for plugin type {0}", pluginType);
         loader = new DefaultPluginLoader<T>(pluginType);
         cache = new DefaultPluginCache<T>(loader);
         resolver = new DefaultPluginResolver<T>(cache);
     }
 
     public PluginManager(Class<T> pluginType, String pluginDescriptor) {
+        LOGGER.debug("Creating new PluginManager for plugin type {0} from descriptors {1}", pluginType, pluginDescriptor);
         loader = new DefaultPluginLoader<T>(pluginType, pluginDescriptor);
         cache = new DefaultPluginCache<T>(loader);
         resolver = new DefaultPluginResolver<T>(cache);
