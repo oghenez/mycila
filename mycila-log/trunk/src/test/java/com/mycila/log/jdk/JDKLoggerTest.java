@@ -14,6 +14,7 @@ public final class JDKLoggerTest {
 
     @Test
     public void test_log_only_INFO_and_more_by_default() throws Exception {
+        LogManager.getLogManager().reset();
         LogManager.getLogManager().readConfiguration();
         Logger logger = Loggers.get(JDKLoggerTest.class);
         logger.trace("trace {0}", "arg");
@@ -30,6 +31,7 @@ public final class JDKLoggerTest {
 
     @Test
     public void test_custom_config() throws Exception {
+        LogManager.getLogManager().reset();
         LogManager.getLogManager().readConfiguration(getClass().getResourceAsStream("/logging.properties"));
         Logger logger = Loggers.get(JDKLoggerTest.class);
         logger.trace("trace {0}", "arg");
