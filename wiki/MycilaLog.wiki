@@ -24,10 +24,60 @@ Such an API is not very useful in final applications such as UIs, Webapps, ... B
 
 = How to use =
 
+The usage is exactly like any other logging API. You also have checks like isDebug, isInfo, ... Like SLF4J, you have the ability to use message formatting options. They will be applied only if you can log with the wanted level, to not decrease performance.
 
-= Example with JDK logger =
+{{{
+import com.mycila.log.Logger;
+import com.mycila.log.Loggers;
 
+[...]
 
+private static final Logger LOGGER = Loggers.get(MyClass.class);
+
+[...]
+
+LOGGER.debug("My log entry with MessageFormat parameters {0} and {1}", "one", 2);
+}}}
+
+= Example with JDK logger and others =
+
+When you put the library in your project, it defaults to JDK logging API. To use anotehr one, you can use:
+
+{{{
+Loggers.useLog4j();
+}}}
+
+Several improvements are provided for JDK logging. In example, here is a logging configuration file that use them:
+
+{{{
+handlers=com.mycila.log.jdk.handler.StdoutHandler,com.mycila.log.jdk.handler.StderrHandler
+
+com.mycila.log.jdk.handler.StdoutHandler.level=ALL
+com.mycila.log.jdk.handler.StdoutHandler.max=INFO
+com.mycila.log.jdk.handler.StdoutHandler.formatter=com.mycila.log.jdk.format.ClassFormatter
+com.mycila.log.jdk.handler.StdoutHandler.hook=com.mycila.log.jdk.hook.AsyncInvocationHandler
+
+com.mycila.log.jdk.handler.StderrHandler.level=WARNING
+com.mycila.log.jdk.handler.StderrHandler.max=SEVERE
+com.mycila.log.jdk.handler.StderrHandler.formatter=com.mycila.log.jdk.format.ClassFormatter
+com.mycila.log.jdk.handler.StderrHandler.hook=com.mycila.log.jdk.hook.AsyncInvocationHandler
+
+.level=WARNING
+com.mycila.level=ALL
+}}}
+
+Then in the Java code you ca configure JDK logging like this:
+
+{{{
+LogManager.getLogManager().reset();       LogManager.getLogManager().readConfiguration(getClass().getResourceAsStream("/logging.properties"));
+}}}
+
+*Note:* You can only configure the logger through the Java API. Check hre for more details:
+
+ * http://www.crazysquirrel.com/computing/java/logging.jspx
+ * http://www.vogella.de/articles/Logging/article.html
+
+The hook API enabled you to modify the behavior of a handler. Here, we add a hook to add Asynchronous logging capabilities to console handlers. We also define the maximum level for each handler, to push errors in System.err and logs to System.out
 
 = Supported Logging API =
 
