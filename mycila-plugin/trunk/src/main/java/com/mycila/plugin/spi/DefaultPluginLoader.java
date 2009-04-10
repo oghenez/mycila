@@ -16,6 +16,8 @@
 
 package com.mycila.plugin.spi;
 
+import com.mycila.log.Logger;
+import com.mycila.log.Loggers;
 import com.mycila.plugin.api.DuplicatePluginException;
 import com.mycila.plugin.api.Plugin;
 import com.mycila.plugin.api.PluginBinding;
@@ -43,21 +45,26 @@ import java.util.TreeSet;
  */
 final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
 
+    private static final Logger LOGGER = Loggers.get(DefaultPluginLoader.class);
+
     final Class<T> pluginsType;
     final String descriptor;
     Set<String> exclusions = Collections.emptySet();
     ClassLoader loader = Thread.currentThread().getContextClassLoader();
 
     DefaultPluginLoader(Class<T> pluginsType) {
-        this(pluginsType, "^%&:;-.`~!@#"); // just to be sure a resource with this name does not exist ;)
+        this(pluginsType, null); // just to be sure a resource with this name does not exist ;)
     }
 
     DefaultPluginLoader(Class<T> pluginsType, String descriptor) {
         this.pluginsType = pluginsType;
-        this.descriptor = descriptor.startsWith("/") ? descriptor.substring(1) : descriptor;
+        this.descriptor = descriptor != null ?
+                descriptor.startsWith("/") ? descriptor.substring(1) : descriptor :
+                null;
     }
 
     public Set<PluginBinding<T>> loadPlugins() {
+        LOGGER.debug("Loading plugins from descriptors {0}...", descriptor);
         Set<PluginBinding<T>> plugins = new HashSet<PluginBinding<T>>();
         Enumeration<URL> configs = loadDescriptors();
         while (configs.hasMoreElements()) {
@@ -73,17 +80,21 @@ final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
                 }
             }
         }
+        LOGGER.debug("Loaded {0} plugins !", plugins.size());
         return Collections.unmodifiableSet(plugins);
     }
 
     Enumeration<URL> loadDescriptors() {
         try {
-            return loader.getResources(descriptor);
+            return descriptor == null ?
+                    Collections.enumeration(Collections.<URL>emptyList()) :
+                    loader.getResources(descriptor);
         } catch (IOException e) {
             throw new PluginIOException(e, "Cannot read plugin descriptors '%s' in classloader '%s'", descriptor, loader);
         }
     }
 
+    @SuppressWarnings({"unchecked"})
     Binding<T> load(URL descriptor, Binding<T> binding, String clazz) {
         Class<?> c;
         try {
@@ -95,7 +106,6 @@ final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
             throw new PluginCreationException("Loaded plugin class does not match expected plugin type", descriptor, binding.getName(), clazz, pluginsType);
         }
         try {
-            //noinspection unchecked
             return binding.withPlugin((T) c.newInstance());
         } catch (Exception e) {
             throw new PluginCreationException("Plugin instanciation error", descriptor, binding.getName(), clazz, pluginsType, e);

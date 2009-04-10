@@ -16,11 +16,14 @@
 
 package com.mycila.plugin.spi;
 
+import com.mycila.log.Logger;
+import com.mycila.log.Loggers;
 import com.mycila.plugin.api.Plugin;
 import com.mycila.plugin.api.PluginBinding;
 import com.mycila.plugin.api.PluginCache;
 import com.mycila.plugin.api.PluginLoader;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,6 +32,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
+
+    private static final Logger LOGGER = Loggers.get(DefaultPluginCache.class);
 
     final ConcurrentHashMap<String, PluginBinding<T>> plugins = new ConcurrentHashMap<String, PluginBinding<T>>();
     final PluginLoader<T> loader;
@@ -47,6 +52,7 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
         if (PluginUtils.isEmpty(name)) {
             throw new IllegalArgumentException("Not a valid plugin name: must not be empty");
         }
+        LOGGER.debug("Adding plugin: {0}", name);
         plugins.put(name, new Binding<T>(name).withPlugin(plugin));
     }
 
@@ -57,6 +63,7 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
     }
 
     public void removePlugins(String... pluginNames) {
+        LOGGER.debug("Removing plugins: {0}", Arrays.toString(pluginNames));
         for (String name : pluginNames) {
             this.plugins.remove(name);
         }
