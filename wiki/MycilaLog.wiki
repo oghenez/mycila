@@ -1,0 +1,47 @@
+#summary Mycila Logging Wrapper
+
+= Introduction =
+
+Mycila Log Wrapper in *NOT a logging API*: it is a *Wrapper API* that enables you to use any logging API behind.
+
+Such an API is not very useful in final applications such as UIs, Webapps, ... But when you are developing core libraries used in several context, you cannot force your clients to use a specific logging API. Thus the need of a wrapping API, to let the clients the choice of using any existing logging API.
+
+= Why using Mycila Log ? =
+
+ * *Drop it, use it !*: No configuration needed, no specific implementations to add: it just works without anything but the library !
+
+ * *Small*: Only 1 very small jar file: unlike SLF4J, does not come in your project with a few libraries
+
+ * *Simple*: No magic / complex code: unlike commons-logging, the code is simple and does not magic with classloaders causing issues in applications
+
+ * *Fast*: code is very fast: simply delegates to existing loggers. Also, the API is designed to avoid doing string concatenations and unneeded calls.
+
+ * *Improvements*: the library add some improvements to the JDK Logging API such as:
+ ** InvocationHandler: to avoid creation of hooks in handlers
+ ** Asynchronous logging
+ ** Thresolds
+
+= How to use =
+
+
+= Example with JDK logger =
+
+
+
+= Supported Logging API =
+
+Currently, Mycila Log already supports
+
+ * Log4j
+ * JDK Logging support.
+
+= Extending =
+
+Extending
+
+= Downloads =
+
+Versions can downloaded from Maven Repositories here:
+
+*Releases*: http://repo2.maven.org/maven2/com/mycila/mycila-log/
+*Snapshots*: http://mc-repo.googlecode.com/svn/maven2/snapshots/com/mycila/mycila-log/
