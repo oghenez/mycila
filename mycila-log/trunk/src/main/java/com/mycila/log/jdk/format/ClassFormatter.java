@@ -1,4 +1,4 @@
-package com.mycila.log.jdk;
+package com.mycila.log.jdk.format;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -10,7 +10,12 @@ import java.util.logging.LogRecord;
 
 public final class ClassFormatter extends Formatter {
 
-    private static final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
+    private DateFormat dateFormat;
+    private String pattern;
+
+    public ClassFormatter() {
+        setDatePattern("yyyy-MM-dd HH:mm:ss,SSS");
+    }
 
     @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
     public String format(LogRecord record) {
@@ -20,7 +25,8 @@ public final class ClassFormatter extends Formatter {
                 .append(record.getLevel())
                 .append(" [").append(record.getSourceMethodName()).append("]")
                 .append(" [").append(stripped(record.getSourceClassName())).append("]")
-                .append(" - ").append(record.getMessage());
+                .append(" - ").append(record.getMessage())
+                .append(Utils.EOL);
         if (record.getThrown() != null) {
             try {
                 StringWriter sw = new StringWriter();
@@ -42,5 +48,14 @@ public final class ClassFormatter extends Formatter {
         pos++;
         if (pos < name.length() && name.charAt(pos) == '.') pos++;
         return name.substring(pos);
+    }
+
+    public void setDatePattern(String pattern) {
+        this.pattern = pattern;
+        dateFormat = new SimpleDateFormat(pattern);
+    }
+
+    public String getDatePattern() {
+        return pattern;
     }
 }

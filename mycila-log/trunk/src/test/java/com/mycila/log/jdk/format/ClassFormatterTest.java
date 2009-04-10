@@ -1,4 +1,4 @@
-package com.mycila.log.jdk;
+package com.mycila.log.jdk.format;
 
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
