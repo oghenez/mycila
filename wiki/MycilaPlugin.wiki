@@ -9,10 +9,10 @@ Mycila Plugin Framework is a really little (4 classes) plugin framework that ena
 
 == Download ==
 
-*mycila-plugin* is available
- * from the [http://code.google.com/p/mycila/downloads/list download section]
- * from our [http://code.google.com/p/mc-repo/ alternate maven repository]
- * from the [http://repo1.maven.org/maven2/com/mycila central maven repository] automatically sync from our alternate repository)
+Versions can downloaded from Maven Repositories here:
+
+*Releases*: http://repo2.maven.org/maven2/com/mycila/mycila-plugin/
+*Snapshots*: http://mc-repo.googlecode.com/svn/maven2/snapshots/com/mycila/mycila-plugin/
 
 == Maven dependency ==
 
