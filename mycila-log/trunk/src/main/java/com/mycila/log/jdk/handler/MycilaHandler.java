@@ -84,11 +84,13 @@ public class MycilaHandler<T extends Handler> extends Handler {
     @Override
     public boolean isLoggable(LogRecord record) {
         int level = record.getLevel().intValue();
-        return getHook().isLoggable(getHandler(), record) && (level <= getThresold().intValue() || level == Level.OFF.intValue());
+        return level == Level.ALL.intValue() || getHook().isLoggable(getHandler(), record) && level <= getThresold().intValue();
     }
 
     public void publish(LogRecord record) {
-        getHook().publish(getHandler(), record);
+        if(isLoggable(record)) {
+            getHook().publish(getHandler(), record);
+        }
     }
 
     public void flush() {
