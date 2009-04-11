@@ -49,6 +49,7 @@ public final class Log4jLogger extends AbstractLogger {
         }
     }
 
+    @Override
     protected void doLog(com.mycila.log.Level level, Throwable throwable, String message, Object... args) {
         switch (level) {
             case TRACE:
