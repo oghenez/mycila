@@ -18,7 +18,7 @@ package com.mycila.testing.plugin.atunit.container;
 import atunit.core.Container;
 import atunit.spring.Bean;
 import atunit.spring.Context;
-import com.mycila.testing.core.ContextHolder;
+import com.mycila.testing.core.Mycila;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
@@ -65,11 +65,11 @@ public class SpringContainer implements Container {
 			Bean beanAnno = field.getAnnotation(Bean.class);
 			if ( beanAnno == null ) {
 				if ( fieldValues.containsKey(field) ) {
-					field.set(ContextHolder.get().getTest().getTarget(), fieldValues.get(field));
+					field.set(Mycila.currentExecution().context().test().instance(), fieldValues.get(field));
 				}
 			} else {
 				if ( ! beanAnno.value().equals("") ) {
-					field.set(ContextHolder.get().getTest().getTarget(), ctx.getBean(beanAnno.value()));
+					field.set(Mycila.currentExecution().context().test().instance(), ctx.getBean(beanAnno.value()));
 				} else {
 					String[] beanNames = ctx.getBeanNamesForType(field.getType());
 					if ( beanNames.length < 1 ) {
@@ -79,7 +79,7 @@ public class SpringContainer implements Container {
 						throw new BeanCreationException("There are " + beanNames.length + " beans defined with type " + field.getType()
 								                                 + "; consider wiring by name instead");
 					}
-					field.set(ContextHolder.get().getTest().getTarget(), ctx.getBean(beanNames[0]));
+					field.set(Mycila.currentExecution().context().test().instance(), ctx.getBean(beanNames[0]));
 				}
 			}
 		}

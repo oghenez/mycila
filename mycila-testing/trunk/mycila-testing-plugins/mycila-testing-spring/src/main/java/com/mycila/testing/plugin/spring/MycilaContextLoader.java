@@ -37,19 +37,19 @@ final class MycilaContextLoader extends GenericXmlContextLoader {
     }
 
     public String[] contextLocations() {
-        SpringContext ctx = mycilaContext.getTest().getTargetClass().getAnnotation(SpringContext.class);
+        SpringContext ctx = mycilaContext.test().testClass().getAnnotation(SpringContext.class);
         return ctx == null ? new String[0] : ctx.locations();
     }
 
     @Override
     protected void customizeContext(GenericApplicationContext context) {
-        for (Field field : mycilaContext.getTest().getFieldsAnnotatedWith(Bean.class)) {
+        for (Field field : mycilaContext.test().findFieldsAnnotatedWith(Bean.class)) {
             Bean annotation = field.getAnnotation(Bean.class);
             context.registerBeanDefinition(
                     annotation.name(),
                     createBeanDefinition(field, FieldAccessFactoryBean.class, annotation.scope()));
         }
-        for (Method method : mycilaContext.getTest().getMethodsAnnotatedWith(Bean.class)) {
+        for (Method method : mycilaContext.test().findMethodsAnnotatedWith(Bean.class)) {
             Bean annotation = method.getAnnotation(Bean.class);
             context.registerBeanDefinition(
                     annotation.name(),
@@ -57,7 +57,7 @@ final class MycilaContextLoader extends GenericXmlContextLoader {
         }
         context.registerBeanDefinition(
                 "org.springframework.test.context.TestContext",
-                createBeanDefinition(mycilaContext.getAttribute("org.springframework.test.context.TestContext"), ObjectFactoryBean.class));
+                createBeanDefinition(mycilaContext.attribute("org.springframework.test.context.TestContext"), ObjectFactoryBean.class));
     }
 
     private AbstractBeanDefinition createBeanDefinition(Object object, Class beanClass) {
@@ -74,7 +74,7 @@ final class MycilaContextLoader extends GenericXmlContextLoader {
 
     private AbstractBeanDefinition createBeanDefinition(AccessibleObject access, Class beanClass, Bean.Scope scope) {
         ConstructorArgumentValues args = new ConstructorArgumentValues();
-        args.addIndexedArgumentValue(0, mycilaContext.getTest().getTarget());
+        args.addIndexedArgumentValue(0, mycilaContext.test().instance());
         args.addIndexedArgumentValue(1, access);
         GenericBeanDefinition beanDef = new GenericBeanDefinition();
         beanDef.setBeanClass(beanClass);

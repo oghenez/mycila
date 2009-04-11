@@ -16,17 +16,16 @@
 package com.mycila.testing.testng;
 
 import com.mycila.testing.MyPlugin;
+import com.mycila.testing.core.Cache;
+import com.mycila.testing.core.MycilaPlugins;
 import com.mycila.testing.core.MycilaTesting;
 import org.testng.annotations.Test;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class TestNGSampleTest extends AbstractMycilaTestNGTest {
-
-    static {
-        assertFalse(MyPlugin.prepared);
-    }
+@MycilaPlugins(value = Cache.UNSHARED)
+public final class TestNGSampleTest extends MycilaTestNGTest {
 
     @Test
     public void dummy_test() {

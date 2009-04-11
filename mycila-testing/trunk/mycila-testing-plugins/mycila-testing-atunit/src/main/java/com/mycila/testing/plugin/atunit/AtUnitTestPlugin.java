@@ -44,7 +44,7 @@ public final class AtUnitTestPlugin extends DefaultTestPlugin {
     public void prepareTestInstance(Context context) {
 
         try {
-            Class<?> c = context.getTest().getTargetClass();
+            Class<?> c = context.test().testClass();
             Set<Field> testFields = getFields(c);
 
             Container container = getContainerFor(c);
@@ -65,8 +65,8 @@ public final class AtUnitTestPlugin extends DefaultTestPlugin {
 
             for (Field field : fieldValues.keySet()) {
                 field.setAccessible(true);
-                if (field.get(context.getTest().getTarget()) == null) {
-                    field.set(context.getTest().getTarget(), fieldValues.get(field));
+                if (field.get(context.test().instance()) == null) {
+                    field.set(context.test().instance(), fieldValues.get(field));
                 }
             }
         } catch (Exception e) {

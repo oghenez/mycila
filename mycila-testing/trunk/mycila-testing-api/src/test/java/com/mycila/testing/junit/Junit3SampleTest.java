@@ -20,7 +20,7 @@ import com.mycila.testing.MyPlugin;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Junit3SampleTest extends AbstractMycilaJunit3Test {
+public final class Junit3SampleTest extends MycilaJunit3Test {
 
     static {
         assertFalse(MyPlugin.prepared);

@@ -17,14 +17,14 @@ package com.mycila.testing.plugin.guice;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import com.mycila.testing.testng.AbstractMycilaTestNGTest;
+import com.mycila.testing.testng.MycilaTestNGTest;
 import org.testng.annotations.Test;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @GuiceContext(AModule.class)
-public final class ExtendTest extends AbstractMycilaTestNGTest {
+public final class ExtendTest extends MycilaTestNGTest {
     @Inject
     @Named("service1")
     Service service1;

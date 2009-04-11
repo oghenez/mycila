@@ -40,14 +40,14 @@ public final class TestInstance {
     /**
      * @return The test instance
      */
-    public Object getTarget() {
+    public Object instance() {
         return instance;
     }
 
     /**
      * @return The test instance's class
      */
-    public Class<?> getTargetClass() {
+    public Class<?> testClass() {
         return instance.getClass();
     }
 
@@ -57,10 +57,10 @@ public final class TestInstance {
      * @param type The type of fields to get
      * @return A list of fields where an instance of the given type could be assign
      */
-    public Field[] getFieldsOfType(Class<?> type) {
+    public Field[] findFieldsOfType(Class<?> type) {
         notNull(type, "Type cannot be null");
         List<Field> fields = new ArrayList<Field>();
-        Class<?> c = getTargetClass();
+        Class<?> c = testClass();
         do {
             for (Field field : c.getDeclaredFields()) {
                 if (field.getType().isAssignableFrom(type)) {
@@ -79,10 +79,10 @@ public final class TestInstance {
      * @param annot Annotation on fields
      * @return A list of all fields annotated with the annotation, even non visible ones.
      */
-    public Field[] getFieldsAnnotatedWith(Class<? extends Annotation> annot) {
+    public Field[] findFieldsAnnotatedWith(Class<? extends Annotation> annot) {
         notNull(annot, "Annotation cannot be null");
         List<Field> fields = new ArrayList<Field>();
-        Class<?> c = getTargetClass();
+        Class<?> c = testClass();
         do {
             for (Field field : c.getDeclaredFields()) {
                 if (field.isAnnotationPresent(annot)) {
@@ -102,11 +102,11 @@ public final class TestInstance {
      * @param annot Annotation on fields
      * @return A list of all fields annotated with the annotation, even non visible ones.
      */
-    public Field[] getFieldsOfTypeAnnotatedWith(Class<?> type, Class<? extends Annotation> annot) {
+    public Field[] findFieldsOfTypeAnnotatedWith(Class<?> type, Class<? extends Annotation> annot) {
         notNull(annot, "Annotation cannot be null");
         notNull(type, "Type cannot be null");
         List<Field> fields = new ArrayList<Field>();
-        Class<?> c = getTargetClass();
+        Class<?> c = testClass();
         do {
             for (Field field : c.getDeclaredFields()) {
                 if (field.getType().isAssignableFrom(type) && field.isAnnotationPresent(annot)) {
@@ -125,10 +125,10 @@ public final class TestInstance {
      * @param type The method return type
      * @return A list of method having this return type. Methods not visible are also returned.
      */
-    public Method[] getMethodsOfType(Class<?> type) {
+    public Method[] findMethodsOfType(Class<?> type) {
         notNull(type, "Return type cannot be null");
         List<Method> methods = new ArrayList<Method>();
-        Class<?> c = getTargetClass();
+        Class<?> c = testClass();
         do {
             for (Method method : c.getDeclaredMethods()) {
                 if (type.isAssignableFrom(method.getReturnType())) {
@@ -147,10 +147,10 @@ public final class TestInstance {
      * @param annot The annotation
      * @return A list of method having this annotation. Methods not visible are also returned.
      */
-    public Method[] getMethodsAnnotatedWith(Class<? extends Annotation> annot) {
+    public Method[] findMethodsAnnotatedWith(Class<? extends Annotation> annot) {
         notNull(annot, "Annotation cannot be null");
         List<Method> methods = new ArrayList<Method>();
-        Class<?> c = getTargetClass();
+        Class<?> c = testClass();
         do {
             for (Method method : c.getDeclaredMethods()) {
                 if (method.isAnnotationPresent(annot)) {
@@ -177,11 +177,11 @@ public final class TestInstance {
      * @param annot Annotation on methods
      * @return A list of all methods annotated with the annotation, even non visible ones.
      */
-    public Method[] getMethodsOfTypeAnnotatedWith(Class<?> type, Class<? extends Annotation> annot) {
+    public Method[] findMethodsOfTypeAnnotatedWith(Class<?> type, Class<? extends Annotation> annot) {
         notNull(type, "Return type cannot be null");
         notNull(annot, "Annotation cannot be null");
         List<Method> methods = new ArrayList<Method>();
-        Class<?> c = getTargetClass();
+        Class<?> c = testClass();
         do {
             for (Method method : c.getDeclaredMethods()) {
                 if (type.isAssignableFrom(method.getReturnType()) && method.isAnnotationPresent(annot)) {
@@ -196,7 +196,7 @@ public final class TestInstance {
 
     public Object invoke(Method method, Object... args) {
         try {
-            return method.invoke(getTarget(), args);
+            return method.invoke(instance(), args);
         } catch (IllegalAccessException e) {
             throw new TestPluginException(e, "Error invoking method '%s' with arguments: %s: %s", method, Arrays.deepToString(args), e.getMessage());
         } catch (InvocationTargetException e) {
@@ -208,17 +208,17 @@ public final class TestInstance {
 
     public Object get(Field field) {
         try {
-            return field.get(getTarget());
+            return field.get(instance());
         } catch (Exception e) {
-            throw new TestPluginException(e, "Error getting value of field '%s' on test class '%s': %s", field, getTargetClass().getName(), e.getMessage());
+            throw new TestPluginException(e, "Error getting value of field '%s' on test class '%s': %s", field, testClass().getName(), e.getMessage());
         }
     }
 
     public void set(Field field, Object value) {
         try {
-            field.set(getTarget(), value);
+            field.set(instance(), value);
         } catch (Exception e) {
-            throw new TestPluginException(e, "Error setting value on field '%s' on test class '%s': %s", field, getTargetClass().getName(), e.getMessage());
+            throw new TestPluginException(e, "Error setting value on field '%s' on test class '%s': %s", field, testClass().getName(), e.getMessage());
         }
     }
 

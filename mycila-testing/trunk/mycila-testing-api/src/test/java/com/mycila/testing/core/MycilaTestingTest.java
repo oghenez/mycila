@@ -26,13 +26,13 @@ import java.lang.annotation.Annotation;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@MycilaPlugins(cache =  UNSHARED, descriptor = "")
-public final class MycilaPluginTest {
+@MycilaPlugins(value =  UNSHARED, descriptor = "")
+public final class MycilaTestingTest {
 
     @Test
     public void test_share_plugins() throws Exception {
         MycilaTesting mycilaTesting = MycilaTesting.from(new MycilaPlugins() {
-            public Cache cache() {
+            public Cache value() {
                 return SHARED;
             }
 
@@ -47,7 +47,7 @@ public final class MycilaPluginTest {
         assertEquals(mycilaTesting.pluginManager().getCache().getBindings().size(), 1);
         assertTrue(mycilaTesting.pluginManager().getCache().contains("myplugin"));
         assertEquals(mycilaTesting, MycilaTesting.from(new MycilaPlugins() {
-            public Cache cache() {
+            public Cache value() {
                 return SHARED;
             }
 
@@ -60,7 +60,7 @@ public final class MycilaPluginTest {
             }
         }));
         assertEquals(mycilaTesting, MycilaTesting.from(new MycilaPlugins() {
-            public Cache cache() {
+            public Cache value() {
                 return null;
             }
 
@@ -78,10 +78,10 @@ public final class MycilaPluginTest {
 
     @Test
     public void test_custom() throws Exception {
-        MycilaTesting mycilaTesting = MycilaTesting.from(MycilaPluginTest.class);
+        MycilaTesting mycilaTesting = MycilaTesting.from(MycilaTestingTest.class);
         assertEquals(mycilaTesting.pluginManager().getCache().getBindings().size(), 0);
         mycilaTesting = MycilaTesting.from(new MycilaPlugins() {
-            public Cache cache() {
+            public Cache value() {
                 return SHARED;
             }
 
@@ -95,7 +95,7 @@ public final class MycilaPluginTest {
         });
         mycilaTesting.pluginManager().getCache().registerPlugin("aa", new MyPlugin());
         MycilaTesting mycilaTesting2 = MycilaTesting.from(new MycilaPlugins() {
-            public Cache cache() {
+            public Cache value() {
                 return SHARED;
             }
 
@@ -115,7 +115,7 @@ public final class MycilaPluginTest {
     public void test_plugins_per_test() throws Exception {
 
         MycilaTesting mycilaTesting = MycilaTesting.from(new MycilaPlugins() {
-            public Cache cache() {
+            public Cache value() {
                 return UNSHARED;
             }
 
@@ -130,7 +130,7 @@ public final class MycilaPluginTest {
         assertEquals(mycilaTesting.pluginManager().getCache().getBindings().size(), 1);
         assertTrue(mycilaTesting.pluginManager().getCache().contains("myplugin"));
         ExtendedAssert.assertNotEquals(mycilaTesting, MycilaTesting.from(new MycilaPlugins() {
-            public Cache cache() {
+            public Cache value() {
                 return UNSHARED;
             }
 

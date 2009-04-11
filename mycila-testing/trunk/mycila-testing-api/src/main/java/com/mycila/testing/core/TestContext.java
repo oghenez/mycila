@@ -28,6 +28,23 @@ import java.util.Map;
  */
 final class TestContext implements Context, TestNotifier {
 
+    private static final Method prepareMethod;static {
+        try {
+            prepareMethod = TestNotifier.class.getDeclaredMethod("prepare");
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    private static final Method fireAfterClassMethod;static {
+        try {
+            fireAfterClassMethod = TestNotifier.class.getDeclaredMethod("fireAfterClass");
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+
     private final TestInstance testInstance;
     private final Map<String, Object> attributes = new HashMap<String, Object>();
     private final PluginManager<TestPlugin> pluginManager;
@@ -35,10 +52,11 @@ final class TestContext implements Context, TestNotifier {
     TestContext(PluginManager<TestPlugin> pluginManager, Object testInstance) {
         this.testInstance = new TestInstance(testInstance);
         this.pluginManager = pluginManager;
+        Mycila.registerContext(this);
     }
 
     @SuppressWarnings({"unchecked"})
-    public <T> T getAttribute(String name) {
+    public <T> T attribute(String name) {
         T att = (T) attributes.get(name);
         if (att == null) {
             throw new TestPluginException("Inexisting attribute: '%s'", name);
@@ -46,11 +64,15 @@ final class TestContext implements Context, TestNotifier {
         return att;
     }
 
-    public Map<String, Object> getAttributes() {
+    public PluginManager<TestPlugin> pluginManager() {
+        return pluginManager;
+    }
+
+    public Map<String, Object> attributes() {
         return Collections.unmodifiableMap(attributes);
     }
 
-    public TestInstance getTest() {
+    public TestInstance test() {
         return testInstance;
     }
 
@@ -69,7 +91,8 @@ final class TestContext implements Context, TestNotifier {
 
     public void prepare() throws TestPluginException {
         try {
-            ContextHolder.set(this);
+            ExecutionImpl execution = new ExecutionImpl(this, prepareMethod);
+            Mycila.registerCurrentExecution(execution.changeStep(Step.PREPARE));
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().prepareTestInstance(this);
@@ -78,14 +101,14 @@ final class TestContext implements Context, TestNotifier {
                 }
             }
         } finally {
-            ContextHolder.unset();
+            Mycila.unsetCurrentExecution();
         }
     }
 
-    public TestExecution fireBeforeTest(Method method) throws TestPluginException {
+    public void fireBeforeTest(Method method) throws TestPluginException {
         TestExecutionImpl testExecution = new TestExecutionImpl(this, method);
         try {
-            ContextHolder.set(this);
+            Mycila.registerCurrentExecution(testExecution.changeStep(Step.BEFORE));
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().beforeTest(testExecution);
@@ -93,19 +116,15 @@ final class TestContext implements Context, TestNotifier {
                     throw new TestPluginException(e, "An error occured while executing 'beforeTest' on plugin '%s': %s: %s", binding.getName(), e.getClass().getSimpleName(), e.getMessage());
                 }
             }
-            return testExecution;
         } finally {
-            ContextHolder.unset();
-            testExecution.state = TestExecutionImpl.State.TEST;
+            Mycila.registerCurrentExecution(testExecution.changeStep(Step.TEST));
         }
     }
 
-    public void fireAfterTest(TestExecution testExecution) throws TestPluginException {
-        if (testExecution instanceof TestExecutionImpl) {
-            ((TestExecutionImpl) testExecution).state = TestExecutionImpl.State.AFTER_TEST;
-        }
+    public void fireAfterTest() throws TestPluginException {
         try {
-            ContextHolder.set(this);
+            TestExecutionImpl testExecution = (TestExecutionImpl) Mycila.currentExecution();
+            testExecution.changeStep(Step.AFTER);
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().afterTest(testExecution);
@@ -114,16 +133,14 @@ final class TestContext implements Context, TestNotifier {
                 }
             }
         } finally {
-            ContextHolder.unset();
-            if (testExecution instanceof TestExecutionImpl) {
-                ((TestExecutionImpl) testExecution).state = TestExecutionImpl.State.FINISHED;
-            }
+            Mycila.unsetCurrentExecution();
         }
     }
 
     public void fireAfterClass() throws TestPluginException {
         try {
-            ContextHolder.set(this);
+            ExecutionImpl execution = new ExecutionImpl(this, fireAfterClassMethod);
+            Mycila.registerCurrentExecution(execution.changeStep(Step.COMPLETED));
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().afterClass(this);
@@ -132,7 +149,7 @@ final class TestContext implements Context, TestNotifier {
                 }
             }
         } finally {
-            ContextHolder.unset();
+            Mycila.unsetCurrentExecution();
         }
     }
 

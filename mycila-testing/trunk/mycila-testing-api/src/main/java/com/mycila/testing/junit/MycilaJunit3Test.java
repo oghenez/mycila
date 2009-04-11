@@ -15,6 +15,7 @@
  */
 package com.mycila.testing.junit;
 
+import com.mycila.testing.core.Mycila;
 import com.mycila.testing.core.MycilaTesting;
 import com.mycila.testing.core.TestExecution;
 import com.mycila.testing.core.TestNotifier;
@@ -26,21 +27,21 @@ import java.lang.reflect.Modifier;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class AbstractMycilaJunit3Test extends TestCase {
+public abstract class MycilaJunit3Test extends TestCase {
 
     private TestNotifier testNotifier;
 
-    public AbstractMycilaJunit3Test() {
+    public MycilaJunit3Test() {
         super();
     }
 
-    public AbstractMycilaJunit3Test(String name) {
+    public MycilaJunit3Test(String name) {
         super(name);
     }
 
     @Override
     public final void runBare() throws Throwable {
-        testNotifier = getTestHandler();
+        testNotifier = createTestNotifier();
         testNotifier.prepare();
         try {
             super.runBare();
@@ -51,7 +52,8 @@ public abstract class AbstractMycilaJunit3Test extends TestCase {
 
     @Override
     protected final void runTest() throws Throwable {
-        TestExecution testExecution = testNotifier.fireBeforeTest(getTestMethod());
+        testNotifier.fireBeforeTest(getTestMethod());
+        TestExecution testExecution = (TestExecution) Mycila.currentExecution();
         if (!testExecution.mustSkip()) {
             try {
                 super.runTest();
@@ -59,9 +61,10 @@ public abstract class AbstractMycilaJunit3Test extends TestCase {
                 testExecution.setThrowable(t);
             }
         }
-        testNotifier.fireAfterTest(testExecution);
-        if (testExecution.hasFailed()) {
-            throw testExecution.getThrowable();
+        testNotifier.fireAfterTest();
+        //noinspection ThrowableResultOfMethodCallIgnored
+        if (testExecution.throwable() != null) {
+            throw testExecution.throwable();
         }
     }
 
@@ -81,11 +84,11 @@ public abstract class AbstractMycilaJunit3Test extends TestCase {
     }
 
     /**
-     * Can be overriden to modify the behavior and provide in example our proper TestSetup instance
+     * Can be overriden to modify the behavior and provide in example our proper TestNotifier instance
      *
      * @return A TestHandler to fire test events (before and after execution)
      */
-    protected TestNotifier getTestHandler() {
+    protected TestNotifier createTestNotifier() {
         return MycilaTesting.from(getClass()).createNotifier(this);
     }
 

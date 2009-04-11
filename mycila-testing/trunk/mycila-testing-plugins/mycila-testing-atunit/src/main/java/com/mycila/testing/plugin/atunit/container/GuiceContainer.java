@@ -19,8 +19,12 @@ import atunit.core.Container;
 import atunit.lib.com.google.common.collect.Iterables;
 import atunit.lib.com.google.common.collect.Multimap;
 import atunit.lib.com.google.common.collect.Multimaps;
-import com.google.inject.*;
-import com.mycila.testing.core.ContextHolder;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import com.google.inject.TypeLiteral;
+import com.mycila.testing.core.Mycila;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -37,7 +41,7 @@ public class GuiceContainer implements Container {
         } else {
             injector = Guice.createInjector(fields);
         }
-        injector.injectMembers(ContextHolder.get().getTest().getTarget());
+        injector.injectMembers(Mycila.currentExecution().context().test().instance());
         return null;
     }
 

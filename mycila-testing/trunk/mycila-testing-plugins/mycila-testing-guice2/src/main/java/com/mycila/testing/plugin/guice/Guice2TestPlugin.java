@@ -47,7 +47,7 @@ public final class Guice2TestPlugin extends DefaultTestPlugin {
     @Override
     public void prepareTestInstance(final Context context) {
         context.setAttribute("guice.providers", new ArrayList<Provider<?>>());
-        GuiceContext ctx = context.getTest().getTargetClass().getAnnotation(GuiceContext.class);
+        GuiceContext ctx = context.test().testClass().getAnnotation(GuiceContext.class);
 
         // create modules
         List<Module> modules = new ArrayList<Module>();
@@ -67,24 +67,24 @@ public final class Guice2TestPlugin extends DefaultTestPlugin {
         modules.addAll(providedModules(context));
         modules.add(bindings(context));
         modules.add(providedBindings(context));
-        if (context.getTest().getTarget() instanceof Module) {
-            modules.add((Module) context.getTest().getTarget());
+        if (context.test().instance() instanceof Module) {
+            modules.add((Module) context.test().instance());
         }
 
         // create injector
         Injector injector = Guice.createInjector(findStage(ctx), Modules.override(contextualModules(ctx)).with(modules));
         context.setAttribute("com.google.inject.Injector", injector);
 
-        injector.injectMembers(context.getTest().getTarget());
+        injector.injectMembers(context.test().instance());
     }
 
     private Module bindings(final Context context) {
         return new Module() {
             public void configure(Binder binder) {
-                for (final Field field : context.getTest().getFieldsAnnotatedWith(Bind.class)) {
+                for (final Field field : context.test().findFieldsAnnotatedWith(Bind.class)) {
                     Guice2TestPlugin.this.configure(context, binder, field.getGenericType(), field.getAnnotation(Bind.class), new InjectedProvider<Object>() {
                         public Object getInternal() {
-                            return context.getTest().get(field);
+                            return context.test().get(field);
                         }
                     });
 
@@ -96,10 +96,10 @@ public final class Guice2TestPlugin extends DefaultTestPlugin {
     private Module providedBindings(final Context context) {
         return new Module() {
             public void configure(Binder binder) {
-                for (final Method method : context.getTest().getMethodsAnnotatedWith(Bind.class)) {
+                for (final Method method : context.test().findMethodsAnnotatedWith(Bind.class)) {
                     Guice2TestPlugin.this.configure(context, binder, method.getGenericReturnType(), method.getAnnotation(Bind.class), new InjectedProvider<Object>() {
                         public Object getInternal() {
-                            return context.getTest().invoke(method);
+                            return context.test().invoke(method);
                         }
                     });
 
@@ -116,20 +116,20 @@ public final class Guice2TestPlugin extends DefaultTestPlugin {
         if (!annotation.scope().equals(NoAnnotation.class)) {
             builder3.in(annotation.scope());
         }
-        context.<List<InjectedProvider<T>>>getAttribute("guice.providers").add(provider);
+        context.<List<InjectedProvider<T>>>attribute("guice.providers").add(provider);
     }
 
     @SuppressWarnings({"unchecked"})
     private List<Module> providedModules(Context ctx) {
         List<Module> modules = new ArrayList<Module>();
-        for (Method method : ctx.getTest().getMethodsOfTypeAnnotatedWith(Module.class, ModuleProvider.class)) {
-            modules.add((Module) ctx.getTest().invoke(method));
+        for (Method method : ctx.test().findMethodsOfTypeAnnotatedWith(Module.class, ModuleProvider.class)) {
+            modules.add((Module) ctx.test().invoke(method));
         }
-        for (Method method : ctx.getTest().getMethodsOfTypeAnnotatedWith(Module[].class, ModuleProvider.class)) {
-            modules.addAll(Arrays.asList((Module[]) ctx.getTest().invoke(method)));
+        for (Method method : ctx.test().findMethodsOfTypeAnnotatedWith(Module[].class, ModuleProvider.class)) {
+            modules.addAll(Arrays.asList((Module[]) ctx.test().invoke(method)));
         }
-        for (Method method : ctx.getTest().getMethodsOfTypeAnnotatedWith(Iterable.class, ModuleProvider.class)) {
-            for (Module module : (Iterable<Module>) ctx.getTest().invoke(method)) {
+        for (Method method : ctx.test().findMethodsOfTypeAnnotatedWith(Iterable.class, ModuleProvider.class)) {
+            for (Module module : (Iterable<Module>) ctx.test().invoke(method)) {
                 modules.add(module);
             }
         }

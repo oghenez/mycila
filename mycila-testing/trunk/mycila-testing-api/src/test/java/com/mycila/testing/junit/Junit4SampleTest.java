@@ -21,7 +21,7 @@ import org.junit.Test;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Junit4SampleTest extends AbstractMycilaJunit4Test {
+public final class Junit4SampleTest extends MycilaJunit4Test {
 
     static {
         assertFalse(MyPlugin.prepared);

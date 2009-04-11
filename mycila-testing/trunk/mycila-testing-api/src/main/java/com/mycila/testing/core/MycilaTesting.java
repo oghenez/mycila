@@ -16,6 +16,8 @@
 
 package com.mycila.testing.core;
 
+import com.mycila.log.Logger;
+import com.mycila.log.Loggers;
 import com.mycila.plugin.spi.PluginManager;
 
 import java.util.HashMap;
@@ -27,7 +29,7 @@ import java.util.Map;
 public final class MycilaTesting {
 
     public static final String DEFAULT_PLUGIN_DESCRIPTOR = "META-INF/mycila/testing/plugins.properties";
-
+    private static final Logger LOGGER = Loggers.get(Mycila.class);
     private static final Map<String, MycilaTesting> instances = new HashMap<String, MycilaTesting>();
     private static MycilaTesting customTestHandler;
 
@@ -142,17 +144,17 @@ public final class MycilaTesting {
      * @return a TestSetup instance which can be used to prepare a test with plugins
      */
     public static MycilaTesting from(MycilaPlugins mycilaPlugins) {
-        if(mycilaPlugins == null || mycilaPlugins.cache() == null) {
+        if(mycilaPlugins == null || mycilaPlugins.value() == null) {
             return staticDefaultSetup();
         }
         boolean descBlank = mycilaPlugins.descriptor() == null || mycilaPlugins.descriptor().trim().length() == 0;
-        switch (mycilaPlugins.cache()) {
+        switch (mycilaPlugins.value()) {
             case SHARED:
                 return descBlank ? staticCustomSetup() : staticSetup(mycilaPlugins.descriptor());
             case UNSHARED:
                 return descBlank ? newCustomSetup() : newSetup(mycilaPlugins.descriptor());
         }
-        throw new AssertionError("Use case not defined for value of enum Cache: " + mycilaPlugins.cache());
+        throw new AssertionError("Use case not defined for value of enum Cache: " + mycilaPlugins.value());
     }
 
 }

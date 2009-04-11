@@ -40,7 +40,7 @@ public final class JMock2TestPlugin extends DefaultTestPlugin {
 
     @Override
     public void prepareTestInstance(Context context) {
-        Field[] mocks = context.getTest().getFieldsAnnotatedWith(Mock.class);
+        Field[] mocks = context.test().findFieldsAnnotatedWith(Mock.class);
         Mockery mockery = findProvidedMockery(context);
         if (mockery == null) {
             mockery = new Mockery();
@@ -52,19 +52,19 @@ public final class JMock2TestPlugin extends DefaultTestPlugin {
             }
         }
         context.setAttribute(CTX_MOCKERY, mockery);
-        for (Field field : context.getTest().getFieldsOfTypeAnnotatedWith(Mockery.class, MockContext.class)) {
-            context.getTest().set(field, mockery);
+        for (Field field : context.test().findFieldsOfTypeAnnotatedWith(Mockery.class, MockContext.class)) {
+            context.test().set(field, mockery);
         }
         for (Field field : mocks) {
-            context.getTest().set(field, mockery.mock(field.getType(), field.getDeclaringClass().getName() + "." + field.getName()));
+            context.test().set(field, mockery.mock(field.getType(), field.getDeclaringClass().getName() + "." + field.getName()));
         }
     }
 
     private Mockery findProvidedMockery(Context context) {
         {
-            Method[] methods = context.getTest().getMethodsAnnotatedWith(MockContextProvider.class);
+            Method[] methods = context.test().findMethodsAnnotatedWith(MockContextProvider.class);
             if (methods.length > 0) {
-                Object o = context.getTest().invoke(methods[0]);
+                Object o = context.test().invoke(methods[0]);
                 if (o != null && o instanceof Mockery) {
                     return (Mockery) o;
                 }
@@ -72,9 +72,9 @@ public final class JMock2TestPlugin extends DefaultTestPlugin {
             }
         }
         {
-            Field[] fields = context.getTest().getFieldsAnnotatedWith(MockContextProvider.class);
+            Field[] fields = context.test().findFieldsAnnotatedWith(MockContextProvider.class);
             if (fields.length > 0) {
-                Object o = context.getTest().get(fields[0]);
+                Object o = context.test().get(fields[0]);
                 if (o != null && o instanceof Mockery) {
                     return (Mockery) o;
                 }
