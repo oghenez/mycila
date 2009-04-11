@@ -41,7 +41,7 @@ public final class MycilaTestingTest {
             }
 
             public Class<? extends Annotation> annotationType() {
-                return MycilaPlugins.class;
+                throw new AssertionError("should not go here");
             }
         });
         assertEquals(mycilaTesting.pluginManager().getCache().getBindings().size(), 1);
@@ -56,7 +56,7 @@ public final class MycilaTestingTest {
             }
 
             public Class<? extends Annotation> annotationType() {
-                return MycilaPlugins.class;
+                throw new AssertionError("should not go here");
             }
         }));
         assertEquals(mycilaTesting, MycilaTesting.from(new MycilaPlugins() {
@@ -65,11 +65,11 @@ public final class MycilaTestingTest {
             }
 
             public String descriptor() {
-                return MycilaTesting.DEFAULT_PLUGIN_DESCRIPTOR;
+                throw new AssertionError("should not go here");
             }
 
             public Class<? extends Annotation> annotationType() {
-                return MycilaPlugins.class;
+                throw new AssertionError("should not go here");
             }
         }));
         assertEquals(mycilaTesting, MycilaTesting.from((MycilaPlugins) null));
@@ -90,7 +90,7 @@ public final class MycilaTestingTest {
             }
 
             public Class<? extends Annotation> annotationType() {
-                return MycilaPlugins.class;
+                throw new AssertionError("should not go here");
             }
         });
         mycilaTesting.pluginManager().getCache().registerPlugin("aa", new MyPlugin());
@@ -104,7 +104,7 @@ public final class MycilaTestingTest {
             }
 
             public Class<? extends Annotation> annotationType() {
-                return MycilaPlugins.class;
+                throw new AssertionError("should not go here");
             }
         });
         assertEquals(mycilaTesting, mycilaTesting2);
@@ -124,7 +124,7 @@ public final class MycilaTestingTest {
             }
 
             public Class<? extends Annotation> annotationType() {
-                return MycilaPlugins.class;
+                throw new AssertionError("should not go here");
             }
         });
         assertEquals(mycilaTesting.pluginManager().getCache().getBindings().size(), 1);
@@ -139,7 +139,7 @@ public final class MycilaTestingTest {
             }
 
             public Class<? extends Annotation> annotationType() {
-                return MycilaPlugins.class;
+                throw new AssertionError("should not go here");
             }
         }));
     }

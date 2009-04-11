@@ -29,18 +29,20 @@ import java.util.Map;
 public final class MycilaTesting {
 
     public static final String DEFAULT_PLUGIN_DESCRIPTOR = "META-INF/mycila/testing/plugins.properties";
-    private static final Logger LOGGER = Loggers.get(Mycila.class);
+    private static final Logger LOGGER = Loggers.get(MycilaTesting.class);
     private static final Map<String, MycilaTesting> instances = new HashMap<String, MycilaTesting>();
     private static MycilaTesting customTestHandler;
 
     private final PluginManager<TestPlugin> pluginManager;
 
     private MycilaTesting() {
+        LOGGER.debug("Creating new empty plugin manager");
         pluginManager = new PluginManager<TestPlugin>(TestPlugin.class);
     }
 
 
     private MycilaTesting(String descriptor) {
+        LOGGER.debug("Creating new plugin manager from descriptor {0}", descriptor);
         pluginManager = new PluginManager<TestPlugin>(TestPlugin.class, descriptor);
     }
 
@@ -85,7 +87,10 @@ public final class MycilaTesting {
         MycilaTesting testSetup = instances.get(pluginDescriptor);
         if (testSetup == null) {
             testSetup = newSetup(pluginDescriptor);
+            LOGGER.debug("Registering new shared plugins for descriptor {0}", pluginDescriptor);
             instances.put(pluginDescriptor, testSetup);
+        } else {
+            LOGGER.debug("Reusing shared plugins for descriptor {0}", pluginDescriptor);
         }
         return testSetup;
     }
@@ -111,7 +116,10 @@ public final class MycilaTesting {
      */
     public static MycilaTesting staticCustomSetup() {
         if (customTestHandler == null) {
+            LOGGER.debug("Registering new shared empty plugin manager");
             customTestHandler = newCustomSetup();
+        } else {
+            LOGGER.debug("Reusing existing shared empty plugin manager");
         }
         return customTestHandler;
     }

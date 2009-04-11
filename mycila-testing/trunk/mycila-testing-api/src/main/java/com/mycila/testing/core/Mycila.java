@@ -18,6 +18,7 @@ package com.mycila.testing.core;
 import com.mycila.log.Logger;
 import com.mycila.log.Loggers;
 
+import java.text.MessageFormat;
 import java.util.WeakHashMap;
 
 /**
@@ -38,12 +39,12 @@ public final class Mycila {
     }
 
     static void registerCurrentExecution(Execution execution) {
-        LOGGER.debug("Registering Execution context in current thread for method %s.%s", execution.context().test().testClass().getName(), execution.method().getName());
+        LOGGER.debug("Registering Execution Context {0}#{1} for test {2}#{3,number,#}", execution.step(), execution.method().getName(), execution.context().test().testClass().getName(), execution.context().test().instance().hashCode());
         CURRENT_EXECUTION.set(execution);
     }
 
     static void registerContext(Context context) {
-        LOGGER.debug("Registering Global Test Context for instance %s of test %s", context.test().instance().hashCode(), context.test().testClass().getName());
+        LOGGER.debug("Registering Global Test Context for test {0}#{1,number,#}", context.test().testClass().getName(), context.test().instance().hashCode());
         CONTEXTS.put(context.test().instance(), context);
     }
 
@@ -51,7 +52,7 @@ public final class Mycila {
         if (LOGGER.canDebug()) {
             Execution execution = CURRENT_EXECUTION.get();
             if (execution != null) {
-                LOGGER.debug("Removing Execution context from current thread for method %s.%s", execution.context().test().testClass().getName(), execution.method().getName());
+                LOGGER.debug("Removing Execution Context {0}#{1} for test {2}#{3,number,#}", execution.step(), execution.method().getName(), execution.context().test().testClass().getName(), execution.context().test().instance().hashCode());
             }
         }
         CURRENT_EXECUTION.remove();
@@ -61,7 +62,7 @@ public final class Mycila {
         if (LOGGER.canDebug()) {
             Context context = CONTEXTS.get(testInstance);
             if (context != null) {
-                LOGGER.debug("Removing Global Test Context for instance %s of test %s", context.test().instance().hashCode(), context.test().testClass().getName());
+                LOGGER.debug("Removing Global Test Context for test {0}#{1,number,#}", context.test().testClass().getName(), context.test().instance().hashCode());
             }
         }
         CONTEXTS.remove(testInstance);
@@ -70,7 +71,7 @@ public final class Mycila {
     public static Context context(Object testInstance) {
         Context context = CONTEXTS.get(testInstance);
         if (context == null) {
-            throw new IllegalStateException("There is no more Global Test Context available for " + testInstance);
+            throw new IllegalStateException("No Global Test Context available for test " + MessageFormat.format("{0}#{1,number,#}", testInstance.getClass().getName(), testInstance.hashCode()));
         }
         return context;
     }
@@ -82,7 +83,7 @@ public final class Mycila {
     public static Execution currentExecution() {
         Execution c = CURRENT_EXECUTION.get();
         if (c == null) {
-            throw new IllegalStateException("There is no Execution context bound to local thread !");
+            throw new IllegalStateException("No Execution context bound to local thread !");
         }
         return c;
     }

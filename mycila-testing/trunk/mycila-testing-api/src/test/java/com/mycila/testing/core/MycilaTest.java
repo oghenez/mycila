@@ -15,34 +15,83 @@
  */
 package com.mycila.testing.core;
 
+import com.mycila.testing.JDKLogging;
 import static com.mycila.testing.core.Cache.*;
-import com.mycila.testing.testng.MycilaTestNGTest;
 import com.mycila.testing.util.Code;
 import static com.mycila.testing.util.ExtendedAssert.*;
 import static org.mockito.Mockito.*;
+import static org.testng.Assert.*;
 import org.testng.annotations.Test;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @MycilaPlugins(UNSHARED)
-public final class MycilaTest extends MycilaTestNGTest {
+public final class MycilaTest {
+
+    static {
+        JDKLogging.init();
+    }
+
     @Test
-    public void test() throws Exception {
+    public void test_context() throws Exception {
         TestInstance testInstance = new TestInstance(this);
         Context context = mock(Context.class);
         when(context.test()).thenReturn(testInstance);
-        assertThrow(IllegalStateException.class).withMessage("There is no Context bound to local thread !").whenRunning(new Code() {
+
+        assertThrow(IllegalStateException.class).containingMessage("No Global Test Context available for test com.mycila.testing.core.MycilaTest#").whenRunning(new Code() {
             public void run() throws Throwable {
                 Mycila.context(MycilaTest.this);
             }
         });
+
         Mycila.registerContext(context);
-        assertEquals(Mycila.currentExecution(), context);
-        Mycila.unsetCurrentExecution();
-        assertThrow(IllegalStateException.class).withMessage("There is no Context bound to local thread !").whenRunning(new Code() {
+        assertEquals(Mycila.context(this), context);
+        Mycila.unsetContext(this);
+
+        assertThrow(IllegalStateException.class).containingMessage("No Global Test Context available for test com.mycila.testing.core.MycilaTest#").whenRunning(new Code() {
             public void run() throws Throwable {
                 Mycila.context(MycilaTest.this);
+            }
+        });
+    }
+
+    @Test
+    public void test_execution() throws Exception {
+        TestInstance testInstance = new TestInstance(this);
+        Context context = mock(Context.class);
+        final Execution execution = mock(Execution.class);
+        when(context.test()).thenReturn(testInstance);
+        when(execution.context()).thenReturn(context);
+        when(execution.step()).thenReturn(Step.BEFORE);
+        when(execution.method()).thenReturn(getClass().getDeclaredMethod("test_execution"));
+
+        assertThrow(IllegalStateException.class).containingMessage("No Execution context bound to local thread !").whenRunning(new Code() {
+            public void run() throws Throwable {
+                Mycila.currentExecution();
+            }
+        });
+
+        Mycila.registerCurrentExecution(execution);
+        assertEquals(Mycila.currentExecution(), execution);
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.submit(new Runnable() {
+            public void run() {
+                // Execution can be inherited between threads
+                assertEquals(Mycila.currentExecution(), execution);
+            }
+        }).get();
+        executorService.shutdown();
+
+        Mycila.unsetCurrentExecution();
+
+        assertThrow(IllegalStateException.class).containingMessage("No Execution context bound to local thread !").whenRunning(new Code() {
+            public void run() throws Throwable {
+                Mycila.currentExecution();
             }
         });
     }
