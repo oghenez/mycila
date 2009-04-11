@@ -18,9 +18,9 @@ Such an API is not very useful in final applications such as UIs, Webapps, ... B
  * *Fast*: code is very fast: simply delegates to existing loggers. Also, the API is designed to avoid doing string concatenations and unneeded calls.
 
  * *Improvements*: the library add some improvements to the JDK Logging API such as:
- ** InvocationHandler: to avoid creation of hooks in handlers
- ** Asynchronous logging
- ** Thresolds
+  * InvocationHandler: to avoid creation of hooks in handlers
+  * Asynchronous logging
+  * Thresolds
 
 = How to use =
 
@@ -88,7 +88,55 @@ Currently, Mycila Log already supports
 
 = Extending =
 
-Extending
+Extending Mycila Log Wrapper is failry simple. Supposing the Log4j support was not there, Here is how we would have added it:
+
+{{{
+Loggers.use(new LoggerProvider() {
+    public Logger get(String name) {
+        final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(name);
+        return new AbstractLogger() {
+            public boolean canLog(com.mycila.log.Level level) {
+                switch (level) {
+                    case TRACE:
+                        return logger.isEnabledFor(org.apache.log4j.Level.TRACE);
+                    case DEBUG:
+                        return logger.isEnabledFor(org.apache.log4j.Level.DEBUG);
+                    case INFO:
+                        return logger.isEnabledFor(org.apache.log4j.Level.INFO);
+                    case WARN:
+                        return logger.isEnabledFor(org.apache.log4j.Level.WARN);
+                    case ERROR:
+                        return logger.isEnabledFor(org.apache.log4j.Level.ERROR);
+                    default:
+                        return false;
+                }
+            }
+            @Override
+            protected void doLog(com.mycila.log.Level level, Throwable throwable, String message, Object... args) {
+                switch (level) {
+                    case TRACE:
+                        logger.log(org.apache.log4j.Level.TRACE, MessageFormat.format(message, args), throwable);
+                        break;
+                    case DEBUG:
+                        logger.log(org.apache.log4j.Level.DEBUG, MessageFormat.format(message, args), throwable);
+                        break;
+                    case INFO:
+                        logger.log(org.apache.log4j.Level.INFO, MessageFormat.format(message, args), throwable);
+                        break;
+                    case WARN:
+                        logger.log(org.apache.log4j.Level.WARN, MessageFormat.format(message, args), throwable);
+                        break;
+                    case ERROR:
+                        logger.log(org.apache.log4j.Level.ERROR, MessageFormat.format(message, args), throwable);
+                        break;
+                    default:
+
+                }
+            }
+        };
+    }
+});
+}}}
 
 = Downloads =
 
