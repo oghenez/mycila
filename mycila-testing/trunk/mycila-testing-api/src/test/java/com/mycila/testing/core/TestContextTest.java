@@ -18,6 +18,7 @@ package com.mycila.testing.core;
 import com.mycila.plugin.spi.PluginManager;
 import com.mycila.testing.FailingPlugin;
 import com.mycila.testing.MyPlugin;
+import static com.mycila.testing.core.Cache.*;
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -25,6 +26,7 @@ import org.testng.annotations.Test;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
+@MycilaPlugins(UNSHARED)
 public final class TestContextTest {
 
     PluginManager<TestPlugin> plugins;
@@ -40,24 +42,24 @@ public final class TestContextTest {
 
     @Test
     public void test_attributes() throws Exception {
-        assertFalse(test.getAttributes().containsKey("yo"));
+        assertFalse(test.attributes().containsKey("yo"));
         assertFalse(test.hasAttribute("yo"));
         test.setAttribute("yo", "man");
         assertTrue(test.hasAttribute("yo"));
-        assertTrue(test.getAttributes().containsKey("yo"));
-        assertEquals(test.getAttribute("yo"), "man");
+        assertTrue(test.attributes().containsKey("yo"));
+        assertEquals(test.attribute("yo"), "man");
         test.removeAttribute("yo");
         assertFalse(test.hasAttribute("yo"));
     }
 
     @Test(expectedExceptions = TestPluginException.class)
     public void test_attributes_inexisting() throws Exception {
-        test.getAttribute("inexisting");
+        test.attribute("inexisting");
     }
 
     @Test
     public void test_instance() throws Exception {
-        assertEquals(test.getTest().getTarget(), this);
+        assertEquals(test.test().instance(), this);
     }
 
     @Test(expectedExceptions = TestPluginException.class)
@@ -79,12 +81,12 @@ public final class TestContextTest {
         assertFalse(MyPlugin.afters.contains("test_fireEvents"));
         assertFalse(MyPlugin.ends.contains("com.mycila.testing.core.TestContextTest"));
 
-        TestExecution testExecution = test.fireBeforeTest(getClass().getMethod("test_fireEvents"));
+        test.fireBeforeTest(getClass().getMethod("test_fireEvents"));
         assertTrue(MyPlugin.befores.contains("test_fireEvents"));
         assertFalse(MyPlugin.afters.contains("test_fireEvents"));
         assertFalse(MyPlugin.ends.contains("com.mycila.testing.core.TestContextTest"));
 
-        test.fireAfterTest(testExecution);
+        test.fireAfterTest();
         assertTrue(MyPlugin.befores.contains("test_fireEvents"));
         assertTrue(MyPlugin.afters.contains("test_fireEvents"));
         assertFalse(MyPlugin.ends.contains("com.mycila.testing.core.TestContextTest"));
@@ -105,9 +107,9 @@ public final class TestContextTest {
             assertEquals(e.getCause().getMessage(), "Hello 1");
         }
 
-        TestExecution testExecution = test.fireBeforeTest(getClass().getMethod("test_fireEvents_Exceptions2"));
+        test.fireBeforeTest(getClass().getMethod("test_fireEvents_Exceptions2"));
         try {
-            test.fireAfterTest(testExecution);
+            test.fireAfterTest();
             fail();
         } catch (TestPluginException e) {
             e.printStackTrace();

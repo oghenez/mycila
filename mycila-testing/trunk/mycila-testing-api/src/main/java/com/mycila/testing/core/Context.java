@@ -16,6 +16,8 @@
 
 package com.mycila.testing.core;
 
+import com.mycila.plugin.spi.PluginManager;
+
 import java.util.Map;
 
 /**
@@ -27,11 +29,16 @@ import java.util.Map;
 public interface Context {
 
     /**
+     * @return The plugin manager used for this test
+     */
+    PluginManager<TestPlugin> pluginManager();
+
+    /**
      * Get the representation of this test
      *
      * @return A {@link TestInstance} instance for this test
      */
-    TestInstance getTest();
+    TestInstance test();
 
     /**
      * Get an attribute from this context
@@ -41,7 +48,7 @@ public interface Context {
      * @return The attribute value
      * @throws TestPluginException If the attribute does not exist (and thus we cannot get its value)
      */
-    <T> T getAttribute(String name) throws TestPluginException;
+    <T> T attribute(String name) throws TestPluginException;
 
     /**
      * Set an attribute
@@ -71,6 +78,6 @@ public interface Context {
     /**
      * @return All attributes from this context
      */
-    Map<String, Object> getAttributes();
+    Map<String, Object> attributes();
 
 }

@@ -40,76 +40,76 @@ public final class TestInstanceTest {
     @Test
     public void test_getTarget() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getTarget(), this);
+        assertEquals(ti.instance(), this);
     }
 
     @Test
     public void test_getTargetClass() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getTargetClass(), getClass());
+        assertEquals(ti.testClass(), getClass());
     }
 
     @Test
     public void test_getFieldsOfType() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getFieldsOfType(int.class).length, 2);
-        assertEquals(ti.getFieldsOfType(int.class)[0].getName(), "field2");
+        assertEquals(ti.findFieldsOfType(int.class).length, 2);
+        assertEquals(ti.findFieldsOfType(int.class)[0].getName(), "field2");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_getFieldsOfType_null() throws Exception {
         TestInstance ti = new TestInstance(this);
-        ti.getFieldsOfType(null);
+        ti.findFieldsOfType(null);
     }
 
     @Test
     public void test_getFieldsOfTypeAnnotatedWith() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getFieldsOfTypeAnnotatedWith(int.class, Annot.class).length, 1);
-        assertEquals(ti.getFieldsOfTypeAnnotatedWith(int.class, Annot.class)[0].getName(), "field3");
+        assertEquals(ti.findFieldsOfTypeAnnotatedWith(int.class, Annot.class).length, 1);
+        assertEquals(ti.findFieldsOfTypeAnnotatedWith(int.class, Annot.class)[0].getName(), "field3");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_getFieldsOfTypeAnnotatedWith_null1() throws Exception {
         TestInstance ti = new TestInstance(this);
-        ti.getFieldsOfTypeAnnotatedWith(null, Annot.class);
+        ti.findFieldsOfTypeAnnotatedWith(null, Annot.class);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_getFieldsOfTypeAnnotatedWith_null2() throws Exception {
         TestInstance ti = new TestInstance(this);
-        ti.getFieldsOfTypeAnnotatedWith(MyPlugin.class, null);
+        ti.findFieldsOfTypeAnnotatedWith(MyPlugin.class, null);
     }
 
     @Test
     public void test_getFieldsAnnotatedWith() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getFieldsAnnotatedWith(Annot.class).length, 1);
-        assertEquals(ti.getFieldsAnnotatedWith(Annot.class)[0].getName(), "field3");
+        assertEquals(ti.findFieldsAnnotatedWith(Annot.class).length, 1);
+        assertEquals(ti.findFieldsAnnotatedWith(Annot.class)[0].getName(), "field3");
     }
 
     @Test
     public void test_getFieldsAnnotatedWith_accessibility() throws Exception {
         TestInstance ti = new TestInstance(new MyPlugin());
-        assertEquals(ti.getFieldsAnnotatedWith(Annot.class).length, 1);
+        assertEquals(ti.findFieldsAnnotatedWith(Annot.class).length, 1);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_getFieldsAnnotatedWith_null() throws Exception {
         TestInstance ti = new TestInstance(this);
-        ti.getFieldsAnnotatedWith(null);
+        ti.findFieldsAnnotatedWith(null);
     }
 
     @Test
     public void test_getMethodsOfType() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getMethodsOfType(int.class).length, 2); // also Object.hashCode()
+        assertEquals(ti.findMethodsOfType(int.class).length, 2); // also Object.hashCode()
     }
 
     @Test
     public void test_getMethodsOfType2() throws Exception {
         TestInstance ti = new TestInstance(this);
-        Method[] m = ti.getMethodsOfType(String.class);
+        Method[] m = ti.findMethodsOfType(String.class);
         for (Method method : m) {
             System.out.println("- " + method.getName());
         }
@@ -119,7 +119,7 @@ public final class TestInstanceTest {
     @Test
     public void test_getMethodsOfType3() throws Exception {
         TestInstance ti = new TestInstance(this);
-        Method[] m = ti.getMethodsOfType(CharSequence.class);
+        Method[] m = ti.findMethodsOfType(CharSequence.class);
         for (Method method : m) {
             System.out.println("- " + method.getName());
         }
@@ -129,66 +129,66 @@ public final class TestInstanceTest {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_getMethodsOfType_null() throws Exception {
         TestInstance ti = new TestInstance(this);
-        ti.getMethodsOfType(null);
+        ti.findMethodsOfType(null);
     }
 
     @Test
     public void test_getMethodsAnnotatedWith() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getMethodsAnnotatedWith(Test.class).length, 23);
+        assertEquals(ti.findMethodsAnnotatedWith(Test.class).length, 23);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_getMethodsAnnotatedWith_null() throws Exception {
         TestInstance ti = new TestInstance(this);
-        ti.getMethodsAnnotatedWith(null);
+        ti.findMethodsAnnotatedWith(null);
     }
 
     @Test
     public void test_getMethodsOfTypeAnnotatedWith() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getMethodsOfTypeAnnotatedWith(int.class, Annot.class).length, 1);
+        assertEquals(ti.findMethodsOfTypeAnnotatedWith(int.class, Annot.class).length, 1);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_getMethodsOfTypeAnnotatedWith_null1() throws Exception {
         TestInstance ti = new TestInstance(this);
-        ti.getMethodsOfTypeAnnotatedWith(null, Annot.class);
+        ti.findMethodsOfTypeAnnotatedWith(null, Annot.class);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_getMethodsOfTypeAnnotatedWith_null2() throws Exception {
         TestInstance ti = new TestInstance(this);
-        ti.getMethodsOfTypeAnnotatedWith(int.class, null);
+        ti.findMethodsOfTypeAnnotatedWith(int.class, null);
     }
 
     @Test
     public void test_invoke() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getMethodsOfTypeAnnotatedWith(String.class, Annot.class).length, 1);
-        assertEquals(ti.invoke(ti.getMethodsOfTypeAnnotatedWith(String.class, Annot.class)[0]), "10");
+        assertEquals(ti.findMethodsOfTypeAnnotatedWith(String.class, Annot.class).length, 1);
+        assertEquals(ti.invoke(ti.findMethodsOfTypeAnnotatedWith(String.class, Annot.class)[0]), "10");
     }
 
     @Test(expectedExceptions = TestPluginException.class)
     public void test_invoke_exc() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getMethodsOfTypeAnnotatedWith(int.class, Annot.class).length, 1);
-        ti.invoke(ti.getMethodsOfTypeAnnotatedWith(int.class, Annot.class)[0]);
+        assertEquals(ti.findMethodsOfTypeAnnotatedWith(int.class, Annot.class).length, 1);
+        ti.invoke(ti.findMethodsOfTypeAnnotatedWith(int.class, Annot.class)[0]);
     }
 
     @Test(expectedExceptions = TestPluginException.class)
     public void test_invoke_bad_args() throws Exception {
         TestInstance ti = new TestInstance(this);
-        assertEquals(ti.getMethodsOfTypeAnnotatedWith(String.class, Annot.class).length, 1);
-        ti.invoke(ti.getMethodsOfTypeAnnotatedWith(String.class, Annot.class)[0], 10, 20);
+        assertEquals(ti.findMethodsOfTypeAnnotatedWith(String.class, Annot.class).length, 1);
+        ti.invoke(ti.findMethodsOfTypeAnnotatedWith(String.class, Annot.class)[0], 10, 20);
     }
 
     @Test
     public void test_get_set() throws Exception {
         TestInstance ti = new TestInstance(new MyPlugin());
-        assertNull(ti.get(ti.getFieldsAnnotatedWith(Annot.class)[0]));
-        ti.set(ti.getFieldsAnnotatedWith(Annot.class)[0], 10);
-        assertEquals(ti.get(ti.getFieldsAnnotatedWith(Annot.class)[0]), 10);
+        assertNull(ti.get(ti.findFieldsAnnotatedWith(Annot.class)[0]));
+        ti.set(ti.findFieldsAnnotatedWith(Annot.class)[0], 10);
+        assertEquals(ti.get(ti.findFieldsAnnotatedWith(Annot.class)[0]), 10);
     }
 
     @Annot

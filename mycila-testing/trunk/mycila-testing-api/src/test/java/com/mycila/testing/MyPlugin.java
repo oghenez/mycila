@@ -44,10 +44,10 @@ public class MyPlugin extends DefaultTestPlugin {
 
     @Override
     public void beforeTest(TestExecution testExecution) throws Exception {
-        befores.add(testExecution.getMethod().getName());
-        if(testExecution.getMethod().getName().equals("test_fireEvents_Exceptions1")) {
+        befores.add(testExecution.method().getName());
+        if(testExecution.method().getName().equals("test_fireEvents_Exceptions1")) {
             throw new IllegalArgumentException("Hello 1");
-        } else if(testExecution.getMethod().getName().equals("test_skip")) {
+        } else if(testExecution.method().getName().equals("test_skip")) {
             assertFalse(testExecution.mustSkip());
             testExecution.setSkip(true);
         }
@@ -55,14 +55,14 @@ public class MyPlugin extends DefaultTestPlugin {
 
     @Override
     public void afterTest(TestExecution testExecution) throws Exception {
-        afters.add(testExecution.getMethod().getName());
-        if(testExecution.getMethod().getName().equals("test_fireEvents_Exceptions2")) {
+        afters.add(testExecution.method().getName());
+        if(testExecution.method().getName().equals("test_fireEvents_Exceptions2")) {
             throw new IllegalArgumentException("Hello 2");
         }
     }
 
     @Override
     public void afterClass(Context context) throws Exception {
-        ends.add(context.getTest().getTargetClass().getName());
+        ends.add(context.test().testClass().getName());
     }
 }

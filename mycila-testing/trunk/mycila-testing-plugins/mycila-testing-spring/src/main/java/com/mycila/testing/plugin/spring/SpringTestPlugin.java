@@ -31,12 +31,12 @@ public final class SpringTestPlugin extends DefaultTestPlugin {
     @Override
     public void prepareTestInstance(Context context) {
         try {
-            final TestContextManager manager = new TestContextManager(context.getTest().getTargetClass());
+            final TestContextManager manager = new TestContextManager(context.test().testClass());
             final TestContext ctx = manager.testContext();
             context.setAttribute("org.springframework.test.context.TestContextManager", manager);
             context.setAttribute("org.springframework.test.context.TestContext", ctx);
             setupContextLoader(ctx, new MycilaContextLoader(context));
-            manager.prepareTestInstance(context.getTest().getTarget());
+            manager.prepareTestInstance(context.test().instance());
             context.setAttribute("org.springframework.context.ApplicationContext", manager.testContext().getApplicationContext());
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);

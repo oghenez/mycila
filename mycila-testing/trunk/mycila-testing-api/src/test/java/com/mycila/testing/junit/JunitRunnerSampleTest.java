@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@RunWith(MycilaJunit4Runner.class)
+@RunWith(MycilaJunitRunner.class)
 public final class JunitRunnerSampleTest {
 
     static {

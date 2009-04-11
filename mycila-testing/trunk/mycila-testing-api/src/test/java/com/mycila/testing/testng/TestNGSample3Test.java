@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class TestNGSample3Test extends AbstractMycilaTestNGTest {
+public final class TestNGSample3Test extends MycilaTestNGTest {
 
     boolean prepared;
     boolean before;
@@ -60,7 +60,7 @@ public final class TestNGSample3Test extends AbstractMycilaTestNGTest {
     }
 
     @Override
-    protected TestNotifier getTestHandler() {
+    protected TestNotifier createTestNotifier() {
         MycilaTesting testSetup = MycilaTesting.newCustomSetup();
         testSetup.pluginManager().getCache().registerPlugin("custom", new DefaultTestPlugin() {
             @Override
@@ -69,7 +69,7 @@ public final class TestNGSample3Test extends AbstractMycilaTestNGTest {
                 assertTrue(prepared);
                 assertFalse(before);
                 before = true;
-                testExecution.setSkip(testExecution.getMethod().getName().equals("test_skip"));
+                testExecution.setSkip(testExecution.method().getName().equals("test_skip"));
             }
 
             @Override
@@ -78,12 +78,12 @@ public final class TestNGSample3Test extends AbstractMycilaTestNGTest {
                 assertTrue(prepared);
                 assertTrue(before);
                 assertFalse(after);
-                if (testExecution.getMethod().getName().equals("test_fail")) {
+                if (testExecution.method().getName().equals("test_fail")) {
                     System.out.println("=> exception");
-                    assertNotNull(testExecution.getThrowable());
-                    assertEquals(testExecution.getThrowable().getClass(), IllegalArgumentException.class);
+                    assertNotNull(testExecution.throwable());
+                    assertEquals(testExecution.throwable().getClass(), IllegalArgumentException.class);
                 } else {
-                    assertNull(testExecution.getThrowable());
+                    assertNull(testExecution.throwable());
                 }
             }
 

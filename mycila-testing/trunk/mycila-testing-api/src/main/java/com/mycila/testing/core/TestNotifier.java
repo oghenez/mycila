@@ -32,18 +32,16 @@ public interface TestNotifier {
      * Fires a before test exection event to all plugins
      *
      * @param method Test method that will be executed
-     * @return True of the execution should be done, false otherwise. The decision is taken by the plugins
      * @throws TestPluginException If a plugin failed in its execution
      */
-    TestExecution fireBeforeTest(Method method) throws TestPluginException;
+    void fireBeforeTest(Method method) throws TestPluginException;
 
     /**
      * Must be fired after the execution of a test method, even if the test method was skipped because if a return of false of the beforeTest method.
      *
-     * @param testExecution The test execution context return by {@link #fireBeforeTest(java.lang.reflect.Method)}
      * @throws TestPluginException If a plugin failed in its execution
      */
-    void fireAfterTest(TestExecution testExecution) throws TestPluginException;
+    void fireAfterTest() throws TestPluginException;
 
     /**
      * Fires an event telling plugins that all tests of this class have ended

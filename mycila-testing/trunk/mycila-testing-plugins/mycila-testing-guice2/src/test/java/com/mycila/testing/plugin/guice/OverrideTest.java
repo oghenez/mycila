@@ -17,14 +17,14 @@ package com.mycila.testing.plugin.guice;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
-import com.mycila.testing.testng.AbstractMycilaTestNGTest;
+import com.mycila.testing.testng.MycilaTestNGTest;
 import org.testng.annotations.Test;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @GuiceContext(OverrideTest.MyModule.class)
-public final class OverrideTest extends AbstractMycilaTestNGTest {
+public final class OverrideTest extends MycilaTestNGTest {
 
     @Inject
     String value;

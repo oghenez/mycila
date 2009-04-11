@@ -23,8 +23,8 @@ import org.testng.annotations.Test;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@MycilaPlugins(cache = Cache.UNSHARED, descriptor = "/plugins.properties")
-public final class TestNGSampleAnnotTest extends AbstractMycilaTestNGTest {
+@MycilaPlugins(value = Cache.UNSHARED, descriptor = "/plugins.properties")
+public final class TestNGSampleAnnotTest extends MycilaTestNGTest {
 
     static {
         assertFalse(MyPlugin.prepared);

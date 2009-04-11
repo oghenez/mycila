@@ -35,6 +35,6 @@ public final class MockitoTestPlugin extends DefaultTestPlugin {
 
     @Override
     public void prepareTestInstance(Context context) {
-        MockitoAnnotations.initMocks(context.getTest().getTarget());
+        MockitoAnnotations.initMocks(context.test().instance());
     }
 }

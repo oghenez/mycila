@@ -37,7 +37,7 @@ public @interface MycilaPlugins {
      *
      * @return The cache strategy to use for plugins
      */
-    Cache cache() default Cache.SHARED;
+    Cache value() default Cache.SHARED;
 
     /**
      * Overrides default plugin descriptor file to use. If null or empty, the plugin cache will not load anything: it will be up to the

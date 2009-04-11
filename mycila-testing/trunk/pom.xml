@@ -164,6 +164,8 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
+                    <showDeprecation>true</showDeprecation>
+                    <showWarnings>true</showWarnings>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
                 </configuration>
@@ -352,17 +354,21 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- mycila testing -->
+            <!-- mycila -->
             <dependency>
                 <groupId>com.mycila.testing</groupId>
                 <artifactId>mycila-testing-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <!-- mycila plugin -->
             <dependency>
                 <groupId>com.mycila</groupId>
                 <artifactId>mycila-plugin</artifactId>
-                <version>1.5</version>
+                <version>1.6</version>
+            </dependency>
+            <dependency>
+                <groupId>com.mycila</groupId>
+                <artifactId>mycila-log</artifactId>
+                <version>1.1</version>
             </dependency>
             <!-- test frameworks -->
             <dependency>

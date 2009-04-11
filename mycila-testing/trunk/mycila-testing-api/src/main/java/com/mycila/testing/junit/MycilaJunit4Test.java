@@ -21,7 +21,7 @@ import org.junit.runner.RunWith;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@RunWith(MycilaJunit4Runner.class)
-public abstract class AbstractMycilaJunit4Test extends Assert {
+@RunWith(MycilaJunitRunner.class)
+public abstract class MycilaJunit4Test extends Assert {
     
 }

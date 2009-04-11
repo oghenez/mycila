@@ -31,20 +31,20 @@ public final class TestExecutionTest {
     public void test_skip() throws Exception {
         TestNotifier notifier = MycilaTesting.from(getClass()).createNotifier(this);
 
-        final TestExecution testExecution = notifier.fireBeforeTest(getClass().getMethod("test_skip"));
-        assertTrue(testExecution.mustSkip());
+        notifier.fireBeforeTest(getClass().getMethod("test_skip"));
+        assertTrue(((TestExecution) Mycila.currentExecution()).mustSkip());
 
         assertThrow(UnsupportedOperationException.class).withMessage("TestExecution.setSkip can only be called after 'fireBeforeTest' call").whenRunning(new Code() {
             public void run() throws Throwable {
-                testExecution.setSkip(true);
+                ((TestExecution) Mycila.currentExecution()).setSkip(true);
             }
         });
 
-        notifier.fireAfterTest(testExecution);
+        notifier.fireAfterTest();
 
         assertThrow(UnsupportedOperationException.class).withMessage("TestExecution.setSkip can only be called after 'fireBeforeTest' call").whenRunning(new Code() {
             public void run() throws Throwable {
-                testExecution.setSkip(true);
+                ((TestExecution) Mycila.currentExecution()).setSkip(true);
             }
         });
     }
@@ -53,26 +53,27 @@ public final class TestExecutionTest {
     public void test_throwable() throws Exception {
         TestNotifier notifier = MycilaTesting.from(getClass()).createNotifier(this);
 
-        final TestExecution testExecution = notifier.fireBeforeTest(getClass().getMethod("test_throwable"));
-        assertNull(testExecution.getThrowable());
+        notifier.fireBeforeTest(getClass().getMethod("test_throwable"));
+        final TestExecution testExecution = (TestExecution) Mycila.currentExecution();
+        assertNull(testExecution.throwable());
         assertFalse(testExecution.hasFailed());
 
         testExecution.setThrowable(new IllegalStateException());
-        assertNotNull(testExecution.getThrowable());
+        assertNotNull(testExecution.throwable());
         assertTrue(testExecution.hasFailed());
 
         testExecution.setThrowable(null);
-        assertNull(testExecution.getThrowable());
+        assertNull(testExecution.throwable());
         assertFalse(testExecution.hasFailed());
 
         testExecution.setThrowable(new InvocationTargetException(new IllegalArgumentException()));
-        assertNotNull(testExecution.getThrowable());
-        assertEquals(testExecution.getThrowable().getClass(), IllegalArgumentException.class);
+        assertNotNull(testExecution.throwable());
+        assertEquals(testExecution.throwable().getClass(), IllegalArgumentException.class);
         assertTrue(testExecution.hasFailed());
-        
-        notifier.fireAfterTest(testExecution);
 
-        assertNotNull(testExecution.getThrowable());
+        notifier.fireAfterTest();
+
+        assertNotNull(testExecution.throwable());
         assertTrue(testExecution.hasFailed());
 
         assertThrow(UnsupportedOperationException.class).withMessage("TestExecution.setThrowable can only be called after 'fireBeforeTest' call and before 'fireAfterTest' call").whenRunning(new Code() {
