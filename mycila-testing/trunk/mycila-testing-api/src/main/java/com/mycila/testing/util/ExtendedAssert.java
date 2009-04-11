@@ -148,32 +148,7 @@ public final class ExtendedAssert {
     }
 
     public static AssertException assertThrow(final Class<? extends Throwable> exceptionClass) {
-        return new AssertException() {
-            String message;
-
-            public AssertException withMessage(String message) {
-                this.message = message;
-                return this;
-            }
-
-            public void whenRunning(Code code) {
-                boolean failed = false;
-                try {
-                    code.run();
-                    failed = true;
-                } catch (Throwable throwable) {
-                    if (!exceptionClass.isAssignableFrom(throwable.getClass())) {
-                        fail("Received bad exception class. Exception is:\n" + asString(throwable), throwable.getClass().getName(), exceptionClass.getName());
-                    }
-                    if (message == null && throwable.getMessage() != null || message != null && !message.equals(throwable.getMessage())) {
-                        fail("Received bad exception message. Exception is:\n" + asString(throwable), throwable.getMessage(), message);
-                    }
-                }
-                if(failed) {
-                    fail(String.format("Should have thrown Exception class '%s'%s", exceptionClass.getName(), message == null ? "" : String.format(" with message '%s'", message)));
-                }
-            }
-        };
+        return new AssertionExceptionImpl(exceptionClass);
     }
 
     private static String asString(Throwable t) {
@@ -214,6 +189,88 @@ public final class ExtendedAssert {
     public static interface AssertException {
         AssertException withMessage(String message);
 
+        AssertException containingMessage(String message);
+
         void whenRunning(Code code);
     }
+
+    private static class AssertionExceptionImpl implements AssertException {
+
+        private static enum MsgCheck {
+            NONE, EQ, IN
+        }
+
+        private final Class<? extends Throwable> exceptionClass;
+
+        private String message;
+        private MsgCheck msgCheck = MsgCheck.NONE;
+
+        public AssertionExceptionImpl(Class<? extends Throwable> exceptionClass) {
+            this.exceptionClass = exceptionClass;
+        }
+
+        public AssertException withMessage(String message) {
+            this.message = message;
+            msgCheck = MsgCheck.EQ;
+            return this;
+        }
+
+        public AssertException containingMessage(String message) {
+            this.message = message;
+            msgCheck = MsgCheck.IN;
+            return this;
+        }
+
+        public void whenRunning(Code code) {
+            boolean failed = true;
+            try {
+                code.run();
+                failed = false;
+            } catch (Throwable throwable) {
+                if (!exceptionClass.isAssignableFrom(throwable.getClass())) {
+                    fail("Received bad exception class. Exception is:\n" + asString(throwable), throwable.getClass().getName(), exceptionClass.getName());
+                }
+                if (msgCheck != MsgCheck.NONE) {
+                    String msgThrown = throwable.getMessage();
+                    if (message == null && msgThrown != null) {
+                        fail("Received bad exception message. Exception is:\n" + asString(throwable), msgThrown, "no message (null)");
+                    } else if (message != null && msgThrown == null) {
+                        switch (msgCheck) {
+                            case EQ:
+                                fail("Received bad exception message. Exception is:\n" + asString(throwable), "no message (null)", message);
+                            case IN:
+                                fail("Received bad exception message. Exception is:\n" + asString(throwable), "no message (null)", "message containing: " + message);
+                        }
+                    } else if(message != null && msgThrown != null) {
+                        switch (msgCheck) {
+                            case EQ:
+                                if(!message.equals(msgThrown)) {
+                                    fail("Received bad exception message. Exception is:\n" + asString(throwable), msgThrown, message);
+                                } else {
+                                    break;
+                                }
+                            case IN:
+                                if(!msgThrown.contains(message)) {
+                                    fail("Received bad exception message. Exception is:\n" + asString(throwable), msgThrown, "message containing: " + message);
+                                } else {
+                                    break;
+                                }
+                        }
+                    }
+                }
+            }
+            if (!failed) {
+                switch (msgCheck) {
+                    case NONE:
+                        fail(String.format("Should have thrown Exception class '%s'", exceptionClass.getName()));
+                    case EQ:
+                        fail(String.format("Should have thrown Exception class '%s' with message '%s'", exceptionClass.getName(), message));
+                    case IN:
+                        fail(String.format("Should have thrown Exception class '%s' containing message '%s'", exceptionClass.getName(), message));
+
+                }
+            }
+        }
+    }
+
 }

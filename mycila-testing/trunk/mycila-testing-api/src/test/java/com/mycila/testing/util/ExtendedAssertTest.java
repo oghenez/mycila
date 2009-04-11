@@ -61,13 +61,68 @@ public final class ExtendedAssertTest {
     }
 
     @Test
-    public void test_assertThrow() throws Exception {
+    public void test_assertThrow_exception() throws Exception {
+
+        // ok
+        assertThrow(RuntimeException.class).whenRunning(new Code() {
+            public void run() throws Throwable {
+                throw new RuntimeException("hello");
+            }
+        });
+
+        // no exception thrown when expected
+        try {
+            assertThrow(RuntimeException.class).whenRunning(new Code() {
+                public void run() throws Throwable {
+                }
+            });
+            fail();
+        } catch (AssertionError e) {
+            e.printStackTrace();
+        }
+
+        // bad exception thrown
+        try {
+            assertThrow(IllegalArgumentException.class).whenRunning(new Code() {
+                public void run() throws Throwable {
+                    throw new IllegalStateException();
+                }
+            });
+            fail();
+        } catch (AssertionError e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test_assertThrow_exception_withMessage() throws Exception {
+
+        // ok
         assertThrow(RuntimeException.class).withMessage("hello").whenRunning(new Code() {
             public void run() throws Throwable {
                 throw new RuntimeException("hello");
             }
         });
 
+        // ok - null message
+        assertThrow(RuntimeException.class).withMessage(null).whenRunning(new Code() {
+            public void run() throws Throwable {
+                throw new RuntimeException();
+            }
+        });
+
+        // no exception thrown
+        try {
+            assertThrow(RuntimeException.class).withMessage("Hello !").whenRunning(new Code() {
+                public void run() throws Throwable {
+                }
+            });
+            fail();
+        } catch (AssertionError e) {
+            e.printStackTrace();
+        }
+
+        // message expected, got null
         try {
             assertThrow(RuntimeException.class).withMessage("hello").whenRunning(new Code() {
                 public void run() throws Throwable {
@@ -79,10 +134,89 @@ public final class ExtendedAssertTest {
             e.printStackTrace();
         }
 
+        // null expected, got message
         try {
-            assertThrow(RuntimeException.class).withMessage("hello").whenRunning(new Code() {
+            assertThrow(RuntimeException.class).withMessage(null).whenRunning(new Code() {
                 public void run() throws Throwable {
-                    throw new IllegalStateException();
+                    throw new RuntimeException("dd");
+                }
+            });
+            fail();
+        } catch (AssertionError e) {
+            e.printStackTrace();
+        }
+
+        // bad message
+        try {
+            assertThrow(RuntimeException.class).withMessage("aa").whenRunning(new Code() {
+                public void run() throws Throwable {
+                    throw new RuntimeException("dd");
+                }
+            });
+            fail();
+        } catch (AssertionError e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void test_assertThrow_containingMessgae() throws Exception {
+
+        // ok
+        assertThrow(RuntimeException.class).containingMessage("hello").whenRunning(new Code() {
+            public void run() throws Throwable {
+                throw new RuntimeException("hello world");
+            }
+        });
+
+        // ok - null message
+        assertThrow(RuntimeException.class).containingMessage(null).whenRunning(new Code() {
+            public void run() throws Throwable {
+                throw new RuntimeException();
+            }
+        });
+
+        // no exception thrown
+        try {
+            assertThrow(RuntimeException.class).containingMessage("Hello !").whenRunning(new Code() {
+                public void run() throws Throwable {
+                }
+            });
+            fail();
+        } catch (AssertionError e) {
+            e.printStackTrace();
+        }
+
+        // message expected, got null
+        try {
+            assertThrow(RuntimeException.class).containingMessage("hello").whenRunning(new Code() {
+                public void run() throws Throwable {
+                    throw new RuntimeException();
+                }
+            });
+            fail();
+        } catch (AssertionError e) {
+            e.printStackTrace();
+        }
+
+        // null expected, got message
+        try {
+            assertThrow(RuntimeException.class).containingMessage(null).whenRunning(new Code() {
+                public void run() throws Throwable {
+                    throw new RuntimeException("dd");
+                }
+            });
+            fail();
+        } catch (AssertionError e) {
+            e.printStackTrace();
+        }
+
+        // bad message
+        try {
+            assertThrow(RuntimeException.class).containingMessage("aa").whenRunning(new Code() {
+                public void run() throws Throwable {
+                    throw new RuntimeException("dd");
                 }
             });
             fail();

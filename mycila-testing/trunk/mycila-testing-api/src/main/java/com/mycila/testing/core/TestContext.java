@@ -15,6 +15,8 @@
  */
 package com.mycila.testing.core;
 
+import com.mycila.log.Logger;
+import com.mycila.log.Loggers;
 import com.mycila.plugin.api.PluginBinding;
 import com.mycila.plugin.spi.PluginManager;
 
@@ -44,6 +46,7 @@ final class TestContext implements Context, TestNotifier {
         }
     }
 
+    private static final Logger LOGGER = Loggers.get(TestContext.class);
 
     private final TestInstance testInstance;
     private final Map<String, Object> attributes = new HashMap<String, Object>();
@@ -52,6 +55,7 @@ final class TestContext implements Context, TestNotifier {
     TestContext(PluginManager<TestPlugin> pluginManager, Object testInstance) {
         this.testInstance = new TestInstance(testInstance);
         this.pluginManager = pluginManager;
+        LOGGER.debug("Creating new Test Context for test {0}#{1,number,#}", this.testInstance.testClass().getName(), this.testInstance.instance().hashCode());
         Mycila.registerContext(this);
     }
 
@@ -93,6 +97,7 @@ final class TestContext implements Context, TestNotifier {
         try {
             ExecutionImpl execution = new ExecutionImpl(this, prepareMethod);
             Mycila.registerCurrentExecution(execution.changeStep(Step.PREPARE));
+            LOGGER.debug("Calling 'prepareTestInstance' on plugins for test {0}#{1,number,#}...", testInstance.testClass().getName(), testInstance.instance().hashCode());
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().prepareTestInstance(this);
@@ -109,6 +114,7 @@ final class TestContext implements Context, TestNotifier {
         TestExecutionImpl testExecution = new TestExecutionImpl(this, method);
         try {
             Mycila.registerCurrentExecution(testExecution.changeStep(Step.BEFORE));
+            LOGGER.debug("Calling 'beforeTest' on plugins for test {0}#{1,number,#}...", testInstance.testClass().getName(), testInstance.instance().hashCode());
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().beforeTest(testExecution);
@@ -117,6 +123,7 @@ final class TestContext implements Context, TestNotifier {
                 }
             }
         } finally {
+            Mycila.unsetCurrentExecution();
             Mycila.registerCurrentExecution(testExecution.changeStep(Step.TEST));
         }
     }
@@ -124,7 +131,9 @@ final class TestContext implements Context, TestNotifier {
     public void fireAfterTest() throws TestPluginException {
         try {
             TestExecutionImpl testExecution = (TestExecutionImpl) Mycila.currentExecution();
-            testExecution.changeStep(Step.AFTER);
+            Mycila.unsetCurrentExecution();
+            Mycila.registerCurrentExecution(testExecution.changeStep(Step.AFTER));
+            LOGGER.debug("Calling 'afterTest' on plugins for test {0}#{1,number,#}...", testInstance.testClass().getName(), testInstance.instance().hashCode());
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().afterTest(testExecution);
@@ -141,6 +150,7 @@ final class TestContext implements Context, TestNotifier {
         try {
             ExecutionImpl execution = new ExecutionImpl(this, fireAfterClassMethod);
             Mycila.registerCurrentExecution(execution.changeStep(Step.COMPLETED));
+            LOGGER.debug("Calling 'afterClass' on plugins for test {0}#{1,number,#}...", testInstance.testClass().getName(), testInstance.instance().hashCode());
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().afterClass(this);
