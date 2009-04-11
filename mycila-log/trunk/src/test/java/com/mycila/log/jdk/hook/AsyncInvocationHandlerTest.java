@@ -48,7 +48,7 @@ public final class AsyncInvocationHandlerTest {
                         throw new RuntimeException(e.getMessage(), e);
                     }
                     for (int j = 0; j < 50; j++) {
-                        logger.info("Hello {0} - {1} !", i1, j);
+                        logger.info("Hello {0} - {1} !", format(i1), format(j));
                     }
                     doneSignal.countDown();
                 }
@@ -65,7 +65,7 @@ public final class AsyncInvocationHandlerTest {
                         throw new RuntimeException(e.getMessage(), e);
                     }
                     for (int j = 0; j < 50; j++) {
-                        logger.error("Hello {0} - {1} !", i1, j);
+                        logger.error("Hello {0} - {1} !", format(i1), format(j));
                     }
                     doneSignal.countDown();
                 }
@@ -75,6 +75,10 @@ public final class AsyncInvocationHandlerTest {
         startSignal.countDown();
         doneSignal.await();
         LogManager.getLogManager().reset();
+    }
+
+    private String format(int i) {
+        return i > 9 ? "" + i : "0" + i;
     }
 
 }

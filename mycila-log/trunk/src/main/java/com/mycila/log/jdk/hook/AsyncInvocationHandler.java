@@ -17,6 +17,7 @@ package com.mycila.log.jdk.hook;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -47,6 +48,13 @@ public final class AsyncInvocationHandler<T extends Handler> extends MycilaInvoc
         handler.publish(logRecord);
         handler.flush();
         executor.shutdown();
+        try {
+            while(!executor.isTerminated()) {
+                executor.awaitTermination(500, TimeUnit.MILLISECONDS);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
         handler.flush();
         handler.close();
     }
