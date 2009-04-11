@@ -143,6 +143,7 @@ Loggers.use(new LoggerProvider() {
 Versions can downloaded from Maven Repositories here:
 
 *Releases*: http://repo2.maven.org/maven2/com/mycila/mycila-log/
+
 *Snapshots*: http://mc-repo.googlecode.com/svn/maven2/snapshots/com/mycila/mycila-log/
 
 For Maven, use:
