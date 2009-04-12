@@ -23,5 +23,5 @@ import org.junit.runner.RunWith;
  */
 @RunWith(MycilaJunitRunner.class)
 public abstract class MycilaJunit4Test extends Assert {
-    
+
 }

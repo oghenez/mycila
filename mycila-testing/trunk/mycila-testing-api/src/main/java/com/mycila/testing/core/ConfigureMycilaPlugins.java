@@ -26,24 +26,9 @@ import java.lang.annotation.Target;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ElementType.METHOD})
 @Inherited
 @Documented
-public @interface MycilaPlugins {
+public @interface ConfigureMycilaPlugins {
 
-    /**
-     * Specify if this test instance should use the plugins shared statically amongst all test instance
-     * or if the plugins should be reloaded for this test.
-     *
-     * @return The cache strategy to use for plugins
-     */
-    Cache value() default Cache.UNSHARED;
-
-    /**
-     * Overrides default plugin descriptor file to use. If null or empty, the plugin cache will not load anything: it will be up to the
-     * programmer to register plugins at runtime.
-     *
-     * @return The plugin descriptor file location in the classpath
-     */
-    String descriptor() default MycilaTesting.DEFAULT_PLUGIN_DESCRIPTOR;
 }

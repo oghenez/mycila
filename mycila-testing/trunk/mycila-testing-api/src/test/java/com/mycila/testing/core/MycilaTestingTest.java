@@ -59,21 +59,6 @@ public final class MycilaTestingTest {
                 throw new AssertionError("should not go here");
             }
         }));
-        assertEquals(mycilaTesting, MycilaTesting.from(new MycilaPlugins() {
-            public Cache value() {
-                return null;
-            }
-
-            public String descriptor() {
-                throw new AssertionError("should not go here");
-            }
-
-            public Class<? extends Annotation> annotationType() {
-                throw new AssertionError("should not go here");
-            }
-        }));
-        assertEquals(mycilaTesting, MycilaTesting.from((MycilaPlugins) null));
-        assertEquals(mycilaTesting, MycilaTesting.from((Class<?>) null));
     }
 
     @Test

@@ -15,6 +15,8 @@
  */
 package com.mycila.testing.junit;
 
+import com.mycila.log.Logger;
+import com.mycila.log.Loggers;
 import com.mycila.testing.core.Mycila;
 import com.mycila.testing.core.MycilaTesting;
 import com.mycila.testing.core.TestExecution;
@@ -29,6 +31,8 @@ import java.lang.reflect.Modifier;
  */
 public abstract class MycilaJunit3Test extends TestCase {
 
+    private static final Logger LOGGER = Loggers.get(MycilaJunit3Test.class);
+
     private TestNotifier testNotifier;
 
     public MycilaJunit3Test() {
@@ -41,7 +45,7 @@ public abstract class MycilaJunit3Test extends TestCase {
 
     @Override
     public final void runBare() throws Throwable {
-        testNotifier = createTestNotifier();
+        testNotifier = MycilaTesting.from(getClass()).configure(this).createNotifier(this);
         testNotifier.prepare();
         try {
             super.runBare();
@@ -56,6 +60,7 @@ public abstract class MycilaJunit3Test extends TestCase {
         TestExecution testExecution = (TestExecution) Mycila.currentExecution();
         if (!testExecution.mustSkip()) {
             try {
+                LOGGER.debug("Calling test method {0}.{1}", testExecution.method().getDeclaringClass().getName(), testExecution.method().getName());
                 super.runTest();
             } catch (Throwable t) {
                 testExecution.setThrowable(t);
@@ -81,15 +86,6 @@ public abstract class MycilaJunit3Test extends TestCase {
             fail("Method \"" + getName() + "\" should be public");
         }
         return testMethod;
-    }
-
-    /**
-     * Can be overriden to modify the behavior and provide in example our proper TestNotifier instance
-     *
-     * @return A TestHandler to fire test events (before and after execution)
-     */
-    protected TestNotifier createTestNotifier() {
-        return MycilaTesting.from(getClass()).createNotifier(this);
     }
 
 }

@@ -15,6 +15,8 @@
  */
 package com.mycila.testing.testng;
 
+import com.mycila.log.Logger;
+import com.mycila.log.Loggers;
 import com.mycila.testing.core.Mycila;
 import com.mycila.testing.core.MycilaTesting;
 import com.mycila.testing.core.TestExecution;
@@ -31,43 +33,33 @@ import org.testng.annotations.BeforeClass;
  */
 public abstract class MycilaTestNGTest extends Assert implements IHookable {
 
-    private ThreadLocal<TestNotifier> testNotifier = new InheritableThreadLocal<TestNotifier>() {
-        @Override
-        protected TestNotifier initialValue() {
-            return createTestNotifier();
-        }
-    };
+    private static final Logger LOGGER = Loggers.get(MycilaTestNGTest.class);
+
+    private TestNotifier testNotifier;
 
     @BeforeClass(alwaysRun = true)
     protected final void prepareTestInstance() {
-        testNotifier.get().prepare();
+        testNotifier = MycilaTesting.from(getClass()).configure(this).createNotifier(this);
+        testNotifier.prepare();
     }
 
     public final void run(IHookCallBack callBack, ITestResult testResult) {
-        testNotifier.get().fireBeforeTest(testResult.getMethod().getMethod());
+        testNotifier.fireBeforeTest(testResult.getMethod().getMethod());
         TestExecution testExecution = (TestExecution) Mycila.currentExecution();
         if (testExecution.mustSkip()) {
             testResult.setStatus(ITestResult.SKIP);
         } else {
+            LOGGER.debug("Calling test method {0}.{1}", testExecution.method().getDeclaringClass().getName(), testExecution.method().getName());
             callBack.runTestMethod(testResult);
         }
         //noinspection ThrowableResultOfMethodCallIgnored
         testExecution.setThrowable(testResult.getThrowable());
-        testNotifier.get().fireAfterTest();
+        testNotifier.fireAfterTest();
     }
 
     @AfterClass(alwaysRun = true)
     protected final void end() {
-        testNotifier.get().fireAfterClass();
-    }
-
-    /**
-     * Can be overriden to modify the behavior and provide in example our proper TestNotifier instance
-     *
-     * @return A TestHandler to fire test events (before and after execution)
-     */
-    protected TestNotifier createTestNotifier() {
-        return MycilaTesting.from(getClass()).createNotifier(this);
+        testNotifier.fireAfterClass();
     }
 
 }

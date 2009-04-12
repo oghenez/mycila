@@ -1,11 +1,12 @@
 package com.mycila.testing.testng;
 
+import com.mycila.plugin.spi.PluginManager;
+import com.mycila.testing.JDKLogging;
 import com.mycila.testing.core.Cache;
+import com.mycila.testing.core.ConfigureMycilaPlugins;
 import com.mycila.testing.core.Context;
 import com.mycila.testing.core.MycilaPlugins;
-import com.mycila.testing.core.MycilaTesting;
 import com.mycila.testing.core.TestExecution;
-import com.mycila.testing.core.TestNotifier;
 import com.mycila.testing.core.TestPlugin;
 import com.mycila.testing.util.Code;
 import static com.mycila.testing.util.ExtendedAssert.*;
@@ -22,6 +23,10 @@ import java.util.List;
  */
 @MycilaPlugins(value = Cache.UNSHARED, descriptor = "")
 public final class TestNGFlowTest extends MycilaTestNGTest {
+
+    static {
+        JDKLogging.init();
+    }
 
     List<String> flow = new ArrayList<String>();
 
@@ -60,10 +65,9 @@ public final class TestNGFlowTest extends MycilaTestNGTest {
         flow.add("after");
     }
 
-    @Override
-    protected TestNotifier createTestNotifier() {
-        MycilaTesting mycilaTesting = MycilaTesting.from(this);
-        mycilaTesting.pluginManager().getCache().registerPlugin("myPlugin", new TestPlugin() {
+    @ConfigureMycilaPlugins
+    void configure(PluginManager<TestPlugin> pluginManager) {
+        pluginManager.getCache().registerPlugin("myPlugin", new TestPlugin() {
             public void prepareTestInstance(Context context) throws Exception {
                 flow.add("prepare");
                 assertEquals(flow, asList("prepare"), flow.toString());
@@ -120,7 +124,6 @@ public final class TestNGFlowTest extends MycilaTestNGTest {
                 return null;
             }
         });
-        return mycilaTesting.createNotifier(this);
     }
 
 }
