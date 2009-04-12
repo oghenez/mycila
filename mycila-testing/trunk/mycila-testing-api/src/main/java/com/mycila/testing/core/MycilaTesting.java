@@ -145,6 +145,10 @@ public final class MycilaTesting {
         return from(c == null ? null : c.getAnnotation(MycilaPlugins.class));
     }
 
+    public static MycilaTesting from(Object instance) {
+        return from(instance == null ? null : instance.getClass());
+    }
+
     /**
      * Get a MycilaTesting instance using the strategy defined in the provided annotation.
      *
