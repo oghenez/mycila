@@ -16,23 +16,24 @@
 
 package com.mycila.testing.junit;
 
+import com.mycila.log.Logger;
+import com.mycila.log.Loggers;
 import com.mycila.testing.core.Mycila;
 import com.mycila.testing.core.MycilaTesting;
 import com.mycila.testing.core.TestExecution;
 import com.mycila.testing.core.TestNotifier;
+import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public class MycilaJunitRunner extends BlockJUnit4ClassRunner {
+
+    private static final Logger LOGGER = Loggers.get(MycilaJunitRunner.class);
 
     private TestNotifier testNotifier;
 
@@ -43,16 +44,24 @@ public class MycilaJunitRunner extends BlockJUnit4ClassRunner {
     @Override
     protected final Object createTest() throws Exception {
         Object test = super.createTest();
-        testNotifier = MycilaTesting.from(getTestClass().getJavaClass()).createNotifier(test);
+        testNotifier = MycilaTesting.from(test.getClass()).configure(test).createNotifier(test);
+        testNotifier.prepare();
         return test;
     }
 
     @Override
-    protected final List<FrameworkMethod> computeTestMethods() {
-        List<FrameworkMethod> methods = new ArrayList<FrameworkMethod>(super.computeTestMethods());
-        methods.add(0, new FrameworkMethod(method("MycilaJunitRunner_prepare")));
-        methods.add(new FrameworkMethod(method("MycilaJunitRunner_afterClass")));
-        return methods;
+    protected Statement classBlock(RunNotifier notifier) {
+        final Statement statement = super.classBlock(notifier);
+        return new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                try {
+                    statement.evaluate();
+                } finally {
+                    testNotifier.fireAfterClass();
+                }
+            }
+        };
     }
 
     @Override
@@ -65,6 +74,7 @@ public class MycilaJunitRunner extends BlockJUnit4ClassRunner {
                 TestExecution testExecution = (TestExecution) Mycila.currentExecution();
                 if (!testExecution.mustSkip()) {
                     try {
+                        LOGGER.debug("Calling test method {0}.{1}", testExecution.method().getDeclaringClass().getName(), testExecution.method().getName());
                         MycilaJunitRunner.super.methodInvoker(method, test).evaluate();
                     } catch (Throwable t) {
                         testExecution.setThrowable(t);
@@ -78,22 +88,4 @@ public class MycilaJunitRunner extends BlockJUnit4ClassRunner {
         };
     }
 
-    private Method method(String methodName) {
-        try {
-            Method method = MycilaJunitRunner.class.getDeclaredMethod(methodName);
-            method.setAccessible(true);
-            return method;
-        } catch (NoSuchMethodException e) {
-            //noinspection ThrowableInstanceNeverThrown
-            throw (AssertionError) new AssertionError("Internal error in Mycila Testing. Please report it to http://code.google.com/p/mycila/issues/list. Exception is: " + e.getMessage()).initCause(e);
-        }
-    }
-
-    private void MycilaJunitRunner_prepare() {
-        testNotifier.prepare();
-    }
-
-    private void MycilaJunitRunner_afterClass() {
-        testNotifier.fireAfterClass();
-    }
 }

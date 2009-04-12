@@ -20,7 +20,11 @@ import com.mycila.log.Logger;
 import com.mycila.log.Loggers;
 import com.mycila.plugin.spi.PluginManager;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -145,10 +149,6 @@ public final class MycilaTesting {
         return from(c == null ? null : c.getAnnotation(MycilaPlugins.class));
     }
 
-    public static MycilaTesting from(Object instance) {
-        return from(instance == null ? null : instance.getClass());
-    }
-
     /**
      * Get a MycilaTesting instance using the strategy defined in the provided annotation.
      *
@@ -156,8 +156,8 @@ public final class MycilaTesting {
      * @return a TestSetup instance which can be used to prepare a test with plugins
      */
     public static MycilaTesting from(MycilaPlugins mycilaPlugins) {
-        if(mycilaPlugins == null || mycilaPlugins.value() == null) {
-            return staticDefaultSetup();
+        if (mycilaPlugins == null || mycilaPlugins.value() == null) {
+            return newDefaultSetup();
         }
         boolean descBlank = mycilaPlugins.descriptor() == null || mycilaPlugins.descriptor().trim().length() == 0;
         switch (mycilaPlugins.value()) {
@@ -169,4 +169,42 @@ public final class MycilaTesting {
         throw new AssertionError("Use case not defined for value of enum Cache: " + mycilaPlugins.value());
     }
 
+    /**
+     * Configure the Plugin manager of this MycilaTesting from the given class. It will search for all methods
+     * annotated by {@link com.mycila.testing.core.ConfigureMycilaPlugins}s and call those having the
+     * {@link com.mycila.plugin.spi.PluginManager} as a parameter:
+     * {@code @ConfigureMycilaPlugins void configure(PluginManager<TestPlugin> pluginManager) {...} }
+     *
+     * @param testInstance The object having configure methods
+     * @return this
+     */
+    public MycilaTesting configure(Object testInstance) {
+        List<Method> methods = new ArrayList<Method>();
+        Class<?> c = testInstance.getClass();
+        do {
+            for (Method method : c.getDeclaredMethods()) {
+                Class<?>[] types = method.getParameterTypes();
+                if (method.isAnnotationPresent(ConfigureMycilaPlugins.class) && types.length == 1 && types[0].equals(PluginManager.class)) {
+                    method.setAccessible(true);
+                    methods.add(0, method);
+                }
+            }
+            c = c.getSuperclass();
+        }
+        while (c != null);
+        if (!methods.isEmpty()) {
+            PluginManager<TestPlugin> pluginManager = pluginManager();
+            for (Method method : methods) {
+                LOGGER.debug("Configuring plugin manager through method {0}.{1}...", method.getDeclaringClass().getName(), method.getName());
+                try {
+                    method.invoke(testInstance, pluginManager);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e.getMessage(), e);
+                } catch (InvocationTargetException e) {
+                    throw new RuntimeException(e.getTargetException().getMessage(), e.getTargetException());
+                }
+            }
+        }
+        return this;
+    }
 }

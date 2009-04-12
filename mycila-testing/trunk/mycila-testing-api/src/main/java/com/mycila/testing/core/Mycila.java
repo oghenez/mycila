@@ -19,7 +19,8 @@ import com.mycila.log.Logger;
 import com.mycila.log.Loggers;
 
 import java.text.MessageFormat;
-import java.util.WeakHashMap;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Holds the current test context. The context holder contains the current test instance used for each call to
@@ -33,7 +34,7 @@ public final class Mycila {
 
     private static final Logger LOGGER = Loggers.get(Mycila.class);
     private static final ThreadLocal<Execution> CURRENT_EXECUTION = new InheritableThreadLocal<Execution>();
-    private static final WeakHashMap<Object, Context> CONTEXTS = new WeakHashMap<Object, Context>();
+    private static final Map<Ref, Context> CONTEXTS = new HashMap<Ref, Context>();
 
     private Mycila() {
     }
@@ -45,7 +46,7 @@ public final class Mycila {
 
     static void registerContext(Context context) {
         LOGGER.debug("Registering Global Test Context for test {0}#{1,number,#}", context.test().testClass().getName(), context.test().instance().hashCode());
-        CONTEXTS.put(context.test().instance(), context);
+        CONTEXTS.put(new Ref(context.test().instance()), context);
     }
 
     static void unsetCurrentExecution() {
@@ -59,17 +60,18 @@ public final class Mycila {
     }
 
     static void unsetContext(Object testInstance) {
+        Ref ref = new Ref(testInstance);
         if (LOGGER.canDebug()) {
-            Context context = CONTEXTS.get(testInstance);
+            Context context = CONTEXTS.get(ref);
             if (context != null) {
                 LOGGER.debug("Removing Global Test Context for test {0}#{1,number,#}", context.test().testClass().getName(), context.test().instance().hashCode());
             }
         }
-        CONTEXTS.remove(testInstance);
+        CONTEXTS.remove(ref);
     }
 
     public static Context context(Object testInstance) {
-        Context context = CONTEXTS.get(testInstance);
+        Context context = CONTEXTS.get(new Ref(testInstance));
         if (context == null) {
             throw new IllegalStateException("No Global Test Context available for test " + MessageFormat.format("{0}#{1,number,#}", testInstance.getClass().getName(), testInstance.hashCode()));
         }
@@ -86,5 +88,20 @@ public final class Mycila {
             throw new IllegalStateException("No Execution context bound to local thread !");
         }
         return c;
+    }
+
+    private static class Ref {
+        final Object object;
+        Ref(Object object) {
+            this.object = object;
+        }
+        @Override
+        public boolean equals(Object o) {
+            return o instanceof Ref && ((Ref) o).object == object;
+        }
+        @Override
+        public int hashCode() {
+            return object.hashCode();
+        }
     }
 }
