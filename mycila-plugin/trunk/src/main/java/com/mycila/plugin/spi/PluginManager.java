@@ -22,6 +22,7 @@ import com.mycila.plugin.api.Plugin;
 import com.mycila.plugin.api.PluginCache;
 import com.mycila.plugin.api.PluginLoader;
 import com.mycila.plugin.api.PluginResolver;
+import static com.mycila.plugin.spi.Ensure.*;
 
 /**
  * Defines a new plugin manager based on a plugin descriptor or
@@ -38,6 +39,7 @@ public final class PluginManager<T extends Plugin> {
     private final PluginCache<T> cache;
 
     public PluginManager(Class<T> pluginType) {
+        notNull("Plugin type", pluginType);
         LOGGER.debug("Creating new empty PluginManager for plugin type {0}", pluginType);
         loader = new DefaultPluginLoader<T>(pluginType);
         cache = new DefaultPluginCache<T>(loader);
@@ -45,6 +47,8 @@ public final class PluginManager<T extends Plugin> {
     }
 
     public PluginManager(Class<T> pluginType, String pluginDescriptor) {
+        notNull("Plugin type", pluginType);
+        notEmpty("Plugin descriptor", pluginDescriptor);
         LOGGER.debug("Creating new PluginManager for plugin type {0} from descriptors {1}", pluginType, pluginDescriptor);
         loader = new DefaultPluginLoader<T>(pluginType, pluginDescriptor);
         cache = new DefaultPluginCache<T>(loader);
