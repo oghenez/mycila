@@ -18,6 +18,7 @@ package com.mycila.plugin.spi;
 
 import com.mycila.plugin.api.Plugin;
 import com.mycila.plugin.api.PluginBinding;
+import static com.mycila.plugin.spi.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -28,10 +29,12 @@ final class Binding<T extends Plugin> implements PluginBinding<T>, Comparable<Pl
     private T plugin;
 
     Binding(String name) {
+        notNull("Plugin name", name);
         this.name = name;
     }
 
     Binding<T> withPlugin(T plugin) {
+        notNull("Plugin instance", plugin);
         this.plugin = plugin;
         return this;
     }
@@ -45,6 +48,7 @@ final class Binding<T extends Plugin> implements PluginBinding<T>, Comparable<Pl
     }
 
     public int compareTo(PluginBinding<T> o) {
+        notNull("Plugin binding", o);
         return getName().compareTo(o.getName());
     }
 

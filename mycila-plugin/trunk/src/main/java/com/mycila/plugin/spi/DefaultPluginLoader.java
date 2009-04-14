@@ -24,6 +24,7 @@ import com.mycila.plugin.api.PluginBinding;
 import com.mycila.plugin.api.PluginCreationException;
 import com.mycila.plugin.api.PluginIOException;
 import com.mycila.plugin.api.PluginLoader;
+import static com.mycila.plugin.spi.Ensure.*;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -57,6 +58,7 @@ final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
     }
 
     DefaultPluginLoader(Class<T> pluginsType, String descriptor) {
+        notNull("Plugin type", pluginsType);
         this.pluginsType = pluginsType;
         this.descriptor = descriptor != null ?
                 descriptor.startsWith("/") ? descriptor.substring(1) : descriptor :
@@ -132,14 +134,17 @@ final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
     }
 
     public void setExclusions(String... exclusions) {
+        notNull("Exclusions", exclusions);
         setExclusions(asList(exclusions));
     }
 
     public void setExclusions(Collection<String> exclusions) {
+        notNull("Exclusions", exclusions);
         this.exclusions = unmodifiableSet(new TreeSet<String>(exclusions));
     }
 
     public void setLoader(ClassLoader loader) {
+        notNull("Classloader", loader);
         this.loader = loader;
     }
 

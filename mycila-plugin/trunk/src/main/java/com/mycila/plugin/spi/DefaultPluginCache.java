@@ -22,6 +22,7 @@ import com.mycila.plugin.api.Plugin;
 import com.mycila.plugin.api.PluginBinding;
 import com.mycila.plugin.api.PluginCache;
 import com.mycila.plugin.api.PluginLoader;
+import static com.mycila.plugin.spi.Ensure.*;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,6 +41,7 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
     volatile boolean loaded;
 
     DefaultPluginCache(PluginLoader<T> loader) {
+        notNull("Plugin loader", loader);
         this.loader = loader;
     }
 
@@ -49,20 +51,21 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
     }
 
     public void registerPlugin(String name, T plugin) {
-        if (PluginUtils.isEmpty(name)) {
-            throw new IllegalArgumentException("Not a valid plugin name: must not be empty");
-        }
+        notEmpty("Plugin name", name);
+        notNull("Plugin instance", plugin);
         LOGGER.debug("Adding plugin: {0}", name);
         plugins.put(name, new Binding<T>(name).withPlugin(plugin));
     }
 
     public void registerPlugins(Map<String, T> plugins) {
+        notNull("Plugin map", plugins);
         for (Map.Entry<String, T> entry : plugins.entrySet()) {
             registerPlugin(entry.getKey(), entry.getValue());
         }
     }
 
     public void removePlugins(String... pluginNames) {
+        notNull("Plugin names", pluginNames);
         LOGGER.debug("Removing plugins: {0}", Arrays.toString(pluginNames));
         for (String name : pluginNames) {
             this.plugins.remove(name);
@@ -70,6 +73,7 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
     }
 
     public boolean contains(String pluginName) {
+        notNull("Plugin name", pluginName);
         return bindings().containsKey(pluginName);
     }
 

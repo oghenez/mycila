@@ -24,7 +24,7 @@ import com.mycila.plugin.api.Plugin;
 import com.mycila.plugin.api.PluginBinding;
 import com.mycila.plugin.api.PluginCache;
 import com.mycila.plugin.api.PluginResolver;
-import static com.mycila.plugin.spi.PluginUtils.*;
+import static com.mycila.plugin.spi.Ensure.*;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
@@ -53,6 +53,7 @@ final class DefaultPluginResolver<T extends Plugin> implements PluginResolver<T>
     final PluginCache<T> cache;
 
     DefaultPluginResolver(PluginCache<T> cache) {
+        notNull("Plugin cache", cache);
         this.cache = cache;
     }
 
@@ -61,6 +62,7 @@ final class DefaultPluginResolver<T extends Plugin> implements PluginResolver<T>
     }
 
     public T getPlugin(String name) {
+        notNull("Plugin name", name);
         PluginBinding<T> binding = cache.getBindings().get(name);
         if (binding == null) {
             throw new InexistingPluginException(name);
@@ -69,6 +71,7 @@ final class DefaultPluginResolver<T extends Plugin> implements PluginResolver<T>
     }
 
     public boolean contains(String name) {
+        notNull("Plugin name", name);
         return cache.contains(name);
     }
 
