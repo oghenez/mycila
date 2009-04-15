@@ -16,8 +16,8 @@
 
 package com.mycila.testing.plugin.mockito;
 
-import com.mycila.testing.core.Context;
-import com.mycila.testing.core.DefaultTestPlugin;
+import com.mycila.testing.core.api.TestContext;
+import com.mycila.testing.core.plugin.DefaultTestPlugin;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
@@ -34,7 +34,7 @@ public final class MockitoTestPlugin extends DefaultTestPlugin {
     }
 
     @Override
-    public void prepareTestInstance(Context context) {
-        MockitoAnnotations.initMocks(context.test().instance());
+    public void prepareTestInstance(TestContext context) {
+        MockitoAnnotations.initMocks(context.introspector().instance());
     }
 }

@@ -17,12 +17,12 @@ package com.mycila.testing.testng;
 
 import com.mycila.plugin.spi.PluginManager;
 import com.mycila.testing.JDKLogging;
-import com.mycila.testing.core.Cache;
-import com.mycila.testing.core.ConfigureMycilaPlugins;
-import com.mycila.testing.core.Context;
-import com.mycila.testing.core.MycilaPlugins;
-import com.mycila.testing.core.TestExecution;
-import com.mycila.testing.core.TestPlugin;
+import com.mycila.testing.core.annot.ConfigureMycilaPlugins;
+import com.mycila.testing.core.annot.MycilaPlugins;
+import com.mycila.testing.core.api.Cache;
+import com.mycila.testing.core.api.TestContext;
+import com.mycila.testing.core.api.TestExecution;
+import com.mycila.testing.core.plugin.TestPlugin;
 import com.mycila.testing.ea.Code;
 import static com.mycila.testing.ea.ExtendedAssert.*;
 import org.testng.annotations.AfterMethod;
@@ -83,7 +83,7 @@ public final class TestNGFlowTest extends MycilaTestNGTest {
     @ConfigureMycilaPlugins
     void configure(PluginManager<TestPlugin> pluginManager) {
         pluginManager.getCache().registerPlugin("myPlugin", new TestPlugin() {
-            public void prepareTestInstance(Context context) throws Exception {
+            public void prepareTestInstance(TestContext context) throws Exception {
                 flow.add("prepare");
                 assertEquals(flow, asList("prepare"), flow.toString());
             }
@@ -125,7 +125,7 @@ public final class TestNGFlowTest extends MycilaTestNGTest {
                 }
             }
 
-            public void afterClass(Context context) throws Exception {
+            public void afterClass(TestContext context) throws Exception {
                 flow.add("afterClass");
                 assertEquals(flow, asList("prepare", "before", "beforeTest", "method1", "afterTest", "after", "before", "beforeTest", "method2", "afterTest", "after", "before", "beforeTest", "afterTest", "after", "before", "beforeTest", "method4", "afterTest", "after", "afterClass"), flow.toString());
 

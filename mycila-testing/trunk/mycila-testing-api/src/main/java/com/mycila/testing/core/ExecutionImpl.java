@@ -15,7 +15,10 @@
  */
 package com.mycila.testing.core;
 
-import static com.mycila.testing.util.Ensure.*;
+import static com.mycila.testing.core.api.Ensure.*;
+import com.mycila.testing.core.api.Execution;
+import com.mycila.testing.core.api.Step;
+import com.mycila.testing.core.api.TestContext;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -25,12 +28,12 @@ import java.lang.reflect.Method;
  */
 final class ExecutionImpl implements Execution {
 
-    private final Context context;
+    private final TestContext context;
     private final Method method;
     private Throwable throwable;
     private Step step = Step.UNKNOWN;
 
-    ExecutionImpl(Context context, Method method) {
+    ExecutionImpl(TestContext context, Method method) {
         notNull("Test context", context);
         notNull("Test method", method);
         this.context = context;
@@ -51,7 +54,7 @@ final class ExecutionImpl implements Execution {
         return method;
     }
 
-    public final Context context() {
+    public final TestContext context() {
         return context;
     }
 

@@ -19,7 +19,11 @@ package com.mycila.testing.core;
 import com.mycila.log.Logger;
 import com.mycila.log.Loggers;
 import com.mycila.plugin.spi.PluginManager;
-import static com.mycila.testing.util.Ensure.*;
+import com.mycila.testing.core.annot.ConfigureMycilaPlugins;
+import com.mycila.testing.core.annot.MycilaPlugins;
+import static com.mycila.testing.core.api.Ensure.*;
+import com.mycila.testing.core.api.TestNotifier;
+import com.mycila.testing.core.plugin.TestPlugin;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -58,7 +62,7 @@ public final class MycilaTesting {
 
     public TestNotifier createNotifier(Object testInstance) {
         notNull("Test instance", testInstance);
-        return new TestContext(pluginManager, testInstance);
+        return new TestContextImpl(pluginManager, testInstance);
     }
 
     /**
@@ -144,7 +148,7 @@ public final class MycilaTesting {
 
     /**
      * Get a MycilaTesting instance using the strategy defined for this class potentially annotated by
-     * {@link com.mycila.testing.core.MycilaPlugins}.
+     * {@link com.mycila.testing.core.annot.MycilaPlugins}.
      *
      * @param c test class
      * @return a TestSetup instance which can be used to prepare a test with plugins
@@ -177,7 +181,7 @@ public final class MycilaTesting {
 
     /**
      * Configure the Plugin manager of this MycilaTesting from the given class. It will search for all methods
-     * annotated by {@link com.mycila.testing.core.ConfigureMycilaPlugins}s and call those having the
+     * annotated by {@link com.mycila.testing.core.annot.ConfigureMycilaPlugins}s and call those having the
      * {@link com.mycila.plugin.spi.PluginManager} as a parameter:
      * {@code @ConfigureMycilaPlugins void configure(PluginManager<TestPlugin> pluginManager) {...} }
      *

@@ -15,25 +15,17 @@
  */
 package com.mycila.testing.core;
 
+import com.mycila.testing.core.api.TestContext;
+import com.mycila.testing.core.plugin.DefaultTestPlugin;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class TestPluginException extends RuntimeException {
-    private static final long serialVersionUID = -7772706327921003956L;
+public class FailingPlugin extends DefaultTestPlugin {
 
-    public TestPluginException(String message) {
-        super(message);
+    @Override
+    public void prepareTestInstance(TestContext context) {
+        throw new IllegalArgumentException("my exception");
     }
 
-    public TestPluginException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public TestPluginException(String message, Object... args) {
-        super(String.format(message, args));
-    }
-
-    public TestPluginException(Throwable cause, String message, Object... args) {
-        super(String.format(message, args), cause);
-    }
 }

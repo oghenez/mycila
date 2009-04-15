@@ -41,7 +41,7 @@ public class GuiceContainer implements Container {
         } else {
             injector = Guice.createInjector(fields);
         }
-        injector.injectMembers(Mycila.currentExecution().context().test().instance());
+        injector.injectMembers(Mycila.currentExecution().context().introspector().instance());
         return null;
     }
 

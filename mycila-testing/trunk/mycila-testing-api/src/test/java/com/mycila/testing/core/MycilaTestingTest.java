@@ -15,8 +15,9 @@
  */
 package com.mycila.testing.core;
 
-import com.mycila.testing.MyPlugin;
-import static com.mycila.testing.core.Cache.*;
+import com.mycila.testing.core.annot.MycilaPlugins;
+import com.mycila.testing.core.api.Cache;
+import static com.mycila.testing.core.api.Cache.*;
 import com.mycila.testing.ea.ExtendedAssert;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
@@ -26,7 +27,7 @@ import java.lang.annotation.Annotation;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@MycilaPlugins(value =  UNSHARED, descriptor = "")
+@MycilaPlugins(value = UNSHARED, descriptor = "")
 public final class MycilaTestingTest {
 
     @Test

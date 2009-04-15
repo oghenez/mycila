@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.testing.core;
+package com.mycila.testing.core.introspect;
 
 /**
+ * This class is used to select fields or methods mor easily.
+ * You can implement you own filters or use existing ones from the
+ * {@link Filters} class and compose them
+ * with and, or, not, ...
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-enum Step {
-    UNKNOWN, PREPARE, BEFORE, TEST, AFTER, COMPLETED
+public interface Filter<T> {
+    boolean accept(T object);
 }

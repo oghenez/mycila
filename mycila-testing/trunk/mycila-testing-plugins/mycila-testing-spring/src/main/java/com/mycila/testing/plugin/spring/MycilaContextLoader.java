@@ -15,7 +15,8 @@
  */
 package com.mycila.testing.plugin.spring;
 
-import com.mycila.testing.core.Context;
+import com.mycila.testing.core.api.TestContext;
+import static com.mycila.testing.core.introspect.Filters.*;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
@@ -30,26 +31,26 @@ import java.lang.reflect.Method;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 final class MycilaContextLoader extends GenericXmlContextLoader {
-    private final Context mycilaContext;
+    private final TestContext mycilaContext;
 
-    public MycilaContextLoader(Context mycilaContext) {
+    public MycilaContextLoader(TestContext mycilaContext) {
         this.mycilaContext = mycilaContext;
     }
 
     public String[] contextLocations() {
-        SpringContext ctx = mycilaContext.test().testClass().getAnnotation(SpringContext.class);
+        SpringContext ctx = mycilaContext.introspector().testClass().getAnnotation(SpringContext.class);
         return ctx == null ? new String[0] : ctx.locations();
     }
 
     @Override
     protected void customizeContext(GenericApplicationContext context) {
-        for (Field field : mycilaContext.test().findFieldsAnnotatedWith(Bean.class)) {
+        for (Field field : mycilaContext.introspector().selectFields(fieldsAnnotatedBy(Bean.class))) {
             Bean annotation = field.getAnnotation(Bean.class);
             context.registerBeanDefinition(
                     annotation.name(),
                     createBeanDefinition(field, FieldAccessFactoryBean.class, annotation.scope()));
         }
-        for (Method method : mycilaContext.test().findMethodsAnnotatedWith(Bean.class)) {
+        for (Method method : mycilaContext.introspector().selectMethods(methodsAnnotatedBy(Bean.class))) {
             Bean annotation = method.getAnnotation(Bean.class);
             context.registerBeanDefinition(
                     annotation.name(),
@@ -74,7 +75,7 @@ final class MycilaContextLoader extends GenericXmlContextLoader {
 
     private AbstractBeanDefinition createBeanDefinition(AccessibleObject access, Class beanClass, Bean.Scope scope) {
         ConstructorArgumentValues args = new ConstructorArgumentValues();
-        args.addIndexedArgumentValue(0, mycilaContext.test().instance());
+        args.addIndexedArgumentValue(0, mycilaContext.introspector().instance());
         args.addIndexedArgumentValue(1, access);
         GenericBeanDefinition beanDef = new GenericBeanDefinition();
         beanDef.setBeanClass(beanClass);

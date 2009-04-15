@@ -16,9 +16,10 @@
 package com.mycila.testing.core;
 
 import com.mycila.plugin.spi.PluginManager;
-import com.mycila.testing.FailingPlugin;
-import com.mycila.testing.MyPlugin;
-import static com.mycila.testing.core.Cache.*;
+import com.mycila.testing.core.annot.MycilaPlugins;
+import static com.mycila.testing.core.api.Cache.*;
+import com.mycila.testing.core.api.TestPluginException;
+import com.mycila.testing.core.plugin.TestPlugin;
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -30,13 +31,13 @@ import org.testng.annotations.Test;
 public final class TestContextTest {
 
     PluginManager<TestPlugin> plugins;
-    TestContext test;
+    TestContextImpl test;
 
     @BeforeMethod
     public void setup() {
         plugins = new PluginManager<TestPlugin>(TestPlugin.class);
         plugins.getCache().registerPlugin("myPlugin", new MyPlugin());
-        test = new TestContext(plugins, this);
+        test = new TestContextImpl(plugins, this);
         MyPlugin.prepared = false;
     }
 
@@ -59,7 +60,7 @@ public final class TestContextTest {
 
     @Test
     public void test_instance() throws Exception {
-        assertEquals(test.test().instance(), this);
+        assertEquals(test.introspector().instance(), this);
     }
 
     @Test(expectedExceptions = TestPluginException.class)

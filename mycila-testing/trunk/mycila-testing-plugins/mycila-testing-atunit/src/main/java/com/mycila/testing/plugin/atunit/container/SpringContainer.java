@@ -36,126 +36,126 @@ import java.util.Map;
 
 public class SpringContainer implements Container {
 
-	public Object createTest(Class<?> testClass, Map<Field, Object> fieldValues) throws Exception {
+    public Object createTest(Class<?> testClass, Map<Field, Object> fieldValues) throws Exception {
 
-		GenericApplicationContext ctx = new GenericApplicationContext();
+        GenericApplicationContext ctx = new GenericApplicationContext();
 
-		for ( Field field : fieldValues.keySet() ) {
+        for (Field field : fieldValues.keySet()) {
 
-			Bean beanAnno = field.getAnnotation(Bean.class);
+            Bean beanAnno = field.getAnnotation(Bean.class);
 
-			AbstractBeanDefinition beandef = defineInstanceHolderFactoryBean(field.getType(), fieldValues.get(field));
+            AbstractBeanDefinition beandef = defineInstanceHolderFactoryBean(field.getType(), fieldValues.get(field));
 
-			if ((beanAnno != null) && !beanAnno.value().equals("")) {
-				ctx.registerBeanDefinition(beanAnno.value(), beandef);
-			} else {
-				BeanDefinitionReaderUtils.registerWithGeneratedName(beandef, ctx);
-			}
-		}
-        
-		loadBeanDefinitions(testClass, ctx);
+            if ((beanAnno != null) && !beanAnno.value().equals("")) {
+                ctx.registerBeanDefinition(beanAnno.value(), beandef);
+            } else {
+                BeanDefinitionReaderUtils.registerWithGeneratedName(beandef, ctx);
+            }
+        }
 
-		fillInMissingFieldBeans(testClass, ctx);
+        loadBeanDefinitions(testClass, ctx);
+
+        fillInMissingFieldBeans(testClass, ctx);
 
 
-		ctx.refresh();
+        ctx.refresh();
 
-		for ( Field field : testClass.getDeclaredFields() ) {
-			field.setAccessible(true);
-			Bean beanAnno = field.getAnnotation(Bean.class);
-			if ( beanAnno == null ) {
-				if ( fieldValues.containsKey(field) ) {
-					field.set(Mycila.currentExecution().context().test().instance(), fieldValues.get(field));
-				}
-			} else {
-				if ( ! beanAnno.value().equals("") ) {
-					field.set(Mycila.currentExecution().context().test().instance(), ctx.getBean(beanAnno.value()));
-				} else {
-					String[] beanNames = ctx.getBeanNamesForType(field.getType());
-					if ( beanNames.length < 1 ) {
-						throw new BeanCreationException("There are no beans defined with type " + field.getType());
-					}
-					if ( beanNames.length > 1 ) {
-						throw new BeanCreationException("There are " + beanNames.length + " beans defined with type " + field.getType()
-								                                 + "; consider wiring by name instead");
-					}
-					field.set(Mycila.currentExecution().context().test().instance(), ctx.getBean(beanNames[0]));
-				}
-			}
-		}
+        for (Field field : testClass.getDeclaredFields()) {
+            field.setAccessible(true);
+            Bean beanAnno = field.getAnnotation(Bean.class);
+            if (beanAnno == null) {
+                if (fieldValues.containsKey(field)) {
+                    field.set(Mycila.currentExecution().context().introspector().instance(), fieldValues.get(field));
+                }
+            } else {
+                if (!beanAnno.value().equals("")) {
+                    field.set(Mycila.currentExecution().context().introspector().instance(), ctx.getBean(beanAnno.value()));
+                } else {
+                    String[] beanNames = ctx.getBeanNamesForType(field.getType());
+                    if (beanNames.length < 1) {
+                        throw new BeanCreationException("There are no beans defined with type " + field.getType());
+                    }
+                    if (beanNames.length > 1) {
+                        throw new BeanCreationException("There are " + beanNames.length + " beans defined with type " + field.getType()
+                                + "; consider wiring by name instead");
+                    }
+                    field.set(Mycila.currentExecution().context().introspector().instance(), ctx.getBean(beanNames[0]));
+                }
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	protected void loadBeanDefinitions(Class<?> testClass, BeanDefinitionRegistry registry) {
-		XmlBeanDefinitionReader xml = new XmlBeanDefinitionReader(registry);
+    protected void loadBeanDefinitions(Class<?> testClass, BeanDefinitionRegistry registry) {
+        XmlBeanDefinitionReader xml = new XmlBeanDefinitionReader(registry);
 
-		String resourceName = testClass.getSimpleName() + ".xml";
-		Context ctxAnno = testClass.getAnnotation(Context.class);
-		if ( ctxAnno != null ) {
-			resourceName = ctxAnno.value();
-		}
-		URL xmlUrl = testClass.getResource(resourceName);
-		if ( xmlUrl != null ) {
-			xml.loadBeanDefinitions(new UrlResource(xmlUrl));
-		} else if ( ctxAnno != null) {
-			// is this the appropriate exception here?
-			throw new ApplicationContextException("Could not find context file named " + resourceName);
-		}
-	}
+        String resourceName = testClass.getSimpleName() + ".xml";
+        Context ctxAnno = testClass.getAnnotation(Context.class);
+        if (ctxAnno != null) {
+            resourceName = ctxAnno.value();
+        }
+        URL xmlUrl = testClass.getResource(resourceName);
+        if (xmlUrl != null) {
+            xml.loadBeanDefinitions(new UrlResource(xmlUrl));
+        } else if (ctxAnno != null) {
+            // is this the appropriate exception here?
+            throw new ApplicationContextException("Could not find context file named " + resourceName);
+        }
+    }
 
-	protected void fillInMissingFieldBeans(Class<?> testClass, GenericApplicationContext ctx) throws Exception {
-		for ( Field field : testClass.getDeclaredFields() ) {
-			Bean beanAnno = field.getAnnotation(Bean.class);
-			if ( beanAnno == null ) continue;
-			String name = beanAnno.value();
-			if ( !name.equals("") && !ctx.containsBean(name) ) {
-				ctx.registerBeanDefinition(name, defineAutowireBean(field.getType()));
-			} else if ( ctx.getBeansOfType(field.getType()).isEmpty() ) {
-				BeanDefinitionReaderUtils.registerWithGeneratedName(defineAutowireBean(field.getType()), ctx);
-			}
-		}
-	}
+    protected void fillInMissingFieldBeans(Class<?> testClass, GenericApplicationContext ctx) throws Exception {
+        for (Field field : testClass.getDeclaredFields()) {
+            Bean beanAnno = field.getAnnotation(Bean.class);
+            if (beanAnno == null) continue;
+            String name = beanAnno.value();
+            if (!name.equals("") && !ctx.containsBean(name)) {
+                ctx.registerBeanDefinition(name, defineAutowireBean(field.getType()));
+            } else if (ctx.getBeansOfType(field.getType()).isEmpty()) {
+                BeanDefinitionReaderUtils.registerWithGeneratedName(defineAutowireBean(field.getType()), ctx);
+            }
+        }
+    }
 
-	protected AbstractBeanDefinition defineAutowireBean(Class<?> type) throws Exception {
-		AbstractBeanDefinition beandef = BeanDefinitionReaderUtils.createBeanDefinition(null, type.getName(), type.getClassLoader());
-		beandef.setAutowireCandidate(true);
-		beandef.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_AUTODETECT);
-		return beandef;
-	}
+    protected AbstractBeanDefinition defineAutowireBean(Class<?> type) throws Exception {
+        AbstractBeanDefinition beandef = BeanDefinitionReaderUtils.createBeanDefinition(null, type.getName(), type.getClassLoader());
+        beandef.setAutowireCandidate(true);
+        beandef.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_AUTODETECT);
+        return beandef;
+    }
 
-	protected AbstractBeanDefinition defineInstanceHolderFactoryBean(Class<?> type, Object instance) throws Exception {
-		ConstructorArgumentValues args = new ConstructorArgumentValues();
-		args.addIndexedArgumentValue(0, type);
-		args.addIndexedArgumentValue(1, instance);
+    protected AbstractBeanDefinition defineInstanceHolderFactoryBean(Class<?> type, Object instance) throws Exception {
+        ConstructorArgumentValues args = new ConstructorArgumentValues();
+        args.addIndexedArgumentValue(0, type);
+        args.addIndexedArgumentValue(1, instance);
 
-		AbstractBeanDefinition beandef = BeanDefinitionReaderUtils.createBeanDefinition(null, InstanceHolderFactoryBean.class.getName(), getClass().getClassLoader());
-		beandef.setConstructorArgumentValues(args);
-		beandef.setAutowireCandidate(true);
-		return beandef;
-	}
+        AbstractBeanDefinition beandef = BeanDefinitionReaderUtils.createBeanDefinition(null, InstanceHolderFactoryBean.class.getName(), getClass().getClassLoader());
+        beandef.setConstructorArgumentValues(args);
+        beandef.setAutowireCandidate(true);
+        return beandef;
+    }
 
-	protected static class InstanceHolderFactoryBean implements FactoryBean {
+    protected static class InstanceHolderFactoryBean implements FactoryBean {
 
-		final Class<?> type;
-		final Object instance;
+        final Class<?> type;
+        final Object instance;
 
-		public InstanceHolderFactoryBean(Class<?> type, Object instance) {
-			this.type = type;
-			this.instance = instance;
-		}
+        public InstanceHolderFactoryBean(Class<?> type, Object instance) {
+            this.type = type;
+            this.instance = instance;
+        }
 
-		public Object getObject() throws Exception {
-			return instance;
-		}
+        public Object getObject() throws Exception {
+            return instance;
+        }
 
-		public Class<?> getObjectType() {
-			return type;
-		}
+        public Class<?> getObjectType() {
+            return type;
+        }
 
-		public boolean isSingleton() {
-			return true;
-		}
+        public boolean isSingleton() {
+            return true;
+        }
 
-	}
+    }
 }

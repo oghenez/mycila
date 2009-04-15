@@ -28,8 +28,9 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.binder.ScopedBindingBuilder;
-import com.mycila.testing.core.Context;
-import com.mycila.testing.core.DefaultTestPlugin;
+import com.mycila.testing.core.api.TestContext;
+import static com.mycila.testing.core.introspect.Filters.*;
+import com.mycila.testing.core.plugin.DefaultTestPlugin;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -44,9 +45,9 @@ import java.util.List;
 public final class Guice1TestPlugin extends DefaultTestPlugin {
 
     @Override
-    public void prepareTestInstance(final Context context) {
+    public void prepareTestInstance(final TestContext context) {
         context.setAttribute("guice.providers", new ArrayList<Provider<?>>());
-        GuiceContext ctx = context.test().testClass().getAnnotation(GuiceContext.class);
+        GuiceContext ctx = context.introspector().testClass().getAnnotation(GuiceContext.class);
 
         // create modules
         List<Module> modules = new ArrayList<Module>();
@@ -67,24 +68,24 @@ public final class Guice1TestPlugin extends DefaultTestPlugin {
         modules.addAll(providedModules(context));
         modules.add(bindings(context));
         modules.add(providedBindings(context));
-        if (context.test().instance() instanceof Module) {
-            modules.add((Module) context.test().instance());
+        if (context.introspector().instance() instanceof Module) {
+            modules.add((Module) context.introspector().instance());
         }
 
         // create injector
         Injector injector = Guice.createInjector(findStage(ctx), modules);
         context.setAttribute("com.google.inject.Injector", injector);
 
-        injector.injectMembers(context.test().instance());
+        injector.injectMembers(context.introspector().instance());
     }
 
-    private Module bindings(final Context context) {
+    private Module bindings(final TestContext context) {
         return new Module() {
             public void configure(Binder binder) {
-                for (final Field field : context.test().findFieldsAnnotatedWith(Bind.class)) {
+                for (final Field field : context.introspector().selectFields(fieldsAnnotatedBy(Bind.class))) {
                     Guice1TestPlugin.this.configure(context, binder, field.getGenericType(), field.getAnnotation(Bind.class), new InjectedProvider<Object>() {
                         public Object getInternal() {
-                            return context.test().get(field);
+                            return context.introspector().get(field);
                         }
                     });
 
@@ -93,13 +94,13 @@ public final class Guice1TestPlugin extends DefaultTestPlugin {
         };
     }
 
-    private Module providedBindings(final Context context) {
+    private Module providedBindings(final TestContext context) {
         return new Module() {
             public void configure(Binder binder) {
-                for (final Method method : context.test().findMethodsAnnotatedWith(Bind.class)) {
+                for (final Method method : context.introspector().selectMethods(methodsAnnotatedBy(Bind.class))) {
                     Guice1TestPlugin.this.configure(context, binder, method.getGenericReturnType(), method.getAnnotation(Bind.class), new InjectedProvider<Object>() {
                         public Object getInternal() {
-                            return context.test().invoke(method);
+                            return context.introspector().invoke(method);
                         }
                     });
 
@@ -109,7 +110,7 @@ public final class Guice1TestPlugin extends DefaultTestPlugin {
     }
 
     @SuppressWarnings({"unchecked"})
-    private <T> void configure(Context context, Binder binder, Type type, Bind annotation, InjectedProvider<T> provider) {
+    private <T> void configure(TestContext context, Binder binder, Type type, Bind annotation, InjectedProvider<T> provider) {
         AnnotatedBindingBuilder<T> builder1 = (AnnotatedBindingBuilder<T>) binder.bind(TypeLiteral.get(type));
         LinkedBindingBuilder<T> builder2 = annotation.annotatedBy().equals(NoAnnotation.class) ? builder1 : builder1.annotatedWith(annotation.annotatedBy());
         ScopedBindingBuilder builder3 = builder2.toProvider(provider);
@@ -120,16 +121,16 @@ public final class Guice1TestPlugin extends DefaultTestPlugin {
     }
 
     @SuppressWarnings({"unchecked"})
-    private List<Module> providedModules(Context ctx) {
+    private List<Module> providedModules(TestContext ctx) {
         List<Module> modules = new ArrayList<Module>();
-        for (Method method : ctx.test().findMethodsOfTypeAnnotatedWith(Module.class, ModuleProvider.class)) {
-            modules.add((Module) ctx.test().invoke(method));
+        for (Method method : ctx.introspector().selectMethods(and(methodsOfType(Module.class), methodsAnnotatedBy(ModuleProvider.class)))) {
+            modules.add((Module) ctx.introspector().invoke(method));
         }
-        for (Method method : ctx.test().findMethodsOfTypeAnnotatedWith(Module[].class, ModuleProvider.class)) {
-            modules.addAll(Arrays.asList((Module[]) ctx.test().invoke(method)));
+        for (Method method : ctx.introspector().selectMethods(and(methodsOfType(Module[].class), methodsAnnotatedBy(ModuleProvider.class)))) {
+            modules.addAll(Arrays.asList((Module[]) ctx.introspector().invoke(method)));
         }
-        for (Method method : ctx.test().findMethodsOfTypeAnnotatedWith(Iterable.class, ModuleProvider.class)) {
-            for (Module module : (Iterable<Module>) ctx.test().invoke(method)) {
+        for (Method method : ctx.introspector().selectMethods(and(methodsOfType(Iterable.class), methodsAnnotatedBy(ModuleProvider.class)))) {
+            for (Module module : (Iterable<Module>) ctx.introspector().invoke(method)) {
                 modules.add(module);
             }
         }
