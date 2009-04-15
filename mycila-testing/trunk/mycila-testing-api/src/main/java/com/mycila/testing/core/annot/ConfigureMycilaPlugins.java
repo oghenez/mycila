@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.testing.plugin.annotation;
+package com.mycila.testing.core.annot;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -23,13 +23,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Skip tests annotated by this annotation. If this annotation is on a test class, all test methods are skipped.
+ * This annotation can be place on any method in your test class to be able to configure the
+ * {@link com.mycila.plugin.spi.PluginManager} at runtime.
+ * <p/>
+ * The method must have one argument, which is the plugin manager. In example:
+ * <p/>
+ * {@code @ConfigureMycilaPlugins
+ * void configure(PluginManager<TestPlugin> pluginManager) {}}
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.METHOD})
 @Inherited
 @Documented
-public @interface Skip {
+public @interface ConfigureMycilaPlugins {
+
 }

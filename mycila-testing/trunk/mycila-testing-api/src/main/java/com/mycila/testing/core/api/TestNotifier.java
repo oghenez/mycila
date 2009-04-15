@@ -13,11 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.testing.core;
+package com.mycila.testing.core.api;
 
 import java.lang.reflect.Method;
 
 /**
+ * A TestNotifier is used to fire events in test frameworks. It is created with
+ * {@link com.mycila.testing.core.MycilaTesting#createNotifier(Object)} and is
+ * used in test frameworks to fire test events to Mycila plugins.
+ * <p/>
+ * For each event thrown, an {@link Execution} context
+ * is created and accesible from {@link com.mycila.testing.core.Mycila#currentExecution()}
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface TestNotifier {

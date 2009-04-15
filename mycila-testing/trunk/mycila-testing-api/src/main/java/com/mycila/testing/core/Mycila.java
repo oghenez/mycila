@@ -17,7 +17,9 @@ package com.mycila.testing.core;
 
 import com.mycila.log.Logger;
 import com.mycila.log.Loggers;
-import static com.mycila.testing.util.Ensure.*;
+import static com.mycila.testing.core.api.Ensure.*;
+import com.mycila.testing.core.api.Execution;
+import com.mycila.testing.core.api.TestContext;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -27,7 +29,7 @@ import java.util.Map;
  * Holds the current test context. The context holder contains the current test instance used for each call to
  * plugin methods for preparing instance, before and after test execution.<p/>
  * <p/>
- * You can safely use in your plugin this class to get from anywhere the current test {@link com.mycila.testing.core.Context}
+ * You can safely use in your plugin this class to get from anywhere the current test {@link com.mycila.testing.core.api.TestContext}
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
@@ -35,28 +37,28 @@ public final class Mycila {
 
     private static final Logger LOGGER = Loggers.get(Mycila.class);
     private static final ThreadLocal<Execution> CURRENT_EXECUTION = new InheritableThreadLocal<Execution>();
-    private static final Map<Ref, Context> CONTEXTS = new HashMap<Ref, Context>();
+    private static final Map<Ref, TestContext> CONTEXTS = new HashMap<Ref, TestContext>();
 
     private Mycila() {
     }
 
     static void registerCurrentExecution(Execution execution) {
         notNull("Execution context", execution);
-        LOGGER.debug("Registering Execution Context {0}#{1} for test {2}#{3,number,#}", execution.step(), execution.method().getName(), execution.context().test().testClass().getName(), execution.context().test().instance().hashCode());
+        LOGGER.debug("Registering Execution Context {0}#{1} for test {2}#{3,number,#}", execution.step(), execution.method().getName(), execution.context().introspector().testClass().getName(), execution.context().introspector().instance().hashCode());
         CURRENT_EXECUTION.set(execution);
     }
 
-    static void registerContext(Context context) {
+    static void registerContext(TestContext context) {
         notNull("Test context", context);
-        LOGGER.debug("Registering Global Test Context for test {0}#{1,number,#}", context.test().testClass().getName(), context.test().instance().hashCode());
-        CONTEXTS.put(new Ref(context.test().instance()), context);
+        LOGGER.debug("Registering Global Test Context for test {0}#{1,number,#}", context.introspector().testClass().getName(), context.introspector().instance().hashCode());
+        CONTEXTS.put(new Ref(context.introspector().instance()), context);
     }
 
     static void unsetCurrentExecution() {
         if (LOGGER.canDebug()) {
             Execution execution = CURRENT_EXECUTION.get();
             if (execution != null) {
-                LOGGER.debug("Removing Execution Context {0}#{1} for test {2}#{3,number,#}", execution.step(), execution.method().getName(), execution.context().test().testClass().getName(), execution.context().test().instance().hashCode());
+                LOGGER.debug("Removing Execution Context {0}#{1} for test {2}#{3,number,#}", execution.step(), execution.method().getName(), execution.context().introspector().testClass().getName(), execution.context().introspector().instance().hashCode());
             }
         }
         CURRENT_EXECUTION.remove();
@@ -66,17 +68,17 @@ public final class Mycila {
         notNull("Test instance", testInstance);
         Ref ref = new Ref(testInstance);
         if (LOGGER.canDebug()) {
-            Context context = CONTEXTS.get(ref);
+            TestContext context = CONTEXTS.get(ref);
             if (context != null) {
-                LOGGER.debug("Removing Global Test Context for test {0}#{1,number,#}", context.test().testClass().getName(), context.test().instance().hashCode());
+                LOGGER.debug("Removing Global Test Context for test {0}#{1,number,#}", context.introspector().testClass().getName(), context.introspector().instance().hashCode());
             }
         }
         CONTEXTS.remove(ref);
     }
 
-    public static Context context(Object testInstance) {
+    public static TestContext context(Object testInstance) {
         notNull("Test instance", testInstance);
-        Context context = CONTEXTS.get(new Ref(testInstance));
+        TestContext context = CONTEXTS.get(new Ref(testInstance));
         if (context == null) {
             throw new IllegalStateException("No Global Test Context available for test " + MessageFormat.format("{0}#{1,number,#}", testInstance.getClass().getName(), testInstance.hashCode()));
         }
@@ -97,13 +99,16 @@ public final class Mycila {
 
     private static class Ref {
         final Object object;
+
         Ref(Object object) {
             this.object = object;
         }
+
         @Override
         public boolean equals(Object o) {
             return o instanceof Ref && ((Ref) o).object == object;
         }
+
         @Override
         public int hashCode() {
             return object.hashCode();

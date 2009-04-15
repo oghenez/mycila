@@ -19,7 +19,13 @@ import com.mycila.log.Logger;
 import com.mycila.log.Loggers;
 import com.mycila.plugin.api.PluginBinding;
 import com.mycila.plugin.spi.PluginManager;
-import static com.mycila.testing.util.Ensure.*;
+import static com.mycila.testing.core.api.Ensure.*;
+import com.mycila.testing.core.api.Step;
+import com.mycila.testing.core.api.TestContext;
+import com.mycila.testing.core.api.TestNotifier;
+import com.mycila.testing.core.api.TestPluginException;
+import com.mycila.testing.core.introspect.Introspector;
+import com.mycila.testing.core.plugin.TestPlugin;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -29,7 +35,7 @@ import java.util.Map;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class TestContext implements Context, TestNotifier {
+final class TestContextImpl implements TestContext, TestNotifier {
 
     private static final Method prepareMethod;static {
         try {
@@ -47,24 +53,24 @@ final class TestContext implements Context, TestNotifier {
         }
     }
 
-    private static final Logger LOGGER = Loggers.get(TestContext.class);
+    private static final Logger LOGGER = Loggers.get(TestContextImpl.class);
 
-    private final TestInstance testInstance;
+    private final Introspector introspector;
     private final Map<String, Object> attributes = new HashMap<String, Object>();
     private final PluginManager<TestPlugin> pluginManager;
 
-    TestContext(PluginManager<TestPlugin> pluginManager, Object testInstance) {
+    TestContextImpl(PluginManager<TestPlugin> pluginManager, Object testInstance) {
         notNull("Plugin manager", pluginManager);
         notNull("Test instance", testInstance);
-        this.testInstance = new TestInstance(testInstance);
+        this.introspector = new Introspector(testInstance);
         this.pluginManager = pluginManager;
-        LOGGER.debug("Creating new Test Context for test {0}#{1,number,#}", this.testInstance.testClass().getName(), this.testInstance.instance().hashCode());
+        LOGGER.debug("Creating new Test Context for test {0}#{1,number,#}", this.introspector.testClass().getName(), this.introspector.instance().hashCode());
         Mycila.registerContext(this);
     }
 
     @SuppressWarnings({"unchecked"})
     public <T> T attribute(String name) {
-        notNull("Attribute name", testInstance);
+        notNull("Attribute name", introspector);
         T att = (T) attributes.get(name);
         if (att == null) {
             throw new TestPluginException("Inexisting attribute: '%s'", name);
@@ -80,12 +86,12 @@ final class TestContext implements Context, TestNotifier {
         return Collections.unmodifiableMap(attributes);
     }
 
-    public TestInstance test() {
-        return testInstance;
+    public Introspector introspector() {
+        return introspector;
     }
 
     public boolean hasAttribute(String name) {
-        notNull("Attribute name", testInstance);
+        notNull("Attribute name", introspector);
         return attributes.containsKey(name);
     }
 
@@ -104,7 +110,7 @@ final class TestContext implements Context, TestNotifier {
         try {
             ExecutionImpl execution = new ExecutionImpl(this, prepareMethod);
             Mycila.registerCurrentExecution(execution.changeStep(Step.PREPARE));
-            LOGGER.debug("Calling 'prepareTestInstance' on plugins for test {0}#{1,number,#}...", testInstance.testClass().getName(), testInstance.instance().hashCode());
+            LOGGER.debug("Calling 'prepareTestInstance' on plugins for test {0}#{1,number,#}...", introspector.testClass().getName(), introspector.instance().hashCode());
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().prepareTestInstance(this);
@@ -122,7 +128,7 @@ final class TestContext implements Context, TestNotifier {
         TestExecutionImpl testExecution = new TestExecutionImpl(this, method);
         try {
             Mycila.registerCurrentExecution(testExecution.changeStep(Step.BEFORE));
-            LOGGER.debug("Calling 'beforeTest' on plugins for test {0}#{1,number,#}...", testInstance.testClass().getName(), testInstance.instance().hashCode());
+            LOGGER.debug("Calling 'beforeTest' on plugins for test {0}#{1,number,#}...", introspector.testClass().getName(), introspector.instance().hashCode());
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().beforeTest(testExecution);
@@ -141,7 +147,7 @@ final class TestContext implements Context, TestNotifier {
             TestExecutionImpl testExecution = (TestExecutionImpl) Mycila.currentExecution();
             Mycila.unsetCurrentExecution();
             Mycila.registerCurrentExecution(testExecution.changeStep(Step.AFTER));
-            LOGGER.debug("Calling 'afterTest' on plugins for test {0}#{1,number,#}...", testInstance.testClass().getName(), testInstance.instance().hashCode());
+            LOGGER.debug("Calling 'afterTest' on plugins for test {0}#{1,number,#}...", introspector.testClass().getName(), introspector.instance().hashCode());
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().afterTest(testExecution);
@@ -158,7 +164,7 @@ final class TestContext implements Context, TestNotifier {
         try {
             ExecutionImpl execution = new ExecutionImpl(this, fireAfterClassMethod);
             Mycila.registerCurrentExecution(execution.changeStep(Step.COMPLETED));
-            LOGGER.debug("Calling 'afterClass' on plugins for test {0}#{1,number,#}...", testInstance.testClass().getName(), testInstance.instance().hashCode());
+            LOGGER.debug("Calling 'afterClass' on plugins for test {0}#{1,number,#}...", introspector.testClass().getName(), introspector.instance().hashCode());
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().afterClass(this);

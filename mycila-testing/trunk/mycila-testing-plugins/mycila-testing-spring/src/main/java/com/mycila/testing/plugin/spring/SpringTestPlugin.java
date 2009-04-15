@@ -16,9 +16,8 @@
 
 package com.mycila.testing.plugin.spring;
 
-import com.mycila.testing.core.Context;
-import com.mycila.testing.core.DefaultTestPlugin;
-import org.springframework.test.context.TestContext;
+import com.mycila.testing.core.api.TestContext;
+import com.mycila.testing.core.plugin.DefaultTestPlugin;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -29,21 +28,21 @@ import java.lang.reflect.Field;
 public final class SpringTestPlugin extends DefaultTestPlugin {
 
     @Override
-    public void prepareTestInstance(Context context) {
+    public void prepareTestInstance(TestContext context) {
         try {
-            final TestContextManager manager = new TestContextManager(context.test().testClass());
-            final TestContext ctx = manager.testContext();
+            final TestContextManager manager = new TestContextManager(context.introspector().testClass());
+            final org.springframework.test.context.TestContext ctx = manager.testContext();
             context.setAttribute("org.springframework.test.context.TestContextManager", manager);
             context.setAttribute("org.springframework.test.context.TestContext", ctx);
             setupContextLoader(ctx, new MycilaContextLoader(context));
-            manager.prepareTestInstance(context.test().instance());
+            manager.prepareTestInstance(context.introspector().instance());
             context.setAttribute("org.springframework.context.ApplicationContext", manager.testContext().getApplicationContext());
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
-    private void setupContextLoader(TestContext ctx, MycilaContextLoader loader) throws Exception {
+    private void setupContextLoader(org.springframework.test.context.TestContext ctx, MycilaContextLoader loader) throws Exception {
         Field locations = ctx.getClass().getDeclaredField("locations");
         locations.setAccessible(true);
         locations.set(ctx, loader.contextLocations());
@@ -62,7 +61,7 @@ public final class SpringTestPlugin extends DefaultTestPlugin {
             super(testClass);
         }
 
-        public TestContext testContext() {
+        public org.springframework.test.context.TestContext testContext() {
             return super.getTestContext();
         }
     }

@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.testing.core;
+package com.mycila.testing.core.annot;
+
+import com.mycila.testing.core.MycilaTesting;
+import com.mycila.testing.core.api.Cache;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -23,6 +26,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * This annotation can be place in your test class to control the
+ * {@link com.mycila.plugin.spi.PluginManager}. You can choose if you want to
+ * load Mycila Plugins statically shared for all tests or if the plugins should
+ * be loaded each time a test instance is created. Also, you have the ability
+ * to control which descriptor file is used to load the plugins.
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)

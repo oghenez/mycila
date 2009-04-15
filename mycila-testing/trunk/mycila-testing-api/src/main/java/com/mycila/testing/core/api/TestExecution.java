@@ -13,19 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.testing.core;
+package com.mycila.testing.core.api;
 
 /**
+ * Represents a current test method execution. This is a context create when calling
+ * {@link com.mycila.testing.core.api.TestNotifier#fireBeforeTest(java.lang.reflect.Method)}
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public enum Cache {
-    /**
-     * The plugin cache will be statically shared bewteen all test instances
-     */
-    SHARED,
+public interface TestExecution extends Execution {
 
     /**
-     * The plugin cache will be recreated for each test instance, thus allowing to control the cache more specifically for a test
+     * @return wheter the test method should be skipped
      */
-    UNSHARED
+    boolean mustSkip();
+
+    /**
+     * Control wheter you want to skip this test method
+     *
+     * @param mustSkip wheter you want to skip the test
+     */
+    void setSkip(boolean mustSkip);
+
 }

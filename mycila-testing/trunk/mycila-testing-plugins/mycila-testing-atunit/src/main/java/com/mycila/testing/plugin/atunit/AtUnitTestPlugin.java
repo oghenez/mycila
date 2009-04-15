@@ -26,8 +26,8 @@ import atunit.core.MockFramework;
 import atunit.core.NoContainer;
 import atunit.core.NoMockFramework;
 import atunit.lib.com.google.common.collect.Sets;
-import com.mycila.testing.core.Context;
-import com.mycila.testing.core.DefaultTestPlugin;
+import com.mycila.testing.core.api.TestContext;
+import com.mycila.testing.core.plugin.DefaultTestPlugin;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -41,10 +41,10 @@ import java.util.Set;
 public final class AtUnitTestPlugin extends DefaultTestPlugin {
 
     @Override
-    public void prepareTestInstance(Context context) {
+    public void prepareTestInstance(TestContext context) {
 
         try {
-            Class<?> c = context.test().testClass();
+            Class<?> c = context.introspector().testClass();
             Set<Field> testFields = getFields(c);
 
             Container container = getContainerFor(c);
@@ -65,8 +65,8 @@ public final class AtUnitTestPlugin extends DefaultTestPlugin {
 
             for (Field field : fieldValues.keySet()) {
                 field.setAccessible(true);
-                if (field.get(context.test().instance()) == null) {
-                    field.set(context.test().instance(), fieldValues.get(field));
+                if (field.get(context.introspector().instance()) == null) {
+                    field.set(context.introspector().instance(), fieldValues.get(field));
                 }
             }
         } catch (Exception e) {

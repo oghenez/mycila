@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.testing.core;
+package com.mycila.testing.core.api;
 
 import java.lang.reflect.Method;
 
@@ -39,7 +39,7 @@ public interface Execution {
     /**
      * @return The Context of the test instance
      */
-    Context context();
+    TestContext context();
 
     /**
      * @return The exception thrown by the method execution if it failed. Returns null if none

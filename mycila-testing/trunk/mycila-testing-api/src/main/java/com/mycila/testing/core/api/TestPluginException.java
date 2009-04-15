@@ -13,19 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.testing;
+package com.mycila.testing.core.api;
 
-import com.mycila.testing.core.Context;
-import com.mycila.testing.core.DefaultTestPlugin;
+import com.mycila.testing.MycilaTestingException;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class FailingPlugin extends DefaultTestPlugin {
+public class TestPluginException extends MycilaTestingException {
+    private static final long serialVersionUID = -7772706327921003956L;
 
-    @Override
-    public void prepareTestInstance(Context context) {
-        throw new IllegalArgumentException("my exception");
+    public TestPluginException(String message) {
+        super(message);
     }
-    
+
+    public TestPluginException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public TestPluginException(String message, Object... args) {
+        super(message, args);
+    }
+
+    public TestPluginException(Throwable cause, String message, Object... args) {
+        super(cause, message, args);
+    }
 }

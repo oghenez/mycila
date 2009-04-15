@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package com.mycila.testing.core;
+package com.mycila.testing.core.plugin;
 
 import com.mycila.plugin.api.Plugin;
+import com.mycila.testing.core.api.TestContext;
+import com.mycila.testing.core.api.TestExecution;
 
 /**
  * This interface should be implemented by all plugins.
  * <strong>It is strongly adviced that plugins extends {@link DefaultTestPlugin}
- * instead of implementing directly {@link com.mycila.testing.core.TestPlugin} interface</strong>,
+ * instead of implementing directly {@link TestPlugin} interface</strong>,
  * to avoid any code break when changing or enhancing the API.
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -35,7 +37,7 @@ public interface TestPlugin extends Plugin {
      * @param context The test context, relative to one test instance
      * @throws Exception If anything wrong occurs in plugin execution. Exception will be catched by the testing API.
      */
-    void prepareTestInstance(Context context) throws Exception;
+    void prepareTestInstance(TestContext context) throws Exception;
 
     /**
      * This method will be called on each plugin in order of dependency to execute code required before a test method can run.
@@ -61,5 +63,5 @@ public interface TestPlugin extends Plugin {
      * @param context The context of this test
      * @throws Exception If anything wrong occurs in plugin execution. Exception will be catched by the testing API.
      */
-    void afterClass(Context context) throws Exception;
+    void afterClass(TestContext context) throws Exception;
 }

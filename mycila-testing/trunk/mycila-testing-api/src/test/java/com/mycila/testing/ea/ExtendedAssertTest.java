@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.testing.util;
+package com.mycila.testing.ea;
 
-import com.mycila.testing.ea.Code;
 import static com.mycila.testing.ea.ExtendedAssert.*;
 import static org.testng.Assert.*;
 import static org.testng.Assert.fail;
@@ -225,5 +224,5 @@ public final class ExtendedAssertTest {
             e.printStackTrace();
         }
     }
-    
+
 }

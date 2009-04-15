@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.mycila.testing.core;
+package com.mycila.testing.core.api;
 
 import com.mycila.plugin.spi.PluginManager;
+import com.mycila.testing.core.introspect.Introspector;
+import com.mycila.testing.core.plugin.TestPlugin;
 
 import java.util.Map;
 
@@ -26,7 +28,7 @@ import java.util.Map;
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Context {
+public interface TestContext {
 
     /**
      * @return The plugin manager used for this test
@@ -36,9 +38,9 @@ public interface Context {
     /**
      * Get the representation of this test
      *
-     * @return A {@link TestInstance} instance for this test
+     * @return A {@link com.mycila.testing.core.introspect.Introspector} instance for this test
      */
-    TestInstance test();
+    Introspector introspector();
 
     /**
      * Get an attribute from this context

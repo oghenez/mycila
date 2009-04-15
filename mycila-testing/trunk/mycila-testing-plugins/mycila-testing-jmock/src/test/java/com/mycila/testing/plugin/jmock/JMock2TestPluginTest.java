@@ -15,8 +15,8 @@
  */
 package com.mycila.testing.plugin.jmock;
 
-import com.mycila.testing.core.Context;
-import com.mycila.testing.core.TestInstance;
+import com.mycila.testing.core.api.TestContext;
+import com.mycila.testing.core.introspect.Introspector;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import static org.testng.Assert.*;
@@ -31,13 +31,13 @@ public final class JMock2TestPluginTest {
 
     Mockery mockery;
     Mockery mockery3 = new Mockery();
-    Context ctx;
+    TestContext ctx;
     JMock2TestPlugin plugin = new JMock2TestPlugin();
 
     @BeforeMethod
     public void setup() {
         mockery = new Mockery();
-        ctx = mockery.mock(Context.class);
+        ctx = mockery.mock(TestContext.class);
     }
 
     @AfterMethod
@@ -48,8 +48,8 @@ public final class JMock2TestPluginTest {
     @Test
     public void test_do_not_override_non_annotated_mockery() throws Exception {
         mockery.checking(new Expectations() {{
-            allowing(ctx).test();
-            will(returnValue(new TestInstance(JMock2TestPluginTest.this)));
+            allowing(ctx).introspector();
+            will(returnValue(new Introspector(JMock2TestPluginTest.this)));
             one(ctx).setAttribute(with(JMock2TestPlugin.CTX_MOCKERY), with(any(Mockery.class)));
         }});
         Mockery current = mockery;
@@ -61,8 +61,8 @@ public final class JMock2TestPluginTest {
     public void test_inject_mockery() throws Exception {
         final Test5 test = new Test5();
         mockery.checking(new Expectations() {{
-            allowing(ctx).test();
-            will(returnValue(new TestInstance(test)));
+            allowing(ctx).introspector();
+            will(returnValue(new Introspector(test)));
             one(ctx).setAttribute(with(JMock2TestPlugin.CTX_MOCKERY), with(any(Mockery.class)));
         }});
         assertNotNull(test.mockery1);
@@ -78,8 +78,8 @@ public final class JMock2TestPluginTest {
     public void test_mock_interface() throws Exception {
         final Test1 test = new Test1();
         mockery.checking(new Expectations() {{
-            allowing(ctx).test();
-            will(returnValue(new TestInstance(test)));
+            allowing(ctx).introspector();
+            will(returnValue(new Introspector(test)));
             one(ctx).setAttribute(with("org.jmock.Mockery"), with(any(Mockery.class)));
         }});
         assertNull(test.ctx);
@@ -91,8 +91,8 @@ public final class JMock2TestPluginTest {
     public void test_mock_class() throws Exception {
         final Test2 test = new Test2();
         mockery.checking(new Expectations() {{
-            allowing(ctx).test();
-            will(returnValue(new TestInstance(test)));
+            allowing(ctx).introspector();
+            will(returnValue(new Introspector(test)));
             one(ctx).setAttribute(with("org.jmock.Mockery"), with(any(Mockery.class)));
         }});
         assertNull(test.ti);
@@ -104,8 +104,8 @@ public final class JMock2TestPluginTest {
     public void test_enhance_superclasses() throws Exception {
         final Test4 test = new Test4();
         mockery.checking(new Expectations() {{
-            allowing(ctx).test();
-            will(returnValue(new TestInstance(test)));
+            allowing(ctx).introspector();
+            will(returnValue(new Introspector(test)));
             one(ctx).setAttribute(with("org.jmock.Mockery"), with(any(Mockery.class)));
         }});
         assertNull(test.getTi3());
@@ -122,8 +122,8 @@ public final class JMock2TestPluginTest {
             private Mockery m = new Mockery();
         };
         mockery.checking(new Expectations() {{
-            allowing(ctx).test();
-            will(returnValue(new TestInstance(test)));
+            allowing(ctx).introspector();
+            will(returnValue(new Introspector(test)));
             one(ctx).setAttribute(with("org.jmock.Mockery"), with(any(Mockery.class)));
         }});
         assertNull(test.get());
@@ -138,8 +138,8 @@ public final class JMock2TestPluginTest {
             private Mockery m;
         };
         mockery.checking(new Expectations() {{
-            allowing(ctx).test();
-            will(returnValue(new TestInstance(test)));
+            allowing(ctx).introspector();
+            will(returnValue(new Introspector(test)));
         }});
         assertNull(test.get());
         plugin.prepareTestInstance(ctx);
@@ -152,8 +152,8 @@ public final class JMock2TestPluginTest {
             private String m = "a string";
         };
         mockery.checking(new Expectations() {{
-            allowing(ctx).test();
-            will(returnValue(new TestInstance(test)));
+            allowing(ctx).introspector();
+            will(returnValue(new Introspector(test)));
         }});
         assertNull(test.get());
         plugin.prepareTestInstance(ctx);
@@ -168,8 +168,8 @@ public final class JMock2TestPluginTest {
             }
         };
         mockery.checking(new Expectations() {{
-            allowing(ctx).test();
-            will(returnValue(new TestInstance(test)));
+            allowing(ctx).introspector();
+            will(returnValue(new Introspector(test)));
             one(ctx).setAttribute(with("org.jmock.Mockery"), with(any(Mockery.class)));
         }});
         assertNull(test.get());
@@ -186,8 +186,8 @@ public final class JMock2TestPluginTest {
             }
         };
         mockery.checking(new Expectations() {{
-            allowing(ctx).test();
-            will(returnValue(new TestInstance(test)));
+            allowing(ctx).introspector();
+            will(returnValue(new Introspector(test)));
         }});
         assertNull(test.get());
         plugin.prepareTestInstance(ctx);
@@ -202,8 +202,8 @@ public final class JMock2TestPluginTest {
             }
         };
         mockery.checking(new Expectations() {{
-            allowing(ctx).test();
-            will(returnValue(new TestInstance(test)));
+            allowing(ctx).introspector();
+            will(returnValue(new Introspector(test)));
         }});
         assertNull(test.get());
         plugin.prepareTestInstance(ctx);
@@ -221,8 +221,8 @@ public final class JMock2TestPluginTest {
             }
         };
         mockery.checking(new Expectations() {{
-            allowing(ctx).test();
-            will(returnValue(new TestInstance(test)));
+            allowing(ctx).introspector();
+            will(returnValue(new Introspector(test)));
             one(ctx).setAttribute(with("org.jmock.Mockery"), with(any(Mockery.class)));
         }});
         assertNull(test.get());

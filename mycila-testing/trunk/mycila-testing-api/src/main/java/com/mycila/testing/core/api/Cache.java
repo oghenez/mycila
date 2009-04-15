@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.testing.core;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package com.mycila.testing.core.api;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
-@Inherited
-@Documented
-public @interface ConfigureMycilaPlugins {
+public enum Cache {
+    /**
+     * The plugin cache will be statically shared bewteen all test instances
+     */
+    SHARED,
 
+    /**
+     * The plugin cache will be recreated for each test instance, thus allowing to control the cache more specifically for a test
+     */
+    UNSHARED
 }

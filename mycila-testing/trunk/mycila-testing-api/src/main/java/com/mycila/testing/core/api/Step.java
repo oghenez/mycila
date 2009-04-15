@@ -13,26 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.testing.core;
+package com.mycila.testing.core.api;
 
 /**
- * represents a current test method execution. This is a sort of context returned by
- * {@link com.mycila.testing.core.TestNotifier#fireBeforeTest(java.lang.reflect.Method)}
- *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface TestExecution extends Execution {
-
-    /**
-     * @return wheter the test method should be skipped
-     */
-    boolean mustSkip();
-
-    /**
-     * Control wheter you want to skip this test method
-     *
-     * @param mustSkip wheter you want to skip the test
-     */
-    void setSkip(boolean mustSkip);
-
+public enum Step {
+    UNKNOWN, PREPARE, BEFORE, TEST, AFTER, COMPLETED
 }

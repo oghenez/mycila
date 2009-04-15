@@ -16,8 +16,9 @@
 
 package com.mycila.testing.plugin.easymock;
 
-import com.mycila.testing.core.Context;
-import com.mycila.testing.core.DefaultTestPlugin;
+import com.mycila.testing.core.api.TestContext;
+import static com.mycila.testing.core.introspect.Filters.*;
+import com.mycila.testing.core.plugin.DefaultTestPlugin;
 import org.easymock.classextension.EasyMock;
 
 import java.lang.reflect.Field;
@@ -35,10 +36,10 @@ public final class EasyMock2TestPlugin extends DefaultTestPlugin {
     }
 
     @Override
-    public void prepareTestInstance(Context context) {
-        List<Field> mocks = context.test().findFieldsAnnotatedWith(Mock.class);
+    public void prepareTestInstance(TestContext context) {
+        List<Field> mocks = context.introspector().selectFields(fieldsAnnotatedBy(Mock.class));
         for (Field field : mocks) {
-            context.test().set(field, mock(field));
+            context.introspector().set(field, mock(field));
         }
     }
 

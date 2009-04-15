@@ -15,7 +15,10 @@
  */
 package com.mycila.testing.core;
 
-import static com.mycila.testing.util.Ensure.*;
+import static com.mycila.testing.core.api.Ensure.*;
+import com.mycila.testing.core.api.Step;
+import com.mycila.testing.core.api.TestContext;
+import com.mycila.testing.core.api.TestExecution;
 
 import java.lang.reflect.Method;
 
@@ -27,7 +30,7 @@ final class TestExecutionImpl implements TestExecution {
     private final ExecutionImpl execution;
     private boolean mustSkip;
 
-    TestExecutionImpl(Context context, Method method) {
+    TestExecutionImpl(TestContext context, Method method) {
         notNull("Test context", context);
         notNull("Test method", method);
         execution = new ExecutionImpl(context, method);
@@ -54,7 +57,7 @@ final class TestExecutionImpl implements TestExecution {
         return execution.method();
     }
 
-    public Context context() {
+    public TestContext context() {
         return execution.context();
     }
 
@@ -65,6 +68,7 @@ final class TestExecutionImpl implements TestExecution {
     public boolean hasFailed() {
         return execution.hasFailed();
     }
+
     public void setThrowable(Throwable throwable) {
         execution.setThrowable(throwable);
     }
