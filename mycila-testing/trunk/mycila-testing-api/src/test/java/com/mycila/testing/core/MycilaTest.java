@@ -17,8 +17,8 @@ package com.mycila.testing.core;
 
 import com.mycila.testing.JDKLogging;
 import static com.mycila.testing.core.Cache.*;
-import com.mycila.testing.util.Code;
-import static com.mycila.testing.util.ExtendedAssert.*;
+import com.mycila.testing.ea.Code;
+import static com.mycila.testing.ea.ExtendedAssert.*;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;

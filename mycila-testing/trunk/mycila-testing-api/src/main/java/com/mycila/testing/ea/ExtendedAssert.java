@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.testing.util;
+package com.mycila.testing.ea;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;

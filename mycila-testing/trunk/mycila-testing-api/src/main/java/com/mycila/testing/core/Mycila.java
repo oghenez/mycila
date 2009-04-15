@@ -17,6 +17,7 @@ package com.mycila.testing.core;
 
 import com.mycila.log.Logger;
 import com.mycila.log.Loggers;
+import static com.mycila.testing.util.Ensure.*;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -40,11 +41,13 @@ public final class Mycila {
     }
 
     static void registerCurrentExecution(Execution execution) {
+        notNull("Execution context", execution);
         LOGGER.debug("Registering Execution Context {0}#{1} for test {2}#{3,number,#}", execution.step(), execution.method().getName(), execution.context().test().testClass().getName(), execution.context().test().instance().hashCode());
         CURRENT_EXECUTION.set(execution);
     }
 
     static void registerContext(Context context) {
+        notNull("Test context", context);
         LOGGER.debug("Registering Global Test Context for test {0}#{1,number,#}", context.test().testClass().getName(), context.test().instance().hashCode());
         CONTEXTS.put(new Ref(context.test().instance()), context);
     }
@@ -60,6 +63,7 @@ public final class Mycila {
     }
 
     static void unsetContext(Object testInstance) {
+        notNull("Test instance", testInstance);
         Ref ref = new Ref(testInstance);
         if (LOGGER.canDebug()) {
             Context context = CONTEXTS.get(ref);
@@ -71,6 +75,7 @@ public final class Mycila {
     }
 
     public static Context context(Object testInstance) {
+        notNull("Test instance", testInstance);
         Context context = CONTEXTS.get(new Ref(testInstance));
         if (context == null) {
             throw new IllegalStateException("No Global Test Context available for test " + MessageFormat.format("{0}#{1,number,#}", testInstance.getClass().getName(), testInstance.hashCode()));

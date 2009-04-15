@@ -19,6 +19,7 @@ package com.mycila.testing.core;
 import com.mycila.log.Logger;
 import com.mycila.log.Loggers;
 import com.mycila.plugin.spi.PluginManager;
+import static com.mycila.testing.util.Ensure.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -56,6 +57,7 @@ public final class MycilaTesting {
     }
 
     public TestNotifier createNotifier(Object testInstance) {
+        notNull("Test instance", testInstance);
         return new TestContext(pluginManager, testInstance);
     }
 
@@ -88,6 +90,7 @@ public final class MycilaTesting {
      *         This instance is registered statically to avoid reloading plugins each time
      */
     public static MycilaTesting staticSetup(String pluginDescriptor) {
+        notNull("Plugin descriptor", pluginDescriptor);
         MycilaTesting testSetup = instances.get(pluginDescriptor);
         if (testSetup == null) {
             testSetup = newSetup(pluginDescriptor);
@@ -108,6 +111,7 @@ public final class MycilaTesting {
      * @return a TestSetup instance which can be used to prepare a test with plugins
      */
     public static MycilaTesting newSetup(String pluginDescriptor) {
+        notNull("Plugin descriptor", pluginDescriptor);
         return new MycilaTesting(pluginDescriptor);
     }
 
@@ -146,7 +150,8 @@ public final class MycilaTesting {
      * @return a TestSetup instance which can be used to prepare a test with plugins
      */
     public static MycilaTesting from(Class<?> c) {
-        return from(c == null ? null : c.getAnnotation(MycilaPlugins.class));
+        notNull("Test class", c);
+        return from(c.getAnnotation(MycilaPlugins.class));
     }
 
     /**
@@ -156,7 +161,8 @@ public final class MycilaTesting {
      * @return a TestSetup instance which can be used to prepare a test with plugins
      */
     public static MycilaTesting from(MycilaPlugins mycilaPlugins) {
-        if (mycilaPlugins == null || mycilaPlugins.value() == null) {
+        notNull("MycilaPlugins annotation", mycilaPlugins);
+        if (mycilaPlugins.value() == null) {
             return newDefaultSetup();
         }
         boolean descBlank = mycilaPlugins.descriptor() == null || mycilaPlugins.descriptor().trim().length() == 0;
@@ -179,9 +185,11 @@ public final class MycilaTesting {
      * @return this
      */
     public MycilaTesting configure(Object testInstance) {
+        notNull("Test instance", testInstance);
         List<Method> methods = new ArrayList<Method>();
         Class<?> c = testInstance.getClass();
         do {
+            //TODO: METHOD OVERRIDE CHECK
             for (Method method : c.getDeclaredMethods()) {
                 Class<?>[] types = method.getParameterTypes();
                 if (method.isAnnotationPresent(ConfigureMycilaPlugins.class) && types.length == 1 && types[0].equals(PluginManager.class)) {

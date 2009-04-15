@@ -15,6 +15,8 @@
  */
 package com.mycila.testing.core;
 
+import static com.mycila.testing.util.Ensure.*;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
@@ -57,20 +59,17 @@ public final class TestInstance {
      * @param type The type of fields to get
      * @return A list of fields where an instance of the given type could be assign
      */
-    public Field[] findFieldsOfType(Class<?> type) {
-        notNull(type, "Type cannot be null");
+    public List<Field> findFieldsOfType(Class<?> type) {
+        notNull("Type", type);
         List<Field> fields = new ArrayList<Field>();
-        Class<?> c = testClass();
-        do {
+        for (Class<?> c = testClass(); c != Object.class; c = c.getSuperclass()) {
             for (Field field : c.getDeclaredFields()) {
                 if (field.getType().isAssignableFrom(type)) {
                     fields.add(accessible(field));
                 }
             }
-            c = c.getSuperclass();
         }
-        while (c != null);
-        return fields.toArray(new Field[fields.size()]);
+        return fields;
     }
 
     /**
@@ -79,20 +78,17 @@ public final class TestInstance {
      * @param annot Annotation on fields
      * @return A list of all fields annotated with the annotation, even non visible ones.
      */
-    public Field[] findFieldsAnnotatedWith(Class<? extends Annotation> annot) {
-        notNull(annot, "Annotation cannot be null");
+    public List<Field> findFieldsAnnotatedWith(Class<? extends Annotation> annot) {
+        notNull("Annotation", annot);
         List<Field> fields = new ArrayList<Field>();
-        Class<?> c = testClass();
-        do {
+        for (Class<?> c = testClass(); c != Object.class; c = c.getSuperclass()) {
             for (Field field : c.getDeclaredFields()) {
                 if (field.isAnnotationPresent(annot)) {
                     fields.add(accessible(field));
                 }
             }
-            c = c.getSuperclass();
         }
-        while (c != null);
-        return fields.toArray(new Field[fields.size()]);
+        return fields;
     }
 
     /**
@@ -102,21 +98,18 @@ public final class TestInstance {
      * @param annot Annotation on fields
      * @return A list of all fields annotated with the annotation, even non visible ones.
      */
-    public Field[] findFieldsOfTypeAnnotatedWith(Class<?> type, Class<? extends Annotation> annot) {
-        notNull(annot, "Annotation cannot be null");
-        notNull(type, "Type cannot be null");
+    public List<Field> findFieldsOfTypeAnnotatedWith(Class<?> type, Class<? extends Annotation> annot) {
+        notNull("Type", type);
+        notNull("Annotation", annot);
         List<Field> fields = new ArrayList<Field>();
-        Class<?> c = testClass();
-        do {
+        for (Class<?> c = testClass(); c != Object.class; c = c.getSuperclass()) {
             for (Field field : c.getDeclaredFields()) {
                 if (field.getType().isAssignableFrom(type) && field.isAnnotationPresent(annot)) {
                     fields.add(accessible(field));
                 }
             }
-            c = c.getSuperclass();
         }
-        while (c != null);
-        return fields.toArray(new Field[fields.size()]);
+        return fields;
     }
 
     /**
@@ -125,20 +118,18 @@ public final class TestInstance {
      * @param type The method return type
      * @return A list of method having this return type. Methods not visible are also returned.
      */
-    public Method[] findMethodsOfType(Class<?> type) {
-        notNull(type, "Return type cannot be null");
+    public List<Method> findMethodsOfType(Class<?> type) {
+        notNull("Type", type);
         List<Method> methods = new ArrayList<Method>();
-        Class<?> c = testClass();
-        do {
+        //TODO: FIX FOR OVERRIDES
+        for (Class<?> c = testClass(); c != Object.class; c = c.getSuperclass()) {
             for (Method method : c.getDeclaredMethods()) {
                 if (type.isAssignableFrom(method.getReturnType())) {
                     methods.add(accessible(method));
                 }
             }
-            c = c.getSuperclass();
         }
-        while (c != null);
-        return methods.toArray(new Method[methods.size()]);
+        return methods;
     }
 
     /**
@@ -147,20 +138,18 @@ public final class TestInstance {
      * @param annot The annotation
      * @return A list of method having this annotation. Methods not visible are also returned.
      */
-    public Method[] findMethodsAnnotatedWith(Class<? extends Annotation> annot) {
-        notNull(annot, "Annotation cannot be null");
+    public List<Method> findMethodsAnnotatedWith(Class<? extends Annotation> annot) {
+        notNull("Annotation", annot);
         List<Method> methods = new ArrayList<Method>();
-        Class<?> c = testClass();
-        do {
+        //TODO: FIX FOR OVERRIDES
+        for (Class<?> c = testClass(); c != Object.class; c = c.getSuperclass()) {
             for (Method method : c.getDeclaredMethods()) {
                 if (method.isAnnotationPresent(annot)) {
                     methods.add(accessible(method));
                 }
             }
-            c = c.getSuperclass();
         }
-        while (c != null);
-        return methods.toArray(new Method[methods.size()]);
+        return methods;
     }
 
     private <T extends AccessibleObject> T accessible(T a) {
@@ -177,24 +166,30 @@ public final class TestInstance {
      * @param annot Annotation on methods
      * @return A list of all methods annotated with the annotation, even non visible ones.
      */
-    public Method[] findMethodsOfTypeAnnotatedWith(Class<?> type, Class<? extends Annotation> annot) {
-        notNull(type, "Return type cannot be null");
-        notNull(annot, "Annotation cannot be null");
+    public List<Method> findMethodsOfTypeAnnotatedWith(Class<?> type, Class<? extends Annotation> annot) {
+        notNull("Type", type);
+        notNull("Annotation", annot);
         List<Method> methods = new ArrayList<Method>();
-        Class<?> c = testClass();
-        do {
+        //TODO: FIX FOR OVERRIDES
+        for (Class<?> c = testClass(); c != Object.class; c = c.getSuperclass()) {
             for (Method method : c.getDeclaredMethods()) {
                 if (type.isAssignableFrom(method.getReturnType()) && method.isAnnotationPresent(annot)) {
                     methods.add(accessible(method));
                 }
             }
-            c = c.getSuperclass();
         }
-        while (c != null);
-        return methods.toArray(new Method[methods.size()]);
+        return methods;
     }
 
+    /**
+     * Invoke a method on this test instance
+     * @param method Method to be invoked
+     * @param args Method argument
+     * @return The result of the invokation
+     */
     public Object invoke(Method method, Object... args) {
+        notNull("Method", method);
+        notNull("Method argumentd", args);
         try {
             return method.invoke(instance(), args);
         } catch (IllegalAccessException e) {
@@ -206,7 +201,13 @@ public final class TestInstance {
         }
     }
 
+    /**
+     * Get a field's value
+     * @param field The field
+     * @return The field value
+     */
     public Object get(Field field) {
+        notNull("Field", field);
         try {
             return field.get(instance());
         } catch (Exception e) {
@@ -214,7 +215,13 @@ public final class TestInstance {
         }
     }
 
+    /**
+     * Set a field value
+     * @param field The field
+     * @param value The new field value
+     */
     public void set(Field field, Object value) {
+        notNull("Field", field);
         try {
             field.set(instance(), value);
         } catch (Exception e) {
@@ -222,10 +229,9 @@ public final class TestInstance {
         }
     }
 
-    private void notNull(Object o, String message) {
-        if (o == null) {
-            throw new IllegalArgumentException(message);
-        }
+    public boolean hasAnnotation(Class<? extends Annotation> annot) {
+        notNull("Annotation", annot);
+        return testClass().isAnnotationPresent(annot);
     }
 
 }
