@@ -36,7 +36,7 @@ public final class EasyMock2TestPlugin extends DefaultTestPlugin {
 
     @Override
     public void prepareTestInstance(Context context) {
-        Field[] mocks = context.test().findFieldsAnnotatedWith(Mock.class);
+        List<Field> mocks = context.test().findFieldsAnnotatedWith(Mock.class);
         for (Field field : mocks) {
             context.test().set(field, mock(field));
         }

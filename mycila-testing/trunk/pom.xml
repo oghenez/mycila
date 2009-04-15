@@ -363,7 +363,7 @@
             <dependency>
                 <groupId>com.mycila</groupId>
                 <artifactId>mycila-plugin</artifactId>
-                <version>1.6</version>
+                <version>1.7-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.mycila</groupId>
