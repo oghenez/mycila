@@ -15,6 +15,8 @@
  */
 package com.mycila.testing.core;
 
+import static com.mycila.testing.util.Ensure.*;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -29,11 +31,14 @@ final class ExecutionImpl implements Execution {
     private Step step = Step.UNKNOWN;
 
     ExecutionImpl(Context context, Method method) {
+        notNull("Test context", context);
+        notNull("Test method", method);
         this.context = context;
         this.method = method;
     }
 
     final ExecutionImpl changeStep(Step step) {
+        notNull("Step", step);
         this.step = step;
         return this;
     }

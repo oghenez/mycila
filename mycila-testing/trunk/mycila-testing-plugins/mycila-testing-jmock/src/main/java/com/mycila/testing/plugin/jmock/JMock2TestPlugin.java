@@ -40,7 +40,7 @@ public final class JMock2TestPlugin extends DefaultTestPlugin {
 
     @Override
     public void prepareTestInstance(Context context) {
-        Field[] mocks = context.test().findFieldsAnnotatedWith(Mock.class);
+        List<Field> mocks = context.test().findFieldsAnnotatedWith(Mock.class);
         Mockery mockery = findProvidedMockery(context);
         if (mockery == null) {
             mockery = new Mockery();
@@ -62,23 +62,23 @@ public final class JMock2TestPlugin extends DefaultTestPlugin {
 
     private Mockery findProvidedMockery(Context context) {
         {
-            Method[] methods = context.test().findMethodsAnnotatedWith(MockContextProvider.class);
-            if (methods.length > 0) {
-                Object o = context.test().invoke(methods[0]);
+            List<Method> methods = context.test().findMethodsAnnotatedWith(MockContextProvider.class);
+            if (methods.size() > 0) {
+                Object o = context.test().invoke(methods.get(0));
                 if (o != null && o instanceof Mockery) {
                     return (Mockery) o;
                 }
-                throw new IllegalArgumentException(String.format("Method '%s' annotated with @MockContextProvider did not returned a valid Mockery object: %s", methods[0], o));
+                throw new IllegalArgumentException(String.format("Method '%s' annotated with @MockContextProvider did not returned a valid Mockery object: %s", methods.get(0), o));
             }
         }
         {
-            Field[] fields = context.test().findFieldsAnnotatedWith(MockContextProvider.class);
-            if (fields.length > 0) {
-                Object o = context.test().get(fields[0]);
+            List<Field> fields = context.test().findFieldsAnnotatedWith(MockContextProvider.class);
+            if (fields.size() > 0) {
+                Object o = context.test().get(fields.get(0));
                 if (o != null && o instanceof Mockery) {
                     return (Mockery) o;
                 }
-                throw new IllegalArgumentException(String.format("Field '%s' annotated with @MockContextProvider does not have a valid Mockery object: %s", fields[0], o));
+                throw new IllegalArgumentException(String.format("Field '%s' annotated with @MockContextProvider does not have a valid Mockery object: %s", fields.get(0), o));
             }
         }
         return null;

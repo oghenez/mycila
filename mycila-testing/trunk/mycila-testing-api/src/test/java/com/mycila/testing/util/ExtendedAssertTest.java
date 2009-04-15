@@ -15,7 +15,8 @@
  */
 package com.mycila.testing.util;
 
-import static com.mycila.testing.util.ExtendedAssert.*;
+import com.mycila.testing.ea.Code;
+import static com.mycila.testing.ea.ExtendedAssert.*;
 import static org.testng.Assert.*;
 import static org.testng.Assert.fail;
 import org.testng.annotations.Test;

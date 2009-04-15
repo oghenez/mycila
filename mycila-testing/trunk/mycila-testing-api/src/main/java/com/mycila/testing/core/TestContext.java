@@ -19,6 +19,7 @@ import com.mycila.log.Logger;
 import com.mycila.log.Loggers;
 import com.mycila.plugin.api.PluginBinding;
 import com.mycila.plugin.spi.PluginManager;
+import static com.mycila.testing.util.Ensure.*;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -53,6 +54,8 @@ final class TestContext implements Context, TestNotifier {
     private final PluginManager<TestPlugin> pluginManager;
 
     TestContext(PluginManager<TestPlugin> pluginManager, Object testInstance) {
+        notNull("Plugin manager", pluginManager);
+        notNull("Test instance", testInstance);
         this.testInstance = new TestInstance(testInstance);
         this.pluginManager = pluginManager;
         LOGGER.debug("Creating new Test Context for test {0}#{1,number,#}", this.testInstance.testClass().getName(), this.testInstance.instance().hashCode());
@@ -61,6 +64,7 @@ final class TestContext implements Context, TestNotifier {
 
     @SuppressWarnings({"unchecked"})
     public <T> T attribute(String name) {
+        notNull("Attribute name", testInstance);
         T att = (T) attributes.get(name);
         if (att == null) {
             throw new TestPluginException("Inexisting attribute: '%s'", name);
@@ -81,15 +85,18 @@ final class TestContext implements Context, TestNotifier {
     }
 
     public boolean hasAttribute(String name) {
+        notNull("Attribute name", testInstance);
         return attributes.containsKey(name);
     }
 
     public void setAttribute(String name, Object value) {
+        notNull("Attribute name", name);
         attributes.put(name, value);
     }
 
     @SuppressWarnings({"unchecked"})
     public <T> T removeAttribute(String name) {
+        notNull("Attribute name", name);
         return (T) attributes.remove(name);
     }
 
@@ -111,6 +118,7 @@ final class TestContext implements Context, TestNotifier {
     }
 
     public void fireBeforeTest(Method method) throws TestPluginException {
+        notNull("Test method", method);
         TestExecutionImpl testExecution = new TestExecutionImpl(this, method);
         try {
             Mycila.registerCurrentExecution(testExecution.changeStep(Step.BEFORE));

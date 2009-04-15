@@ -15,6 +15,8 @@
  */
 package com.mycila.testing.core;
 
+import static com.mycila.testing.util.Ensure.*;
+
 import java.lang.reflect.Method;
 
 /**
@@ -26,6 +28,8 @@ final class TestExecutionImpl implements TestExecution {
     private boolean mustSkip;
 
     TestExecutionImpl(Context context, Method method) {
+        notNull("Test context", context);
+        notNull("Test method", method);
         execution = new ExecutionImpl(context, method);
     }
 
