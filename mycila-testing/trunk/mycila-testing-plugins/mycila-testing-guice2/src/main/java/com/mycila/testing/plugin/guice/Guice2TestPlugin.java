@@ -97,7 +97,7 @@ public final class Guice2TestPlugin extends DefaultTestPlugin {
     private Module providedBindings(final TestContext context) {
         return new Module() {
             public void configure(Binder binder) {
-                for (final Method method : context.introspector().selectMethods(methodsAnnotatedBy(Bind.class))) {
+                for (final Method method : context.introspector().selectMethods(excludeOverridenMethods(methodsAnnotatedBy(Bind.class)))) {
                     Guice2TestPlugin.this.configure(context, binder, method.getGenericReturnType(), method.getAnnotation(Bind.class), new InjectedProvider<Object>() {
                         public Object getInternal() {
                             return context.introspector().invoke(method);
@@ -123,13 +123,13 @@ public final class Guice2TestPlugin extends DefaultTestPlugin {
     @SuppressWarnings({"unchecked"})
     private List<Module> providedModules(TestContext ctx) {
         List<Module> modules = new ArrayList<Module>();
-        for (Method method : ctx.introspector().selectMethods(and(methodsReturning(Module.class), methodsAnnotatedBy(ModuleProvider.class)))) {
+        for (Method method : ctx.introspector().selectMethods(excludeOverridenMethods(and(methodsReturning(Module.class), methodsAnnotatedBy(ModuleProvider.class))))) {
             modules.add((Module) ctx.introspector().invoke(method));
         }
-        for (Method method : ctx.introspector().selectMethods(and(methodsReturning(Module[].class), methodsAnnotatedBy(ModuleProvider.class)))) {
+        for (Method method : ctx.introspector().selectMethods(excludeOverridenMethods(and(methodsReturning(Module[].class), methodsAnnotatedBy(ModuleProvider.class))))) {
             modules.addAll(Arrays.asList((Module[]) ctx.introspector().invoke(method)));
         }
-        for (Method method : ctx.introspector().selectMethods(and(methodsReturning(Iterable.class), methodsAnnotatedBy(ModuleProvider.class)))) {
+        for (Method method : ctx.introspector().selectMethods(excludeOverridenMethods(and(methodsReturning(Iterable.class), methodsAnnotatedBy(ModuleProvider.class))))) {
             for (Module module : (Iterable<Module>) ctx.introspector().invoke(method)) {
                 modules.add(module);
             }
