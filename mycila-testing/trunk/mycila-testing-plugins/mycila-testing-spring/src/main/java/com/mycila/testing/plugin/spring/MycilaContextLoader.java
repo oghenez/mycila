@@ -50,7 +50,7 @@ final class MycilaContextLoader extends GenericXmlContextLoader {
                     annotation.name(),
                     createBeanDefinition(field, FieldAccessFactoryBean.class, annotation.scope()));
         }
-        for (Method method : mycilaContext.introspector().selectMethods(methodsAnnotatedBy(Bean.class))) {
+        for (Method method : mycilaContext.introspector().selectMethods(excludeOverridenMethods(methodsAnnotatedBy(Bean.class)))) {
             Bean annotation = method.getAnnotation(Bean.class);
             context.registerBeanDefinition(
                     annotation.name(),

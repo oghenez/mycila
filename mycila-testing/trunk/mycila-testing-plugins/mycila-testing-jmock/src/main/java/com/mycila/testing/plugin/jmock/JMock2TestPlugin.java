@@ -63,7 +63,7 @@ public final class JMock2TestPlugin extends DefaultTestPlugin {
 
     private Mockery findProvidedMockery(TestContext context) {
         {
-            List<Method> methods = context.introspector().selectMethods(methodsAnnotatedBy(MockContextProvider.class));
+            List<Method> methods = context.introspector().selectMethods(excludeOverridenMethods(methodsAnnotatedBy(MockContextProvider.class)));
             if (methods.size() > 0) {
                 Object o = context.introspector().invoke(methods.get(0));
                 if (o != null && o instanceof Mockery) {
