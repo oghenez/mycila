@@ -26,6 +26,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -42,9 +43,30 @@ public final class IntrospectorTest {
     private int field3;
 
     @Test
-    public void test_getTarget() throws Exception {
+    public void test_all() throws Exception {
         Introspector ti = new Introspector(this);
         assertEquals(ti.instance(), this);
+    }
+
+    @Test
+    public void test_filter_all() throws Exception {
+        Introspector ti = new Introspector(this);
+        System.out.println(ti.selectFields(Filters.<Field>all()));
+        assertEquals(ti.selectFields(Filters.<Field>all()).size(), 3);
+    }
+
+    @Test
+    public void test_filter_none() throws Exception {
+        Introspector ti = new Introspector(this);
+        System.out.println(ti.selectFields(Filters.<Field>all()));
+        assertEquals(ti.selectFields(Filters.<Field>none()).size(), 0);
+    }
+
+    @Test
+    public void test_filter_not() throws Exception {
+        Introspector ti = new Introspector(this);
+        System.out.println(ti.selectFields(not(fieldsOfType(int.class))));
+        assertEquals(ti.selectFields(not(fieldsOfType(int.class))).size(), 1);
     }
 
     @Test
@@ -89,13 +111,13 @@ public final class IntrospectorTest {
     @Test
     public void test_getMethodsOfType() throws Exception {
         Introspector ti = new Introspector(this);
-        assertEquals(ti.selectMethods(methodsOfType(int.class)).size(), 1);
+        assertEquals(ti.selectMethods(methodsReturning(int.class)).size(), 1);
     }
 
     @Test
     public void test_getMethodsOfType2() throws Exception {
         Introspector ti = new Introspector(this);
-        List<Method> m = ti.selectMethods(methodsOfType(String.class));
+        List<Method> m = ti.selectMethods(methodsReturning(String.class));
         for (Method method : m) {
             System.out.println("- " + method.getName());
         }
@@ -105,7 +127,7 @@ public final class IntrospectorTest {
     @Test
     public void test_getMethodsOfType3() throws Exception {
         Introspector ti = new Introspector(this);
-        List<Method> m = ti.selectMethods(methodsOfType(CharSequence.class));
+        List<Method> m = ti.selectMethods(methodsReturning(CharSequence.class));
         for (Method method : m) {
             System.out.println("- " + method.getName());
         }
@@ -115,37 +137,66 @@ public final class IntrospectorTest {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_getMethodsOfType_null() throws Exception {
         Introspector ti = new Introspector(this);
-        ti.selectMethods(methodsOfType(null));
+        ti.selectMethods(methodsReturning(null));
+    }
+
+    static interface I {
+        void method3();
     }
 
     @Test
     public void test_getMethodsAnnotatedWith_inherited() throws Exception {
-        class A {
-            @Annot
+        abstract class A implements I {
             private void method1() {
             }
 
-            @Annot
             void method2() {
             }
+
+            protected abstract void method4();
         }
         class B extends A {
-            @Annot
             private void method1() {
             }
 
-            @Annot
-            void method2() {
+            CharSequence method2(String s) {
+                return null;
+            }
+
+            public void method3() {
+            }
+
+            @Override
+            protected final void method4() {
             }
         }
-        Introspector ti = new Introspector(new B());
-        assertEquals(ti.selectMethods(methodsAnnotatedBy(Annot.class)).size(), 3);
+        class C extends B {
+            @Override
+            String method2(String s) {
+                return null;
+            }
+
+            @Override
+            public void method3() {
+            }
+        }
+        Introspector ti = new Introspector(new C());
+        System.out.println("selected:");
+        for (Method method : ti.selectMethods(Filters.<Method>all())) {
+            System.out.println("- " + method);
+        }
+        assertEquals(ti.selectMethods(Filters.<Method>all()).size(), 10); // a volatile method is created for B.method2
+        System.out.println("selected:");
+        for (Method method : ti.selectMethods(excludeOverridenMethods(Filters.<Method>all()))) {
+            System.out.println("- " + method);
+        }
+        assertEquals(ti.selectMethods(excludeOverridenMethods(Filters.<Method>all())).size(), 6);
     }
 
     @Test
     public void test_getMethodsAnnotatedWith() throws Exception {
         Introspector ti = new Introspector(this);
-        assertEquals(ti.selectMethods(methodsAnnotatedBy(Test.class)).size(), 19);
+        assertEquals(ti.selectMethods(methodsAnnotatedBy(Test.class)).size(), 22);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -157,28 +208,28 @@ public final class IntrospectorTest {
     @Test
     public void test_getMethodsOfTypeAnnotatedWith() throws Exception {
         Introspector ti = new Introspector(this);
-        assertEquals(ti.selectMethods(and(methodsOfType(int.class), methodsAnnotatedBy(Annot.class))).size(), 1);
+        assertEquals(ti.selectMethods(and(methodsReturning(int.class), methodsAnnotatedBy(Annot.class))).size(), 1);
     }
 
     @Test
     public void test_invoke() throws Exception {
         Introspector ti = new Introspector(this);
-        assertEquals(ti.selectMethods(and(methodsOfType(String.class), methodsAnnotatedBy(Annot.class))).size(), 1);
-        assertEquals(ti.invoke(ti.selectMethods(and(methodsOfType(String.class), methodsAnnotatedBy(Annot.class))).get(0)), "10");
+        assertEquals(ti.selectMethods(and(methodsReturning(String.class), methodsAnnotatedBy(Annot.class))).size(), 1);
+        assertEquals(ti.invoke(ti.selectMethods(and(methodsReturning(String.class), methodsAnnotatedBy(Annot.class))).get(0)), "10");
     }
 
     @Test(expectedExceptions = MycilaTestingException.class)
     public void test_invoke_exc() throws Exception {
         Introspector ti = new Introspector(this);
-        assertEquals(ti.selectMethods(and(methodsOfType(int.class), methodsAnnotatedBy(Annot.class))).size(), 1);
-        ti.invoke(ti.selectMethods(and(methodsOfType(int.class), methodsAnnotatedBy(Annot.class))).get(0));
+        assertEquals(ti.selectMethods(and(methodsReturning(int.class), methodsAnnotatedBy(Annot.class))).size(), 1);
+        ti.invoke(ti.selectMethods(and(methodsReturning(int.class), methodsAnnotatedBy(Annot.class))).get(0));
     }
 
     @Test(expectedExceptions = MycilaTestingException.class)
     public void test_invoke_bad_args() throws Exception {
         Introspector ti = new Introspector(this);
-        assertEquals(ti.selectMethods(and(methodsOfType(String.class), methodsAnnotatedBy(Annot.class))).size(), 1);
-        ti.invoke(ti.selectMethods(and(methodsOfType(String.class), methodsAnnotatedBy(Annot.class))).get(0), 10, 20);
+        assertEquals(ti.selectMethods(and(methodsReturning(String.class), methodsAnnotatedBy(Annot.class))).size(), 1);
+        ti.invoke(ti.selectMethods(and(methodsReturning(String.class), methodsAnnotatedBy(Annot.class))).get(0), 10, 20);
     }
 
     @Test

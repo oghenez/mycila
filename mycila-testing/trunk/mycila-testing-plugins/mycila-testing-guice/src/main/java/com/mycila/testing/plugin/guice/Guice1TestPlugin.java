@@ -123,13 +123,13 @@ public final class Guice1TestPlugin extends DefaultTestPlugin {
     @SuppressWarnings({"unchecked"})
     private List<Module> providedModules(TestContext ctx) {
         List<Module> modules = new ArrayList<Module>();
-        for (Method method : ctx.introspector().selectMethods(and(methodsOfType(Module.class), methodsAnnotatedBy(ModuleProvider.class)))) {
+        for (Method method : ctx.introspector().selectMethods(and(methodsReturning(Module.class), methodsAnnotatedBy(ModuleProvider.class)))) {
             modules.add((Module) ctx.introspector().invoke(method));
         }
-        for (Method method : ctx.introspector().selectMethods(and(methodsOfType(Module[].class), methodsAnnotatedBy(ModuleProvider.class)))) {
+        for (Method method : ctx.introspector().selectMethods(and(methodsReturning(Module[].class), methodsAnnotatedBy(ModuleProvider.class)))) {
             modules.addAll(Arrays.asList((Module[]) ctx.introspector().invoke(method)));
         }
-        for (Method method : ctx.introspector().selectMethods(and(methodsOfType(Iterable.class), methodsAnnotatedBy(ModuleProvider.class)))) {
+        for (Method method : ctx.introspector().selectMethods(and(methodsReturning(Iterable.class), methodsAnnotatedBy(ModuleProvider.class)))) {
             for (Module module : (Iterable<Module>) ctx.introspector().invoke(method)) {
                 modules.add(module);
             }

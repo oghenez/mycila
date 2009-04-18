@@ -22,7 +22,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -59,17 +58,14 @@ public final class Introspector {
      * @param filter Filter to use for selection
      * @return A list containing the selected objects
      */
-    public List<Field> selectFields(Filter<? super Field> filter) {
+    public List<Field> selectFields(Filter<Field> filter) {
         notNull("Filter", filter);
-        List<Field> fields = new ArrayList<Field>();
         for (Class<?> c = testClass(); c != Object.class; c = c.getSuperclass()) {
             for (Field field : c.getDeclaredFields()) {
-                if (filter.accept(field)) {
-                    fields.add(accessible(field));
-                }
+                filter.add(accessible(field));
             }
         }
-        return fields;
+        return filter.select();
     }
 
     /**
@@ -78,17 +74,14 @@ public final class Introspector {
      * @param filter Filter to use for selection
      * @return A list containing the selected objects
      */
-    public List<Method> selectMethods(Filter<? super Method> filter) {
+    public List<Method> selectMethods(Filter<Method> filter) {
         notNull("Filter", filter);
-        List<Method> fields = new ArrayList<Method>();
         for (Class<?> c = testClass(); c != Object.class; c = c.getSuperclass()) {
             for (Method method : c.getDeclaredMethods()) {
-                if (filter.accept(method)) {
-                    fields.add(accessible(method));
-                }
+                filter.add(accessible(method));
             }
         }
-        return fields;
+        return filter.select();
     }
 
     /**
