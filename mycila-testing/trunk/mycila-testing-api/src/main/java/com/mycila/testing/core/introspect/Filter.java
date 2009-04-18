@@ -15,14 +15,36 @@
  */
 package com.mycila.testing.core.introspect;
 
+import static com.mycila.testing.core.api.Ensure.*;
+
+import java.util.LinkedList;
+import java.util.List;
+
 /**
- * This class is used to select fields or methods mor easily.
+ * This class is used to select fields or methods more easily.
  * You can implement you own filters or use existing ones from the
  * {@link Filters} class and compose them
  * with and, or, not, ...
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Filter<T> {
-    boolean accept(T object);
+public abstract class Filter<T> {
+
+    protected final List<T> elements = new LinkedList<T>();
+
+    public List<T> select() {
+        return elements;
+    }
+
+    protected boolean accept(T object) {
+        return true;
+    }
+
+    public void add(T element) {
+        notNull("Element", element);
+        if (accept(element)) {
+            elements.add(element);
+        }
+    }
+
 }
