@@ -19,6 +19,7 @@ import com.mycila.log.Logger;
 import com.mycila.log.Loggers;
 import com.mycila.plugin.api.PluginBinding;
 import com.mycila.plugin.spi.PluginManager;
+import com.mycila.testing.core.api.Attributes;
 import static com.mycila.testing.core.api.Ensure.*;
 import com.mycila.testing.core.api.Step;
 import com.mycila.testing.core.api.TestContext;
@@ -28,9 +29,6 @@ import com.mycila.testing.core.introspect.Introspector;
 import com.mycila.testing.core.plugin.TestPlugin;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -56,8 +54,8 @@ final class TestContextImpl implements TestContext, TestNotifier {
     private static final Logger LOGGER = Loggers.get(TestContextImpl.class);
 
     private final Introspector introspector;
-    private final Map<String, Object> attributes = new HashMap<String, Object>();
     private final PluginManager<TestPlugin> pluginManager;
+    private final Attributes attributes = new AttributesImpl();
 
     TestContextImpl(PluginManager<TestPlugin> pluginManager, Object testInstance) {
         notNull("Plugin manager", pluginManager);
@@ -68,42 +66,16 @@ final class TestContextImpl implements TestContext, TestNotifier {
         Mycila.registerContext(this);
     }
 
-    @SuppressWarnings({"unchecked"})
-    public <T> T attribute(String name) {
-        notNull("Attribute name", introspector);
-        T att = (T) attributes.get(name);
-        if (att == null) {
-            throw new TestPluginException("Inexisting attribute: '%s'", name);
-        }
-        return att;
-    }
-
     public PluginManager<TestPlugin> pluginManager() {
         return pluginManager;
-    }
-
-    public Map<String, Object> attributes() {
-        return Collections.unmodifiableMap(attributes);
     }
 
     public Introspector introspector() {
         return introspector;
     }
 
-    public boolean hasAttribute(String name) {
-        notNull("Attribute name", introspector);
-        return attributes.containsKey(name);
-    }
-
-    public void setAttribute(String name, Object value) {
-        notNull("Attribute name", name);
-        attributes.put(name, value);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public <T> T removeAttribute(String name) {
-        notNull("Attribute name", name);
-        return (T) attributes.remove(name);
+    public Attributes attributes() {
+        return attributes;
     }
 
     public void prepare() throws TestPluginException {

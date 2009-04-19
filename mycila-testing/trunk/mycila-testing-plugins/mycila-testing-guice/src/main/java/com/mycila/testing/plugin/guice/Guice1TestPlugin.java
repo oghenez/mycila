@@ -44,9 +44,11 @@ import java.util.List;
  */
 public final class Guice1TestPlugin extends DefaultTestPlugin {
 
+    public static final String INJECTOR = "com.google.inject.Injector";
+
     @Override
     public void prepareTestInstance(final TestContext context) {
-        context.setAttribute("guice.providers", new ArrayList<Provider<?>>());
+        context.attributes().set("guice.providers", new ArrayList<Provider<?>>());
         GuiceContext ctx = context.introspector().testClass().getAnnotation(GuiceContext.class);
 
         // create modules
@@ -57,7 +59,7 @@ public final class Guice1TestPlugin extends DefaultTestPlugin {
                 bind(ProviderSetup.class).toInstance(new ProviderSetup() {
                     @Inject
                     void inject(Injector injector) {
-                        for (Provider<?> provider : context.<List<Provider<?>>>removeAttribute("guice.providers")) {
+                        for (Provider<?> provider : context.attributes().<List<Provider<?>>>remove("guice.providers")) {
                             injector.injectMembers(provider);
                         }
                     }
@@ -74,7 +76,7 @@ public final class Guice1TestPlugin extends DefaultTestPlugin {
 
         // create injector
         Injector injector = Guice.createInjector(findStage(ctx), modules);
-        context.setAttribute("com.google.inject.Injector", injector);
+        context.attributes().set(INJECTOR, injector);
 
         injector.injectMembers(context.introspector().instance());
     }
@@ -117,7 +119,7 @@ public final class Guice1TestPlugin extends DefaultTestPlugin {
         if (!annotation.scope().equals(NoAnnotation.class)) {
             builder3.in(annotation.scope());
         }
-        context.<List<InjectedProvider<T>>>attribute("guice.providers").add(provider);
+        context.attributes().<List<InjectedProvider<T>>>get("guice.providers").add(provider);
     }
 
     @SuppressWarnings({"unchecked"})

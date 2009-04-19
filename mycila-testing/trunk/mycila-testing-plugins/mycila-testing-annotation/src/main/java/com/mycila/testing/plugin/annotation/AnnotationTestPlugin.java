@@ -19,6 +19,7 @@ import com.mycila.log.Logger;
 import com.mycila.log.Loggers;
 import com.mycila.testing.core.api.TestExecution;
 import com.mycila.testing.core.plugin.DefaultTestPlugin;
+import com.mycila.testing.ea.Code;
 import static com.mycila.testing.ea.ExtendedAssert.*;
 
 /**
@@ -37,17 +38,24 @@ public final class AnnotationTestPlugin extends DefaultTestPlugin {
     }
 
     @Override
-    public void afterTest(TestExecution testExecution) throws Exception {
+    public void afterTest(final TestExecution testExecution) throws Exception {
         ExpectException expectException = testExecution.method().getAnnotation(ExpectException.class);
-        if (expectException != null) {
+        if (!testExecution.mustSkip() && expectException != null) {
             AssertException assertException = assertThrow(expectException.type());
             //noinspection StringEquality
-            if (expectException.message() != ExpectException.NO_MESSAGE) {
+            if (!ExpectException.NO_MESSAGE.equals(expectException.message())) {
                 assertException.withMessage(expectException.message());
             } else //noinspection StringEquality
-                if (expectException.containing() != ExpectException.NO_MESSAGE) {
+                if (!ExpectException.NO_MESSAGE.equals(expectException.containing())) {
                     assertException.containingMessage(expectException.containing());
                 }
+            assertException.whenRunning(new Code() {
+                public void run() throws Throwable {
+                    if (testExecution.hasFailed()) {
+                        throw testExecution.throwable();
+                    }
+                }
+            });
         }
     }
 

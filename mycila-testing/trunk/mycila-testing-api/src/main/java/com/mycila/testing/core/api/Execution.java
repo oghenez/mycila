@@ -58,4 +58,10 @@ public interface Execution {
      */
     void setThrowable(Throwable throwable);
 
+    /**
+     * Handle attributes of this Execution Context, which can be shared amongst plugins
+     *
+     * @return Attribute handler
+     */
+    Attributes attributes();
 }

@@ -27,16 +27,20 @@ import java.lang.reflect.Field;
  */
 public final class SpringTestPlugin extends DefaultTestPlugin {
 
+    public static final String TESTCONTEXTMANAGER = "org.springframework.test.context.TestContextManager";
+    public static final String TESTCONTEXT = "org.springframework.test.context.TestContext";
+    public static final String APPLICATIONCONTEXT = "org.springframework.context.ApplicationContext";
+
     @Override
     public void prepareTestInstance(TestContext context) {
         try {
             final TestContextManager manager = new TestContextManager(context.introspector().testClass());
             final org.springframework.test.context.TestContext ctx = manager.testContext();
-            context.setAttribute("org.springframework.test.context.TestContextManager", manager);
-            context.setAttribute("org.springframework.test.context.TestContext", ctx);
+            context.attributes().set(TESTCONTEXTMANAGER, manager);
+            context.attributes().set(TESTCONTEXT, ctx);
             setupContextLoader(ctx, new MycilaContextLoader(context));
             manager.prepareTestInstance(context.introspector().instance());
-            context.setAttribute("org.springframework.context.ApplicationContext", manager.testContext().getApplicationContext());
+            context.attributes().set(APPLICATIONCONTEXT, manager.testContext().getApplicationContext());
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }

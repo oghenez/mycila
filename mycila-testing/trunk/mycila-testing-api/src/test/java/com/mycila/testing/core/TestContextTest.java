@@ -43,19 +43,19 @@ public final class TestContextTest {
 
     @Test
     public void test_attributes() throws Exception {
-        assertFalse(test.attributes().containsKey("yo"));
-        assertFalse(test.hasAttribute("yo"));
-        test.setAttribute("yo", "man");
-        assertTrue(test.hasAttribute("yo"));
-        assertTrue(test.attributes().containsKey("yo"));
-        assertEquals(test.attribute("yo"), "man");
-        test.removeAttribute("yo");
-        assertFalse(test.hasAttribute("yo"));
+        assertFalse(test.attributes().all().containsKey("yo"));
+        assertFalse(test.attributes().has("yo"));
+        test.attributes().set("yo", "man");
+        assertTrue(test.attributes().has("yo"));
+        assertTrue(test.attributes().all().containsKey("yo"));
+        assertEquals(test.attributes().get("yo"), "man");
+        test.attributes().remove("yo");
+        assertFalse(test.attributes().has("yo"));
     }
 
     @Test(expectedExceptions = TestPluginException.class)
     public void test_attributes_inexisting() throws Exception {
-        test.attribute("inexisting");
+        test.attributes().get("inexisting");
     }
 
     @Test
