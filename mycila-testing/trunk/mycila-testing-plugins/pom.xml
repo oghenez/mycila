@@ -33,7 +33,6 @@
     </distributionManagement>
 
     <modules>
-        <module>mycila-testing-annotation</module>
         <module>mycila-testing-atunit</module>
         <module>mycila-testing-easymock</module>
         <module>mycila-testing-guice</module>
