@@ -58,7 +58,7 @@ final class MycilaContextLoader extends GenericXmlContextLoader {
         }
         context.registerBeanDefinition(
                 "org.springframework.test.context.TestContext",
-                createBeanDefinition(mycilaContext.attribute("org.springframework.test.context.TestContext"), ObjectFactoryBean.class));
+                createBeanDefinition(mycilaContext.attributes().get("org.springframework.test.context.TestContext"), ObjectFactoryBean.class));
     }
 
     private AbstractBeanDefinition createBeanDefinition(Object object, Class beanClass) {

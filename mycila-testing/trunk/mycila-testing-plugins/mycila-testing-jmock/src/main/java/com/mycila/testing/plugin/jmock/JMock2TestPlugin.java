@@ -32,7 +32,7 @@ import java.util.List;
  */
 public final class JMock2TestPlugin extends DefaultTestPlugin {
 
-    public static final String CTX_MOCKERY = "org.jmock.Mockery";
+    public static final String MOCKERY = "org.jmock.Mockery";
 
     @Override
     public List<String> getAfter() {
@@ -52,7 +52,7 @@ public final class JMock2TestPlugin extends DefaultTestPlugin {
                 }
             }
         }
-        context.setAttribute(CTX_MOCKERY, mockery);
+        context.attributes().set(MOCKERY, mockery);
         for (Field field : context.introspector().selectFields(and(fieldsAccepting(Mockery.class), fieldsAnnotatedBy(MockContext.class)))) {
             context.introspector().set(field, mockery);
         }

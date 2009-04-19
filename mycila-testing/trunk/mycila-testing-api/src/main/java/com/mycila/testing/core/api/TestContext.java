@@ -20,8 +20,6 @@ import com.mycila.plugin.spi.PluginManager;
 import com.mycila.testing.core.introspect.Introspector;
 import com.mycila.testing.core.plugin.TestPlugin;
 
-import java.util.Map;
-
 /**
  * A context handles plugin management and hooks for a test.
  * It can be used to put any attributes which are only available per test instance.
@@ -43,43 +41,9 @@ public interface TestContext {
     Introspector introspector();
 
     /**
-     * Get an attribute from this context
+     * Handle attributes of this Test Context, which can be shared amongst plugins
      *
-     * @param name Attribute name (should be unique amongst all attribute names)
-     * @param <T>  Infered type of the attribute
-     * @return The attribute value
-     * @throws TestPluginException If the attribute does not exist (and thus we cannot get its value)
+     * @return Attribute handler
      */
-    <T> T attribute(String name) throws TestPluginException;
-
-    /**
-     * Set an attribute
-     *
-     * @param name  Attribute name (should be unique amongst all attribute names)
-     * @param value Attribute Value
-     */
-    void setAttribute(String name, Object value);
-
-    /**
-     * Check if the context has a specific attribute
-     *
-     * @param name Attribute name
-     * @return True if this attribute exists, false otherwise
-     */
-    boolean hasAttribute(String name);
-
-    /**
-     * Removes an attribute. Does nothing if attribute does not exist.
-     *
-     * @param name Attribute name
-     * @param <T>  Inferred attribute type
-     * @return The removed attribute or null if none has been removed
-     */
-    <T> T removeAttribute(String name);
-
-    /**
-     * @return All attributes from this context
-     */
-    Map<String, Object> attributes();
-
+    Attributes attributes();
 }

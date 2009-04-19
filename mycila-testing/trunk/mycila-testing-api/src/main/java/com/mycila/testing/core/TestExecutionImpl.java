@@ -15,6 +15,7 @@
  */
 package com.mycila.testing.core;
 
+import com.mycila.testing.core.api.Attributes;
 import static com.mycila.testing.core.api.Ensure.*;
 import com.mycila.testing.core.api.Step;
 import com.mycila.testing.core.api.TestContext;
@@ -42,6 +43,10 @@ final class TestExecutionImpl implements TestExecution {
 
     public void setSkip(boolean mustSkip) {
         this.mustSkip = mustSkip;
+    }
+
+    public Attributes attributes() {
+        return execution.attributes();
     }
 
     TestExecutionImpl changeStep(Step step) {

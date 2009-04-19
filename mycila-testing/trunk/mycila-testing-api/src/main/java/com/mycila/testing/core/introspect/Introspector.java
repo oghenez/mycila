@@ -35,6 +35,7 @@ public final class Introspector {
     private final Object instance;
 
     public Introspector(Object instance) {
+        notNull("Object to introspect", instance);
         this.instance = instance;
     }
 

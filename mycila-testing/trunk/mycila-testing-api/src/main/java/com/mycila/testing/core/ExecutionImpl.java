@@ -15,6 +15,7 @@
  */
 package com.mycila.testing.core;
 
+import com.mycila.testing.core.api.Attributes;
 import static com.mycila.testing.core.api.Ensure.*;
 import com.mycila.testing.core.api.Execution;
 import com.mycila.testing.core.api.Step;
@@ -32,12 +33,17 @@ final class ExecutionImpl implements Execution {
     private final Method method;
     private Throwable throwable;
     private Step step = Step.UNKNOWN;
+    private final Attributes attributes = new AttributesImpl();
 
     ExecutionImpl(TestContext context, Method method) {
         notNull("Test context", context);
         notNull("Test method", method);
         this.context = context;
         this.method = method;
+    }
+
+    public Attributes attributes() {
+        return attributes;
     }
 
     final ExecutionImpl changeStep(Step step) {
