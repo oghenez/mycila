@@ -45,7 +45,7 @@ public final class MycilaTestingTest {
                 throw new AssertionError("should not go here");
             }
         });
-        assertEquals(mycilaTesting.pluginManager().getCache().getBindings().size(), 1);
+        assertEquals(mycilaTesting.pluginManager().getCache().getBindings().size(), 2);
         assertTrue(mycilaTesting.pluginManager().getCache().contains("myplugin"));
         assertEquals(mycilaTesting, MycilaTesting.from(new MycilaPlugins() {
             public Cache value() {
