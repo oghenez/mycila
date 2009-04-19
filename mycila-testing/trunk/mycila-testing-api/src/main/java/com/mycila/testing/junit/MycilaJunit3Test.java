@@ -33,8 +33,6 @@ public abstract class MycilaJunit3Test extends TestCase {
 
     private static final Logger LOGGER = Loggers.get(MycilaJunit3Test.class);
 
-    private TestNotifier testNotifier;
-
     public MycilaJunit3Test() {
         super();
     }
@@ -45,31 +43,27 @@ public abstract class MycilaJunit3Test extends TestCase {
 
     @Override
     public final void runBare() throws Throwable {
-        testNotifier = MycilaTesting.from(getClass()).configure(this).createNotifier(this);
+        final TestNotifier testNotifier = MycilaTesting.from(getClass()).configure(this).createNotifier(this);
         testNotifier.prepare();
         try {
-            super.runBare();
+            setUp();
+            testNotifier.fireBeforeTest(getTestMethod());
+            TestExecution testExecution = (TestExecution) Mycila.currentExecution();
+            if (!testExecution.mustSkip()) {
+                try {
+                    LOGGER.debug("Calling test method {0}.{1}", testExecution.method().getDeclaringClass().getName(), testExecution.method().getName());
+                    super.runTest();
+                } catch (Throwable t) {
+                    testExecution.setThrowable(t);
+                }
+            }
+            testNotifier.fireAfterTest();
+            tearDown();
+            if (testExecution.hasFailed()) {
+                throw testExecution.throwable().fillInStackTrace();
+            }
         } finally {
             testNotifier.fireAfterClass();
-        }
-    }
-
-    @Override
-    protected final void runTest() throws Throwable {
-        testNotifier.fireBeforeTest(getTestMethod());
-        TestExecution testExecution = (TestExecution) Mycila.currentExecution();
-        if (!testExecution.mustSkip()) {
-            try {
-                LOGGER.debug("Calling test method {0}.{1}", testExecution.method().getDeclaringClass().getName(), testExecution.method().getName());
-                super.runTest();
-            } catch (Throwable t) {
-                testExecution.setThrowable(t);
-            }
-        }
-        testNotifier.fireAfterTest();
-        //noinspection ThrowableResultOfMethodCallIgnored
-        if (testExecution.throwable() != null) {
-            throw testExecution.throwable();
         }
     }
 
