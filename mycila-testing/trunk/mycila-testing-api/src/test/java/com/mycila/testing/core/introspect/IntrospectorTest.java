@@ -65,8 +65,8 @@ public final class IntrospectorTest {
     @Test
     public void test_filter_not() throws Exception {
         Introspector ti = new Introspector(this);
-        System.out.println(ti.selectFields(not(fieldsOfType(int.class))));
-        assertEquals(ti.selectFields(not(fieldsOfType(int.class))).size(), 1);
+        System.out.println(ti.selectFields(not(fieldsAccepting(int.class))));
+        assertEquals(ti.selectFields(not(fieldsAccepting(int.class))).size(), 1);
     }
 
     @Test
@@ -78,8 +78,8 @@ public final class IntrospectorTest {
     @Test
     public void test_getFieldsOfType() throws Exception {
         Introspector ti = new Introspector(this);
-        assertEquals(ti.selectFields(fieldsOfType(int.class)).size(), 2);
-        assertEquals(ti.selectFields(fieldsOfType(int.class)).get(0).getName(), "field2");
+        assertEquals(ti.selectFields(fieldsAccepting(int.class)).size(), 2);
+        assertEquals(ti.selectFields(fieldsAccepting(int.class)).get(0).getName(), "field2");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -91,8 +91,8 @@ public final class IntrospectorTest {
     @Test
     public void test_getFieldsOfTypeAnnotatedWith() throws Exception {
         Introspector ti = new Introspector(this);
-        assertEquals(ti.selectFields(and(fieldsOfType(int.class), fieldsAnnotatedBy(Annot.class))).size(), 1);
-        assertEquals(ti.selectFields(and(fieldsOfType(int.class), fieldsAnnotatedBy(Annot.class))).get(0).getName(), "field3");
+        assertEquals(ti.selectFields(and(fieldsAccepting(int.class), fieldsAnnotatedBy(Annot.class))).size(), 1);
+        assertEquals(ti.selectFields(and(fieldsAccepting(int.class), fieldsAnnotatedBy(Annot.class))).get(0).getName(), "field3");
     }
 
     @Test
