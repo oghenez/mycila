@@ -100,12 +100,28 @@ public final class Filters {
      * @param type Selected type
      * @return Created filter
      */
-    public static Filter<Field> fieldsOfType(final Class<?> type) {
+    public static Filter<Field> fieldsProviding(final Class<?> type) {
         notNull("Field type", type);
         return new Filter<Field>() {
             @Override
             public boolean accept(Field object) {
                 return type.isAssignableFrom(object.getType());
+            }
+        };
+    }
+
+    /**
+     * Filter that select fields having specified type or a super-type of the specified type
+     *
+     * @param type Selected type
+     * @return Created filter
+     */
+    public static Filter<Field> fieldsAccepting(final Class<?> type) {
+        notNull("Field type", type);
+        return new Filter<Field>() {
+            @Override
+            public boolean accept(Field object) {
+                return object.getType().isAssignableFrom(type);
             }
         };
     }

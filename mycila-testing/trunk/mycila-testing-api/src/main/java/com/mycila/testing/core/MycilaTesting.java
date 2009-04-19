@@ -21,13 +21,17 @@ import com.mycila.log.Loggers;
 import com.mycila.plugin.spi.PluginManager;
 import com.mycila.testing.core.annot.ConfigureMycilaPlugins;
 import com.mycila.testing.core.annot.MycilaPlugins;
+import com.mycila.testing.core.api.Cache;
 import static com.mycila.testing.core.api.Ensure.*;
 import com.mycila.testing.core.api.TestNotifier;
+import com.mycila.testing.core.introspect.Filter;
+import static com.mycila.testing.core.introspect.Filters.*;
+import com.mycila.testing.core.introspect.Introspector;
 import com.mycila.testing.core.plugin.TestPlugin;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +42,7 @@ import java.util.Map;
 public final class MycilaTesting {
 
     public static final String DEFAULT_PLUGIN_DESCRIPTOR = "META-INF/mycila/testing/plugins.properties";
+
     private static final Logger LOGGER = Loggers.get(MycilaTesting.class);
     private static final Map<String, MycilaTesting> instances = new HashMap<String, MycilaTesting>();
     private static MycilaTesting customTestHandler;
@@ -155,7 +160,23 @@ public final class MycilaTesting {
      */
     public static MycilaTesting from(Class<?> c) {
         notNull("Test class", c);
-        return from(c.getAnnotation(MycilaPlugins.class));
+        MycilaPlugins mycilaPlugins = c.getAnnotation(MycilaPlugins.class);
+        if (mycilaPlugins == null) {
+            mycilaPlugins = new MycilaPlugins() {
+                public Cache value() {
+                    return Cache.UNSHARED;
+                }
+
+                public String descriptor() {
+                    return DEFAULT_PLUGIN_DESCRIPTOR;
+                }
+
+                public Class<? extends Annotation> annotationType() {
+                    return MycilaPlugins.class;
+                }
+            };
+        }
+        return from(mycilaPlugins);
     }
 
     /**
@@ -190,31 +211,23 @@ public final class MycilaTesting {
      */
     public MycilaTesting configure(Object testInstance) {
         notNull("Test instance", testInstance);
-        List<Method> methods = new ArrayList<Method>();
-        Class<?> c = testInstance.getClass();
-        do {
-            //TODO: METHOD OVERRIDE CHECK
-            for (Method method : c.getDeclaredMethods()) {
-                Class<?>[] types = method.getParameterTypes();
-                if (method.isAnnotationPresent(ConfigureMycilaPlugins.class) && types.length == 1 && types[0].equals(PluginManager.class)) {
-                    method.setAccessible(true);
-                    methods.add(0, method);
-                }
+        final Introspector introspector = new Introspector(testInstance);
+        final List<Method> methods = introspector.selectMethods(excludeOverridenMethods(and(methodsAnnotatedBy(ConfigureMycilaPlugins.class), new Filter<Method>() {
+            @Override
+            protected boolean accept(Method method) {
+                final Class<?>[] types = method.getParameterTypes();
+                return types.length == 1 && types[0].equals(PluginManager.class);
             }
-            c = c.getSuperclass();
-        }
-        while (c != null);
-        if (!methods.isEmpty()) {
-            PluginManager<TestPlugin> pluginManager = pluginManager();
-            for (Method method : methods) {
-                LOGGER.debug("Configuring plugin manager through method {0}.{1}...", method.getDeclaringClass().getName(), method.getName());
-                try {
-                    method.invoke(testInstance, pluginManager);
-                } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e.getMessage(), e);
-                } catch (InvocationTargetException e) {
-                    throw new RuntimeException(e.getTargetException().getMessage(), e.getTargetException());
-                }
+        })));
+        final PluginManager<TestPlugin> pluginManager = pluginManager();
+        for (Method method : methods) {
+            LOGGER.debug("Configuring plugin manager through method {0}.{1}...", method.getDeclaringClass().getName(), method.getName());
+            try {
+                method.invoke(testInstance, pluginManager);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e.getMessage(), e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e.getTargetException().getMessage(), e.getTargetException());
             }
         }
         return this;

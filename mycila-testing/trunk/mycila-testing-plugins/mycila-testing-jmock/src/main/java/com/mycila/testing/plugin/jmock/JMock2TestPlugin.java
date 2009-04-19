@@ -53,7 +53,7 @@ public final class JMock2TestPlugin extends DefaultTestPlugin {
             }
         }
         context.setAttribute(CTX_MOCKERY, mockery);
-        for (Field field : context.introspector().selectFields(and(fieldsOfType(Mockery.class), fieldsAnnotatedBy(MockContext.class)))) {
+        for (Field field : context.introspector().selectFields(and(fieldsAccepting(Mockery.class), fieldsAnnotatedBy(MockContext.class)))) {
             context.introspector().set(field, mockery);
         }
         for (Field field : mocks) {
