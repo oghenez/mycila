@@ -21,12 +21,16 @@ import com.mycila.testing.core.Mycila;
 import com.mycila.testing.core.MycilaTesting;
 import com.mycila.testing.core.api.TestExecution;
 import com.mycila.testing.core.api.TestNotifier;
+import com.mycila.testing.core.api.TestPluginException;
 import org.testng.Assert;
 import org.testng.IHookCallBack;
 import org.testng.IHookable;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.internal.MethodHelper;
+
+import java.lang.reflect.Field;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -50,11 +54,21 @@ public abstract class MycilaTestNGTest extends Assert implements IHookable {
             testResult.setStatus(ITestResult.SKIP);
         } else {
             LOGGER.debug("Calling test method {0}.{1}", testExecution.method().getDeclaringClass().getName(), testExecution.method().getName());
-            callBack.runTestMethod(testResult);
+            try {
+                Field field = callBack.getClass().getDeclaredField("val$instance");
+                field.setAccessible(true);
+                MethodHelper.invokeMethod(testResult.getMethod().getMethod(), field.get(callBack), testResult.getParameters());
+            } catch (Throwable e) {
+                testExecution.setThrowable(e);
+            }
+        }
+        try {
+            testNotifier.fireAfterTest();
+        } catch (TestPluginException e) {
+            testExecution.setThrowable(e);
         }
         //noinspection ThrowableResultOfMethodCallIgnored
-        testExecution.setThrowable(testResult.getThrowable());
-        testNotifier.fireAfterTest();
+        testResult.setThrowable(testExecution.throwable());
     }
 
     @AfterClass(alwaysRun = true)
