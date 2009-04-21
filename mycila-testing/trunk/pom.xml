@@ -72,7 +72,7 @@
         <url>http://code.google.com/p/mycila/issues/list</url>
     </issueManagement>
 
-    <ciManagement />
+    <ciManagement/>
 
     <mailingLists>
         <mailingList>
@@ -363,7 +363,7 @@
             <dependency>
                 <groupId>com.mycila</groupId>
                 <artifactId>mycila-plugin</artifactId>
-                <version>1.7-SNAPSHOT</version>
+                <version>1.7</version>
             </dependency>
             <dependency>
                 <groupId>com.mycila</groupId>
