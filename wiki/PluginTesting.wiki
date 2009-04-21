@@ -1,0 +1,16 @@
+#summary One-sentence TestingPlugin
+#sidebar PluginBar
+
+== Introduction ==
+
+This plugin is always available since it is packaged in mycila-api. The plugin provides some annotations to control your test flow and improve Junit and TestNG assetions.
+
+=== @Skip ===
+
+All test methods annotated by @Skip wil be skipped.
+
+=== @ExpectException ===
+
+Junit and TestNG already provide exepcted exception features, but they lack of functionnalities.
+
+All test methods
