@@ -5,12 +5,12 @@
 *[MycilaTestingReleaseNotes Release notes]*
 
 *Manual*
- * *[TestingAPI API]*
- * *[MycilaJunit Junit integration]*
- * *[MycilaTestNG TestNG integration]*
- * *[MycilaCustom Custom integration]*
- * *[PluginDevelopment How to Create Plugins]*
- * *[ExtendedAssertions Extended Assertions]*
+ * [TestingAPI API]
+ * [MycilaJunit Junit integration]
+ * [MycilaTestNG TestNG integration]
+ * [MycilaCustom Custom integration]
+ * [PluginDevelopment How to Create Plugins]
+ * [ExtendedAssertions Extended Assertions]
 
 *Plugins*
  * [PluginTesting Testing Plugin]
