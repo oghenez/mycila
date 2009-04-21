@@ -13,10 +13,10 @@ Mycila is composed of several APIs serving different users:
 
 You are lucky, you don't have to know anything except how to use the plugins you want to use and also which class to extend / use as a runner for your test:
 
- * MycilaTestNGTest
- * MycilaJunit3Test
- * MycilaJunit4Test
- * @MycilaJunitRunner
+ * `MycilaTestNGTest`
+ * `MycilaJunit3Test`
+ * `MycilaJunit4Test`
+ * `@MycilaJunitRunner`
 
 See corresponding entries on the left menu.
 
