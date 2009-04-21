@@ -41,7 +41,7 @@ LOGGER.debug("My log entry with MessageFormat parameters {0} and {1}", "one", 2)
 
 = Example with JDK logger and others =
 
-When you put the library in your project, it defaults to JDK logging API. To use anotehr one, you can use:
+When you put the library in your project, it defaults to JDK logging API. To use another one, you can simply issue:
 
 {{{
 Loggers.useLog4j();
