@@ -22,7 +22,7 @@ Versions can downloaded from Maven Repositories here:
 
 *Snapshots*: http://mc-repo.googlecode.com/svn/maven2/snapshots/com/mycila/testing/
 
-== Maven dependency ==
+== Maven dependencies ==
 
 Just add these dependencies to your POM (the API and required dependencies comes transitively), with the plugins you want. See the Module page for a complete list of module.
 
