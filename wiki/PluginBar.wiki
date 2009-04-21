@@ -4,7 +4,7 @@
 
 *[MycilaTestingReleaseNotes Release notes]*
 
-*[TestingAPI Mycila Testing Usage]*
+*[TestingAPI Usage]*
 
 *[PluginDevelopment How to Create Plugins]*
 
