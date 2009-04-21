@@ -12,7 +12,7 @@ import static org.testng.Assert.*;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public final class Usage1 {
+public final class Usage1 extends MycilaTestNGTest {
 
     @Mock
     Service standardMock;
@@ -22,11 +22,6 @@ public final class Usage1 {
 
     @Mock(Mock.TYPE.STRICT)
     Service strictMock;
-
-    @BeforeClass
-    public void setup() {
-        TestSetup.setup(this);
-    }
 
     @Test
     public void test_mock_standard() {
