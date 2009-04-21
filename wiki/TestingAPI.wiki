@@ -1,5 +1,4 @@
 #summary Mycila Testing API
-#labels TODO
 #sidebar PluginBar
 
 = Mycila Testing API =
@@ -19,6 +18,14 @@ You are lucky, you don't have to know anything except how to use the plugins you
  * `@MycilaJunitRunner`
 
 See corresponding entries on the left menu.
+
+*Advanced usage*
+
+If you want to configure the PluginManager (i.e. you only want to load for a test the PluginA), you will have to annotate your test with `@MycilaPlugins` and a method with `@ConfigureMycilaPlugins`.
+
+Basically, `@MycilaPlugins` enables you to control which plugin descriptor to use (to isolate your plugin when testing) and this annotation enables you to configure per-test the PluginManager.
+
+If you want to define your own plugin at runtime like [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/test/java/com/mycila/testing/junit/Junit4FlowTest.java this example], you'll have to annotate your configuration method with `@ConfigureMycilaPlugins`.
 
 == For integration in test frameworks ==
 
