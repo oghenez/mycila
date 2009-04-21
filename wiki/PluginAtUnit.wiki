@@ -8,7 +8,7 @@ Here is a sample test using AtUnit Plugin:
 {{{
 @ContainerClass(GuiceContainer.class)
 @MockFrameworkClass(JMockFramework.class)
-public class ExampleGuiceAndJMockTest {
+public class ExampleGuiceAndJMockTest extends MycilaTestNGTest {
 
     @Inject
     @Unit
@@ -24,11 +24,6 @@ public class ExampleGuiceAndJMockTest {
     @Stub
     Logger ignoredLogger;
 
-    @BeforeClass
-    public void setup() {
-        TestSetup.setup(this);
-    }
-    
     @Test
     public void testGetUser() {
         mockery.checking(new Expectations() {{
@@ -46,7 +41,7 @@ here is another sample with Spring and EasyMock
 {{{
 @ContainerClass(SpringContainer.class)
 @MockFrameworkClass(EasyMockFramework.class)
-public class ExampleSpringEasyMockTest {
+public class ExampleSpringEasyMockTest extends MycilaTestNGTest {
 
     @Bean
     @Unit
@@ -58,6 +53,7 @@ public class ExampleSpringEasyMockTest {
     @Bean("userDao")
     @Mock
     UserDao dao;
+
     @Bean("log")
     @Stub
     Logger log;
