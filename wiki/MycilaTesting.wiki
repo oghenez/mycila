@@ -61,7 +61,7 @@ import org.testng.annotations.Test;
 import java.util.UUID;
 
 @GuiceContext(ClusterModule.class)
-public final class ClusterNodeListenerTest extends AbstractMycilaTestNGTest {
+public final class ClusterNodeListenerTest extends MycilaTestNGTest {
 
     @Inject
     ClusterFactory factory;
