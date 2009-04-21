@@ -1,5 +1,5 @@
 #summary Mycila Testing Framework
-#labels Featured,TODO
+#labels Featured
 #sidebar PluginBar
 
 == Introduction ==
@@ -88,10 +88,4 @@ public final class ClusterNodeListenerTest extends AbstractMycilaTestNGTest {
         verify(listener, times(2)).onLeave(any(UUID.class));
     }
 }
-}}}
-
-Here is an example of a unit test using Mycila Testing Framework. In this sample, we use Spring and JMock.
-
-{{{
-
 }}}
