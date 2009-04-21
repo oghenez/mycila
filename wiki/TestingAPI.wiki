@@ -2,4 +2,26 @@
 #labels TODO
 #sidebar PluginBar
 
-== Mycila Testing API ==
+= Mycila Testing API =
+
+Mycila is composed of several APIs serving different users:
+ * Those using Mycila testing framework on a day to day basis to write test,
+ * Those writing test plugins
+ * Those integrating Mycila in other test frameworks
+
+== For Mycila users ==
+
+You are lucky, you don't have to know anything except how to use the plugins you want to use and also which class to extend / use as a runner for your test:
+
+ * MycilaTestNGTest
+ * MycilaJunit3Test
+ * MycilaJunit4Test
+ * @MycilaJunitRunner
+
+See corresponding entries on the left menu.
+
+== For integration in test frameworks ==
+
+To integrate Mycila in another testing framework, you can have a look on the [MycilaCustom integration wiki page].
+
+== For Plugin writers ==
