@@ -17,10 +17,10 @@ package com.mycila.testing.ea;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 
@@ -29,6 +29,7 @@ import java.util.Collection;
  */
 public final class ExtendedAssert {
 
+    private static final String DEFAULT_ENCODING = System.getProperty("file.encoding");
     private static final SoftHashMap<URL, byte[]> cache = new SoftHashMap<URL, byte[]>();
     private static final byte[] NULL = new byte[0];
 
@@ -110,23 +111,55 @@ public final class ExtendedAssert {
         return u;
     }
 
-    public static String readString(String classPath) {
-        return readString(classPath, "UTF-8");
+    public static String asString(File file) {
+        return asString(file, DEFAULT_ENCODING);
     }
 
-    public static String readString(String classPath, String encoding) {
+    public static String asString(URL url) {
+        return asString(url, DEFAULT_ENCODING);
+    }
+
+    public static String asString(String classPath) {
+        return asString(classPath, DEFAULT_ENCODING);
+    }
+
+    public static String asString(File file, String encoding) {
         try {
-            return new String(readByte(classPath), encoding);
+            return asString(file.toURI().toURL(), encoding);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public static String asString(String classPath, String encoding) {
+        try {
+            return new String(asBytes(classPath), encoding);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
-    public static byte[] readByte(String classPath) {
-        return readByte(resource(classPath));
+    public static String asString(URL url, String encoding) {
+        try {
+            return new String(asBytes(url), encoding);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
-    public static byte[] readByte(URL url) {
+    public static byte[] asBytes(File file) {
+        try {
+            return asBytes(file.toURI().toURL());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public static byte[] asBytes(String classPath) {
+        return asBytes(resource(classPath));
+    }
+
+    public static byte[] asBytes(URL url) {
         byte[] data = cache.get(url);
         if (data == null) {
             try {
@@ -151,14 +184,7 @@ public final class ExtendedAssert {
         return new AssertionExceptionImpl(exceptionClass);
     }
 
-    private static String asString(Throwable t) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-        t.printStackTrace(pw);
-        return sw.toString();
-    }
-
-    private static String format(String message, Object actual, Object expected) {
+    static String format(String message, Object actual, Object expected) {
         String formatted = "";
         if (message != null && !message.equals(""))
             formatted = message + " ";
@@ -178,11 +204,11 @@ public final class ExtendedAssert {
         return className + "<" + valueString + ">";
     }
 
-    private static void fail(String message, Object actual, Object expected) {
+    static void fail(String message, Object actual, Object expected) {
         fail(format(message, actual, expected));
     }
 
-    private static void fail(String message) {
+    static void fail(String message) {
         throw new AssertionError(message == null ? "" : message);
     }
 
@@ -192,85 +218,6 @@ public final class ExtendedAssert {
         AssertException containingMessage(String message);
 
         void whenRunning(Code code);
-    }
-
-    private static class AssertionExceptionImpl implements AssertException {
-
-        private static enum MsgCheck {
-            NONE, EQ, IN
-        }
-
-        private final Class<? extends Throwable> exceptionClass;
-
-        private String message;
-        private MsgCheck msgCheck = MsgCheck.NONE;
-
-        public AssertionExceptionImpl(Class<? extends Throwable> exceptionClass) {
-            this.exceptionClass = exceptionClass;
-        }
-
-        public AssertException withMessage(String message) {
-            this.message = message;
-            msgCheck = MsgCheck.EQ;
-            return this;
-        }
-
-        public AssertException containingMessage(String message) {
-            this.message = message;
-            msgCheck = MsgCheck.IN;
-            return this;
-        }
-
-        public void whenRunning(Code code) {
-            boolean failed = true;
-            try {
-                code.run();
-                failed = false;
-            } catch (Throwable throwable) {
-                if (!exceptionClass.isAssignableFrom(throwable.getClass())) {
-                    fail("Received bad exception class. Exception is:\n" + asString(throwable), throwable.getClass().getName(), exceptionClass.getName());
-                }
-                if (msgCheck != MsgCheck.NONE) {
-                    String msgThrown = throwable.getMessage();
-                    if (message == null && msgThrown != null) {
-                        fail("Received bad exception message. Exception is:\n" + asString(throwable), msgThrown, "no message (null)");
-                    } else if (message != null && msgThrown == null) {
-                        switch (msgCheck) {
-                            case EQ:
-                                fail("Received bad exception message. Exception is:\n" + asString(throwable), "no message (null)", message);
-                            case IN:
-                                fail("Received bad exception message. Exception is:\n" + asString(throwable), "no message (null)", "message containing: " + message);
-                        }
-                    } else if(message != null && msgThrown != null) {
-                        switch (msgCheck) {
-                            case EQ:
-                                if(!message.equals(msgThrown)) {
-                                    fail("Received bad exception message. Exception is:\n" + asString(throwable), msgThrown, message);
-                                } else {
-                                    break;
-                                }
-                            case IN:
-                                if(!msgThrown.contains(message)) {
-                                    fail("Received bad exception message. Exception is:\n" + asString(throwable), msgThrown, "message containing: " + message);
-                                } else {
-                                    break;
-                                }
-                        }
-                    }
-                }
-            }
-            if (!failed) {
-                switch (msgCheck) {
-                    case NONE:
-                        fail(String.format("Should have thrown Exception class '%s'", exceptionClass.getName()));
-                    case EQ:
-                        fail(String.format("Should have thrown Exception class '%s' with message '%s'", exceptionClass.getName(), message));
-                    case IN:
-                        fail(String.format("Should have thrown Exception class '%s' containing message '%s'", exceptionClass.getName(), message));
-
-                }
-            }
-        }
     }
 
 }
