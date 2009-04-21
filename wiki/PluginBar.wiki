@@ -21,9 +21,3 @@
  * [PluginGuice2 Google Guice 2 Plugin]
  * [PluginSpring Spring Framework Plugin]
  * [PluginAtUnit AtUnit]
-
-*Coming soon*
- 
- * DbUnit Plugin
- * Custom assertions, Extensions, ...
- * ...
