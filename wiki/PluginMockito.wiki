@@ -12,15 +12,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import com.mycila.testing.core.TestSetup;
 
-public final class MyTest {
+public final class MyTest extends MycilaTestNGTest {
 
     @Mock
     Service standardMock;
-
-    @BeforeClass
-    public void setup() {
-        TestSetup.setup(this);
-    }
 
     @Test
     public void test() {
