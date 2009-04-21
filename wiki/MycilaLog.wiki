@@ -18,7 +18,7 @@ Such an API is not very useful in final applications such as UIs, Webapps, ... B
  * *Fast*: code is very fast: simply delegates to existing loggers. Also, the API is designed to avoid doing string concatenations and unneeded calls.
 
  * *Improvements*: the library add some improvements to the JDK Logging API such as:
-  * InvocationHandler: to avoid creation of hooks in handlers
+  * InvocationHandler: to setup hooks in handlers
   * Asynchronous logging
   * Thresolds
 
