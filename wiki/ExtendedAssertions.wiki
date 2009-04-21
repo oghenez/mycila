@@ -7,7 +7,7 @@ Just put in your test:
 
 {{{
 import static com.mycila.testing.ea.ExtendedAssert.*;
-}}]
+}}}
 
 and you will have access to these additional methods:
 
