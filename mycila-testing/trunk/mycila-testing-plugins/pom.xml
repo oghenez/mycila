@@ -35,6 +35,7 @@
     <modules>
         <module>mycila-testing-atunit</module>
         <module>mycila-testing-db</module>
+        <module>mycila-testing-dbunit</module>
         <module>mycila-testing-easymock</module>
         <module>mycila-testing-guice</module>
         <module>mycila-testing-guice2</module>
