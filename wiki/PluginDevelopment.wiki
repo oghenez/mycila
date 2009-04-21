@@ -47,9 +47,13 @@ List<Method> methods = introspector.selectMethods(excludeOverridenMethods(and(me
 })));
 }}}
 
-=== Configure PluginManager ===
+=== Configure PluginManager / Test your plugin ===
 
+You can use `@MycilaPlugins` and `@ConfigureMycilaPlugins` to test your plugin, as described in the [TestingAPI User API wiki page]. 
 
+Basically, `@MycilaPlugins` enables you to control which plugin descriptor to use (to isolate your plugin when testing) and this annotation enables you to configure per-test the PluginManager.
+
+If you want to define your own plugin at runtime like [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/test/java/com/mycila/testing/junit/Junit4FlowTest.java this example], you'll have to annotate your configuration method with `@ConfigureMycilaPlugins`.
 
 == Example ==
 
