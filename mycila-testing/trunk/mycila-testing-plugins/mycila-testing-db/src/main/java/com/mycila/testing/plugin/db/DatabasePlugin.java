@@ -7,7 +7,6 @@ import com.mycila.testing.core.plugin.DefaultTestPlugin;
 
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
-import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,20 +32,20 @@ public final class DatabasePlugin extends DefaultTestPlugin {
         // @Query
         // @Tx: ro, isolation, rollback, ...
         // 
-        Connection c;
+        /*Connection c;
         c.createStatement().executeQuery().
                 // for tx
                         dataSource.getConnection().setAutoCommit();
         dataSource.getConnection().setReadOnly();
-        dataSource.getConnection().setTransactionIsolation();
+        dataSource.getConnection().setTransactionIsolation();*/
     }
 
     @Override
     public void afterTest(TestExecution testExecution) throws Exception {
         // for tx
-        dataSource.getConnection().setAutoCommit();
+        /*dataSource.getConnection().setAutoCommit();
         dataSource.getConnection().setReadOnly();
-        dataSource.getConnection().setTransactionIsolation();
+        dataSource.getConnection().setTransactionIsolation();*/
     }
 
     @Override
