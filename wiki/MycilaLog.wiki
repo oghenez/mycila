@@ -69,7 +69,8 @@ com.mycila.level=ALL
 Then in the Java code you ca configure JDK logging like this:
 
 {{{
-LogManager.getLogManager().reset();       LogManager.getLogManager().readConfiguration(getClass().getResourceAsStream("/logging.properties"));
+LogManager.getLogManager().reset();
+LogManager.getLogManager().readConfiguration(getClass().getResourceAsStream("/logging.properties"));
 }}}
 
 *Note:* You can only configure the logger through the Java API. Check hre for more details:
