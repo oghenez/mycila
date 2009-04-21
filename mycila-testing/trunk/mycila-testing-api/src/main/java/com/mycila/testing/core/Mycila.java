@@ -22,7 +22,7 @@ import com.mycila.testing.core.api.Execution;
 import com.mycila.testing.core.api.TestContext;
 
 import java.text.MessageFormat;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 /**
@@ -37,7 +37,7 @@ public final class Mycila {
 
     private static final Logger LOGGER = Loggers.get(Mycila.class);
     private static final ThreadLocal<Execution> CURRENT_EXECUTION = new InheritableThreadLocal<Execution>();
-    private static final Map<Ref, TestContext> CONTEXTS = new HashMap<Ref, TestContext>();
+    private static final Map<Object, TestContext> CONTEXTS = new IdentityHashMap<Object, TestContext>();
 
     private Mycila() {
     }
@@ -51,7 +51,7 @@ public final class Mycila {
     static void registerContext(TestContext context) {
         notNull("Test context", context);
         LOGGER.debug("Registering Global Test Context for test {0}#{1,number,#}", context.introspector().testClass().getName(), context.introspector().instance().hashCode());
-        CONTEXTS.put(new Ref(context.introspector().instance()), context);
+        CONTEXTS.put(context.introspector().instance(), context);
     }
 
     static void unsetCurrentExecution() {
@@ -66,19 +66,18 @@ public final class Mycila {
 
     static void unsetContext(Object testInstance) {
         notNull("Test instance", testInstance);
-        Ref ref = new Ref(testInstance);
         if (LOGGER.canDebug()) {
-            TestContext context = CONTEXTS.get(ref);
+            TestContext context = CONTEXTS.get(testInstance);
             if (context != null) {
                 LOGGER.debug("Removing Global Test Context for test {0}#{1,number,#}", context.introspector().testClass().getName(), context.introspector().instance().hashCode());
             }
         }
-        CONTEXTS.remove(ref);
+        CONTEXTS.remove(testInstance);
     }
 
     public static TestContext context(Object testInstance) {
         notNull("Test instance", testInstance);
-        TestContext context = CONTEXTS.get(new Ref(testInstance));
+        TestContext context = CONTEXTS.get(testInstance);
         if (context == null) {
             throw new IllegalStateException("No Global Test Context available for test " + MessageFormat.format("{0}#{1,number,#}", testInstance.getClass().getName(), testInstance.hashCode()));
         }
@@ -97,21 +96,4 @@ public final class Mycila {
         return c;
     }
 
-    private static class Ref {
-        final Object object;
-
-        Ref(Object object) {
-            this.object = object;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return o instanceof Ref && ((Ref) o).object == object;
-        }
-
-        @Override
-        public int hashCode() {
-            return object.hashCode();
-        }
-    }
 }
