@@ -13,6 +13,7 @@
 *Plugins*
 
  * [PluginTesting Testing Plugin]
+ * [PluginDbUnit DbUnit Plugin]
  * [PluginJMock2 JMock Plugin]
  * [PluginEasyMock2 EasyMock Plugin]
  * [PluginMockito Mockito Plugin]
