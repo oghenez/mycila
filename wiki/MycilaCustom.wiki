@@ -34,3 +34,25 @@ Has the effect to create a PluginManager to read MycilaPlugins. If the annotatio
 If you want to defined new plugins at runtime, or test plugins amongst several tests, you would probably use the annotation to use a shared instance of the PluginManager.
 
 *@MycilaPlugins* can also take another parameter which is the descriptor to read plugins from. See [MycilaPlugin] wiki page for details.
+
+`MycilaTesting.from(getClass()).configure(this)`
+
+The *configure* call is not mandatory but can be used to configure the PluginManager in your tests. This method will call all methods in your test class annotated by *@ConfigureMycilaPlugins* having one parameter of type `PluginManager<TestPlugin>`. In example in our [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/test/java/com/mycila/testing/junit/Junit4FlowTest.java unit test sample] we have:
+
+{{{
+@ConfigureMycilaPlugins
+void configure(PluginManager<TestPlugin> pluginManager) {
+    pluginManager.getCache().registerPlugin("myPlugin", new TestPlugin() {
+        [...]
+    });
+}
+}}}
+
+`MycilaTesting.from(getClass()).configure(this).createNotifier(this)`
+
+The *createNotifier* call will create a TestNotifier for this test. The test notifier is responsible of firing events to Mycila system. There is only 4 methods, which match all steps in a usual test flow:
+
+ * `prepare`
+ * `fireBeforeTest`
+ * `fireAfterTest`
+ * `fireAfterClass`
