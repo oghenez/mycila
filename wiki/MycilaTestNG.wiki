@@ -3,7 +3,7 @@
 
 == TestNG integration ==
 
-* MycilaTestNGTest
+ * MycilaTestNGTest
 
 {{{
 public final class MyTest extends MycilaTestNGTest {
