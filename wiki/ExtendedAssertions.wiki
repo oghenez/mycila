@@ -1,7 +1,7 @@
 #summary One-sentence Extended Assertions
 #sidebar PluginBar
 
-= Introduction =
+== Introduction ==
 
 Just put in your test:
 
@@ -19,3 +19,14 @@ and you will have access to these additional methods:
 || resource || get a classpath resource ||
 || asString, asBytes || reads a resource or file ||
 || assertThrow... withMessage... containingMessage... || asserts that a code throws an exception. You can also check its message ||
+
+== Example ==
+
+{{{
+assertThrow(RuntimeException.class).containingMessage("aa").whenRunning(new Code() {
+    public void run() throws Throwable {
+        throw new RuntimeException("dd");
+    }
+});
+}}}
+
