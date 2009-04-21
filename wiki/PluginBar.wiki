@@ -6,10 +6,13 @@
 
 *[TestingAPI Usage]*
 
+*[ExtendedAssertions Extended Assertions]*
+
 *[PluginDevelopment How to Create Plugins]*
 
 *Plugins*
 
+ * [PluginTesting Testing Plugin]
  * [PluginJMock2 JMock Plugin]
  * [PluginEasyMock2 EasyMock Plugin]
  * [PluginMockito Mockito Plugin]
