@@ -33,11 +33,4 @@ To integrate Mycila in another testing framework, you can have a look on the [My
 
 == For Plugin developers ==
 
-TODO:
- * MycilaPlugin annot
- * Configure Annot
- * Filters
- * Introspector
- * Context
-
-{{{TODO}}}
+Please see the section [PluginDevelopment How to Create Plugins]
