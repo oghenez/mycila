@@ -9,7 +9,7 @@ Example:
 
 {{{
 @GuiceContext(OverrideTest.MyModule.class)
-public final class OverrideTest extends AbstractMycilaTestNGTest {
+public final class OverrideTest extends MycilaTestNGTest {
 
     @Inject
     String value;
