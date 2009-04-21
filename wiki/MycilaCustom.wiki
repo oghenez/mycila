@@ -1,0 +1,36 @@
+#summary One-sentence summary of this page.
+#sidebar PluginBar
+
+== Custom integration ==
+
+You can integrate Mycila in any testing Framework. We suggest you first have a look on existing integration to see how it is done.
+
+ * [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/testng TestNG]
+ * [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/junit JUnit]
+
+The flow of a test is usually the same:
+
+ # Prepare the test
+ # Run Befores (class and test)
+ # Run Tests
+ # Run Afters (test and class)
+
+The goal of the integraton is to fire events by calling methods on Mycila API at each step. In example for TestNG, here is how we integrated it:
+
+{{{
+@BeforeClass(alwaysRun = true)
+protected final void prepareTestInstance() {
+    testNotifier = MycilaTesting.from(getClass()).configure(this).createNotifier(this);
+    testNotifier.prepare();
+}
+}}}
+
+Before all other methods run, we create a new MycilaTesting instance based on this test class.
+
+`MycilaTesting.from(getClass())` 
+
+Has the effect to create a PluginManager to read MycilaPlugins. If the annotation *@MycilaPlugins* is on the test class, it is used to specify if the PluginManager should be reused (static PluginManager) or if we create a new instance for this test. By default a new instance is created for each test.
+
+If you want to defined new plugins at runtime, or test plugins amongst several tests, you would probably use the annotation to use a shared instance of the PluginManager.
+
+*@MycilaPlugins* can also take another parameter which is the descriptor to read plugins from. See [MycilaPlugin] wiki page for details.
