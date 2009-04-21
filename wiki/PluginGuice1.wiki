@@ -17,7 +17,7 @@ There is two version of Google Guice Plugin: one for Guice 1 and one for Guice 2
 
 {{{
 @GuiceContext(AModule.class)
-public final class GuiceContextTest {
+public final class GuiceContextTest extends MycilaTestNGTest {
 
     @Inject
     @Named("service1")
@@ -28,11 +28,6 @@ public final class GuiceContextTest {
 
     @Inject
     Injector injector;
-
-    @BeforeClass
-    public void setup() {
-        TestSetup.setup(this);
-    }
 
     @Test
     public void test_something() {
@@ -48,15 +43,10 @@ Provider methods are really useful when your module do not have a default constr
 Methods returning modules must have one of the following return types: Module, Module[] or Iterable`<Module>` or any subtypes of these.
 
 {{{
-public final class ModuleProviderTest {
+public final class ModuleProviderTest extends MycilaTestNGTest {
 
     @Inject
     Injector injector;
-
-    @BeforeClass
-    public void setup() {
-        TestSetup.setup(this);
-    }
 
     @ModuleProvider
     private Module providesOneModule() {
@@ -91,7 +81,7 @@ The @Bind annotation supports two optional parameters:
 Here is an example using @Bind on fields. As you can see, you can use a trick: since bindings by default are not singletons, you can change the value of the field, and it will change the binding. But if you put the Singleton scope, the first value is always returned.
 
 {{{
-public final class BindFieldTest {
+public final class BindFieldTest extends MycilaTestNGTest {
 
     @Bind
     String a = "helloa";
@@ -104,7 +94,6 @@ public final class BindFieldTest {
 
     @Test
     public void test_bind() {
-        TestSetup.setup(this);
         assertEquals(injector.getInstance(String.class), "helloa");
         assertEquals(injector.getInstance(Key.get(String.class, Named.class)), "hellob");
         b = "changedb";
@@ -118,7 +107,7 @@ public final class BindFieldTest {
 Here is now an example using method. Like before, the returned values of the methods that are binded can change.
 
 {{{
-public final class BindMethodTest {
+public final class BindMethodTest extends MycilaTestNGTest {
 
     String a = "helloa";
     String b = "hellob";
@@ -138,7 +127,6 @@ public final class BindMethodTest {
 
     @Test
     public void test_bind() {
-        TestSetup.setup(this);
         assertEquals(injector.getInstance(String.class), "helloa");
         assertEquals(injector.getInstance(Key.get(String.class, Named.class)), "hellob");
         b = "changedb";
@@ -164,7 +152,7 @@ and be forced to setup yourself dependencies, you can instead provide your depen
 {{{
 // You can optionnaly specify some modules to be loaded, with a stage
 @GuiceContext(InjectInBeanTest.MyModule.class)
-public final class InjectInBeanTest {
+public final class InjectInBeanTest extends MycilaTestNGTest {
 
     // you can provide bindings in your tests
     @Bind
@@ -181,11 +169,6 @@ public final class InjectInBeanTest {
     // You can inject all what is binded, thus the injector
     @Inject Injector injector;
     @Inject D d;
-
-    @BeforeClass
-    public void setup() {
-        TestSetup.setup(this);
-    }
 
     @Test
     public void test_bind() {
