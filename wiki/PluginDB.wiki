@@ -1,0 +1,6 @@
+#labels TODO,COMMING-SOON
+#sidebar PluginBar
+
+== Introduction ==
+
+This plugin enables you to setup quickly a datasources, connections and transactions in tests.
