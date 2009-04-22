@@ -68,6 +68,10 @@
             <artifactId>mycila-plugin</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.mycila</groupId>
+            <artifactId>mycila-log</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <classifier>jdk15</classifier>
