@@ -1,4 +1,3 @@
-#summary Mycila Testing Framework
 #labels Featured
 #sidebar PluginBar
 
