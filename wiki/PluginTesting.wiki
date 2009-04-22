@@ -5,12 +5,26 @@
 
 This plugin is always available since it is packaged in mycila-api. The plugin provides some annotations to control your test flow and improve Junit and TestNG assetions.
 
-=== @Skip ===
+=== `@Skip` ===
 
-All test methods annotated by @Skip wil be skipped.
+All test methods annotated by @Skip will be skipped.
 
-=== @ExpectException ===
+=== `@ExpectException` ===
 
-Junit and TestNG already provide exepcted exception features, but they lack of functionnalities.
+Junit and TestNG already provide expected exception features, but they lack of attributes.
 
-All test methods
+This annotation let you define complete assertions on exceptions like this:
+
+{{{
+    @Test
+    @ExpectException(type = IllegalStateException.class, message = "exception 3")
+    public void must_throw_an_exception_3() throws Exception {
+        throw new IllegalStateException("exception 3");
+    }
+
+    @Test
+    @ExpectException(type = IllegalStateException.class, containing = "4")
+    public void must_throw_an_exception_4() throws Exception {
+        throw new IllegalStateException("exception 4");
+    }
+}}}
