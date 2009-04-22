@@ -24,6 +24,14 @@ In these plugin methods, you have access to the current Execution context and th
 || afterTest || `TestExecution` context is passed as a parameter<br>`TestExecution execution = (TestExecution) Mycila.currentExecution();`<br>`TestContext ctx = execution.context();` ||
 || afterClass || `TestContext` context is passed as a parameter<br/>`Execution execution = Mycila.currentExecution();` ||
 
+=== Context ===
+
+The `Execution` and sub class `TestExecution` context represents the method in test. When you develop a plugin that handles beforeTest and afterTest events, the `TestExecution` context enables you to set wheter the test method should be skipped, and enables you to get the exception thrown by the test method if any.
+
+With those 2 properties, you are able to change the behavior of the test framework and let some test pass even if they thrown an exception.
+
+A good example of this is the [http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/plugin/annotation/AnnotationTestPlugin.java AnnotationPlugin] which provides `@Skip` and `@ExpectException` annotations
+
 === Introspector and Filters ===
 
 The TestContext class gives you access to an Introspector on the test instance, from where you can select fields and methods through filters and compose them. In example, in Guice plugin, to select all methods providing Guice Modules and annotated by @ModuleProvider, we can call:
