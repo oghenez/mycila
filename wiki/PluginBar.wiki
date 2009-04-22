@@ -4,6 +4,8 @@
 
 *[MycilaTestingReleaseNotes Release notes]*
 
+*[ModuleList Maven dependencies]*
+
 *Manual*
  * [TestingAPI API]
  * [MycilaJunit Junit integration]
