@@ -20,13 +20,22 @@ and you will have access to these additional methods:
 || asString, asBytes || reads a resource or file ||
 || assertThrow... withMessage... containingMessage... || asserts that a code throws an exception. You can also check its message ||
 
-== Example ==
+== Examples ==
 
 {{{
-assertThrow(RuntimeException.class).containingMessage("aa").whenRunning(new Code() {
+assertThrow(RuntimeException.class).whenRunning(new Code() {
     public void run() throws Throwable {
-        throw new RuntimeException("dd");
+        throw new RuntimeException("hello");
+    }
+});
+assertThrow(RuntimeException.class).withMessage("hello").whenRunning(new Code() {
+    public void run() throws Throwable {
+        throw new RuntimeException("hello");
+    }
+});
+assertThrow(RuntimeException.class).containingMessage("hello").whenRunning(new Code() {
+    public void run() throws Throwable {
+        throw new RuntimeException("hello world");
     }
 });
 }}}
-
