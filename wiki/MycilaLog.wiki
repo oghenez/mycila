@@ -1,5 +1,4 @@
 #summary Mycila Logging Wrapper
-#labels Featured
 
 = Introduction =
 
@@ -16,6 +15,8 @@ Such an API is not very useful in final applications such as UIs, Webapps, ... B
  * *Simple*: No magic / complex code: unlike commons-logging, the code is simple and does not magic with classloaders causing issues in applications
 
  * *Fast*: code is very fast: simply delegates to existing loggers. Also, the API is designed to avoid doing string concatenations and unneeded calls.
+
+ * *Small memory*: loggers are cached to be reused at most, in a `SoftHashMap`. Thus the JDK will be able to automatically garbage entries if memory is needed, causing a re-creation of the logger if it is needed elsewhere.
 
  * *Improvements*: the library add some improvements to the JDK Logging API such as:
   * InvocationHandler: to setup hooks in handlers
@@ -39,13 +40,27 @@ private static final Logger LOGGER = Loggers.get(MyClass.class);
 LOGGER.debug("My log entry with MessageFormat parameters {0} and {1}", "one", 2);
 }}}
 
-= Example with JDK logger and others =
+= Examples  =
+
+=== Using No logging ===
+
+{{{
+Loggers.useNone);
+}}}
+
+This will register a No-Op `LoggerProvider` which will return a shared empty Logger each time, doing nothing at all.
+
+=== Using Log4J ===
 
 When you put the library in your project, it defaults to JDK logging API. To use another one, you can simply issue:
 
 {{{
 Loggers.useLog4j();
 }}}
+
+=== Using JDK logging ===
+
+JDK logging is the default behavior, so you have nothing to do.
 
 Several improvements are provided for JDK logging. In example, here is a logging configuration file that use them:
 
@@ -86,6 +101,7 @@ Currently, Mycila Log already supports
 
  * Log4j
  * JDK Logging support.
+ * No Op logger (to log nothing at all)
 
 = Extending =
 
@@ -138,6 +154,14 @@ Loggers.use(new LoggerProvider() {
     }
 });
 }}}
+
+*Caching*
+
+By default, all loggers are cached in a `SoftHashMap`. You can cache your own `LoggerProvider` instance by doing:
+
+`Loggers.use(LoggerProviders.cache(myProvider))`
+
+The `LoggerProviders` class has a lot of methods to get all supported providers and decorate them.
 
 = Downloads =
 
