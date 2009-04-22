@@ -1,13 +1,13 @@
 #summary Mycila Logging Wrapper
 #labels Featured
 
-= Introduction =
+== Introduction ==
 
 Mycila Log Wrapper in *NOT a logging API*: it is a *Wrapper API* that enables you to use any logging API behind.
 
 Such an API is not very useful in final applications such as UIs, Webapps, ... But when you are developing core libraries used in several context, you cannot force your clients to use a specific logging API. Thus the need of a wrapping API, to let the clients the choice of using any existing logging API.
 
-= Downloads =
+== Downloads ==
 
 Versions can downloaded from Maven Repositories here:
 
@@ -25,13 +25,13 @@ For Maven, use:
 </dependency>
 }}}
 
-= Why using Mycila Log ? =
+== Why using Mycila Log ? ==
 
- * *Drop it, use it !*: No configuration needed, no specific implementations to add: it just works without anything but the library !
+ * *Drop it, use it !*: No configuration needed, no specific implementations to add *unlike SLF4J*: it just works without anything but the library !
 
- * *Small*: Only 1 very small jar file: unlike SLF4J, does not come in your project with a few libraries
+ * *Small*: Only 1 very small jar file: *unlike SLF4J*, does not come in your project with a few libraries
 
- * *Simple*: No magic / complex code: unlike commons-logging, the code is simple and does not magic with classloaders causing issues in applications
+ * *Simple*: No magic / complex code: *unlike commons-logging*, the code is simple and does not magic with classloaders causing issues in applications
 
  * *Fast*: code is very fast: simply delegates to existing loggers. Also, the API is designed to avoid doing string concatenations and unneeded calls.
 
@@ -42,7 +42,7 @@ For Maven, use:
   * Asynchronous logging
   * Thresolds
 
-= How to use =
+== How to use ==
 
 The usage is exactly like any other logging API. You also have checks like isDebug, isInfo, ... Like SLF4J, you have the ability to use message formatting options. They will be applied only if you can log with the wanted level, to not decrease performance.
 
@@ -59,7 +59,7 @@ private static final Logger LOGGER = Loggers.get(MyClass.class);
 LOGGER.debug("My log entry with MessageFormat parameters {0} and {1}", "one", 2);
 }}}
 
-= Examples  =
+== Examples  ==
 
 === Using No logging ===
 
@@ -114,7 +114,7 @@ LogManager.getLogManager().readConfiguration(getClass().getResourceAsStream("/lo
 
 The hook API enabled you to modify the behavior of a handler. Here, we add a hook to add Asynchronous logging capabilities to console handlers. We also define the maximum level for each handler, to push errors in System.err and logs to System.out
 
-= Supported Logging API =
+== Supported Logging API ==
 
 Currently, Mycila Log already supports
 
@@ -122,7 +122,7 @@ Currently, Mycila Log already supports
  * JDK Logging support.
  * No Op logger (to log nothing at all)
 
-= Extending =
+== Extending ==
 
 Extending Mycila Log Wrapper is failry simple. Supposing the Log4j support was not there, Here is how we would have added it:
 
@@ -174,7 +174,7 @@ Loggers.use(new LoggerProvider() {
 });
 }}}
 
-=== Caching ===
+== Caching ==
 
 By default, all loggers are cached in a `SoftHashMap`. You can cache your own `LoggerProvider` instance by doing:
 
