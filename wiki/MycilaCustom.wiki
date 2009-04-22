@@ -32,7 +32,7 @@ Before all other methods run, we create a new MycilaTesting instance based on th
 
 `MycilaTesting.from(getClass())` 
 
-Has the effect to create a PluginManager to read MycilaPlugins. If the annotation *@MycilaPlugins* is on the test class, it is used to specify if the PluginManager should be reused (static PluginManager) or if we create a new instance for this test. By default a new instance is created for each test.
+Has the effect to create a PluginManager to read MycilaPlugins. If the annotation *@MycilaPlugins* is on the test class, it is used to specify if the PluginManager should be reused (static PluginManager) or if we create a new instance for this test. By default, the PluginManager is shared amongst all test.
 
 If you want to defined new plugins at runtime, or test plugins amongst several tests, you would probably use the annotation to use a shared instance of the PluginManager.
 
