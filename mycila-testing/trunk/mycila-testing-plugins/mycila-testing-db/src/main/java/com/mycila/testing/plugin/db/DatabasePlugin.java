@@ -52,4 +52,5 @@ public final class DatabasePlugin extends DefaultTestPlugin {
     public void afterClass(TestContext context) throws Exception {
 
     }
+
 }
