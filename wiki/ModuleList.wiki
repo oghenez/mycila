@@ -11,6 +11,26 @@
 </dependency>
 }}}
 
+ * *[PluginDB Database Plugin]*: Database integration
+
+{{{
+<dependency>
+    <groupId>com.mycila.testing.plugins</groupId>
+    <artifactId>mycila-testing-db</artifactId>
+    <version>X.Y</version>
+</dependency>
+}}}
+
+ * *[PluginDbUnit DbUnit Plugin]*: DbUnit integration
+
+{{{
+<dependency>
+    <groupId>com.mycila.testing.plugins</groupId>
+    <artifactId>mycila-testing-dbunit</artifactId>
+    <version>X.Y</version>
+</dependency>
+}}}
+
  * *[PluginJMock2 JMock Plugin]*: JMock integration
 
 {{{
@@ -31,6 +51,15 @@
 </dependency>
 }}}
 
+ * *[PluginMockito Mockito Plugin]*: Mockito integration
+
+{{{
+<dependency>
+    <groupId>com.mycila.testing.plugins</groupId>
+    <artifactId>mycila-testing-mockito</artifactId>
+    <version>X.Y</version>
+</dependency>
+}}}
 
  * *[PluginGuice1 Guice Plugin]*: Guice integration
 
@@ -38,6 +67,16 @@
 <dependency>
     <groupId>com.mycila.testing.plugins</groupId>
     <artifactId>mycila-testing-guice</artifactId>
+    <version>X.Y</version>
+</dependency>
+}}}
+
+ * *[PluginGuice2 Guice 2 Plugin]*: Guice 2 integration
+
+{{{
+<dependency>
+    <groupId>com.mycila.testing.plugins</groupId>
+    <artifactId>mycila-testing-guice2</artifactId>
     <version>X.Y</version>
 </dependency>
 }}}
@@ -52,12 +91,12 @@
 </dependency>
 }}}
 
- * *[PluginMockito Mockito Plugin]*: Mockito integration
+ * *[PluginAtUnit AtUnit]*: AtUnit integration
 
 {{{
 <dependency>
     <groupId>com.mycila.testing.plugins</groupId>
-    <artifactId>mycila-testing-mockito</artifactId>
+    <artifactId>mycila-testing-atunit</artifactId>
     <version>X.Y</version>
 </dependency>
 }}}
