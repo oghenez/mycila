@@ -61,7 +61,7 @@
 </dependency>
 }}}
 
- * *[PluginGuice1 Guice Plugin]*: Guice integration
+ * *[PluginGuice1 Guice Plugin]*: Google Guice integration
 
 {{{
 <dependency>
@@ -71,7 +71,7 @@
 </dependency>
 }}}
 
- * *[PluginGuice2 Guice 2 Plugin]*: Guice 2 integration
+ * *[PluginGuice2 Guice 2 Plugin]*: Google Guice 2 integration
 
 {{{
 <dependency>
