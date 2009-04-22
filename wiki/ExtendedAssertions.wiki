@@ -1,4 +1,3 @@
-#summary One-sentence Extended Assertions
 #sidebar PluginBar
 
 == Introduction ==
