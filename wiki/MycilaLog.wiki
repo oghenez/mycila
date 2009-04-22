@@ -7,6 +7,24 @@ Mycila Log Wrapper in *NOT a logging API*: it is a *Wrapper API* that enables yo
 
 Such an API is not very useful in final applications such as UIs, Webapps, ... But when you are developing core libraries used in several context, you cannot force your clients to use a specific logging API. Thus the need of a wrapping API, to let the clients the choice of using any existing logging API.
 
+= Downloads =
+
+Versions can downloaded from Maven Repositories here:
+
+*Releases*: http://repo2.maven.org/maven2/com/mycila/mycila-log/
+
+*Snapshots*: http://mc-repo.googlecode.com/svn/maven2/snapshots/com/mycila/mycila-log/
+
+For Maven, use:
+
+{{{
+<dependency>
+    <groupId>com.mycila</groupId>
+    <artifactId>mycila-log</artifactId>
+    <version>X.Y</version>
+</dependency>
+}}}
+
 = Why using Mycila Log ? =
 
  * *Drop it, use it !*: No configuration needed, no specific implementations to add: it just works without anything but the library !
@@ -156,28 +174,10 @@ Loggers.use(new LoggerProvider() {
 });
 }}}
 
-*Caching*
+=== Caching ===
 
 By default, all loggers are cached in a `SoftHashMap`. You can cache your own `LoggerProvider` instance by doing:
 
 `Loggers.use(LoggerProviders.cache(myProvider))`
 
 The `LoggerProviders` class has a lot of methods to get all supported providers and decorate them.
-
-= Downloads =
-
-Versions can downloaded from Maven Repositories here:
-
-*Releases*: http://repo2.maven.org/maven2/com/mycila/mycila-log/
-
-*Snapshots*: http://mc-repo.googlecode.com/svn/maven2/snapshots/com/mycila/mycila-log/
-
-For Maven, use:
-
-{{{
-<dependency>
-    <groupId>com.mycila</groupId>
-    <artifactId>mycila-log</artifactId>
-    <version>X.Y</version>
-</dependency>
-}}}
