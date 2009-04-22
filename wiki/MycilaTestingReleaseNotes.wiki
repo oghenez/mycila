@@ -1,4 +1,3 @@
-#summary Release notes
 #labels Featured
 #sidebar PluginBar
 
