@@ -15,8 +15,7 @@
  */
 package com.mycila.log;
 
-import com.mycila.log.jdk.JDKLogger;
-import com.mycila.log.log4j.Log4jLogger;
+import static com.mycila.log.LoggerProviders.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -34,38 +33,61 @@ public final class Loggers {
     private Loggers() {
     }
 
+    /**
+     * Configure Mycila Logger to use JDK logging. This is the default behavior.
+     */
     public static void useJDK() {
-        use(new LoggerProvider() {
-            public Logger get(String name) {
-                return new JDKLogger(name);
-            }
-        });
+        use(cache(JDK));
     }
 
+    /**
+     * Configure Mycila Logger to use Log4J
+     */
     public static void useLog4j() {
-        use(new LoggerProvider() {
-            public Logger get(String name) {
-                return new Log4jLogger(name);
-            }
-        });
+        use(cache(LOG4J));
     }
 
+    /**
+     * Configure Mycila Logger to use no logger at all and thus won't log anything
+     */
+    public static void useNone() {
+        use(cache(NOP));
+    }
+
+    /**
+     * Read the system property 'mycila.log.provider' to get the name of a class to instanciate,
+     * which implementing {@link com.mycila.log.LoggerProvider}
+     */
     public static void useSystemProperty() {
-        try {
-            use((LoggerProvider) Thread.currentThread().getContextClassLoader().loadClass(System.getProperty("mycila.log.provider")).newInstance());
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        use(cache(fromSystemProperty()));
     }
 
-    public static void use(LoggerProvider loggerProvider) {
+    /**
+     * Specify a custom {@link com.mycila.log.LoggerProvider} that will returns {@link Logger instances}.
+     * {@link com.mycila.log.LoggerProvider} can be composed using {@link com.mycila.log.LoggerProviders}
+     *
+     * @param loggerProvider The logger provider
+     */
+    public static synchronized void use(LoggerProvider loggerProvider) {
         Loggers.loggerProvider = loggerProvider;
     }
 
+    /**
+     * Get the logger for specified class
+     *
+     * @param c The class
+     * @return A logger for this class
+     */
     public static Logger get(Class<?> c) {
         return get(c.getName());
     }
 
+    /**
+     * Get a named logger
+     *
+     * @param name The logger name
+     * @return A logger for this name
+     */
     public static Logger get(String name) {
         return loggerProvider.get(name);
     }
