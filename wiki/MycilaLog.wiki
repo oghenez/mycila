@@ -1,4 +1,5 @@
 #summary Mycila Logging Wrapper
+#labels Featured
 
 = Introduction =
 
