@@ -164,7 +164,7 @@ public final class MycilaTesting {
         if (mycilaPlugins == null) {
             mycilaPlugins = new MycilaPlugins() {
                 public Cache value() {
-                    return Cache.UNSHARED;
+                    return Cache.SHARED;
                 }
 
                 public String descriptor() {
@@ -188,7 +188,7 @@ public final class MycilaTesting {
     public static MycilaTesting from(MycilaPlugins mycilaPlugins) {
         notNull("MycilaPlugins annotation", mycilaPlugins);
         if (mycilaPlugins.value() == null) {
-            return newDefaultSetup();
+            return staticDefaultSetup();
         }
         boolean descBlank = mycilaPlugins.descriptor() == null || mycilaPlugins.descriptor().trim().length() == 0;
         switch (mycilaPlugins.value()) {
