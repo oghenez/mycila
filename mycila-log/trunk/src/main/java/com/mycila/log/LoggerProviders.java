@@ -73,10 +73,11 @@ public final class LoggerProviders {
      * @return The logger specified in the system property
      */
     public static LoggerProvider fromSystemProperty() {
+        String className = System.getProperty("mycila.log.provider");
         try {
-            return (LoggerProvider) Thread.currentThread().getContextClassLoader().loadClass(System.getProperty("mycila.log.provider")).newInstance();
+            return (LoggerProvider) Thread.currentThread().getContextClassLoader().loadClass(className).newInstance();
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
+            throw new RuntimeException("Error loading class '" + className + "' defined for system property 'mycila.log.provider': " + e.getMessage(), e);
         }
     }
 
