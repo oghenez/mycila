@@ -8,7 +8,7 @@
 
     <groupId>com.mycila</groupId>
     <artifactId>mycila-log</artifactId>
-    <version>1.2</version>
+    <version>1.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>mycila-log</name>
@@ -29,9 +29,9 @@
     -->
 
     <scm>
-        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-log/tags/mycila-log-1.2</connection>
-        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-log/tags/mycila-log-1.2</developerConnection>
-        <url>http://mycila.googlecode.com/svn/mycila-log/tags/mycila-log-1.2</url>
+        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-log/trunk</connection>
+        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-log/trunk</developerConnection>
+        <url>http://mycila.googlecode.com/svn/mycila-log/trunk</url>
     </scm>
 
     <!--
