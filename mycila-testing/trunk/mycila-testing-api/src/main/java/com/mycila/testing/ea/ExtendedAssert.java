@@ -106,7 +106,7 @@ public final class ExtendedAssert {
     }
 
     public static URL resource(String classPath) {
-        URL u = Thread.currentThread().getContextClassLoader().getResource(classPath);
+        URL u = Thread.currentThread().getContextClassLoader().getResource(classPath.startsWith("/") ? classPath.substring(1) : classPath);
         if (u == null) {
             throw new IllegalArgumentException("Resource not found in classpath: " + classPath);
         }
