@@ -55,7 +55,7 @@ public final class MycilaTest {
 
         Mycila.registerContext(context);
         assertEquals(Mycila.context(this), context);
-        Mycila.unsetContext(this);
+        Mycila.unsetContext(context);
 
         assertThrow(IllegalStateException.class).containingMessage("No Global Test Context available for test com.mycila.testing.core.MycilaTest#").whenRunning(new Code() {
             public void run() throws Throwable {

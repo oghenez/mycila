@@ -22,6 +22,8 @@ import com.mycila.testing.core.Mycila;
 import com.mycila.testing.core.MycilaTesting;
 import com.mycila.testing.core.api.TestExecution;
 import com.mycila.testing.core.api.TestNotifier;
+import com.mycila.testing.core.util.Closeable;
+import com.mycila.testing.core.util.ShutdownHook;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
@@ -45,6 +47,11 @@ public class MycilaJunitRunner extends BlockJUnit4ClassRunner {
     protected final Object createTest() throws Exception {
         Object test = super.createTest();
         testNotifier = MycilaTesting.from(test.getClass()).configure(test).createNotifier(test);
+        ShutdownHook.get().add(new Closeable() {
+            public void close() throws Exception {
+                testNotifier.shutdown();
+            }
+        });
         testNotifier.prepare();
         return test;
     }

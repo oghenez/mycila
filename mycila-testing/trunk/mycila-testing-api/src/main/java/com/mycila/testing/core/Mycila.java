@@ -37,6 +37,7 @@ public final class Mycila {
 
     private static final Logger LOGGER = Loggers.get(Mycila.class);
     private static final ThreadLocal<Execution> CURRENT_EXECUTION = new InheritableThreadLocal<Execution>();
+    //TODO: weak reference here
     private static final Map<Object, TestContext> CONTEXTS = new IdentityHashMap<Object, TestContext>(10000);
 
     private Mycila() {
@@ -64,15 +65,11 @@ public final class Mycila {
         CURRENT_EXECUTION.remove();
     }
 
-    static void unsetContext(Object testInstance) {
-        notNull("Test instance", testInstance);
-        if (LOGGER.canDebug()) {
-            TestContext context = CONTEXTS.get(testInstance);
-            if (context != null) {
-                LOGGER.debug("Removing Global Test Context for test {0}#{1,number,#}", context.introspector().testClass().getName(), context.introspector().instance().hashCode());
-            }
+    static void unsetContext(TestContext context) {
+        notNull("Test context", context);
+        if (CONTEXTS.remove(context.introspector().instance()) != null) {
+            LOGGER.debug("Removing Global Test Context for test {0}#{1,number,#}", context.introspector().testClass().getName(), context.introspector().instance().hashCode());
         }
-        CONTEXTS.remove(testInstance);
     }
 
     public static TestContext context(Object testInstance) {

@@ -15,6 +15,8 @@
  */
 package com.mycila.testing.ea;
 
+import com.mycila.testing.core.util.SoftHashMap;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;

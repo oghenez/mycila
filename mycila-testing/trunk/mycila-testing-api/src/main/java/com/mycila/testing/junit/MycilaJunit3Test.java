@@ -21,6 +21,8 @@ import com.mycila.testing.core.Mycila;
 import com.mycila.testing.core.MycilaTesting;
 import com.mycila.testing.core.api.TestExecution;
 import com.mycila.testing.core.api.TestNotifier;
+import com.mycila.testing.core.util.Closeable;
+import com.mycila.testing.core.util.ShutdownHook;
 import junit.framework.TestCase;
 
 import java.lang.reflect.Method;
@@ -44,6 +46,11 @@ public abstract class MycilaJunit3Test extends TestCase {
     @Override
     public final void runBare() throws Throwable {
         final TestNotifier testNotifier = MycilaTesting.from(getClass()).configure(this).createNotifier(this);
+        ShutdownHook.get().add(new Closeable() {
+            public void close() throws Exception {
+                testNotifier.shutdown();
+            }
+        });
         testNotifier.prepare();
         try {
             setUp();
