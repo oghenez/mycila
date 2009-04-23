@@ -37,7 +37,6 @@ public final class Mycila {
 
     private static final Logger LOGGER = Loggers.get(Mycila.class);
     private static final ThreadLocal<Execution> CURRENT_EXECUTION = new InheritableThreadLocal<Execution>();
-    //TODO: weak reference here
     private static final Map<Object, TestContext> CONTEXTS = new IdentityHashMap<Object, TestContext>(10000);
 
     private Mycila() {
