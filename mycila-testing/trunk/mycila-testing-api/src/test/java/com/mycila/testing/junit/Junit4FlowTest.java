@@ -22,6 +22,7 @@ import com.mycila.testing.core.annot.MycilaPlugins;
 import com.mycila.testing.core.api.Cache;
 import com.mycila.testing.core.api.TestContext;
 import com.mycila.testing.core.api.TestExecution;
+import com.mycila.testing.core.plugin.DefaultTestPlugin;
 import com.mycila.testing.core.plugin.TestPlugin;
 import com.mycila.testing.ea.Code;
 import static com.mycila.testing.ea.ExtendedAssert.*;
@@ -83,7 +84,7 @@ public final class Junit4FlowTest extends MycilaJunit4Test {
 
     @ConfigureMycilaPlugins
     void configure(PluginManager<TestPlugin> pluginManager) {
-        pluginManager.getCache().registerPlugin("myPlugin", new TestPlugin() {
+        pluginManager.getCache().registerPlugin("myPlugin", new DefaultTestPlugin() {
             public void prepareTestInstance(TestContext context) throws Exception {
                 flow.add("prepare");
                 assertEquals(flow.toString(), asList("prepare"), flow);
