@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.testing.ea;
+package com.mycila.testing.core.util;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class SoftHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
+public final class SoftHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
 
     private static final int DEFAULT_INITIAL_CAPACITY = 16;
     private static final int MAXIMUM_CAPACITY = 1 << 30;

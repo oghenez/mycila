@@ -51,6 +51,14 @@ final class TestContextImpl implements TestContext, TestNotifier {
         }
     }
 
+    private static final Method shutdownMethod;static {
+        try {
+            shutdownMethod = TestNotifier.class.getDeclaredMethod("shutdown");
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
     private static final Logger LOGGER = Loggers.get(TestContextImpl.class);
 
     private final Introspector introspector;
@@ -146,6 +154,24 @@ final class TestContextImpl implements TestContext, TestNotifier {
             }
         } finally {
             Mycila.unsetCurrentExecution();
+        }
+    }
+
+    public void shutdown() {
+        try {
+            ExecutionImpl execution = new ExecutionImpl(this, shutdownMethod);
+            Mycila.registerCurrentExecution(execution.changeStep(Step.SHUTDOWN));
+            LOGGER.debug("Calling 'shutdown' on plugins for test {0}#{1,number,#}...", introspector.testClass().getName(), introspector.instance().hashCode());
+            for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
+                try {
+                    binding.getPlugin().shutdown(this);
+                } catch (Exception e) {
+                    LOGGER.error(e, "An error occured while executing 'shutdown' on plugin {0}: {1}: {2}", binding.getName(), e.getClass().getSimpleName(), e.getMessage());
+                }
+            }
+        } finally {
+            Mycila.unsetCurrentExecution();
+            Mycila.unsetContext(this);
         }
     }
 

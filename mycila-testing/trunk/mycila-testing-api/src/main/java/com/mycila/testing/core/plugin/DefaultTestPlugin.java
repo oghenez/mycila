@@ -48,4 +48,7 @@ public class DefaultTestPlugin implements TestPlugin {
 
     public void afterClass(TestContext context) throws Exception {
     }
+
+    public void shutdown(TestContext context) throws Exception {
+    }
 }

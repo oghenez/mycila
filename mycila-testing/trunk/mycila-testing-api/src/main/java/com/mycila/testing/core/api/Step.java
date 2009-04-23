@@ -19,5 +19,5 @@ package com.mycila.testing.core.api;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public enum Step {
-    UNKNOWN, PREPARE, BEFORE, TEST, AFTER, COMPLETED
+    UNKNOWN, PREPARE, BEFORE, TEST, AFTER, COMPLETED, SHUTDOWN
 }

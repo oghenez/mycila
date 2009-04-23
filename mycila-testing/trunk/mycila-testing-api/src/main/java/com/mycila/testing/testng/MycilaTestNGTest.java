@@ -27,6 +27,7 @@ import org.testng.IHookCallBack;
 import org.testng.IHookable;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
 import org.testng.internal.MethodHelper;
 
@@ -76,4 +77,8 @@ public abstract class MycilaTestNGTest extends Assert implements IHookable {
         testNotifier.fireAfterClass();
     }
 
+    @AfterSuite(alwaysRun = true)
+    protected final void shutdown() {
+        testNotifier.shutdown();
+    }
 }

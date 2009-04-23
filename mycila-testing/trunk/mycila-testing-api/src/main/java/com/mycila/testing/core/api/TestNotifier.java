@@ -57,4 +57,8 @@ public interface TestNotifier {
      */
     void fireAfterClass() throws TestPluginException;
 
+    /**
+     * Ask the plugins to shutdown and cleanly close resources
+     */
+    void shutdown();
 }

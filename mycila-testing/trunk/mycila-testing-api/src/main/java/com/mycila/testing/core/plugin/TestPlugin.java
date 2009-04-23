@@ -64,4 +64,12 @@ public interface TestPlugin extends Plugin {
      * @throws Exception If anything wrong occurs in plugin execution. Exception will be catched by the testing API.
      */
     void afterClass(TestContext context) throws Exception;
+
+    /**
+     * This method will be called at JVM shutdown if the plugin needs to close some resources cleanly.
+     *
+     * @param context The context of this test
+     * @throws Exception If anything wrong occurs in plugin execution. Exception will be catched by the testing API.
+     */
+    void shutdown(TestContext context) throws Exception;
 }
