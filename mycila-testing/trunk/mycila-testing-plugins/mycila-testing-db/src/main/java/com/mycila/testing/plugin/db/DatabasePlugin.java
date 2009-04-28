@@ -22,8 +22,8 @@ public final class DatabasePlugin extends DefaultTestPlugin {
 
     @Override
     public void prepareTestInstance(TestContext context) throws Exception {
-        for (Field field : context.introspector().selectFields(and(fieldsAnnotatedBy(DriverDataSource.class), fieldsAccepting(DataSource.class)))) {
-            context.introspector().set(field, DriverDataSourceImpl.from(field.getAnnotation(DriverDataSource.class)));
+        for (Field field : context.introspector().selectFields(and(fieldsAnnotatedBy(InjectDataSource.class), fieldsAccepting(DataSource.class)))) {
+            context.introspector().set(field, DriverDataSourceImpl.from(field.getAnnotation(InjectDataSource.class)));
         }
     }
 
