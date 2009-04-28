@@ -74,11 +74,16 @@ final class DriverDataSourceImpl implements DataSource {
         return new DriverDataSourceImpl(url);
     }
 
-    static DriverDataSourceImpl from(DriverDataSource driverDataSource) {
+    static DriverDataSourceImpl from(InjectDataSource driverDataSource) {
+        try {
+            Class.forName(driverDataSource.driver().getName());
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
         DriverDataSourceImpl dataSource = new DriverDataSourceImpl(driverDataSource.url())
                 .withUsername(driverDataSource.username())
                 .withPassword(driverDataSource.password());
-        for (DriverProperty property : driverDataSource.properties()) {
+        for (Property property : driverDataSource.properties()) {
             dataSource.withProperty(property.name(), property.value());
         }
         return dataSource;

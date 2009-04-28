@@ -40,3 +40,41 @@ public final class DbUnitPlugin extends DefaultTestPlugin {
         super.afterClass(context);
     }
 }
+
+/*
+    rassembler DB + DbUnit
+
+    http://www.dbunit.org/faq.html#extract
+    singleton DbUnit.get() ThreadLocale
+    * toXmlDataSet(File out)
+    * String toXmlDataSet()
+    * toXmlDataSet(OutputStream out)
+    * toXmlDataSet(Writer out)
+
+    * idem pour createDtd
+
+    * idem pour
+
+    * getConnection
+
+    * operations: cleanInsert, cleanUpdate, ...
+    * ...
+
+    @InjectDriver(...)
+    DbUnit dbUnit
+
+    @InjectDriver(...)
+    DataSource ds
+
+    @InjectDriver(...)
+    Connection con
+
+    @Test
+    @Transactional(readonly=false, isolation=default, rollbackOn={Throwable.class}, alwaysRollback=true)
+
+
+    ConnectionHolder.currentConnection();
+
+
+    ThreadLocale pour Mycila.currentExecution()
+ */
