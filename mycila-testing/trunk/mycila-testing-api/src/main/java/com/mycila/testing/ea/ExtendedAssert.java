@@ -33,7 +33,6 @@ public final class ExtendedAssert {
 
     private static final String DEFAULT_ENCODING = System.getProperty("file.encoding");
     private static final SoftHashMap<URL, byte[]> cache = new SoftHashMap<URL, byte[]>();
-    private static final byte[] NULL = new byte[0];
 
     private ExtendedAssert() {
     }
@@ -179,7 +178,7 @@ public final class ExtendedAssert {
                 throw new RuntimeException(e.getMessage(), e);
             }
         }
-        return data == NULL ? null : data;
+        return data;
     }
 
     public static AssertException assertThrow(final Class<? extends Throwable> exceptionClass) {
