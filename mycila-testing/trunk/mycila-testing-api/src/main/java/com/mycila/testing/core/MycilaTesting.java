@@ -18,6 +18,10 @@ package com.mycila.testing.core;
 
 import com.mycila.log.Logger;
 import com.mycila.log.Loggers;
+import com.mycila.log.jdk.format.ClassFormatter;
+import com.mycila.log.jdk.handler.StderrHandler;
+import com.mycila.log.jdk.handler.StdoutHandler;
+import com.mycila.log.jdk.hook.AsyncInvocationHandler;
 import com.mycila.plugin.spi.PluginManager;
 import com.mycila.testing.core.annot.ConfigureMycilaPlugins;
 import com.mycila.testing.core.annot.MycilaPlugins;
@@ -35,6 +39,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.StreamHandler;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -68,6 +74,39 @@ public final class MycilaTesting {
     public TestNotifier createNotifier(Object testInstance) {
         notNull("Test instance", testInstance);
         return new TestContextImpl(pluginManager, testInstance);
+    }
+
+    /**
+     * Configure the Plugin manager of this MycilaTesting from the given class. It will search for all methods
+     * annotated by {@link com.mycila.testing.core.annot.ConfigureMycilaPlugins}s and call those having the
+     * {@link com.mycila.plugin.spi.PluginManager} as a parameter:
+     * {@code @ConfigureMycilaPlugins void configure(PluginManager<TestPlugin> pluginManager) {...} }
+     *
+     * @param testInstance The object having configure methods
+     * @return this
+     */
+    public MycilaTesting configure(Object testInstance) {
+        notNull("Test instance", testInstance);
+        final Introspector introspector = new Introspector(testInstance);
+        final List<Method> methods = introspector.selectMethods(excludeOverridenMethods(and(methodsAnnotatedBy(ConfigureMycilaPlugins.class), new Filter<Method>() {
+            @Override
+            protected boolean accept(Method method) {
+                final Class<?>[] types = method.getParameterTypes();
+                return types.length == 1 && types[0].equals(PluginManager.class);
+            }
+        })));
+        final PluginManager<TestPlugin> pluginManager = pluginManager();
+        for (Method method : methods) {
+            LOGGER.debug("Configuring plugin manager through method {0}.{1}...", method.getDeclaringClass().getName(), method.getName());
+            try {
+                method.invoke(testInstance, pluginManager);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e.getMessage(), e);
+            } catch (InvocationTargetException e) {
+                throw new RuntimeException(e.getTargetException().getMessage(), e.getTargetException());
+            }
+        }
+        return this;
     }
 
     /**
@@ -200,36 +239,22 @@ public final class MycilaTesting {
         throw new AssertionError("Use case not defined for value of enum Cache: " + mycilaPlugins.value());
     }
 
-    /**
-     * Configure the Plugin manager of this MycilaTesting from the given class. It will search for all methods
-     * annotated by {@link com.mycila.testing.core.annot.ConfigureMycilaPlugins}s and call those having the
-     * {@link com.mycila.plugin.spi.PluginManager} as a parameter:
-     * {@code @ConfigureMycilaPlugins void configure(PluginManager<TestPlugin> pluginManager) {...} }
-     *
-     * @param testInstance The object having configure methods
-     * @return this
-     */
-    public MycilaTesting configure(Object testInstance) {
-        notNull("Test instance", testInstance);
-        final Introspector introspector = new Introspector(testInstance);
-        final List<Method> methods = introspector.selectMethods(excludeOverridenMethods(and(methodsAnnotatedBy(ConfigureMycilaPlugins.class), new Filter<Method>() {
-            @Override
-            protected boolean accept(Method method) {
-                final Class<?>[] types = method.getParameterTypes();
-                return types.length == 1 && types[0].equals(PluginManager.class);
-            }
-        })));
-        final PluginManager<TestPlugin> pluginManager = pluginManager();
-        for (Method method : methods) {
-            LOGGER.debug("Configuring plugin manager through method {0}.{1}...", method.getDeclaringClass().getName(), method.getName());
-            try {
-                method.invoke(testInstance, pluginManager);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e.getMessage(), e);
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException(e.getTargetException().getMessage(), e.getTargetException());
-            }
-        }
-        return this;
+    public static void debug() {
+        StdoutHandler stdoutHandler = new StdoutHandler();
+        stdoutHandler.setLevel(Level.ALL);
+        stdoutHandler.setMaxLevel(Level.INFO);
+        stdoutHandler.setFormatter(new ClassFormatter());
+        stdoutHandler.setHook(new AsyncInvocationHandler<StreamHandler>());
+
+        StderrHandler stderrHandler = new StderrHandler();
+        stderrHandler.setLevel(Level.WARNING);
+        stderrHandler.setMaxLevel(Level.SEVERE);
+        stderrHandler.setFormatter(new ClassFormatter());
+        stderrHandler.setHook(new AsyncInvocationHandler<StreamHandler>());
+
+        java.util.logging.Logger logger = java.util.logging.Logger.getLogger("com.mycila");
+        logger.setLevel(Level.ALL);
+        logger.addHandler(stdoutHandler);
+        logger.addHandler(stderrHandler);
     }
 }
