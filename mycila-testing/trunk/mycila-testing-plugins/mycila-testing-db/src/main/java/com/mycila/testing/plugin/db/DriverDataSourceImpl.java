@@ -1,5 +1,9 @@
 package com.mycila.testing.plugin.db;
 
+import com.mycila.testing.plugin.db.api.DbDataSource;
+import com.mycila.testing.plugin.db.api.DbProp;
+import com.mycila.testing.plugin.db.api.Isolation;
+
 import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -16,23 +20,29 @@ final class DriverDataSourceImpl implements DataSource {
     private String username;
     private String password;
     private Properties connectionProperties = new Properties();
+    private Isolation defaultIsolation = Isolation.DEFAULT;
 
     private DriverDataSourceImpl(String url) {
         this.url = url;
     }
 
-    public DriverDataSourceImpl withUsername(String username) {
+    private DriverDataSourceImpl withUsername(String username) {
         this.username = username;
         return this;
     }
 
-    public DriverDataSourceImpl withPassword(String password) {
+    private DriverDataSourceImpl withPassword(String password) {
         this.password = password;
         return this;
     }
 
-    public DriverDataSourceImpl withProperty(String property, Object value) {
+    private DriverDataSourceImpl withProperty(String property, Object value) {
         connectionProperties.put(property, value);
+        return this;
+    }
+
+    private DriverDataSourceImpl withDefaultIsolation(Isolation isolation) {
+        this.defaultIsolation = isolation;
         return this;
     }
 
@@ -51,7 +61,11 @@ final class DriverDataSourceImpl implements DataSource {
         if (password != null) {
             connectionProperties.setProperty("password", password);
         }
-        return DriverManager.getConnection(url, connectionProperties);
+        Connection connection = DriverManager.getConnection(url, connectionProperties);
+        if (defaultIsolation != Isolation.DEFAULT && connection.getTransactionIsolation() != defaultIsolation.value()) {
+            connection.setTransactionIsolation(defaultIsolation.value());
+        }
+        return connection;
     }
 
     public PrintWriter getLogWriter() throws SQLException {
@@ -70,11 +84,7 @@ final class DriverDataSourceImpl implements DataSource {
         return 0;
     }
 
-    static DriverDataSourceImpl from(String url) {
-        return new DriverDataSourceImpl(url);
-    }
-
-    static DriverDataSourceImpl from(InjectDataSource driverDataSource) {
+    static DriverDataSourceImpl from(DbDataSource driverDataSource) {
         try {
             Class.forName(driverDataSource.driver().getName());
         } catch (ClassNotFoundException e) {
@@ -82,10 +92,12 @@ final class DriverDataSourceImpl implements DataSource {
         }
         DriverDataSourceImpl dataSource = new DriverDataSourceImpl(driverDataSource.url())
                 .withUsername(driverDataSource.username())
-                .withPassword(driverDataSource.password());
-        for (Property property : driverDataSource.properties()) {
+                .withPassword(driverDataSource.password())
+                .withDefaultIsolation(driverDataSource.defaultIsolation());
+        for (DbProp property : driverDataSource.properties()) {
             dataSource.withProperty(property.name(), property.value());
         }
         return dataSource;
     }
+
 }
