@@ -1,4 +1,4 @@
-package com.mycila.testing.plugin.db;
+package com.mycila.testing.plugin.db.api;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -11,8 +11,11 @@ import java.lang.annotation.Target;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target(ElementType.FIELD)
 @Inherited
 @Documented
-public @interface InjectConnection {
+public @interface DbProp {
+    public abstract String name();
+
+    public abstract String value();
 }

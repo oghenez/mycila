@@ -1,8 +1,12 @@
-package com.mycila.testing.plugin.db;
+package com.mycila.testing.plugin.db.api;
 
 import java.sql.Connection;
 
-
+/**
+ * Enumeration that represents transaction isolation levels
+ * for use with the JDK 1.5+ transaction annotation, corresponding
+ * to the TransactionDefinition interface.
+ */
 public enum Isolation {
 
     /**
@@ -60,8 +64,12 @@ public enum Isolation {
 
     private final int value;
 
-	Isolation(int value) { this.value = value; }
+    Isolation(int value) {
+        this.value = value;
+    }
 
-	public int value() { return value; }
+    public int value() {
+        return value;
+    }
 
 }
