@@ -222,19 +222,6 @@ final class StatementImpl implements Statement {
         }
     }
 
-    public Db pushAndCommit() {
-        try {
-            preparedStatement.execute();
-            db.getConnection().commit();
-            return db;
-        } catch (SQLException e) {
-            rollback();
-            throw new RuntimeException(e.getMessage(), e);
-        } finally {
-            JdbcUtils.closeStatement(preparedStatement);
-        }
-    }
-
     public SqlResults query() {
         try {
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -249,6 +236,7 @@ final class StatementImpl implements Statement {
 
     public Db commit() {
         try {
+            preparedStatement.execute();
             db.getConnection().commit();
             return db;
         } catch (SQLException e) {

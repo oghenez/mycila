@@ -21,14 +21,14 @@ final class SqlColumnHeaderImpl implements SqlColumnHeader {
         try {
             final int col = index + 1;
             this.index = index;
-            this.name = JdbcUtils.lookupColumnName(resultSetMetaData, col);
+            this.name = JdbcUtils.lookupColumnName(resultSetMetaData, col).toUpperCase();
             this.sqlType = SqlType.fromSqlType(resultSetMetaData.getColumnType(col));
             this.typeName = resultSetMetaData.getColumnTypeName(col);
             int size = resultSetMetaData.getColumnDisplaySize(col);
             if (size == Integer.MAX_VALUE) {
                 size = 20;
-            } else if (size < 5) {
-                size = 5;
+            } else if (size < 4) {
+                size = 4;
             }
             if (name.length() > size) {
                 size = name.length();

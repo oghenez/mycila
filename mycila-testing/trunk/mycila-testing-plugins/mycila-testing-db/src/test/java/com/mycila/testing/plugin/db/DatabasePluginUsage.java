@@ -20,10 +20,10 @@ public final class DatabasePluginUsage extends MycilaTestNGTest {
         MycilaTesting.debug();
     }
 
-    @DbDataSource(driver = Driver.class, url = "jdbc:h2:tcp://localhost/./target/db")
+    @DbDataSource(driver = Driver.class, url = "jdbc:h2:file:./target/db")
     DataSource dataSource;
 
-    @DbDataSource(driver = Driver.class, url = "jdbc:h2:tcp://localhost/./target/db")
+    @DbDataSource(driver = Driver.class, url = "jdbc:h2:file:./target/db")
     Db db;
 
     @BeforeClass
@@ -35,8 +35,8 @@ public final class DatabasePluginUsage extends MycilaTestNGTest {
     @Test
     public void test_insert() throws Exception {
         db
-                .prepare("INSERT INTO PERSON VALUES('1', 'math', 'M')").pushAndCommit()
-                .prepare("INSERT INTO PERSON VALUES('2', 'cassie', 'F')").pushAndCommit();
+                .prepare("INSERT INTO PERSON VALUES('1', 'math', 'M')").commit()
+                .prepare("INSERT INTO PERSON VALUES('2', 'cassie', 'F')").commit();
         System.out.println(db.prepare("select * from person;").query());
     }
 
@@ -44,8 +44,7 @@ public final class DatabasePluginUsage extends MycilaTestNGTest {
     public void test_complex_requests() throws Exception {
         db.prepare("INSERT INTO PERSON VALUES(?, ?, ?)")
                 .setInt(1, 10).setString(2, "complex1").setString(3, "F").push()
-                .setInt(1, 11).setString(2, "complex2").setString(3, "M").push()
-                .commit()
+                .setInt(1, 11).setString(2, "complex2").setString(3, "M").commit()
                 .prepare("INSERT INTO PERSON VALUES(?, ?, ?)")
                 .setInt(1, 13).setString(2, "complex3").setString(3, "F").push()
                 .rollback();

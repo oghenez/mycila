@@ -1,5 +1,6 @@
 package com.mycila.testing.plugin.db;
 
+import static com.mycila.testing.core.api.Ensure.*;
 import com.mycila.testing.plugin.db.api.SqlColumn;
 import com.mycila.testing.plugin.db.api.SqlColumnHeader;
 import com.mycila.testing.plugin.db.api.SqlData;
@@ -92,7 +93,8 @@ final class SqlResultsImpl implements SqlResults {
     }
 
     public SqlColumn column(String name) {
-        SqlColumn column = sqlColumnsByName.get(name);
+        notNull("Column name", name);
+        SqlColumn column = sqlColumnsByName.get(name.toUpperCase());
         if (column == null) {
             throw new IllegalArgumentException("Inexisting column name: " + name);
         }
