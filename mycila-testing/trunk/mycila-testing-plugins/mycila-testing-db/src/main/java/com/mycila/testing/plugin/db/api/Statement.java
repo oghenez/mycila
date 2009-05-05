@@ -64,8 +64,6 @@ public interface Statement {
      */
     Statement push();
 
-    Db pushAndCommit();
-
     /**
      * Run the query and commit the statement
      *

@@ -22,13 +22,13 @@ public final class SqlResultsTest extends MycilaTestNGTest {
         MycilaTesting.debug();
     }
 
-    @DbDataSource(driver = Driver.class, url = "jdbc:h2:tcp://localhost/./target/db")
+    @DbDataSource(driver = Driver.class, url = "jdbc:h2:file:./target/db")
     Db db;
 
-    @DbDataSource(driver = Driver.class, url = "jdbc:h2:tcp://localhost/./target/types2")
+    @DbDataSource(driver = Driver.class, url = "jdbc:h2:file:./target/types2")
     Db db2;
 
-    @DbDataSource(driver = Driver.class, url = "jdbc:h2:tcp://localhost/./target/types3")
+    @DbDataSource(driver = Driver.class, url = "jdbc:h2:file:./target/types3")
     Db db3;
 
     @BeforeClass
@@ -39,7 +39,7 @@ public final class SqlResultsTest extends MycilaTestNGTest {
         db2.runScript("/types.sql").runScript("/types-insert.sql");
         SqlResults results2 = db2.prepare("SELECT * FROM TESTTYPES").query();
         System.out.println(results2);
-        System.out.println(results2.column("C21"));
+        System.out.println(results2.column("column21"));
 
         db3.runScript("/types.sql");
         System.out.println(db3.prepare("SELECT * FROM TESTTYPES").query());
@@ -47,11 +47,11 @@ public final class SqlResultsTest extends MycilaTestNGTest {
 
     @Test
     public void test_insert_complex() throws Exception {
-        db3.prepare("INSERT INTO TESTTYPES(c13) VALUES(?)").setBytes(1, "hello".getBytes()).pushAndCommit();                    // byte arrays
-        db3.prepare("INSERT INTO TESTTYPES(c14) VALUES(?)").setObject(1, UUID.randomUUID()).pushAndCommit();                    // java object seralized
-        db3.prepare("INSERT INTO TESTTYPES(c18) VALUES(?)").setBlob(1, new SerialBlob("hello".getBytes())).pushAndCommit();     // blob
-        db3.prepare("INSERT INTO TESTTYPES(c19) VALUES(?)").setClob(1, new SerialClob("hello".toCharArray())).pushAndCommit();  // clob
-        db3.prepare("INSERT INTO TESTTYPES(c21) VALUES(?)").setObjects(1, new Object[]{1, "h", 'R'}).pushAndCommit();          // array
+        db3.prepare("INSERT INTO TESTTYPES(c13) VALUES(?)").setBytes(1, "hello".getBytes()).commit();                    // byte arrays
+        db3.prepare("INSERT INTO TESTTYPES(c14) VALUES(?)").setObject(1, UUID.randomUUID()).commit();                    // java object seralized
+        db3.prepare("INSERT INTO TESTTYPES(c18) VALUES(?)").setBlob(1, new SerialBlob("hello".getBytes())).commit();     // blob
+        db3.prepare("INSERT INTO TESTTYPES(c19) VALUES(?)").setClob(1, new SerialClob("hello".toCharArray())).commit();  // clob
+        db3.prepare("INSERT INTO TESTTYPES(column21) VALUES(?)").setObjects(1, new Object[]{1, "h", 'R'}).commit();           // array
         System.out.println(db3.prepare("SELECT * FROM TESTTYPES").query());
     }
 

@@ -21,5 +21,5 @@ c17 CHAR,
 c18 BLOB,
 c19 CLOB,
 c20 UUID,
-c21 ARRAY,
+column21 ARRAY,
 );
