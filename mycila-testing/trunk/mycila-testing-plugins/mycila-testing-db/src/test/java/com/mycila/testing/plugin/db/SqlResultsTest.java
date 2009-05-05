@@ -55,9 +55,13 @@ public final class SqlResultsTest extends MycilaTestNGTest {
         System.out.println(db3.prepare("SELECT * FROM TESTTYPES").query());
     }
 
-    @Test
-    public void test_conversion() throws Exception {
-
+    //@Test
+    public void test_select() throws Exception {
+        SqlResults results2 = db2.prepare("SELECT * FROM TESTTYPES").query();
+        System.out.println("All results:\n" + results2);
+        System.out.println("columns: " + results2.columnCount());
+        System.out.println("rows: " + results2.columnCount());
+        System.out.println("9th element of row 5: " + results2.row(4).column(8));
+        System.out.println("name of column 4: " + results2.columnHeader(3).name());
     }
-
 }
