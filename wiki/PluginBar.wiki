@@ -6,6 +6,8 @@
 
 *[ModuleList Maven dependencies]*
 
+*[Contribute Contribute]*
+
 *Manual*
  * [TestingAPI API]
  * [MycilaJunit Junit integration]
@@ -17,7 +19,6 @@
 *Plugins*
  * [PluginTesting Testing Plugin]
  * [PluginDB Database Plugin]
- * [PluginDbUnit DbUnit Plugin]
  * [PluginJMock2 JMock Plugin]
  * [PluginEasyMock2 EasyMock Plugin]
  * [PluginMockito Mockito Plugin]
@@ -25,3 +26,13 @@
  * [PluginGuice2 Google Guice 2 Plugin]
  * [PluginSpring Spring Framework Plugin]
  * [PluginAtUnit AtUnit]
+
+*Todos*
+ * [PluginDbUnit DbUnit Plugin]
+ * [PluginH2 Hypersonic 2 Plugin]
+ * [PluginJMS JMS Plugin]
+ * [PluginJGroups JGroups Plugin]
+ * [PluginSelenium Selenium Plugin]
+ * [PluginJMX JMX Plugin]
+ * [PluginRest Rest Plugin]
+ * [PluginWS Web Service Plugin]
