@@ -99,6 +99,21 @@ final class DriverDataSourceImpl implements DataSource {
         return 0;
     }
 
+    //---------------------------------------------------------------------
+    // Implementation of JDBC 4.0's Wrapper interface
+    //---------------------------------------------------------------------
+
+    public Object unwrap(Class iface) throws SQLException {
+        if (!DataSource.class.equals(iface)) {
+            throw new SQLException("DataSource of type [" + getClass().getName() + "] can only be unwrapped as [javax.sql.DataSource], not as [" + iface.getName());
+        }
+        return this;
+    }
+
+    public boolean isWrapperFor(Class iface) throws SQLException {
+        return DataSource.class.equals(iface);
+    }
+
     static DriverDataSourceImpl from(DbDataSource driverDataSource) {
         try {
             Class.forName(driverDataSource.driver().getName());
