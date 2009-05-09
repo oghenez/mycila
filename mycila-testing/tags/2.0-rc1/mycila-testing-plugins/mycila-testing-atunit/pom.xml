@@ -1,0 +1,139 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+         POM settings
+     -->
+
+    <parent>
+        <groupId>com.mycila.testing.plugins</groupId>
+        <artifactId>mycila-testing-plugins</artifactId>
+        <version>2.0-rc1</version>
+    </parent>
+
+    <artifactId>mycila-testing-atunit</artifactId>
+    <packaging>jar</packaging>
+
+    <name>mycila-testing-atunit</name>
+    <description>Spring plugin</description>
+    <url>http://old.mycila.com/p/mycila/mycila-testing/plugins/mycila-testing-atunit/</url>
+
+    <!--
+        Distributions
+    -->
+
+    <distributionManagement>
+        <site>
+            <id>website</id>
+            <name>website</name>
+            <url>file://${basedir}/../../target/dist/site/mycila-testing/plugins/mycila-testing-atunit/</url>
+        </site>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-repository-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>bundle-create</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>bundle-create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!--
+         LIBS
+    -->
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.atunit</groupId>
+            <artifactId>atunit</artifactId>
+            <version>1.0.1</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/atunit-1.0.1.jar</systemPath>
+            <optional>true</optional>
+        </dependency>
+        <!-- custom containers -->
+        <dependency>
+            <groupId>com.google.code.guice</groupId>
+            <artifactId>guice</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>2.5.6</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>2.5.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>2.5.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>2.5.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock</artifactId>
+            <version>2.5.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock-legacy</artifactId>
+            <version>2.5.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis</artifactId>
+            <version>1.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymockclassextension</artifactId>
+            <version>2.4</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>
