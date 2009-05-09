@@ -27,7 +27,7 @@
  * [PluginSpring Spring Framework Plugin]
  * [PluginAtUnit AtUnit]
 
-*Todos*
+*TODOs*
  * [PluginDbUnit DbUnit Plugin]
  * [PluginH2 Hypersonic 2 Plugin]
  * [PluginJMS JMS Plugin]
