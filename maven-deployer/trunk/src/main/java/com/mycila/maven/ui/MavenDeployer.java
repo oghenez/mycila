@@ -120,6 +120,7 @@ public final class MavenDeployer {
             p.load(url.openStream());
             version = " " + p.getProperty("version");
         } catch (Exception ignored) {
+            version = " x.y";
         }
         JFrame frame = new JFrame("Maven Deployer" + version + " - By Mathieu Carbou (http://blog.mycila.com)");
         frame.setContentPane(gui.formPanel);
