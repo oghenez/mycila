@@ -22,7 +22,6 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
 
@@ -120,7 +119,7 @@ public final class MavenDeployer {
             Properties p = new Properties();
             p.load(url.openStream());
             version = " " + p.getProperty("version");
-        } catch (IOException ignored) {
+        } catch (Exception ignored) {
         }
         JFrame frame = new JFrame("Maven Deployer" + version + " - By Mathieu Carbou (http://blog.mycila.com)");
         frame.setContentPane(gui.formPanel);
