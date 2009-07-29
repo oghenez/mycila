@@ -32,11 +32,13 @@ import java.util.List;
 final class Deployer extends SwingWorker<Void, Void> {
 
     final MavenDeployerGui gui;
+    final File pom;
     Process deploy;
     Thread reader;
 
-    Deployer(MavenDeployerGui gui) {
+    Deployer(MavenDeployerGui gui, File pom) {
         this.gui = gui;
+        this.pom = pom;
     }
 
     protected Void doInBackground() throws Exception {
@@ -89,29 +91,34 @@ final class Deployer extends SwingWorker<Void, Void> {
 
     List<String> buildCommands() throws MalformedURLException, URISyntaxException {
         java.util.List<String> cmd = new ArrayList<String>();
-        cmd.add(findMavenExecutable());
+        cmd.add(gui.mavenBin.getText());
         cmd.add("deploy:deploy-file");
         cmd.add("-DuniqueVersion=false");
 
+        if(gui.cbDeployPOM.isSelected()) {
+            cmd.add("-DpomFile=" + pom.getAbsolutePath());
+        } else {
+            // required
+            cmd.add("-DgroupId=" + gui.groupId.getText());
+            cmd.add("-DartifactId=" + gui.artifactId.getText());
+            cmd.add("-Dversion=" + gui.version.getText());
+            cmd.add("-Dpackaging=" + gui.packaging.getSelectedItem());
+
+            // optional classifier
+            String classifier = (String) gui.classifier.getSelectedItem();
+            if (classifier != null && classifier.trim().length() > 0) {
+                cmd.add("-Dclassifier=" + classifier);
+            }
+
+            // optional description
+            String desc = gui.description.getText();
+            if (desc != null && desc.trim().length() > 0) {
+                cmd.add("-Ddescription=" + desc);
+            }
+        }
         // required
-        cmd.add("-DgroupId=" + gui.groupId.getText());
-        cmd.add("-DartifactId=" + gui.artifactId.getText());
-        cmd.add("-Dversion=" + gui.version.getText());
-        cmd.add("-Dpackaging=" + gui.packaging.getSelectedItem());
         cmd.add("-Dfile=" + gui.artifactFile.getText());
         cmd.add("-Durl=" + toUrl(gui.repositoryURL.getText()));
-
-        // optional classifier
-        String classifier = (String) gui.classifier.getSelectedItem();
-        if (classifier != null && classifier.trim().length() > 0) {
-            cmd.add("-Dclassifier=" + classifier);
-        }
-
-        // optional description
-        String desc = gui.description.getText();
-        if (desc != null && desc.trim().length() > 0) {
-            cmd.add("-Ddescription=" + desc);
-        }
 
         // optional repo ID
         String repoId = gui.repositoryID.getText();
@@ -120,20 +127,6 @@ final class Deployer extends SwingWorker<Void, Void> {
         }
 
         return cmd;
-    }
-
-    private String findMavenExecutable() {
-        String script = "mvn";
-        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
-            script += ".bat";
-        }
-        for (String path : System.getenv("PATH").split(File.pathSeparator)) {
-            File file = new File(path, script);
-            if (file.exists() && file.isFile() && file.canRead()) {
-                return file.getAbsolutePath();
-            }
-        }
-        throw new IllegalStateException(String.format("Unable to find Maven executable '%s' in PATH: %s", script, System.getenv("PATH")));
     }
 
     String toUrl(String path) throws MalformedURLException, URISyntaxException {
