@@ -19,6 +19,7 @@
     <id>dist</id>
     <formats>
         <format>zip</format>
+        <format>tar.gz</format>
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
     <fileSets>
@@ -32,6 +33,7 @@
         <fileSet>
             <directory>src/main/script</directory>
             <outputDirectory>maven-deployer</outputDirectory>
+            <fileMode>0755</fileMode>
         </fileSet>
     </fileSets>
 </assembly>
