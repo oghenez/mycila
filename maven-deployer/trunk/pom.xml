@@ -8,7 +8,7 @@
 
     <groupId>com.mycila.maven</groupId>
     <artifactId>maven-deployer</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.3</version>
     <packaging>jar</packaging>
 
     <name>maven-deployer</name>
@@ -29,9 +29,9 @@
     -->
 
     <scm>
-        <connection>scm:svn:http://mycila.googlecode.com/svn/maven-deployer/trunk</connection>
-        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/maven-deployer/trunk</developerConnection>
-        <url>http://mycila.googlecode.com/svn/maven-deployer/trunk</url>
+        <connection>scm:svn:http://mycila.googlecode.com/svn/maven-deployer/tags/maven-deployer-1.3</connection>
+        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/maven-deployer/tags/maven-deployer-1.3</developerConnection>
+        <url>http://mycila.googlecode.com/svn/maven-deployer/tags/maven-deployer-1.3</url>
     </scm>
 
     <!--
@@ -183,17 +183,15 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <configuration>
                     <tasks>
-                        <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"/>
+                        <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" />
                         <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
-                            <zipfileset src="${project.build.directory}/dependency/xmltool-1.4.jar"/>
-                            <zipfileset src="${project.build.directory}/dependency/swing-worker-1.1.jar"/>
-                            <rule pattern="com.google.**" result="com.mycila.maven.ui.internal.com.google.@1"/>
-                            <rule pattern="org.jdesktop.**" result="com.mycila.maven.ui.internal.org.jdesktop.@1"/>
-                            <keep pattern="com.mycila.**"/>
+                            <zipfileset src="${project.build.directory}/dependency/xmltool-1.4.jar" />
+                            <zipfileset src="${project.build.directory}/dependency/swing-worker-1.1.jar" />
+                            <rule pattern="com.google.**" result="com.mycila.maven.ui.internal.com.google.@1" />
+                            <rule pattern="org.jdesktop.**" result="com.mycila.maven.ui.internal.org.jdesktop.@1" />
+                            <keep pattern="com.mycila.**" />
                         </jarjar>
-                        <signjar jar="${project.build.directory}/${project.build.finalName}.jar"
-                                 alias="maven-deployer" storepass="password"
-                                 keystore="${basedir}/src/main/etc/keystore"/>
+                        <signjar jar="${project.build.directory}/${project.build.finalName}.jar" alias="maven-deployer" storepass="password" keystore="${basedir}/src/main/etc/keystore" />
                     </tasks>
                 </configuration>
                 <executions>
