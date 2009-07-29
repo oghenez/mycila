@@ -3,4 +3,4 @@
 
 === Maven Deployer UI: [http://mycila.googlecode.com/files/maven-deployer-dist.zip Download] - [http://repo.mycila.com/pub/maven-deployer/maven-deployer.jnlp Java Web Start] ===
 
-[http://mycila.googlecode.com/files/maven-deployer.png]
+[http://mycila.googlecode.com/files/MavenDeployer.png]
