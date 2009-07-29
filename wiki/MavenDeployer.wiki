@@ -1,5 +1,8 @@
-#summary Maven Deployer GUI
 #labels Featured
+== 2009-07-29: Version 1.3 released ! ==
+
+ * Added support to upload pom files with an artifact
+ * Added ability to change Maven binary used
 
 === Maven Deployer UI: [http://mycila.googlecode.com/files/maven-deployer-dist.zip Download] - [http://repo.mycila.com/pub/maven-deployer/maven-deployer.jnlp Java Web Start] ===
 
