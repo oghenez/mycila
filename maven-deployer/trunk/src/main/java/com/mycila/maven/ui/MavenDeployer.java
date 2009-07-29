@@ -30,6 +30,7 @@ public final class MavenDeployer {
 
     private static File currentDir = new File(".");
     private static Deployer deployer;
+    private static File pom;
 
     public static void main(String[] args) {
         final MavenDeployerGui gui = new MavenDeployerGui();
@@ -38,6 +39,9 @@ public final class MavenDeployer {
         final Chooser pomChooser = new Chooser(gui.formPanel, JFileChooser.FILES_ONLY, new POMFilter());
 
         gui.cancel.setEnabled(false);
+        gui.cbDeployPOM.setVisible(false);
+        gui.cbDeployPOM.setEnabled(false);
+        gui.mavenBin.setText(findMavenExecutable());
 
         gui.repositoryBrowser.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -61,7 +65,7 @@ public final class MavenDeployer {
 
         gui.deploy.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                deployer = new Deployer(gui);
+                deployer = new Deployer(gui, pom);
                 deployer.execute();
             }
         });
@@ -81,53 +85,28 @@ public final class MavenDeployer {
             }
         });
 
+        gui.cbDeployPOM.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                boolean enable = !gui.cbDeployPOM.isSelected();
+                gui.groupId.setEnabled(enable);
+                gui.artifactId.setEnabled(enable);
+                gui.classifier.setEnabled(enable);
+                gui.version.setEnabled(enable);
+                gui.packaging.setEnabled(enable);
+                gui.description.setEnabled(enable);
+                readPOM(gui);
+            }
+        });
+
         gui.loadPOM.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                File pom = pomChooser.chooseFrom(currentDir);
+                pom = pomChooser.chooseFrom(currentDir);
                 if (pom != null) {
                     currentDir = pomChooser.currentFolder;
-                    try {
-                        XMLDocument doc = XMLDoc.from(pom).gotoRoot();
-                        String ns = doc.getPefix("http://maven.apache.org/POM/4.0.0");
-                        if (ns.length() > 0) ns += ":";
-                        if (doc.hasTag("%1$sgroupId", ns)) {
-                            gui.groupId.setText(doc.getText("%1$sgroupId", ns));
-                        } else {
-                            gui.groupId.setText("");
-                        }
-                        if (doc.hasTag("%1$sartifactId", ns)) {
-                            gui.artifactId.setText(doc.getText("%1$sartifactId", ns));
-                        } else {
-                            gui.artifactId.setText("");
-                        }
-                        if (doc.hasTag("%1$sversion", ns)) {
-                            gui.version.setText(doc.getText("%1$sversion", ns));
-                        } else {
-                            gui.version.setText("");
-                        }
-                        if (doc.hasTag("%1$spackaging", ns)) {
-                            gui.packaging.setSelectedItem(doc.getText("%1$spackaging", ns));
-                        } else {
-                            gui.packaging.setSelectedItem("jar");
-                        }
-                        if (doc.hasTag("%1$sdescription", ns)) {
-                            gui.description.setText(doc.getText("%1$sdescription", ns));
-                        } else {
-                            gui.description.setText("");
-                        }
-                        if (doc.hasTag("%1$sdistributionManagement/%1$srepository/%1$surl", ns)) {
-                            gui.repositoryURL.setText(doc.getText("%1$sdistributionManagement/%1$srepository/%1$surl", ns));
-                        } else {
-                            gui.repositoryURL.setText("");
-                        }
-                        if (doc.hasTag("%1$sdistributionManagement/%1$srepository/%1$sid", ns)) {
-                            gui.repositoryID.setText(doc.getText("%1$sdistributionManagement/%1$srepository/%1$sid", ns));
-                        } else {
-                            gui.repositoryID.setText("");
-                        }
-                    } catch (Exception ee) {
-                        gui.console.setText(ExceptionUtils.asText(ee));
-                    }
+                    readPOM(gui);
+                    gui.cbDeployPOM.setText("Deploy also " + pom.getAbsolutePath());
+                    gui.cbDeployPOM.setEnabled(true);
+                    gui.cbDeployPOM.setVisible(true);
                 }
             }
         });
@@ -139,6 +118,65 @@ public final class MavenDeployer {
         frame.setLocationByPlatform(true);
         frame.pack();
         frame.setVisible(true);
+    }
+
+    private static String findMavenExecutable() {
+        String script = "mvn";
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            script += ".bat";
+        }
+        for (String path : System.getenv("PATH").split(File.pathSeparator)) {
+            File file = new File(path, script);
+            if (file.exists() && file.isFile() && file.canRead()) {
+                return file.getAbsolutePath();
+            }
+        }
+        return "";
+    }
+
+    private static void readPOM(MavenDeployerGui gui) {
+        try {
+            XMLDocument doc = XMLDoc.from(pom).gotoRoot();
+            String ns = doc.getPefix("http://maven.apache.org/POM/4.0.0");
+            if (ns.length() > 0) ns += ":";
+            if (doc.hasTag("%1$sgroupId", ns)) {
+                gui.groupId.setText(doc.getText("%1$sgroupId", ns));
+            } else {
+                gui.groupId.setText("");
+            }
+            if (doc.hasTag("%1$sartifactId", ns)) {
+                gui.artifactId.setText(doc.getText("%1$sartifactId", ns));
+            } else {
+                gui.artifactId.setText("");
+            }
+            if (doc.hasTag("%1$sversion", ns)) {
+                gui.version.setText(doc.getText("%1$sversion", ns));
+            } else {
+                gui.version.setText("");
+            }
+            if (doc.hasTag("%1$spackaging", ns)) {
+                gui.packaging.setSelectedItem(doc.getText("%1$spackaging", ns));
+            } else {
+                gui.packaging.setSelectedItem("jar");
+            }
+            if (doc.hasTag("%1$sdescription", ns)) {
+                gui.description.setText(doc.getText("%1$sdescription", ns));
+            } else {
+                gui.description.setText("");
+            }
+            if (doc.hasTag("%1$sdistributionManagement/%1$srepository/%1$surl", ns)) {
+                gui.repositoryURL.setText(doc.getText("%1$sdistributionManagement/%1$srepository/%1$surl", ns));
+            } else {
+                gui.repositoryURL.setText("");
+            }
+            if (doc.hasTag("%1$sdistributionManagement/%1$srepository/%1$sid", ns)) {
+                gui.repositoryID.setText(doc.getText("%1$sdistributionManagement/%1$srepository/%1$sid", ns));
+            } else {
+                gui.repositoryID.setText("");
+            }
+        } catch (Exception ee) {
+            gui.console.setText(ExceptionUtils.asText(ee));
+        }
     }
 
 }
