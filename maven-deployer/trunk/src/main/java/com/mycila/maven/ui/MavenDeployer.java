@@ -22,6 +22,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Properties;
 
 /**
  * @author Mathieu Carbou - mathieu.carbou(at)gmail.com
@@ -111,7 +114,15 @@ public final class MavenDeployer {
             }
         });
 
-        JFrame frame = new JFrame("Maven Deployer - By Mathieu Carbou");
+        String version = "";
+        try {
+            URL url = Thread.currentThread().getContextClassLoader().getResource("META-INF/maven/com.mycila.maven/maven-deployer/pom.properties");
+            Properties p = new Properties();
+            p.load(url.openStream());
+            version = " " + p.getProperty("version");
+        } catch (IOException ignored) {
+        }
+        JFrame frame = new JFrame("Maven Deployer" + version + " - By Mathieu Carbou (http://blog.mycila.com)");
         frame.setContentPane(gui.formPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
