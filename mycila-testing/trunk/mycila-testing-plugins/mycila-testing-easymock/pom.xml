@@ -54,6 +54,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.mycila.testing</groupId>
+            <artifactId>mycila-testing-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
             <version>2.4</version>

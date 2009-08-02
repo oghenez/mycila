@@ -56,6 +56,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.mycila.testing</groupId>
+            <artifactId>mycila-testing-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.dbunit</groupId>
             <artifactId>dbunit</artifactId>
             <version>2.4.4</version>
