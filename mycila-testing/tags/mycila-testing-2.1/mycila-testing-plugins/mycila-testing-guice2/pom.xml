@@ -53,6 +53,10 @@
     -->
 
     <dependencies>
+    	<dependency>
+            <groupId>com.mycila.testing</groupId>
+            <artifactId>mycila-testing-api</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
