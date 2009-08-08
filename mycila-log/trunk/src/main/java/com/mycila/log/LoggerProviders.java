@@ -15,9 +15,9 @@
  */
 package com.mycila.log;
 
-import com.mycila.log.jdk.JDKLogger;
-import com.mycila.log.log4j.Log4jLogger;
-import com.mycila.log.nop.NopLogger;
+import com.mycila.log.jdk.JDKLoggerProvider;
+import com.mycila.log.log4j.Log4jLoggerProvider;
+import com.mycila.log.nop.NopLoggerProvider;
 
 import java.util.Map;
 
@@ -32,29 +32,17 @@ public final class LoggerProviders {
     /**
      * Provides Log4J Loggers
      */
-    public static final LoggerProvider LOG4J = new LoggerProvider() {
-        public Logger get(String name) {
-            return new Log4jLogger(name);
-        }
-    };
+    public static final LoggerProvider LOG4J = new Log4jLoggerProvider();
 
     /**
      * Provides JDK Loggers
      */
-    public static final LoggerProvider JDK = new LoggerProvider() {
-        public Logger get(String name) {
-            return new JDKLogger(name);
-        }
-    };
+    public static final LoggerProvider JDK = new JDKLoggerProvider();
 
     /**
      * Provides an empty logger
      */
-    public static final LoggerProvider NOP = new LoggerProvider() {
-        public Logger get(String name) {
-            return NopLogger.INSTANCE;
-        }
-    };
+    public static final LoggerProvider NOP = new NopLoggerProvider();
 
     /**
      * Caches Logger instances in a SoftHashMap so that garbadge collector can remove entries on memory demand.
