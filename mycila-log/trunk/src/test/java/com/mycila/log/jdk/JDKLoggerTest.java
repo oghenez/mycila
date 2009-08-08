@@ -47,7 +47,7 @@ public final class JDKLoggerTest {
     @Test
     public void test_custom_config() throws Exception {
         LogManager.getLogManager().reset();
-        LogManager.getLogManager().readConfiguration(getClass().getResourceAsStream("/logging.properties"));
+        Loggers.useJDK();
         Logger logger = Loggers.get(JDKLoggerTest.class);
         logger.trace("trace {0}", "arg");
         logger.trace(new IllegalStateException("trace"), "trace {0}", "arg");
