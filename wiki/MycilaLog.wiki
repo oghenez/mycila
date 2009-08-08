@@ -100,11 +100,11 @@ com.mycila.log.jdk.handler.StderrHandler.hook=com.mycila.log.jdk.hook.AsyncInvoc
 com.mycila.level=ALL
 }}}
 
-Then in the Java code you ca configure JDK logging like this:
+If you have a logging.properties file in your classpath, it will automatically be loaded. Otherwise, you can configure JDK logging like this somewhere in your code:
 
 {{{
 LogManager.getLogManager().reset();
-LogManager.getLogManager().readConfiguration(getClass().getResourceAsStream("/logging.properties"));
+LogManager.getLogManager().readConfiguration(getClass().getResourceAsStream("/mylogging.properties"));
 }}}
 
 *Note:* You can only configure the logger through the Java API. Check hre for more details:
