@@ -1,0 +1,59 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+         POM settings
+     -->
+
+    <parent>
+        <groupId>com.mycila.math</groupId>
+        <artifactId>mycila-math-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>euler-project</artifactId>
+    <packaging>jar</packaging>
+
+    <name>euler-project</name>
+    <description>Euler Project's code</description>
+    <url>http://code.mycila.com/</url>
+
+    <!--
+        Distributions
+    -->
+
+    <distributionManagement>
+        <site>
+            <id>website</id>
+            <name>website</name>
+            <url>file://${basedir}/../target/dist/site/euler-project</url>
+        </site>
+    </distributionManagement>
+
+    <!--
+         LIBS
+    -->
+
+    <dependencies>
+        <dependency>
+            <groupId>com.mycila.math</groupId>
+            <artifactId>mycila-math</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>1.6</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>jgrapht</groupId>
+            <artifactId>jgrapht</artifactId>
+            <version>0.8.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/jgrapht-jdk1.6.jar</systemPath>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+</project>
