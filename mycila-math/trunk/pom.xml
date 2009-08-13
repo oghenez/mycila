@@ -246,8 +246,7 @@
                     </properties>
                     <excludes>
                         <exclude>LICENSE.txt</exclude>
-                        <exclude>**/src/test/resources/**</exclude>
-                        <exclude>**/src/test/data/**</exclude>
+                        <exclude>**/src/main/resources/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
