@@ -1,7 +1,22 @@
+/**
+ * Copyright (C) 2009 Mathieu Carbou <mathieu.carbou@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package euler;
 
+import com.mycila.Digits;
 import com.mycila.Pandigital;
-import com.mycila.old.MathsOld;
 import com.mycila.sequence.IntSequence;
 import com.mycila.sequence.LongSequence;
 
@@ -17,12 +32,13 @@ class Problem043 {
         final long time = currentTimeMillis();
 
         // search for combinations of multiples of 13 (d7d8d9) and 17 (d8d9d10) to build d7d8d9d10
+        final Digits digits = Digits.base(10);
         final IntSequence list_d7d8d9d10 = new IntSequence();
         for (int d8d9d10 = 17; d8d9d10 < 987; d8d9d10 += 17) { // 017 to 987
             for (int d7d8d9 = 13; d7d8d9 < 987; d7d8d9 += 13) { // 013 to 987
                 if (d7d8d9 % 100 == d8d9d10 / 10) {
                     final int d7d8d9d10 = d7d8d9 * 10 + d8d9d10 % 10;
-                    if (MathsOld.hasDifferentDigitsForLength(d7d8d9d10, 4)) {
+                    if (digits.allDifferents(d7d8d9d10, 4)) {
                         final int offset = list_d7d8d9d10.binarySearch(d7d8d9d10);
                         if (offset < 0) list_d7d8d9d10.insert(-offset - 1, d7d8d9d10);
                     }
@@ -40,7 +56,7 @@ class Problem043 {
                 // if d3d4d5 is a multiple of 3
                 if (d4d5d6 / 100 == d4 && ((d2d3d4 % 100) / 10 + d4 + (d4d5d6 % 100) / 10) % 3 == 0) {
                     final int d2d3d4d5d6 = d2d3d4 * 100 + d4d5d6 % 100;
-                    if (MathsOld.hasDifferentDigitsForLength(d2d3d4d5d6, 5)) {
+                    if (digits.allDifferents(d2d3d4d5d6, 5)) {
                         int offset = list_d2d3d4d5d6.binarySearch(d2d3d4d5d6);
                         if (offset < 0) list_d2d3d4d5d6.insert(-offset - 1, d2d3d4d5d6);
                     }

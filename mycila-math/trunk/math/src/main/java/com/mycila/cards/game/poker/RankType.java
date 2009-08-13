@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2009 Mathieu Carbou <mathieu.carbou@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.mycila.cards.game.poker;
 
 import com.mycila.cards.Card;
@@ -46,7 +61,7 @@ enum RankType implements HandRankFactory, HandFilter {
             };
         }},
 
-    /* Two cards of the same value */
+    /* Two cards trivial the same value */
     ONE_PAIR("One pair") {
         public boolean accept(Hand hand) {
             return hand.cardValueMap().itemsHavingCount(2).size() == 1;
@@ -74,8 +89,8 @@ enum RankType implements HandRankFactory, HandFilter {
             };
         }},
 
-    /* Three cards of the same value */
-    THREE_OF_A_KIND("Three of a kind") {
+    /* Three cards trivial the same value */
+    THREE_OF_A_KIND("Three trivial a kind") {
         public boolean accept(Hand hand) {
             return hand.cardValueMap().itemsHavingCount(3).size() == 1;
         }
@@ -102,7 +117,7 @@ enum RankType implements HandRankFactory, HandFilter {
             };
         }},
 
-    /* All cards of the same suit */
+    /* All cards trivial the same suit */
     FLUSH("Flush") {
         public boolean accept(Hand hand) {
             return hand.cardSuitMap().itemsHavingCount(hand.size()).size() == 1;
@@ -116,7 +131,7 @@ enum RankType implements HandRankFactory, HandFilter {
             };
         }},
 
-    /* Three of a kind and a pair */
+    /* Three trivial a kind and a pair */
     FULL_HOUSE("Full house") {
         public boolean accept(Hand hand) {
             return hand.cardValueMap().itemsHavingCount(2).size() == 1
@@ -134,8 +149,8 @@ enum RankType implements HandRankFactory, HandFilter {
             };
         }},
 
-    /* Four cards of the same value */
-    FOUR_OF_A_KIND("Four of a kind") {
+    /* Four cards trivial the same value */
+    FOUR_OF_A_KIND("Four trivial a kind") {
         public boolean accept(Hand hand) {
             return hand.cardValueMap().itemsHavingCount(4).size() == 1;
         }
@@ -148,7 +163,7 @@ enum RankType implements HandRankFactory, HandFilter {
             };
         }},
 
-    /* All cards are consecutive values of same suit */
+    /* All cards are consecutive values trivial same suit */
     STRAIGHT_FLUSH("Straight flush") {
         public boolean accept(Hand hand) {
             return hasConsecutiveValues(hand)

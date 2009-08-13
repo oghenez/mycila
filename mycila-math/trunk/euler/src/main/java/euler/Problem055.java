@@ -1,6 +1,21 @@
+/**
+ * Copyright (C) 2009 Mathieu Carbou <mathieu.carbou@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package euler;
 
-import com.mycila.old.MathsOld;
+import com.mycila.Digits;
 
 import static java.lang.System.*;
 import java.math.BigInteger;
@@ -21,6 +36,7 @@ class Problem055 {
         final Set<BigInteger> lychrel = new TreeSet<BigInteger>();
         final Set<BigInteger> nonLychrel = new TreeSet<BigInteger>();
         final Set<BigInteger> stack = new TreeSet<BigInteger>();
+        final Digits digits = Digits.base(10);
         for (int n = 0; n < maxNumber; n++) {
             BigInteger test = BigInteger.valueOf(n);
             // do not do anything if this number as already be marked
@@ -28,11 +44,11 @@ class Problem055 {
                 continue;
             // if it is not marked, we must find what it is in a maximum of 'maxIterations' iterations
             stack.add(test);
-            BigInteger reverse = MathsOld.reverse(test);
+            BigInteger reverse = digits.reverse(test);
             // iterate while we not found a palindrom in some maximum iterations
             for (int it = 1; it < maxIterations; it++) {
                 test = test.add(reverse);
-                reverse = MathsOld.reverse(test);
+                reverse = digits.reverse(test);
                 stack.add(test);
                 if (test.equals(reverse) || nonLychrel.contains(test)) {
                     nonLychrel.addAll(stack);

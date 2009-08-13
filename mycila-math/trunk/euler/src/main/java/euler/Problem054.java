@@ -1,10 +1,24 @@
+/**
+ * Copyright (C) 2009 Mathieu Carbou <mathieu.carbou@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package euler;
 
 import com.mycila.cards.Hand;
 import com.mycila.cards.HandRank;
 import com.mycila.cards.game.poker.PokerGame;
 
-import java.io.File;
 import static java.lang.System.*;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -26,7 +40,7 @@ class Problem054 {
         List<Hand> handsP2 = new ArrayList<Hand>(1000);
 
         // reads poker file
-        Scanner scanner = new Scanner(new File("data/poker.txt"));
+        Scanner scanner = new Scanner(Problem054.class.getResourceAsStream("/poker.txt"));
         while (scanner.hasNext()) {
             String hands = scanner.nextLine();
             handsP1.add(game.handFromCodes(hands.substring(0, 14)));

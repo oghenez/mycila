@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2009 Mathieu Carbou <mathieu.carbou@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.mycila;
 
 import com.mycila.sequence.IntSequence;
@@ -10,9 +25,9 @@ import java.util.BitSet;
  */
 public final class Sieve {
 
-    private final int[] primes;
+    private int[] primes;
 
-    private Sieve(int max) {
+    private Sieve(int min, int max) {
         if (max < 2) primes = new int[0];
         else {
             final int bounds = (max - 1) >> 1;
@@ -22,10 +37,16 @@ public final class Sieve {
                     for (int j = (i * (i + 1)) << 1; j <= bounds; j += 2 * i + 1)
                         sieve.set(j);
             primes = new int[bounds + 1 - sieve.cardinality()];
-            primes[0] = 2;
-            for (int i = 1, pos = 1; i <= bounds; i++)
-                if (!sieve.get(i))
-                    primes[pos++] = (i << 1) + 1;
+            int pos = 0;
+            if (min <= 2) primes[pos++] = 2;
+            for (int i = 1; i <= bounds; i++) {
+                if (!sieve.get(i)) {
+                    final int prime = (i << 1) + 1;
+                    if (prime >= min) primes[pos++] = prime;
+                }
+            }
+            if (pos != primes.length)
+                primes = Arrays.copyOf(primes, pos);
         }
     }
 
@@ -87,6 +108,15 @@ public final class Sieve {
         return Arrays.binarySearch(primes, prime) >= 0;
     }
 
+    public int last() {
+        return primes[primes.length - 1];
+    }
+
+    public int indexOf(int number) {
+        final int pos = Arrays.binarySearch(primes, number);
+        return pos >= 0 ? pos : -1;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -116,7 +146,11 @@ public final class Sieve {
     }
 
     public static Sieve to(int max) {
-        return new Sieve(max);
+        return new Sieve(2, max);
+    }
+
+    public static Sieve range(int min, int max) {
+        return new Sieve(min, max);
     }
 
 }

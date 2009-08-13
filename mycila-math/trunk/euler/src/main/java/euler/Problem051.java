@@ -1,10 +1,25 @@
+/**
+ * Copyright (C) 2009 Mathieu Carbou <mathieu.carbou@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package euler;
 
+import com.mycila.Digits;
+import com.mycila.Sieve;
 import com.mycila.distribution.Distribution;
 import com.mycila.distribution.Item;
 import com.mycila.distribution.Maximum;
-import com.mycila.old.MathsOld;
-import gnu.trove.TIntArrayList;
 
 import static java.lang.System.*;
 import java.util.HashMap;
@@ -22,14 +37,17 @@ class Problem051 {
         final int length = 6;
         final int sameDigits = 3;
 
+        final Digits digits = Digits.base(10);
+
         // create a prime list containing only primes having N digits
-        final TIntArrayList primes = MathsOld.sieve(MathsOld.powInt(10, length - 1), MathsOld.powInt(10, length) - 1);
+        final Sieve primes = Sieve.range((int) Math.pow(10, length - 1), (int) Math.pow(10, length) - 1);
         System.out.println(primes);
 
         // build a list of patterns having same length
         final Distribution<String> patterns = Distribution.of(String.class);
-        for (int prime : primes._data) {
-            for (Integer item : MathsOld.digitMap(prime).itemsHavingCount(sameDigits)) {
+        for (int i = 0, max = primes.size(); i < max; i++) {
+            final int prime = primes.get(i);
+            for (Integer item : digits.map(prime).itemsHavingCount(sameDigits)) {
                 patterns.add(Integer.toString(prime).replaceAll(item.toString(), "x"));
             }
         }
@@ -41,7 +59,7 @@ class Problem051 {
             pattern.reset();
             for (int digit = 0; digit <= 10; digit++) {
                 final int number = Integer.parseInt(pattern.value().replaceAll("x", "" + digit));
-                if (primes.binarySearch(number) >= 0) {
+                if (primes.contains(number)) {
                     pattern.increment();
                     final String current = list.get(pattern);
                     list.put(pattern, number + (current == null ? "" : " " + current));

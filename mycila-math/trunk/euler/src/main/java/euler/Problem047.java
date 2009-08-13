@@ -1,8 +1,22 @@
+/**
+ * Copyright (C) 2009 Mathieu Carbou <mathieu.carbou@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package euler;
 
-import com.mycila.Factor;
-import com.mycila.old.MathsOld;
-import gnu.trove.TIntArrayList;
+import com.mycila.Decomposition;
+import com.mycila.Sieve;
 
 import static java.lang.System.*;
 import java.util.ArrayList;
@@ -18,25 +32,25 @@ class Problem047 {
         final long time = currentTimeMillis();
 
         // will stock our results, just for display
-        final List<List<Factor>> results = new ArrayList<List<Factor>>(4);
+        final List<Decomposition> results = new ArrayList<Decomposition>(4);
         final int[] numbers = new int[4];
 
         // create a prime sieve to reuse it to find factors to avoid repeated calls of tial division
-        TIntArrayList sieve = MathsOld.sieve(100000);
+        Sieve sieve = Sieve.to(100000);
         int max = sieve.last();
 
         // check all numbers starting at 2*3*5*7 which is the first composite of 4 different primes
         for (int n = 2 * 3 * 5 * 7, consecutive = 0; ; n++) {
             // if n is above the sieve limit, we extend the sieve up to 2n primes
             if (n > max) {
-                sieve = MathsOld.sieveExtend(100000, sieve);
+                sieve = sieve.grow(100000);
                 max = sieve.last();
             }
             // then we extract the different prime factors of n
-            List<Factor> factors = MathsOld.decompSieve(n, sieve);
+            Decomposition decomposition = Decomposition.of(n, sieve);
             // if the count is 4, we increment our counter. Otherwise, we reset it.
-            if (factors.size() == 4) {
-                results.add(consecutive, factors);
+            if (decomposition.factorCount() == 4) {
+                results.add(consecutive, decomposition);
                 numbers[consecutive++] = n;
             } else consecutive = 0;
             if (consecutive == 4) {
