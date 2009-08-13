@@ -27,7 +27,14 @@ final class RunALL {
     public static void main(String[] args) throws Exception {
         for (int i = 1; i < 300; i++) {
             String num = Format.leftPad(i, 3, '0');
-            Class c = Class.forName("euler.Problem" + num);
+            Class c = null;
+            try {
+                c = Class.forName("euler.Problem" + num);
+            } catch (ClassNotFoundException e) {
+                Thread.sleep(500);
+                System.err.println("\n\nPROBLEM " + num + " is MISSING !!!");
+                return;
+            }
             System.out.println("==================== EULER PROBLEM: " + num + " ====================");
             try {
                 c.getMethod("main", new Class<?>[]{String[].class}).invoke(null, new Object[]{new String[0]});
