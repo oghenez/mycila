@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2009 Mathieu Carbou <mathieu.carbou@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package euler;
 
 import com.mycila.Matrix;
@@ -5,7 +20,6 @@ import org.jgrapht.alg.BellmanFordShortestPath;
 import org.jgrapht.experimental.dag.DirectedAcyclicGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
@@ -23,7 +37,7 @@ class Problem067 {
         // SAME PROBLEM AS 18
 
         // create the matrix from the triangle
-        Matrix<Integer> matrix = readTriangle(new File("data/triangle.txt"));
+        Matrix<Integer> matrix = readTriangle();
 
         // create the graph
         DirectedAcyclicGraph<String, Edge> dag = createDAG(matrix);
@@ -57,9 +71,9 @@ class Problem067 {
         return dag;
     }
 
-    private static Matrix<Integer> readTriangle(File triangle) throws FileNotFoundException {
-        Matrix<Integer> matrix = new Matrix<Integer>(100, 100);
-        Scanner lines = new Scanner(triangle);
+    private static Matrix<Integer> readTriangle() throws FileNotFoundException {
+        Matrix<Integer> matrix = Matrix.create(100, 100);
+        Scanner lines = new Scanner(Problem067.class.getResourceAsStream("/triangle.txt"));
         lines.useDelimiter("\\n");
         for (int row = 0; lines.hasNext(); row++) {
             Scanner numbers = new Scanner(lines.next());

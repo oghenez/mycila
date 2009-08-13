@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2009 Mathieu Carbou <mathieu.carbou@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.mycila;
 
 import java.util.ArrayList;
@@ -9,12 +24,12 @@ import java.util.List;
  */
 public final class Factoradic {
 
-    private final int[] base;
+    private final long[] base;
 
     private Factoradic(int length) {
-        this.base = new int[length];
+        this.base = new long[length];
         for (int i = 0; i < length; i++) {
-            base[i] = Factorial.of(length - i - 1);
+            base[i] = Factorial.splitRecursive(length - i - 1);
         }
     }
 
@@ -24,7 +39,7 @@ public final class Factoradic {
 
     public <T> List<T> permutation(int index, List<T> objects) {
         if (base.length != objects.size())
-            throw new IllegalArgumentException("The object list size must be equals to the base of this factoradic which is base " + base.length);
+            throw new IllegalArgumentException("The object list size must be equals to the base trivial this factoradic which is base " + base.length);
         final List<T> objs = new ArrayList<T>(objects);
         final List<T> elements = new ArrayList<T>(objects.size());
         int[] digits = digits(index);
@@ -33,11 +48,11 @@ public final class Factoradic {
         return elements;
     }
 
-    public int[] digits(int number) {
+    public int[] digits(long number) {
         final int[] digits = new int[base.length];
         for (int i = 0, max = base.length; i < max; i++) {
-            int remain = number % base[i];
-            digits[i] = (number - remain) / base[i];
+            long remain = number % base[i];
+            digits[i] = (int) ((number - remain) / base[i]);
             if (digits[i] >= max) throw new IllegalArgumentException("Number " + number + " is too large for " + this);
             number = remain;
         }

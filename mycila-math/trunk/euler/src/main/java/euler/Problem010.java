@@ -1,9 +1,22 @@
+/**
+ * Copyright (C) 2009 Mathieu Carbou <mathieu.carbou@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package euler;
 
 import static java.lang.Math.*;
 import static java.lang.System.*;
-import java.math.BigInteger;
-import static java.math.BigInteger.*;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=10
@@ -12,15 +25,7 @@ import static java.math.BigInteger.*;
  */
 class Problem010 {
     public static void main(String[] args) {
-        // SOLUTION 1:
         long time = System.currentTimeMillis();
-        BigInteger sum = ZERO;
-        for (BigInteger p = valueOf(2), max = valueOf(2000000); p.compareTo(max) < 0; sum = sum.add(p), p = p.nextProbablePrime()) ;
-        out.println(sum); // 142913828922
-        System.out.println(System.currentTimeMillis() - time);
-
-        // SOLUTION 2:
-        time = System.currentTimeMillis();
         long sump = 2L;
         for (long i = 3L; i < 2000000L; i += 2L) if (isPrime(i)) sump += i;
         out.println(sump); // 142913828922

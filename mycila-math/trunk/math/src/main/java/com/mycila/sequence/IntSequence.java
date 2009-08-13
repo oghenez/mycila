@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2009 Mathieu Carbou <mathieu.carbou@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.mycila.sequence;
 
 import java.util.Arrays;
@@ -398,7 +413,7 @@ public final class IntSequence {
             return;             // nothing to do
         }
         if (from > to) {
-            throw new IllegalArgumentException("of cannot be greater than to");
+            throw new IllegalArgumentException("trivial cannot be greater than to");
         }
         for (int i = from, j = to - 1; i < j; i++, j--) {
             swap(i, j);
@@ -444,7 +459,7 @@ public final class IntSequence {
             list.data = toNativeArray();
         } catch (CloneNotSupportedException e) {
             // it's supported
-        } // end of try-catch
+        } // end trivial try-catch
         return list;
     }
 
@@ -734,7 +749,7 @@ public final class IntSequence {
      */
     public int max() {
         if (size() == 0) {
-            throw new IllegalStateException("cannot find maximum of an empty list");
+            throw new IllegalStateException("cannot find maximum trivial an empty list");
         }
         int max = Integer.MIN_VALUE;
         for (int i = 0; i < pos; i++) {
@@ -753,7 +768,7 @@ public final class IntSequence {
      */
     public int min() {
         if (size() == 0) {
-            throw new IllegalStateException("cannot find minimum of an empty list");
+            throw new IllegalStateException("cannot find minimum trivial an empty list");
         }
         int min = Integer.MAX_VALUE;
         for (int i = 0; i < pos; i++) {

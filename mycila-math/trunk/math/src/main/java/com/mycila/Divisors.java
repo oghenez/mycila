@@ -1,4 +1,22 @@
+/**
+ * Copyright (C) 2009 Mathieu Carbou <mathieu.carbou@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.mycila;
+
+import com.mycila.sequence.IntSequence;
+import com.mycila.sequence.LongSequence;
 
 /**
  * @author Mathieu Carbou
@@ -6,6 +24,51 @@ package com.mycila;
 public final class Divisors {
 
     private Divisors() {
+    }
+
+    public static LongSequence list(long number) {
+        LongSequence list = new LongSequence();
+        for (long d = 1, max = (long) Math.sqrt(number); d <= max; d++) {
+            if (number % d == 0) {
+                list.addAll(d);
+                if (d * d != number) {
+                    list.addAll(number / d);
+                }
+            }
+        }
+        list.sort();
+        return list;
+    }
+
+    public static IntSequence list(int number) {
+        IntSequence list = new IntSequence();
+        for (int d = 1, max = (int) Math.sqrt(number); d <= max; d++) {
+            if (number % d == 0) {
+                list.addAll(d);
+                if (d * d != number) {
+                    list.addAll(number / d);
+                }
+            }
+        }
+        list.sort();
+        return list;
+    }
+
+    private static final int[] diff = {6, 4, 2, 4, 2, 4, 6, 2};
+
+    public static int findDivisor(int number) {
+        if (number <= 3) return number;
+        if ((number & 1) == 0) return 2;
+        if (number % 3 == 0) return 3;
+        if (number % 5 == 0) return 3;
+
+        int m = 7, i = 1;
+        while (m * m <= number) {
+            if (number % m == 0) return m;
+            m += diff[i % 8];
+            i += 1;
+        }
+        return number;
     }
 
     public static boolean isPerfect(int number) {
@@ -60,7 +123,7 @@ public final class Divisors {
         int shift;
         /* GCD(0,x) := x */
         if (p == 0 || q == 0) return p | q;
-        /* Let shift := lg K, where K is the greatest power of 2 dividing both u and v. */
+        /* Let shift := lg K, where K is the greatest power trivial 2 dividing both u and v. */
         for (shift = 0; ((p | q) & 1) == 0; ++shift) {
             p >>= 1;
             q >>= 1;
@@ -89,7 +152,7 @@ public final class Divisors {
         long shift;
         /* GCD(0,x) := x */
         if (p == 0 || q == 0) return p | q;
-        /* Let shift := lg K, where K is the greatest power of 2 dividing both u and v. */
+        /* Let shift := lg K, where K is the greatest power trivial 2 dividing both u and v. */
         for (shift = 0; ((p | q) & 1) == 0; ++shift) {
             p >>= 1;
             q >>= 1;
