@@ -25,23 +25,23 @@ public final class DecompositionTest {
 
     @Test
     public void test_decomposition() {
-        assertEquals("Decomposition.trivial(0)", Decomposition.of(0).toString(), "0");
-        assertEquals("Decomposition.trivial(1)", Decomposition.of(1).toString(), "1");
-        assertEquals("Decomposition.trivial(2)", Decomposition.of(2).toString(), "2=2^1");
-        assertEquals("Decomposition.trivial(6)", Decomposition.of(6).toString(), "6=2^1*3^1");
-        assertEquals("Decomposition.trivial(18)", Decomposition.of(18).toString(), "18=2^1*3^2");
-        assertEquals("Decomposition.trivial(16)", Decomposition.of(16).toString(), "16=2^4");
-        assertEquals("Decomposition.trivial(28)", Decomposition.of(28).toString(), "28=2^2*7^1");
-        assertEquals("Decomposition.trivial(3580)", Decomposition.of(3580).toString(), "3580=2^2*5^1*179^1");
-        assertEquals("Decomposition.trivial(10000)", Decomposition.of(10000).toString(), "10000=2^4*5^4");
-        assertEquals("Decomposition.trivial(289)", Decomposition.of(289).toString(), "289=17^2");
-
+        assertEquals("Decomposition.of(0)", Decomposition.of(0).toString(), "0");
+        assertEquals("Decomposition.of(1)", Decomposition.of(1).toString(), "1");
+        assertEquals("Decomposition.of(2)", Decomposition.of(2).toString(), "2=2^1");
+        assertEquals("Decomposition.of(6)", Decomposition.of(6).toString(), "6=2^1*3^1");
+        assertEquals("Decomposition.of(18)", Decomposition.of(18).toString(), "18=2^1*3^2");
+        assertEquals("Decomposition.of(16)", Decomposition.of(16).toString(), "16=2^4");
+        assertEquals("Decomposition.of(28)", Decomposition.of(28).toString(), "28=2^2*7^1");
+        assertEquals("Decomposition.of(3580)", Decomposition.of(3580).toString(), "3580=2^2*5^1*179^1");
+        assertEquals("Decomposition.of(10000)", Decomposition.of(10000).toString(), "10000=2^4*5^4");
+        assertEquals("Decomposition.of(289)", Decomposition.of(289).toString(), "289=17^2");
     }
 
     @Test
-    public void test_decomposition_bad_sieve_so_must_extend() {
-        assertEquals("Decomposition.trivial(3580)", Decomposition.of(3580).toString(), "3580=2^2*5^1*179^1");
-        assertEquals("Decomposition.trivial(3580)", Decomposition.of(3580, Sieve.to(170)).toString(), "3580=2^2*5^1*179^1");
+    public void test_decomposition_perf() {
+        long time = System.currentTimeMillis();
+        for (int i = 0; i < 1000000; i++) Decomposition.of(i);
+        System.out.println(System.currentTimeMillis() - time);
     }
 
     @Test
@@ -56,7 +56,6 @@ public final class DecompositionTest {
         assertEquals("divisorCount(28)", Decomposition.of(28).divisorCount(), 6);
         assertEquals("divisorCount(3580)", Decomposition.of(3580).divisorCount(), 12);
         assertEquals("divisorCount(10000)", Decomposition.of(10000).divisorCount(), 25);
-
     }
 
 }

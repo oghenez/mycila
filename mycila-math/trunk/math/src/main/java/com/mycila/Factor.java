@@ -55,8 +55,9 @@ public final class Factor {
         return p + "^" + exp;
     }
 
-    public void incrementExponent() {
+    public Factor incrementExponent() {
         this.exp++;
+        return this;
     }
 
     public int value() {

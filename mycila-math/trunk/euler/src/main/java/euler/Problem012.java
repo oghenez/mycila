@@ -16,7 +16,6 @@
 package euler;
 
 import com.mycila.Decomposition;
-import com.mycila.Sieve;
 
 import static java.lang.System.*;
 
@@ -35,9 +34,8 @@ class Problem012 {
         // We know that the first number to have over 500 divisors will be less or equals than
         // the number composed of the first 501 primes.
         // So all the divisors of the triangle number will be composed of some of these 501 primes
-        Sieve primes501 = Sieve.to(10000);
         for (int i = 1, triangle = 1; ; i++, triangle = i * (1 + i) / 2) {
-            if (Decomposition.of(triangle, primes501).divisorCount() > 500) {
+            if (Decomposition.of(triangle).divisorCount() > 500) {
                 out.println(triangle);
                 break;
             }
