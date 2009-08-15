@@ -15,10 +15,13 @@
  */
 package com.mycila.distribution;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,7 +30,15 @@ import java.util.Set;
  */
 public final class Distribution<T> implements Iterable<Item<T>> {
 
+    private static final Comparator<Item<?>> BY_COUNT = new Comparator<Item<?>>() {
+        @Override
+        public int compare(Item<?> o1, Item<?> o2) {
+            return o1.count() - o2.count();
+        }
+    };
+
     private final Map<T, Item<T>> items = new HashMap<T, Item<T>>();
+    private int totalSize;
 
     private Distribution() {
     }
@@ -39,6 +50,7 @@ public final class Distribution<T> implements Iterable<Item<T>> {
             items.put(value, item);
         }
         item.increment();
+        totalSize++;
         return this;
     }
 
@@ -52,8 +64,18 @@ public final class Distribution<T> implements Iterable<Item<T>> {
         return items;
     }
 
-    public int itemCount() {
+    public List<Item<T>> sortByCount(SortOrder order) {
+        List<Item<T>> sorted = new ArrayList<Item<T>>(items.values());
+        Collections.sort(sorted, order == SortOrder.DESC ? Collections.reverseOrder(BY_COUNT) : BY_COUNT);
+        return sorted;
+    }
+
+    public int size() {
         return items.size();
+    }
+
+    public int totalSize() {
+        return totalSize;
     }
 
     public boolean isEmpty() {

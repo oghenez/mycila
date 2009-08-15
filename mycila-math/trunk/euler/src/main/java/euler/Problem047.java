@@ -47,7 +47,7 @@ class Problem047 {
                 max = sieve.last();
             }
             // then we extract the different prime factors of n
-            Decomposition decomposition = Decomposition.of(n, sieve);
+            Decomposition decomposition = Decomposition.of(n);
             // if the count is 4, we increment our counter. Otherwise, we reset it.
             if (decomposition.factorCount() == 4) {
                 results.add(consecutive, decomposition);

@@ -24,38 +24,13 @@ import java.util.List;
 public final class Decomposition {
 
     private final int number;
-    private final List<Factor> decomp = new ArrayList<Factor>();
+    private final List<Factor> decomp;
     private int divisorCount = -1;
     private String toString;
 
-    private Decomposition(int number, Sieve sieve) {
+    private Decomposition(int number, List<Factor> decomp) {
         this.number = number;
-        int i = 0;
-        for (int max = sieve.size(); i < max && number > 1; i++) {
-            final int prime = sieve.get(i);
-            if (number < prime) break;
-            if (number % prime == 0) {
-                final Factor factor = Factor.valueOf(prime);
-                decomp.add(factor);
-                for (number /= prime; number % prime == 0; number /= prime)
-                    factor.incrementExponent();
-            }
-        }
-        // if the number is greater than one, it means that the sieve is not large enough.
-        // We try to increase it
-        if (number > 1) {
-            sieve = sieve.growTo(number);
-            for (int max = sieve.size(); i < max && number > 1; i++) {
-                final int prime = sieve.get(i);
-                if (number < prime) break;
-                if (number % prime == 0) {
-                    final Factor factor = Factor.valueOf(prime);
-                    decomp.add(factor);
-                    for (number /= prime; number % prime == 0; number /= prime)
-                        factor.incrementExponent();
-                }
-            }
-        }
+        this.decomp = decomp;
     }
 
     public int factorCount() {
@@ -94,11 +69,28 @@ public final class Decomposition {
     }
 
     public static Decomposition of(int number) {
-        return new Decomposition(number, Sieve.to(number));
-    }
-
-    public static Decomposition of(int number, Sieve sieve) {
-        return new Decomposition(number, sieve);
+        final List<Factor> decomp = new ArrayList<Factor>();
+        if (number >= 2) {
+            int np = number;
+            if ((number & 1) == 0) {
+                Factor factor = Factor.valueOf(2);
+                decomp.add(factor);
+                while (((np >>= 1) & 1) == 0)
+                    factor.incrementExponent();
+            }
+            int p = 3;
+            while (p * p <= np) {
+                if (np % p != 0) p += 2;
+                else {
+                    Factor factor = Factor.valueOf(p);
+                    decomp.add(factor);
+                    while ((np /= p) % p == 0)
+                        factor.incrementExponent();
+                }
+            }
+            if (np > 1) decomp.add(Factor.valueOf(np == number ? p : np));
+        }
+        return new Decomposition(number, decomp);
     }
 
 }
