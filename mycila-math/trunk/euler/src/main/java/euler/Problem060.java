@@ -16,9 +16,13 @@
 package euler;
 
 import com.mycila.Digits;
+import com.mycila.PrimaltyTest;
 import com.mycila.Sieve;
+import com.mycila.combination.Combinations;
+import com.mycila.sequence.IntSequence;
 
 import static java.lang.System.*;
+import java.util.List;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=60
@@ -30,30 +34,40 @@ class Problem060 {
     public static void main(String[] args) throws Exception {
         final long time = currentTimeMillis();
 
-        final int SET_SIZE = 4;
+        final int SELECTION_SIZE = 5;
         final Digits digits = Digits.base(10);
-        final Sieve sieve = Sieve.to(10000);
-        /*for (List<Integer> primes : Combinations.combinations(SET_SIZE, sieve.asList())) {
-            // skip set containing 2 or 5 since concatenations will be multiples
-            if (primes.contains(2) || primes.contains(5)) continue;
+
+        // all combinations to select a couple of prime amongst the set size
+        final List<int[]> couples = Combinations.combinations(SELECTION_SIZE, 2).asList();
+
+        // in the sieve, we skip primes at index 0 and 2:
+        // there are 2 and 5, and they cannot be used in a concatenation
+        final IntSequence primes = Sieve.to(100000).asSequence();
+        primes.remove(2);
+        primes.remove(0);
+
+        for (int[] primesPosition : Combinations.combinations(primes.size(), SELECTION_SIZE)) {
             boolean found = true;
-            for (List<Integer> couple : Combinadic.base(SET_SIZE).combinations(2, primes)) {
-                int p1 = couple.get(0);
-                int p2 = couple.get(1);
-                if (!PrimaltyTest.trialDivision(p1 * (int) Math.pow(10, digits.length(p2)) + p2)
-                        || !PrimaltyTest.trialDivision(p2 * (int) Math.pow(10, digits.length(p1)) + p1)) {
+            for (int[] couplePositions : couples) {
+                final int p1 = primes.getQuick(primesPosition[couplePositions[0]]);
+                final int p2 = primes.getQuick(primesPosition[couplePositions[1]]);
+                if (!PrimaltyTest.trialDivision(digits.concat(p1, p2))
+                        || !PrimaltyTest.trialDivision(digits.concat(p2, p1))) {
                     found = false;
                     break;
                 }
             }
             if (found) {
                 int sum = 0;
-                for (int prime : primes) sum += prime;
-                System.out.println(primes + " => " + sum);
-            }
-        }*/
+                for (int pos : primesPosition)
+                    sum += primes.getQuick(pos);
 
-        out.println("in " + (currentTimeMillis() - time) + "ms");
+                StringBuilder sb = new StringBuilder().append(sum).append(":");
+                for (int pos : primesPosition)
+                    sb.append(" ").append(primes.getQuick(pos));
+                System.out.println(sb.append(" in ").append(currentTimeMillis() - time).append("ms"));
+            }
+        }
     }
 
 }

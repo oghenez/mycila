@@ -153,7 +153,7 @@ public final class Sieve implements Iterable<Integer> {
     }
 
     public int[] asArray() {
-        return primes;
+        return Arrays.copyOf(primes, primes.length);
     }
 
     @Override

@@ -148,6 +148,13 @@ public final class Digits {
         return number == 0 ? 1 : (int) (Math.floor(Math.log(number) / Math.log(10))) + 1;
     }
 
+    public long concat(long... numbers) {
+        long res = numbers[0];
+        for (int i = 1, max = numbers.length; i < max; i++)
+            res = res * (long) Math.pow(base, length(numbers[i])) + numbers[i];
+        return res;
+    }
+
     public static Digits base(int base) {
         return new Digits(base);
     }
