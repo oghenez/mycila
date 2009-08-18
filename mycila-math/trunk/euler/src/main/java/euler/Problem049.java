@@ -15,8 +15,8 @@
  */
 package euler;
 
-import com.mycila.Combinations;
 import com.mycila.Sieve;
+import com.mycila.combination.Combinations;
 
 import static java.lang.System.*;
 

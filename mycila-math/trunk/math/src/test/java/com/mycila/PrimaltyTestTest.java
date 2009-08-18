@@ -18,6 +18,8 @@ package com.mycila;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import java.math.BigInteger;
+
 /**
  * @author Mathieu Carbou
  */
@@ -31,6 +33,7 @@ public final class PrimaltyTestTest {
         assertTrue(PrimaltyTest.trialDivision(7));
         assertTrue(PrimaltyTest.trialDivision(179));
         assertTrue(PrimaltyTest.trialDivision(Integer.MAX_VALUE)); // 2147483647
+        //assertTrue(PrimaltyTest.trialDivision(9223372036854775783L));
     }
 
     @Test
@@ -41,7 +44,30 @@ public final class PrimaltyTestTest {
         assertTrue(PrimaltyTest.millerRabin(7));
         assertTrue(PrimaltyTest.millerRabin(179));
         assertTrue(PrimaltyTest.millerRabin(Integer.MAX_VALUE)); // 2147483647
+        assertTrue(PrimaltyTest.millerRabin(BigInteger.valueOf(9223372036854775783L)));
     }
+
+    @Test
+    public void test_perf() {
+        Sieve sieve = Sieve.to(1000000);
+
+        long time = System.currentTimeMillis();
+        for (int prime : sieve) assertTrue(PrimaltyTest.millerRabin(prime));
+        System.out.println(System.currentTimeMillis() - time);
+
+        time = System.currentTimeMillis();
+        for (int prime : sieve) assertTrue(PrimaltyTest.millerRabin(prime));
+        System.out.println(System.currentTimeMillis() - time);
+
+        time = System.currentTimeMillis();
+        for (int prime : sieve) assertTrue(PrimaltyTest.trialDivision(prime));
+        System.out.println(System.currentTimeMillis() - time);
+
+        time = System.currentTimeMillis();
+        for (int prime : sieve) assertTrue(PrimaltyTest.trialDivision(prime));
+        System.out.println(System.currentTimeMillis() - time);
+    }
+
 
     @Test
     public void test_lucasLehmer() {

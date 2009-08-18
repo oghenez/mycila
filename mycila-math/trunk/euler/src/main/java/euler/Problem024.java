@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.Factoradic;
+import com.mycila.combination.Factoradic;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,7 +62,7 @@ class Problem024 {
 
         System.out.println("1000000th permutation is " + sb + " in " + (System.currentTimeMillis() - time) + "ms");
 
-        System.out.println(Factoradic.base(10).permutation(1000000 - 1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
+        System.out.println(Factoradic.base(10).permutations(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).get(1000000 - 1));
     }
 
     private static int fact(int n) {

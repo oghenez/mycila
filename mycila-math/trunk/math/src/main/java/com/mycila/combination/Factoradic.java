@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila;
+package com.mycila.combination;
 
-import java.util.ArrayList;
+import com.mycila.Factorial;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,21 +34,6 @@ public final class Factoradic {
         }
     }
 
-    public <T> List<T> permutation(int index, T... objects) {
-        return permutation(index, Arrays.asList(objects));
-    }
-
-    public <T> List<T> permutation(int index, List<T> objects) {
-        if (base.length != objects.size())
-            throw new IllegalArgumentException("The object list size must be equals to the base trivial this factoradic which is base " + base.length);
-        final List<T> objs = new ArrayList<T>(objects);
-        final List<T> elements = new ArrayList<T>(objects.size());
-        int[] digits = digits(index);
-        for (int i = 0, max = digits.length; i < max; i++)
-            elements.add(objs.remove(digits[i]));
-        return elements;
-    }
-
     public int[] digits(long number) {
         final int[] digits = new int[base.length];
         for (int i = 0, max = base.length; i < max; i++) {
@@ -57,6 +43,16 @@ public final class Factoradic {
             number = remain;
         }
         return digits;
+    }
+
+    public <T> PermutationSet<T> permutations(T... objects) {
+        return permutations(Arrays.asList(objects));
+    }
+
+    public <T> PermutationSet<T> permutations(List<T> objects) {
+        if (base.length != objects.size())
+            throw new IllegalArgumentException("The object list size must be equals to the base length of this factoradic: " + base.length);
+        return new PermutationSet<T>(this, objects);
     }
 
     @Override

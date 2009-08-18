@@ -16,14 +16,18 @@
 package com.mycila;
 
 import com.mycila.sequence.IntSequence;
+import com.mycila.sequence.ReadOnlySequenceIterator;
 
+import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Mathieu Carbou
  */
-public final class Sieve {
+public final class Sieve implements Iterable<Integer> {
 
     private int[] primes;
 
@@ -96,6 +100,11 @@ public final class Sieve {
         return new Sieve(newPrimes);
     }
 
+    @Override
+    public Iterator<Integer> iterator() {
+        return ReadOnlySequenceIterator.on(primes);
+    }
+
     public int size() {
         return primes.length;
     }
@@ -123,6 +132,28 @@ public final class Sieve {
         if (o == null || getClass() != o.getClass()) return false;
         Sieve sieve = (Sieve) o;
         return Arrays.equals(primes, sieve.primes);
+    }
+
+    public List<Integer> asList() {
+        return new AbstractList<Integer>() {
+            @Override
+            public Integer get(int index) {
+                return primes[index];
+            }
+
+            @Override
+            public int size() {
+                return primes.length;
+            }
+        };
+    }
+
+    public IntSequence asSequence() {
+        return new IntSequence(primes);
+    }
+
+    public int[] asArray() {
+        return primes;
     }
 
     @Override
