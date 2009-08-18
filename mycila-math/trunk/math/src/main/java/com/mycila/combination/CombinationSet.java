@@ -1,6 +1,9 @@
 package com.mycila.combination;
 
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
@@ -18,6 +21,14 @@ public final class CombinationSet<T> implements Iterable<int[]> {
 
     public long size() {
         return Combinations.binomial(n, r);
+    }
+
+    public List<int[]> asList() {
+        final List<int[]> list = new LinkedList<int[]>();
+        for (int[] ints : this) {
+            list.add(ints);
+        }
+        return list;
     }
 
     @Override
@@ -49,7 +60,7 @@ public final class CombinationSet<T> implements Iterable<int[]> {
                     for (int i = 0; i < a.length; i++) a[i] = i;
                 }
                 index++;
-                return a;
+                return Arrays.copyOf(a, a.length);
             }
 
             @Override

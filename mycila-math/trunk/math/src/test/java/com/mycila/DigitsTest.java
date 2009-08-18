@@ -79,4 +79,12 @@ public final class DigitsTest {
         assertEquals(Digits.base(8).rebase(8), 10);
     }
 
+    @Test
+    public void test_concat() {
+        assertEquals(Digits.base(10).concat(0, 1, 2, 3), 123);
+        assertEquals(Digits.base(10).concat(0, 12, 233, 677), 12233677);
+        assertEquals(Digits.base(10).concat(0, 0, 1, 0, 0, 1, 0, 0), 100100);
+
+    }
+
 }
