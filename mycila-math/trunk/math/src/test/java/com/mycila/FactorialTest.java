@@ -58,15 +58,15 @@ public final class FactorialTest {
     @Test
     public void test_best() {
         long time = System.nanoTime();
-        for (long i = 0; i < 20; i++) Factorial.trivial(i);
-        for (long i = 0; i < 20; i++) Factorial.trivial(i);
-        for (long i = 0; i < 20; i++) Factorial.trivial(i);
+        for (long i = 0; i < 30; i++) Factorial.trivial(i);
+        for (long i = 0; i < 30; i++) Factorial.trivial(i);
+        for (long i = 0; i < 30; i++) Factorial.trivial(i);
         System.out.println(System.nanoTime() - time);
 
         time = System.nanoTime();
-        for (long i = 0; i < 20; i++) Factorial.splitRecursive(i);
-        for (long i = 0; i < 20; i++) Factorial.splitRecursive(i);
-        for (long i = 0; i < 20; i++) Factorial.splitRecursive(i);
+        for (long i = 0; i < 30; i++) Factorial.splitRecursive(i);
+        for (long i = 0; i < 30; i++) Factorial.splitRecursive(i);
+        for (long i = 0; i < 30; i++) Factorial.splitRecursive(i);
         System.out.println(System.nanoTime() - time);
     }
 

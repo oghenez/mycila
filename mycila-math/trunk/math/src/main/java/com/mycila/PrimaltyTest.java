@@ -16,13 +16,15 @@
 package com.mycila;
 
 import java.math.BigInteger;
+import java.util.Random;
 
 /**
  * @author Mathieu Carbou
  */
 public final class PrimaltyTest {
 
-    private static BigInteger TWO = BigInteger.valueOf(2);
+    private static final BigInteger TWO = BigInteger.valueOf(2);
+    private static final Random RANDOM = new Random();
 
     private PrimaltyTest() {
     }
@@ -42,6 +44,21 @@ public final class PrimaltyTest {
         return true;
     }
 
+    public static boolean trialDivision(long number) {
+        if (number == 2 || number == 3) return true;
+        if (number < 2 || (number & 1) == 0) return false;
+        if (number < 9) return true;
+        if (number % 3 == 0) return false;
+        long r = (long) Math.sqrt(number);
+        long f = 5;
+        while (f <= r) {
+            if (number % f == 0 || number % (f + 2) == 0)
+                return false;
+            f += 6;
+        }
+        return true;
+    }
+
     public static boolean millerRabin(int number) {
         return number > 1
                 && (number == 2
@@ -50,17 +67,40 @@ public final class PrimaltyTest {
                 && (number <= 61 || millerRabinPass(61, number)));
     }
 
-    private static boolean millerRabinPass(int a, int n) {
+    private static boolean millerRabinPass(final int a, final int n) {
         int d = n - 1;
         int s = Integer.numberOfTrailingZeros(d);
         d >>= s;
-        int a_to_power = (int) Mod.pow((long) a, (long) d, (long) n);
+        int a_to_power = Mod.pow(a, d, n);
+        s--;
         if (a_to_power == 1) return true;
-        for (int i = 0; i < s - 1; i++) {
+        for (int i = 0; i < s; i++) {
             if (a_to_power == n - 1) return true;
             a_to_power = Mod.pow(a_to_power, 2, n);
         }
         return a_to_power == n - 1;
+    }
+
+    public static boolean millerRabin(BigInteger n) {
+        for (int repeat = 0; repeat < 50; repeat++) {
+            BigInteger a;
+            do a = new BigInteger(n.bitLength(), RANDOM);
+            while (a.signum() == 0);
+            if (!millerRabinPass(a, n)) return false;
+        }
+        return true;
+    }
+
+    private static boolean millerRabinPass(BigInteger a, BigInteger n) {
+        final BigInteger n_minus_one = n.subtract(BigInteger.ONE);
+        final int s = n_minus_one.getLowestSetBit();
+        BigInteger pow = a.modPow(n_minus_one.shiftRight(s), n);
+        if (pow.equals(BigInteger.ONE)) return true;
+        for (int i = 0; i < s - 1; i++) {
+            if (pow.equals(n_minus_one)) return true;
+            pow = pow.multiply(pow).mod(n);
+        }
+        return pow.equals(n_minus_one);
     }
 
     // http://en.wikipedia.org/wiki/Lucas%E2%80%93Lehmer_test_for_Mersenne_numbers

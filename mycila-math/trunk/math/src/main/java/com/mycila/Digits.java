@@ -144,9 +144,8 @@ public final class Digits {
     }
 
     public int length(long number) {
-        int length = 1;
-        while ((number /= base) > 0) length++;
-        return length;
+        if (number < 0) number = -number;
+        return number == 0 ? 1 : (int) (Math.floor(Math.log(number) / Math.log(10))) + 1;
     }
 
     public static Digits base(int base) {

@@ -15,10 +15,12 @@
  */
 package com.mycila;
 
+import com.mycila.combination.Factoradic;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Mathieu Carbou
@@ -38,13 +40,22 @@ public final class FactoradicTest {
 
     @Test
     public void test_permutation() {
-        assertEquals(Factoradic.base(10).permutation(999999, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9), Arrays.asList(2, 7, 8, 3, 9, 1, 5, 4, 6, 0));
-        assertEquals(Factoradic.base(10).permutation(0, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9), Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
-        assertEquals(Factoradic.base(10).permutation(3628799, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9), Arrays.asList(9, 8, 7, 6, 5, 4, 3, 2, 1, 0));
+        assertEquals(Factoradic.base(10).permutations(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).get(999999), Arrays.asList(2, 7, 8, 3, 9, 1, 5, 4, 6, 0));
+        assertEquals(Factoradic.base(10).permutations(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).get(0), Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
+        assertEquals(Factoradic.base(10).permutations(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).get(3628799), Arrays.asList(9, 8, 7, 6, 5, 4, 3, 2, 1, 0));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void test_permutation2() {
-        Factoradic.base(10).permutation(3628800, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+        Factoradic.base(10).permutations(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).get(3628800);
     }
+
+    @Test
+    public void test_iterate() {
+        int count = 0;
+        for (List<String> list : Factoradic.base(4).permutations("A", "B", "C", "D")) {
+            System.out.println(count++ + ": " + list);
+        }
+    }
+
 }

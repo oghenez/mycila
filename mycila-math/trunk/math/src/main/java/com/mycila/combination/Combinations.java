@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila;
+package com.mycila.combination;
+
+import com.mycila.Factorial;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -23,24 +25,19 @@ import java.util.Arrays;
  */
 public final class Combinations {
 
-    private final long set;
-    private final BigInteger bSet;
-
-    private Combinations(long set) {
-        this.set = set;
-        this.bSet = BigInteger.valueOf(set);
+    private Combinations() {
     }
 
-    public long binomial(long combinations) {
-        return Factorial.trivialDiv(set, set - combinations) / Factorial.splitRecursive(combinations);
+    public static long binomial(int n, int r) {
+        return Factorial.trivialDiv(n, n - r) / Factorial.splitRecursive(r);
     }
 
-    public BigInteger binomial(BigInteger combinations) {
-        return Factorial.trivialDiv(bSet, bSet.min(combinations)).divide(Factorial.trivial(combinations));
+    public static BigInteger binomial(BigInteger n, BigInteger r) {
+        return Factorial.trivialDiv(n, n.subtract(r)).divide(Factorial.trivial(r));
     }
 
-    public static Combinations set(long setLength) {
-        return new Combinations(setLength);
+    public static <T> CombinationSet<T> combinations(int n, int r) {
+        return new CombinationSet<T>(n, r);
     }
 
     public static boolean arePermutations(int n1, int... numbers) {
