@@ -30,7 +30,6 @@ class Problem060 {
     public static void main(String[] args) throws Exception {
         final long time = currentTimeMillis();
 
-        final int SELECTION_SIZE = 5;
         final Sieve sieve = Sieve.to(9999);
 
         // remove primes which cannot be concatenated
@@ -40,7 +39,7 @@ class Problem060 {
         final int[] primes = sequence.toNativeArray();
 
         main:
-        for (int p1 = 0, p1max = primes.length - SELECTION_SIZE; p1 < p1max; p1++) {
+        for (int p1 = 0, p1max = primes.length - 5; p1 < p1max; p1++) {
             for (int p2 = p1 + 1, p2max = p1max + 1; p2 < p2max; p2++) {
                 if (!sieve.isPrime(Integer.parseInt(primes[p1] + "" + primes[p2]))
                         || !sieve.isPrime(Integer.parseInt(primes[p2] + "" + primes[p1])))
