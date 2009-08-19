@@ -43,13 +43,68 @@ public final class CombinationsTest {
 
     @Test
     public void test_iterate() {
-        System.out.println("3, 7, 109, 673");
         int count = 0;
+        System.out.println("C(0, 0)");
+        for (int[] positions : Combinations.combinations(0, 0)) {
+            System.out.println(count++ + ": " + Arrays.toString(positions));
+        }
+
+        System.out.println("C(0, 1)");
+        count = 0;
+        for (int[] positions : Combinations.combinations(0, 1)) {
+            System.out.println(count++ + ": " + Arrays.toString(positions));
+        }
+
+        System.out.println("C(1, 0)");
+        count = 0;
+        for (int[] positions : Combinations.combinations(1, 0)) {
+            System.out.println(count++ + ": " + Arrays.toString(positions));
+        }
+
+        System.out.println("C(1, 1)");
+        count = 0;
+        for (int[] positions : Combinations.combinations(1, 1)) {
+            System.out.println(count++ + ": " + Arrays.toString(positions));
+        }
+
+        System.out.println("C(2, 0)");
+        count = 0;
+        for (int[] positions : Combinations.combinations(2, 0)) {
+            System.out.println(count++ + ": " + Arrays.toString(positions));
+        }
+
+        System.out.println("C(2, 1)");
+        count = 0;
+        for (int[] positions : Combinations.combinations(2, 1)) {
+            System.out.println(count++ + ": " + Arrays.toString(positions));
+        }
+
+        System.out.println("C(2, 2)");
+        count = 0;
+        for (int[] positions : Combinations.combinations(2, 2)) {
+            System.out.println(count++ + ": " + Arrays.toString(positions));
+        }
+
+        System.out.println("C(4, 2)");
+        count = 0;
         for (int[] positions : Combinations.combinations(4, 2)) {
             System.out.println(count++ + ": " + Arrays.toString(positions));
         }
+
+        System.out.println("C(5, 3)");
         count = 0;
-        for (int[] positions : Combinations.combinations(4, 3)) {
+        for (int[] positions : Combinations.combinations(5, 3)) {
+            System.out.println(count++ + ": " + Arrays.toString(positions));
+        }
+
+        System.out.println("C(5, 1)");
+        count = 0;
+        for (int[] positions : Combinations.combinations(5, 1)) {
+            System.out.println(count++ + ": " + Arrays.toString(positions));
+        }
+        System.out.println("C(5, 4)");
+        count = 0;
+        for (int[] positions : Combinations.combinations(5, 4)) {
             System.out.println(count++ + ": " + Arrays.toString(positions));
         }
     }
