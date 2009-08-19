@@ -43,19 +43,22 @@ class Problem060 {
         for (int p1 = 0, p1max = primes.length - SELECTION_SIZE; p1 < p1max; p1++) {
             for (int p2 = p1 + 1, p2max = p1max + 1; p2 < p2max; p2++) {
                 if (!sieve.isPrime(Integer.parseInt(primes[p1] + "" + primes[p2]))
-                        || !sieve.isPrime(Integer.parseInt(primes[p2] + "" + primes[p1]))) continue;
+                        || !sieve.isPrime(Integer.parseInt(primes[p2] + "" + primes[p1])))
+                    continue;
                 for (int p3 = p2 + 1, p3max = p2max + 1; p3 < p3max; p3++) {
                     if (!sieve.isPrime(Integer.parseInt(primes[p1] + "" + primes[p3]))
                             || !sieve.isPrime(Integer.parseInt(primes[p3] + "" + primes[p1]))
                             || !sieve.isPrime(Integer.parseInt(primes[p2] + "" + primes[p3]))
-                            || !sieve.isPrime(Integer.parseInt(primes[p3] + "" + primes[p2]))) continue;
+                            || !sieve.isPrime(Integer.parseInt(primes[p3] + "" + primes[p2])))
+                        continue;
                     for (int p4 = p3 + 1, p4max = p3max + 1; p4 < p4max; p4++) {
                         if (!sieve.isPrime(Integer.parseInt(primes[p1] + "" + primes[p4]))
                                 || !sieve.isPrime(Integer.parseInt(primes[p2] + "" + primes[p4]))
                                 || !sieve.isPrime(Integer.parseInt(primes[p3] + "" + primes[p4]))
                                 || !sieve.isPrime(Integer.parseInt(primes[p4] + "" + primes[p1]))
                                 || !sieve.isPrime(Integer.parseInt(primes[p4] + "" + primes[p2]))
-                                || !sieve.isPrime(Integer.parseInt(primes[p4] + "" + primes[p3]))) continue;
+                                || !sieve.isPrime(Integer.parseInt(primes[p4] + "" + primes[p3])))
+                            continue;
                         for (int p5 = p4 + 1, p5max = p4max + 1; p5 < p5max; p5++) {
                             if (!sieve.isPrime(Integer.parseInt(primes[p1] + "" + primes[p5]))
                                     || !sieve.isPrime(Integer.parseInt(primes[p2] + "" + primes[p5]))
@@ -64,7 +67,8 @@ class Problem060 {
                                     || !sieve.isPrime(Integer.parseInt(primes[p5] + "" + primes[p1]))
                                     || !sieve.isPrime(Integer.parseInt(primes[p5] + "" + primes[p2]))
                                     || !sieve.isPrime(Integer.parseInt(primes[p5] + "" + primes[p3]))
-                                    || !sieve.isPrime(Integer.parseInt(primes[p5] + "" + primes[p4]))) continue;
+                                    || !sieve.isPrime(Integer.parseInt(primes[p5] + "" + primes[p4])))
+                                continue;
                             System.out.println(primes[p1] + " " + primes[p2] + " " + primes[p3] + " " + primes[p4] + " " + primes[p5] + " => " +
                                     (primes[p1] + primes[p2] + primes[p3] + primes[p4] + primes[p5]));
                             break main;
