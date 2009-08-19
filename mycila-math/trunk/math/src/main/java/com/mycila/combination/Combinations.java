@@ -36,8 +36,8 @@ public final class Combinations {
         return Factorial.trivialDiv(n, n.subtract(r)).divide(Factorial.trivial(r));
     }
 
-    public static <T> CombinationSet<T> combinations(int n, int r) {
-        return new CombinationSet<T>(n, r);
+    public static CombinationSet combinations(int n, int r) {
+        return new CombinationSet(n, r);
     }
 
     public static boolean arePermutations(int n1, int... numbers) {

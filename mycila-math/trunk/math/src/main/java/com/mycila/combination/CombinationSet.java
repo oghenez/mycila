@@ -1,15 +1,13 @@
 package com.mycila.combination;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 /**
  * @author Mathieu Carbou
  */
-public final class CombinationSet<T> implements Iterable<int[]> {
+public final class CombinationSet implements Iterable<int[]> {
 
     final int n;
     final int r;
@@ -33,34 +31,54 @@ public final class CombinationSet<T> implements Iterable<int[]> {
 
     @Override
     public Iterator<int[]> iterator() {
+        if (n == 0 || r == 0)
+            return new Iterator<int[]>() {
+                boolean hasNext = true;
+
+                @Override
+                public boolean hasNext() {
+                    return hasNext;
+                }
+
+                @Override
+                public int[] next() {
+                    hasNext = false;
+                    return new int[]{0};
+                }
+
+                @Override
+                public void remove() {
+                    throw new UnsupportedOperationException("Remove not supported");
+                }
+            };
         return new Iterator<int[]>() {
-            long index = 0;
-            final int[] a = new int[r];
+            boolean first = true;
+            final int[] pos = new int[r];
             final int end = r - 1;
-            final int total = n - r;
-            final long max = size();
+            final int offset = n - r;
+            long count = size();
 
             @Override
             public boolean hasNext() {
-                return index < max;
+                return count > 0;
             }
 
             @Override
             public int[] next() {
-                if (index == max) throw new NoSuchElementException();
-                if (index > 0) {
-                    int i = end;
-                    while (a[i] == total + i)
-                        i--;
-                    a[i]++;
-                    for (int j = i + 1; j < r; j++)
-                        a[j] = a[i] + j - i;
-
+                if (first) {
+                    for (int i = 0; i < pos.length; i++) pos[i] = i;
+                    first = false;
                 } else {
-                    for (int i = 0; i < a.length; i++) a[i] = i;
+                    int i = end;
+                    while (pos[i] == offset + i)
+                        i--;
+                    pos[i]++;
+                    for (int j = i + 1; j < r; j++)
+                        pos[j] = pos[i] + j - i;
+
                 }
-                index++;
-                return Arrays.copyOf(a, a.length);
+                count--;
+                return pos;
             }
 
             @Override

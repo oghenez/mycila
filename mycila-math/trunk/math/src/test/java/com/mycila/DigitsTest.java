@@ -81,10 +81,25 @@ public final class DigitsTest {
 
     @Test
     public void test_concat() {
-        assertEquals(Digits.base(10).concat(0, 1, 2, 3), 123);
-        assertEquals(Digits.base(10).concat(0, 12, 233, 677), 12233677);
-        assertEquals(Digits.base(10).concat(0, 0, 1, 0, 0, 1, 0, 0), 100100);
-
+        assertEquals(Digits.base(10).concatInt(0, 1, 2, 3), 123);
+        assertEquals(Digits.base(10).concatInt(0, 12, 233, 677), 12233677);
+        assertEquals(Digits.base(10).concatInt(0, 0, 1, 0, 0, 1, 0, 0), 100100);
     }
 
+    @Test
+    public void test_concat_perf() {
+        Digits digits = Digits.base(10);
+        final int MAX = 2222;
+        long time = System.currentTimeMillis();
+        for (int j = 0; j < MAX; j++)
+            for (int i = 0; i < MAX; i++)
+                digits.concatInt(i, j);
+        System.out.println(System.currentTimeMillis() - time);
+
+        time = System.currentTimeMillis();
+        for (int j = 0; j < MAX; j++)
+            for (int i = 0; i < MAX; i++)
+                Integer.parseInt(i + "" + j);
+        System.out.println(System.currentTimeMillis() - time);
+    }
 }

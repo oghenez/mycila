@@ -15,14 +15,10 @@
  */
 package euler;
 
-import com.mycila.Digits;
-import com.mycila.PrimaltyTest;
 import com.mycila.Sieve;
-import com.mycila.combination.Combinations;
 import com.mycila.sequence.IntSequence;
 
 import static java.lang.System.*;
-import java.util.List;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=60
@@ -35,39 +31,49 @@ class Problem060 {
         final long time = currentTimeMillis();
 
         final int SELECTION_SIZE = 5;
-        final Digits digits = Digits.base(10);
+        final Sieve sieve = Sieve.to(9999);
 
-        // all combinations to select a couple of prime amongst the set size
-        final List<int[]> couples = Combinations.combinations(SELECTION_SIZE, 2).asList();
+        // remove primes which cannot be concatenated
+        IntSequence sequence = sieve.asSequence();
+        sequence.remove(2);
+        sequence.remove(0);
+        final int[] primes = sequence.toNativeArray();
 
-        // in the sieve, we skip primes at index 0 and 2:
-        // there are 2 and 5, and they cannot be used in a concatenation
-        final IntSequence primes = Sieve.to(100000).asSequence();
-        primes.remove(2);
-        primes.remove(0);
-
-        for (int[] primesPosition : Combinations.combinations(primes.size(), SELECTION_SIZE)) {
-            boolean found = true;
-            for (int[] couplePositions : couples) {
-                final int p1 = primes.getQuick(primesPosition[couplePositions[0]]);
-                final int p2 = primes.getQuick(primesPosition[couplePositions[1]]);
-                if (!PrimaltyTest.trialDivision(digits.concat(p1, p2))
-                        || !PrimaltyTest.trialDivision(digits.concat(p2, p1))) {
-                    found = false;
-                    break;
+        main:
+        for (int p1 = 0, p1max = primes.length - SELECTION_SIZE; p1 < p1max; p1++) {
+            for (int p2 = p1 + 1, p2max = p1max + 1; p2 < p2max; p2++) {
+                if (!sieve.isPrime(Integer.parseInt(primes[p1] + "" + primes[p2]))
+                        || !sieve.isPrime(Integer.parseInt(primes[p2] + "" + primes[p1]))) continue;
+                for (int p3 = p2 + 1, p3max = p2max + 1; p3 < p3max; p3++) {
+                    if (!sieve.isPrime(Integer.parseInt(primes[p1] + "" + primes[p3]))
+                            || !sieve.isPrime(Integer.parseInt(primes[p3] + "" + primes[p1]))
+                            || !sieve.isPrime(Integer.parseInt(primes[p2] + "" + primes[p3]))
+                            || !sieve.isPrime(Integer.parseInt(primes[p3] + "" + primes[p2]))) continue;
+                    for (int p4 = p3 + 1, p4max = p3max + 1; p4 < p4max; p4++) {
+                        if (!sieve.isPrime(Integer.parseInt(primes[p1] + "" + primes[p4]))
+                                || !sieve.isPrime(Integer.parseInt(primes[p2] + "" + primes[p4]))
+                                || !sieve.isPrime(Integer.parseInt(primes[p3] + "" + primes[p4]))
+                                || !sieve.isPrime(Integer.parseInt(primes[p4] + "" + primes[p1]))
+                                || !sieve.isPrime(Integer.parseInt(primes[p4] + "" + primes[p2]))
+                                || !sieve.isPrime(Integer.parseInt(primes[p4] + "" + primes[p3]))) continue;
+                        for (int p5 = p4 + 1, p5max = p4max + 1; p5 < p5max; p5++) {
+                            if (!sieve.isPrime(Integer.parseInt(primes[p1] + "" + primes[p5]))
+                                    || !sieve.isPrime(Integer.parseInt(primes[p2] + "" + primes[p5]))
+                                    || !sieve.isPrime(Integer.parseInt(primes[p3] + "" + primes[p5]))
+                                    || !sieve.isPrime(Integer.parseInt(primes[p4] + "" + primes[p5]))
+                                    || !sieve.isPrime(Integer.parseInt(primes[p5] + "" + primes[p1]))
+                                    || !sieve.isPrime(Integer.parseInt(primes[p5] + "" + primes[p2]))
+                                    || !sieve.isPrime(Integer.parseInt(primes[p5] + "" + primes[p3]))
+                                    || !sieve.isPrime(Integer.parseInt(primes[p5] + "" + primes[p4]))) continue;
+                            System.out.println(primes[p1] + " " + primes[p2] + " " + primes[p3] + " " + primes[p4] + " " + primes[p5] + " => " +
+                                    (primes[p1] + primes[p2] + primes[p3] + primes[p4] + primes[p5]));
+                            break main;
+                        }
+                    }
                 }
             }
-            if (found) {
-                int sum = 0;
-                for (int pos : primesPosition)
-                    sum += primes.getQuick(pos);
-
-                StringBuilder sb = new StringBuilder().append(sum).append(":");
-                for (int pos : primesPosition)
-                    sb.append(" ").append(primes.getQuick(pos));
-                System.out.println(sb.append(" in ").append(currentTimeMillis() - time).append("ms"));
-            }
         }
+        System.out.println("in " + (System.currentTimeMillis() - time) + "ms");
     }
 
 }

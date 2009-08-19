@@ -28,10 +28,12 @@ public final class Digits {
 
     private final int base;
     private final BigInteger bigBase;
+    private final double logBase;
 
     private Digits(int base) {
         this.base = base;
         this.bigBase = BigInteger.valueOf(base);
+        this.logBase = Math.log(base);
     }
 
     public boolean allDifferents(long number, int length) {
@@ -144,15 +146,25 @@ public final class Digits {
     }
 
     public int length(long number) {
-        if (number < 0) number = -number;
-        return number == 0 ? 1 : (int) (Math.floor(Math.log(number) / Math.log(10))) + 1;
+        return number == 0 ? 1 : (int) (Math.floor(Math.log(number) / logBase)) + 1;
     }
 
-    public long concat(long... numbers) {
-        long res = numbers[0];
-        for (int i = 1, max = numbers.length; i < max; i++)
-            res = res * (long) Math.pow(base, length(numbers[i])) + numbers[i];
-        return res;
+    public int length(int number) {
+        return number == 0 ? 1 : (int) (Math.floor(Math.log(number) / logBase)) + 1;
+    }
+
+    public int concatInt(int number, int... numbers) {
+        final StringBuilder sb = new StringBuilder().append(number);
+        for (int i = 0, max = numbers.length; i < max; i++)
+            sb.append(numbers[i]);
+        return Integer.parseInt(sb.toString());
+    }
+
+    public long concatLong(long number, long... numbers) {
+        final StringBuilder sb = new StringBuilder().append(number);
+        for (int i = 0, max = numbers.length; i < max; i++)
+            sb.append(numbers[i]);
+        return Long.parseLong(sb.toString());
     }
 
     public static Digits base(int base) {

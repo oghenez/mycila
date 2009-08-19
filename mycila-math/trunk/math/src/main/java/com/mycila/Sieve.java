@@ -30,10 +30,13 @@ import java.util.List;
 public final class Sieve implements Iterable<Integer> {
 
     private int[] primes;
+    private final int maxPrime;
 
     private Sieve(int min, int max) {
-        if (max < 2) primes = new int[0];
-        else {
+        if (max < 2) {
+            primes = new int[0];
+            maxPrime = 0;
+        } else {
             final int bounds = (max - 1) >> 1;
             final BitSet sieve = new BitSet(bounds + 1);
             for (int i = 1, limit = ((int) Math.sqrt(max) - 1) >> 1; i <= limit; i++)
@@ -51,19 +54,16 @@ public final class Sieve implements Iterable<Integer> {
             }
             if (pos != primes.length)
                 primes = Arrays.copyOf(primes, pos);
+            maxPrime = primes[primes.length - 1];
         }
     }
 
     private Sieve(int[] array) {
         this.primes = array;
-    }
-
-    public boolean isPrime(int number) {
-        return isPrime(number, primes, primes.length);
+        maxPrime = primes[primes.length - 1];
     }
 
     public Sieve growTo(int number) {
-        final int maxPrime = primes[primes.length - 1];
         if ((number & 1) == 0) number--;
         if (maxPrime >= number) return this;
         int maxNum = maxPrime * maxPrime;
@@ -86,7 +86,6 @@ public final class Sieve implements Iterable<Integer> {
         int pos = primes.length;
         final int max = pos + numberOfPrimesToAdd;
         final int[] newPrimes = Arrays.copyOf(primes, max);
-        final int maxPrime = primes[primes.length - 1];
         final int maxNum = maxPrime * maxPrime;
         int p = maxPrime + 2;
         for (; p < maxNum && pos < max; p += 2) {
@@ -103,6 +102,12 @@ public final class Sieve implements Iterable<Integer> {
     @Override
     public Iterator<Integer> iterator() {
         return ReadOnlySequenceIterator.on(primes);
+    }
+
+    public boolean isPrime(int number) {
+        return number <= maxPrime ?
+                Arrays.binarySearch(primes, number) >= 0 :
+                isPrime(number, primes, primes.length);
     }
 
     public int size() {
