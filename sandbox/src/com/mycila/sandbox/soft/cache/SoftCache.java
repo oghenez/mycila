@@ -13,9 +13,15 @@ public final class SoftCache<K, V> implements Cache<K, V> {
 
     private final Provider<K, V> provider;
     private final Map<K, V> cache = new SoftHashMap<K, V>();
+    private final boolean allowNULL;
 
     public SoftCache(Provider<K, V> provider) {
+        this(provider, true);
+    }
+
+    public SoftCache(Provider<K, V> provider, boolean allowNULL) {
         this.provider = provider;
+        this.allowNULL = allowNULL;
     }
 
     @Override
@@ -41,7 +47,8 @@ public final class SoftCache<K, V> implements Cache<K, V> {
     @SuppressWarnings({"unchecked"})
     private V fetched(K key) {
         V value = provider.fetch(key);
-        cache.put(key, value == null ? (V) NULL_VALUE : value);
+        if (value == null && allowNULL) cache.put(key, (V) NULL_VALUE);
+        else if (value != null) cache.put(key, value);
         return value;
     }
 
