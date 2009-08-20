@@ -332,7 +332,7 @@ public final class SoftHashMap<K, V> extends AbstractMap<K, V> {
         }
 
         public K getKey() {
-            return SoftHashMap.<K>unmaskNull(get());
+            return SoftHashMap.unmaskNull(get());
         }
 
         public V getValue() {
@@ -464,13 +464,14 @@ public final class SoftHashMap<K, V> extends AbstractMap<K, V> {
 
         public Object[] toArray() {
             Collection<K> c = new ArrayList<K>(size());
-            for (Iterator<K> i = iterator(); i.hasNext();) c.add(i.next());
+            for (K v: this) c.add(v);
             return c.toArray();
         }
 
+        @SuppressWarnings({"SuspiciousToArrayCall"})
         public <T> T[] toArray(T[] a) {
             Collection<K> c = new ArrayList<K>(size());
-            for (Iterator<K> i = iterator(); i.hasNext();) c.add(i.next());
+            for (K v: this) c.add(v);
             return c.toArray(a);
         }
     }
@@ -494,13 +495,14 @@ public final class SoftHashMap<K, V> extends AbstractMap<K, V> {
 
         public Object[] toArray() {
             Collection<V> c = new ArrayList<V>(size());
-            for (Iterator<V> i = iterator(); i.hasNext();) c.add(i.next());
+            for (V v: this) c.add(v);
             return c.toArray();
         }
 
+        @SuppressWarnings({"SuspiciousToArrayCall"})
         public <T> T[] toArray(T[] a) {
             Collection<V> c = new ArrayList<V>(size());
-            for (Iterator<V> i = iterator(); i.hasNext();) c.add(i.next());
+            for (V v: this) c.add(v);
             return c.toArray(a);
         }
     }
@@ -531,15 +533,14 @@ public final class SoftHashMap<K, V> extends AbstractMap<K, V> {
 
         public Object[] toArray() {
             Collection<Map.Entry<K, V>> c = new ArrayList<Map.Entry<K, V>>(size());
-            for (Iterator<Map.Entry<K, V>> i = iterator(); i.hasNext();)
-                c.add(new SimpleEntry<K, V>(i.next()));
+            for (Map.Entry<K, V> entry: this) c.add(new SimpleEntry<K, V>(entry));
             return c.toArray();
         }
 
+        @SuppressWarnings({"SuspiciousToArrayCall"})
         public <T> T[] toArray(T[] a) {
             Collection<Map.Entry<K, V>> c = new ArrayList<Map.Entry<K, V>>(size());
-            for (Iterator<Map.Entry<K, V>> i = iterator(); i.hasNext();)
-                c.add(new SimpleEntry<K, V>(i.next()));
+            for (Map.Entry<K, V> entry: this) c.add(new SimpleEntry<K, V>(entry));
             return c.toArray(a);
         }
     }
