@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.Figurate;
+import com.mycila.Polygon;
 
 import static java.lang.System.*;
 
@@ -28,14 +28,14 @@ class Problem045 {
     public static void main(String[] args) throws Exception {
         final long time = currentTimeMillis();
         for (int i = 286; ; i++) {
-            final long ti = Figurate.triangle(i);
-            final long n = Figurate.isHexagonal(ti);
-            final long m = Figurate.isPentagonal(ti);
+            final long ti = Polygon.triangle(i);
+            final long n = Polygon.isHexagonal(ti);
+            final long m = Polygon.isPentagonal(ti);
             if (n != -1 && m != -1) {
                 out.println("T(" + i + ")=P(" + m + ")=H(" + n + ")=" + ti);
-                out.println("T(" + i + ")=" + Figurate.triangle(i));
-                out.println("P(" + m + ")=" + Figurate.pentagonal(m));
-                out.println("H(" + n + ")=" + Figurate.hexagonal(n));
+                out.println("T(" + i + ")=" + Polygon.triangle(i));
+                out.println("P(" + m + ")=" + Polygon.pentagonal(m));
+                out.println("H(" + n + ")=" + Polygon.hexagonal(n));
                 out.println(" in " + (currentTimeMillis() - time) + "ms");
                 break;
             }

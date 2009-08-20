@@ -15,13 +15,16 @@
  */
 package com.mycila.sequence;
 
+import java.util.AbstractList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 /**
  * @author Mathieu Carbou
  */
-public final class IntSequence {
+public final class IntSequence implements Iterable<Integer> {
 
     private static final int DEFAULT_CAPACITY = 10;
 
@@ -42,13 +45,33 @@ public final class IntSequence {
         add(values);
     }
 
-    public void ensureCapacity(int capacity) {
+    public IntSequence ensureCapacity(int capacity) {
         if (capacity > data.length) {
             int newCap = Math.max(data.length << 1, capacity);
             int[] tmp = new int[newCap];
             System.arraycopy(data, 0, tmp, 0, data.length);
             data = tmp;
         }
+        return this;
+    }
+
+    public List<Integer> asList() {
+        return new AbstractList<Integer>() {
+            @Override
+            public Integer get(int index) {
+                return IntSequence.this.get(index);
+            }
+
+            @Override
+            public int size() {
+                return pos;
+            }
+        };
+    }
+
+    @Override
+    public Iterator<Integer> iterator() {
+        return ReadOnlySequenceIterator.on(data, pos);
     }
 
     public int[] internalArray() {
@@ -77,12 +100,13 @@ public final class IntSequence {
      * Sheds any excess capacity above and beyond the current size of
      * the list.
      */
-    public void trimToSize() {
+    public IntSequence trimToSize() {
         if (data.length > size()) {
             int[] tmp = new int[size()];
             toNativeArray(tmp, 0, tmp.length);
             data = tmp;
         }
+        return this;
     }
 
     // modifying
@@ -92,21 +116,25 @@ public final class IntSequence {
      *
      * @param val an <code>int</code> value
      */
-    public void add(int val) {
+    public IntSequence add(int val) {
         ensureCapacity(pos + 1);
         data[pos++] = val;
+        return this;
     }
 
-    public void addQuick(int val) {
+    public IntSequence addQuick(int val) {
         data[pos++] = val;
+        return this;
     }
 
-    public void addFirst(int val) {
+    public IntSequence addFirst(int val) {
         insert(0, val);
+        return this;
     }
 
-    public void addLast(int val) {
+    public IntSequence addLast(int val) {
         add(val);
+        return this;
     }
 
     public int first() {
@@ -125,18 +153,25 @@ public final class IntSequence {
         return data[pos - 1];
     }
 
+    public IntSequence addIfMissing(int n) {
+        if (lastIndexOf(pos, n) != -1) add(n);
+        return this;
+    }
+
     /**
      * Adds the values in the array <tt>vals</tt> to the end of the
      * list, in order.
      *
      * @param vals an <code>int[]</code> value
      */
-    public void add(int[] vals) {
+    public IntSequence add(int[] vals) {
         add(0, vals.length, vals);
+        return this;
     }
 
-    public void addAll(int... vals) {
+    public IntSequence addAll(int... vals) {
         add(0, vals.length, vals);
+        return this;
     }
 
     /**
@@ -147,10 +182,11 @@ public final class IntSequence {
      * @param offset the offset at which to start copying
      * @param length the number of values to copy.
      */
-    public void add(int offset, int length, int... vals) {
+    public IntSequence add(int offset, int length, int... vals) {
         ensureCapacity(pos + length);
         System.arraycopy(vals, offset, data, pos, length);
         pos += length;
+        return this;
     }
 
     /**
@@ -161,10 +197,10 @@ public final class IntSequence {
      * @param offset an <code>int</code> value
      * @param value  an <code>int</code> value
      */
-    public void insert(int offset, int value) {
+    public IntSequence insert(int offset, int value) {
         if (offset == pos) {
             add(value);
-            return;
+            return this;
         }
         ensureCapacity(pos + 1);
         // shift right
@@ -172,6 +208,7 @@ public final class IntSequence {
         // insert
         data[offset] = value;
         pos++;
+        return this;
     }
 
     /**
@@ -182,8 +219,9 @@ public final class IntSequence {
      * @param offset an <code>int</code> value
      * @param values an <code>int[]</code> value
      */
-    public void insert(int offset, int[] values) {
+    public IntSequence insert(int offset, int[] values) {
         insert(offset, 0, values.length, values);
+        return this;
     }
 
     /**
@@ -197,10 +235,10 @@ public final class IntSequence {
      *                  start copying.
      * @param len       the number of values to copy from the values array
      */
-    public void insert(int offset, int valOffset, int len, int... values) {
+    public IntSequence insert(int offset, int valOffset, int len, int... values) {
         if (offset == pos) {
             add(valOffset, len, values);
-            return;
+            return this;
         }
 
         ensureCapacity(pos + len);
@@ -209,6 +247,7 @@ public final class IntSequence {
         // insert
         System.arraycopy(values, valOffset, data, offset, len);
         pos += len;
+        return this;
     }
 
     /**
@@ -241,11 +280,12 @@ public final class IntSequence {
      * @param offset an <code>int</code> value
      * @param val    an <code>int</code> value
      */
-    public void set(int offset, int val) {
+    public IntSequence set(int offset, int val) {
         if (offset >= pos) {
             throw new ArrayIndexOutOfBoundsException(offset);
         }
         data[offset] = val;
+        return this;
     }
 
     /**
@@ -272,8 +312,9 @@ public final class IntSequence {
      * @param offset the first offset to replace
      * @param values the source of the new values
      */
-    public void set(int offset, int... values) {
+    public IntSequence set(int offset, int... values) {
         set(offset, 0, values.length, values);
+        return this;
     }
 
     /**
@@ -286,11 +327,12 @@ public final class IntSequence {
      * @param valOffset the first value to copy from the values array
      * @param length    the number of values to copy
      */
-    public void set(int offset, int valOffset, int length, int... values) {
+    public IntSequence set(int offset, int valOffset, int length, int... values) {
         if (offset < 0 || offset + length > pos) {
             throw new ArrayIndexOutOfBoundsException(offset);
         }
         System.arraycopy(values, valOffset, data, offset, length);
+        return this;
     }
 
     /**
@@ -300,16 +342,18 @@ public final class IntSequence {
      * @param offset an <code>int</code> value
      * @param val    an <code>int</code> value
      */
-    public void setQuick(int offset, int val) {
+    public IntSequence setQuick(int offset, int val) {
         data[offset] = val;
+        return this;
     }
 
     /**
      * Flushes the internal state of the list, resetting the capacity
      * to the default.
      */
-    public void clear() {
+    public IntSequence clear() {
         clear(DEFAULT_CAPACITY);
+        return this;
     }
 
     /**
@@ -318,9 +362,10 @@ public final class IntSequence {
      *
      * @param capacity an <code>int</code> value
      */
-    public void clear(int capacity) {
+    public IntSequence clear(int capacity) {
         data = new int[capacity];
         pos = 0;
+        return this;
     }
 
     /**
@@ -331,9 +376,10 @@ public final class IntSequence {
      *
      * @see #clear
      */
-    public void reset() {
+    public IntSequence reset() {
         pos = 0;
         fill(0);
+        return this;
     }
 
     /**
@@ -350,8 +396,9 @@ public final class IntSequence {
      * @see #clear
      * @see #getQuick
      */
-    public void resetQuick() {
+    public IntSequence resetQuick() {
         pos = 0;
+        return this;
     }
 
     /**
@@ -373,7 +420,7 @@ public final class IntSequence {
      * @param offset an <code>int</code> value
      * @param length an <code>int</code> value
      */
-    public void remove(int offset, int length) {
+    public IntSequence remove(int offset, int length) {
         if (offset < 0 || offset >= pos) {
             throw new ArrayIndexOutOfBoundsException(offset);
         }
@@ -393,13 +440,15 @@ public final class IntSequence {
         // no need to clear old values beyond pos, because this is a
         // primitive collection and 0 takes as much room as any other
         // value
+        return this;
     }
 
     /**
      * Reverse the order of the elements in the list.
      */
-    public void reverse() {
+    public IntSequence reverse() {
         reverse(0, pos);
+        return this;
     }
 
     /**
@@ -408,9 +457,9 @@ public final class IntSequence {
      * @param from the inclusive index at which to start reversing
      * @param to   the exclusive index at which to stop reversing
      */
-    public void reverse(int from, int to) {
+    public IntSequence reverse(int from, int to) {
         if (from == to) {
-            return;             // nothing to do
+            return this;
         }
         if (from > to) {
             throw new IllegalArgumentException("trivial cannot be greater than to");
@@ -418,6 +467,7 @@ public final class IntSequence {
         for (int i = from, j = to - 1; i < j; i++, j--) {
             swap(i, j);
         }
+        return this;
     }
 
     /**
@@ -426,10 +476,11 @@ public final class IntSequence {
      *
      * @param rand a <code>Random</code> value
      */
-    public void shuffle(Random rand) {
+    public IntSequence shuffle(Random rand) {
         for (int i = pos; i-- > 1;) {
             swap(i, rand.nextInt(i));
         }
+        return this;
     }
 
     /**
@@ -514,18 +565,20 @@ public final class IntSequence {
      * @param offset the offset of the first value to copy
      * @param len    the number of values to copy.
      */
-    public void toNativeArray(int[] dest, int offset, int len) {
+    public IntSequence toNativeArray(int[] dest, int offset, int len) {
         if (len == 0) {
-            return;             // nothing to copy
+            return this;
         }
         if (offset < 0 || offset >= pos) {
             throw new ArrayIndexOutOfBoundsException(offset);
         }
         System.arraycopy(data, offset, dest, 0, len);
+        return this;
     }
 
-    public void copyInto(int[] dest, int offset) {
+    public IntSequence copyInto(int[] dest, int offset) {
         System.arraycopy(data, 0, dest, offset, pos);
+        return this;
     }
 
     // comparing
@@ -573,8 +626,9 @@ public final class IntSequence {
      *
      * @see java.util.Arrays#sort
      */
-    public void sort() {
+    public IntSequence sort() {
         Arrays.sort(data, 0, pos);
+        return this;
     }
 
     /**
@@ -585,8 +639,9 @@ public final class IntSequence {
      * @param toIndex   the index at which to stop sorting (exclusive)
      * @see java.util.Arrays#sort
      */
-    public void sort(int fromIndex, int toIndex) {
+    public IntSequence sort(int fromIndex, int toIndex) {
         Arrays.sort(data, fromIndex, toIndex);
+        return this;
     }
 
     // filling
@@ -596,8 +651,9 @@ public final class IntSequence {
      *
      * @param val the value to use when filling
      */
-    public void fill(int val) {
+    public IntSequence fill(int val) {
         Arrays.fill(data, 0, pos, val);
+        return this;
     }
 
     /**
@@ -607,12 +663,13 @@ public final class IntSequence {
      * @param toIndex   the offset at which to stop filling (exclusive)
      * @param val       the value to use when filling
      */
-    public void fill(int fromIndex, int toIndex, int val) {
+    public IntSequence fill(int fromIndex, int toIndex, int val) {
         if (toIndex > pos) {
             ensureCapacity(toIndex);
             pos = toIndex;
         }
         Arrays.fill(data, fromIndex, toIndex, val);
+        return this;
     }
 
     // searching
@@ -805,4 +862,5 @@ public final class IntSequence {
         for (int i = 0; i < pos; i++) sum += data[i];
         return sum;
     }
+
 }

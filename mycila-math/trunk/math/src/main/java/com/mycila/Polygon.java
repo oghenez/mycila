@@ -19,13 +19,22 @@ package com.mycila;
  * @author Mathieu Carbou
  */
 // http://en.wikipedia.org/wiki/Figurate_number
-public final class Figurate {
+public final class Polygon {
 
-    private Figurate() {
+    private Polygon() {
+    }
+
+    public static long square(long index) {
+        return index * index;
+    }
+
+    public static long isSquare(long number) {
+        double test = Math.sqrt(number);
+        return test == (long) test ? (long) test : -1;
     }
 
     public static long pentagonal(long index) {
-        return index * (3 * index - 1) >> 1;
+        return (index * (3 * index - 1)) >> 1;
     }
 
     public static long isPentagonal(long number) {
@@ -34,7 +43,7 @@ public final class Figurate {
     }
 
     public static long triangle(long index) {
-        return index * (index + 1) >> 1;
+        return (index * (index + 1)) >> 1;
     }
 
     public static long isTriangle(long number) {
@@ -48,6 +57,24 @@ public final class Figurate {
 
     public static long isHexagonal(long number) {
         double test = (Math.sqrt(1 + (number << 3)) + 1) / 4;
+        return test == (long) test ? (long) test : -1;
+    }
+
+    public static long heptagonal(long index) {
+        return (index * (5 * index - 3)) >> 1;
+    }
+
+    public static long isHeptagonal(long number) {
+        double test = (1.5 + Math.sqrt(2.25 + 10 * number)) / 5;
+        return test == (long) test ? (long) test : -1;
+    }
+
+    public static long octagonal(long index) {
+        return index * (3 * index - 2);
+    }
+
+    public static long isOctagonal(long number) {
+        double test = (1 + Math.sqrt(1 + 3 * number)) / 3;
         return test == (long) test ? (long) test : -1;
     }
 
