@@ -7,23 +7,35 @@ import java.util.Map;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class SoftCache<K, V> {
+public final class SoftCache<K, V> implements Cache<K, V> {
 
-    public static final long INFINITE = -1;
+    private static final Object NULL_VALUE = new Object();
 
     private final Provider<K, V> provider;
-    private static final Object NULL_VALUE = new Object();
     private final Map<K, V> cache = new SoftHashMap<K, V>();
 
     public SoftCache(Provider<K, V> provider) {
         this.provider = provider;
     }
 
+    @Override
     public V get(K key) {
         V val = cache.get(key);
         if (val == NULL_VALUE) return null;
         if (val != null) return val;
         return fetched(key);
+    }
+
+    @Override
+    public int size() {
+        return 0;
+    }
+
+    @Override
+    public void clear() {
+        synchronized (cache) {
+            cache.clear();
+        }
     }
 
     @SuppressWarnings({"unchecked"})
@@ -33,9 +45,4 @@ public final class SoftCache<K, V> {
         return value;
     }
 
-    public void clear() {
-        synchronized (cache) {
-            cache.clear();
-        }
-    }
 }
