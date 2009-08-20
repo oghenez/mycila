@@ -15,8 +15,8 @@
  */
 package euler;
 
+import com.mycila.Digits;
 import com.mycila.Sieve;
-import com.mycila.combination.Combinations;
 
 import static java.lang.System.*;
 
@@ -29,13 +29,14 @@ class Problem049 {
     public static void main(String[] args) throws Exception {
         long time = currentTimeMillis();
         // create a sieve up to maximum prime number having 4 digits
+        final Digits digits = Digits.base(10);
         final Sieve sieve = Sieve.to(9999);
         for (int i = 0, max = sieve.size(); i < max - 2; i++) {
             final int prime = sieve.get(i);
             if (prime > 1000 && prime < 9999
                     && sieve.contains(prime + 3330)
                     && sieve.contains(prime + 6660)
-                    && Combinations.arePermutations(prime, prime + 3330, prime + 6660))
+                    && digits.arePermutations(prime, prime + 3330, prime + 6660))
                 System.out.println(prime + " " + (prime + 3330) + " " + (prime + 6660));
         }
         out.println(" in " + (currentTimeMillis() - time) + "ms");

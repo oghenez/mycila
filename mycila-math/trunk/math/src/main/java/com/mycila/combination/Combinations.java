@@ -18,7 +18,6 @@ package com.mycila.combination;
 import com.mycila.Factorial;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 
 /**
  * @author Mathieu Carbou
@@ -38,22 +37,6 @@ public final class Combinations {
 
     public static CombinationSet combinations(int n, int r) {
         return new CombinationSet(n, r);
-    }
-
-    public static boolean arePermutations(int n1, int... numbers) {
-        final char[] first = ("" + n1).toCharArray();
-        final int length = first.length;
-        Arrays.sort(first);
-        for (int number : numbers) {
-            final char[] digits = ("" + number).toCharArray();
-            if (digits.length != length)
-                return false;
-            Arrays.sort(digits);
-            for (int i = 0; i < length; i++)
-                if (first[i] != digits[i])
-                    return false;
-        }
-        return true;
     }
 
 }
