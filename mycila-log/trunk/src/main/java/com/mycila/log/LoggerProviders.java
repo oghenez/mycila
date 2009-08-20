@@ -30,21 +30,6 @@ public final class LoggerProviders {
     }
 
     /**
-     * Provides Log4J Loggers
-     */
-    public static final LoggerProvider LOG4J = new Log4jLoggerProvider();
-
-    /**
-     * Provides JDK Loggers
-     */
-    public static final LoggerProvider JDK = new JDKLoggerProvider();
-
-    /**
-     * Provides an empty logger
-     */
-    public static final LoggerProvider NOP = new NopLoggerProvider();
-
-    /**
      * Caches Logger instances in a SoftHashMap so that garbadge collector can remove entries on memory demand.
      *
      * @param loggerProvider The LoggerProvider to cache
@@ -82,6 +67,27 @@ public final class LoggerProviders {
         } catch (Exception e) {
             throw new RuntimeException("Error loading class '" + className + "' defined for system property 'mycila.log.provider': " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * @return Log4J wrapper
+     */
+    public static LoggerProvider log4j() {
+        return Log4jLoggerProvider.get();
+    }
+
+    /**
+     * @return JDK Logging wrapper
+     */
+    public static LoggerProvider jdk() {
+        return JDKLoggerProvider.get();
+    }
+
+    /**
+     * @return NO OP wrapper, to disable logging
+     */
+    public static LoggerProvider nop() {
+        return NopLoggerProvider.get();
     }
 
 }

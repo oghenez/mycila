@@ -19,8 +19,6 @@ import com.mycila.log.AbstractLogger;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import java.text.MessageFormat;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
@@ -53,19 +51,19 @@ public final class Log4jLogger extends AbstractLogger {
     protected void doLog(com.mycila.log.Level level, Throwable throwable, String message, Object... args) {
         switch (level) {
             case TRACE:
-                logger.log(Level.TRACE, MessageFormat.format(message, args), throwable);
+                logger.log(Level.TRACE, String.format(message, args), throwable);
                 break;
             case DEBUG:
-                logger.log(Level.DEBUG, MessageFormat.format(message, args), throwable);
+                logger.log(Level.DEBUG, String.format(message, args), throwable);
                 break;
             case INFO:
-                logger.log(Level.INFO, MessageFormat.format(message, args), throwable);
+                logger.log(Level.INFO, String.format(message, args), throwable);
                 break;
             case WARN:
-                logger.log(Level.WARN, MessageFormat.format(message, args), throwable);
+                logger.log(Level.WARN, String.format(message, args), throwable);
                 break;
             case ERROR:
-                logger.log(Level.ERROR, MessageFormat.format(message, args), throwable);
+                logger.log(Level.ERROR, String.format(message, args), throwable);
                 break;
             default:
 

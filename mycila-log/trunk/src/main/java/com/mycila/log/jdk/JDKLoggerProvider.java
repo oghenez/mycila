@@ -27,7 +27,9 @@ import java.util.logging.LogManager;
  */
 public final class JDKLoggerProvider implements LoggerProvider {
 
-    public JDKLoggerProvider() {
+    private static final LoggerProvider INSTANCE = new JDKLoggerProvider();
+
+    private JDKLoggerProvider() {
         URL config = Thread.currentThread().getContextClassLoader().getResource("logging.properties");
         if (config != null) {
             try {
@@ -41,4 +43,9 @@ public final class JDKLoggerProvider implements LoggerProvider {
     public Logger get(String name) {
         return new JDKLogger(name);
     }
+
+    public static LoggerProvider get() {
+        return INSTANCE;
+    }
+        
 }

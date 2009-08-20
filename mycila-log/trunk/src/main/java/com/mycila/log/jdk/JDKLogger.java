@@ -17,7 +17,6 @@ package com.mycila.log.jdk;
 
 import com.mycila.log.AbstractLogger;
 
-import java.text.MessageFormat;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
@@ -72,7 +71,7 @@ public final class JDKLogger extends AbstractLogger {
     }
 
     private LogRecord buildLogRecord(Level level, Throwable throwable, String message, Object... args) {
-        LogRecord logRecord = new LogRecord(level, MessageFormat.format(message, args));
+        LogRecord logRecord = new LogRecord(level, String.format(message, args));
         logRecord.setLoggerName(logger.getName());
         logRecord.setSourceClassName(logger.getName());
         logRecord.setSourceMethodName(Thread.currentThread().getName());
