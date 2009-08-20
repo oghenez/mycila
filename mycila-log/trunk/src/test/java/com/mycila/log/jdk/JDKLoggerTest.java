@@ -27,38 +27,39 @@ import java.util.logging.LogManager;
  */
 public final class JDKLoggerTest {
 
+    static {Loggers.useJDK();}
+    
     @Test
     public void test_log_only_INFO_and_more_by_default() throws Exception {
         LogManager.getLogManager().reset();
         LogManager.getLogManager().readConfiguration();
         Logger logger = Loggers.get(JDKLoggerTest.class);
-        logger.trace("trace {0}", "arg");
-        logger.trace(new IllegalStateException("trace"), "trace {0}", "arg");
-        logger.debug("debug {0}", "arg");
-        logger.debug(new IllegalStateException("debug"), "debug {0}", "arg");
-        logger.info("info {0}", "arg");
-        logger.info(new IllegalStateException("info"), "info {0}", "arg");
-        logger.warn("warn {0}", "arg");
-        logger.warn(new IllegalStateException("warn"), "warn {0}", "arg");
-        logger.error("error {0}", "arg");
-        logger.error(new IllegalStateException("error"), "error {0}", "arg");
+        logger.trace("trace %s", "arg");
+        logger.trace(new IllegalStateException("trace"), "trace %s", "arg");
+        logger.debug("debug %s", "arg");
+        logger.debug(new IllegalStateException("debug"), "debug %s", "arg");
+        logger.info("info %s", "arg");
+        logger.info(new IllegalStateException("info"), "info %s", "arg");
+        logger.warn("warn %s", "arg");
+        logger.warn(new IllegalStateException("warn"), "warn %s", "arg");
+        logger.error("error %s", "arg");
+        logger.error(new IllegalStateException("error"), "error %s", "arg");
     }
 
     @Test
     public void test_custom_config() throws Exception {
         LogManager.getLogManager().reset();
-        Loggers.useJDK();
         Logger logger = Loggers.get(JDKLoggerTest.class);
-        logger.trace("trace {0}", "arg");
-        logger.trace(new IllegalStateException("trace"), "trace {0}", "arg");
-        logger.debug("debug {0}", "arg");
-        logger.debug(new IllegalStateException("debug"), "debug {0}", "arg");
-        logger.info("info {0}", "arg");
-        logger.info(new IllegalStateException("info"), "info {0}", "arg");
-        logger.warn("warn {0}", "arg");
-        logger.warn(new IllegalStateException("warn"), "warn {0}", "arg");
-        logger.error("error {0}", "arg");
-        logger.error(new IllegalStateException("error"), "error {0}", "arg");
+        logger.trace("trace %s", "arg");
+        logger.trace(new IllegalStateException("trace"), "trace %s", "arg");
+        logger.debug("debug %s", "arg");
+        logger.debug(new IllegalStateException("debug"), "debug %s", "arg");
+        logger.info("info %s", "arg");
+        logger.info(new IllegalStateException("info"), "info %s", "arg");
+        logger.warn("warn %s", "arg");
+        logger.warn(new IllegalStateException("warn"), "warn %s", "arg");
+        logger.error("error %s", "arg");
+        logger.error(new IllegalStateException("error"), "error %s", "arg");
     }
 
 }

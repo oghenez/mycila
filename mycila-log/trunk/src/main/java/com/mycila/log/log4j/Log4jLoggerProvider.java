@@ -22,7 +22,18 @@ import com.mycila.log.LoggerProvider;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class Log4jLoggerProvider implements LoggerProvider {
+
+    private static final LoggerProvider INSTANCE = new Log4jLoggerProvider();
+
+    private Log4jLoggerProvider() {
+    }
+
     public Logger get(String name) {
         return new Log4jLogger(name);
     }
+
+    public static LoggerProvider get() {
+        return INSTANCE;
+    }
+    
 }

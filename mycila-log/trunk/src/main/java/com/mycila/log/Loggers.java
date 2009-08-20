@@ -15,18 +15,21 @@
  */
 package com.mycila.log;
 
-import static com.mycila.log.LoggerProviders.*;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class Loggers {
 
-    private static LoggerProvider loggerProvider; static {
+    private static enum Usage {
+        NONE, LOG4J, CUSTOM, JDK
+    }
+
+    private static volatile Usage current;
+    private static volatile LoggerProvider loggerProvider; static {
         try {
             useSystemProperty();
         } catch (Exception e) {
-            useJDK();
+            useNone();
         }
     }
 
@@ -36,30 +39,40 @@ public final class Loggers {
     /**
      * Configure Mycila Logger to use JDK logging. This is the default behavior.
      */
-    public static void useJDK() {
-        use(cache(JDK));
+    public static synchronized void useJDK() {
+        if (current != Usage.JDK) {
+            current = Usage.JDK;
+            Loggers.loggerProvider = LoggerProviders.cache(LoggerProviders.jdk());
+        }
     }
 
     /**
      * Configure Mycila Logger to use Log4J
      */
-    public static void useLog4j() {
-        use(cache(LOG4J));
+    public static synchronized void useLog4j() {
+        if (current != Usage.LOG4J) {
+            current = Usage.LOG4J;
+            Loggers.loggerProvider = LoggerProviders.cache(LoggerProviders.log4j());
+        }
     }
 
     /**
      * Configure Mycila Logger to use no logger at all and thus won't log anything
      */
-    public static void useNone() {
-        use(cache(NOP));
+    public static synchronized void useNone() {
+        if (current != Usage.NONE) {
+            current = Usage.NONE;
+            Loggers.loggerProvider = LoggerProviders.cache(LoggerProviders.nop());
+        }
     }
 
     /**
      * Read the system property 'mycila.log.provider' to get the name of a class to instanciate,
      * which implementing {@link com.mycila.log.LoggerProvider}
      */
-    public static void useSystemProperty() {
-        use(cache(fromSystemProperty()));
+    public static synchronized void useSystemProperty() {
+        current = Usage.CUSTOM;
+        Loggers.loggerProvider = LoggerProviders.cache(LoggerProviders.fromSystemProperty());
     }
 
     /**
@@ -69,6 +82,7 @@ public final class Loggers {
      * @param loggerProvider The logger provider
      */
     public static synchronized void use(LoggerProvider loggerProvider) {
+        current = Usage.CUSTOM;
         Loggers.loggerProvider = loggerProvider;
     }
 

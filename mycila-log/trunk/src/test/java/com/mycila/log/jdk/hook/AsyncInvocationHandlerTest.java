@@ -27,6 +27,8 @@ import java.util.logging.LogManager;
  */
 public final class AsyncInvocationHandlerTest {
 
+    static {Loggers.useJDK();}
+    
     @Test
     public void test_concurrency() throws Exception {
 
@@ -48,7 +50,7 @@ public final class AsyncInvocationHandlerTest {
                         throw new RuntimeException(e.getMessage(), e);
                     }
                     for (int j = 0; j < 50; j++) {
-                        logger.info("Hello {0} - {1} !", format(i1), format(j));
+                        logger.info("Hello %s - %s !", format(i1), format(j));
                     }
                     doneSignal.countDown();
                 }
@@ -65,7 +67,7 @@ public final class AsyncInvocationHandlerTest {
                         throw new RuntimeException(e.getMessage(), e);
                     }
                     for (int j = 0; j < 50; j++) {
-                        logger.error("Hello {0} - {1} !", format(i1), format(j));
+                        logger.error("Hello %s - %s !", format(i1), format(j));
                     }
                     doneSignal.countDown();
                 }
