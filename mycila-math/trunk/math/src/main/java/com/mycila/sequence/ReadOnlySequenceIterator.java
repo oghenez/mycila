@@ -10,9 +10,11 @@ public final class ReadOnlySequenceIterator<T> implements Iterator<T> {
 
     private final Object array;
     private int current = 0;
+    private final int size;
 
-    private ReadOnlySequenceIterator(Object array) {
+    private ReadOnlySequenceIterator(Object array, int size) {
         this.array = array;
+        this.size = size;
     }
 
     @SuppressWarnings({"unchecked"})
@@ -28,18 +30,31 @@ public final class ReadOnlySequenceIterator<T> implements Iterator<T> {
 
     @Override
     public boolean hasNext() {
-        return current < Array.getLength(array);
+        return current < size;
     }
 
     public static <T> Iterator<T> on(T[] array) {
-        return new ReadOnlySequenceIterator<T>(array);
+        return new ReadOnlySequenceIterator<T>(array, array.length);
+    }
+
+    public static <T> Iterator<T> on(T[] array, int size) {
+        return new ReadOnlySequenceIterator<T>(array, size);
     }
 
     public static Iterator<Integer> on(int[] array) {
-        return new ReadOnlySequenceIterator<Integer>(array);
+        return new ReadOnlySequenceIterator<Integer>(array, array.length);
+    }
+
+    public static Iterator<Integer> on(int[] array, int size) {
+        return new ReadOnlySequenceIterator<Integer>(array, size);
     }
 
     public static Iterator<Long> on(long[] array) {
-        return new ReadOnlySequenceIterator<Long>(array);
+        return new ReadOnlySequenceIterator<Long>(array, array.length);
     }
+
+    public static Iterator<Long> on(long[] array, int size) {
+        return new ReadOnlySequenceIterator<Long>(array, size);
+    }
+
 }

@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.Figurate;
+import com.mycila.Polygon;
 import com.mycila.sequence.IntSequence;
 
 import static java.lang.System.*;
@@ -35,7 +35,7 @@ class Problem044 {
             pentagonals.add(pk);
             for (int j = k - 2; j >= 0; j--) {
                 final int d = pk - pentagonals.getQuick(j);
-                if (pentagonals.binarySearch(d) > 0 && Figurate.isPentagonal(pk + pentagonals.getQuick(j)) != -1) {
+                if (pentagonals.binarySearch(d) > 0 && Polygon.isPentagonal(pk + pentagonals.getQuick(j)) != -1) {
                     out.println(d + " in " + (currentTimeMillis() - time) + "ms");
                     return;
                 }

@@ -50,8 +50,7 @@ public final class Divisors {
                 }
             }
         }
-        list.sort();
-        return list;
+        return list.sort();
     }
 
     private static final int[] diff = {6, 4, 2, 4, 2, 4, 6, 2};
