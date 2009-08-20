@@ -3,6 +3,8 @@ package com.mycila.sandbox.soft.cache;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Provider<K, V> {
-    V fetch(K key);
+public interface Cache<K, V> {
+    V get(K key);
+    void clear();
+    int size();
 }
