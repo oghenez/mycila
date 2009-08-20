@@ -20,6 +20,7 @@ import com.mycila.sequence.IntProcedure;
 import com.mycila.sequence.IntSequence;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 /**
  * @author Mathieu Carbou
@@ -165,6 +166,35 @@ public final class Digits {
         for (int i = 0, max = numbers.length; i < max; i++)
             sb.append(numbers[i]);
         return Long.parseLong(sb.toString());
+    }
+
+    public int sort(int number) {
+        final int[] digits = new int[length(number)];
+        int i = 0;
+        do digits[i++] = number % base;
+        while ((number /= base) > 0);
+        Arrays.sort(digits);
+        int sorted = 0;
+        for (int digit : digits)
+            sorted = base * sorted + digit;
+        return sorted;
+    }
+
+    public int[] signature(int number) {
+        final int[] digits = new int[length(number)];
+        int i = 0;
+        do digits[i++] = (number % base);
+        while ((number /= base) > 0);
+        Arrays.sort(digits);
+        return digits;
+    }
+
+    public boolean arePermutations(final int number, final int... numbers) {
+        final int[] sign = signature(number);
+        for (int n : numbers)
+            if (!Arrays.equals(sign, signature(n)))
+                return false;
+        return true;
     }
 
     public static Digits base(int base) {

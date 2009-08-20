@@ -80,6 +80,36 @@ public final class DigitsTest {
     }
 
     @Test
+    public void test_sort() {
+        assertEquals(Digits.base(10).sort(0), 0);
+        assertEquals(Digits.base(10).sort(1), 1);
+        assertEquals(Digits.base(10).sort(2), 2);
+        assertEquals(Digits.base(10).sort(10), 1);
+        assertEquals(Digits.base(10).sort(11), 11);
+        assertEquals(Digits.base(10).sort(5678), 5678);
+        assertEquals(Digits.base(10).sort(9883442), 2344889);
+        assertEquals(Digits.base(10).sort(900002), 29);
+        assertEquals(Digits.base(10).sort(9002), 29);
+        assertEquals(Digits.base(10).sort(900200), 29);
+    }
+
+    @Test
+    public void test_signature() {
+        assertArrayEquals(Digits.base(10).signature(0), new int[]{0});
+        assertArrayEquals(Digits.base(10).signature(1), new int[]{1});
+        assertArrayEquals(Digits.base(10).signature(2), new int[]{2});
+        assertArrayEquals(Digits.base(10).signature(10), new int[]{0, 1});
+        assertArrayEquals(Digits.base(10).signature(11), new int[]{1, 1});
+        assertArrayEquals(Digits.base(10).signature(5678), new int[]{5, 6, 7, 8});
+        assertArrayEquals(Digits.base(10).signature(9883442), new int[]{2, 3, 4, 4, 8, 8, 9});
+        assertArrayEquals(Digits.base(10).signature(900002), new int[]{0, 0, 0, 0, 2, 9});
+        assertArrayEquals(Digits.base(10).signature(92), new int[]{2, 9});
+        assertArrayEquals(Digits.base(10).signature(902), new int[]{0, 2, 9});
+        assertArrayEquals(Digits.base(10).signature(920), new int[]{0, 2, 9});
+        assertArrayEquals(Digits.base(10).signature(92000), new int[]{0, 0, 0, 2, 9});
+    }
+
+    @Test
     public void test_concat() {
         assertEquals(Digits.base(10).concatInt(0, 1, 2, 3), 123);
         assertEquals(Digits.base(10).concatInt(0, 12, 233, 677), 12233677);
