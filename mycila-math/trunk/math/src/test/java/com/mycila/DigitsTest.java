@@ -54,13 +54,49 @@ public final class DigitsTest {
     }
 
     @Test
+    public void test_length_int() {
+        assertEquals(Digits.base(10).length(999999998), 9);
+        assertEquals(Digits.base(10).length(999999999), 9);
+        assertEquals(Digits.base(10).length(1000000000), 10);
+        assertEquals(Digits.base(10).length(1), 1);
+        assertEquals(Digits.base(10).length(0), 1);
+        assertEquals(Digits.base(10).length(999999), 6);
+        assertEquals(Digits.base(10).length(99998), 5);
+        assertEquals(Digits.base(10).length(99999), 5);
+        assertEquals(Digits.base(10).length(10000), 5);
+        assertEquals(Digits.base(10).length(10001), 5);
+        assertEquals(Digits.base(10).length(9998), 4);
+        assertEquals(Digits.base(10).length(9999), 4);
+        assertEquals(Digits.base(10).length(1000), 4);
+        assertEquals(Digits.base(10).length(1001), 4);
+        assertEquals(Digits.base(10).length(100), 3);
+        assertEquals(Digits.base(10).length(11), 2);
+        assertEquals(Digits.base(10).length(10), 2);
+        assertEquals(Digits.base(10).length(9), 1);
+    }
+
+    @Test
     public void test_length() {
+        assertEquals(Digits.base(10).length(9999999998L), 10);
         assertEquals(Digits.base(10).length(9999999999L), 10);
+        assertEquals(Digits.base(10).length(10000000000L), 11);
+        assertEquals(Digits.base(10).length(999999998), 9);
+        assertEquals(Digits.base(10).length(999999999), 9);
+        assertEquals(Digits.base(10).length(1000000000), 10);
         assertEquals(Digits.base(10).length(1), 1);
         assertEquals(Digits.base(10).length(0), 1);
         assertEquals(Digits.base(10).length(BigInteger.ZERO), 1);
         assertEquals(Digits.base(10).length(BigInteger.ONE), 1);
         assertEquals(Digits.base(10).length(BigInteger.valueOf(9999999999L)), 10);
+        assertEquals(Digits.base(10).length(BigInteger.valueOf(10000)), 5);
+        assertEquals(Digits.base(10).length(10000), 5);
+        assertEquals(Digits.base(10).length(1000), 4);
+        assertEquals(Digits.base(10).length(100), 3);
+        assertEquals(Digits.base(10).length(10), 2);
+        assertEquals(Digits.base(10).length(10000L), 5);
+        assertEquals(Digits.base(10).length(1000L), 4);
+        assertEquals(Digits.base(10).length(100L), 3);
+        assertEquals(Digits.base(10).length(10L), 2);
     }
 
     @Test
@@ -95,18 +131,18 @@ public final class DigitsTest {
 
     @Test
     public void test_signature() {
-        assertArrayEquals(Digits.base(10).signature(0), new int[]{0});
-        assertArrayEquals(Digits.base(10).signature(1), new int[]{1});
-        assertArrayEquals(Digits.base(10).signature(2), new int[]{2});
-        assertArrayEquals(Digits.base(10).signature(10), new int[]{0, 1});
-        assertArrayEquals(Digits.base(10).signature(11), new int[]{1, 1});
-        assertArrayEquals(Digits.base(10).signature(5678), new int[]{5, 6, 7, 8});
-        assertArrayEquals(Digits.base(10).signature(9883442), new int[]{2, 3, 4, 4, 8, 8, 9});
-        assertArrayEquals(Digits.base(10).signature(900002), new int[]{0, 0, 0, 0, 2, 9});
-        assertArrayEquals(Digits.base(10).signature(92), new int[]{2, 9});
-        assertArrayEquals(Digits.base(10).signature(902), new int[]{0, 2, 9});
-        assertArrayEquals(Digits.base(10).signature(920), new int[]{0, 2, 9});
-        assertArrayEquals(Digits.base(10).signature(92000), new int[]{0, 0, 0, 2, 9});
+        assertArrayEquals(Digits.base(10).signature(0).internalArray(), new int[]{0});
+        assertArrayEquals(Digits.base(10).signature(1).internalArray(), new int[]{1});
+        assertArrayEquals(Digits.base(10).signature(2).internalArray(), new int[]{2});
+        assertArrayEquals(Digits.base(10).signature(10).internalArray(), new int[]{0, 1});
+        assertArrayEquals(Digits.base(10).signature(11).internalArray(), new int[]{1, 1});
+        assertArrayEquals(Digits.base(10).signature(5678).internalArray(), new int[]{5, 6, 7, 8});
+        assertArrayEquals(Digits.base(10).signature(9883442).internalArray(), new int[]{2, 3, 4, 4, 8, 8, 9});
+        assertArrayEquals(Digits.base(10).signature(900002).internalArray(), new int[]{0, 0, 0, 0, 2, 9});
+        assertArrayEquals(Digits.base(10).signature(92).internalArray(), new int[]{2, 9});
+        assertArrayEquals(Digits.base(10).signature(902).internalArray(), new int[]{0, 2, 9});
+        assertArrayEquals(Digits.base(10).signature(920).internalArray(), new int[]{0, 2, 9});
+        assertArrayEquals(Digits.base(10).signature(92000).internalArray(), new int[]{0, 0, 0, 2, 9});
     }
 
     @Test

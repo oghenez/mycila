@@ -147,11 +147,17 @@ public final class Digits {
     }
 
     public int length(long number) {
-        return number == 0 ? 1 : (int) (Math.floor(Math.log(number) / logBase)) + 1;
+        if (number == 0) return 1;
+        int count = 0;
+        for (; number > 0; number /= base) count++;
+        return count;
     }
 
     public int length(int number) {
-        return number == 0 ? 1 : (int) (Math.floor(Math.log(number) / logBase)) + 1;
+        if (number == 0) return 1;
+        int count = 0;
+        for (; number > 0; number /= base) count++;
+        return count;
     }
 
     public int concatInt(int number, int... numbers) {
@@ -180,19 +186,24 @@ public final class Digits {
         return sorted;
     }
 
-    public int[] signature(int number) {
-        final int[] digits = new int[length(number)];
-        int i = 0;
-        do digits[i++] = (number % base);
+    public IntSequence signature(int number) {
+        final IntSequence digits = new IntSequence(length(number));
+        do digits.addQuick(number % base);
         while ((number /= base) > 0);
-        Arrays.sort(digits);
-        return digits;
+        return digits.sort();
+    }
+
+    public IntSequence signature(long number) {
+        final IntSequence digits = new IntSequence(length(number));
+        do digits.addQuick((int) (number % base));
+        while ((number /= base) > 0);
+        return digits.sort();
     }
 
     public boolean arePermutations(final int number, final int... numbers) {
-        final int[] sign = signature(number);
+        final IntSequence sign = signature(number);
         for (int n : numbers)
-            if (!Arrays.equals(sign, signature(n)))
+            if (!sign.equals(signature(n)))
                 return false;
         return true;
     }
