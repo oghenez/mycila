@@ -32,7 +32,6 @@ class Problem062 {
 
     public static void main(String[] args) throws Exception {
         final long time = currentTimeMillis();
-
         final Digits digits = Digits.base(10);
         Map<IntSequence, LongSequence> map = new HashMap<IntSequence, LongSequence>();
         for (long i = 3, cube = i * i * i; i <= 2097151; i++, cube = i * i * i) {
