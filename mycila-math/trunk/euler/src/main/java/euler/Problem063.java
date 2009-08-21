@@ -58,7 +58,7 @@ len(a^n)=n
 floor(log(a^n))+1=n
 floor(n*log(a))=n-1
 
-So for this problem, we do not need BigInteger or brute force at all. We just need to iterate over all n numbers starting at 1, and for each n we check the equality.
+So we just need to iterate over all n numbers starting at 1, and for each n we check the equality.
 Also, we can even reduce the search: we can see that for n = 3 it is obvious that 2^3, 3^3 won't give 3 digits. This is true for all a^n with a<=n.
 
 With the log, we can generalize:
