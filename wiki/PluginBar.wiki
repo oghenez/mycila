@@ -10,7 +10,7 @@
 
 *Manual*
  * [TestingAPI API]
- * [MycilaJunit Junit > 4.5 integration]
+ * [MycilaJunit Junit >= 4.5 integration]
  * [MycilaTestNG TestNG integration]
  * [MycilaCustom Custom integration]
  * [PluginDevelopment How to Create Plugins]
