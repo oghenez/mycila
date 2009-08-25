@@ -30,17 +30,11 @@ class Problem053 {
         long time = currentTimeMillis();
         int count = 0;
         final BigInteger LIMIT = BigInteger.valueOf(1000000);
-        final BigInteger HUNDRED = BigInteger.valueOf(100);
-        final BigInteger TWO = BigInteger.valueOf(2);
-        for (BigInteger n = BigInteger.valueOf(23); n.compareTo(HUNDRED) <= 0; n = n.add(BigInteger.ONE)) {
-            for (BigInteger p = TWO, max = n.shiftRight(1); p.compareTo(max) <= 0; p = p.add(BigInteger.ONE)) {
+        for (int n = 23; n <= 100; n++) {
+            for (int p = 2, max = n >> 1; p <= max; p++) {
                 final BigInteger c = Combinations.binomial(n, p);
-                if (c.compareTo(LIMIT) > 0) {
-                    BigInteger o = n.subtract(p);
-                    count += o.compareTo(p) == 0 ? 1 : 2;
-                    //if(o.compareTo(p) == 0) System.out.println(MessageFormat.format("1x C({0},{1})=C({0},{2})={3}", n, p, o, c));
-                    //else System.out.println(MessageFormat.format("2x C({0},{1})=C({0},{2})={3}", n, p, o, c));
-                }
+                if (c.compareTo(LIMIT) > 0)
+                    count += p << 1 == n ? 1 : 2;
             }
         }
         out.println(count + " in " + (currentTimeMillis() - time) + "ms");

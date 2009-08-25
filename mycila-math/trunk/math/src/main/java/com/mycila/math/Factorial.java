@@ -28,53 +28,61 @@ public final class Factorial {
      */
     private static final long[] factorials = new long[]
             {1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800,
-                    479001600, 6227020800l, 87178291200l, 1307674368000l, 20922789888000l,
-                    355687428096000l, 6402373705728000l, 121645100408832000l,
-                    2432902008176640000l};
-    private static final BigInteger TWENTY = valueOf(20);
+             479001600, 6227020800l, 87178291200l, 1307674368000l, 20922789888000l,
+             355687428096000l, 6402373705728000l, 121645100408832000l,
+             2432902008176640000l};
     private static final BigInteger TWO = valueOf(2);
 
     private Factorial() {
     }
 
     /**
-     * Compute the factorial of a number.
-     * <p/>
-     * <b>Implementation:</b>
-     * <p/>
-     * Uses the trivial algorithm
+     * Compute the factorial of a number by using a lookup table
      *
-     * @param number A positive number
+     * @param number A positive number, between 0 and 20
      * @return The factorial
+     * @throws ArithmeticException If the number is too big (> 20)
      */
-    public static long get(int number) {
+    public static long lookup(int number) throws ArithmeticException {
         if (number < 0 || number >= factorials.length)
             throw new ArithmeticException("Number too big:" + number);
         return factorials[number];
     }
 
     /**
-     * Compute the factorial of a number.
-     * <p/>
-     * <b>Implementation:</b>
-     * <p/>
-     * Uses the trivial algorithm
+     * Compute the factorial of a number by using a lookup table if the number is low, or
+     * the <a href="http://www.luschny.de/math/factorial/index.html">Split algorithm</a>
      *
-     * @param n A positive number
+     * @param number A positive number
      * @return The factorial
      */
-    public static BigInteger trivial(BigInteger n) {
-        if (n.signum() < 0)
-            throw new ArithmeticException("Invalid number:" + n);
-        if (n.compareTo(TWENTY) <= 0)
-            return valueOf(factorials[n.intValue()]);
-        BigInteger f = ONE;
-        while (n.signum() > 0) {
-            f = f.multiply(n);
-            n = n.subtract(ONE);
+    public static BigInteger get(int number) {
+        if (number <= 20) return valueOf(lookup(number));
+        BigInteger oddProduct = ONE;
+        BigInteger factorialProduct = oddProduct;
+        int exponentOfTwo = 0;
+        for (int i = 30 - Integer.numberOfLeadingZeros(number); i >= 0; i--) {
+            int m = number >>> i;
+            int k = m >>> 1;
+            exponentOfTwo += k;
+            oddProduct = oddProduct.multiply(oddProduct(k + 1, m));
+            factorialProduct = factorialProduct.multiply(oddProduct);
         }
-        return f;
+        return factorialProduct.multiply(TWO.pow(exponentOfTwo));
     }
+
+    private static BigInteger oddProduct(long n, long m) {
+        n = n | 1;       // Round n up to the next odd number
+        m = (m - 1) | 1; // Round m down to the next odd number
+        if (n > m) return ONE;
+        else if (n == m) return BigInteger.valueOf(n);
+        else {
+            long k = (n + m) >>> 1;
+            return oddProduct(n, k).multiply(oddProduct(k + 1, m));
+        }
+    }
+
+    //TODO: factorial for big integers: http://www.luschny.de/math/factorial/index.html + http://www.luschny.de/math/factorial/java/PrimeSieve.java.html
 
     /**
      * Computes <code>a! / b! for a > b</code>
@@ -112,55 +120,6 @@ public final class Factorial {
             a = a.subtract(ONE);
         }
         return res;
-    }
-
-    /**
-     * Compute the factorial of a number.
-     * <p/>
-     * <b>Implementation:</b>
-     * <p/>
-     * Uses the <a href="http://www.luschny.de/math/factorial/index.html">Split Recursive algorithm</a>
-     *
-     * @param n A positive number
-     * @return The factorial
-     */
-    public static BigInteger splitRecursive(BigInteger n) {
-        return new SplitRecursive().get(n);
-    }
-
-    private static final class SplitRecursive {
-
-        private BigInteger l = ONE;
-
-        private BigInteger get(BigInteger n) {
-            return l;
-
-            /*if (n.compareTo(TWO) < 0) return ONE;
-            BigInteger p = ONE, r = ONE;
-            n.bitLength()
-            int log2n = 63 - Long.numberOfLeadingZeros(n);
-            long h = 0, shift = 0, high = 1;
-            while (h != n) {
-                shift += h;
-                h = n >>> log2n--;
-                long len = high;
-                high = (h - 1) | 1;
-                len = (high - len) >> 1;
-                if (len > 0) {
-                    p *= product(len);
-                    r *= p;
-                }
-            }
-            return r << shift;*/
-        }
-
-        /*private long product(BigInteger n) {
-            long m = n >> 1;
-            if (m == 0) return l += 2;
-            if (n == 2) return (l += 2) * (l += 2);
-            return product(n - m) * product(m);
-        }*/
-        //TODO: factorial for big integers
     }
 
 }

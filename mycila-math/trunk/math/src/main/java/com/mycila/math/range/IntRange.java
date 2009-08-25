@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila;
+package com.mycila.math.range;
 
 /**
  * @author Mathieu Carbou
  */
-public final class Range {
+public final class IntRange {
+
+    private static final IntRange EMPTY = new IntRange(Integer.MAX_VALUE, Integer.MIN_VALUE);
+
     public final int from;
     public final int to;
 
-    private Range(int from, int to) {
+    private IntRange(int from, int to) {
         this.from = from;
         this.to = to;
     }
@@ -31,7 +34,8 @@ public final class Range {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Range range = (Range) o;
+        IntRange range = (IntRange) o;
+        if (o == EMPTY || this == EMPTY) return this == o;
         return !(from != range.from || to != range.to);
     }
 
@@ -42,13 +46,33 @@ public final class Range {
         return result;
     }
 
-    @Override
-    public String toString() {
-        return "[" + from + ", " + to + ']';
+    public boolean contains(int value) {
+        return from <= value && to >= value;
     }
 
-    public static Range range(int from, int to) {
-        return new Range(from, to);
+    public int length() {
+        return isEmpty() ? 0 : to - from + 1;
+    }
+
+    public boolean isEmpty() {
+        return this == EMPTY;
+    }
+
+    public IntRange extendTo(int to) {
+        return to > this.to ? new IntRange(from, to) : this;
+    }
+
+    @Override
+    public String toString() {
+        return isEmpty() ? "[]" : "[" + from + ", " + to + ']';
+    }
+
+    public static IntRange range(int from, int to) {
+        return new IntRange(from, to);
+    }
+
+    public static IntRange empty() {
+        return EMPTY;
     }
 
 }

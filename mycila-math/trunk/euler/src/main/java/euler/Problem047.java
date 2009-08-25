@@ -16,7 +16,7 @@
 package euler;
 
 import com.mycila.Decomposition;
-import com.mycila.Sieve;
+import com.mycila.math.prime.sieve.IntSieve;
 
 import static java.lang.System.*;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ class Problem047 {
         final int[] numbers = new int[4];
 
         // create a prime sieve to reuse it to find factors to avoid repeated calls of tial division
-        Sieve sieve = Sieve.to(100000);
+        IntSieve sieve = IntSieve.to(100000);
         int max = sieve.last();
 
         // check all numbers starting at 2*3*5*7 which is the first composite of 4 different primes

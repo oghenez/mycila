@@ -16,7 +16,7 @@
 package euler;
 
 import com.mycila.math.Polygon;
-import com.mycila.math.sequence.IntSequence;
+import com.mycila.math.list.IntSequence;
 
 import static java.lang.System.*;
 

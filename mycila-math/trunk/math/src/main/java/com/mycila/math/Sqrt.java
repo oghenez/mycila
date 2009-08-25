@@ -23,88 +23,36 @@ import static java.math.BigInteger.*;
  */
 public final class Sqrt {
 
-    private static final BigInteger TWO = valueOf(2);
-    private static final BigInteger THREE = valueOf(3);
-
     private Sqrt() {
     }
 
-    //TODO: add intsqrt from http://atoms.alife.co.uk/sqrt/index.html + execute tests + perf
-
-    /**
-     * Compute the <a href="http://en.wikipedia.org/wiki/Integer_square_root">integer square root</a> of a number.
-     * <p/>
-     * <b>Implementation:</b>
-     * <p/>
-     * Uses the <a href="http://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Binary_.28base_2.29">base 2 algorithm</a>
-     * <p/>
-     * <b>Notes:</b>
-     * <p/>
-     * Slower than <code>int sqrt = (int) (Math.sqrt(i));</code>
-     *
-     * @param number A positive number from 0 to {@link Integer#MAX_VALUE}
-     * @return The integer square root in an int
-     */
     public static int sqrtInt(int number) {
-        if (number < 2) return number;
-        int res = 0;
-        int one = 1 << 30;
-        while (one > number) one >>= 2;
-        while (one != 0) {
-            final int sum = res + one;
-            if (number < sum) res >>= 1;
-            else {
-                number -= sum;
-                res = (res >> 1) + one;
-            }
-            one >>= 2;
-        }
-        return res;
+        return (int) Math.sqrt(number);
     }
 
-    /**
-     * Compute the <a href="http://en.wikipedia.org/wiki/Integer_square_root">integer square root</a> of a number.
-     * <p/>
-     * <b>Implementation:</b>
-     * <p/>
-     * Uses the <a href="http://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Binary_.28base_2.29">base 2 algorithm</a>
-     * <p/>
-     * <b>Notes:</b>
-     * <p/>
-     * Slower than <code>long sqrt = (long) (Math.sqrt(i));</code>
-     *
-     * @param number A positive number from 0 to {@link Long#MAX_VALUE}
-     * @return The integer square root in an int
-     */
     public static long sqrtInt(long number) {
-        long res = 0;
-        long one = 1L << 62;
-        while (one > number) one >>= 2;
-        while (one != 0) {
-            final long sum = res + one;
-            if (number < sum) res >>= 1;
-            else {
-                number -= sum;
-                res = (res >> 1) + one;
-            }
-            one >>= 2;
-        }
-        return res;
+        return (long) Math.sqrt(number);
     }
 
     /**
      * Compute the <a href="http://en.wikipedia.org/wiki/Integer_square_root">integer square root</a> of a number.
      *
      * @param number A positive number
-     * @return The integer square root
+     * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>2</sup> + r = number</code>.
      */
-    public static BigInteger sqrtInt(BigInteger number) {
-        BigInteger square = BigInteger.ONE;
-        BigInteger delta = THREE;
-        while (square.compareTo(number) <= 0) {
-            square = square.add(delta);
-            delta = delta.add(TWO);
+    public static BigInteger[] sqrtInt(BigInteger number) {
+        if (number.signum() == 0 || number.equals(ONE)) return new BigInteger[]{number, ZERO};
+        BigInteger lastGuess = ZERO;
+        BigInteger guess = ONE.shiftLeft(number.bitLength() >> 1);
+        BigInteger test = lastGuess.subtract(guess);
+        BigInteger reminder = number.subtract(guess.pow(2));
+        while (test.signum() != 0 && !test.equals(ONE) || reminder.signum() < 0) {
+            lastGuess = guess;
+            guess = number.divide(guess).add(lastGuess).shiftRight(1);
+            test = lastGuess.subtract(guess);
+            reminder = number.subtract(guess.pow(2));
         }
-        return delta.shiftRight(1).subtract(BigInteger.ONE);
+        return new BigInteger[]{guess, reminder};
     }
+
 }

@@ -17,7 +17,7 @@ package euler;
 
 import com.mycila.math.Digits;
 import com.mycila.math.Factorial;
-import com.mycila.math.sequence.IntProcedure;
+import com.mycila.math.list.IntProcedure;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=34
@@ -30,11 +30,11 @@ class Problem034 {
         int s = 0;
         final Digits digits = Digits.base(10);
         for (int i = 100; i < 2540160; i++) {
-            final int[] sum = new int[]{0};
+            final long[] sum = new long[]{0};
             final int n = i;
             digits.each(i, new IntProcedure() {
                 public boolean execute(int digit) {
-                    sum[0] += Factorial.get(digit);
+                    sum[0] += Factorial.lookup(digit);
                     return sum[0] <= n;
                 }
             });

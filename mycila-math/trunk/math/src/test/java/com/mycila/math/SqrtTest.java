@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.math.BigInteger;
+import static java.math.BigInteger.*;
 
 /**
  * @author Mathieu Carbou
@@ -26,64 +27,24 @@ import java.math.BigInteger;
 public final class SqrtTest {
 
     @Test
-    public void test_sqrtInt() {
-        assertEquals(Sqrt.sqrtInt(0), 0);
-        assertEquals(Sqrt.sqrtInt(0L), 0L);
-        assertEquals(Sqrt.sqrtInt(1L), 1L);
-        assertEquals(Sqrt.sqrtInt(1), 1);
-        assertEquals(Sqrt.sqrtInt(3), 1);
-        assertEquals(Sqrt.sqrtInt(16), 4);
-        assertEquals(Sqrt.sqrtInt(36), 6);
-        assertEquals(Sqrt.sqrtInt(10000), 100);
-        assertEquals(Sqrt.sqrtInt(Integer.MAX_VALUE), 46340); // 2147483647
-        assertEquals(Sqrt.sqrtInt(Long.MAX_VALUE), 3037000499L); // 9223372036854775807
-
-        for (int i = 0; i < 10000000; i++) {
-            assertEquals(Sqrt.sqrtInt(i), (int) (Math.sqrt(i)));
-        }
-        for (long i = 10000000000L; i < 1000999999L; i++) {
-            assertEquals(Sqrt.sqrtInt(i), (long) (Math.sqrt(i)));
-        }
-    }
-
-    @Test
     public void test_sqrtInt_big() {
-        assertEquals(Sqrt.sqrtInt(BigInteger.valueOf(0)), BigInteger.valueOf(0));
-        assertEquals(Sqrt.sqrtInt(BigInteger.valueOf(1)), BigInteger.valueOf(1));
-        assertEquals(Sqrt.sqrtInt(BigInteger.valueOf(2)), BigInteger.valueOf(1));
-        assertEquals(Sqrt.sqrtInt(BigInteger.valueOf(3)), BigInteger.valueOf(1));
-        assertEquals(Sqrt.sqrtInt(BigInteger.valueOf(4)), BigInteger.valueOf(2));
-        assertEquals(Sqrt.sqrtInt(BigInteger.valueOf(5)), BigInteger.valueOf(2));
-        assertEquals(Sqrt.sqrtInt(BigInteger.valueOf(Integer.MAX_VALUE)), BigInteger.valueOf(46340));
-        assertEquals(Sqrt.sqrtInt(new BigInteger("15241578750190521")), new BigInteger("123456789"));
-        assertEquals(Sqrt.sqrtInt(new BigInteger("15241578750190530")), new BigInteger("123456789"));
-    }
-
-    @Test
-    public void test_sqrtInt_perf() {
-        long time = System.currentTimeMillis();
-        for (int i = 0; i < 100000000; i++) {
-            int a = Sqrt.sqrtInt(i);
-        }
-        System.out.println(System.currentTimeMillis() - time);
-
-        time = System.currentTimeMillis();
-        for (long i = 10000000000L; i < 10000999999L; i++) {
-            long a = Sqrt.sqrtInt(i);
-        }
-        System.out.println(System.currentTimeMillis() - time);
-
-        time = System.currentTimeMillis();
-        for (int i = 0; i < 100000000; i++) {
-            int sqrt = (int) (Math.sqrt(i));
-        }
-        System.out.println(System.currentTimeMillis() - time);
-
-        time = System.currentTimeMillis();
-        for (long i = 10000000000L; i < 10000999999L; i++) {
-            long sqrt = (long) (Math.sqrt(i));
-        }
-        System.out.println(System.currentTimeMillis() - time);
+        assertEquals(Sqrt.sqrtInt(valueOf(0))[0], valueOf(0));
+        assertEquals(Sqrt.sqrtInt(valueOf(1))[0], valueOf(1));
+        assertEquals(Sqrt.sqrtInt(valueOf(2))[0], valueOf(1));
+        assertEquals(Sqrt.sqrtInt(valueOf(3))[0], valueOf(1));
+        assertEquals(Sqrt.sqrtInt(valueOf(4))[0], valueOf(2));
+        assertEquals(Sqrt.sqrtInt(valueOf(5))[0], valueOf(2));
+        assertEquals(Sqrt.sqrtInt(valueOf(Integer.MAX_VALUE))[0], valueOf(46340));
+        assertEquals(Sqrt.sqrtInt(new BigInteger("15241578750190521"))[0], new BigInteger("123456789"));
+        assertEquals(Sqrt.sqrtInt(new BigInteger("15241578750190521"))[1], ZERO);
+        assertEquals(Sqrt.sqrtInt(new BigInteger("15241578750190530"))[0], new BigInteger("123456789"));
+        assertEquals(Sqrt.sqrtInt(new BigInteger("15241578750190530"))[1], new BigInteger("9"));
+        for (int i = 0; i < 1000000; i++)
+            assertEquals("" + i, Sqrt.sqrtInt(BigInteger.valueOf(i))[0], BigInteger.valueOf((int) Math.sqrt(i)));
+        for (int i = Integer.MAX_VALUE - 1000000; i < Integer.MAX_VALUE; i++)
+            assertEquals("" + i, Sqrt.sqrtInt(BigInteger.valueOf(i))[0], BigInteger.valueOf((int) Math.sqrt(i)));
+        for (long i = Long.MAX_VALUE - 1000000; i < Long.MAX_VALUE; i++)
+            assertEquals("" + i, Sqrt.sqrtInt(BigInteger.valueOf(i))[0], BigInteger.valueOf((long) Math.sqrt(i)));
     }
 
 }

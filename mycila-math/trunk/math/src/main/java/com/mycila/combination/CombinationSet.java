@@ -18,7 +18,7 @@ public final class CombinationSet implements Iterable<int[]> {
     }
 
     public long size() {
-        return Combinations.binomial(n, r);
+        return Combinations.binomialLong(n, r);
     }
 
     public List<int[]> asList() {

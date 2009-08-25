@@ -15,8 +15,8 @@
  */
 package com.mycila.math;
 
-import com.mycila.math.sequence.IntSequence;
-import com.mycila.math.sequence.LongSequence;
+import com.mycila.math.list.IntSequence;
+import com.mycila.math.list.LongSequence;
 
 import java.math.BigInteger;
 

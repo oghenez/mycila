@@ -16,8 +16,8 @@
 package euler;
 
 import com.mycila.math.Digits;
-import com.mycila.math.sequence.IntSequence;
-import com.mycila.math.sequence.LongSequence;
+import com.mycila.math.list.IntSequence;
+import com.mycila.math.list.LongSequence;
 
 import static java.lang.System.*;
 import java.util.HashMap;

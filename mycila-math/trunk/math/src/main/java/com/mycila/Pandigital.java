@@ -15,6 +15,8 @@
  */
 package com.mycila;
 
+import com.mycila.math.range.IntRange;
+
 /**
  * @author Mathieu Carbou
  */
@@ -40,8 +42,8 @@ public final class Pandigital {
         return (bitset & mask) == mask;
     }
 
-    public Range range(long number) {
-        if (number == 0) return Range.range(0, 0);
+    public IntRange range(long number) {
+        if (number == 0) return IntRange.range(0, 0);
         int bitset = 0;
         for (; number > 0; number /= base) {
             int digit = (int) (number % base);
@@ -54,7 +56,7 @@ public final class Pandigital {
         for (; mask <= 512 && (bitset & mask) == 0; mask <<= 1) from++;
         int to = from;
         for (; mask <= 512 && (bitset & mask) == mask; mask <<= 1) to++;
-        return (bitset >> to) == 0 ? Range.range(from, to - 1) : null;
+        return (bitset >> to) == 0 ? IntRange.range(from, to - 1) : null;
     }
 
     public static Pandigital base(int base) {

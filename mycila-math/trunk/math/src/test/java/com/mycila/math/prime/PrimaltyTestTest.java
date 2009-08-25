@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila;
+package com.mycila.math.prime;
 
+import com.mycila.math.prime.sieve.IntSieve;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -33,7 +34,7 @@ public final class PrimaltyTestTest {
         assertTrue(PrimaltyTest.trialDivision(7));
         assertTrue(PrimaltyTest.trialDivision(179));
         assertTrue(PrimaltyTest.trialDivision(Integer.MAX_VALUE)); // 2147483647
-        //assertTrue(PrimaltyTest.trialDivision(9223372036854775783L));
+        assertFalse(PrimaltyTest.trialDivision(21474483647546L));
     }
 
     @Test
@@ -49,22 +50,22 @@ public final class PrimaltyTestTest {
 
     @Test
     public void test_perf() {
-        Sieve sieve = Sieve.to(1000000);
+        IntSieve sieve = IntSieve.to(1000000);
 
         long time = System.currentTimeMillis();
-        for (int prime : sieve) assertTrue(PrimaltyTest.millerRabin(prime));
+        for (int prime : sieve.iterable()) assertTrue(PrimaltyTest.millerRabin(prime));
         System.out.println(System.currentTimeMillis() - time);
 
         time = System.currentTimeMillis();
-        for (int prime : sieve) assertTrue(PrimaltyTest.millerRabin(prime));
+        for (int prime : sieve.iterable()) assertTrue(PrimaltyTest.millerRabin(prime));
         System.out.println(System.currentTimeMillis() - time);
 
         time = System.currentTimeMillis();
-        for (int prime : sieve) assertTrue(PrimaltyTest.trialDivision(prime));
+        for (int prime : sieve.iterable()) assertTrue(PrimaltyTest.trialDivision(prime));
         System.out.println(System.currentTimeMillis() - time);
 
         time = System.currentTimeMillis();
-        for (int prime : sieve) assertTrue(PrimaltyTest.trialDivision(prime));
+        for (int prime : sieve.iterable()) assertTrue(PrimaltyTest.trialDivision(prime));
         System.out.println(System.currentTimeMillis() - time);
     }
 

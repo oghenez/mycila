@@ -15,8 +15,8 @@
  */
 package euler;
 
-import com.mycila.Sieve;
-import com.mycila.math.sequence.IntSequence;
+import com.mycila.math.list.IntSequence;
+import com.mycila.math.prime.sieve.IntSieve;
 
 import static java.lang.System.*;
 
@@ -30,7 +30,7 @@ class Problem060 {
     public static void main(String[] args) throws Exception {
         final long time = currentTimeMillis();
 
-        final Sieve sieve = Sieve.to(9999);
+        final IntSieve sieve = IntSieve.to(9999);
 
         // remove primes which cannot be concatenated
         IntSequence sequence = sieve.asSequence();

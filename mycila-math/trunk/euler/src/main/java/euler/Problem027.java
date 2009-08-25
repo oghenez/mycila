@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.Sieve;
+import com.mycila.math.prime.sieve.IntSieve;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=27
@@ -24,7 +24,7 @@ import com.mycila.Sieve;
  */
 class Problem027 {
     public static void main(String[] args) throws Exception {
-        System.out.println(Sieve.to(1000));
+        System.out.println(IntSieve.to(1000));
     }
 }
 

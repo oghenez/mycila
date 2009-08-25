@@ -15,7 +15,7 @@
  */
 package com.mycila.math;
 
-import com.mycila.math.sequence.LongSequence;
+import com.mycila.math.list.LongSequence;
 
 /**
  * @author Mathieu Carbou

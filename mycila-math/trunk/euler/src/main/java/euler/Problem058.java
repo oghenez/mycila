@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.PrimaltyTest;
+import com.mycila.math.prime.PrimaltyTest;
 
 import static java.lang.System.*;
 
