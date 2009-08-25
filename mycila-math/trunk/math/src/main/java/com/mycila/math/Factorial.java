@@ -16,11 +16,23 @@
 package com.mycila.math;
 
 import java.math.BigInteger;
+import static java.math.BigInteger.*;
 
 /**
  * @author Mathieu Carbou
  */
 public final class Factorial {
+
+    /**
+     * All long-representable factorials
+     */
+    private static final long[] factorials = new long[]
+            {1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800,
+                    479001600, 6227020800l, 87178291200l, 1307674368000l, 20922789888000l,
+                    355687428096000l, 6402373705728000l, 121645100408832000l,
+                    2432902008176640000l};
+    private static final BigInteger TWENTY = valueOf(20);
+    private static final BigInteger TWO = valueOf(2);
 
     private Factorial() {
     }
@@ -35,10 +47,10 @@ public final class Factorial {
      * @param number A positive number
      * @return The factorial
      */
-    public static long trivial(long number) {
-        long res = number > 1 ? number : 1;
-        while (number-- > 1) res *= number;
-        return res;
+    public static long get(int number) {
+        if (number < 0 || number >= factorials.length)
+            throw new ArithmeticException("Number too big:" + number);
+        return factorials[number];
     }
 
     /**
@@ -52,16 +64,20 @@ public final class Factorial {
      * @return The factorial
      */
     public static BigInteger trivial(BigInteger n) {
-        BigInteger f = BigInteger.ONE;
+        if (n.signum() < 0)
+            throw new ArithmeticException("Invalid number:" + n);
+        if (n.compareTo(TWENTY) <= 0)
+            return valueOf(factorials[n.intValue()]);
+        BigInteger f = ONE;
         while (n.signum() > 0) {
             f = f.multiply(n);
-            n = n.subtract(BigInteger.ONE);
+            n = n.subtract(ONE);
         }
         return f;
     }
 
     /**
-     * Computes <code>fact(a) / fact(b) for a > b</code>
+     * Computes <code>a! / b! for a > b</code>
      * <p/>
      * <b>Implementation:</b>
      * <p/>
@@ -79,7 +95,7 @@ public final class Factorial {
     }
 
     /**
-     * Computes <code>fact(a) / fact(b) for a > b</code>
+     * Computes <code>a! / b! for a > b</code>
      * <p/>
      * <b>Implementation:</b>
      * <p/>
@@ -90,10 +106,10 @@ public final class Factorial {
      * @return The factorial
      */
     public static BigInteger trivialDiv(BigInteger a, BigInteger b) {
-        BigInteger res = BigInteger.ONE;
+        BigInteger res = ONE;
         while (a.compareTo(b) > 0) {
             res = res.multiply(a);
-            a = a.subtract(BigInteger.ONE);
+            a = a.subtract(ONE);
         }
         return res;
     }
@@ -108,17 +124,20 @@ public final class Factorial {
      * @param n A positive number
      * @return The factorial
      */
-    public static long splitRecursive(long n) {
+    public static BigInteger splitRecursive(BigInteger n) {
         return new SplitRecursive().get(n);
     }
 
     private static final class SplitRecursive {
 
-        private long l = 1;
+        private BigInteger l = ONE;
 
-        private long get(long n) {
-            if (n < 2) return 1;
-            long p = 1, r = 1;
+        private BigInteger get(BigInteger n) {
+            return l;
+
+            /*if (n.compareTo(TWO) < 0) return ONE;
+            BigInteger p = ONE, r = ONE;
+            n.bitLength()
             int log2n = 63 - Long.numberOfLeadingZeros(n);
             long h = 0, shift = 0, high = 1;
             while (h != n) {
@@ -132,15 +151,16 @@ public final class Factorial {
                     r *= p;
                 }
             }
-            return r << shift;
+            return r << shift;*/
         }
 
-        private long product(long n) {
+        /*private long product(BigInteger n) {
             long m = n >> 1;
             if (m == 0) return l += 2;
             if (n == 2) return (l += 2) * (l += 2);
             return product(n - m) * product(m);
-        }
+        }*/
+        //TODO: factorial for big integers
     }
 
 }

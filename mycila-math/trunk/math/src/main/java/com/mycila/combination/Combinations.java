@@ -34,11 +34,12 @@ public final class Combinations {
      * @return Catalan(i)
      */
     public static long catalan(int index) {
-        return Factorial.trivialDiv(index << 1, index) / Factorial.splitRecursive(index + 1);
+        return Factorial.trivialDiv(index << 1, index) / Factorial.get(index + 1);
     }
 
+    //TODO: improve - see commons-math
     public static long binomial(int n, int r) {
-        return Factorial.trivialDiv(n, n - r) / Factorial.splitRecursive(r);
+        return Factorial.trivialDiv(n, n - r) / Factorial.get(r);
     }
 
     public static BigInteger binomial(BigInteger n, BigInteger r) {

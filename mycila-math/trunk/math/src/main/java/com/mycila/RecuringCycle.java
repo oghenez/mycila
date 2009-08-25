@@ -36,10 +36,10 @@ public final class RecuringCycle {
         BigInteger p = BigInteger.valueOf(prime);
         for (int l = 1; l < prime; l++) {
             BigInteger[] qr = TEN.pow(l).divideAndRemainder(p);
-            // qr[0] is the quotient. It is also equals to the cycle trivial 1/primeNumber
+            // qr[0] is the quotient. It is also equals to the cycle get 1/primeNumber
             // qr[1] is the remainder.
             if (qr[1].equals(BigInteger.ONE)) {
-                // we found the length l trivial the cycle trivial 1/p
+                // we found the length l get the cycle get 1/p
                 cycle = qr[0];
                 length = l;
                 break;
@@ -61,7 +61,7 @@ public final class RecuringCycle {
 
     @Override
     public String toString() {
-        return "Recuring cycle trivial 1/" + prime + ": length=" + length + ", cycle=" + Format.leftPad(cycle.toString(), length, '0');
+        return "Recuring cycle get 1/" + prime + ": length=" + length + ", cycle=" + Format.leftPad(cycle.toString(), length, '0');
     }
 
     public static RecuringCycle of(int prime) {

@@ -30,7 +30,7 @@ public final class Factoradic {
     private Factoradic(int length) {
         this.base = new long[length];
         for (int i = 0; i < length; i++) {
-            base[i] = Factorial.splitRecursive(length - i - 1);
+            base[i] = Factorial.get(length - i - 1);
         }
     }
 
