@@ -1,0 +1,8 @@
+document.write ('<script language="JavaScript1.1" src="http://altfarm.mediaplex.com/ad/js/10217-81825-6712-8?mpt=905802287&mpvc=http://oasc05134.247realmedia.com/RealMedia/ads/click_lx.ads/TCHNeet/technology/1{TIME_DATE_STAMP}/L18/905802287/Top1/BBN/BCN2009050171_006c_Fuor/Fuor_Quebec_728.html/526c486e45306d776754634141376762?">\n');
+document.write ('</script>\n');
+document.write ('<noscript>\n');
+document.write ('  <a href="http://oasc05134.247realmedia.com/RealMedia/ads/click_lx.ads/TCHNeet/technology/1{TIME_DATE_STAMP}/L18/905802287/Top1/BBN/BCN2009050171_006c_Fuor/Fuor_Quebec_728.html/526c486e45306d776754634141376762?http://altfarm.mediaplex.com/ad/ck/10217-81825-6712-8?mpt=905802287">\n');
+document.write ('    <img src="http://altfarm.mediaplex.com/ad/bn/10217-81825-6712-8?mpt=905802287"\n');
+document.write ('alt="Click Here" border="0">\n');
+document.write ('</a>\n');
+document.write ('</noscript>\n');

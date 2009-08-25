@@ -1,0 +1,2142 @@
+<html>
+<head>
+
+
+    <!-- title and meta tags -->
+    <title>Embedded.com - Integer Square Roots (Programmer's Toolbox) </title>
+    <meta name="description" content="Welcome to Embedded.com, the on-line resource for embedded systems developers. This is the place to come for tutorials, code, demos, and news, along with information about Embedded Systems Design Magazine and the Embedded Systems Conferences.">
+    <meta name="keywords"
+          content="embedded systems,conference,development,real-time,programming,emulators,multitasking,debugging,software,optimization,engineer,RTOS,chips,tools,microcontrollers,DSP,operating systems,kernel,microprocessors,object-oriented,single board,ada,C++,visual basic, forth,RISC,compilers,specialty libraries, configuration management,ICE,ROM emulators,logic analyzers,device programmers,oscilloscopes,8-bit,eprom,flash,OEM,boards,CMP Media LLC,vendor,magazine,custom publishing,esp,esc,directories,mwmedia,Windows CE, Win CE, CE, Windows, Microsoft, developer, software, operating system, hand held, wallet, PC, OS, mobile, wireless, portable, driver, ETK, OAL, OAK, Pentium, 486, MIPS, Smartcards, Cellular Phone, Small-Form-Factor, H/PC, Palm, CE, RFA, PDA, PIC">
+    <meta name="revisit-after" content="2 days">
+    <meta name="robots" content="index,follow">
+    <!-- Begin Network Navigation -->
+    <script type="text/javascript">
+        <!--
+        function MM_swapImgRestore() { //v3.0
+            var i,x,a = document.MM_sr;
+            for (i = 0; a && i < a.length && (x = a[i]) && x.oSrc; i++) x.src = x.oSrc;
+        }
+        function MM_preloadImages() { //v3.0
+            var d = document;
+            if (d.images) {
+                if (!d.MM_p) d.MM_p = new Array();
+                var i,j = d.MM_p.length,a = MM_preloadImages.arguments;
+                for (i = 0; i < a.length; i++)
+                    if (a[i].indexOf("#") != 0) {
+                        d.MM_p[j] = new Image;
+                        d.MM_p[j++].src = a[i];
+                    }
+            }
+        }
+        function MM_findObj(n, d) { //v4.01
+            var p,i,x;
+            if (!d) d = document;
+            if ((p = n.indexOf("?")) > 0 && parent.frames.length) {
+                d = parent.frames[n.substring(p + 1)].document;
+                n = n.substring(0, p);
+            }
+            if (!(x = d[n]) && d.all) x = d.all[n];
+            for (i = 0; !x && i < d.forms.length; i++) x = d.forms[i][n];
+            for (i = 0; !x && d.layers && i < d.layers.length; i++) x = MM_findObj(n, d.layers[i].document);
+            if (!x && d.getElementById) x = d.getElementById(n);
+            return x;
+        }
+        function MM_swapImage() { //v3.0
+            var i,j = 0,x,a = MM_swapImage.arguments;
+            document.MM_sr = new Array;
+            for (i = 0; i < (a.length - 2); i += 3)
+                if ((x = MM_findObj(a[i])) != null) {
+                    document.MM_sr[j++] = x;
+                    if (!x.oSrc) x.oSrc = x.src;
+                    x.src = a[i + 2];
+                }
+        }
+        //-->
+    </script>
+    <style>
+        /* Network Navigation */
+        .nav {
+            margin-top: -1px;
+            margin-left: 0px;
+        }
+    </style>
+    <!-- Begin Network navigation -->
+    <meta name="verify-v1" content="K8+4EoBW0V0owP7ONuM9s69436WkjKi+Ph8J25xCXFM=">
+    <meta name="title" content="Integer Square Roots (Programmer's Toolbox)">
+    <meta name="issue" content="February 1998">
+    <meta name="author" content="Jack Crenshaw">
+    <meta http-equiv="Content-type" content="text/html; charset=ISO-8859-1">
+</head>
+<body rightmargin="0" leftmargin="0" topmargin="0"
+      onload="MM_preloadImages('https://i.cmpnet.com/eetimes/network/tol/network_eet_on.gif','https://i.cmpnet.com/eetimes/network/eet/images/tol_on.gif','https://i.cmpnet.com/eetimes/network/eet/embeddded_on.gif','https://i.cmpnet.com/eetimes/network/embedded/eet_on.gif')" marginheight="0"
+      marginwidth="0" vlink="#999999" text="#000000" link="#336699" alink="#6699cc" bgcolor="white">
+<!-- SiteCatalyst code version: H.20.3.
+Copyright 1997-2009 Omniture, Inc. More info available at
+http://www.omniture.com -->
+<script language="JavaScript" type="text/javascript" src="Integer%20Square%20Roots_files/s_code_remote_eetimes.js"></script>
+<script language="JavaScript">
+    <!--
+    s.pageName = "";
+    s.server = "";
+    s.channel = "";
+    s.pageType = "";
+    s.prop1 = "";
+    s.prop2 = "";
+    s.prop3 = "";
+    s.prop4 = "";
+    s.prop5 = "";
+    s.prop6 = "";
+    s.prop7 = "";
+    s.prop8 = "70.81.231.169 | Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.1.3pre) Gecko/20090822 Ubuntu/9.04 (jaunty) Shiretoko/3.5.3pre";
+    s.prop9 = "";
+    s.prop10 = "";
+    s.prop11 = "";
+    s.prop12 = "";
+    s.prop13 = "http://www.embedded.com/dhandler.jhtml";
+    s.prop14 = "";
+    s.prop15 = "";
+    s.prop16 = "";
+    s.prop19 = "False";
+    s.prop21 = "";
+
+    /* Conversion Variables */
+    s.campaign = "";
+    s.state = "";
+    s.zip = "";
+    s.events = "event5";
+    s.products = "";
+    s.purchaseID = "";
+    s.eVar1 = "";
+    s.eVar2 = "";
+    s.eVar3 = "";
+    s.eVar4 = "";
+    s.eVar5 = "";
+    s.eVar21 = "";
+    s.eVar22 = "";
+    s.eVar23 = "False";
+    /************* DO NOT ALTER ANYTHING BELOW THIS LINE ! **************/
+    var s_code = s.t();
+    if (s_code)document.write(s_code)//--></script>
+<script language="JavaScript" type="text/javascript"><!--
+if (navigator.appVersion.indexOf('MSIE') >= 0)document.write(unescape('%3C') + '\!-' + '-')
+//--></script>
+<noscript><a href="http://www.omniture.com" title="Web Analytics"><img
+        src="http://om.eetimes.com/b/ss/cmpglobalvista/1/H.20.3--NS/0"
+        height="1" width="1" border="0" alt=""/></a></noscript>
+<!--/DO NOT REMOVE/-->
+<!-- End SiteCatalyst code version: H.20.3. -->
+
+<table class="nav" marginwidth="0" marginheight="0" topmargin="0" leftmargin="0" rightmargin="0" cellpadding="0" cellspacing="0" height="28" width="100%" bgcolor="#424242" border="0">
+    <tbody>
+    <tr>
+        <td>
+            <img src="Integer%20Square%20Roots_files/network_logo.gif" alt="network logo" height="28" width="141" border="0"><a href="http://www.eetimes.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" onmouseout="MM_swapImgRestore()"
+                                                                                                                                onmouseover="MM_swapImage('Image5','','https://i.cmpnet.com/eetimes/network/embedded/eet_on.gif',1)"><img src="Integer%20Square%20Roots_files/eet.gif" alt="eet"
+                                                                                                                                                                                                                                          name="Image5" id="Image5" height="28" width="100"
+                                                                                                                                                                                                                                          border="0"></a><a href="http://www.techonline.com/"
+                                                                                                                                                                                                                                                            onmouseout="MM_swapImgRestore()"
+                                                                                                                                                                                                                                                            onmouseover="MM_swapImage('Image4','','https://i.cmpnet.com/eetimes/network/eet/tol_on.gif',1)"><img
+                src="Integer%20Square%20Roots_files/tol.gif" alt="techonline" name="Image4" id="Image4" height="28" width="129" border="0"></a><img src="Integer%20Square%20Roots_files/embedded_002.gif" alt="embedded" height="28" width="143" border="0"></td>
+    </tr>
+    </tbody>
+</table>
+<!-- End Network navigation -->
+<!-- End Network Navigation -->
+<!-- for google verification -->
+
+<link href="Integer%20Square%20Roots_files/embeddedv2.css" rel="stylesheet" type="text/css">
+<link href="Integer%20Square%20Roots_files/tabber.css" rel="stylesheet" type="text/css">
+<link href="Integer%20Square%20Roots_files/cc.css" rel="stylesheet" type="text/css">
+<link href="Integer%20Square%20Roots_files/ff.css" rel="stylesheet" type="text/css">
+<link href="Integer%20Square%20Roots_files/search_results.css" rel="stylesheet" type="text/css">
+<link href="Integer%20Square%20Roots_files/globalspec.css" rel="stylesheet" type="text/css">
+<link href="Integer%20Square%20Roots_files/star_rating.css" rel="stylesheet" type="text/css" media="all">
+<script language="JavaScript" type="text/javascript" src="Integer%20Square%20Roots_files/searchbox.js"></script>
+<script type="text/javascript">
+    /* rmedlin: 7/22/09 - I added this code to rotate the tabs and added a new Twitter widget
+     */
+    document.write('<style type="text/css">.tabber{display:none;}<\/style>');
+    var rotateTab = 1;
+    var tabClicked = false;
+    function rotateTabs() {
+        if (tabClicked == false) {
+            if (navigator.appVersion.indexOf("MSIE") == -1) {
+                if (rotateTab == 3) {
+                    document.getElementById("rotateTabbernav4").innerHTML = "<span style='position:relative; top:3px;*top:0px;_top:0px;'><img style='display:inline;margin:0;padding:0;' border='0' src='http://i.cmpnet.com/embedded/twitter/twitter_tab.gif'/></span>";
+                } else {
+                    document.getElementById("rotateTabbernav4").innerHTML = "<span style='position:relative; top:3px;*top:0px;_top:0px;'><img style='display:inline;margin:0;padding:0;' border='0' src='http://i.cmpnet.com/embedded/twitter/twitter_tab_blue.gif'/></span>";
+                }
+            }
+            document.getElementById('rotateTabber').tabber.tabShow(rotateTab);
+        }
+        if (rotateTab < 3) {
+            rotateTab++;
+        } else {
+            rotateTab = 0;
+        }
+    }
+    var tabberOptions = {
+        /* Optional: instead of letting tabber run during the onload event,
+         we'll start it up manually. This can be useful because the onload
+         even runs after all the images have finished loading, and we can
+         run tabber at the bottom of our page to start it up faster. See the
+         bottom of this page for more info. Note: this variable must be set
+         BEFORE you include tabber.js.
+         */
+        'manualStartup':false,
+        /* Optional: code to run after each tabber object has initialized */
+        'onLoad': function(argsObj) {
+            /* Display an alert only after tab2 */
+            setInterval("rotateTabs()", "10000");
+            if (navigator.appVersion.indexOf("MSIE") == -1) {
+                document.getElementById("rotateTabbernav4").innerHTML = "<span style='position:relative; top:3px;*top:0px;_top:0px;'><img style='display:inline;margin:0;padding:0;' border='0' src='http://i.cmpnet.com/embedded/twitter/twitter_tab_blue.gif'/></span>";
+            }
+            //document.getElementById("rotateTabbernav4").style.background="url(http://i.cmpnet.com/embedded/twitter/twitter_tab.gif)";
+            //document.getElementById("rotateTabbernav4").style.width="100px";
+        },
+        /* Optional: code to run when the user clicks a tab. If this
+         function returns boolean false then the tab will not be changed
+         (the click is canceled). If you do not return a value or return
+         something that is not boolean false, */
+        'onClick': function(argsObj) {
+            var t = argsObj.tabber;
+            /* Tabber object */
+            var id = t.id;
+            /* ID of the main tabber DIV */
+            var i = argsObj.index;
+            /* Which tab was clicked (0 is the first tab) */
+            var e = argsObj.event;
+            /* Event object */
+            if (navigator.appVersion.indexOf("MSIE") == -1) {
+                if (i == 3) {
+                    document.getElementById("rotateTabbernav4").innerHTML = "<span style='position:relative; top:3px;*top:0px;_top:0px;'><img style='display:inline;margin:0;padding:0;' border='0' src='http://i.cmpnet.com/embedded/twitter/twitter_tab.gif'/></span>";
+                } else {
+                    document.getElementById("rotateTabbernav4").innerHTML = "<span style='position:relative; top:3px;*top:0px;_top:0px;'><img style='display:inline;margin:0;padding:0;' border='0' src='http://i.cmpnet.com/embedded/twitter/twitter_tab_blue.gif'/></span>";
+                }
+            }
+            tabClicked = true;
+            setTimeout("tabClicked = false;", "30000")
+        },
+        /* Optional: set an ID for each tab navigation link */
+        'addLinkId': true
+    };
+</script>
+<style type="text/css">.tabber {
+    display: none;
+}</style>
+<script language="JavaScript" type="text/javascript" src="Integer%20Square%20Roots_files/tabber-new.js"></script>
+<script language="JavaScript" type="text/javascript" src="Integer%20Square%20Roots_files/cc.js"></script>
+<script language="JavaScript" type="text/javascript" src="Integer%20Square%20Roots_files/ff.js"></script>
+<script language="JavaScript" type="text/javascript" src="Integer%20Square%20Roots_files/rating.js"></script>
+
+<!-- in shared template parts main maintemplate -->
+<img src="Integer%20Square%20Roots_files/MSFT_EmbeddedHP.gif" height="1" width="1">
+<!-- Welcome AD in maintemplate -->
+<!-- http://as.cmpnet.com/html.ng/pagepos=fullpage&affiliate=embedded&site=electronics&country=canada&state=qc&server=atg&city=montreal&target=/98/9802fe2.htm -->
+<script src="Integer%20Square%20Roots_files/techinsights_house_090924.js"></script>
+<img src="Integer%20Square%20Roots_files/TypecountClientType2AdID233037FlightID148262TargetID8815Site.gif" height="1" width="1" border="0">
+<!-- end Welcome AD in maintemplate -->
+<div id="pageWrapper">
+<!-- main table -->
+<table cellpadding="0" cellspacing="0" width="978" align="center" border="0">
+<tbody>
+<tr>
+<td valign="top">
+<table cellpadding="0" cellspacing="0" width="100%" border="0">
+<tbody>
+<tr>
+    <td colspan="4">
+        <!-- top ads -->
+        <table cellpadding="0" cellspacing="0" width="975" border="0">
+            <tbody>
+            <tr>
+                <td width="740" align="center">
+                    <!-- top ads in shared template parts main top ads -->
+                    <!-- http://as.cmpnet.com/html.ng/pagepos=top&affiliate=embedded&site=electronics&country=canada&state=qc&server=atg&city=montreal&target=/98/9802fe2.htm -->
+                    <a target="_parent"
+                       href="http://as.cmpnet.com/event.ng/Type=click&amp;FlightID=151284&amp;AdID=237504&amp;TargetID=683&amp;Segments=862,885,3108,3448,13824,13830,14394&amp;Targets=683,786,2625,2878&amp;Values=34,46,51,63,77,87,93,102,140,203,304,309,442,451,1766,1785,1925,1945,1979,2281,2299,2310,2326,2352,2678,4079,6293,6332,6393,6489,6541,6567,6967&amp;RawValues=IP,66.77.24.210,&amp;Redirect=http://www.mips.com/android/"><img
+                            src="Integer%20Square%20Roots_files/MIPS_Techinsights_728x90LBAd_08132009.gif" alt="" height="90" width="728" border="0"></a><img src="Integer%20Square%20Roots_files/TypecountClientType2AdID237504FlightID151284TargetID683SiteI.gif" height="1" width="1" border="0">
+                    <br>
+                    <!-- http://as.cmpnet.com/html.ng/pagepos=buy&catid=top&affiliate=embedded&site=electronics&country=canada&state=qc&server=atg&city=montreal&target=/98/9802fe2.htm -->
+                    <a target="_blank"
+                       href="http://as.cmpnet.com/event.ng/Type=click&amp;FlightID=130182&amp;AdID=209357&amp;TargetID=10928&amp;Segments=3108,3448,14918&amp;Targets=2625,2878,10928&amp;Values=34,46,51,63,77,87,93,102,140,304,309,442,451,1476,1766,1785,1925,1945,1979,2281,2299,2310,2326,2352,2678,4079,6293,6332,6393,6489,6541,6567,6672,6967&amp;RawValues=&amp;Redirect=https://techinsights.balihoo.com/?PID=421389">Your
+                        ad here. Buy Media Now</a><img src="Integer%20Square%20Roots_files/TypecountClientType2AdID209357FlightID130182TargetID10928Sit.gif" height="1" width="1" border="0">
+                </td>
+                <td width="10" align="center">
+                    <img src="Integer%20Square%20Roots_files/spacer.gif" height="1" hspace="0" vspace="0" width="10" border="0">
+                </td>
+                <td height="60" width="225" align="center">
+                    <!-- <a href="http://www.eetimes.com/brightcove_video/index.jhtml;jsessionid=1T1IXLMBKPPGOQSNDLPSKH0CJUNN2JVN">
+                <img src="http://i.cmpnet.com/embedded/images/embedded_video_esc.gif" hspace="0" vspace="0" border="0"></a>-->
+                    <!-- <a href="http://www.embedded-on-demand.com">
+                <img src="http://i.cmpnet.com/embedded/2007/on_demand_button.gif" hspace="0" vspace="0" border="0"></a>-->
+                    <!-- <a href="http://www.wilsonresearch.com/esdsurvey08.php?" target="_blank">
+               <img src="http://i.cmpnet.com/embedded/marketstudy/embedded_market_study.jpg" hspace="0" vspace="0" border="0"></a> -->
+                    <!-- <a href="http://cmptv.net/TeardownTV/embedded_launcher.php" target="_blank">
+                <img src="http://i.cmpnet.com/embedded/images/embedded_video.gif" hspace="0" vspace="0" border="0"></a>-->
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+<tr>
+    <td>
+        <a href="http://www.cmp.com/"><img src="Integer%20Square%20Roots_files/cmp.gif" alt="CMP" height="85" width="78" border="0"></a>
+    </td>
+    <td width="383">
+        <a href="http://www.embedded.com/"><img src="Integer%20Square%20Roots_files/embedded.gif" alt="EMBEDDED.COM" height="85" width="383" border="0"></a>
+    </td>
+    <td width="10">
+        <img src="Integer%20Square%20Roots_files/spacer.gif" height="1" hspace="0" vspace="0" width="10" border="0">
+    </td>
+    <td height="87" width="490">
+        <!-- search box -->
+        <table cellpadding="0" cellspacing="0" width="490" border="0">
+            <tbody>
+            <tr>
+                <td align="top">
+                    <img src="Integer%20Square%20Roots_files/spacer.gif" height="3" hspace="0" vspace="0" width="1" border="0">
+                    <br>
+
+                    <div class="search">
+                        <form method="get" action="/TechSearch/Search.jhtml" name="searchForm">
+                            <input name="sortSpec" value="score desc" type="hidden">
+                            <input name="site_id" value="Embedded.com" type="hidden">
+                            <input name="Site ID" value="Embedded.com" type="hidden">
+                            <input name="c1" id="c12" value="All" onclick="javascript:searchCheckCheckBoxes(this.id, this.checked);" type="checkbox"> All
+                            <input name="c2" id="c22" value="Articles" onclick="searchUncheckMain();" type="checkbox"> Articles
+                            <input name="c3" id="c32" value="Products" onclick="searchUncheckMain();" type="checkbox"> Products
+                            <input name="c4" id="c42" value="Columns" onclick="searchUncheckMain();" type="checkbox"> Columns
+                            <input name="c5" id="c52" value="Courses" onclick="searchUncheckMain();" type="checkbox"> Courses
+                            <input name="c6" id="c62" value="VirtuaLabs" onclick="searchUncheckMain();" type="checkbox"> VirtuaLabs
+                            <input name="c7" id="c72" value="Webinars" onclick="searchUncheckMain();" type="checkbox"> Webinars
+                            <br>
+                            <img src="Integer%20Square%20Roots_files/search.gif" alt="Search" height="20" width="65" border="0">
+                            <input name="queryText" size="60" type="text">
+                            <input src="Integer%20Square%20Roots_files/form_go_arrow.gif" name="Search" height="17" width="16" type="image" border="0"><br>
+                        </form>
+                    </div>
+                </td>
+                <td align="top">
+                    <img src="Integer%20Square%20Roots_files/spacer.gif" height="1" hspace="0" vspace="0" width="5" border="0">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+<tr>
+    <td colspan="4" valign="middle">
+        <!-- login/register & embedded on demand -->
+        <!-- logged out in shared temp parts main login_register -->
+        <table cellpadding="0" cellspacing="0" width="975" border="0">
+            <tbody>
+            <tr>
+                <td valign="middle" width="32" background="Integer%20Square%20Roots_files/header_left.gif"><img src="Integer%20Square%20Roots_files/key.gif" height="34" width="32" border="0"></td>
+                <td valign="middle" width="375" background="Integer%20Square%20Roots_files/header_left.gif">
+                    <a href="http://www.embedded.com/profile" style="text-decoration: none;">
+                        <span class="teal_header">Login</span>
+                    </a>
+                    <font color="gray" face="verdana" size="2"><strong>|</strong></font>
+                    <a href="http://www.embedded.com/profile?register=true" style="text-decoration: none;">
+                        <span class="teal_header">Register</span>
+                    </a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<span class="teal_header">Welcome Guest</span>
+                </td>
+                <td valign="bottom" width="403" align="right" background="Integer%20Square%20Roots_files/header_left.gif"></td>
+                <td valign="bottom" width="165" align="right" background="Integer%20Square%20Roots_files/header_left.gif">
+                </td>
+                <td background="Integer%20Square%20Roots_files/IPS_Logo_right_border.gif">&nbsp;</td>
+            </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+<tr>
+    <td id="awmAnchor-top_nav_menu" colspan="4" height="21" width="100%">
+        <script charset="UTF-8" src="Integer%20Square%20Roots_files/header_nav.js" type="text/javascript"></script>
+        <div id="dropdownmenu" class="dropmenudiv" style="z-index: 100; visibility: hidden; width: 270px; top: 315px; left: 1001px;" onmouseover="clearhidemenu()" onmouseout="dynamichide(event)"><a href="http://www.embedded.com/about">About Us</a><a href="http://www.embedded.com/sitemap">Site
+            map</a><a href="http://www.embedded.com/feedback">Feedback</a><a href="http://www.techinsights.com/">Media Kit</a><a href="http://i.cmpnet.com/embedded/2009/ESD_EDIT_CALENDAR_110062008.pdf">Editorial Calendar</a><a
+                href="http://www.embedded.com/profile/preferences.jhtml">Preferences</a><a href="http://www.embedded.com/techcareers">Career Center</a><a href="http://www.embedded.com/calendar">Event Calendar</a></div>
+        <style>
+            /* ######### Style for Drop Down Menu ######### */
+            .dropmenudiv {
+                position: absolute;
+                top: 0;
+                margin-top: 0px;
+                border: 1px solid #000000; /*THEME CHANGE HERE*/
+                border-bottom-width: 0;
+                font: normal 11px Arial;
+                line-height: 18px;
+                z-index: 100;
+                background-color: #FFFFFF;
+                width: 50px;
+                visibility: hidden;
+                filter: progid:DXImageTransform.Microsoft.Shadow(color = #CACACA, direction = 135, strength = 4); /*Add Shadow in IE. Remove if desired*/
+            }
+
+            .dropmenudiv a {
+                width: auto;
+                display: block;
+                text-indent: 3px;
+                border-bottom: 1px solid #000000; /*THEME CHANGE HERE*/
+                padding: 2px 0;
+                text-decoration: none;
+                font-weight: bold;
+                color: #000000;
+            }
+
+            * html .dropmenudiv a {
+            /*IE only hack*/
+                width: 100%;
+            }
+
+            .dropmenudiv a:hover {
+            /*THEME CHANGE HERE*/
+                background-color: #145E8D;
+                color: #FFFFFF;
+            }
+        </style>
+        <!-- Survey Gizmo Popup Survey -->
+        <!--<droplet src="/surveys/popup.jhtml"></droplet>-->
+        <table cellpadding="0" cellspacing="0" border="0">
+            <tbody>
+            <tr>
+                <td width="59">
+                    <a href="http://www.embedded.com/">
+                        <img src="Integer%20Square%20Roots_files/topnav_home_white.gif" alt="HOME" name="image1" height="30" width="59" border="0">
+                    </a>
+                </td>
+                <td width="90">
+                    <a href="http://www.embedded.com/design" onmouseover="dropdownmenu(this, event, menu1, '120px')" onmouseout="delayhidemenu()">
+                        <img src="Integer%20Square%20Roots_files/topnav_design_white.gif" alt="DESIGN" name="image2" height="30" width="98" border="0">
+                    </a>
+                </td>
+                <td width="61">
+                    <a href="http://www.embedded.com/products" onmouseover="dropdownmenu(this, event, menu2, '120px')" onmouseout="delayhidemenu()">
+                        <img src="Integer%20Square%20Roots_files/topnav_products_white.gif" alt="PRODUCTS" name="image3" height="30" width="61" border="0">
+                    </a>
+                </td>
+                <td width="61">
+                    <a href="http://www.embedded.com/columns" onmouseover="dropdownmenu(this, event, menu3, '150px')" onmouseout="delayhidemenu()">
+                        <img src="Integer%20Square%20Roots_files/topnav_columns_white.gif" alt="COLUMNS" name="image4" height="30" width="61" border="0">
+                    </a>
+                </td>
+                <td width="71">
+                    <a href="http://www.embedded.com/elearning" onmouseover="dropdownmenu(this, event, menu4, '120px')" onmouseout="delayhidemenu()">
+                        <img src="Integer%20Square%20Roots_files/topnav_elearning_white.gif" alt="E-LEARNING" name="image5" height="30" width="71" border="0">
+                    </a>
+                </td>
+                <td width="81">
+                    <a href="http://www.embedded.com/events/" onmouseover="dropdownmenu(this, event, menu5, '160px')" onmouseout="delayhidemenu()">
+                        <img src="Integer%20Square%20Roots_files/topnav_conferences_white.gif" alt="CONFERENCES" name="image6" height="30" width="81" border="0">
+                    </a>
+                </td>
+                <td width="182">
+                    <a href="http://www.embedded.com/code.new">
+                        <img src="Integer%20Square%20Roots_files/topnav_code_white.gif" alt="CODE" name="image7" height="30" width="182" border="0">
+                    </a>
+                </td>
+                <td width="89">
+                    <a href="#" onmouseover="dropdownmenu(this, event, menu6, '120px')" onmouseout="delayhidemenu()">
+                        <img src="Integer%20Square%20Roots_files/topnav_forums_white.gif" alt="FORUMS/BLOGS" name="image8" height="30" width="89" border="0">
+                    </a>
+                </td>
+                <td width="77">
+                    <a href="http://www.eetimes.com/newsletter/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" target="_blank">
+                        <img src="Integer%20Square%20Roots_files/topnav_newsletters_white.gif" alt="NEWSLETTERS" name="image9" height="30" width="77" border="0">
+                    </a>
+                </td>
+                <td width="56">
+                    <a href="http://www.embedded.com/contact" onmouseover="dropdownmenu(this, event, menu7, '270px')" onmouseout="delayhidemenu()">
+                        <img src="Integer%20Square%20Roots_files/topnav_contact_white.gif" alt="CONTACT" name="image10" height="30" width="56" border="0">
+                    </a>
+                </td>
+                <td width="83">
+                    <a href="#" onmouseover="dropdownmenu(this, event, menu8, '270px')" onmouseout="delayhidemenu()">
+                        <img src="Integer%20Square%20Roots_files/topnav_sitefeat_white.gif" alt="FEATURES" name="image11" height="30" width="83" border="0">
+                    </a>
+                </td>
+                <td width="52">
+                    <a href="http://www.embedded.com/rss">
+                        <img src="Integer%20Square%20Roots_files/topnav_rss.gif" alt="RSS" name="image12" height="30" width="52" border="0">
+                    </a>
+                </td>
+                <td width="6">
+                    <a href="#">
+                        <img src="Integer%20Square%20Roots_files/nav_spacer.gif" alt="RSS" height="30" width="6" border="0">
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+<tr>
+<td colspan="4" align="left">
+<!-- taxonomy elements -->
+<!-- elearnings id's (from TOL) -->
+<!-- columns -->
+<!-- columns (archives only) -->
+<!-- sourcecode filtered file id -->
+<div class="sub_template">
+<table cellpadding="0" cellspacing="0" width="100%" border="0">
+<tbody>
+<tr>
+<td valign="top" width="600" align="left" bgcolor="#ffffff">
+<table cellpadding="0" cellspacing="0" width="100%" border="0">
+    <tbody>
+    <tr>
+        <td width="600">
+            <!-- breadcrumb -->
+            <div class="breadcrumb">
+                <a href="http://www.embedded.com/">Embedded.com</a>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" valign="top">
+            <img src="Integer%20Square%20Roots_files/gray_dot.gif" height="1" vspace="0" width="600"><br>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<table cellpadding="10" cellspacing="0" width="600" border="0">
+<tbody>
+<tr>
+<td valign="top" width="100%">
+<!-- BEGIN MAIN CONTENT -->
+<!-- TITLE Integer Square Roots (Programmer's Toolbox) -->
+
+
+<font face="Verdana, Georgia, Sans-Serif" size="2">
+</font>
+<center>
+    <font face="Verdana, Georgia, Sans-Serif" size="2"><br><img src="Integer%20Square%20Roots_files/esplogo.gif" height="67" width="329"><br><br>
+    </font></center>
+<h3><font face="Verdana, Georgia, Sans-Serif" size="2">Integer Square Roots
+</font></h3><font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+    <i><b>by Jack W. Crenshaw
+    </b></i><br><br>
+</font>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2"><b><i>Functions that execute an unpredictable number of iterations are frowned upon in real-time systems.</i></b></font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2"><i><b>Editor's note:</b> We have updated the listings, figures, and tables are updated in this article to make them easier to read. --sr, 10/27/08. </i></font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Ask any
+    math-smart programmer how to find a square root of a number, and five
+    will get you ten, he'll tell you about Newton's method, which is an
+    iterative approach. The general idea is this: given a number <i>a</i> for which we want to find the square root, we begin with an estimate <i>x<sub>0</sub></i> for that root. We then refine the estimate using the formula:</font></p>
+<font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+    <!--<p><img width="65" src="http://i.cmpnet.com/embedded/gifs/9802eq1.gif" height="30" align="middle">-->
+</font>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq01sm.gif"></font></center>
+<p>
+    <font face="Verdana, Georgia, Sans-Serif" size="2">(1)
+    </font></p>
+<font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+</font>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">This
+    method does work, and works very well. With any kind of reasonable
+    initial estimate, it converges very rapidly. But it is, after all, an
+    iterative method, and the number of iterations it requires to converge
+    depends on the accuracy of our initial guess. In the vicinity of the
+    correct root, the method converges exponentially, meaning that it gives
+    twice as many digits of accuracy at each step. However, if our initial
+    guess is lousy, we only creep up on the solution by halving the error
+    at each step. Everything depends on how well we make that initial
+    guess. I wrote an article on this way back in 1991 ("Square Roots are
+    Simple?" November 1991, p. 30)--my first column for <i>ESP</i>, in fact--where I discussed the intimate details of this method and how to optimize the guessing process.</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Even with the
+    best estimates, however, we can't predict in advance how many
+    iterations the method will take to converge to suitable accuracy. In
+    general, functions that execute an unpredictable number of iterations
+    are frowned upon in real-time systems, for the obvious reason that they
+    make the total time per task unpredictable, and introduce jitter, not
+    to mention potential disaster in the form of task overruns, into the
+    system. </font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">If you're using integer arithmetic, there's yet another problem: the method fails to converge! Try it for <i>a</i> = 15 and you'll find that <i>x</i> oscillates between three and four. Only one of these numbers (the three) can possibly be
+    correct, but tell that to Dr. Newton.</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">I suppose we could fix the method up easily enough, by refusing to allow a solution whose square is greater than <i>a</i>,
+    but there's another possibility: a closed-form solution that can't
+    oscillate. You and I both know that such algorithms exist--we all
+    learned one in high school. And unless you're very weird, you promptly
+    forgot it just as I did. As a sort of dessert to our recent smorgasbord
+    of algorithms for integer arithmetic, this month I'm offering a
+    discussion of the closed-form solutions for the square root.
+</font></p><font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+</font>
+
+<p>
+</p>
+
+<h3><font face="Verdana, Georgia, Sans-Serif" size="2"><b>Begin at the Beginning<br>
+</b></font></h3>
+<font face="Verdana, Georgia, Sans-Serif" size="2">When I'm starting on
+    a new algorithm, I sometimes find it's both fun and instructional to
+    begin by trying to see just how simple-minded an algorithm I can write.
+    I think I do this just to prove to myself that the problem can at least
+    be solved. From there, anything else is mere refinement.
+</font>
+
+<p></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">For the case of integer square roots, let's be specific about what we want: we want the <i>largest</i> integer <i>x</i> whose square is <i>less</i> than <i>a</i>.
+    Well, I certainly know one way to find such an integer: an exhaustive
+    search. We'll start with x = 1, keep incrementing it until it's too
+    big, then back off by one. Listing 1 shows the simplest square root
+    finder you will ever see. Note carefully the way the loop test is
+    written. The "&lt;=" sign is used, rather than simply "&lt;", to
+    guarantee that we always exit the loop with x too large.</font></p><font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+    <br>
+</font>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensL01sm.gif"></font></center>
+<!--<p><b>LISTING 1 -- The simplest square root.</b>-->
+<!--<pre><font size="2" face="Courier"><b>
+unsigned long sqrt(unsigned long a){
+unsigned long x = 1;
+while(x*x <= a)
+++x;
+return --x;
+}</b></font></pre>-->
+<p></p>
+
+<p>
+</p>
+
+<h3><font face="Verdana, Georgia, Sans-Serif" size="2"><b>Getting Better<br>
+</b></font></h3>
+<font face="Verdana, Georgia, Sans-Serif" size="2">Can we improve on Listing 1? Of course; it would be difficult <i>not</i> to do so. The biggest problem with the method is that it requires the multiplication <i>x*x</i>
+    at each trial. This shouldn't be necessary. Since we're progressing
+    systematically up through the list of all possible integers, we should
+    be able to predict what the next square will be without having to
+    actually perform the multiplication. We can do this by noting that:
+</font>
+
+<p></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq02sm.gif"></font></center>
+<font face="Verdana, Georgia, Sans-Serif" size="2">(2)
+    <!--
+    <p>(
+    <i>n
+    </i>+1)
+    <sup>2
+    </sup> =
+    <i>n
+    </i><sup>2
+    </sup> + 2n + 1	(2)
+    </p>
+    -->
+</font>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">If we already have the square of <i>n</i>, which we do, we can get the square of the next larger number by adding 2<i>n</i>+1.
+    Now, does this expression look familiar? It should; it's the expression
+    for the sequence of odd numbers. We can see this relationship
+    graphically by considering the difference between the first few
+    squares, as illustrated in Table 1.
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensT01sm.gif"></font></center>
+<font face="Verdana, Georgia, Sans-Serif" size="2"><a href="http://i.cmpnet.com/embedded/gifs/9802/9802CrensT01.gif">View the full-size image</a>
+    <!--<p>
+    <b>Table 1 -- Squares and differences</b>
+    -->
+    <!--<p>
+    <pre>
+    n n2 Difference
+    0 0
+    1 1 1
+    2 4 3
+    3 9 5
+    4 16 7
+    5 25 9
+    6 36 11
+    7 49 13
+    8 64 15
+    9 81 17
+    10 100 19
+    </pre>
+    </P>
+    -->
+</font>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Equation 2
+    and Table 1 show us that we can generate each square simply by adding a
+    successively larger odd integer to the previous one. Listing 2 shows
+    the improved algorithm.
+</font></p>
+<font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+</font>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensL02sm.gif"></font></center>
+<!--
+<p><b>LISTING 2 -- Improving efficiency.</b>--><font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+    <!--<pre><code><font size="2" face="Courier"><b>
+    unsigned long sqrt(unsigned long a){
+    unsigned long square = 1;
+    unsigned long delta = 3;
+    while(square
+    <
+    = a){
+    square += delta;
+    delta += 2;
+    }
+    return (delta/2 - 1);
+    }
+    </b></font></code></pre>
+    </p>-->
+</font>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">This
+    program may seem trivial, but the fact is, you could do a lot worse.
+    While this approach, cycling through all possible integers, isn't going
+    to be fast, it is simple and requires neither multiplication nor
+    division. This makes it a wonderful candidate for implementation on a
+    small microcontroller which doesn't support multiplication or division,
+    where the word length is short, and speed isn't much of an issue. PIC
+    programmers take note.
+</font></p><font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+</font>
+
+<p>
+</p>
+
+<h3><font face="Verdana, Georgia, Sans-Serif" size="2"><b>The Friden Algorithm<br>
+</b></font></h3>
+<font face="Verdana, Georgia, Sans-Serif" size="2">The next algorithm
+    requires some background, which is best given in the form of a little
+    ancient history. Once upon a time, a very long time ago, people didn't
+    have ready access to computers. We didn't even have electronic
+    calculators. I was working at NASA in those days. When we needed more
+    accuracy than we could squeeze out of our slide rules, we used an
+    electro-mechanical calculator. There were several vendors of such
+    machines, but the most common for scientific work was a massive,
+    motor-driven, electro-mechanical monster made by Friden. This thing was
+    bigger than the largest typewriter, had a moveable carriage like one,
+    cost about $1,500 in 1960 dollars, and had hernia-inducing mass. You
+    didn't move a Friden without warming up first on a set of dumbbells. (I
+    did once see, nevertheless, a Friden installed in the passenger side of
+    an MG, for use in sports car rallies.) </font>
+
+<p></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">The Friden
+    keyboard was huge, consisting of 16 columns of 10 keys each,
+    representing the 10 digits. You punched in a number by picking one from
+    column <i>A</i>, one from column <i>B</i>, and so on. On the carriage
+    was a set of rotating wheels, which displayed the answers as digits
+    which showed up in little windows. A set of operator keys on the right
+    told the computer what to do, and it did so with a great gnashing of
+    gear teeth. </font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">When there was a
+    Friden in use in the room, everyone there knew it. The room lights
+    dimmed, the motor whirred, the entire desktop shook, and the wheels
+    spun with a sound somewhere between a threshing machine and a car in
+    dire need of Mr. Transmission. It sounded as though the machine
+    couldn't possibly last out the day, but in fact, the Friden was quite a
+    reliable machine. The basic Friden was strictly a four-function
+    calculator, with no memory except the little wheels on the carriage.
+    However, a square root version was available at considerable extra
+    cost. Our office had only one square root Friden, so we all had to take
+    turns with it when we needed square roots. Or so I thought.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">One day I was
+    busily thinking deep-space thoughts, while my officemate was banging
+    away on our common, non-square-root Friden. I heard a strange sound
+    that went something like "punch-punch-cachunk, punch-punch-cachunk,
+    punch-punch-cachunk-DING, punch-punch-DING-clang-clang" in a repeated
+    rhythm. I thought my mate had either lost his marbles, or was creating
+    some new kind of computer game.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">I asked him what the heck he was doing. He said, "Finding a square root."
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">"But, um...," I said, "this isn't a square root Friden."
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">"I know," he replied. "That's why I have to do it this way."
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Turns out, my
+    officemate, "Gap," was an old NASA hand, and one who could make the
+    Friden do all kinds of tricks, including the famous "Friden March,"
+    which was the division of two magic numbers that made the thing
+    simulate the "rah, rah, rah-rah-rah" sound of a football cheer. </font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Somewhere along
+    the line, Gap had learned the Friden algorithm for finding a square
+    root on a non-square-root Friden. It was the same algorithm, in fact,
+    as the one programmed into the cam-and-gear "ROM" of the square-root
+    Friden. Gap taught it to me, and now I'll teach it to you. (Gap, if
+    you're still out there and reading this, thanks for the education.) </font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">The whole algorithm is based loosely on Equation 2, but written:
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq03sm.gif"></font></center>
+<!--<p>(<i>n</i>+1)<sup>2</sup> = <i>n</i><sup>2</sup> + <i>n</i> + (<i>n</i>+1)	--><font face="Verdana, Georgia, Sans-Serif" size="2">(3)
+</font>
+
+<p></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">The keys on the
+    Friden keyboard were "sticky," meaning that they held whatever was
+    punched into them. The nice part about the formulation in Equation 3 is
+    that the last digit punched in was also the number whose square you
+    were taking. To see it work, watch the squares develop in Table 2.
+</font></p>
+<font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+</font>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensT02sm.gif"></font></center>
+<font face="Verdana, Georgia, Sans-Serif" size="2"><a href="http://i.cmpnet.com/embedded/gifs/9802/9802CrensT02.gif">View the full-size image</a>
+    <!--<p><pre>
+    Table 2 -- The "Friden" sequence.
+    Initial Number	Numbers Added	Result
+    0	0+1	1
+    1	1+2	4
+    4	2+3	9
+    9	3+4	16
+    16	4+5	25
+    25	5+6	36
+    36	6+7	49
+    49	7+8	64
+    64	8+9	81
+    </pre>
+    -->
+</font>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">As you can see, the number in the third column of this table is always the square of the last number added in.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Only Gap wasn't
+    really adding, he was subtracting--from the number whose root he was
+    seeking. The "DING" sound I had heard occurred each time the
+    subtraction caused an overflow. This was the signal to Gap that he'd
+    gone too far, so he'd back up by adding the last two numbers back in
+    the <i>reverse</i> order he'd subtracted. In that way, the number
+    remaining in the keyboard was always the largest digit whose square
+    didn't exceed the input number. This is precisely the number we seek
+    for the integer square root.
+</font></p><font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+</font>
+
+<p>
+</p>
+
+<h3><font face="Verdana, Georgia, Sans-Serif" size="2"><b>Shifting<br>
+</b></font></h3>
+<font face="Verdana, Georgia, Sans-Serif" size="2">This next part of
+    the algorithm is critically important, both for the Friden solution and
+    for our computerized ones. It's the notion of shifting, in a manner
+    similar to that used in long division.
+</font>
+
+<p></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Somewhere in the
+    dim recesses of your memory, you have a vague recollection of "pointing
+    off by two" to begin the computation of a square root by hand. That's
+    because squaring a one-digit number (from zero through nine) produces a
+    two-digit result (zero through 81). Consider, for a moment, a two-digit
+    decimal number, where the two digits are <i>p</i> and <i>q</i>. We can write this number as:
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq04sm.gif"></font></center>
+<!--<p><i>x</i> = 10<i>p</i> + <i>q</i>	--><font face="Verdana, Georgia, Sans-Serif" size="2">(4)
+</font>
+
+<p></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Squaring gives:
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq05sm.gif"></font></center>
+<!--<p><i>x</i><sup>2</sup> = (10<i>p</i> + <i>q</i>)<sup>2</sup> = 100<i>p</i><sup>2</sup> + 20<i>pq</i> + <i>q</i><sup>2</sup>	--><font face="Verdana, Georgia, Sans-Serif" size="2">(5)
+</font>
+
+<p></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">To make the example more concrete, let:
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq06-08sm.gif"></font></center>
+<!--<p><i>p</i> = 9;
+<i>q</i> = 5	(6)
+</p>
+so 
+<i>x</i> = 95	(7)
+<br>
+and 
+<i>x</i><sup>2</sup> = 100*81 + 20*45 + 25
+<br>	= 8,100 + 900 + 25
+<br>	= 9,025	(8)
+<br>-->
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">From this example, it's easy to convince oneself that the <i>p</i><sup>2</sup> and the <i>q</i><sup>2</sup>
+    terms don't interact; the latter term can never be as large as 100, so
+    it can never affect the value of the higher two digits--it fits neatly
+    into the space reserved by the trailing two zeros of 100<i>p</i><sup>2</sup>.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">The middle term,
+    900 in our example, is a little more worrisome. It clearly overlaps
+    into the high half of the result, and changes the values of the two
+    high digits. However, a little reflection will convince you that the
+    value of <i>q</i> can never influence the result we get for <i>p</i>. The worst-case condition occurs when <i>q</i> = 9. Even for this case, however, the sum can never be as large as the square of the next larger <i>p</i>. In mathematical terms, </font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq09sm.gif"></font></center>
+<!--<p>10<i>p</i> + 9 < 10(<i>p</i> + 1)	--><font face="Verdana, Georgia, Sans-Serif" size="2">(9)
+</font>
+
+<p></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Clearly, there is
+    nothing magic about our choice of ten as the base for this number, so
+    extension to other bases is straightforward.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">The implication
+    of Equation 9 is profound: it means that we can solve for each
+    individual digit of the root separately; there is no need to backtrack
+    and adjust those digits previously found. As we shift to the next lower
+    digit (using the next pair of digits of the input number, which is why
+    we point off by twos), we are refining the final result by adding
+    digits to the right-hand side of the result, but those digits already
+    found remain inviolate. This characteristic is what makes the whole
+    Friden algorithm fly. To see it work, watch the square root develop
+    (less the successive subtraction) in Table 3.
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensT03dm.gif"></font></center>
+<font face="Verdana, Georgia, Sans-Serif" size="2"><a href="http://i.cmpnet.com/embedded/gifs/9802/9802CrensT03.gif">View the full-size image</a>
+    <!--
+    <p><pre>
+    Table 3 -- Decimal square root.
+    12	34	56	78	90
+    -0-11
+    1
+    -1-2
+    8
+    -2-3
+    3	334
+    -30-31
+    273
+    -31-32
+    210
+    -32-33
+    145
+    -33-34
+    78
+    -34-35
+    9	956
+    -350-351
+    255	25578
+    -3510-3511
+    18557
+    -3511-3512
+    11534
+    -3512-3513
+    4509	450990
+    -35130-35131
+    380729
+    -35131-35132
+    310466
+    -35132-35133
+    240201
+    -35133-35134
+    169934
+    -35134-35135
+    99665
+    -35135-35136
+    29394
+    </pre>
+    -->
+</font>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">As you can
+    see from the table, we're still subtracting numbers in pairs, each one
+    larger than the other. Note, however, that we don't ignore the
+    higher-order digits, as we would in long division. Each of our
+    subtracted numbers includes all the digits previously found, and we're
+    working our way up through the last digit, starting with the zero. This
+    process turned out to be just the right approach for the Friden
+    calculator, which had sticky digits and thus remembered the leftmost
+    digits already found. The nicest part of the whole approach, from the
+    point of view of utility, was that after the last digit was found, the
+    numbers left stuck in the keyboard did, in fact, represent the square
+    root--in this case: </font></p>
+<font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+    <!--<p><img width="163" src="http://i.cmpnet.com/embedded/gifs/9802eq10.gif" height="16" align="middle">-->
+</font>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq10sm.gif"></font></center>
+<font face="Verdana, Georgia, Sans-Serif" size="2">(10)
+</font>
+
+<p></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">It's worth
+    mentioning that this may be the only case in computing history where
+    the result of the computation is found entered into the keyboard,
+    instead of the usual result display.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Another subtlety
+    of the Friden algorithm is also worth mentioning: in Table 3, we
+    shifted the "dividend" by two digits to tackle the next digit of the
+    result. This meant copying the digits found thus far over one digit to
+    the right. In the real Friden algorithm, we don't want to move the
+    digits already found--they're stuck in the keyboard. To avoid moving
+    them, we shift the carriage one place to the left instead of two, which
+    leaves the digits of the root lined up correctly without having to move
+    them. You'll see a similar behavior in our final, binary version.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Finally, note
+    that, unlike the case of division, the number we're subtracting gets
+    more and more digits in it as we go, growing from one digit to five.
+    This behavior is hardly surprising. In general the number of digits in
+    the result, which is also the thing we're subtracting, is half that of
+    the original argument. If we're to get this multi-digit result in the
+    keyboard, it stands to reason that the number of digits involved in the
+    subtractions must grow as the process unfolds. Describing this process
+    in words, however, can't begin to evoke the sound that the Friden
+    calculator would generate while taking a square-root.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">From a practical
+    point of view, however, the result is the sound of a thrashing
+    calculator whose decibels, not to mention the complexity of the sound,
+    are rising at an alarming rate, roughly comparable to the sound of a
+    Yugo being seriously overrevved. Imagine the sound of a pondful of
+    hoarse frogs, as one after the other chimes in to harmonize with the
+    rest. The first time you hear it, it seems a toss-up which will arrive
+    first, the solution or the demise of a calculating engine. However,
+    despite the alarming noise, I never saw a Friden fail or give an
+    incorrect result.
+</font></p><font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+</font>
+
+<p>
+</p>
+
+<h3><font face="Verdana, Georgia, Sans-Serif" size="2"><b>The High-School Algorithm<br>
+</b></font></h3>
+<font face="Verdana, Georgia, Sans-Serif" size="2">As I mentioned
+    earlier, you and I both know that a method exists for the
+    pencil-and-paper computation of the square root--we all learned the
+    method, and promptly forgot it, in high school. </font>
+
+<p></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">As fascinating as
+    the Friden algorithm might be, and as valuable from a historical point
+    of view, it has little if any value using any other calculator, one
+    that lacks the sticky, matrix-like keyboard of the Friden.
+    Nevertheless, it is the basis for the "high school" algorithm and gives
+    us enough insight into the process so that, with any luck, you will be
+    able to remember it this time.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Let's go back to Equations 4 and 5, which I'll repeat here for convenience:
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq04sm.gif"></font></center>
+<!--<p><i>x</i> = 10<i>p</i> + <i>q</i>	-->
+<font face="Verdana, Georgia, Sans-Serif" size="2">(4)
+</font>
+
+<p></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq05_2sm.gif"></font></center>
+<!--
+<p><i>x</i><sup>2</sup> = 100<i>p</i><sup>2</sup> + 20<i>pq</i> + <i>q</i><sup>2</sup>	-->
+<font face="Verdana, Georgia, Sans-Serif" size="2">(5)
+</font>
+
+<p></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">We'll assume that we've already managed to find <i>p</i>, by some method or another. We're now looking for the next digit, <i>q</i>. Rewriting Equation 5 gives:
+</font></p>
+<!--20<i>pq</i> + <i>q</i><sup>2</sup> = <i>x</i><sup>2</sup> - 100<i>p</i><sup>2</sup><br>-->
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq10a.gif"></font></center>
+<font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+</font>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq11sm.gif"></font></center>
+<!--<i>q</i>(20<i>p</i> + <i>q</i>) =<i> x</i><sup>2</sup> - 100<i>p</i><sup>2</sup><br><br>
+<p>or 
+</p>
+<p><img width="64" src="http://i.cmpnet.com/embedded/gifs/9802eq11.gif" height="29" align="middle">--><font face="Verdana, Georgia, Sans-Serif" size="2">(11)
+</font>
+
+<p></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">This formula gives us a rule for finding <i>q</i>. Notice that the numerator of the right-hand side is the original number, less the square of <i>p</i>, shifted left so that the two line up. In short, the numerator is the <i>remainder</i> after
+    we've subtracted our initial guess for the root. To get the denominator, we must double our guess <i>p</i>, shift it left one place, and add <i>q</i>.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">At this point, if you've been paying attention, you're asking, "How can I add <i>q</i>
+    until I know what it is?" The answer, of course, is that you can't.
+    This makes the square root algorithm a bit of a trial-and-error
+    process, just like the division algorithm (hardly a surprise, there).
+    In division, as we've learned so laboriously over the last few months,
+    we look at the first couple of digits of the dividend and divisor, and
+    use them to guess at the next digit of the quotient. We can't be sure
+    that it's correct, however, until we've multiplied it by the entire
+    divisor, and verified that we get a small, positive remainder. </font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">In the same way, in the square root process, we assume a value for <i>q</i>, based on a divisor of 20<i>p</i>. Then we must substitute the new value of <i>q</i>, and make sure the division still works.</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">It seems complicated, but it's actually no more complicated than division, and in some ways it's a bit easier.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">When I first wrote down Equation 4, I was assuming that <i>p</i> and <i>q</i> were single digits. However, you'll note that there's nothing in the math that requires that. We can now let <i>p</i> be all the digits of the root that we've found so
+    far, and <i>q</i>
+    the one we're seeking next. In division, the trial quotient digit must
+    be tested at each step, and often adjusted. The same is true in the
+    square root algorithm. However, in the latter, the larger <i>p</i> is, the less influence <i>q</i> will have on the square, and the less likely we are to have to backtrack and reduce <i>q</i>.
+    Therefore, although we must still always check to be sure, there's
+    actually less backtracking in the square root. The only thing that
+    makes the algorithm seem harder is the fact that the root, and
+    therefore the differences, are getting larger as we go along, just as
+    we saw in Table 3.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Enough talk; let's see an example. We'll use the same input value we used before. Our first step is to point it off by twos:
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq11asm.gif"></font></center>
+<!--<br>
+<p>12 34 56 78 90
+</p>
+<br>-->
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Next, we write
+    down the first digit of the root. We don't need a fancy algorithm for
+    this. The first piece of the argument is only two digits long, and its
+    root can only be one of nine numbers. Even a mathophobe should be able
+    to figure out, by inspection, which of the nine it is. In this case, we
+    see that four gives a square of 16, which is too large. So the first
+    digit must be three. Write it down above the input value. Now square
+    it, and subtract it to get the remainder:
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq11bsm.gif"></font></center>
+<!--<p><img src="http://i.cmpnet.com/embedded/gifs/9802ex1.gif"></p>
+<br>-->
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">As you can see,
+    we've "brought down" the next digits, just as we do in division. The
+    only difference is, we bring them down by twos, so our next dividend is
+    334. This is the top half of the division in Equation 11.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Now, here comes the tricky part: Remember that the bottom half is not 10<i>p</i>+<i>q</i>, but 20<i>p</i>+<i>q</i>. Before we look for <i>q</i>, we must <i>double</i> the current root, then tack on a new zero (bet that's the part you forgot!). At
+    this point, the process looks like this:
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq11csm.gif"></font></center>
+<!--<br>
+<p><img src="http://i.cmpnet.com/embedded/gifs/9802ex2.gif"></p>
+<br>-->
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Our division is,
+    then, 334/60, which yields five and some change. Before we write down
+    the new digit, five, however, we must make sure that the division still
+    works when we stick the five into the divisor. So we now have:
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq11dsm.gif"></font></center>
+<!--<p>335/65, -->
+<p></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">which still gives
+    us a five. We're okay, and don't need to backtrack. Write this next
+    digit down, so our trial root is now 35. Please note: it's very, very
+    important for you to see that the trial root and the thing we divide
+    with are not the same, because of that factor of two. The last digit is
+    the same, but the rest of the divisor is double that of the root. At
+    this point, our process looks like this:
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq11esm.gif"></font></center>
+<!--<br>
+<p><img src="http://i.cmpnet.com/embedded/gifs/9802ex3.gif"></p>
+<br>-->
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Now, you're probably thinking, what next? How do I subtract to get the new remainder?
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">We can't just square 35 and subtract it, because we've already subtracted the square of three.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Again, Equation 5 provides our answer. We have:
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq11fsm.gif"></font></center>
+<!--<p><i>x</i><sup>2</sup> = 100<i>p</i><sup>2</sup> + 20<i>pq</i> + <i>q</i><sup>2</sup></p>-->
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">which we have already written in the form:
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq11gsm.gif"></font></center>
+<!--<p><i>q</i>(20<i>p</i> + 1) = <i>x</i><sup>2</sup> - 100<i>p</i><sup>2</sup></p>-->
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">We've also already performed the subtraction on the right--that's how we got the remainder to divide with, to find <i>q</i>.
+    Now that we've found it, we must complete the subtraction by
+    subtracting out the left-hand side. That is, the remainder we now must
+    obtain is:
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq12sm.gif"></font></center>
+<font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+    (12)
+    <!--<p><i>rem</i> = <i>x</i><sup>2</sup> - 100<i>p</i><sup>2</sup> -<i>q</i>(20<i>p</i> + <i>q</i>) (12)
+    </p>-->
+</font>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">In this example, <i>q</i> is five, and 20<i>p</i>+<i>q</i> is 65, so we subtract 325. Note that this step is identical to division. After the subtraction, our process looks like this:
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq12asm.gif"></font></center>
+<!--<br>
+<p><img src="http://i.cmpnet.com/embedded/gifs/9802ex4.gif"></p>
+<br>-->
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">At this point, we can begin to see how the algorithm works. Let's see if we can state it in words:
+</font></p>
+<font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+</font>
+<ul type="DISC">
+    <font face="Verdana, Georgia, Sans-Serif" size="2">
+        <li>Point off the argument by twos</li>
+        <li>Write down the first square root digit by inspection</li>
+        <li>Subtract its square from the first two digits</li>
+        <li>Obtain the remainder by drawing down the next two digits</li>
+        <li>Double the square root, and append a zero</li>
+        <li>Estimate the next root digit by dividing the remainder by this number</li>
+        <li>Verify the digit by substituting it as the last digit of the divisor</li>
+        <li>Multiply the last digit by the divisor</li>
+        <li>Subtract to get the new remainder</li>
+        <li>Repeat step five until done</li>
+    </font></ul>
+<font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+</font>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">By now, you should see how the process goes to completion. The completed process is shown in Figure 1.
+</font></p>
+
+<p>
+</p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802Crens01sm.gif"></font></center>
+<font face="Verdana, Georgia, Sans-Serif" size="2"><a href="http://i.cmpnet.com/embedded/gifs/9802/9802Crens01.gif">View the full-size image</a>
+</font>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Note again that when we subtract the next product, the last digit of the divisor must <i>always</i> be the same as the multiplier. That's because they're both <i>q</i>.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Is the result
+    correct? Sure enough, if we square 35,136, we get 1,234,538,496. If we
+    square the next larger number, 35,137, we get 1,234,608,969, which is
+    too large. Thus the root we obtained, 35,136, is indeed the largest
+    integer whose square is less than the original argument.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">You've just seen
+    the high-school algorithm in all its glory. Now that you've seen it
+    again, you probably recognize at least bits and pieces of it. If, like
+    me, you've tried to apply it since high school and found that you
+    couldn't, it's probably because you forgot that doubling bit. The thing
+    that you're dividing to get the next digit (the divisor) is <i>not</i>
+    the root itself, nor is it exactly twenty times the root, either. You
+    get it by doubling the root, then appending a zero. Also, before
+    finally multiplying this divisor by the new digit, don't forget to
+    stick that new digit into the divisor, in place of the original zero.
+    When you do so, there's always the chance that the new product is too
+    large. In that case, as in division, you must decrement the latest
+    digit and try again.
+</font></p>
+
+<p>
+</p>
+
+<h3><font face="Verdana, Georgia, Sans-Serif" size="2"><b>Doing it in Binary<br>
+</b></font></h3>
+<font face="Verdana, Georgia, Sans-Serif" size="2">We now know (or,
+    rather, we've been reminded) how to find square roots by hand, using
+    decimal arithmetic. However, the algorithm is a lot more useful, and
+    universal, than that. In deriving it, we made no assumptions as to the
+    base of the arithmetic, except where we put a ten in Equation 4.
+    Replace that ten with any other base, and the method still works. As in
+    the case of division, it's particularly easy when we use base two, or
+    binary arithmetic. That's because we don't have to really do any
+    division to get the next digit. It's either a one or a zero, so we
+    either subtract, or we don't. We know how to test for one number
+    greater than another, and that's as smart as we need to be to make this
+    method work in binary.
+</font>
+
+<p></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">You'll recall
+    that, in the decimal case, we made our first estimate of the quotient
+    digit by using the divisor with a zero as the last digit. Then, once we
+    had the new digit, we stuck it into the divisor in place of the
+    trailing zero, and tried again. Using binary arithmetic, we don't even
+    have to do this step. If the division succeeds, it must succeed with
+    the one as the last bit, so we might as well put it there in the first
+    place.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">In the example in Figure 2, we're going to repeat the long-form square root in binary.
+</font></p>
+
+<p>
+</p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802Crens02sm.gif"></font></center>
+<font face="Verdana, Georgia, Sans-Serif" size="2"><a href="http://i.cmpnet.com/embedded/gifs/9802/9802Crens02.gif">View the full-size image</a>
+</font>
+
+<p></p>
+
+<p>
+    <font face="Verdana, Georgia, Sans-Serif" size="2">The input argument is:
+    </font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq12bsm.gif"></font></center>
+<!--<p>45765 = 0xb2c5 = 0b1011001011000101
+</p>-->
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">We perform
+    exactly the same process as in decimal arithmetic. The only difference
+    is that we don't have to do a division. We merely need to look at the
+    magnitude of the two numbers, and either subtract, or don't.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">The root is
+    0b11010101, which is 0xd5, or decimal 213. This result tells us that
+    the square root of 45,765 is 213, which is true within our definition
+    of the integer root. The next larger root would be 214, whose square is
+    45,796, which is too large. Any doubt we might have about the method is
+    expelled by looking at the remainder, which is:
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq12csm.gif"></font></center>
+<!--<p>0b110001100 = 0x18c = 396, 
+</p>-->
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">which is also:
+</font></p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensEq12dsm.gif"></font></center>
+<!--45,765 - (213)2.-->
+<p></p><font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+</font>
+
+<p>
+</p>
+
+<h3><font face="Verdana, Georgia, Sans-Serif" size="2"><b>Implementing It<br>
+</b></font></h3>
+<font face="Verdana, Georgia, Sans-Serif" size="2">Now that you see how
+    the algorithm works, let's try to implement it in software. The major
+    difference between a hand computation and a computerized one is it's
+    better to shift the argument so that we are always subtracting on word
+    boundaries. To do this, I'll shift the input argument into a second
+    word, two bits at a time. This second word will hold our partial
+    remainders. We'll build up the root in a third word, and the divisor in
+    a fourth. Remember, the divisor has an extra bit tacked on (the
+    multiplication by two, remember?), so we need at least one more bit
+    than the final root. The easiest thing to do is to make the divisor and
+    the remainder words both the same length as the input argument. Listing
+    3 shows the result. Try it with any argument from zero through the
+    maximum length of an unsigned long word (4,294,967,295), and you'll
+    find it always gives the correct root. It gives it quickly, too--only
+    16 iterations, with nothing in the loop but a test and a subtraction.
+</font>
+
+<p></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">As an aside, note
+    that unlike in floating-point implementations, we don't test for the
+    error of a negative argument. Because the argument is assumed unsigned,
+    such a test is unnecessary.
+</font></p><font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+</font>
+
+<p>
+</p>
+
+<h3><font face="Verdana, Georgia, Sans-Serif" size="2"><b>Better Yet<br>
+</b></font></h3>
+<font face="Verdana, Georgia, Sans-Serif" size="2">The code of Listing
+    3 looks hard to beat, but it does use a lot of internal variables,
+    doesn't it? It needs one to hold the remainder, into which we shift the
+    input argument, one to hold the root we're building, and one to hold
+    the divisor. Can we do better? </font>
+
+<p></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">As a matter of
+    fact, we can. The secret is in noting the intimate relationship between
+    the root and the divisor. They differ only in that the root ends in one
+    or zero, while the corresponding divisor has a zero tucked in front of
+    the last bit, and so ends in 01 or 00. We can see this relationship by
+    comparing the two, as I've shown in Table 4 for our example problem.
+    The divisors for successful, as well as unsuccessful, subtractions are
+    shown.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">We can see that,
+    whether the subtraction is done or not, the divisor is always four
+    times the root, plus one. The success or failure of the subtraction
+    only determines whether or not the bit inserted into the <i>next</i> root is a one or a zero.
+</font></p>
+
+<p>
+</p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensT04sm.gif"></font></center>
+<font face="Verdana, Georgia, Sans-Serif" size="2"><a href="http://i.cmpnet.com/embedded/gifs/9802/9802CrensT04.gif">View the full-size image</a>
+    <!--<pre>
+    Table 4 -- Root vs. Divisor.
+    Root	Divisor	Successful?
+    1	101	y
+    11	1101	n
+    110	11001	y
+    1101	110101
+    n
+    11010	1101001	y
+    110101	11010101	n
+    1101010	110101001	y
+    </pre>-->
+</font>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">The nice
+    part about this correspondence is this: because there's always a
+    predictable relationship between the root and the divisor, we don't
+    need to store both values. We can always compute the final result from
+    the last divisor. The binary algorithm, modified to use a single
+    variable for the divisor, is shown in Listing 4. In this
+    implementation, we basically carry the desired information in the
+    divisor. One division by two, at the end, gives us the desired root.
+</font></p><font face="Verdana, Georgia, Sans-Serif" size="2"><br>
+</font>
+
+<p>
+</p>
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensL03sm.gif"></font></center>
+<!--<pre>LISTING 3
+The binary square root.
+unsigned short sqrt(unsigned long a){
+unsigned long rem = 0;
+unsigned long root = 0;
+unsigned long divisor = 0;
+for(int i=0; i
+<
+16; i++){
+root 
+<
+<
+= 1;
+rem = ((rem 
+<
+<
+2) + (a >> 30));
+a 
+<
+<
+= 2;
+divisor = (root
+<
+<
+1) + 1;
+if(divisor 
+<
+= rem){
+rem -= divisor;
+root++;
+}
+}
+return (unsigned short)(root);
+}
+</pre>-->
+<center><font face="Verdana, Georgia, Sans-Serif" size="2"><img src="Integer%20Square%20Roots_files/9802CrensL04.gif"></font></center>
+<!--<p><p><pre>
+LISTING 4
+An improved version.
+unsigned short sqrt(unsigned long a){
+unsigned long rem = 0;
+unsigned long root = 0;
+for(int i=0; i
+<
+16; i++){
+root 
+<
+<
+= 1;
+rem = ((rem 
+<
+<
+2) + (a >> 30));
+a 
+<
+<
+= 2;
+root ++;
+if(root 
+<
+= rem){
+rem -= root;
+root++;
+}
+else
+rootý;
+}
+return (unsigned short)(root >> 1);
+}
+</pre>-->
+<p>
+</p>
+
+<h3><font face="Verdana, Georgia, Sans-Serif" size="2"><b>Wrapping Up<br>
+</b></font></h3>
+<font face="Verdana, Georgia, Sans-Serif" size="2">Well, at this point
+    we've pretty well said all there is to be said for integer arithmetic.
+    In the past few months, we've covered multi-word addition and
+    subtraction; we've looked at signed and unsigned multi-word
+    multiplication; and we even found something I hadn't thought possible:
+    a fast multi-word integer division. The square root algorithm you've
+    seen here sort of puts the icing on the cake of integer arithmetic.
+</font>
+
+<p></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">Since it's
+    difficult to think of anything else we can do with integers, I'm sure
+    you'd agree that we're well and truly done with them, and are ready to
+    move on to other things.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">You'd be wrong.
+    Not too long ago, I ran across a remarkable algorithm for, of all
+    things, the integer logarithm. It's just the ticket for cases where you
+    have to simulate logarithmic behavior, for a loudness or brightness
+    control, for example. I'll tell you all about this algorithm next
+    month.
+</font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">During these
+    months, while we've been hammering away at integers, I've amassed a ton
+    of other material to cover in future months. Lately I've been spending
+    a lot of time fitting curves with nonlinear functions. I've also been
+    looking at the generation of certain functions for simulation
+    transients from input sensors and similar sources. We'll be talking
+    about those in future months. I've also got the long-promised
+    discussion of high-speed interpreters, and how they can be used in
+    real-time systems. </font></p>
+
+<p><font face="Verdana, Georgia, Sans-Serif" size="2">In short, we have a lot of ground to cover now that integers are nearly behind us. I'm looking forward to it; how about you?
+</font></p>
+<font face="Verdana, Georgia, Sans-Serif" size="2"><i><p>Jack W.
+    Crenshaw is a staff scientist at Invivo Research in Orlando, FL. He did
+    much early work in the space program and has developed numerous
+    analysis and real-time programs. Crenshaw can be reached via e-mail at <a href="mailto:jcrens@earthlink.net">jcrens@earthlink.net</a>.
+</p></i>
+    <!-- END MAIN CONTENT -->
+</font></td>
+</tr>
+</tbody>
+</table>
+</td>
+<td class="vertical_line" width="1">
+    <img src="Integer%20Square%20Roots_files/spacer.gif" height="0" width="0" border="0">
+</td>
+<td valign="top" width="377" align="center">
+    <table cellpadding="0" cellspacing="0" width="336" border="0">
+        <tbody>
+        <tr>
+            <td>
+                <!-- career center box -->
+                <center>
+                    <div id="cc_container" style="width: 336px;">
+                        <div class="cc_top_box">
+                            <div id="cc_header_box">Embedded.com Career Center</div>
+                            <div id="cc_control_box">
+                                <div id="cc_expression">Ready for a change?</div>
+                                <div id="cc_controls"><a href="javascript:void(jobsopen())">Open</a> | <a href="javascript:void(jobsclose())">Close</a></div>
+                                <div id="cc_expression" align="center"><a href="http://www.eetimescareers.com/"><img src="Integer%20Square%20Roots_files/EETimes_TC_Banner.gif" width="315" border="0"></a></div>
+                            </div>
+                        </div>
+                        <div id="cc_bottomBox" class="cc_bottom_box">
+                            <div id="cc_header_box">SEARCH JOBS</div>
+                            <table class="cc_techcareerbox" cellpadding="0" cellspacing="0" border="0">
+                                <tbody>
+                                <tr>
+                                    <td valign="top">
+                                        <form method="post" action="http://www.eetimescareers.com/JS/Action/SearchResults.asp" id="search" name="search" onsubmit="return setSearchParams();">
+                                            <input name="FOrderBy" value="modifydate[d]" type="hidden">
+                                            <input value="25" type="hidden">
+                                            Keyword(s):<br><input name="FKeywords" size="14"><br>
+                                            State:<br><input name="FState" size="2" maxlength="2"> <input value="Search" type="submit">
+                                        </form>
+                                        <p>
+                                            <a href="http://www.eetimescareers.com/JS/JobSearch/">Browse all jobs</a>
+                                        </p></td>
+                                    <td>
+                                        <ul class="jobsearch">
+                                            <li><a href="http://www.eetimescareers.com/">Recent Articles</a>
+                                                - industry trends, advice, and other career related content.
+                                            </li>
+                                            <li><a href="http://www.eetimescareers.com/Companies/Pages/TechCareers/careerprofiles.asp">Career Profiles</a>
+                                                - Advice from tech pros who've "made it".
+                                            </li>
+                                            <li><a href="http://www.eetimescareers.com/Companies/Pages/TechCareers/hiringreports.asp">Hiring Reports</a>
+                                                - Company hiring and recruiting strategies.
+                                            </li>
+                                            <li><a href="http://www.eetimescareers.com/Companies/Pages/TechCareers/jobsearchtips.asp">Job Search Tips</a>
+                                                - Experts share their secrets on job hunting.
+                                            </li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <div id="cc_header_box">SPONSOR</div>
+                            <div id="sponsorbox">
+                                <!-- http://as.cmpnet.com/html.ng/pagepos=logo11&affiliate=embedded&site=electronics&country=canada&state=qc&server=atg&city=montreal&target=/98/9802fe2.htm -->
+                                <a target="_parent"
+                                   href="http://as.cmpnet.com/event.ng/Type=click&amp;FlightID=142249&amp;AdID=224642&amp;TargetID=8600&amp;Segments=3108,3448,12086&amp;Targets=2625,2878,8600&amp;Values=34,46,51,63,77,87,93,102,140,304,309,442,451,1715,1766,1785,1925,1945,1979,2281,2299,2310,2326,2352,2678,4079,6293,6332,6393,6489,6541,6567,6967&amp;RawValues=IP,66.77.24.210,&amp;Redirect=http://www.resumerabbit.com/index.jsp%3Fpid%3D3ff9d75dae87c16aaa42b67811c85d5d%26aid%3D883701"><img
+                                        src="Integer%20Square%20Roots_files/300x250-Resume-Rabbit_03172009.gif" alt="" border="0"></a><img src="Integer%20Square%20Roots_files/TypecountClientType2AdID224642FlightID142249TargetID8600Site.gif" height="1" width="1" border="0">
+                            </div>
+                            <div id="cc_header_box">RECENT JOB POSTINGS</div>
+                            <div class="cc_techcareerbox">
+                                <a href="http://www.eetimescareers.com/JS/General/Job.asp?id=20929469">
+                                    Lawrence Berkeley National Lab seeking Linux Administrator in Berkeley, CA
+                                </a>
+
+                                <p>
+                                    <a href="http://www.eetimescareers.com/JS/General/Job.asp?id=20851252">
+                                        ITT Corporation seeking SW Engineer in Clifton, NJ
+                                    </a>
+                                </p>
+
+                                <p>
+                                    <a href="http://www.eetimescareers.com/JS/General/Job.asp?id=20923548">
+                                        Fujitsu seeking RF designers in Tempe, AZ
+                                    </a>
+                                </p>
+
+                                <p>
+                                    <a href="http://www.eetimescareers.com/JS/General/Job.asp?id=20814008">
+                                        Sandia seeking Computer Software R and D in Albuquerque, NM
+                                    </a>
+                                </p>
+
+                                <p>
+                                    <a href="http://www.eetimescareers.com/JS/General/Job.asp?id=20766999">
+                                        Osram Sylvania seeking Service Technician in Springfield, MA
+                                    </a>
+                                </p>
+
+                                <p>
+                                </p>
+
+                                <div>
+                                    For more great jobs, career related news, features and services, please visit EETimes
+                                    <a href="http://www.eetimescareers.com/"><span style="color: rgb(20, 94, 141); text-decoration: none; font-weight: bold;">Career Center</span></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </center>
+                <!-- imu ad in shared template parts sub sub template -->
+                <table>
+                    <tbody>
+                    <tr>
+                        <td align="center"><img src="Integer%20Square%20Roots_files/advert_rule_sm.gif"></td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <!-- http://as.cmpnet.com/html.ng/pagepos=sec&affiliate=embedded&site=electronics&country=canada&state=qc&server=atg&city=montreal&target=/98/9802fe2.htm -->
+                            <a target="_parent"
+                               href="http://as.cmpnet.com/event.ng/Type=click&amp;FlightID=151404&amp;AdID=237717&amp;TargetID=679&amp;Segments=853,3108,3448,12181,13822,13828&amp;Targets=679,2625,2878,8657&amp;Values=34,46,51,63,77,87,93,102,140,304,309,399,442,451,1766,1785,1925,1945,1979,2281,2299,2310,2326,2352,2678,4079,6293,6332,6393,6489,6541,6567,6967&amp;RawValues=IP,66.77.24.210,&amp;Redirect=http://techonline.com/software_eval/showSoftwareEval.jhtml%3Fid%3D2"><img
+                                    src="Integer%20Square%20Roots_files/nuckern336x280_08142009.jpg" alt="" height="280" width="336" border="0"></a><img src="Integer%20Square%20Roots_files/TypecountClientType2AdID237717FlightID151404TargetID679SiteI.gif" height="1" width="1" border="0">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center"><img src="Integer%20Square%20Roots_files/advert_rule_sm.gif"></td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <!-- http://as.cmpnet.com/html.ng/pagepos=sec2&affiliate=embedded&site=electronics&country=canada&state=qc&server=atg&city=montreal&target=/98/9802fe2.htm -->
+
+                            <script src="Integer%20Square%20Roots_files/DartRichMedia_1_03.js"></script>
+                            <!-- Sniffer Code for Flash version=80 -->
+                            <script language="JavaScript">
+                                <!--
+                                var swf_click = "http://as.cmpnet.com/event.ng/Type=click&FlightID=150554&AdID=236314&TargetID=8657&Segments=3108,3448,12181,14498&Targets=2625,2878,8657,10558&Values=34,46,51,63,77,87,93,102,140,304,309,442,451,1766,1785,1925,1945,1979,2281,2299,2310,2326,2352,2678,3380,4079,6293,6332,6393,6489,6541,6567,6967&RawValues=&Redirect=http://budurl.com/clph";
+                                var dcswf_click = escape(swf_click);
+                                var ShockMode = 0;
+                                var plugin = (navigator.mimeTypes && navigator.mimeTypes["application/x-shockwave-flash"]) ? navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin : 0;
+                                if (plugin && parseInt(plugin.description.substring(plugin.description.indexOf(".") - 2)) >= 8)
+                                {
+                                    ShockMode = 1;
+                                }
+                                else if (navigator.userAgent && navigator.userAgent.indexOf("MSIE") >= 0
+                                        && (navigator.userAgent.indexOf("Windows 95") >= 0 || navigator.userAgent.indexOf("Windows 98") >= 0 || navigator.userAgent.indexOf("Windows NT") >= 0)) {
+                                    document.write('<SCRIPT LANGUAGE=VBScript\> \n');
+                                    document.write('on error resume next \n');
+                                    document.write('ShockMode = (IsObject(CreateObject("ShockwaveFlash.ShockwaveFlash.8")))\n');
+                                    document.write('<\/SCRIPT\> \n');
+                                }
+                                if (ShockMode) {
+                                    document.write('<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"');
+                                    document.write(' codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0"');
+                                    document.write(' ID=flashad WIDTH=336 HEIGHT=280>');
+                                    document.write(' <PARAM NAME=movie VALUE="http://i.cmpnet.com/ads/graphics/as5/hg/HouseAds/SOCVirtualConference/socvc_336x280.swf?clickTag=' + dcswf_click + '"> ');
+                                    document.write(' <PARAM NAME=quality VALUE=autohigh> ');
+                                    document.write(' <PARAM NAME=wmode VALUE=opaque> ');
+                                    document.write(' <EMBED SRC="http://i.cmpnet.com/ads/graphics/as5/hg/HouseAds/SOCVirtualConference/socvc_336x280.swf?clickTag=' + dcswf_click + '" QUALITY=autohigh WMODE=opaque ');
+                                    document.write(' NAME=flashad swLiveConnect=TRUE WIDTH=336 HEIGHT=280');
+                                    document.write(' TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash">');
+                                    document.write('</EMBED>');
+                                    document.write('</OBJECT>');
+                                } else if (!(navigator.appName && navigator.appName.indexOf("Netscape") >= 0 && navigator.appVersion.indexOf("2.") >= 0)) {
+                                    document.write('<A HREF="http://as.cmpnet.com/event.ng/Type=click&FlightID=150554&AdID=236314&TargetID=8657&Segments=3108,3448,12181,14498&Targets=2625,2878,8657,10558&Values=34,46,51,63,77,87,93,102,140,304,309,442,451,1766,1785,1925,1945,1979,2281,2299,2310,2326,2352,2678,3380,4079,6293,6332,6393,6489,6541,6567,6967&RawValues=&Redirect=http://budurl.com/clph" target="_top"><IMG SRC="http://i.cmpnet.com/ads/graphics/as5/hg/BlankGif/blank.gif" WIDTH=336 HEIGHT=280 BORDER=0></A>');
+                                }
+                                //-->
+                            </script>
+                            <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" id="flashad" height="280" width="336">
+                                <param name="movie"
+                                       value="http://i.cmpnet.com/ads/graphics/as5/hg/HouseAds/SOCVirtualConference/socvc_336x280.swf?clickTag=http%3A//as.cmpnet.com/event.ng/Type%3Dclick%26FlightID%3D150554%26AdID%3D236314%26TargetID%3D8657%26Segments%3D3108%2C3448%2C12181%2C14498%26Targets%3D2625%2C2878%2C8657%2C10558%26Values%3D34%2C46%2C51%2C63%2C77%2C87%2C93%2C102%2C140%2C304%2C309%2C442%2C451%2C1766%2C1785%2C1925%2C1945%2C1979%2C2281%2C2299%2C2310%2C2326%2C2352%2C2678%2C3380%2C4079%2C6293%2C6332%2C6393%2C6489%2C6541%2C6567%2C6967%26RawValues%3D%26Redirect%3Dhttp%3A//budurl.com/clph">
+                                <param name="quality" value="autohigh">
+                                <param name="wmode" value="opaque">
+                                <embed src="Integer%20Square%20Roots_files/socvc_336x280.swf" quality="autohigh" wmode="opaque" name="flashad" swliveconnect="TRUE" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash"
+                                       height="280" width="336">
+                            </object>
+                            <noembed>
+                                &lt;A
+                                HREF="http://as.cmpnet.com/event.ng/Type=click&amp;FlightID=150554&amp;AdID=236314&amp;TargetID=8657&amp;Segments=3108,3448,12181,14498&amp;Targets=2625,2878,8657,10558&amp;Values=34,46,51,63,77,87,93,102,140,304,309,442,451,1766,1785,1925,1945,1979,2281,2299,2310,2326,2352,2678,3380,4079,6293,6332,6393,6489,6541,6567,6967&amp;RawValues=&amp;Redirect=http://budurl.com/clph"
+                                target="_top"&gt;&lt;IMG
+                                SRC="http://i.cmpnet.com/ads/graphics/as5/hg/BlankGif/blank.gif"
+                                WIDTH=336 HEIGHT=280 BORDER=0&gt;&lt;/A&gt;
+                            </noembed>
+                            <noscript><A
+                                    HREF="http://as.cmpnet.com/event.ng/Type=click&FlightID=150554&AdID=236314&TargetID=8657&Segments=3108,3448,12181,14498&Targets=2625,2878,8657,10558&Values=34,46,51,63,77,87,93,102,140,304,309,442,451,1766,1785,1925,1945,1979,2281,2299,2310,2326,2352,2678,3380,4079,6293,6332,6393,6489,6541,6567,6967&RawValues=&Redirect=http://budurl.com/clph"
+                                    target="_top"><IMG
+                                    SRC="http://i.cmpnet.com/ads/graphics/as5/hg/BlankGif/blank.gif"
+                                    WIDTH=336 HEIGHT=280 BORDER=0></A>
+                            </noscript>
+                            <img src="Integer%20Square%20Roots_files/TypecountClientType2AdID236314FlightID150554TargetID8657Site.gif" height="1" width="1" border="0">
+                            <br>
+                            <!-- http://as.cmpnet.com/html.ng/pagepos=buy&catid=imu&affiliate=embedded&site=electronics&country=canada&state=qc&server=atg&city=montreal&target=/98/9802fe2.htm -->
+                            <a target="_blank"
+                               href="http://as.cmpnet.com/event.ng/Type=click&amp;FlightID=130183&amp;AdID=209358&amp;TargetID=10927&amp;Segments=3108,3448,14919&amp;Targets=2625,2878,10927&amp;Values=34,46,51,63,77,87,93,102,140,304,309,442,451,1766,1785,1925,1945,1979,2281,2299,2310,2326,2352,2678,3026,4079,6293,6332,6393,6489,6541,6567,6672,6967&amp;RawValues=&amp;Redirect=https://techinsights.balihoo.com/?PID=421389">Your
+                                ad here. Buy Media Now</a><img src="Integer%20Square%20Roots_files/TypecountClientType2AdID209358FlightID130183TargetID10927Sit.gif" height="1" width="1" border="0">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <p>
+                </p>
+
+                <div style="margin-left: 3px;">
+                    <!-- added to align box in column - MJT -->
+                    <!-- FIRSTLIGHT LIVE CODE -->
+                    <script type="text/javascript" language="JavaScript">
+                        var era_rc = {
+                            ERADomain: 'embedded.firstlightera.com'
+                        };
+                    </script>
+                    <script type="text/javascript" language="JavaScript" src="Integer%20Square%20Roots_files/era_rl.aspx"></script>
+                    <div id="ERA_RC"></div>
+                    <iframe name="era_relatedLinks" src="Integer%20Square%20Roots_files/Default.html" marginwidth="0" marginheight="0" frameborder="0" height="275" width="335" scrolling="no"></iframe>
+                    <!-- END TEST LIVE CODE -->
+                </div>
+                <!-- related contents -->
+                <hr>
+                <!-- most popular articles -->
+                <div style="padding-top: 2px;">
+                    <img src="Integer%20Square%20Roots_files/most_pop_bl.gif" height="27" width="200" align="center" border="0">
+                    <ul class="purple">
+                        <li class="purple"><a href="http://www.embedded.com/design/219401085">Poor reasons for rejecting C++</a></li>
+                        <li class="purple"><a href="http://www.embedded.com/design/opensource/218600135">FLIRTing with 8-bit MCU OSes</a></li>
+                        <li class="purple"><a href="http://www.embedded.com/design/218600142">Real men program in C</a></li>
+                        <li class="purple"><a href="http://www.embedded.com/design/opensource/207402540">Building "instant-up" real-time operating systems</a></li>
+                        <li class="purple"><a href="http://www.embedded.com/design/opensource/204300381">Do-it-yourself embedded Linux development tools</a></li>
+                    </ul>
+                </div>
+                <hr>
+                <!-- highest rated articles -->
+                <img src="Integer%20Square%20Roots_files/highest_rated_bl.gif" height="27" width="200" align="center" border="0">
+                <ul class="purple">
+                    <li class="purple"><a href="http://www.embedded.com/columns/technicalinsights/210602856">A Trillion Lines of Code?</a>
+                    </li>
+                    <li class="purple"><a href="http://www.embedded.com/columns/technicalinsights/214501175">PPTC devices help protect electric motors, transformers and industrial controllers</a>
+                    </li>
+                    <li class="purple"><a href="http://www.embedded.com/columns/technicalinsights/193401141">The Scheduling Subsystem For Realtime Java: Explained</a>
+                    </li>
+                    <li class="purple"><a href="http://www.embedded.com/columns/technicalinsights/168602060">Implementing the logic behind complex behavior</a>
+                    </li>
+                    <li class="purple"><a href="http://www.embedded.com/columns/technicalinsights/196802062">Using multi-antenna software to optimize mobile WiMAX performance</a>
+                    </li>
+                </ul>
+                <p>
+                    <!-- industry brains marketplace ads -->
+                    <script type="text/javascript" src="Integer%20Square%20Roots_files/jsct"></script>
+                <table style="border: 1px solid rgb(229, 229, 229); width: 336px; height: 365px; border-collapse: collapse;" xmlns:ibn="urn:industrybrains.com:linkserver" cellspacing="0">
+                    <tbody>
+                    <tr>
+                        <td style="padding: 2px 2px 2px 8px; font-family: Arial,Helvetica,sans-serif; font-style: normal; font-variant: normal; font-weight: bold; font-size: 12px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; color: rgb(255, 255, 255); text-align: left; background-color: rgb(0, 102, 164);"
+                            colspan="2"> SPONSORED LINKS
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1px;"></td>
+                        <td style="border: 0px solid rgb(24, 77, 49); padding: 3px;">
+                            <div>
+                                <a style="font-family: Verdana,Arial,Helvetica,sans-serif; font-style: normal; font-variant: normal; font-size: 11px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; color: rgb(0, 0, 204); font-weight: bold; text-decoration: underline;"
+                                   href="http://links.industrybrains.com/click?sid=597&amp;rqctid=51&amp;pos=1&amp;lid=478176&amp;cid=6858&amp;pr=2&amp;tstamp=20090825022655&amp;iip=70.81.231.169&amp;url=http://www.sgvsarc.comhttp://www.sgvsarc.com/adv_default.asp%3fsrcid%3dEmbROS">Flowcharts from
+                                    C/C++ code -- Free trial... </a></div>
+                            <div><a style="text-decoration: none; font-family: Verdana; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; color: rgb(0, 0, 0);"
+                                    href="http://links.industrybrains.com/click?sid=597&amp;rqctid=51&amp;pos=1&amp;lid=478176&amp;cid=6858&amp;pr=2&amp;tstamp=20090825022655&amp;iip=70.81.231.169&amp;url=http://www.sgvsarc.comhttp://www.sgvsarc.com/adv_default.asp%3fsrcid%3dEmbROS">Understand C/C++
+                                code in less time. Flowcharts, DataFlow, Rich Trees, Static checking, Documentation</a></div>
+                            <div><a target="_blank" href="http://links.industrybrains.com/click?sid=597&amp;rqctid=51&amp;pos=1&amp;lid=478176&amp;cid=6858&amp;pr=2&amp;tstamp=20090825022655&amp;iip=70.81.231.169&amp;url=http://www.sgvsarc.comhttp://www.sgvsarc.com/adv_default.asp%3fsrcid%3dEmbROS">
+                                <div style="text-decoration: underline; font-family: Verdana; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; color: rgb(90, 170, 38);">
+                                    www.sgvsarc.com
+                                </div>
+                            </a></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1px;"></td>
+                        <td style="border: 0px solid rgb(24, 77, 49); padding: 3px;">
+                            <div>
+                                <a style="font-family: Verdana,Arial,Helvetica,sans-serif; font-style: normal; font-variant: normal; font-size: 11px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; color: rgb(0, 0, 204); font-weight: bold; text-decoration: underline;"
+                                   href="http://links.industrybrains.com/click?sid=597&amp;rqctid=51&amp;pos=2&amp;lid=547132&amp;cid=140868&amp;pr=2&amp;tstamp=20090825022655&amp;iip=70.81.231.169&amp;url=http://clk.atdmt.com/DSF/go/156028876/direct/01/">Intel® Embedded Community</a></div>
+                            <div><a style="text-decoration: none; font-family: Verdana; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; color: rgb(0, 0, 0);"
+                                    href="http://links.industrybrains.com/click?sid=597&amp;rqctid=51&amp;pos=2&amp;lid=547132&amp;cid=140868&amp;pr=2&amp;tstamp=20090825022655&amp;iip=70.81.231.169&amp;url=http://clk.atdmt.com/DSF/go/156028876/direct/01/">Learn embedded tips and skills from Intel
+                                developers. Join the community today.</a></div>
+                            <div><a target="_blank" href="http://links.industrybrains.com/click?sid=597&amp;rqctid=51&amp;pos=2&amp;lid=547132&amp;cid=140868&amp;pr=2&amp;tstamp=20090825022655&amp;iip=70.81.231.169&amp;url=http://clk.atdmt.com/DSF/go/156028876/direct/01/">
+                                <div style="text-decoration: underline; font-family: Verdana; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; color: rgb(90, 170, 38);">
+                                    http://edc.intel.com/community
+                                </div>
+                            </a></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1px;"></td>
+                        <td style="border: 0px solid rgb(24, 77, 49); padding: 3px;">
+                            <div>
+                                <a style="font-family: Verdana,Arial,Helvetica,sans-serif; font-style: normal; font-variant: normal; font-size: 11px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; color: rgb(0, 0, 204); font-weight: bold; text-decoration: underline;"
+                                   href="http://links.industrybrains.com/click?sid=597&amp;rqctid=51&amp;pos=3&amp;lid=568658&amp;cid=142775&amp;pr=2&amp;tstamp=20090825022655&amp;iip=70.81.231.169&amp;url=http://s0b.bluestreak.com/ix.e%3fhy%26s%3d7950656%26a%3d7386949%26k%3d11808127%26u%3dhttp%253a%252f%252fusa%252Eautodesk%252Ecom%252fadsk%252fservlet%252findex%253fsiteID%253d123112%2526id%253d4246282%2526DCMP%253dKNC%252DDP%252Dus%252Dib%252Dinv">Inventor,
+                                    A Digital Prototype Revolution</a></div>
+                            <div><a style="text-decoration: none; font-family: Verdana; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; color: rgb(0, 0, 0);"
+                                    href="http://links.industrybrains.com/click?sid=597&amp;rqctid=51&amp;pos=3&amp;lid=568658&amp;cid=142775&amp;pr=2&amp;tstamp=20090825022655&amp;iip=70.81.231.169&amp;url=http://s0b.bluestreak.com/ix.e%3fhy%26s%3d7950656%26a%3d7386949%26k%3d11808127%26u%3dhttp%253a%252f%252fusa%252Eautodesk%252Ecom%252fadsk%252fservlet%252findex%253fsiteID%253d123112%2526id%253d4246282%2526DCMP%253dKNC%252DDP%252Dus%252Dib%252Dinv">Try
+                                Software That Enables You To Create, Test, and Iterate Your Models in 3D.</a></div>
+                            <div><a target="_blank"
+                                    href="http://links.industrybrains.com/click?sid=597&amp;rqctid=51&amp;pos=3&amp;lid=568658&amp;cid=142775&amp;pr=2&amp;tstamp=20090825022655&amp;iip=70.81.231.169&amp;url=http://s0b.bluestreak.com/ix.e%3fhy%26s%3d7950656%26a%3d7386949%26k%3d11808127%26u%3dhttp%253a%252f%252fusa%252Eautodesk%252Ecom%252fadsk%252fservlet%252findex%253fsiteID%253d123112%2526id%253d4246282%2526DCMP%253dKNC%252DDP%252Dus%252Dib%252Dinv">
+                                <div style="text-decoration: underline; font-family: Verdana; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; color: rgb(90, 170, 38);">
+                                    www.AutoDesk.com/Inventor
+                                </div>
+                            </a></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 1px;"></td>
+                        <td style="border: 0px solid rgb(24, 77, 49); padding: 3px;">
+                            <div>
+                                <a style="font-family: Verdana,Arial,Helvetica,sans-serif; font-style: normal; font-variant: normal; font-size: 11px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; color: rgb(0, 0, 204); font-weight: bold; text-decoration: underline;"
+                                   href="http://links.industrybrains.com/click?sid=597&amp;rqctid=51&amp;pos=4&amp;lid=546621&amp;cid=2474&amp;pr=2&amp;tstamp=20090825022655&amp;iip=70.81.231.169&amp;url=http://www.pannam.com">Lowest Cost Membrane Switches</a></div>
+                            <div><a style="text-decoration: none; font-family: Verdana; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; color: rgb(0, 0, 0);"
+                                    href="http://links.industrybrains.com/click?sid=597&amp;rqctid=51&amp;pos=4&amp;lid=546621&amp;cid=2474&amp;pr=2&amp;tstamp=20090825022655&amp;iip=70.81.231.169&amp;url=http://www.pannam.com">Pannam with its ISO9001 domestic and overseas manufacturing assures
+                                highest quality and lowest cost.</a></div>
+                            <div><a target="_blank" href="http://links.industrybrains.com/click?sid=597&amp;rqctid=51&amp;pos=4&amp;lid=546621&amp;cid=2474&amp;pr=2&amp;tstamp=20090825022655&amp;iip=70.81.231.169&amp;url=http://www.pannam.com">
+                                <div style="text-decoration: underline; font-family: Verdana; font-style: normal; font-variant: normal; font-weight: normal; font-size: 10px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; color: rgb(90, 170, 38);">
+                                    www.pannam.com
+                                </div>
+                            </a></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.2em; font-family: Arial,Helvetica,sans-serif; font-style: italic; font-variant: normal; font-weight: normal; font-size: 11px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; color: rgb(0, 51, 102); text-align: right;"
+                            colspan="2"><a href="http://www.industrybrains.com/signupgroup/Welcome_IB.aspx" target="_blank"
+                                           style="font-family: Verdana,Arial,Helvetica,sans-serif; font-style: italic; font-variant: normal; font-weight: normal; font-size: 11px; line-height: normal; font-size-adjust: none; font-stretch: normal; -x-system-font: none; color: rgb(0, 51, 102);"> Buy a
+                            Link Now </a></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a href="http://shlinks.industrybrains.com/sh?sid=597&amp;a=87bc2e58c7b99f7296c4e5383ff13c18ddd75b6351083e0a38b115aca8812b9c"></a>
+                </p></td>
+        </tr>
+        </tbody>
+    </table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</td>
+</tr>
+<tr>
+    <td colspan="4">
+        <!-- bottom navigation -->
+        <table cellpadding="0" cellspacing="0" width="100%" border="0">
+            <tbody>
+            <tr>
+                <td height="1" bgcolor="#cccccc"></td>
+            </tr>
+            <tr>
+                <td>
+                    <!-- resource link - No content returned ... IsEmpty=true -->
+                    <debug name="resource link url" value="http://adserver1.eseohserve.com/pull?v1=www.embedded.com&amp;v2=/98/9802fe2.htm&amp;v3=/98/9802fe2.htm">
+                    </debug>
+                </td>
+            </tr>
+            <tr>
+                <td align="center">
+                    <br>
+                    <!-- bottom ad -->
+                    <!-- http://as.cmpnet.com/html.ng/pagepos=bottom&affiliate=embedded&site=electronics&country=canada&state=qc&server=atg&city=montreal&target=/98/9802fe2.htm -->
+                    <script language="JavaScript1.1" src="Integer%20Square%20Roots_files/1TIME_DATE_STAMPTop1">
+                    </script>
+                    <script language="JavaScript1.1" src="Integer%20Square%20Roots_files/10217-81825-6712-8">
+                    </script>
+                    <script type="text/javascript" src="Integer%20Square%20Roots_files/documentwrite.js"></script>
+                    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,40,0" id="37" name="movie37" height="90" width="728">
+                        <param name="FlashVars"
+                               value="clickTAG=http://oasc05134.247realmedia.com/RealMedia/ads/click_lx.ads/TCHNeet/technology/1{TIME_DATE_STAMP}/L18/905802287/Top1/BBN/BCN2009050171_006c_Fuor/Fuor_Quebec_728.html/526c486e45306d776754634141376762?http://altfarm.mediaplex.com/ad/ck/10217-81825-6712-8?mpt=905802287&amp;clickTag=http://oasc05134.247realmedia.com/RealMedia/ads/click_lx.ads/TCHNeet/technology/1{TIME_DATE_STAMP}/L18/905802287/Top1/BBN/BCN2009050171_006c_Fuor/Fuor_Quebec_728.html/526c486e45306d776754634141376762?http://altfarm.mediaplex.com/ad/ck/10217-81825-6712-8?mpt=905802287&amp;clickTag1=http://oasc05134.247realmedia.com/RealMedia/ads/click_lx.ads/TCHNeet/technology/1{TIME_DATE_STAMP}/L18/905802287/Top1/BBN/BCN2009050171_006c_Fuor/Fuor_Quebec_728.html/526c486e45306d776754634141376762?http://altfarm.mediaplex.com/ad/ck/10217-81825-6712-8?mpt=905802287">
+                        <param name="movie" value="http://img-cdn.mediaplex.com/0/10217/81825/relo_b2_728x90.swf">
+                        <param name="wmode" value="opaque">
+                        <param name="allowscriptaccess" value="always">
+                        <param name="wmode" value="opaque">
+                        <param name="allowscriptaccess" value="always">
+                        <embed wmode="opaque" allowscriptaccess="always" name="37" src="Integer%20Square%20Roots_files/relo_b2_728x90.swf"
+                               flashvars="clickTAG=http://oasc05134.247realmedia.com/RealMedia/ads/click_lx.ads/TCHNeet/technology/1{TIME_DATE_STAMP}/L18/905802287/Top1/BBN/BCN2009050171_006c_Fuor/Fuor_Quebec_728.html/526c486e45306d776754634141376762?http://altfarm.mediaplex.com/ad/ck/10217-81825-6712-8?mpt=905802287&amp;clickTag=http://oasc05134.247realmedia.com/RealMedia/ads/click_lx.ads/TCHNeet/technology/1{TIME_DATE_STAMP}/L18/905802287/Top1/BBN/BCN2009050171_006c_Fuor/Fuor_Quebec_728.html/526c486e45306d776754634141376762?http://altfarm.mediaplex.com/ad/ck/10217-81825-6712-8?mpt=905802287&amp;clickTag1=http://oasc05134.247realmedia.com/RealMedia/ads/click_lx.ads/TCHNeet/technology/1{TIME_DATE_STAMP}/L18/905802287/Top1/BBN/BCN2009050171_006c_Fuor/Fuor_Quebec_728.html/526c486e45306d776754634141376762?http://altfarm.mediaplex.com/ad/ck/10217-81825-6712-8?mpt=905802287"
+                               swliveconnect="FALSE" type="application/x-shockwave-flash" pluginspage="" height="90" width="728">
+                    </object>
+                    <noscript><a
+                            href="http://oasc05134.247realmedia.com/RealMedia/ads/click_lx.ads/TCHNeet/technology/1{TIME_DATE_STAMP}/L18/905802287/Top1/BBN/BCN2009050171_006c_Fuor/Fuor_Quebec_728.html/526c486e45306d776754634141376762?http://altfarm.mediaplex.com/ad/ck/10217-81825-6712-8?mpt=905802287">
+
+                        <img
+                                src="http://altfarm.mediaplex.com/ad/bn/10217-81825-6712-8?mpt=905802287"
+                                alt="Click
+Here" border="0">
+                    </a>
+                    </noscript>
+                    <img src="Integer%20Square%20Roots_files/TypecountClientType2AdID233658FlightID127797TargetID10709Sit.gif" height="1" width="1" border="0">
+                    <br>
+                    <!-- http://as.cmpnet.com/html.ng/pagepos=buy&catid=bottom&affiliate=embedded&site=electronics&country=canada&state=qc&server=atg&city=montreal&target=/98/9802fe2.htm -->
+                    <a target="_blank"
+                       href="http://as.cmpnet.com/event.ng/Type=click&amp;FlightID=130184&amp;AdID=209359&amp;TargetID=10926&amp;Segments=3108,3448,14920&amp;Targets=2625,2878,10926&amp;Values=34,46,51,63,77,87,93,102,140,304,309,442,451,1482,1766,1785,1925,1945,1979,2281,2299,2310,2326,2352,2678,4079,6293,6332,6393,6489,6541,6567,6672,6967&amp;RawValues=&amp;Redirect=https://techinsights.balihoo.com/?PID=421389">Your
+                        ad here. Buy Media Now</a><img src="Integer%20Square%20Roots_files/TypecountClientType2AdID209359FlightID130184TargetID10926Sit.gif" height="1" width="1" border="0">
+                </td>
+            </tr>
+            <tr>
+                <td height="16" valign="top"></td>
+            </tr>
+            <tr>
+                <td class="footer_red" valign="top" align="center">
+                    <strong>Embedded.com Links</strong>
+                </td>
+            </tr>
+            <tr>
+                <td height="9" valign="top" align="center"></td>
+            </tr>
+            <tr>
+                <td class="footer_gray" valign="top" align="center">
+                    <a href="http://www.embedded.com/sitemap" class="footer_gray"><strong>Site Map</strong></a> |
+                    <a href="http://www.embedded.com/about" class="footer_gray"><strong>About Us</strong></a> |
+                    <a href="http://www.embedded.com/contact" class="footer_gray"><strong>Contact Us</strong></a> |
+                    <a href="http://www.techinsights.com/" target="_new" class="footer_gray"><strong>Media Kit</strong></a> |
+                    <a href="http://www.techinsights.com/calendar" class="footer_gray" target="_blank">
+                        <strong>Editorial Calendar</strong>
+                    </a> |
+                    <a href="http://www.embedded.com/events/" class="footer_gray"><strong>Conferences</strong></a> |
+                    <a href="http://www.embedded.com/europe" class="footer_gray"><strong>ESD Europe</strong></a> |
+                    <a href="http://www.embedded-on-demand.com/" class="footer_gray" target="_blank"><strong>ESC on Demand</strong></a> |
+                    <a href="http://www.embeddedsystemsdesignsubscribe.com/" class="footer_gray" target="_blank"><strong>Subscriptions</strong></a> |
+                    <a href="http://www.eetimes.com/newsletter;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>Newsletter</strong></a> |
+                    <a href="http://www.wrightsreprints.com/reprints/index.cfm?magid=2211" class="footer_gray" target="_blank"><strong>Reprints</strong></a>
+                </td>
+            </tr>
+            <tr>
+                <td height="9" valign="top" align="center"></td>
+            </tr>
+            <tr>
+                <td class="footer_red" valign="top" align="center">
+                    <style type="text/css">
+                        <!--
+                        .footer_green {
+                            font-family: Arial, Helvetica, sans-serif;
+                            font-size: 11px;
+                            font-style: normal;
+                            line-height: normal;
+                            font-weight: normal;
+                            font-variant: normal;
+                            text-transform: none;
+                            color: #006634;
+                            text-decoration: none;
+                        }
+
+                        -->
+                    </style>
+                    <table cellpadding="0" cellspacing="0" width="850" border="0">
+                        <tbody>
+                        <tr>
+                            <td valign="top">
+                                <table cellpadding="0" cellspacing="0" width="100%" border="0">
+                                    <tbody>
+                                    <tr valign="top">
+                                        <td rowspan="19" width="20"></td>
+                                        <td rowspan="19" width="1" bgcolor="#92c6f8"></td>
+                                        <td height="1" bgcolor="#92c6f8"></td>
+                                        <td rowspan="19" width="1" bgcolor="#92c6f8"></td>
+                                        <td rowspan="19" width="20"></td>
+                                    </tr>
+                                    <tr>
+                                        <td height="16" valign="top"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="footer_red" valign="top" align="center"><strong>TechOnline Communities</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td height="9" valign="top" align="center"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="footer_gray" valign="top" align="center"><a href="http://www.audiodesignline.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>Audio DesignLine</strong></a> | <a
+                                                href="http://www.automotivedesignline.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>Automotive DesignLine</strong></a> | <a href="http://www.commsdesign.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN"
+                                                                                                                                                                                                                            class="footer_gray" target="_blank"><strong>CommsDesign</strong></a> | <a
+                                                href="http://www.digitalhomedesignline.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>Digital Home DesignLine</strong></a> | <a
+                                                href="http://www.dspdesignline.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>DSP DesignLine</strong></a> | <a href="http://www.edadesignline.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN"
+                                                                                                                                                                                                              class="footer_gray" target="_blank"><strong>EDA DesignLine</strong></a><br>
+                                            <a href="http://www.eeproductcenter.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>eeProductCenter</strong></a> | <a href="http://www.greensupplyline.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN"
+                                                                                                                                                                                                                class="footer_green" target="_blank"><strong>Green SupplyLine</strong></a><strong> | <a
+                                                    href="http://www.industrialcontroldesignline.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>Industrial Control DesignLine</strong></a> | <a
+                                                    href="http://www.mobilehandsetdesignline.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>Mobile Handset DesignLine</strong></a> | <a
+                                                    href="http://www.planetanalog.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>Planet Analog</strong></a> | <a href="http://www.powermanagementdesignline.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN"
+                                                                                                                                                                                                                class="footer_gray" target="_blank"><strong>Power Management DesignLine</strong></a><br><a
+                                                    href="http://www.pldesignline.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>Programmable Logic DesignLine</strong></a> | <a
+                                                    href="http://www.rfdesignline.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>RF DesignLine</strong></a> | <a href="http://www.teardown.com/" class="footer_gray"
+                                                                                                                                                                                                                target="_blank"><strong>Teardown.com</strong></a> | <a href="http://www.techonline.com/"
+                                                                                                                                                                                                                                                                       class="footer_gray"
+                                                                                                                                                                                                                                                                       target="_blank"><strong>TechOnline</strong></a>
+                                                | <a href="http://www.videsignline.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>Video/Imaging DesignLine</strong></a> | <a
+                                                        href="http://www.wirelessnetdesignline.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>Wireless Net DesignLine</strong></a>
+                                            </strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td height="9" valign="top" align="center"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="footer_red" valign="top" align="center"><strong>EE Times</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td height="9" valign="top" align="center"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="footer_gray" valign="top" align="center">
+                                            <a href="http://www.eetimes.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>United States</strong></a> | <a href="http://www.eetasia.com/" class="footer_gray" target="_blank"><strong>Asia</strong></a> | <a
+                                                href="http://www.eetchina.com/" class="footer_gray" target="_blank"><strong>China</strong></a> | <a href="http://www.eetimes.eu/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>Europe</strong></a> | <a
+                                                href="http://www.eetimes.eu/france/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>France</strong></a> | <a href="http://www.eetimes.eu/germany/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray"
+                                                                                                                                                                                                      target="_blank"><strong>Germany</strong></a> | <a href="http://www.eetindia.com/" class="footer_gray"
+                                                                                                                                                                                                                                                        target="_blank"><strong>India</strong></a> | <a
+                                                href="http://www.eetimes.jp/" class="footer_gray" target="_blank"><strong>Japan</strong></a> | <a href="http://www.eetkorea.com/" class="footer_gray" target="_blank"><strong>Korea</strong></a> | <a href="http://www.eettaiwan.com/" class="footer_gray"
+                                                                                                                                                                                                                                                      target="_blank"><strong>Taiwan</strong></a> | <a
+                                                href="http://www.eetimes.eu/uk/%20;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>United Kingdom</strong></a> | <a href="http://www.eetimessupplynetwork.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN"
+                                                                                                                                                                                                             class="footer_gray" target="_blank"><strong>EE Times Supply Network</strong></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td height="9" valign="top" align="center"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="footer_red" valign="top" align="center"><strong>Additional Network Sites </strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td height="9" valign="top" align="center"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="footer_gray" valign="top" align="center">
+                                            <a href="http://www.analog-europe.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>Analog Europe</strong></a> | <a href="http://www.automotivedesign-europe.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN"
+                                                                                                                                                                                                            class="footer_gray" target="_blank"><strong>Automotive Designline Europe</strong></a> | <a
+                                                href="http://www.deepchip.com/" class="footer_gray" target="_blank"><strong>DeepChip</strong></a> | <a href="http://www.design-reuse.com/" class="footer_gray" target="_blank"><strong>Design &amp; Reuse</strong></a> | <a
+                                                href="http://www.eetimes.eu/scandinavia/%20;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>Electronik iNorden</strong></a> |
+                                            <a href="http://www.embedded.com/" class="footer_gray" target="_blank"><strong>Embedded.com</strong></a><br>
+                                            <!--<a href="http://www.industrial-europe.com/" class="footer_gray" target="_blank"><strong>Industrial Control Europe</strong></a>--> | <a href="http://www.mwee.com/" class="footer_gray" target="_blank"><strong>Microwave Engineering Europe</strong></a> |
+                                            <a href="http://www.portelligent.com/" class="footer_gray" target="_blank"><strong>Portelligent</strong></a> |
+                                            <a href="http://www.powermanagement-europe.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>Power Management Designline Europe</strong></a><br>
+                                            <a href="http://www.rfid-world.com/" class="footer_gray" target="_blank"><strong>The RF Edge</strong></a> | <a href="http://www.semiconductor.com/" class="footer_gray" target="_blank"><strong>Semiconductor Insights</strong></a> | <a
+                                                href="http://www.embedded-europe.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>Embedded-europe.com</strong></a> | <a href="http://www.mcadonline.com/" class="footer_gray" target="_blank"><strong>Mechanical
+                                            Design</strong></a> | <a href="http://www.techonlineindia.com/;jsessionid=D1JPYOYIXIRMZQE1GHRSKH4ATMY32JVN" class="footer_gray" target="_blank"><strong>TechOnline India</strong></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td height="16" valign="top"></td>
+                                    </tr>
+                                    <tr>
+                                        <td height="1" bgcolor="#92c6f8"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td class="footer_gold_text" valign="top" align="center">All materials on this site <a href="http://www.cmp.com/delivery/copyright.html" class="footer_gold_text" target="_blank">Copyright © 2009 TechInsights, a Division of United Business Media LLC</a> All rights
+                                reserved.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td height="3" valign="top"></td>
+                        </tr>
+                        <tr>
+                            <td class="side_related_link1" valign="top" align="center"><a href="http://www.cmpnet.com/delivery/privacy.html" class="side_related_link1" target="_blank">Privacy Statement</a>
+                                <!--| <a href="http://www.cmp.com/delivery/privacy.html#california" class="side_related_link1" target="_blank">Your California Privacy Rights</a>--> | <a href="http://www.cmp.com/delivery/terms.html" class="side_related_link1" target="_blank">Terms of Service</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td valign="top">&nbsp;</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <!-- Start Quantcast tag -->
+                    <script type="text/javascript">
+                        _qoptions = {
+                            qacct:"p-74fmbvTZzwLDQ"
+                        };
+                    </script>
+                    <script type="text/javascript" src="Integer%20Square%20Roots_files/quant.js"></script>
+                    <noscript><a href="http://www.quantcast.com/p-74fmbvTZzwLDQ"
+                                 target="_blank"><img
+                            src="http://pixel.quantserve.com/pixel/p-74fmbvTZzwLDQ.gif"
+                            style="display: none;" border="0" height="1" width="1"
+                            alt="Quantcast"/></a>
+                    </noscript>
+                    <!-- End Quantcast tag -->
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;:</td>
+            </tr>
+            </tbody>
+        </table>
+    </td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<!-- /main table -->
+</div>
+<!-- added per maria p 2/11/08 in shared/main template -->
+<script language="javascript" src="Integer%20Square%20Roots_files/872.js"></script>
+<script language="javascript" src="Integer%20Square%20Roots_files/adServer.html"></script>
+<!-- peel away ad in maintemplate -->
+<!-- http://as.cmpnet.com/html.ng/pagepos=toptile&affiliate=embedded&site=electronics&country=canada&state=qc&server=atg&city=montreal&target=/98/9802fe2.htm -->
+<script> var clickstream = 'http://as.cmpnet.com/event.ng/Type=click&FlightID=151548&AdID=237915&TargetID=4798&Segments=3108,3448,6025&Targets=2625,2878,4798&Values=34,46,51,63,77,87,93,102,140,265,304,309,442,451,1766,1785,1925,1945,1979,2281,2299,2310,2326,2352,2678,4079,6293,6332,6393,6489,6541,6567,6967&RawValues=&Redirect=' ; </script>
+<script src="Integer%20Square%20Roots_files/emb_ti_090824.js"></script>
+<style type="text/css"> #pp_l {
+    position: absolute;
+    top: 0px;
+    width: 100px;
+    height: 75px;
+    right: 0px;
+    z-index: 999999;
+} </style>
+<div id="pp_l">
+    <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" id="pObj" height="100%" width="100%">
+        <param name="allowScriptAccess" value="always">
+        <param name="movie" value="http://i.cmpnet.com/ads/graphics/as5/pagepeel/emb_ti_090824_pp.swf?keyLock=2626241">
+        <param name="wmode" value="transparent">
+        <param name="FlashVars"
+               value="clickstream=http%3A//as.cmpnet.com/event.ng/Type%3Dclick%26FlightID%3D151548%26AdID%3D237915%26TargetID%3D4798%26Segments%3D3108%2C3448%2C6025%26Targets%3D2625%2C2878%2C4798%26Values%3D34%2C46%2C51%2C63%2C77%2C87%2C93%2C102%2C140%2C265%2C304%2C309%2C442%2C451%2C1766%2C1785%2C1925%2C1945%2C1979%2C2281%2C2299%2C2310%2C2326%2C2352%2C2678%2C4079%2C6293%2C6332%2C6393%2C6489%2C6541%2C6567%2C6967%26RawValues%3D%26Redirect%3D&amp;ckop=undefined&amp;legal=PagePeel%20%3A%20Copyright%20Visual%20Steel%2C%20all%20rights%20reserved%20%28http%3A//visualsteel.net%29">
+        <embed src="Integer%20Square%20Roots_files/emb_ti_090824_pp.swf" wmode="transparent" id="pObj" name="pObj"
+               flashvars="clickstream=http%3A//as.cmpnet.com/event.ng/Type%3Dclick%26FlightID%3D151548%26AdID%3D237915%26TargetID%3D4798%26Segments%3D3108%2C3448%2C6025%26Targets%3D2625%2C2878%2C4798%26Values%3D34%2C46%2C51%2C63%2C77%2C87%2C93%2C102%2C140%2C265%2C304%2C309%2C442%2C451%2C1766%2C1785%2C1925%2C1945%2C1979%2C2281%2C2299%2C2310%2C2326%2C2352%2C2678%2C4079%2C6293%2C6332%2C6393%2C6489%2C6541%2C6567%2C6967%26RawValues%3D%26Redirect%3D&amp;ckop=undefined&amp;legal=PagePeel%20%3A%20Copyright%20Visual%20Steel%2C%20all%20rights%20reserved%20%28http%3A//visualsteel.net%29"
+               allowscriptaccess="always" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" height="100%" width="100%">
+    </object>
+</div>
+<img src="Integer%20Square%20Roots_files/TypecountClientType2AdID237915FlightID151548TargetID4798Site.gif" height="1" width="1" border="0">
+
+</body>
+</html>
