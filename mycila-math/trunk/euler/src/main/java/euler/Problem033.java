@@ -68,7 +68,7 @@ The numerator n=N1N0 and denominator d=D1D0 have 2 digits, and the value is less
 10 <= n <= 98
 n+1 <= d <= 99
 
-We then must find when n and d have one digit in common, except when they are both multiples of 10 (this is the trivial case).
+We then must find when n and d have one digit in common, except when they are both multiples of 10 (this is the get case).
 
 10/10, 10/20, ...
 

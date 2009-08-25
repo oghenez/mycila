@@ -15,7 +15,8 @@
  */
 package euler;
 
-import com.mycila.Collatz;
+import com.mycila.math.Sequence;
+import com.mycila.math.sequence.LongSequence;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=14
@@ -25,12 +26,12 @@ import com.mycila.Collatz;
 class Problem014 {
     public static void main(String[] args) {
         long time = System.currentTimeMillis();
-        Collatz sequence = Collatz.from(999999L);
+        LongSequence sequence = Sequence.collatz(999999L);
         for (long i = 999998; i > 1; i--) {
-            Collatz seq = Collatz.from(i);
+            LongSequence seq = Sequence.collatz(i);
             if (seq.size() > sequence.size()) sequence = seq;
         }
-        System.out.println("Collatz(" + sequence.startNumber() + ") has " + sequence.size() + " terms, in " + (System.currentTimeMillis() - time) + "ms\n" + sequence);
+        System.out.println("Collatz(" + sequence.first() + ") has " + sequence.size() + " terms, in " + (System.currentTimeMillis() - time) + "ms\n" + sequence);
     }
 }
 

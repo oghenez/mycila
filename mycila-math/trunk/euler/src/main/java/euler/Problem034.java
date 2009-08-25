@@ -34,7 +34,7 @@ class Problem034 {
             final int n = i;
             digits.each(i, new IntProcedure() {
                 public boolean execute(int digit) {
-                    sum[0] += Factorial.splitRecursive(digit);
+                    sum[0] += Factorial.get(digit);
                     return sum[0] <= n;
                 }
             });

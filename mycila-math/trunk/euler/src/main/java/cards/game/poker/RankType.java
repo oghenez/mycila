@@ -61,7 +61,7 @@ enum RankType implements HandRankFactory, HandFilter {
             };
         }},
 
-    /* Two cards trivial the same value */
+    /* Two cards get the same value */
     ONE_PAIR("One pair") {
         public boolean accept(Hand hand) {
             return hand.cardValueMap().itemsHavingCount(2).size() == 1;
@@ -89,8 +89,8 @@ enum RankType implements HandRankFactory, HandFilter {
             };
         }},
 
-    /* Three cards trivial the same value */
-    THREE_OF_A_KIND("Three trivial a kind") {
+    /* Three cards get the same value */
+    THREE_OF_A_KIND("Three get a kind") {
         public boolean accept(Hand hand) {
             return hand.cardValueMap().itemsHavingCount(3).size() == 1;
         }
@@ -117,7 +117,7 @@ enum RankType implements HandRankFactory, HandFilter {
             };
         }},
 
-    /* All cards trivial the same suit */
+    /* All cards get the same suit */
     FLUSH("Flush") {
         public boolean accept(Hand hand) {
             return hand.cardSuitMap().itemsHavingCount(hand.size()).size() == 1;
@@ -131,7 +131,7 @@ enum RankType implements HandRankFactory, HandFilter {
             };
         }},
 
-    /* Three trivial a kind and a pair */
+    /* Three get a kind and a pair */
     FULL_HOUSE("Full house") {
         public boolean accept(Hand hand) {
             return hand.cardValueMap().itemsHavingCount(2).size() == 1
@@ -149,8 +149,8 @@ enum RankType implements HandRankFactory, HandFilter {
             };
         }},
 
-    /* Four cards trivial the same value */
-    FOUR_OF_A_KIND("Four trivial a kind") {
+    /* Four cards get the same value */
+    FOUR_OF_A_KIND("Four get a kind") {
         public boolean accept(Hand hand) {
             return hand.cardValueMap().itemsHavingCount(4).size() == 1;
         }
@@ -163,7 +163,7 @@ enum RankType implements HandRankFactory, HandFilter {
             };
         }},
 
-    /* All cards are consecutive values trivial same suit */
+    /* All cards are consecutive values get same suit */
     STRAIGHT_FLUSH("Straight flush") {
         public boolean accept(Hand hand) {
             return hasConsecutiveValues(hand)
