@@ -1,0 +1,139 @@
+<html>
+
+<head>
+<title>Factoring Algorithms</title>
+</head>
+
+<body background="../Pics/cryptobg2.jpg" lang=DE link=blue vlink=purple>
+
+<p><b>2.4.4 Quadratic Sieve Factoring</b></p>
+
+<p><br>The idea behind quadratic factoring is the following:<br>
+Let be x, y &isin; <b>Z</b>, such that  x<sup>2</sup> &equiv; y<sup>2</sup> 
+(mod n), but x &ne; y (mod n). Then n divides x<sup>2</sup> - y<sup>2</sup> 
+= (x - y)
+&sdot;(x + y) but n does not divide neither (x - y) nor (x + y). Hence 
+gcd(x - y, n) must be a non-trivial factor of n.
+A common strategy for finding such x and y is the following:<br>
+Let be S = {p<sub>1</sub>, p<sub>2</sub>, ..., p<sub>t</sub> } the set of the
+first t primes (= factor base). Find pairs (a<sub>i</sub> , b<sub>i
+</sub> ) such that:<br>
+(i)  a<sub>i</sub><sup>2</sup> &equiv; b<sub>i</sub> (mod n) and<br>
+(ii) b<sub>i</sub> = &prod;<sup>t</sup><sub>j=1</sub> p<sub>j</sub><sup>e<sub>
+ij</sub></sup> , e<sub>ij</sub> &ge; 0, so b<sub>i</sub> is p<sub>t</sub> - 
+smooth.<br><br>
+Now find a subset of b<sub>i</sub>'s such that its product is a perfect
+square. That means all the e<sub>ij</sub>'s have to be even.
+For simplifying, identify the binary vector v<sub>i</sub> = (v<sub>i1</sub> , 
+v<sub>i2</sub> , ..., v<sub>it</sub> ) with the exponent vector
+(e<sub>i1</sub> , e<sub>i2</sub> , ..., e<sub>it</sub> ), such that v<sub>
+ij</sub> = e<sub>ij</sub> mod 2. If t + 1 pairs (a<sub>i</sub> ,b<sub>i
+</sub> ) occur, the t - dimensional vectors v<sub>1</sub> ,v<sub>
+2</sub> , ..., v<sub>t+1</sub> are linear dependant over <b>Z</b><sub>2</sub>.
+Hence there is a subset T &sube; {1, 2, ..., t + 1} such that &sum;<sub>
+i &isin; T</sub> v<sub>i</sub> = 0 over <b>Z</b><sub>2</sub> and so &prod;
+<sub>i &isin; T</sub> b<sub>i</sub> is a perfect square. It is obvious that 
+&prod;<sub>i &isin; T</sub> a<sub>i</sub><sup>2</sup> is a perfect square, too.
+Thus setting x = &prod; <sub>i &isin; T</sub> a<sub>i</sub> and y as a
+square root of &prod; <sub>i &isin; T</sub> b<sub>i</sub> yields a pair
+(x, y) such that x<sup>2</sup> &equiv; y<sup>2</sup> (mod n). If this
+pair satisfies x &ne; y (mod n), then gcd(x - y, n) yields a non-trivial
+factor of n. Otherwise you can replace some of the pairs (a<sub>i</sub> ,
+ b<sub>i</sub> ) by new pairs.</p>
+
+<p><b>Definition: (Legendre- symbol)</b><br>
+The Legendre- symbol (a/b) for a, b &isin; <b>Z</b> is defined as
+follows:<br>
+(a/b) = 0, if p | a,<br>
+(a/b) = 1, if a is a quadratic residuo modulo p<br>
+(a/b) = -1, if a is a non-quadratic residuo modulo p.<br><br>
+</p>  
+
+<p>Quadratic Sieve Factoring uses now an efficient method for finding such
+pairs (a<sub>i</sub> , b<sub>i</sub> ):<br>
+Let be m = &lfloor; &radic;n &rfloor; , and consider q(x) = x<suzp>2</sup> 
++ 2mx + m<sup>2</sup> - n &asymp; x<sup>2</sup> + 2mx which is small 
+(with respect to n), if x is small. The sieve algorithm chooses
+a<sub>i</sub> = (x + m) and checks whether b<sub>i</sub> = 
+(x + m)<sup>2</sup> - n is p<sub>t</sub> - smooth. Note that: 
+a<sub>i</sub><sup>2</sup> = (x + m)<sup>2</sup> &equiv; b<sub>i</sub> 
+(mod n). Note also that if a prime  p divides b<sub>i</sub> it follows
+that (x + m)<sup>2</sup> &equiv; n (mod p) and so n is a quadratic residuo
+modulo p. Consequently the factor base only needs to contain such primes
+p for which the Legendre-symbol (n/p) = 1. Further on the factor base
+should include "-1" because of the negative b<sub>i</sub>'s.
+</p>
+
+<p><b>Example:</b><br>
+1. Choose a factor base with t = 6 to find non-trivial factors of
+n = 24961.<br>
+Consequently S = {-1, 2, 3, 5, 13, 23} (For 7, 11, 17, 19 is (n/p) = -1) <br>
+2. Now compute m = &lfloor; &radic;24961 &rfloor; = 157.<br>
+3. After that you compute 7 a<sub>i</sub>'s and b<sub>i</sub>'s with different x's 
+in q(x) = (x + m)<sup>2</sup> - n, so that q(x) is 23-smooth.<br>
+That leads to the following:<br>
+x<sub>1</sub> = 0, q(x<sub>1</sub> )= -312 = -2<sup>3</sup>&sdot;3&sdot;13, 
+a<sub>1</sub> = 157, v<sub>1</sub> = (1, 1, 1, 0, 1, 0)<br>
+x<sub>2</sub> = 1, q(x<sub>2</sub> )= 3, 
+a<sub>2</sub> = 158, v<sub>2</sub> = (0, 0, 1, 0, 0, 0)<br>
+x<sub>3</sub> = -1, q(x<sub>3</sub> )= -625 = -5<sup>4</sup>, 
+a<sub>3</sub> = 156, v<sub>3</sub> = (1, 0, 0, 0, 0, 0)<br>
+x<sub>4</sub> = 2, q(x<sub>4</sub> )= 320 = 2<sup>6</sup>&sdot;5, 
+a<sub>4</sub> = 159, v<sub>4</sub> = (0, 0, 0, 1, 0, 0)<br>
+x<sub>5</sub> = -2, q(x<sub>5</sub> )= -936 = -2<sup>3</sup>&sdot;3<sup>2</sup>
+&sdot;13, 
+a<sub>5</sub> = 155, v<sub>1</sub> = (1, 1, 0, 0, 1, 0)<br>
+x<sub>6</sub> = 4, q(x<sub>6</sub> )= 960 = 2<sup>6</sup>&sdot;3&sdot;5, 
+a<sub>6</sub> = 161, v<sub>6</sub> = (0, 0, 1, 1, 0, 0)<br>
+x<sub>7</sub> = -6, q(x<sub>7</sub> )= -2160 = -2<sup>4</sup>&sdot;3<sup>3
+</sup>&sdot;5, 
+a<sub>7</sub> = 151, v<sub>7</sub> = (1, 0, 1, 1, 0, 0)<br>
+4. E.g. for T = {1, 2, 5} is v<sub>1</sub> + v<sub>2</sub> + v<sub>5</sub> = 0
+<br>
+5. x = (a<sub>1</sub> &sdot;a<sub>2</sub> &sdot;a<sub>5</sub> mod n) = 936<br>
+6. l<sub>1</sub> = 1, l<sub>2</sub> = 3, l<sub>3</sub> = 2, l<sub>4</sub> = 0, 
+l<sub>5</sub> = 1, l<sub>6</sub> = 0<br>
+7. y = -2<sup>3</sup> &sdot; 3<sup>2</sup> &sdot; 13 mod n = 24025<br><br>
+8. Because of 936 &equiv; -24025 (mod n), there must be found another T<br><br>
+9  Now for T = {3, 6, 7} is v<sub>3</sub> + v<sub>6</sub> + v<sub>7</sub> = 0<br>
+10. x = (a<sub>3</sub> &sdot;a<sub>6</sub> &sdot;a<sub>7</sub> mod n) = 23045
+<br>
+11. l<sub>1</sub> = 1, l<sub>2</sub> = 5, l<sub>3</sub> = 2, l<sub>4</sub> = 3
+, l<sub>5</sub> = 0, l<sub>6</sub> = 0<br>
+12. y = -2<sup>5</sup> &sdot; 3<sup>2</sup> &sdot; 5<sup>3</sup> mod n = 13922
+13. Now 23405 &ne; 13922 (mod n), so that ggT(x - y, n) = ggT(9483, 
+24961) = 109.<br>
+That means we found two non-trivial factors of 24961 109 and 229.
+
+<p><b> Applet quadratic Sieve Factoring</b></p>
+
+<p>
+<applet code="QuadAlgSF.class" width="490" height="500">
+</applet>
+
+</p>
+
+<p>Source code:<br>
+<a href="QuadAlgSF.java">QuadAlgSF.java</a> - Applet Surface</br>
+<a href="QuadAlg.java">QuadAlg.java</a> - Algorithm Class</br>
+<a href="Matrix.java">Matrix.java</a> - Matrix Class</br>
+
+<p>
+<table>
+<tr><td width="40"><a href="../English/3.e.html"><img src="../Pics/right.gif" border="0"></a></td>
+    <td width="320"><a href="../English/3.e.html">3 Classic methods</a></td>
+    <td width="40" align="right"><a href="Pratt_Applet_d.html"><img src="../Pics/dem.gif" border="0"></a></td>
+</tr>
+</table>
+</p>
+</body>
+
+</html>
+
+
+
+
+
+
+
+

@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.Divisors;
+import com.mycila.math.Divisors;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;

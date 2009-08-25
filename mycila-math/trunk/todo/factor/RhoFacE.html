@@ -1,0 +1,88 @@
+<html>
+
+<head>
+<title>Factoring Algorithms</title>
+</head>
+
+<body background="../Pics/cryptobg2.jpg" lang=DE link=blue vlink=purple>
+
+<p><b>2.4.1 Pollard's Rho-Factoring-Algorithm </b></p>
+
+<p><br>Pollard's rho factoring algotrithm is a special-purpose algorithm for 
+finding small non-trivial factors of an integer. Have a look at following 
+proposition:<br><br>
+Let f: S&rarr;S be a random function, where |S| = n. 
+Let further be x<sub>0</sub> &isin; S, at random. Consider the sequence  
+x<sub>0</sub>, x<sub>1</sub>, x<sub>2</sub>, ... defined by
+x<sub>i+1</sub> = f(x<sub>i</sub> ). Since S is finite, the sequence must
+eventually cycle and be composed of a tail.</p>
+
+<p><br>For finding out the length of the cycle, following algorithm is 
+suitable (Floyd's cycle-finding algorithm):<br><br>
+In this method one starts with the pair (x<sub>1</sub> , x<sub>2</sub> )
+and iteratively computes (x<sub>i</sub> , x<sub>2i</sub> ) from the
+previous pair (x<sub>i-1</sub> , x<sub>2i-2</sub> ) until a duplicate
+x<sub>m</sub> = x<sub>2m</sub> appears for some m. &rArr; If the tail of the 
+sequence has length &lambda; and the cycle has length &mu;,
+so the first time when x<sub>m</sub> = x<sub>2m</sub> is when
+m = &mu; (1 + &lfloor;&lambda; / &mu; &rfloor; ).
+</p>
+
+<p><br>Now Floyd's algorithm is utilized by Pollard's rho algorithm to find
+such a duplicate in the sequence of integers y<sub>0</sub>, y<sub>1</sub>, 
+y<sub>2</sub>, ..., y<sub>i</sub> &isin; <b>Z</b> &forall; i. That sequence
+is defined by: y<sub>0</sub> = 2, y<sub>i+1</sub> = f(y<sub>i</sub> ) = 
+(y<sub>i</sub><sup>2</sup> + 1) mod p, i &ge; 0. Now Floyd's algorithm is
+used to find y<sub>m</sub> and  y<sub>2m</sub> with y<sub>m</sub> 
+&equiv; y<sub>2m</sub> (mod p). Since p devides n, but is unknown, this is
+done by computing the terms y<sub>i</sub> mod n and testing whether is
+gcd(y<sub>m</sub> - y<sub>2m</sub> , n ) &gt; 1. If such an m is found
+and if gcd(y<sub>m</sub> - y<sub>2m</sub> , n ) &lt; n, then a non-trivial
+factor of n is obtained (=n occurs with low probability).
+</p>
+
+<p><b>Example:</b><br><br>
+Let be n = 221. We start with:<br><br>
+y<sub>0</sub> = 2<br>
+y<sub>1</sub> = f(y<sub>0</sub> ) = ((y<sub>0</sub> )<sup>2</sup> + 1) mod n 
+= 5, y<sub>2</sub> = f( f( y<sub>0</sub> )) = 26, d = gcd(y<sub>1</sub> - 
+y<sub>2</sub> , n ) = gcd ( 21, 221 ) = 1,<br>
+y<sub>2</sub> = 26, y<sub>4</sub> = 197, d = gcd ( 26 - 197, 221 ) = 1,<br>
+y<sub>3</sub> = 26<sup>2</sup> + 1 mod 221 = 14, y<sub>6</sub> = 104, 
+d = gcd ( 90, 221 ) = 1,<br>
+y<sub>4</sub> = 197, y<sub>8</sub> = 145, d = 13,<br>
+So 13 is a non-trivial factor of 221 and the other non-trivial factor is
+221 / 13 = 17.
+</p>
+
+<p>If the algorithm terminates with failure, you can try again with a
+different function f having another integer coefficient for example
+f = x<sup>2</sup> + c , c &ne; 0, -2
+<br>
+But consider that this algoithm is meant for composite integers which are not
+prime powers.
+</p>
+
+<p><b> Applet Rho-Factorization:</b></p>
+
+<p>
+<applet code="RhoFacSF.class" width="490" height="440">
+</applet>
+
+</p>
+
+<p>Quellcode:<br>
+<a href="RhoFacSF.java">RhoFacSF.java</a> - Applet surface class</br>
+<a href="RhoFac.java">RhoFac.java</a> - Algorithm class</br>
+
+<p>
+<table>
+<tr><td width="40"><a href="../Factor/PmeAlgE.html">
+  <img src="../Pics/right.gif" border="0"></a></td>    
+  <td width="320"><a href="../Factor/PmeAlgE.html">2.4.2 (p-1)-Faktoring</a></td>
+</tr>
+</table>
+</p>
+</body>
+
+</html>

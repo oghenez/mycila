@@ -1,0 +1,1581 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="author" content="Dr R Knott: enquiry (AT) ronknott (DOT) com">
+<meta name="description" content="The Egyptians wrote fractions as a sum of unit fractions of the form  1/n.  Why?  How is it a better system than ours?  How can we change our fractions into Egyptian fractions?  These are answered on this page, designed for school-age students and others interested in the  fun side of number play.">
+<meta name="keywords" content="Egyptian, Babylonian, fraction, fractions, unit fraction, fraction sum,  papyrus, scribe, scroll, Rhind, Ahmes, 2/n, Fibonacci, greedy algorithm,  calculator, online, interactive, RMP, 1/n, algorithms, minimax, shortest, smallest, least, minimum, maximum, Sylvester, Sylvesters sequence, reciprocal, sum, Fibonacci, greedy, algorithm, method,   number, fun, mathematics, simplest, count, decimals, school, recreational">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+
+<link rel="stylesheet" type="text/css" href="Egyptian%20Fractions_files/global.css"> 
+<script type="text/javascript" language="JavaScript" src="Egyptian%20Fractions_files/global.js"></script>
+<script type="text/javascript" language="JavaScript" src="Egyptian%20Fractions_files/maths.js"></script>
+<script type="text/javascript" language="JavaScript" src="Egyptian%20Fractions_files/egyptian.js"></script>
+
+<title>               Egyptian Fractions
+</title>
+
+<style type="text/css">
+INPUT {text-align:right}
+</style>
+
+</head><body>
+
+The ancient Egyptians only used fractions of the form <sup>1</sup>/<sub>n</sub>
+so any other fraction had to be represented as a <i>sum of such unit fractions</i>
+and, furthermore, all the unit fractions were different! <br>
+Why?  Is this a better system than our present day one?  In fact, it <i>is</i> for
+some tasks.  <p>
+This page explores some of the history and gives you a summary of computer searches
+for such representations.  There's lots of investigations to do in this area of
+maths suitable for 8-10 year olds as well as older students and it is also designed
+as a resource for teachers and educators.  
+
+
+</p><div align="center"><img src="Egyptian%20Fractions_files/redorangeline.gif" alt="---"></div>
+
+
+
+<h1 align="center">  Contents of this page
+</h1>
+The <img src="Egyptian%20Fractions_files/ttdicon.gif" alt="Things To Do" height="14" width="25"> icon means 
+there is a <span class="ttd"> Things to do</span> investigation at the end of the section.<br>
+<img src="Egyptian%20Fractions_files/calcicon.gif" alt="Calculator" height="13" width="34"> indicates an on-line 
+  interactive calculator is provided for the section.
+
+<ul class="contentsl1">
+<li><a href="#intro"> An Introduction to  Egyptian Mathematics</a>
+  <ul class="contentsl2">
+  <li><a href="#rhind"> Henry Rhind and his Papyrus scroll</a></li>
+  </ul></li>
+<li><a href="#ef">     Egyptian Fractions</a>
+   <ul class="contentsl2">
+    <li><a href="#why">       Why use Egyptian fractions today?</a></li>
+    <li><a href="#practical"> A practical use of Egyptian Fractions</a> 
+       <img src="Egyptian%20Fractions_files/ttdicon.gif" alt="Things To Do" height="14" width="25"> </li>
+    <li><a href="#comparing">   Comparing Egyptian fractions </a> 
+       <img src="Egyptian%20Fractions_files/ttdicon.gif" alt="Things To Do" height="14" width="25"> </li>
+     <li><a href="#calc1">A Calculator to convert a Fraction to an Egyptian Fraction</a>
+        <img src="Egyptian%20Fractions_files/calcicon.gif" alt="Calculator" height="13" width="34">
+    </li></ul>
+</li><li><a href="#different"> Different representations for the same fraction</a>
+         <ul class="contentsl2">
+         <li><a href="#infnbways"> Each fraction has an infinite number of Egyptian fraction forms</a></li>
+         </ul></li>
+<li><a href="#alwaysef">Every ordinary fraction has an Egyptian Fraction form</a>
+   <ul class="contentsl2">
+   <li><a href="#Fibgreedy">Fibonacci's Method a.k.a. the Greedy Algorithm</a>
+         <img src="Egyptian%20Fractions_files/ttdicon.gif" alt="Things To Do" height="14" width="25"> </li>
+   <li><a href="#proof1">A Proof</a> optional</li>
+   </ul> </li>
+<li><a href="#smallshort">  Shortest Egyptian Fractions </a>
+  <ul class="contentsl2">
+  <li><a href="#greedyshort">The <i>greedy method</i> and the <i>shortest</i> Egyptian fraction</a></li>
+  <li><a href="#shortCalc">A Calculator for Shortest Egyptian Fractions</a>
+    <img src="Egyptian%20Fractions_files/calcicon.gif" alt="Calculator" height="13" width="34"></li>
+  <li><a href="#shorttable">The number of Shortest Length Egyptian Fractions</a></li>
+  <li><a href="#shortpatts"> Finding patterns for shortest Egyptian Fractions </a></li>
+  <li><a href="#nbshort">How many Egyptian Fractions of shortest length are there for T/B?</a></li>
+  </ul></li>
+<li><a href="#fxdlen"> Fixed Length Egyptian Fractions</a> 
+   <img src="Egyptian%20Fractions_files/calcicon.gif" alt="Calculator" height="13" width="34">
+      <img src="Egyptian%20Fractions_files/ttdicon.gif" alt="Things To Do" height="14" width="25"></li>
+<li><a href="#smallest1">Smallest Denominators</a></li>
+<li><a href="#rmptable">The 2/n Table of the Rhind Papyrus</a>
+      <img src="Egyptian%20Fractions_files/ttdicon.gif" alt="Things To Do" height="14" width="25"> </li>
+<li><a href="#links"> Links and References</a></li>
+</ul>
+
+<div align="center"><img src="Egyptian%20Fractions_files/redorangeline.gif" alt="---"></div>
+
+<a name="intro"></a>
+<h1 align="center">  An Introduction to  Egyptian Mathematics
+</h1>
+
+Some of the oldest writing in the world is on a form of paper made from papyrus reeds
+that grew all along the Nile river in Egypt.  
+<a href="http://aleph0.clarku.edu/%7Edjoyce/mathhist/egypt.html">
+  <img src="Egyptian%20Fractions_files/egypt.gif" alt="map of upper Nile" align="left"></a>
+[The image is a link to 
+<a href="http://aleph0.clarku.edu/%7Edjoyce/mathhist/mathhist.html">
+   David Joyce's site</a>
+    on the History of Maths at Clarke University.]
+
+The reeds were squashed and pressed into 
+long sheets like a roll of wall-paper and left to dry in the sun.  When dry, these scrolls
+ could be rolled up and easily carried or stored.  <p>
+ 
+Some of the papyrus scrolls  date back to about 2000 BC,
+around the time of the construction of the larger Egyptian pyramids.  Because there are deserts 
+on either side of the Nile,  papyrus scrolls 
+have been  well preserved in the dry conditions.</p><p>
+
+  So what was on them do you think?  How to preserve a body
+  as a mummy?   Maybe it was
+  how to construct the extensive system of canals used for irrigation
+  across Egypt or on storage of grain in their great storage
+  granaries? Perhaps they tell  how to build
+  boats  out of papyrus reeds which float very well because pictures of
+  these boats have been found in many Egyptian tombs?<br>
+  The surprising answer is that the oldest ones are about <i>mathematics!</i>
+  <br clear="all">
+  
+  
+<a name="rhind"></a>
+</p><h2 align="center">  Henry Rhind and his Papyrus scroll
+</h2>
+
+One of the papyrus scrolls, discovered in a tomb in Thebes, 
+was bought by a 25 year old Scotsman, 
+Henry Rhind  at a market in
+Luxor, Egypt, in 1858. 
+After his death at the  age of 30, 
+the scroll found its way to the British Museum in London
+in 1864 and remained there ever since, being referred to as
+the <b>Rhind Mathematical Papyrus</b> (or RMP for short).  <p>
+<a href="http://www-history.mcs.st-and.ac.uk/%7Ehistory/Mathematicians/Ahmes.html">
+  <img src="Egyptian%20Fractions_files/Rhind_papyrus.jpeg" alt="Rhind papyrus" align="right"> </a>
+So what did it say?  </p><p>
+The hieroglyphs (picture-writing) on the papyrus were only deciphered in 1842 
+(and the Babylonian clay-tablet
+cuneiform writing was deciphered later that century).</p><p>
+
+It starts off by saying that the scribe "Ahmes" is writing it about 1600 BC but that
+he had copied it from "ancient writings" so it probably goes back to at least
+2000BC and probably further.  The picture is also a link so click on it
+to go to the St Andrews MacTutor biography of Ahmes.
+
+</p><p>
+
+  Since early civilisations would need to predict the start of spring accurately
+  in order to sow seeds, then a large part of such mathematical writing has
+  applications in astronomy.  
+  Also, calculations were needed for surveying (geometry) and
+  for building and for accounting.  However, quite a lot of the problems in the
+  RMP are arithmetic puzzles - problems posed just for the fun of solving them!
+</p><p>
+  On this page we will look at how the Egyptians of 4000 years ago worked with
+  fractions.
+<br clear="all">
+
+</p><div align="center"><img src="Egyptian%20Fractions_files/redorangeline.gif" alt="---">  </div>
+  
+<a name="ef"></a>
+<h1>      Egyptian Fractions
+</h1>
+
+The Egyptians of 3000 BC had an interesting way to represent fractions.<br>
+Although they had a notation for <sup>1</sup>/<sub>2</sub> and <sup>1</sup>/<sub>3</sub>
+and <sup>1</sup>/<sub>4</sub> and so on (these are called <b>reciprocals</b> or 
+<b>unit fractions</b>
+ since they are
+<sup>1</sup>/<sub>n</sub> for some number n), their notation did not allow them to write
+<sup>2</sup>/<sub>5</sub> or <sup>3</sup>/<sub>4</sub> or <sup>4</sup>/<sub>7</sub> as we would today.<p>
+Instead, they were able to write <i>any</i> fraction as <b><i>a sum of unit fractions</i></b>
+where <b>all the unit fractions were different</b>.
+
+</p><p>
+For example,</p><div align="center">
+<sup>3</sup>/<sub>4</sub> = <sup>1</sup>/<sub>2</sub> + <sup>1</sup>/<sub>4</sub>  <p>
+<sup>6</sup>/<sub>7</sub> = <sup>1</sup>/<sub>2</sub> + <sup>1</sup>/<sub>3</sub> + <sup>1</sup>/<sub>42</sub>
+</p></div>
+<br>
+
+<i>A fraction written as a sum of distinct unit fractions</i> is called an <i><b>Egyptian Fraction</b></i>.
+
+
+<a name="why"></a>
+<h2>           Why use Egyptian fractions today?
+</h2>
+
+For two very good reasons:
+
+<ul>
+<li> The first reason is a  practical one. <br>
+     Suppose you have  5 sacks of grain to share 
+     between 8 people, so each would receive <sup>5</sup>/<sub>8</sub> of a sack of grain
+     in terms of present-day fractions.  
+     How are you going to do it simply, without using a calculator?
+     You could try pouring the 5 sacks of grain into 8 heaps and, by carefully comparing them,
+     perhaps by weighing them against each other,  balance them so they are all
+     the same!  But is there a better way?  We will see that using unit fractions makes this easier.
+     
+</li><li> The second reason is that it is much easier to <i>compare fractions</i> using Egyptian 
+     fractions than 
+     it is by using our present-day notation for fractions!  
+     For instance: 
+      <div align="center">
+               Which is bigger:  
+              <sup>5</sup>/<sub>8</sub>  or  <sup>4</sup>/<sub>7</sub>?
+     </div>
+     but remember - you are <i>not</i> allowed to use your calculator to answer this!  Again unit fractions can 
+     make this much simpler.
+     
+</li></ul>
+
+On this page we see how both of these work in Egyptian fractions.
+
+<a name="practical"></a>
+
+<h2>           A practical use of Egyptian Fractions
+</h2>
+
+So suppose Fatima has 5 loaves of bread to share among the 8 workers who have helped dig 
+her fields this week and clear the irrigation channels.  
+<i>Pause for a minute and decide how YOU would solve this problem before reading on.....</i>
+<p>
+
+First Fatima sees that they all get at least half a loaf, so she gives all 
+8 of them half a loaf each, with one whole loaf left.<br>
+Now it is easy to divide one loaf into 8, so they get an extra eighth of a loaf each 
+and all the loaves are divided equally between the 5 workers. On the picture
+here they each receive one red part 
+(<sup>1</sup>/<sub>2</sub> a loaf) and one green part (<sup>1</sup>/<sub>8</sub> of a loaf):
+             <img src="Egyptian%20Fractions_files/egypt5.gif" alt="4 loaves split into halves and 1 split into eighths" align="left" height="64" width="238"> </p><p>  
+  and   
+  <sup>5</sup>/<sub>8</sub> = <sup>1</sup>/<sub>2</sub> + <sup>1</sup>/<sub>8</sub>
+<br clear="all">
+          
+          
+</p><div class="ttd">  <h4><img src="Egyptian%20Fractions_files/ttdicon.gif" alt="/" height="14" width="25">
+                           Things to do   
+<img src="Egyptian%20Fractions_files/ttdicon.gif" alt="/" height="14" width="25"></h4>
+      <ol class="ttd"> 
+       <li>  Suppose Fatima had 3 loaves to share between 4 people.  
+            How would she do it?</li>
+       <li> ...and what if it was 2 loaves amongst 5 people?</li>
+       <li> ...or 4 loaves between 5 people?</li>
+       <li>  What about 13 loaves to share among 12 people?  
+             We could give them one loaf each and
+            divide the 13<sup>th</sup> into 13 parts for the final portion to 
+            give to everyone.<br>
+           Try representing <sup>13</sup>/<sub>12</sub> as 
+           <sup>1</sup>/<sub>2</sub> + <sup>1</sup>/<sub>3</sub> + <sup>1</sup>/<sub>*</sub> .
+           What does this mean - that is, how would you  divide the loaves using this 
+           representation?  <br>
+           Was this easier?</li>
+
+       </ol>
+</div>
+       
+  
+ <a name="comparing"></a> 
+ <h2>                   Comparing Egyptian fractions 
+ </h2>
+ 
+ 
+ 
+ Which is larger:  <sup>3</sup>/<sub>4</sub>  or  <sup>4</sup>/<sub>5</sub>?
+ <p>
+ We <i>could use decimals</i>  so that <sup>3</sup>/<sub>4</sub> =0.75 =<sup>75</sup>/<sub>100</sub> whereas
+ <sup>4</sup>/<sub>5</sub>  =0.8 = 0.80 = <sup>80</sup>/<sub>100</sub> so we can see that 80 (hundredths)
+ is bigger than 75 and we can now see that
+  <b><sup>4</sup>/<sub>5</sub> is bigger than <sup>3</sup>/<sub>4</sub></b>.
+  
+ </p><p>Could you do this without converting to decimals?<br>
+ We could try using ordinary fractions as follows:<br>
+ 
+        What common fraction could we convert both <sup>3</sup>/<sub>4</sub>  
+        and   <sup>4</sup>/<sub>5</sub> into?   
+        20<sup>th</sup>s would do:<br>
+        <sup>3</sup>/<sub>4</sub> = <sup>15</sup>/<sub>20</sub>  whereas<br>
+        <sup>4</sup>/<sub>5</sub> = <sup>16</sup>/<sub>20</sub><br>
+        so again we can easily see that <sup>4</sup>/<sub>5</sub> is larger 
+        than <sup>3</sup>/<sub>4</sub>.
+        
+ </p><p>  Using Egyptian fractions we write each as a sum of unit fractions:
+ <br>
+ <sup>3</sup>/<sub>4</sub> = <sup>1</sup>/<sub>2</sub> + 
+                             <sup>1</sup>/<sub>4</sub>     <br>
+ <sup>4</sup>/<sub>5</sub> = <sup>1</sup>/<sub>2</sub> + 
+                             <sup>3</sup>/<sub>10</sub>
+ and, expanding <sup>3</sup>/<sub>10</sub> as <sup>1</sup>/<sub>4</sub> + <sup>1</sup>/<sub>20</sub>
+ we have<br>
+ <sup>4</sup>/<sub>5</sub> = <sup>1</sup>/<sub>2</sub> + <sup>1</sup>/<sub>4</sub>  + 
+                             <sup>1</sup>/<sub>20</sub> <br>
+ We can now see that <sup>4</sup>/<sub>5</sub> is the larger - by exactly 
+ <sup>1</sup>/<sub>20</sub>.
+  
+</p><div class="ttd">  <h4><img src="Egyptian%20Fractions_files/ttdicon.gif" alt="/" height="14" width="25">
+                           Things to do   
+<img src="Egyptian%20Fractions_files/ttdicon.gif" alt="/" height="14" width="25"></h4>
+<ol class="ttd"> 
+     
+       <li>  Which is larger: <sup>4</sup>/<sub>7</sub>  or  <sup>5</sup>/<sub>8</sub>?</li>
+       <li>  Which is larger: <sup>3</sup>/<sub>11</sub>  or  <sup>2</sup>/<sub>7</sub>?</li>
+       
+   </ol>
+</div>
+
+<a name="calc1"></a>
+<h2>                        A Calculator to convert a Fraction to an Egyptian Fraction
+</h2>
+An Egyptian Fraction for <sup>T</sup>/<sub>B</sub> is a sum of unit fractions, <i>all different</i>, 
+whose sum is <sup>T</sup>/<sub>B</sub>. Enter your
+fraction in the boxes below and the click on the <b>Convert to an Egyptian fraction</b> button and an equivalent
+Egyptian fraction will be printed in the RESULTS window.   <br>
+<a href="#shortCalc">Further down this page</a>
+is another calculator which will find <b>all</b> the shortest Egyptian Fractions 
+but this calculator is quicker if you just want one.
+<p>
+
+</p><div class="calc"> C A L C U L A T O R <br>
+<div align="center">
+<form name="ef1" action="">
+<table><tbody><tr><td><input name="top" value="" size="25" type="text"></td>
+   <td rowspan="3"><input value=" Convert to an Egyptian fraction " onclick='outF="ef1";toEgypt()' type="button">
+   <!-- input type=button value='table' onClick='tablLENS()' -->
+   </td>
+</tr>
+<tr><td height="3"><img src="Egyptian%20Fractions_files/black.gif" alt="--" height="3" width="100%"></td></tr>
+<tr><td><input name="bot" value="" size="25" type="text">
+</td></tr></tbody></table>
+
+R E S U L T S <input class="clear" value="Clear" onclick="clearmsg('ef1')" type="button"><br>
+<div id="msgef1" class="res" style="width: 60em; height: 15em;">
+    </div>
+</form>
+</div>
+</div>
+
+
+<a name="different"></a>
+<h1>            Different representations for the same fraction
+</h1>
+
+We have already seen that 
+    <sup>3</sup>/<sub>4</sub> = <sup>1</sup>/<sub>2</sub> + 
+                                <sup>1</sup>/<sub>4</sub>       <br>
+    Can you write <sup>3</sup>/<sub>4</sub> as <sup>1</sup>/<sub>2</sub> + 
+    <sup>1</sup>/<sub>5</sub> + <sup>1</sup>/<sub>*</sub> ?
+    <br>
+    What about <sup>3</sup>/<sub>4</sub> as <sup>1</sup>/<sub>2</sub> + <sup>1</sup>/<sub>6</sub> + <sup>1</sup>/<sub>*</sub> ?
+    <br>
+    How many more can you find?
+ 
+ <p>
+ Here are some results that mathematicians have proved:
+ </p><ul>
+ <li> Every fraction <sup>T</sup>/<sub>B</sub> can be written as a sum of
+      unit fractions...
+ </li><li> .. and each can be written in an infinite number of such ways!
+ </li></ul>
+ 
+ Now let's examine each of these in turn and I'll try to convince you that each 
+ is true for all fractions <sup>T</sup>/<sub>B</sub> less than one 
+ (so that T, the number on top, is smaller than B, the bottom number).  
+ <p>
+ You can <a href="#smallshort">skip over these two sub-sections</a> if you like.
+ 
+ <a name="infnbways"></a>
+ </p><h2>               Each fraction has an infinite number of Egyptian fraction forms
+ </h2>
+ 
+ To see why the second fact is true, consider this:
+ 
+ <div class="rule">
+ 1 = <sup>1</sup>/<sub>2</sub> + <sup>1</sup>/<sub>3</sub> + 
+                                 <sup>1</sup>/<sub>6</sub>   (*)
+ </div>
+ 
+ So if <br>
+ <sup>3</sup>/<sub>4</sub> = <sup>1</sup>/<sub>2</sub> + 
+                             <sup>1</sup>/<sub>4</sub>       <br>
+Let's use (*) to <i>expand</i> the final fraction <sup>1</sup>/<sub>4</sub>:<br>
+So let's divide  equation (*) by 4:
+ 
+ <div align="center">
+         <sup>1</sup>/<sub>4</sub> = <sup>1</sup>/<sub>8</sub> + 
+                                     <sup>1</sup>/<sub>12</sub> + 
+                                     <sup>1</sup>/<sub>24</sub>
+ </div>
+ 
+  which we can then feed back into our Egyptian fraction for 
+  <sup>3</sup>/<sub>4</sub>:<br>
+  
+ <sup>3</sup>/<sub>4</sub> = <sup>1</sup>/<sub>2</sub> + 
+                             <sup>1</sup>/<sub>4</sub>    <br>
+ <sup>3</sup>/<sub>4</sub> = <sup>1</sup>/<sub>2</sub> + 
+                             <sup>1</sup>/<sub>8</sub> + 
+                             <sup>1</sup>/<sub>12</sub> + 
+                             <sup>1</sup>/<sub>24</sub>    <br>
+ 
+ But now we can do the same thing for the final fraction here, dividing equation (*) by 24 this time.
+ Since we are choosing the largest denominator to
+expand, it will be replaced by even larger ones so we won't repeat any denominators that we
+have used already:
+ 
+ <div align="center">
+      <sup>1</sup>/<sub>24</sub> = <sup>1</sup>/<sub>48</sub> + 
+                                   <sup>1</sup>/<sub>72</sub> + 
+                                   <sup>1</sup>/<sub>144</sub>
+ </div>
+ and so
+ <br>
+ <sup>3</sup>/<sub>4</sub> = <sup>1</sup>/<sub>2</sub> + 
+                             <sup>1</sup>/<sub>8</sub> + 
+                             <sup>1</sup>/<sub>12</sub> + 
+                             <sup>1</sup>/<sub>48</sub> + 
+                             <sup>1</sup>/<sub>72</sub> + 
+                             <sup>1</sup>/<sub>144</sub>
+ <br>
+ Now we can repeat the process by again expanding the last term: 
+ <sup>1</sup>/<sub>144</sub>
+ and so on for ever!<br>
+ 
+ Each time we get a different set of unit fractions which add to 
+ <sup>3</sup>/<sub>4</sub>!
+ <br>
+ 
+ This shows conclusively once we have found one way of writing 
+ <sup>T</sup>/<sub>B</sub>
+ as a sum of unit fractions, then we can derive as many other representations as
+ we wish!  If T=1 already (so we have <sup>1</sup>/<sub>B</sub>) then using (*) we can always start off the process 
+  by dividing (*) by B to get an initial 3 unit fractions that sum to <sup>1</sup>/<sub>B</sub>. 
+ 
+ <p>
+ 
+ 
+ 
+ 
+ <a name="alwaysef"></a>
+ </p><h1>    Every ordinary fraction has an Egyptian Fraction form
+ </h1>
+ 
+ We now show there is <i>always</i> at least one sum of unit fractions whose sum is
+ any given fraction <sup>T</sup>/<sub>B</sub>&lt;1 by actually showing how to find
+ such a sum.  
+ 
+ <a name="Fibgreedy"></a>
+ <h2>                  Fibonacci's Method a.k.a. the Greedy Algorithm
+ </h2>
+ 
+ This method and a proof are given by Fibonacci in his book <i>Liber Abaci</i>
+ produced in 1202 that introduced the rabbit problem involving the 
+ <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/" target="_blank">Fibonacci Numbers</a>.
+ 
+ <p> Remember that </p><ul>
+ <li> <b><sup>T</sup>/<sub>B</sub>&lt;1</b> and 
+ </li><li> if T=1 the problem is solved since <sup>T</sup>/<sub>B</sub> is already a unit fraction, so 
+ </li><li> we are interested in those fractions where <b>T&gt;1</b>.
+ </li></ul>
+ <p>
+ The method is to find the <b>biggest unit fraction we can and take it from 
+ <sup>T</sup>/<sub>B</sub></b> and hence its other name - the <b>greedy algorithm</b>.<br>
+ With what is left, we repeat the process.  We will
+ show that this series of unit fractions always decreases, never repeats a fraction
+ and eventually will stop.  Such processes are now called <i>algorithms</i>
+ and this is an example of a <i>greedy algorithm</i> since we (greedily) take
+ the largest unit fraction we can and then repeat on the remainder.
+ 
+ </p><p>
+ Let's look at an example before we present the proof: <sup>521</sup>/<sub>1050</sub>.<br>
+ 
+ <sup>521</sup>/<sub>1050</sub> is less than one-half (since 521 is less than a half of 1050)
+ but it is bigger than one-third.  So the largest unit fraction we can take away from 
+ <sup>521</sup>/<sub>1050</sub> is <sup>1</sup>/<sub>3</sub>:
+ </p><div align="center">
+      <sup>521</sup>/<sub>1050</sub> = <sup>1</sup>/<sub>3</sub> + R
+ </div>
+ What is the remainder?
+ <div align="center">
+    <sup>521</sup>/<sub>1050</sub> - <sup>1</sup>/<sub>3</sub> 
+    = <sup>57</sup>/<sub>350</sub>
+ </div>
+ So we repeat the process on <sup>57</sup>/<sub>350</sub>:<br>
+ This time the largest unit fraction less than <sup>57</sup>/<sub>350</sub> is
+ <sup>1</sup>/<sub>7</sub> and the remainder is <sup>1</sup>/<sub>50</sub>.<br>
+ <blockquote>How do we know it is 7?  Divide the bottom (larger) number, 350,  by the top
+ one, 57, and we get 6.14... . So we need a number larger than 6 (since we have 6 + 0.14)
+ and the next one above 6 is 7.)</blockquote>
+ 
+ So
+ <div align="center">
+    <sup>521</sup>/<sub>1050</sub> = <sup>1</sup>/<sub>3</sub> +
+           <sup>1</sup>/<sub>7</sub> + <sup>1</sup>/<sub>50</sub>
+ </div>
+ 
+ The sequence of remainders is important in the proof that we do not have to keep
+ on doing this for ever for some fractions <sup>T</sup>/<sub>B</sub>:
+ <div align="center">
+      <sup>521</sup>/<sub>1050</sub>, 
+      <sup>57</sup>/<sub>350</sub>, 
+      <sup>1</sup>/<sub>50</sub>
+ </div>
+ in particular, although the <i>denominators</i> of the remainders are getting bigger,
+ the important fact that is true in <i>all cases</i> is that 
+ <i>the numerator of the remainder is getting smaller</i>.   If it keeps decreasing then it must
+ eventually reach 1 and the process stops.
+ <p>
+ 
+ Practice with these examples and then we'll have a look at finding <i>short</i> Egyptian fractions.
+
+</p><div class="ttd">  <h4><img src="Egyptian%20Fractions_files/ttdicon.gif" alt="/" height="14" width="25">
+                           Things to do   
+<img src="Egyptian%20Fractions_files/ttdicon.gif" alt="/" height="14" width="25"></h4>
+<ol class="ttd"> 
+
+   <li> What does the greedy method give for <sup>5</sup>/<sub>21</sub>?  <br>
+        What if you started  with <sup>1</sup>/<sub>6</sub> (what is the remainder)?</li>
+   <li> Can you improve on  the 
+         greedy method's solution for <sup>9</sup>/<sub>20</sub> (that is, use fewer
+         unit fractions)? [Hint: Express 9 as a sum of two numbers
+         which are factors of 20.]</li>
+   <li> The numbers in the denominators can get quite large using the greedy method:
+        What does the greedy method give for <sup>5</sup>/<sub>91</sub>?
+        <br>
+        Can you find a <i>two term Egyptian fraction</i> for <sup>5</sup>/<sub>91</sub>?<br>
+        [Hint: Since 91 = 7x13, try unit fractions which are multiples of 7.]</li>
+
+   </ol>
+</div>
+
+ <a name="proof1"></a>
+ <h2>                          A Proof 
+ </h2>
+ You can <a href="#greedyshort">skip over this proof</a> if you like.<p>
+ 
+ Now let's see how we can show this is true for all fractions <sup>T</sup>/<sub>B</sub>.
+ 
+ We want
+ </p><div align="center">
+ <sup>T</sup>/<sub>B</sub> = <sup>1</sup>/<sub>u<sub>1</sub></sub> +
+                             <sup>1</sup>/<sub>u<sub>2</sub></sub> +
+                             ... +
+                             <sup>1</sup>/<sub>u<sub>n</sub></sub><br>
+  where  u<sub>1</sub> &lt; u<sub>2</sub> &lt; ... &lt; u<sub>n</sub>
+  </div>
+  Also, we are choosing the largest u<sub>1</sub> at each stage.<br>
+  
+  What does this mean?<br>
+  It means that 
+  <div align="center">
+       <sup>1</sup>/<sub>u<sub>1</sub></sub> &lt; <sup>T</sup>/<sub>B</sub>
+  </div>
+  but that <sup>1</sup>/<sub>u<sub>1</sub></sub> is the <i> largest</i> 
+  such fraction. For instance, we found that
+  <sup>1</sup>/<sub>3</sub> was the largest unit fraction less than
+  <sup>521</sup>/<sub>1050</sub>.  This means that 
+  <sup>1</sup>/<sub>2</sub> would be <i>bigger</i> than <sup>521</sup>/<sub>1050</sub>.
+  <br>
+  In general, if  <sup>1</sup>/<sub>u<sub>1</sub></sub> is the largest unit fraction
+  less than <sup>T</sup>/<sub>B</sub> then 
+  <div align="center">
+        <sup>1</sup>/<sub>u<sub>1</sub>-1</sub>  &gt; <sup>T</sup>/<sub>B</sub>
+  </div>
+  
+  Since T&gt;1, neither <sup>1</sup>/<sub>u<sub>1</sub></sub> nor 
+                     <sup>1</sup>/<sub>u<sub>1</sub>-1</sub>
+                      equal <sup>T</sup>/<sub>B</sub>.
+  
+  <p>
+  
+  <b>What is the remainder?</b>
+  
+   </p><p> It is 
+   </p><div align="center">
+   <sup>T</sup>/<sub>B</sub> - <sup>1</sup>/<sub>u<sub>1</sub></sub>
+   = <sup>(T*u<sub>1</sub> - B)</sup>/<sub>(B*u<sub>1</sub>)</sub>
+   </div>
+   
+   Also, since 
+   <div align="center">
+        <sup>1</sup>/<sub>(u<sub>1</sub>-1)</sub>  &gt; <sup>T</sup>/<sub>B</sub>
+  </div>
+  then multiplying both sides by B we have
+  <div align="center">
+        B/<sub>(u<sub>1</sub>-1)</sub>  &gt; T
+  </div>
+ or, multiplying both sides by (u<sub>1</sub>-1) and expanding the brackets,
+ then adding T and subtracting B to both sides we have:
+   <div align="center">
+       B  &gt; T*(u<sub>1</sub> - 1)<br>
+       B  &gt; T*u<sub>1</sub> - T<br>
+       T  &gt; T*u<sub>1</sub> - B
+   </div>
+   Now T*u<sub>1</sub> - B was the <i>numerator of the remainder</i>
+   and we have just shown that <i>it is smaller than the original numerator T</i>.
+   If the remainder, in its lowest terms, has a 1 on the top, we are finished.
+   Otherwise, we can <i>repeat the process</i> on the remainder, which has a smaller
+   denominator and so the remainder when we take off its largest unit fraction gets
+   smaller still.  Since T is a whole (positive) number, this process <i>must</i>
+   inevitably  terminate with a numerator of 1 at some stage.
+ 
+ 
+ <p>
+ That completes the proof that
+ </p><ul>
+ <li> There is always a <i>finite</i> list of unit fractions whose sum is any given
+    fraction <sup>T</sup>/<sub>B</sub>
+ </li><li> We can find such a sum by taking the largest unit fraction at each stage and
+      repeating on the remainder (the <i>greedy algorithm</i>)
+ </li><li> The unit fractions so chosen get smaller and smaller (and so all are  unique)
+ </li></ul>
+ <p>
+ 
+ 
+ 
+
+ So let's now concentrate on the <i><b>shortest</b> Egyptian fractions </i>
+ for any given fraction.
+
+
+<a name="smallshort"></a> 
+</p><h1>   Shortest Egyptian Fractions 
+</h1>
+
+  <a name="greedyshort"></a>
+ <h2> The <i>greedy method</i> and the <i>shortest</i> Egyptian fraction
+ </h2>
+ 
+ However, the Egyptian fraction produced by the greedy method may not be the shortest
+ such fraction.  Here is an example:
+ <br>
+ by the greedy method,  <sup>4</sup>/<sub>17</sub> reduces to
+ <div align="center">
+ <sup>4</sup>/<sub>17</sub> = <sup>1</sup>/<sub>5</sub> +
+                              <sup>1</sup>/<sub>29</sub> +
+                              <sup>1</sup>/<sub>1233</sub> +
+                              <sup>1</sup>/<sub>3039345</sub>
+ </div>
+ whereas we can also check that
+ <div align="center">
+ <sup>4</sup>/<sub>17</sub> = <sup>1</sup>/<sub>5</sub> +
+                              <sup>1</sup>/<sub>30</sub> +
+                              <sup>1</sup>/<sub>510</sub>
+ </div>
+ 
+  
+<p> Here is the complete list of all the <i>shortest</i> representations of <sup>T</sup>/<sub>B</sub>
+for B up to 11.  We use a <i>list notation</i> here to make the unit fractions
+more readable.  For instance, above we saw that:
+
+</p><div align="center">
+<sup>4</sup>/<sub>5</sub> = <sup>1</sup>/<sub>2</sub> + 
+                             <sup>1</sup>/<sub>4</sub> + 
+                             <sup>1</sup>/<sub>20</sub>
+</div>
+which we will write as:
+<div align="center">
+                               <sup>4</sup>/<sub>5</sub> = [2,4,20]
+</div>
+<table style="font-family: monospace;">
+<tbody><tr><td><sup>2</sup>/<sub>3</sub></td><td> = [2,6]</td></tr>
+<tr><td><sup>2</sup>/<sub>5</sub></td><td> = [3,15]</td></tr>
+<tr><td><sup>2</sup>/<sub>7</sub></td><td> = [4,28]</td></tr>
+<tr><td><sup>2</sup>/<sub>9</sub></td><td> = [5,45] = [6,18]</td></tr>
+<tr><td><sup>2</sup>/<sub>11</sub></td><td> = [6,66]</td></tr>
+<tr><td> </td></tr>
+<tr><td><sup>3</sup>/<sub>4</sub></td><td> = [2,4]</td></tr>
+<tr><td><sup>3</sup>/<sub>5</sub></td><td> = [2,10]</td></tr>
+<tr><td><sup>3</sup>/<sub>7</sub></td><td> = [3,11,231] = [3,12,84] = [3,14,42] = [3,15,35] = [4,6,84] = [4,7,28]</td></tr>
+<tr><td><sup>3</sup>/<sub>8</sub></td><td> = [3,24] = [4,8]</td></tr>
+<tr><td><sup>3</sup>/<sub>10</sub></td><td> = [4,20] = [5,10]</td></tr>
+<tr><td><sup>3</sup>/<sub>11</sub></td><td> = [4,44]</td></tr>
+<tr><td> </td></tr>
+<tr><td><sup>4</sup>/<sub>5</sub></td><td> = [2,4,20] = [2,5,10]</td></tr>
+<tr><td><sup>4</sup>/<sub>7</sub></td><td> = [2,14]</td></tr>
+<tr><td><sup>4</sup>/<sub>9</sub></td><td> = [3,9]</td></tr>
+<tr><td><sup>4</sup>/<sub>11</sub></td><td> = [3,33]</td></tr>
+<tr><td> </td></tr>
+<tr><td><sup>5</sup>/<sub>6</sub></td><td> = [2,3]</td></tr>
+<tr><td><sup>5</sup>/<sub>7</sub></td><td> = [2,5,70] = [2,6,21] = [2,7,14]</td></tr>
+<tr><td><sup>5</sup>/<sub>8</sub></td><td> = [2,8]</td></tr>
+<tr><td><sup>5</sup>/<sub>9</sub></td><td> = [2,18]</td></tr>
+<tr><td><sup>5</sup>/<sub>11</sub></td><td> = [3,9,99] = [3,11,33] = [4,5,220]</td></tr>
+<tr><td> </td></tr>
+<tr><td><sup>6</sup>/<sub>7</sub></td><td> = [2,3,42]</td></tr>
+<tr><td><sup>6</sup>/<sub>11</sub></td><td> = [2,22]</td></tr>
+<tr><td> </td></tr>
+<tr><td><sup>7</sup>/<sub>8</sub></td><td> = [2,3,24] = [2,4,8]</td></tr>
+<tr><td><sup>7</sup>/<sub>9</sub></td><td> = [2,4,36] = [2,6,9]</td></tr>
+<tr><td><sup>7</sup>/<sub>10</sub></td><td> = [2,5]</td></tr>
+<tr><td><sup>7</sup>/<sub>11</sub></td><td> = [2,8,88] = [2,11,22]</td></tr>
+<tr><td> </td></tr>
+<tr><td><sup>8</sup>/<sub>9</sub></td><td> = [2,3,18]</td></tr>
+<tr><td><sup>8</sup>/<sub>11</sub></td><td> = [2,5,37,4070] =
+[2,5,38,1045] = [2,5,40,440] = [2,5,44,220] = [2,5,45,198] =
+[2,5,55,110] = [2,5,70,77] = [2,6,17,561] = [2,6,18,198] = [2,6,21,77]
+= [2,6,22,66] = [2,7,12,924] = [2,7,14,77] = [2,8,10,440] = [2,8,11,88]
+= [3,4,7,924]</td></tr>
+<tr><td>     </td></tr>
+<tr><td><sup>9</sup>/<sub>10</sub></td><td> = [2,3,15]</td></tr>
+<tr><td><sup>9</sup>/<sub>11</sub></td><td> = [2,4,15,660] = [2,4,16,176] = [2,4,20,55] = [2,4,22,44] = [2,5,10,55]</td></tr>
+<tr><td> </td></tr>
+<tr><td><sup>10</sup>/<sub>11</sub></td><td> = [2,3,14,231] = [2,3,15,110] = [2,3,22,33]</td></tr>
+</tbody></table>
+ 
+<sup>8</sup>/<sub>11</sub> has an unusually large number of different (shortest) representations!
+
+<a name="shortCalc"></a>
+<h2>                           A Calculator for Shortest Egyptian Fractions
+</h2>
+The calculator below will find all the Egyptian fractions of shortest length for an
+ordinary fraction.<br>
+
+<div class="calc"> C A L C U L A T O R<br>
+<div align="center">
+<form name="ef2" action="">
+<table class="calcblue">
+<tbody><tr>
+<td align="right">&nbsp;<input value="Find" onclick='outF="ef2";eflen()' type="button">
+     </td><td>  the shortest  Egyptian fractions for
+     <!-- input type=button value="table nb" onClick="tablNB('nb')">     <input type=button value="table minlen" onClick="tablNB('minlen')" -->
+   <!--  <br>   <input type=button value=' length=' onClick='eflen()'><input type=text name="len" value='' size=5>(max 8)   -->
+</td><td>
+  <table><tbody><tr><td>&nbsp;<input name="top" value="" size="20" type="text">&nbsp;</td></tr>
+         <tr><td height="3"><img src="Egyptian%20Fractions_files/black.gif" alt="--" height="2" width="100%"></td></tr>
+         <tr><td>&nbsp;<input name="bot" value="" size="20" type="text"></td></tr>
+  </tbody></table>
+</td></tr>
+</tbody></table>
+R E S U L T S <input class="clear" value="Clear" onclick="clearmsg('ef2')" type="button"><br>
+<div id="msgef2" class="res" style="width: 40em; height: 15em;">
+    </div>
+</form>
+</div>
+</div>
+
+
+<p>
+
+<a name="shorttable"></a>
+</p><h2> The number of Shortest Length Egyptian Fractions
+</h2>
+
+  Here is a table of the <i><b>lengths</b></i> of the <i>shortest</i> 
+  Egyptian Fractions  for all fractions <sup>T</sup>/<sub>B</sub> (Top over Bottom) where the denominator
+  B takes all values up to 30:
+
+ <p> 
+ <a name="tableshortest"></a>
+  </p><h4>Shortest Egyptian Fractions lengths for fraction <sup>T</sup>/<sub>B</sub></h4>
+  
+ KEY:<br>
+
+ <table border="1" cellpadding="3" cellspacing="0">
+ <tbody><tr><td> &#8211;  </td><td>means the fraction <sup>T</sup>/<sub>B</sub> is not in its lowest form 
+    e.g. <sup>9</sup>/<sub>12</sub> so
+    find its lowest form <sup>P</sup>/<sub>Q</sub> (<sup>9</sup>/<sub>12</sub>=<sup>3</sup>/<sub>4</sub>) 
+    and then look up that fraction
+           </td></tr>
+<tr><td>  . </td><td> means the fraction <sup>T</sup>/<sub>B</sub> is bigger than 1.  
+     Try <sup>B</sup>/<sub>T</sub> instead!</td></tr>
+<tr><td> number</td><td>   is the <i>minimum</i> number of unit fractions 
+           that are needed to sum to <sup>T</sup>/<sub>B</sub>.</td></tr>
+</tbody></table>
+        <b>Find T (top or numerator) down the side and B (bottom or denominator) across the top</b>
+<div align="center">
+<table cellpadding="5"><tbody><tr><td style="background-color: rgb(255, 204, 204);"><pre>\B:                1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2 3
+<u>T\   3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0</u>
+ 2|  2 - 2 - 2 - 2 - 2 - 2 - 2 - 2 - 2 - 2 - 2 - 2 - 2 - 2 -
+ 3|  . 2 2 - 3 2 - 2 2 - 3 2 - 2 2 - 3 2 - 2 2 - 2 2 - 2 2 -
+ 4|  . . 3 - 2 - 2 - 2 - 3 - 2 - 3 - 2 - 2 - 2 - 3 - 2 - 3 -
+ 5|  . . . 2 3 2 2 - 3 2 3 2 - 2 3 2 2 - 2 3 3 2 - 2 2 2 2 -
+ 6|  . . . . 3 - - - 2 - 3 - - - 2 - 3 - - - 2 - 2 - - - 2 -
+ 7|  . . . . . 3 3 2 3 2 2 - 3 3 3 2 3 2 - 3 3 2 3 2 2 - 3 2
+ 8|  . . . . . . 3 - 4 - 3 - 2 - 4 - 3 - 2 - 2 - 3 - 3 - 3 -
+ 9|  . . . . . . . 3 4 - 3 2 - 2 2 - 4 2 - 3 3 - 3 2 - 2 3 -
+10|  . . . . . . . . 4 - 3 - - - 3 - 2 - 2 - 3 - - - 2 - 2 -
+11|  . . . . . . . . . 3 3 3 3 3 3 2 3 2 2 - 3 2 3 3 3 2 3 2
+12|  . . . . . . . . . . 4 - - - 3 - 3 - - - 2 - 4 - - - 4 -
+13|  . . . . . . . . . . . 4 3 3 3 3 3 3 3 2 3 2 2 - 3 3 3 2
+14|  . . . . . . . . . . . . 3 - 4 - 4 - - - 3 - 3 - 2 - 4 -
+15|  . . . . . . . . . . . . . 4 4 - 4 - - 3 4 - - 2 - 2 2 -
+16|  . . . . . . . . . . . . . . 5 - 3 - 3 - 4 - 3 - 3 - 3 -
+17|  . . . . . . . . . . . . . . . 3 4 3 3 3 4 3 3 3 3 3 3 2
+18|  . . . . . . . . . . . . . . . . 4 - - - 4 - 3 - - - 4 -
+19|  . . . . . . . . . . . . . . . . . 3 3 3 4 3 3 4 3 3 4 3
+20|  . . . . . . . . . . . . . . . . . . 4 - 4 - - - 4 - 4 -
+21|  . . . . . . . . . . . . . . . . . . . 4 5 - 3 4 - - 4 -
+22|  . . . . . . . . . . . . . . . . . . . . 5 - 4 - 4 - 3 -
+23|  . . . . . . . . . . . . . . . . . . . . . 3 4 4 3 3 4 3
+24|  . . . . . . . . . . . . . . . . . . . . . . 4 - - - 4 -
+25|  . . . . . . . . . . . . . . . . . . . . . . . 4 4 3 4 -
+26|  . . . . . . . . . . . . . . . . . . . . . . . . 4 - 4 -
+27|  . . . . . . . . . . . . . . . . . . . . . . . . . 4 5 -
+28|  . . . . . . . . . . . . . . . . . . . . . . . . . . 5 -
+29|  . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+
+</pre>
+</td></tr></tbody></table>
+</div>
+
+So the "smallest" fraction that needs <i>three</i> terms is T=4 B=5 
+i.e. <sup>4</sup>/<sub>5</sub><br>
+In fact there are <i>two</i> ways to write <sup>4</sup>/<sub>5</sub> as a sum of
+<i>three</i> unit fractions:
+<div align="center">
+<sup>4</sup>/<sub>5</sub> = <sup>1</sup>/<sub>2</sub> + <sup>1</sup>/<sub>4</sub> + <sup>1</sup>/<sub>20</sub>
+and
+<sup>4</sup>/<sub>5</sub> = <sup>1</sup>/<sub>2</sub> + <sup>1</sup>/<sub>5</sub> + <sup>1</sup>/<sub>10</sub>
+</div>
+
+
+<a name="shortpatts"></a>
+<h2>           Finding patterns for shortest Egyptian Fractions 
+</h2>
+
+There seem to be lots of patterns to spot in the table above.<br>
+The top row, for instance, seems to have the pattern that <sup>2</sup>/<sub>B</sub> can be written as a
+sum of just 2 unit fractions (providing that B is odd since otherwise, <sup>2</sup>/<sub>B</sub> would not
+be in its "lowest form").  
+The odd numbers are those of the form 2i+1 as i goes from 1 upwards.
+Let's list some of these in full:
+<table style="background-color: rgb(255, 204, 204);" align="center" border="1" cellpadding="4" cellspacing="0">
+<tbody><tr><th>i</th><th colspan="3"><sup>2</sup>/<sub>(2i+1)</sub></th></tr>
+<tr><td>1 </td><td><sup>2</sup>/<sub>3</sub> = <sup>1</sup>/<sub>2</sub> + <sup>1</sup>/<sub>6</sub></td></tr>
+<tr><td>2 </td><td><sup>2</sup>/<sub>5</sub> = <sup>1</sup>/<sub>3</sub> + <sup>1</sup>/<sub>15</sub></td></tr>
+<tr><td>3 </td><td><sup>2</sup>/<sub>7</sub> = <sup>1</sup>/<sub>4</sub> + <sup>1</sup>/<sub>28</sub></td></tr>
+<tr><td>4 </td><td><sup>2</sup>/<sub>9</sub> = <sup>1</sup>/<sub>5</sub> + <sup>1</sup>/<sub>45</sub><br>
+                   <sup>2</sup>/<sub>9</sub> = <sup>1</sup>/<sub>6</sub> + <sup>1</sup>/<sub>18</sub></td></tr>
+<tr><td>5 </td><td><sup>2</sup>/<sub>11</sub> = <sup>1</sup>/<sub>6</sub> + <sup>1</sup>/<sub>66</sub></td></tr>
+<tr><td>6 </td><td><sup>2</sup>/<sub>13</sub> = <sup>1</sup>/<sub>7</sub> + <sup>1</sup>/<sub>91</sub></td></tr>
+<tr><td>7 </td><td><sup>2</sup>/<sub>15</sub> = <sup>1</sup>/<sub>8</sub> + <sup>1</sup>/<sub>120</sub><br>
+ <sup>2</sup>/<sub>15</sub> = <sup>1</sup>/<sub>9</sub> + <sup>1</sup>/<sub>45</sub><br>
+ <sup>2</sup>/<sub>15</sub> = <sup>1</sup>/<sub>10</sub> + <sup>1</sup>/<sub>30</sub><br>
+ <sup>2</sup>/<sub>15</sub> = <sup>1</sup>/<sub>12</sub> + <sup>1</sup>/<sub>20</sub></td></tr>
+</tbody></table>
+
+Let's concentrate on the first sum on each line since some of the fractions
+above have more than one form as a sum of two unit fractions.
+<p>
+It looks as if 
+</p><div align="center">
+         <sup>2</sup>/<sub>2i+1</sub> = <sup>1</sup>/<sub>i+1</sub> + <sup>1</sup>/<sub>?</sub>
+</div>
+Can you spot how we can use (2i+1) and i to find the missing number?<br>
+Here is the table again with the (2i+1) and i+1 parts in <span class="red">red</span>
+and the <b>?</b> number is in <span class="green">green</span> :
+<div align="center">
+<table style="font-family: monospace;">
+<tbody><tr><td width="15">i</td><td><sup>2</sup>/<sub>2i+1</sub></td><td> = <sup>1</sup>/<sub>i+1</sub> + <sup>1</sup>/<sub>?</sub></td></tr>
+<tr><td>1</td><td>  <sup>2</sup>/<sub><span class="red">3</span></sub></td><td> = <sup>1</sup>/<sub><span class="red">2</span></sub> + <sup>1</sup>/<sub><span class="green">6</span></sub></td></tr>
+<tr><td>2</td><td>  <sup>2</sup>/<sub><span class="red">5</span></sub></td><td> = <sup>1</sup>/<sub><span class="red">3</span></sub> + <sup>1</sup>/<sub><span class="green">15</span></sub></td></tr>
+<tr><td>3</td><td>  <sup>2</sup>/<sub><span class="red">7</span></sub></td><td> = <sup>1</sup>/<sub><span class="red">4</span></sub> + <sup>1</sup>/<sub><span class="green">28</span></sub></td></tr>
+<tr><td>4</td><td>  <sup>2</sup>/<sub><span class="red">9</span></sub></td><td> = <sup>1</sup>/<sub><span class="red">5</span></sub> + <sup>1</sup>/<sub><span class="green">45</span></sub></td><td> = <sup>1</sup>/<sub>6</sub> + <sup>1</sup>/<sub>18</sub></td></tr>
+<tr><td>5</td><td>  <sup>2</sup>/<sub><span class="red">11</span></sub></td><td> = <sup>1</sup>/<sub><span class="red">6</span></sub> + <sup>1</sup>/<sub><span class="green">66</span></sub></td></tr>
+<tr><td>6</td><td>  <sup>2</sup>/<sub><span class="red">13</span></sub></td><td> = <sup>1</sup>/<sub><span class="red">7</span></sub> + <sup>1</sup>/<sub><span class="green">91</span></sub></td></tr>
+<tr><td>7</td><td>  <sup>2</sup>/<sub><span class="red">15</span></sub></td><td> = <sup>1</sup>/<sub><span class="red">8</span></sub> + <sup>1</sup>/<sub><span class="green">120</span></sub></td><td> = <sup>1</sup>/<sub>9</sub> + <sup>1</sup>/<sub>45</sub></td><td> = <sup>1</sup>/<sub>10</sub> + <sup>1</sup>/<sub>30</sub></td><td> = <sup>1</sup>/<sub>12</sub> + <sup>1</sup>/<sub>20</sub></td></tr>
+<tr><td>8</td><td>  <sup>2</sup>/<sub><span class="red">17</span></sub></td><td> = <sup>1</sup>/<sub><span class="red">9</span></sub> + <sup>1</sup>/<sub><span class="green">153</span></sub></td></tr>
+<tr><td>9</td><td>  <sup>2</sup>/<sub><span class="red">19</span></sub></td><td> = <sup>1</sup>/<sub><span class="red">10</span></sub> + <sup>1</sup>/<sub><span class="green">190</span></sub></td></tr>
+</tbody></table>
+</div>
+
+Yes! Just multiply the red numbers i+1 and 2i+1 to get the green ones!<br>
+
+<br>
+So it looks like we may have the pattern:
+<div align="center">
+         <sup>2</sup>/<sub>2i+1</sub> = <sup>1</sup>/<sub>i+1</sub> + <sup>1</sup>/<sub>(i+1)(2i+1)</sub>
+</div>
+
+We can check it by simplifying the fraction on the right and seeing if it reduces to
+the one on the left:
+<pre>                     1/(i+1) + 1/[(i+1)(2i+1)]
+                   = (2i+1  + 1)/[(i+1)(2i+1)]
+                   = (2i+2)/[(i+1)(2i+1)]
+                   = 2(i+1)/[(i+1)(2i+1)]
+                   = 2/(2i+1)   which is the fraction we wanted!!
+</pre>
+So algebra has shown us that the formula is <i>always true</i>.
+
+
+<a name="nbshort"></a>
+<h2> How many Egyptian Fractions of shortest length are there for <sup>T</sup>/<sub>B</sub>?
+</h2>
+
+Here is a table like the one above, but this time each entry is a <b>count</b>
+of all the ways we can write <sup>T</sup>/<sub>B</sub> as a sum of the <b>minimum</b> number of unit fractions:
+
+<br>
+For instance, we have seen that <sup>4</sup>/<sub>5</sub> can be written with a minimum of 2 unit fractions,
+so <b>2</b> appears in the first table under <sup>T</sup>/<sub>B</sub>=<sup>4</sup>/<sub>5</sub>.<br> 
+But we saw that <sup>4</sup>/<sub>5</sub> has <i>two ways</i> in which it can be so written, so in the
+following table we have entry 2 under <sup>T</sup>/<sub>B</sub>=<sup>4</sup>/<sub>5</sub>.<br>
+<sup>2</sup>/<sub>15</sub> needs at least 2 unit fractions in its Egyptian form:  here are all the
+variations:
+<div align="center">
+<table>
+<tbody><tr><td><sup>2</sup>/<sub>15</sub></td><td> = <sup>1</sup>/<sub>8</sub> + <sup>1</sup>/<sub>120</sub> </td></tr>
+<tr><td>  </td><td>   = <sup>1</sup>/<sub>9</sub> + <sup>1</sup>/<sub>45</sub> </td></tr>
+<tr><td>  </td><td>   = <sup>1</sup>/<sub>10</sub> + <sup>1</sup>/<sub>30</sub> </td></tr>
+<tr><td>  </td><td>   = <sup>1</sup>/<sub>12</sub> + <sup>1</sup>/<sub>20</sub></td></tr>
+</tbody></table></div>
+so it has <i>four</i> representations.  In the table below, under <sup>T</sup>/<sub>B</sub>=<sup>2</sup>/<sub>15</sub> we have
+the entry <i>4</i>:
+<p>
+</p><div align="center">
+<table style="background-color: rgb(255, 204, 204);" cellpadding="5"><tbody><tr><td><pre>NUMBER of Shortest Egyptian Fractions:
+\B    3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
+<u>T\                                                        </u>
+ 2|   1  -  1  -  1  -  2  -  1  -  1  -  4  -  1  -  1  -
+ 3|   .  1  1  -  6  2  -  2  1  -  8  3  -  2  1  -  8  4
+ 4|   .  .  2  -  1  -  1  -  1  -  4  -  3  -  4  -  1  -
+ 5|   .  .  .  1  3  1  1  -  3  2  5  1  -  1  5  2  1  -
+ 6|   .  .  .  .  1  -  -  -  1  -  1  -  -  -  1  -  2  -
+ 7|   .  .  .  .  .  2  2  1  2  2  1  -  7  5  3  1  5  2
+ 8|   .  .  .  .  .  .  1  - 16  -  3  -  2  - 23  -  2  -
+ 9|   .  .  .  .  .  .  .  1  5  -  1  1  -  1  1  - 14  1
+10|   .  .  .  .  .  .  .  .  3  -  1  -  -  -  3  -  1  -
+11|   .  .  .  .  .  .  .  .  .  2  1  1  2  2  1  1  3  1
+12|   .  .  .  .  .  .  .  .  .  .  3  -  -  -  1  -  1  -
+13|   .  .  .  .  .  .  .  .  .  .  .  6  2  1  1  2  1  5
+14|   .  .  .  .  .  .  .  .  .  .  .  .  1  -  2  -  5  -
+15|   .  .  .  .  .  .  .  .  .  .  .  .  .  5  4  -  3  -
+16|   .  .  .  .  .  .  .  .  .  .  .  .  .  . 39  -  1  -
+17|   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  1  3  2
+18|   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  1  -
+19|   .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  1
+</pre></td></tr></tbody></table>
+</div> 
+
+
+
+
+
+
+
+<a name="fxdlen"></a>
+<h1>                               Fixed Length Egyptian Fractions
+</h1>
+The shortest Egyptian fractions do not always give the smallest numbers.  <br>
+For example, the smallest number of unit fractions for <sup>8</sup>/<sub>11</sub> is 4; there are
+16 of them and the one with the smallest numbers (i.e. its largest denominator
+is the smallest of the 14) is 
+8/11 = 1/2 + 1/6 + 1/22 + 1/66<br>
+However, if we look for a larger collection, of 5 unit fractions, we find smaller numbers still:
+<br>
+8/11 = 1/2 + 1/11 + 1/12 + 1/33 + 1/44 and<br>
+8/11 = 1/3 + 1/4 + 1/11 + 1/33 + 1/44
+<p>
+
+Here we investigate
+Egyptian Fractions with more than the smallest number of reciprocals.
+<br>
+We have <a href="#alwaysef">already seen</a>
+that every fraction <sup>T</sup>/<sub>B</sub> has an Egyptian Fraction
+and, what is more, <a href="#infnbways">an infinite number of longer and longer
+ Egyptian fraction forms</a>.  <br>
+ 
+ So let's see what we can find about the number of 
+ Egyptian fractions for <sup>t</sup>/<sub>b</sub> of a given length L.
+
+</p><div class="calc"> C A L C U L A T O R <br>
+<div align="center">
+<form name="ef3" action="">
+<table border="0" cellpadding="4" cellspacing="0">
+<tbody><tr><td colspan="5"></td><td align="right"> <i>Options: leave blank if not needed</i></td></tr>
+<tr><td style="background-color: rgb(255, 204, 102);" align="right">
+   <input value="Count" onclick='outF="ef3";printing=false;efFXDlen()' type="button"><br>
+   <input value="Show all" onclick='outF="ef3";printing=true;efFXDlen()' type="button"><br>
+   <input value="Find one" onclick='outF="ef3";printing=true;document.ef3.ctlim.value="1";efFXDlen()' type="button">
+   </td>
+   <td style="background-color: rgb(255, 204, 102);"> Egyptian fractions of length </td>
+    <td style="background-color: rgb(255, 204, 102);">
+     <!-- input type=button value="table nb" onClick="tablNB('nb')">     <input type=button value="table minlen" onClick="tablNB('minlen')" -->
+   <input name="len" value="" size="3" type="text">
+   </td>
+   <td style="background-color: rgb(255, 204, 102);"> for </td>
+  <td style="background-color: rgb(255, 204, 102);"><table><tbody><tr><td><input name="top" value="" size="10" type="text"></td>
+         </tr><tr><td height="2"><img src="Egyptian%20Fractions_files/black.gif" alt="--" height="2" width="100%"></td></tr>
+         <tr><td><input name="bot" value="" size="10" type="text"></td></tr>
+  </tbody></table></td>
+  <td class="dim" align="right"><i>
+     all denominators &#8804; <input size="8" value="" name="maxden" type="text"><br>
+     find no more than <input size="5" value="1000" name="ctlim" type="text">  </i>
+  <!-- input type=button value="Table 4/ len3" onClick='tableUnder(3,15)'  -->
+  </td>
+</tr>
+</tbody></table>
+
+R E S U L T S <input class="clear" value="Clear" onclick="clearmsg('ef3')" type="button"><br>
+<div id="msgef3" class="res" style="width: 60em; height: 15em;">
+    </div>
+</form>
+</div>
+</div>
+
+
+
+<div class="ttd">  <h4><img src="Egyptian%20Fractions_files/ttdicon.gif" alt="/" height="14" width="25">
+                           Things to do   
+<img src="Egyptian%20Fractions_files/ttdicon.gif" alt="/" height="14" width="25"></h4>
+<ol class="ttd"> 
+<li> <blockquote>1 = <sup>1</sup>/<sub>2</sub>+<sup>1</sup>/<sub>3</sub>+<sup>1</sup>/<sub>6</sub>
+</blockquote>  shows 3 different unit fractions with a sum of 1 whereas<blockquote>
+       1=  <sup>1</sup>/<sub>2</sub>+<sup>1</sup>/<sub>4</sub>+<sup>1</sup>/<sub>10</sub>+<sup>1</sup>/<sub>12</sub>+<sup>1</sup>/<sub>15</sub>
+       </blockquote> is a set of 5 unit fractions.<br>
+      <ol type="a">
+      <li>In how many  ways can you  make write 1 as a sum of <i>4 different</i> unit fractions?</li>
+     <li> How many other ways can you find to write 1 as a sum of 5 unit fractions?
+      (There are more than 10 but less than 100.)</li>
+      <!-- A006585 gives the number as 6 :         2,3,7,42; 2,3,8,24; 2,3,9,18; 2,3,10,15; 2,4,5,20; 2,4,6,12 -->
+      <!-- A073546 gives an example of each length from 3 upwards -->
+      <!-- A051907 gives a count of those with a denominators sum of n so <sup>1</sup>/<sub>2</sub>+<sup>1</sup>/<sub>3</sub>+<sup>1</sup>/<sub>6</sub> comes under 2+3+6=11-->
+      </ol>
+      <i>Check your answers at <a href="http://www.research.att.com/%7Enjas/sequences/A006585">A006585</a>.</i>
+</li>
+
+<li> Suppose we now allowed unit fractions to be repeated in the above question e.g.
+    <blockquote>
+       1 = <sup>1</sup>/<sub>2</sub>+<sup>1</sup>/<sub>4</sub>+<sup>1</sup>/<sub>4</sub> = <sup>1</sup>/<sub>3</sub>+<sup>1</sup>/<sub>3</sub>+<sup>1</sup>/<sub>3</sub>
+       </blockquote>
+      There are a total now of 14 ways to write 1  as a sum of 4 unit fractions which includes all
+      those solutions you found in the first question.  What are they?
+      <!-- A002966 gives the count of those of n fractions -->
+</li>
+<li> Is it always possible to find  <i>n</i> different unit fractions that sum to 1 no matter what n is?<br>
+        Can you give a formula for the n unit fractions or a method of constructing them for certain values of n?
+</li>
+<li> <a href="#Fibgreedy">Fibonacci's Greedy algorithm</a> 
+  to find Egyptian fractions with a sum of 1 is as follows: <br>
+  <blockquote>Choose the largest unit fraction we can, write it down and subtract it<br>
+    Repeat this  on the remainder until
+    we find the remainder is itself a unit fraction not equal to one already written down. <br>
+    At this point we could stop or else continue splitting the unit fraction into smaller fractions.
+    </blockquote>
+     To use this method to find a set of unit fractions that sum to 1:<br>
+      So we would start with <sup>1</sup>/<sub>2</sub> as the largest unit fraction less than 1:<br>
+   <blockquote>   1 = <sup>1</sup>/<sub>2</sub> + ( <sup>1</sup>/<sub>2</sub>  remaining) </blockquote>
+   so we repeat the process on the remainder:
+      the largest fraction less than <sup>1</sup>/<sub>2</sub>  is <sup>1</sup>/<sub>3</sub>:<blockquote>
+      1 = <sup>1</sup>/<sub>2</sub> + <sup>1</sup>/<sub>3</sub> + ( <sup>1</sup>/<sub>6</sub> remaining). </blockquote>
+      We could stop now or else continue with <sup>1</sup>/<sub>7</sub> 
+      as the largest unit fraction less than <sup>1</sup>/<sub>6</sub>
+      ...<blockquote>
+      1 = <sup>1</sup>/<sub>2</sub> + <sup>1</sup>/<sub>3</sub> + <sup>1</sup>/<sub>7</sub> + ...</blockquote>
+  Find a few more terms, choosing the largest unit fraction at each point rather than stopping. <br>
+  The infinite sequence of denominators is  called <b>Sylvester's Sequence</b>.
+  <br>
+  <i>Check your answers at <a href="http://www.research.att.com/%7Enjas/sequences/A000058">A000058</a> in Sloane's
+  <a href="http://www.research.att.com/%7Enjas/sequences/Seis.html">Online Encyclopedia of Integer Sequences</a>.</i>
+  <!-- A000058: 2,3,7,43,1807,3263443,10650056950807, ...  -->
+  
+</li>
+<li>  Investigate shortest Egyptian fractions for <sup>3</sup>/<sub>n</sub>:
+    <ol type="a">
+    <li> Find a fraction of the form <sup>3</sup>/<sub>n</sub> that is not a sum of two
+       unit fractions. </li>   <!-- 3/7 -->
+    <li> Is it always possible to write <sup>3</sup>/<sub>n</sub> as a sum of <i>three</i> unit fractions ?  <br>
+          Give a formula for the different cases to verify your answer.
+          <!--  3/2 = 1 + 1/3 + 1/6 covers 3/2n cases   i.e. n=0,2,4 mod 6                1/m = 1/(2m) + 1/(2m+1) + 1/(2m(2m+1)) covers n=3 mod 6                3/(6n+1) = 1/(6n+1) + 1/(3n+1) + 1/(3n+1)/(6n+1) covers n=1 mod 6                3/(6n-1) = 1/(6n-1) + 1/(3n) + 1/(3n(6n-1)) covers n=5 mod 6          -->
+    </li>
+    </ol>
+</li>
+    
+<li> Shortest Egyptian fractions for <sup>4</sup>/<sub>n</sub>:<br>
+       Find a value for n where <sup>4</sup>/<sub>n</sub> cannot be expressed as a sum of <i>two</i> unit fractions.
+       <p>
+     The famous mathematician 
+     <a href="http://www-groups.dcs.st-and.ac.uk/%7Ehistory/Mathematicians/Erdos.html">Paul Erdös</a>
+     (1913-1996) together with 
+     <a href="http://www-groups.dcs.st-and.ac.uk/%7Ehistory/Mathematicians/Straus.html">E. G. Straus
+     </a> suggested the following in 1948:
+     
+     </p><div class="rule">
+     The 
+     <a href="http://mathworld.wolfram.com/Erdos-StrausConjecture.html">Erdös-Straus Conjecture</a>: <br>
+     ?? <i>Every</i>  fraction <sup>4</sup>/<sub>n</sub> can be written as a sum of three 
+      unit fractions. ??
+      </div>
+      
+     It has been verified that 3 unit fractions <b>can</b> found for all values of n up to 10<sup>14</sup>
+     but as yet no one has <i>proved</i> it true <i>for all values of n</i> nor has anyone 
+     found a number n for which it is  <i>not</i> true.  <br>
+     The Calculator above shows that for any given n there are  many ways to choose the whole numbers, x, y and z
+     for the three unit fraction denominators.
+     <br>
+    
+     Using the calculator, can you <b>find patterns for some values of n, x, y and z</b>?    <br>
+    <table><tbody><tr><td>
+      For instance: among all the result of three fractions summing to <sup>4</sup>/<sub>n</sub> when n is <i>even</i>, we have:
+		 </td><td>
+		 <table style="background-color: white; font-size: 60%;" border="2" cellpadding="5" cellspacing="0"><tbody><tr><th>n</th><th>x</th><th>y</th><th>z</th></tr>
+	<tr><th>6</th><td align="right">3</td><td align="right">4</td><td align="right">12</td></tr>
+	<tr><th>8</th><td align="right">4</td><td align="right">5</td><td align="right">20</td></tr>
+	<tr><th>10</th><td align="right">5</td><td align="right">6</td><td align="right">30</td></tr>
+	<tr><th>12</th><td align="right">6</td><td align="right">7</td><td align="right">42</td></tr>
+	<tr><th colspan="4">...</th></tr>
+	 </tbody></table></td><td>
+		 How would you write this pattern mathematically?
+		 </td></tr></tbody></table>
+		
+		Here is a list of all the 3-term Egyptian fractions for <sup>4</sup>/<sub>n</sub> for n from 5 to 15.<br>
+  
+  
+	<table><tbody><tr><td valign="top">  
+	 <table style="background-color: white; font-size: 60%;" border="1" cellpadding="5" cellspacing="0">
+	<tbody><tr><td>4/5=</td><td>1/2 + 1/4 + 1/20<br>
+	1/2 + 1/5 + 1/10<br>
+	</td></tr><tr>
+	<td>4/6=</td><td>1/2 + 1/7 + 1/42<br>
+	1/2 + 1/8 + 1/24<br>
+	1/2 + 1/9 + 1/18<br>
+	1/2 + 1/10 + 1/15<br>
+	1/3 + 1/4 + 1/12<br>
+	</td></tr><tr>
+	<td>4/7=</td><td>1/2 + 1/15 + 1/210<br>
+	1/2 + 1/16 + 1/112<br>
+	1/2 + 1/18 + 1/63<br>
+	1/2 + 1/21 + 1/42<br>
+	1/3 + 1/6 + 1/14<br>
+	</td></tr><tr>
+	<td>4/8=</td><td>1/3 + 1/7 + 1/42<br>
+	1/3 + 1/8 + 1/24<br>
+	1/3 + 1/9 + 1/18<br>
+	1/3 + 1/10 + 1/15<br>
+	1/4 + 1/5 + 1/20<br>
+	1/4 + 1/6 + 1/12<br>
+	</td></tr><tr>
+	<td>4/9=</td><td>1/3 + 1/10 + 1/90<br>
+	1/3 + 1/12 + 1/36<br>
+	1/4 + 1/6 + 1/36<br>
+	1/4 + 1/9 + 1/12<br>
+	</td></tr>
+	</tbody></table></td>
+	
+	<td valign="top">
+	<table style="background-color: white; font-size: 60%;" border="1" cellpadding="5" cellspacing="0"><tbody><tr>
+	<td>4/10=</td><td>1/3 + 1/16 + 1/240<br>
+	1/3 + 1/18 + 1/90<br>
+	1/3 + 1/20 + 1/60<br>
+	1/3 + 1/24 + 1/40<br>
+	1/4 + 1/7 + 1/140<br>
+	1/4 + 1/8 + 1/40<br>
+	1/4 + 1/10 + 1/20<br>
+	1/4 + 1/12 + 1/15<br>
+	1/5 + 1/6 + 1/30<br>
+	</td></tr>
+	<tr>
+	<td>4/11=</td><td>1/3 + 1/34 + 1/1122<br>
+	1/3 + 1/36 + 1/396<br>
+	1/3 + 1/42 + 1/154<br>
+	1/3 + 1/44 + 1/132<br>
+	1/4 + 1/9 + 1/396<br>
+	1/4 + 1/11 + 1/44<br>
+	1/4 + 1/12 + 1/33<br>
+	</td></tr>
+	<tr>
+	<td>4/12=</td><td>1/4 + 1/13 + 1/156<br>
+	1/4 + 1/14 + 1/84<br>
+	1/4 + 1/15 + 1/60<br>
+	1/4 + 1/16 + 1/48<br>
+	1/4 + 1/18 + 1/36<br>
+	1/4 + 1/20 + 1/30<br>
+	1/4 + 1/21 + 1/28<br>
+	1/5 + 1/8 + 1/120<br>
+	1/5 + 1/9 + 1/45<br>
+	1/5 + 1/10 + 1/30<br>
+	1/5 + 1/12 + 1/20<br>
+	1/6 + 1/7 + 1/42<br>
+	1/6 + 1/8 + 1/24<br>
+	1/6 + 1/9 + 1/18<br>
+	1/6 + 1/10 + 1/15<br>
+	</td></tr></tbody></table></td>
+	
+	<td valign="top">
+	<table style="background-color: white; font-size: 60%;" border="1" cellpadding="5" cellspacing="0">
+	<tbody><tr>
+	<td>4/13=</td><td>1/4 + 1/18 + 1/468<br>
+	1/4 + 1/20 + 1/130<br>
+	1/4 + 1/26 + 1/52<br>
+	1/5 + 1/10 + 1/130<br>
+	</td></tr><tr>
+	<td>4/14=</td><td>1/4 + 1/29 + 1/812<br>
+	1/4 + 1/30 + 1/420<br>
+	1/4 + 1/32 + 1/224<br>
+	1/4 + 1/35 + 1/140<br>
+	1/4 + 1/36 + 1/126<br>
+	1/4 + 1/42 + 1/84<br>
+	1/4 + 1/44 + 1/77<br>
+	1/5 + 1/12 + 1/420<br>
+	1/5 + 1/14 + 1/70<br>
+	1/5 + 1/20 + 1/28<br>
+	1/6 + 1/9 + 1/126<br>
+	1/6 + 1/12 + 1/28<br>
+	1/6 + 1/14 + 1/21<br>
+	1/7 + 1/8 + 1/56<br>
+	</td></tr>
+	</tbody></table></td>
+	
+	<td valign="top">
+	<table style="background-color: white; font-size: 60%;" border="1" cellpadding="5" cellspacing="0"><tbody><tr>
+	<td>4/15=</td><td>1/4 + 1/61 + 1/3660<br>
+	1/4 + 1/62 + 1/1860<br>
+	1/4 + 1/63 + 1/1260<br>
+	1/4 + 1/64 + 1/960<br>
+	1/4 + 1/65 + 1/780<br>
+	1/4 + 1/66 + 1/660<br>
+	1/4 + 1/68 + 1/510<br>
+	1/4 + 1/69 + 1/460<br>
+	1/4 + 1/70 + 1/420<br>
+	1/4 + 1/72 + 1/360<br>
+	1/4 + 1/75 + 1/300<br>
+	1/4 + 1/76 + 1/285<br>
+	1/4 + 1/78 + 1/260<br>
+	1/4 + 1/80 + 1/240<br>
+	1/4 + 1/84 + 1/210<br>
+	1/4 + 1/85 + 1/204<br>
+	1/4 + 1/90 + 1/180<br>
+	1/4 + 1/96 + 1/160<br>
+	1/4 + 1/100 + 1/150<br>
+	1/4 + 1/105 + 1/140<br>
+	1/4 + 1/108 + 1/135<br>
+	1/4 + 1/110 + 1/132<br>
+	1/5 + 1/16 + 1/240<br>
+	1/5 + 1/18 + 1/90<br>
+	1/5 + 1/20 + 1/60<br>
+	1/5 + 1/24 + 1/40<br>
+	1/6 + 1/11 + 1/110<br>
+	1/6 + 1/12 + 1/60<br>
+	1/6 + 1/14 + 1/35<br>
+	1/6 + 1/15 + 1/30<br>
+	1/7 + 1/10 + 1/42<br>
+	1/8 + 1/10 + 1/24<br>
+	1/9 + 1/10 + 1/18
+	
+	</td></tr>
+	</tbody></table></td>
+	</tr></tbody></table>
+	Can you spot any further patterns here?<br>
+  Use the Calculator above to help with your investigations.<p> 
+  If you do find any more, let me know (see contact details at the foot of this page) and I will 
+     put your results here.<br>
+     If we can find a set of cases that cover <i>all values of n</i>, then we have a proof of the
+     <b>Erdös-Straus conjecture</b>.
+
+</p></li><li>
+   The number of solutions to <sup>4</sup>/<sub>n</sub> as a sum of 3 unit fractions is:
+	<blockquote>
+	The first value is <sup>4</sup>/<sub>3</sub>:<br>
+	1 solution for <sup>4</sup>/<sub>3</sub> = <sup>1</sup>/<sub>1</sub>+<sup>1</sup>/<sub>4</sub>+<sup>1</sup>/<sub>12</sub><br>
+	1 solution for <sup>4</sup>/<sub>4</sub> = <sup>1</sup>/<sub>2</sub>+<sup>1</sup>/<sub>3</sub>+<sup>1</sup>/<sub>6</sub> <br>
+     2 ways for <sup>4</sup>/<sub>5</sub><br>
+	5 ways for <sup>4</sup>/<sub>6</sub> = <sup>2</sup>/<sub>3</sub><br>
+	...
+	</blockquote>
+	The series of counts is (0,0), 1, 1, 2, 5, ...
+	<br>
+	How does it continue?<br>
+	
+	<i>Check your answers with 
+	<a href="http://www.research.att.com/%7Enjas/sequences/A073101">A073101</a> in 
+		 Neil Sloane's <a href="http://www.research.att.com/%7Enjas/sequences/Seis.html"> Online 
+		 Encyclopedia of Integer Sequences</a>. </i>
+		 <br>
+	<b>If</b> the Erdös-Straus Conjecture is true then  
+	the only zeroes in the whole infinite series are for n=1 and 2.
+     
+     <p>
+     <small>With thanks to Robert David Acker, Jr. for suggesting this topic.</small>
+
+
+</p></li><li> 
+     Another famous mathematician, 
+     <a href="http://www-groups.dcs.st-and.ac.uk/%7Ehistory/Mathematicians/Sierpinski.html">Sierpinski</a> 
+     suggested in 1956 that the same applied to all fractions of the form <sup>5</sup>/<sub>n</sub>,
+     that is that each of these also can be expressed as a sum of 3 unit fractions.
+     <p>
+     There are:<br>
+     0 solutions for <sup>5</sup>/<sub>2</sub><br>
+     1 solution for <sup>5</sup>/<sub>3</sub>: <sup>5</sup>/<sub>3</sub>=<sup>1</sup>/<sub>1</sub>+<sup>1</sup>/<sub>2</sub>+<sup>1</sup>/<sub>6</sub><br>
+     2 for <sup>5</sup>/<sub>4</sub>: <sup>5</sup>/<sub>4</sub>=<sup>1</sup>/<sub>1</sub>+<sup>1</sup>/<sub>5</sub>+<sup>1</sup>/<sub>20</sub> and <sup>1</sup>/<sub>1</sub>+<sup>1</sup>/<sub>6</sub>+<sup>1</sup>/<sub>12</sub>;<br>
+     1  for <sup>5</sup>/<sub>5</sub>; what is it?<br>
+     The number of solutions this time is the series 0,1,2,1,1,3,5,9,6,3,12,... which is
+     <a href="http://www.research.att.com/%7Enjas/sequences/A075248">A075248</a> in 
+     Neil Sloane's <a href="http://www.research.att.com/%7Enjas/sequences/Seis.html"> Online 
+     Encyclopedia of Integer Sequences</a>.  If the conjecture is true, then there are no zeroes in this
+     series apart from the starting value.<br>
+     </p><ol type="a">
+     <li> Find the single  set of 3 unit fractions with a sum of <sup>5</sup>/<sub>6</sub>.</li>
+     <li> Find the three sets of 3 for <sup>5</sup>/<sub>7</sub>.</li>
+     <li> What formulae can you find for special cases of <sup>5</sup>/<sub>n</sub> as a sum of 3 unit fractions?</li>
+     </ol>
+</li>
+<li> From the <a href="#tableshortest">table of lengths of the shortest Egyptian fractions</a> above, 
+   find a fraction that needs  5 unit fractions for its Egyptian fraction.</li>
+<li> Can you find a fraction that cannot be written using less than 6 unit fractions for its Egyptian fraction?
+   <!-- 77/79 is one -->
+</li><li>  Investigate Egyptian fractions which have only <i>odd</i> denominators.  <br>
+Is it  possible to find a sum of odd Egyptian fractions for <i>every</i> fraction <sup>a</sup>/<sub>b</sub>?
+<!-- yes, see Unsolved Probs in Nb Theory, R K Guy,  D11 -->
+</li>
+</ol>
+</div>
+  
+  <p>
+The above will give you some ideas for your own experiments and the References below point to more information and
+ideas.
+<br>Happy calculating!
+
+
+<a name="smallest1"></a>
+</p><h1>                      Smallest Denominators
+</h1>
+
+Apart from the shortest Egyptian fractions (those with the fewest unit fractions), 
+we can also look for the <i>smallest</i> numbers in the denominators.<br>
+<a href="#fxdlen">As we saw</a> at the start of the <b>Fixed Length Egyptian Fractions</b> section above, the smallest
+denominators do not always appear in the <i>shortest</i> Egyptian fractions.  
+<ul>
+<li>The <i>shortest</i> for 8/11 is<br>
+   8/11 = 1/2 + 1/6 + 1/22 + 1/66<br>
+   and 15 others, but this one has the fewest numbers with just 4 unit fractions but it
+   includes a denominator of 66;</li>
+<li>The EF for 8/11 with <i>smallest numbers</i> has no denominator larger than 44 and there are two 
+such EFs both containing 5 unit fractions (out of the 667 of length 5):<br>
+8/11 = 1/2 + 1/11 + 1/12 + 1/33 + 1/44 and<br>
+8/11 = 1/3 + 1/4 + 1/11 + 1/33 + 1/44
+</li>
+</ul>
+Here is a list of the EF's for 1 of various lengths  with smallest denominators:
+<div align="center">
+<div style="overflow: scroll; height: 15em; width: 36em;">
+
+<table style="width: 35em; font-size: 50%;" border="1" cellpadding="1" cellspacing="0">
+<tbody><tr><th>Length</th><th>Denominators with sum of 1</th></tr>
+<tr><td>3</td><td>2   3   6</td></tr>
+<tr><td>4</td><td>2   4   6  12</td></tr>
+<tr><td>5</td><td>2   4  10  12  15</td></tr>
+<tr><td>6</td><td>3   4   6  10  12  15</td></tr>
+<tr><td>7</td><td>3   4   9  10  12  15  18</td></tr>
+<tr><td>8</td><td>3   5   9  10  12  15  18  20<br>
+                  4   5   6   9  10  15  18  20</td></tr>
+<tr><td>9</td><td>4   5   8   9  10  15  18  20  24<br>
+                  4   6   8   9  10  12  15  18  24</td></tr>
+<tr><td>10</td><td>5   6   8   9  10  12  15  18  20  24</td></tr>
+<tr><td>11</td><td>5   6   8   9  10  15  18  20  21  24  28<br>
+                   5   7   8   9  10  14  15  18  20  24  28<br>
+                   6   7   8   9  10  12  14  15  18  24  28</td></tr>
+<tr><td>12</td><td>4   8   9  10  12  15  18  20  21  24  28  30<br>
+                   6   7   8   9  10  14  15  18  20  24  28  30</td></tr>
+<tr><td>13</td><td>4 8 9 11 12 18 20 21 22 24 28 30 33 <br>
+4 8 10 11 12 15 20 21 22 24 28 30 33 <br>
+4 9 10 11 12 15 18 20 21 22 28 30 33 <br>
+5 8 9 10 11 12 18 21 22 24 28 30 33 <br>
+5 8 9 10 11 15 18 20 21 22 24 28 33 <br>
+6 7 8 9 11 14 18 20 22 24 28 30 33 <br>
+6 7 8 10 11 14 15 20 22 24 28 30 33 <br>
+6 7 9 10 11 14 15 18 20 22 28 30 33 <br>
+6 8 9 10 11 12 15 18 20 22 24 30 33 <br>
+6 8 9 10 11 12 15 18 21 22 24 28 33 <br>
+7 8 9 10 11 12 14 15 18 22 24 28 33 </td></tr>
+<tr><td>14</td><td>6 8 9 10 11 15 18 20 21 22 24 28 30 33<br>
+7 8 9 10 11 14 15 18 20 22 24 28 30 33</td></tr>
+<tr><td>15</td><td>6 8 9 11 14 15 18 20 21 22 24 28 30 33 35</td></tr>
+<tr><td>16</td><td>6 8 11 12 14 15 18 20 21 22 24 28 30 33 35 36</td></tr>
+<tr><td>17</td><td>6 10 11 12 14 15 18 20 21 22 24 28 30 33 35 36 40</td></tr>
+<tr><td>18</td><td>7 10 11 12 14 15 18 20 21 22 24 28 30 33 35 36 40 42</td></tr>
+</tbody></table>
+</div></div>
+
+
+So of all the EFs for 1 with 3 fractions, the smallest has all denominators no bigger than <span class="math">6</span>.<br>
+Of those EFs for 1 with 4 fractions, the smallest has no denominator bigger than <span class="math">12</span>. 
+and for 5 fractions, the smallest has no denominator bigger than <span class="math">15</span>.<br>
+The series of these smallest maximum denominators (the <b>minimax</b> solution) in the EFs for 1
+of various lengths is given by:<br>
+<span class="math">6, 12, 15, 15, 18, 20, 24, 24, 28, 30, 33, 33, 35, 36, 40, 42, ...</span> 
+<a href="http://www.research.att.com/%7Enjas/sequences/A030659">A030659</a>.
+
+
+
+
+
+<br clear="all">
+<p>
+<a name="rmptable"></a>
+</p><h1>                         The <sup>2</sup>/<sub>n</sub> table of the Rhind Papyrus
+</h1>
+Here is the Table at the start of the Rhind mathematical papyrus. 
+It is a table of unit fractions for <sup>2</sup>/<sub>n</sub> for the odd values of n from 3 to 101.<br>
+Sometimes the shortest Egyptian fraction is ignored in the table in favour of a longer decomposition.
+Only one sum of unit fractions is given when several are possible.
+The scribe tends to favour unit fractions with even denominators, since this makes their use in
+multiplication and division easier. The Egyptian multiplication method was based on doubling and
+adding, in exactly the same way that a binary computer uses today, so it is  easy to double when the
+unit fractions are even.<br>
+Also, he prefers to use smaller numbers.  Their method of writing numerals was decimal
+more like the Roman numerals than our decimal place system though.  He seems to reject
+any form that would need a numeral bigger than 999.
+All the shortest forms and alternative shortest forms are given here in an extra column.
+<div style="font-size: 70%;" align="center">
+<table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td align="center" valign="middle">2</td><td rowspan="3" valign="middle">&nbsp;=&nbsp;</td><td align="center" valign="middle">1</td><td rowspan="3" valign="middle">&nbsp;+&nbsp;</td><td align="center" valign="middle">1</td><td rowspan="3" valign="middle">&nbsp;+&nbsp;</td><td align="center" valign="middle">1</td><td rowspan="3" valign="middle">&nbsp;+&nbsp;</td><td align="center" valign="middle">1</td></tr><tr><td style="line-height: 3px;" height="3" valign="middle"><img src="Egyptian%20Fractions_files/black.gif" alt=" " height="1" width="100%"></td><td style="line-height: 3px;" height="3" valign="middle"><img src="Egyptian%20Fractions_files/black.gif" alt=" " height="1" width="100%"></td><td style="line-height: 3px;" height="3" valign="middle"><img src="Egyptian%20Fractions_files/black.gif" alt=" " height="1" width="100%"></td><td style="line-height: 3px;" height="3" valign="middle"><img src="Egyptian%20Fractions_files/black.gif" alt=" " height="1" width="100%"></td><td style="line-height: 3px;" height="3" valign="middle"><img src="Egyptian%20Fractions_files/black.gif" alt=" " height="1" width="100%"></td></tr><tr><td align="center">n</td><td align="center">a</td><td align="center">b</td><td align="center">c</td><td align="center">d</td></tr></tbody></table>
+<br>
+<table>
+<tbody><tr><td valign="top">
+<table style="font-size: 70%; background-color: rgb(255, 204, 204);" border="1" cellpadding="3" cellspacing="0">
+<tbody><tr><th>n</th><th>a</th><th>b</th><th>c</th><th>d</th><th colspan="2">shortest?</th></tr>
+<tr><th>5</th><td>3</td><td>15</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>&nbsp;</td></tr>
+<tr><th>7</th><td>4</td><td>28</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>&nbsp;</td></tr>
+<tr><th>9</th><td>6</td><td>18</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>5 45</td></tr>
+<tr><th>11</th><td>6</td><td>66</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>&nbsp;</td></tr>
+<tr><th>13</th><td>8</td><td>52</td><td>104</td><td>&nbsp;</td><td>×</td><td>7 91</td></tr>
+<tr><th>15</th><td>10</td><td>30</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>8 120<br>9 45<br>12 20</td></tr>
+<tr><th>17</th><td>12</td><td>51</td><td>68</td><td>&nbsp;</td><td>×</td><td>9 153</td></tr>
+<tr><th>19</th><td>12</td><td>76</td><td>114</td><td>&nbsp;</td><td>×</td><td>10 190</td></tr>
+<tr><th>21</th><td>14</td><td>42</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>11 231<br>12 84<br>15 35</td></tr>
+<tr><th>23</th><td>12</td><td>276</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>&nbsp;</td></tr>
+<tr><th>25</th><td>15</td><td>75</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>13 325</td></tr>
+<tr><th>27</th><td>18</td><td>54</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>15 135<br>24 378</td></tr>
+<tr><th>29</th><td>24</td><td>58</td><td>174</td><td>232</td><td>×</td><td>15 435</td></tr>
+<tr><th>31</th><td>20</td><td>124</td><td>155</td><td>&nbsp;</td><td>×</td><td>16 496</td></tr>
+<tr><th>33</th><td>22</td><td>66</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>21 77<br>18 198<br>17 561</td></tr>
+<tr><th>35</th><td>30</td><td>42</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>21 105<br>20 140<br>18 630</td></tr>
+<tr><th>37</th><td>24</td><td>111</td><td>296</td><td>&nbsp;</td><td>×</td><td>19 703</td></tr>
+<tr><th>39</th><td>26</td><td>78</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>24 104<br>21 273<br>20 780</td></tr>
+<tr><th>41</th><td>24</td><td>246</td><td>328</td><td>&nbsp;</td><td>×</td><td>21 861</td></tr>
+<tr><th>43</th><td>42</td><td>86</td><td>129</td><td>301</td><td>×</td><td>22 946</td></tr>
+<tr><th>45</th><td>30</td><td>90</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>36 60<br>35 63<br>27 135<br>25 225<br>24 360<br>23 1035</td></tr>
+</tbody></table>
+</td><td valign="top">
+<table style="font-size: 70%; background-color: rgb(255, 204, 204);" border="1" cellpadding="3" cellspacing="0">
+<tbody><tr><th>n</th><th>a</th><th>b</th><th>c</th><th>d</th><th colspan="2">shortest?</th></tr>
+<tr><th>47</th><td>30</td><td>141</td><td>470</td><td>&nbsp;</td><td>&#8730;</td><td>24 1128</td></tr>
+<tr><th>49</th><td>28</td><td>196</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>25 1225</td></tr>
+<tr><th>51</th><td>34</td><td>102</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>30 170<br>27 459<br>26 1326</td></tr>
+<tr><th>53</th><td>30</td><td>318</td><td>795</td><td>&nbsp;</td><td>×</td><td>27 1431</td></tr>
+<tr><th>55</th><td>30</td><td>330</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>40 88<br>33 165<br>28 1540</td></tr>
+<tr><th>57</th><td>38</td><td>114</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>33 209<br>30 570<br>29 1653</td></tr>
+<tr><th>59</th><td>36</td><td>236</td><td>531</td><td>&nbsp;</td><td>×</td><td>30 1770</td></tr>
+<tr><th>61</th><td>40</td><td>244</td><td>488</td><td>610</td><td>×</td><td>31 1891</td></tr>
+<tr><th>63</th><td>42</td><td>126</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>56 72<br>45 105<br>36 252<br>35 315<br>33 693<br>32 2016</td></tr>
+<tr><th>65</th><td>39</td><td>195</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>45 117<br>35 455<br>33 2145</td></tr>
+<tr><th>67</th><td>40</td><td>335</td><td>536</td><td>&nbsp;</td><td>×</td><td>34 2278</td></tr>
+<tr><th>69</th><td>46</td><td>138</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>39 299<br>36 828<br>35 2415</td></tr>
+<tr><th>71</th><td>40</td><td>568</td><td>710</td><td>&nbsp;</td><td>×</td><td>36 2556</td></tr>
+<tr><th>73</th><td>60</td><td>219</td><td>292</td><td>365</td><td>×</td><td>37 2701</td></tr>
+<tr><th>75</th><td>50</td><td>150</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>60 100<br>45 225<br>42 350<br>40 600<br>39 975<br>38 2850</td></tr>
+</tbody></table>
+</td><td valign="top">
+<table style="font-size: 70%; background-color: rgb(255, 204, 204);" border="1" cellpadding="3" cellspacing="0">
+<tbody><tr><th>n</th><th>a</th><th>b</th><th>c</th><th>d</th><th colspan="2">shortest?</th></tr>
+<tr><th>77</th><td>44</td><td>308</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>63 99<br>42 462<br>39 3003</td></tr>
+<tr><th>79</th><td>60</td><td>237</td><td>316</td><td>790</td><td>×</td><td>40 3160</td></tr>
+<tr><th>81</th><td>54</td><td>162</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>45 405<br>42 1134<br>41 3321</td></tr>
+<tr><th>83</th><td>60</td><td>332</td><td>415</td><td>498</td><td>×</td><td>42 3486<br>also<br>166 249 498</td></tr>
+<tr><th>85</th><td>51</td><td>255</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>55 187<br>45 765<br>43 3655</td></tr>
+<tr><th>87</th><td>58</td><td>174</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>48 464<br>45 1305<br>44 3828</td></tr>
+<tr><th>89</th><td>60</td><td>356</td><td>534</td><td>890</td><td>×</td><td>45 4005<br>
+184 of length 3</td></tr>
+<tr><th>91</th><td>70</td><td>130</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>52 364<br>49 637<br>46 4186</td></tr>
+<tr><th>93</th><td>62</td><td>186</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>51 527<br>48 1488<br>47 4371</td></tr>
+<tr><th>95</th><td>60</td><td>380</td><td>570</td><td>&nbsp;</td><td>×</td><td>60 228&nbsp;<br>57 285<br>50 950<br>48 4560</td></tr>
+<tr><th>97</th><td>56</td><td>679</td><td>776</td><td>&nbsp;</td><td>×</td><td>49 4753</td></tr>
+<tr><th>99</th><td>66</td><td>198</td><td>&nbsp;</td><td>&nbsp;</td><td>&#8730;</td><td>90 110<br>63 231<br>55 495<br>54 594<br>51 1683<br>50 4950</td></tr>
+<tr><th>101</th><td>202</td><td>303</td><td>606</td><td>&nbsp;</td><td>×</td><td>51&nbsp;5151</td></tr>
+</tbody></table>
+</td></tr>
+</tbody></table>
+</div>
+All those with n  a multiple of 3 follow the same pattern:
+<blockquote> <sup>2</sup>/<sub>3n</sub> = <sup>1</sup>/<sub>2n</sub> + <sup>1</sup>/<sub>6n</sub>
+</blockquote>
+But there are still some mysteries here.  <br>
+For instance why choose<blockquote>
+ <sup>2</sup>/<sub>95</sub> = <sup>1</sup>/<sub>60</sub> + <sup>1</sup>/<sub>380</sub>  + <sup>1</sup>/<sub>570</sub>  
+ </blockquote>instead of the much simpler 
+ <blockquote>
+ <sup>2</sup>/<sub>95</sub> = <sup>1</sup>/<sub>60</sub> + <sup>1</sup>/<sub>228</sub>?
+</blockquote>
+Why stop at 103? 
+There is a sum for <sup>2</sup>/<sub>103</sub> with two unit fractions but it contains a four digit number:
+  <blockquote>
+ <sup>2</sup>/<sub>103</sub> = <sup>1</sup>/<sub>52</sub> + <sup>1</sup>/<sub>5356</sub>
+ </blockquote>
+and all of the other 65 of length 3  contain a denominator of at least 1236.  <br>
+The one with this least maximum denominator is:
+ <sup>2</sup>/<sub>103</sub> = <sup>1</sup>/<sub>60</sub> + <sup>1</sup>/<sub>515</sub> + <sup>1</sup>/<sub>1236</sub><br>
+There are only two of length 4 that don't use four digit numbers:
+<blockquote>
+ <sup>2</sup>/<sub>103</sub> = <sup>1</sup>/<sub>103</sub> + <sup>1</sup>/<sub>206</sub> + <sup>1</sup>/<sub>309</sub> + <sup>1</sup>/<sub>618</sub><br>
+ <sup>2</sup>/<sub>103</sub> = <sup>1</sup>/<sub>72</sub> + <sup>1</sup>/<sub>309</sub> + <sup>1</sup>/<sub>824</sub> + <sup>1</sup>/<sub>927</sub>.
+</blockquote>
+The <a href="#fxdlen">Calculator above</a> may help with your investigations.
+
+
+<div class="ttd">  <h4><img src="Egyptian%20Fractions_files/ttdicon.gif" alt="/" height="14" width="25">
+                           Things to do   
+<img src="Egyptian%20Fractions_files/ttdicon.gif" alt="/" height="14" width="25"></h4>
+  <ol class="ttd"> 
+  <li> Is there a pattern common to all the <sup>2</sup>/<sub>5n</sub> forms in the papyrus table?</li>
+  <li> Is there a pattern common to all the <sup>2</sup>/<sub>7n</sub> forms in the papyrus table?</li>
+  <li> Which fractions in the table could be found by the <a href="#Fibgreedy">Fibonacci method</a>?</li>
+ </ol>
+</div>
+
+<hr>
+
+<a name="links"></a>
+<h1 align="center">                  Links and References
+</h1>
+
+<img src="Egyptian%20Fractions_files/compass.gif" alt="WWW:" height="15" width="15"> 
+<a href="http://www.ics.uci.edu/%7Eeppstein/numth/egypt/">
+David Eppstein</a> of University of California, Irvine
+has a host of links on all sorts of information on 
+Egyptian Fractions and a comprehensive guide to the different algorithms that can be used
+to write your own Egyptian Fraction computer programs, although his are described using many different techniques available in 
+the Mathematica package  and there are references to C and C++ sources too.
+<br>
+
+<img src="Egyptian%20Fractions_files/compass.gif" alt="WWW:" height="15" width="15"> Dr Scott William's page on
+<a href="http://www.math.buffalo.edu/mad/Ancient-Africa/mad_ancient_egyptroll2-n.html">The Rhind 2/n Table</a>
+has a list of the fractions <sup>2</sup>/<sub>n</sub> written as Egyptian fractions 
+in the Rhind papyrus that we mentioned at the start of this
+page and that is given in full <a href="#rmptable">earlier on this page</a>.  He also includes  a discussion and analysis of the fractions chosen and suggestions of the methods the Egyptians
+might have used.  He has some interesting pages on  African mathematics and mathematicians from ancient times to today.
+<br>
+
+<img src="Egyptian%20Fractions_files/compass.gif" alt="WWW:" height="15" width="15"> 
+<a href="http://mathworld.wolfram.com/EgyptianFraction.html">Eric Weisstein's Mathworld article on Egyptian Fractions</a> 
+has many references too.
+<p>
+<img src="Egyptian%20Fractions_files/book.gif" alt="Book:" height="14" width="22">
+<a href="http://www.amazon.co.uk/exec/obidos/ASIN/0714109444/fibonacnumbers04">The Rhind Mathematical Papyrus</a>
+G Robins, C Shute, British Museum Press, 1987, (88 pages, paperback)
+is highly recommended for its explanations of the arithmetic
+methods that
+may have been used in the 2/n table and the other tables and problems in the papyrus. It has
+excellent colour photographs of the papyrus and many illustrations. 
+Buy it from the Amazon.co.uk site [use the link above] as it is <i>much</i> cheaper than the
+Amazon.com site!
+<br>
+
+<img src="Egyptian%20Fractions_files/book.gif" alt="Book:" height="14" width="22">
+<a href="http://www.amazon.com/exec/obidos/ASIN/048624315X/fibonacnumbersan">Mathematics in the Time of the Pharaohs</a>
+by Richard J Gillings, Dover, 1972 is an inexpensive and readable
+account of the mathematics in the Rhind Papyrus, it contents and
+methods.
+Recommended! <br>
+
+<img src="Egyptian%20Fractions_files/book.gif" alt="Book:" height="14" width="22">
+<a href="http://www.amazon.com/exec/obidos/ASIN/1857028295/fibonacnumbersan">The Man Who Loved Only Numbers</a> 
+The Story of Paul Erdos and the Search for Mathematical Truth by P Hoffmann, Fourth Estate (1999) paperback
+<br>
+<img src="Egyptian%20Fractions_files/book.gif" alt="Book:" height="14" width="22">
+<a href="http://www.amazon.com/exec/obidos/ASIN/0684859807/fibonacnumbersan">MY BRAIN IS OPEN: 
+The Mathematical Journeys of Paul Erdos</a> B Schechter, Simon &amp; Schuster (2000) paperback <br>
+These above two books are  recommended if you want to read more about
+the extraordinary Hungarian mathematician Paul Erdös or try this highly acclaimed DVD: <br>
+<img src="Egyptian%20Fractions_files/cd.gif" alt="cd/dvd" height="20" width="20">
+<a href="http://www.amazon.com/exec/obidos/ASIN/B0002MQFI2/fibonacnumbersan">N is a Number: A Portrait of Paul Erdös</a>
+ (2007) Region 1, USA and Canada only, for NSTC (non-EU) TVs.
+<br>
+
+<img src="Egyptian%20Fractions_files/book.gif" alt="Book:" height="14" width="22">
+<a href="http://www.amazon.com/exec/obidos/ASIN/0486223329/fibonacnumbersan">The Exact Sciences in Antiquity</a>
+by Otto Neugebauer, Dover, second edition 1969,  is another great book covering not only Egyptian arithmetic but also
+the Babylonian, Sumerian and Greek contributions to both number notation and arithmetic as well as astronomy.  
+It is about the history of the mathematics more than the maths itself and is now, rightly,  a classic on this subject.
+<br clear="all">
+
+</p><hr>
+<div align="center"><address>
+<a href="http://validator.w3.org/"><img src="Egyptian%20Fractions_files/valid-html401.gif" alt="Valid HTML 4.01!" align="right" border="0" height="31" width="88"></a> 
+© 1996-2008 &nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/contactron.html">Dr Ron Knott</a> 
+&nbsp;&nbsp;&nbsp;&nbsp; last update: 26 March 2008
+</address>
+</div>
+
+</body></html>

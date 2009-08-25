@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.Divisors;
+import com.mycila.math.Divisors;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=33

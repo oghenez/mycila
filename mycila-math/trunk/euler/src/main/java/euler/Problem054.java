@@ -15,9 +15,9 @@
  */
 package euler;
 
-import com.mycila.cards.Hand;
-import com.mycila.cards.HandRank;
-import com.mycila.cards.game.poker.PokerGame;
+import cards.Hand;
+import cards.HandRank;
+import cards.game.poker.PokerGame;
 
 import static java.lang.System.*;
 import java.text.MessageFormat;

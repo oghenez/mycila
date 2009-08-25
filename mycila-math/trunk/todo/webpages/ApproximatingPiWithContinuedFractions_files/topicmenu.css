@@ -1,0 +1,32 @@
+.topics_menu_child {
+  z-index:11;
+}
+
+.topics_menu_items {
+  	width: 200px;
+	font-size:11px;
+	font-family:Arial;
+	border:1px solid #1D4C9C;
+	color:#000000; 
+	background-color:#F7F7EF;
+	padding-top:10px;
+	padding-bottom:10px;
+	background-image:none;
+	}
+
+.topics_menu_items li {
+	padding-left:10px;
+	background-image:none;
+	}	
+	
+.menuItemOver {
+	color: white; background-color:#AEAFAA;}
+
+.menuItemOver a:link
+
+.menuItemOver a:link {color: white;}
+.menuItemOver a:visited {color: white;}
+.menuItemOver a:hover {color: white;}
+	  
+.topics_menu_items li a:link {color: #000000;}
+.topics_menu_items li a:visited {color: #000000;}

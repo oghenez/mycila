@@ -1,0 +1,26 @@
+@charset "ISO-8859-1";
+/* Layout implementation for mathematical texts
+   $Id: math.css,v 1.20 2007-12-31 10:07:18 eddy Exp $
+   */
+@import url("site.css");
+.proven, .proof { margin-left: 2em; margin-right: 1em; } /* = .aside, for now */
+.proven:before { content: "Proof: "; font-weight: bold; }
+q.naming { font-weight: bold; }
+
+/* Derivations and sums of terms: */
+dl.derivation > dt { margin-left: 2em; text-indent: -1em; }
+dl.derivation > dd { margin-left: 3em; text-indent: -1em; margin-top: 1ex; }
+dl.derivation > dd p { margin-left: 0.5em; text-indent: 0em; }
+dl.derivation dl.sum { margin-top: 0ex; margin-bottom: 0ex; }
+dl.sum > dt { margin-left: 3em; text-indent: -3em; margin-bottom: 0ex; }
+dl.sum > dt:first-child { text-indent: -3em; }
+dl.sum > dd { margin-left: 3em; text-indent: -2.7em; margin-top: 0ex; margin-bottom: 0ex; }
+dl.sum > dd.noop { text-indent: -1.7em; }
+
+/* Einstein-oid notation: */
+sub, sup { white-space: nowrap; }
+
+/* Styles for denotational definitions: */
+.template { font-style: italic; }
+.literal { font-style: normal; font-weight: bold; }
+.deprecate { color: gray; }

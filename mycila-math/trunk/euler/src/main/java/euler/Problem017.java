@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.Format;
+import com.mycila.math.Format;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=17

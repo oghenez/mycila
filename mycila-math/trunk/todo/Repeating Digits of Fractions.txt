@@ -1,0 +1,567 @@
+<http://mathforum.org/redirect-tutor.html>
+
+Drexel dragon <http://www.drexel.edu/>The Math ForumDonate to the Math
+Forum <http://www.drexel.edu/ia/mathforum/>
+
+Ask Dr. Math - Questions and Answers from our Archives
+
+_____________________________________________
+Associated Topics <#assoc> || Dr. Math Home </dr.math/> || Search Dr.
+Math <#search>
+_____________________________________________
+
+
+      Repeating Digits of Fractions
+
+
+Date: 04/28/99 at 07:39:22
+From: Grabowski
+Subject: Long numbers
+
+Hi,
+
+I have been interested in working out fractions, and I would like to 
+find patterns. When I divide one number by another I sometimes get a 
+simple decimal tail, as with 1/8 = 0.125, where the number finishes 
+or turns into an endless line of zeros. Others repeat (boringly as 
+with 1/3). But then there are some more interesting repeats, where a 
+group of numbers keeps repeating (e.g. 1/7 = 0.142857.) 
+
+I am interested in finding longer repeating groups in these number 
+tails, but my calculator doesn't let me see more than a few digits. 
+What can I do to have divisions like 1/13 read more than just 
+0.076923076, where I can't tell if the 076923 is really a repeat 
+group? 
+
+I want to try to see what are the longer tail repetitions. I know 
+that pi is infinite, but I have to have a better kind of calculator 
+for this work because ordinary long division is no fun when going to 
+such lengths. Does such a calculator exist? Also, I want to try to 
+divide terms of the Fibonacci series and other interesting sequences 
+(prime numbers?) to see what the repeating situation is with them.  I 
+am sure that buried in them there will be a rule to govern such 
+repeating tails. If so, I will find it and it will be Grabowski's 
+Rule.
+
+P. Grabowski
+
+------------------------------------------------------------------------
+
+
+Date: 04/28/99 at 13:28:26
+From: Doctor Rob
+Subject: Re: Long numbers
+
+You have started on an odyssey that can lead you (eventually) to a 
+fact known as Fermat's Little Theorem. It is a worthy journey, and you 
+can learn much along the way.
+
+The length of the repeating part is the smallest number of 9's such 
+that the denominator divides 9999...999000...0000 evenly. For example, 
+7 divides 999999 evenly, so the repeating part has length 6. 
+Furthermore, the digits in the repeating part of 1/7 are the digits of 
+the quotient 999999/7 = 142857.
+
+   1/7 = 142857/999999 = 142857/10^6 + 142857/10^12
+          + 142857/10^18 + ...
+
+       = 0.142857 + 0.000000142857 + 0.000000000000142857 + ...
+
+You will recognize this as a geometric series.
+
+Since 13 is a divisor of 999999, with quotient 76923, you can safely 
+predict that
+
+   1/13 = 0.076923 076923 076923 076923 076923 076923 076923 ...
+
+without needing a high-precision calculator.
+
+Next you probably want to know in advance what number 
+999...999000...000 is a multiple of some denominator N. This is done 
+by factoring N as a product of prime powers, which can be done only 
+one way. They fall into two classes: ones dividing 10 and ones not 
+dividing 10 (the base of our system of numerals). The first consists 
+of just {2,5}, and the second is all the other primes. The number of 
+zeroes in the number in the first line of this paragraph is just the 
+larger of the two exponents of 2 and 5. That's the easy part. And if 
+there are no other primes, then that larger exponent E is such that N 
+is a divisor of 10^E, and the decimal terminates after E decimal 
+places. 1/N = Q/10^E, where Q = 10^E/N.
+
+The next step is to find for the rest of the primes p dividing into N 
+evenly what smallest power of 10 has the property that 10^k - 1 is a 
+multiple of p. That number k is called the order of 10 modulo p.  The 
+most helpful fact about k is that it is a divisor of p-1.  Recall that 
+for p = 7, we had k = 6, and, sure enough, 6 is a divisor of 7-1 = 6. 
+This limits you to just a few possibilities. There is no easy way to 
+tell which of these divisors of p-1 is actually k, you just have to 
+try them.
+
+The next step is to find the highest power of p dividing 10^k - 1. We 
+know that it is at least 1, but it may be more. For example, if p = 3, 
+the divisors of 3-1 = 2 are 1 and 2. It turns out that k = 1, because 
+3 is a divisor of 10^1 - 1 = 9, but, in fact, 3^2 is also a divisor of 
+9 as well. Call that highest power p^e.
+
+Now if the power of p dividing N is p^n, and n <= e, then the period 
+length of 1/p^n is k. If, on the other hand, n > e, then the period 
+length of 1/p^n is k*p^(n-e).
+
+Now to get the length of the period of 1/N, take the least common 
+multiple of the lengths of the periods of 1/p^n, for all primes other 
+than 2 or 5 dividing N.
+
+Example: Find the length of the period of 1/9450. Start by factoring 
+9450 = 2 * 3^3 * 5^2 * 7. The number of zeroes will be the larger of 1 
+and 2 (the exponents of 2 and 5 in this factorization), namely 2. Now 
+first consider 3^3 = p^n. The order of 10 modulo 3 is 1, and 3^2 is a 
+divisor of 10^1 - 1 = 9, so e = 2. Since n = 3 > 2, the period length 
+of 1/3^3 is 1*3^(3-2) = 3. Next consider 7^1 = p^n. The order of 10 
+modulo 7 is 6, as above, and 7^1 is the largest power of 7 dividing 
+10^6 - 1 = 999999 = 3^3 * 7 * 11 * 13 * 37, so e = 1. Thus the period 
+length of 1/7 is 6. Taking the LCM of 3 and 6 gives 6. That tells me 
+that the number of 9's should be 6, and 9450 must divide evenly into 
+99999900. Sure enough, it does, and the quotient is 10582. Thus
+
+   1/9450 = 10582/99999900 = 0.00 010582 010582 010582 010582...
+
+Notice the 2 digits to the right of the decimal before the repeating 
+part begins, corresponding to the two zeroes at the end of the number 
+99999900, corresponding to the larger of the exponents of 2 and 5 in 
+the factorization of 9450. Similarly,
+
+   4567/9450 = 48327994/99999900 = 0.48 328042 328042 328042...
+
+
+Example: Find the period length of 1/73. Since 73 is prime, we need to 
+find the order of 10 modulo 73. It must be a divisor of 72, so it 
+could be 72, 36, 24, 18, 12, 9, 8, 6, 4, 3, 2 or 1.  It turns out to 
+be 8, so k = 8, and 73 divides evenly into 99999999. The period length 
+must be 8. The quotient is 1369863, so the decimal expansion must be
+
+   1/73 = 0.01369863 01369863 01369863 01369863...
+
+Get the idea?
+
+Proofs of the above facts are a part of a subject called Number 
+Theory, which you can study as an advanced undergraduate at a college 
+or university.
+
+- Doctor Rob, The Math Forum
+  http://mathforum.org/dr.math/   
+
+------------------------------------------------------------------------
+
+
+Date: 05/21/99 at 15:41:35
+From: S.J. Lean
+Subject: RE: Long numbers
+
+On 28 April 1999, Dr. Rob wrote me a good reply, except there is no 
+information on the calculator (I mean, software calculator) I must 
+find.
+
+For example I have already looked at sevenths, and find tail 142857 - 
+six digits long. But what is tail length of 1/7 times 1/7, or 1/49? 
+When I work out it is very interesting:
+
+   0.020408163265306122448979591836734693877551...
+
+THEN digits repeat. I noticed that this is 42 digits long! But 42 is 
+obviously six times seven. Maybe it is only a coincidence, but maybe 
+not. So I have an idea that one over a number (n = 7 in this example) 
+would give a tail length of such-and-such, (6 in this example), but 
+that the tail length of one over the same number SQUARED (n^2 = 49) 
+would turn out to be the first number TIMES the first tail length? 
+This is MY "little theory," but how can I check it out? I tried some 
+examples and found it was true.
+
+But I can not easily do trial-and-error without a better calculator. 
+And if I can't, how will I find more patterns for my clues? Do you 
+know about software for this application? I want to work out some 
+examples dozens of digits long (hundreds would be better).
+
+P. Grabowski
+
+------------------------------------------------------------------------
+
+
+Date: 05/25/99 at 09:55:32
+From: Doctor Rob
+Subject: RE: Long numbers
+
+Thanks for writing back to Ask Dr. Math!
+
+The problem you are trying to deal with does not require high 
+precision calculators to solve. I described the solution in a previous 
+answer. If you insist on using such calculators, here is some 
+information which may be helpful.
+
+Here is a website with links to lots of on-line calculators:
+
+    Martindale's Reference Desk: Calculators On-Line Center
+   http://www.martindalecenter.com/Calculators.html   
+
+It sounds to me as if you want a software symbolic computation program 
+such as MAPLE, MATHEMATICA, MATLAB, GP/PARI, or the like, which 
+includes high-accuracy multiple precision arithmetic. Some of these 
+are commercial products, which you have to buy. Others are freeware or 
+shareware. Here is a Web page with links to software for math 
+education that may be of some help:
+
+  http://mathforum.org/mathed/math.software.archives.html   
+
+You can use an ordinary 10-digit calculator to do the divisions you 
+want to do, too. You want to find the decimal expansion of 1/N for 
+some values of N less than, say, 10000000 = 10^7. Enter 1000000000 
+into your calculator. That is your first dividend, D1. Divide by N. 
+The integer part of the quotient is the first part of the decimal 
+expansion. Call that Q1. Then enter D1 and subtract Q1*N. That will 
+give you the remainder R1. Now enter R1 followed by as many 0's as 
+will fit in your calculator. That is your next dividend D2. Divide by 
+N. The integer part of the quotient is the next part of the decimal 
+expansion. Call that Q2. Then enter D2 and subtract Q2*N. That will 
+give you the remainder R2. Continue this process as long as you like.
+
+Example: Find the decimal expansion of 1/127. N = 127.
+D1 = 1000000000.  D1/N = 1000000000/127 = 7874015.748...
+  so Q1 = 7874015, and then D1 - Q1*N = R1 = 95.
+D2 = 9500000000.  D2/N = 9500000000/127 = 74803149.61...
+  so Q2 = 74803149, and then D2 - Q2*N = R2 = 77.
+D3 = 7700000000.  D3/N = 7700000000/127 = 60629921.25...
+  so Q3 = 60629921, and then D3 - Q3*N = R3 = 33.
+D4 = 3300000000.  D4/N = 3300000000/127 = 25984251.97...
+  so Q4 = 25984251, and then D4 - Q4*N = R4 = 123.
+D5 = 1230000000.  D5/N = 1230000000/127 = 9685039.370...
+  so Q5 = 9685039, and then D5 - Q5*N = R5 = 47.
+D6 = 4700000000.  D6/N = 4700000000/127 = 37007874.01...
+  so Q6 = 37007874.
+The decimal expansion we have found so far is
+
+   1/127 = 0.007874015748031496062992125984251968503937 007874...
+
+and you can see the beginning of the second period. The length of the 
+period is 42. This is because 10^42 - 1 is a multiple of 127, and no 
+smaller power of 10 has that property. Note that 42 = (127-1)/3.
+
+   999999999999999999999999999999999999999999/127 =
+     7874015748031496062992125984251968503937 exactly.
+
+If N is larger, you get fewer decimal places in the expansion at each 
+step, so you have to take more steps, but the result is just as valid. 
+This will not work if N is larger than D1.
+
+- Doctor Rob, The Math Forum
+  http://mathforum.org/dr.math/   
+
+------------------------------------------------------------------------
+
+
+Date: 06/05/99 at 09:02:25
+From: Grabowski
+Subject: RE: Long numbers
+
+Dear Dr Rob,
+
+Thank you for suggesting that I use MAPLE for my hobby. Mr. Lean (I 
+can use his computer) has found a MAPLE demo that I'm using to work 
+out the tails very smoothly and easily. So thank you for that good 
+tip. I would like to tell you about two new qualities for every number 
+I have discovered. Maybe this can lead to a new way to find prime 
+numbers (like the Sieve of Erastosthenes.) I call these qualities "U" 
+and "F", for "unfriendly" and "friendly". Here's a chart for the first 
+few integers:
+
+n           U  F            n           U   F
+----------------            -----------------
+1           1  0            17          16  0
+2           1  1            18          1   1
+3           1  0            19          18  0
+4           1  2            20          1   2
+5           1  1            21          6   0
+6           1  1            22          2   1
+7           6  0            23          22  0
+8           1  3            24          1   3
+9           1  0            25          1   2
+10          1  1            26          7   0
+11          2  0            27          3   0
+12          1  2            28          6   2
+13          6  0            29          28  0
+14          6  1            30          1   1
+15          1  1            31          30  0
+16          1  4            32          1   5
+
+From the chart you can see that the unfriendliest numbers are always 
+prime numbers. Also, the friendliest numbers are powers of two. But 
+how are U and F defined?
+
+First, take the reciprocal. Then: F is number of digits AFTER the 
+decimal point and BEFORE the repeat happens (including zeros). U is 
+simply the length of the repeating part. So:
+
+              1/n (decimal)
+n  1/n   Before / Repeating part                       F U
+------------------------------------------------------------
+1  1/1    1.      / 0...                               0 1
+2  1/2*   0.5     / 0...                               1 1
+3  1/3*   0.      / 3...                               0 1
+4  1/4    0.25    / 0...                               2 1
+5  1/5*   0.2     / 0...                               1 1
+6  1/6    0.1     / 6...                               1 1
+7  1/7*   0.      / 142857...                          0 6
+8  1/8    0.125   / 0...                               3 1
+9  1/9    0.      / 1...                               0 1
+10 1/10   0.1     / 0...                               1 1
+11 1/11*  0.      / 09...                              0 2
+12 1/12   0.08    / 3...                               2 1
+13 1/13*  0.      / 076923...                          0 6
+14 1/14   0.0     / 714285...                          1 6
+15 1/15   0.0     / 6...                               1 1
+16 1/16   0.0625  / 0...                               4 1
+17 1/17*  0.      / 0588235294117647...                0 16
+18 1/18   0.0     / 5...                               1 1
+19 1/19*  0.      / 052631578947368421...              0 18
+20 1/20   0.05    / 0...                               2 1
+21 1/21   0.      / 047619...                          0 6
+22 1/22   0.0     / 45...                              1 2
+23 1/23*  0.      / 0434782608695652173913...          0 22
+24 1/24   0.041   / 6...                               3 1
+25 1/25   0.04    / 0...                               2 1
+26 1/26   0.      / 0384615...                         0 7
+27 1/27   0.      / 037...                             0 3
+28 1/28   0.03    / 571428...                          2 6
+29 1/29*  0.      / 0344827586206896551724137931...    0 28
+30 1/30   0.0     / 3...                               1 1
+31 1/31*  0.      / 032258064516129032258064516129...  0 30
+32 1/32*  0.03125 / 0...                               5 1
+
+60 1/60   0.01    / 6...                               2 1
+64 1/64   0.015625/ 0...                               6 1
+360 1/360 0.002   / 7...                               3 1
+
+Now you can see a good rule if you look only at the primes. I have 
+discovered that:
+
+1) Except for two and five all primes have zero friendliness. This is 
+very good for a first check. (I think 2 and 5 are different because 
+2*5 = 10, and that is the base of our number system. I need to check 
+it in a base seven, for instance, to see if this is true.)
+
+2) Tails can only grow to a maximum length equal to a prime number 
+minus one. If they do, I call them Grabowski Primes - marked with G. 
+Examples: 17, 61, 97, etc. (Only prime numbers have this quality.)
+
+3) Tails sometimes grow to that number minus one DIVIDED BY TWO. If 
+they do, I call them Half-Grabowski Primes. (Marked with H. Examples: 
+13, 43, etc.)
+
+4) Other tails can grow to a maximum of that number minus one DIVIDED 
+BY FOUR. If they do I, call them Quarter-Grabowski Primes. (Marked 
+with "Q". Examples, 5, 53, 173, etc.)
+
+And so on for 8, 16, 32 ... this gives an ORDER of Grabowski prime. 
+BUT ...
+
+5) There is a type of prime that is not accounted for in the Grabowski 
+prime series, which has this following characteristic: It is a 
+Grabowski prime PLUS A REMAINDER that is ALWAYS itself a prime number 
+or a product of primes. Examples: 11, 37, 79
+
+Here is a chart of primes up to 200:
+
+n  1/n    1/n (decimal)                           F U   Type
+--------------------------------------------------------------
+2   1/2   0.5 / 0...                              1 1   G
+3   1/3   0.  / 3...                              0 1   H
+
+5   1/5   0.2 / 0...                              1 1   Q
+7   1/7   0.  / 142857...                         0 6   H
+
+11  1/11  0.  / 09...                             0 2  *H'5
+13  1/13  0.  / 076923...                         0 6   H
+17  1/17  0.  / 0588235294117647...               0 16  G
+19  1/19  0.  / 052631578947368421...             0 18  G
+23  1/23  0.  / 0434782608695652173913...         0 22  G
+29  1/29  0.  / 0344827586206896551724137931...   0 28  G
+31  1/31  0.  / 032258064516129032258064516129... 0 30  G
+
+37  1/37  0.  / 027...                            0 3  *Q'9=3*3
+41  1/41  0.  / 02439..                           0 5   8
+43  1/43  0.  / 023255813953488372093..           0 21  H
+47  1/47  0.     too boring to write in here      0 46  G
+
+53  1/53  0.            .                         0 13  Q
+59  1/59  0.            .                         0 58  G
+61  1/61  0.            .                         0 60  G
+
+67  1/67  0.            .                         0 33  H
+71  1/71  0.            .                         0 35  H
+
+73  1/73  0.            .                         0 8
+79  1/79  0.            .                         0 13 *H'39=3*13
+83  1/83  0.            .                         0 41  H
+89  1/89  0.            .                         0 43  H
+97  1/97  0.            .                         0 96  G
+
+101 1/101 0.            .                         0 4  *Q'25=5*5
+103 1/103 0.            .                         0 34 *H'51=3*17
+107 1/107 0.            .                         0 53  H
+109 1/109 0.            .                         0 108 G
+113 1/113 0.            .                         0 112 G
+
+127 1/127 0.            .                         0 42 *H'63=3*3*7
+131 1/131 0.            .                         0 130 G
+
+137 1/137 0.            .                         0 8   8'17
+139 1/139 0.            .                         0 46 H'69=3*23
+149 1/149 0.            .                         0 148 G
+
+151 1/151 0.            .                         0 75  H
+157 1/157 0.            .                         0 78  H
+163 1/163 0.            .                         0 81  H
+167 1/167 0.            .                         0 166 G
+
+173 1/173 0.            .                         0 43  Q
+179 1/179 0.            .                         0 178 G
+181 1/181 0.            .                         0 180 G
+
+191 1/191 0.            .                         0 95  H
+193 1/193 0.            .                         0 192 G
+
+197 1/197 0.            .                         0 98  H
+199 1/199 0.            .                         0 99  H
+
+I broke the chart down into separate sequences to show how they climb 
+up each time, from lower Grabowski orders (sometimes non-Grabowski) up 
+to full Grabowski, then start again. This seems to be typical 
+behavior.
+
+The non-Grabowski primes (I call them "lean primes") have least 
+"unfriendliness" and even within this type, there are likely to be 
+some different classifications. Such as: those that come from a single 
+prime (11 and 137, etc.) as opposed to those that come from a product 
+of primes.
+
+                         like
+number     tail length   type     remainder
+-------------------------------------------
+11             2          H       5
+37             3          Q       9=3*3
+79             13         H       39=3*13
+101            4          Q       25=5*5
+103            34         H       51=3*17
+127            42         H       63=3*3*7
+137            8          8       17
+139            46         H       69=3*23
+
+
+My question is: Can my system be recognized? It is my conjecture that 
+examination of reciprocal tails and classification can be used as a 
+way to work out primes.
+
+Thank you for your help, Dr Rob.
+
+Grabowski
+
+------------------------------------------------------------------------
+
+
+Date: 06/07/99 at 11:46:52
+From: Doctor Rob
+Subject: Re: Long numbers
+
+>1) Except for two and five all primes have zero friendliness. 
+>This is very good for a first check. (I think 2 and 5 are 
+>different because 2*5 = 10, and that is the base of our number 
+>system. I need to check it in a base seven, for instance, to 
+>see if this is true.)
+
+The friendliness number F is just the larger of the exponents of 2 and 
+5 in the prime factorization of the denominator n.
+
+n = 25 = 5^2 => F = 2.
+n = 64 = 2^6 => F = 6.
+n = 200 = 2^3*5^2 => F = max(3,5) = 5.
+
+>2) Tails can only grow to a maximum length equal to a prime 
+>number minus one. If they do, I call them Grabowski Primes - 
+>marked with G. Examples: 17, 61, 97, etc. (Only prime numbers 
+>have this quality.)
+
+These are the primes for which 10 is a primitive root.
+
+Fermat's Little Theorem says that if p doesn't divide a, then a^(p-1) 
+= 1 (mod p). The smallest exponent k such that a^k = 1 (mod p) is 
+called the order of a (mod p), and is written ord_p(a). If that order 
+is p - 1, then a is called a primitive root (mod p). A corollary says 
+that ord_p(a) must always be a divisor of p - 1.
+
+>3) Tails sometimes grow to that number minus one DIVIDED BY 
+>TWO. If they do, I call them Half-Grabowski Primes. (Marked 
+>with H. Examples: 13, 43, etc.)
+
+These are the primes for which the (p-1)/ord_p(10) = 2.
+
+>4) Other tails can grow to a maximum of that number minus one 
+>DIVIDED BY FOUR. If they do I, call them Quater-Grabowski 
+>Primes. (Marked with "Q". Examples, 5, 53, 173, etc.)
+>
+>And so on for 8, 16, 32 ... this gives an ORDER of Grabowski 
+>prime. BUT ...
+
+These are the primes for which the (p-1)/ord_p(10) = 4.
+
+>5) There is a type of prime that is not accounted for in the 
+>Grabowski prime series, which has this following 
+>characteristic: It is a Grabowski prime PLUS A REMAINDER that 
+>is ALWAYS itself a prime number or a product of primes. 
+>Examples: 11, 37, 79
+
+These are primes for which (p-1)/ord_p(10) is not a power of 2.
+
+>My question is: Can my system be recognized? It is my 
+>conjecture that examination of reciprocal tails and 
+>classification can be used as a way to work out primes.
+
+There is very little known about how to determine ord_p(10) other than 
+trying divisors of p - 1 and doing the arithmetic to see which one is 
+the right one. There are efficient ways to do that, but no theory of 
+which I am aware to predict what will happen without computing.
+
+Keep up your good questions!
+
+- Doctor Rob, The Math Forum
+  http://mathforum.org/dr.math/   
+    
+
+*Associated Topics*:
+College Number Theory </library/drmath/sets/college_number_theory.html>
+High School Number Theory </library/drmath/sets/high_number_theory.html>
+
+*Search the Dr. Math Library:*
+
+
+Find items containing (put spaces between keywords):
+ 
+*Click only once for faster results:*
+
+[ Choose "whole words" when searching for a word like /age./]
+
+all keywords, in any order at least one, that exact phrase
+parts of words whole words
+
+*Submit your own question to Dr. Math </dr.math/ask.html>*
+
+[*Privacy Policy </announce/privacy.html>*] [*Terms of Use
+</announce/terms.html>*]
+
+_____________________________________
+Math Forum Home </> || Math Library </library/> || Quick Reference
+</special.html> || Math Forum Search </grepform.html>
+_____________________________________
+
+Ask Dr. Math^TM
+© 1994-2008 The Math Forum
+http://mathforum.org/dr.math/
+</drexel/>
+

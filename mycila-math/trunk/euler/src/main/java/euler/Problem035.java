@@ -15,9 +15,9 @@
  */
 package euler;
 
-import com.mycila.Digits;
+import com.mycila.math.Digits;
 import com.mycila.Sieve;
-import com.mycila.sequence.IntSequence;
+import com.mycila.math.sequence.IntSequence;
 
 import static java.lang.System.*;
 
@@ -54,7 +54,7 @@ class Problem035 {
             final IntSequence probableCircular = new IntSequence(length);
             probableCircular.add(prime);
             for (; length > 1; length--) {
-                prime = digits.rotate(prime);
+                prime = digits.rotate(prime, 1);
                 // if the number is prime, add it to the probable circular list if not already there
                 if (sieve.contains(prime)) {
                     if (!probableCircular.contains(prime)) {

@@ -1,0 +1,239 @@
+BODY {background-color:white; font-family:Verdana,'Trebuchet MS', Lucida, Arial, Helvetica, sans-serif;}
+.normal {background-color:white; color:black; font-weight:normal; 
+        font-style:normal;font-family:Verdana,'Trebuchet MS', Lucida, Arial, Helvetica, sans-serif;}
+
+H1,H2,H3,H4,H5 {color:#C00;text-align:center;}
+SUP {vertical-align:super;font-size:80%;}
+SUB {vertical-align:sub;font-size:80%}
+INPUT[type=text] {text-align:right}
+
+A:link {color:blue;}
+A:visited {color:navy;}
+A:hover {color:red;}
+A:active {color:green;}
+
+UL.contentsl1 A:link      {font-weight:bolder;}
+UL.contentsl1 A:visited   {font-weight:bolder;color:navy;background-color:white;}
+UL.contentsl1 {list-style-image:url(images/redsq.gif);list-style-type:disc;
+   background-color:white;color:#666;}
+
+UL.contentsl2 A:link       {font-weight:normal;}
+UL.contentsl2 A:visited   {font-weight:normal;color:navy;background-color:white;}
+UL.contentsl2 {list-style-image:url(images/goldsq.gif);list-style-type:square;font-size:100%;
+    color:#666;background-color:white;}
+
+UL.contentsl3 A:link       {}
+UL.contentsl3 A:visited   {color:navy;background-color:white;}
+UL.contentsl3 {list-style-image:url(images/greensq.gif);list-style-type:circle;
+   font-size:95%;color:#666;background-color:white;}
+
+UL.contentsl4 A:link       {}
+UL.contentsl4 A:visited   {color:navy;background-color:white;}
+UL.contentsl4 {list-style-image:url(images/bluesq.gif);list-style-type:circle;
+   font-size:95%;color:#666;background-color:white;}
+
+
+UL.contentsCalc {list-style-image:url(images/calcicon.gif);list-style-type:circle;
+   font-size:95%;color:#666;font-style:italic;}
+
+
+
+.centered {text-align:center;}
+.overline,
+.overbar {text-decoration:overline;}
+.underline {border-bottom:1px solid black;}
+
+.cancel  {text-decoration:line-through;}
+.question {text-align:center;color:#960;background-color:white;font-style:italic;margin-bottom:10pt;margin-top:10pt;}
+
+UL LI.book {list-style-image: url(images/book.gif);}
+UL LI.paper  {list-style-image:url(images/openbook.gif);}
+UL LI.link {list-style-image:url(images/compass.gif);}
+UL LI.calc {list-style-image:url(images/calc.gif);}
+
+UL {margin-left:0px;}
+
+
+.ttl {color:red;background-color:transparent;text-align:center;font-weight:bolder;font-size:larger;}
+
+EM {font-weight:bolder;}
+.nonb {font-weight:normal}
+
+
+.newprime {color:#0C0;background-color:white;}
+.prime {color:#F33;background-color:white;}
+.comp {color:#33C;font-family:Arial,Verdana,sans-serif;}
+
+.xout {text-decoration:line-through;}
+
+.orange  {color:#FC0;font-weight:bolder;}
+.red     {color:#F30;font-weight:bolder;}
+.magenta {color:#F0F;font-weight:bolder;}
+.purple  {color:#939;font-weight:bolder;}
+.brown   {color:#900;font-weight:bolder;}
+.blue    {color:#60F;font-weight:bolder;}
+.green   {color:#3C0;font-weight:bolder;}
+.cyan    {color:#0FF;font-weight:bolder;}
+.jade    {color:#3C6;font-weight:bolder;}
+.plum    {color:#C36;font-weight:bolder;}
+.skyblue {color:#36C;font-weight:bolder;}
+.gold    {color:#FF3;font-weight:bolder;}
+.black   {color:#000;}
+.silver  {color:#CCC;}
+.grey    {color:#999;}
+.gray    {color:#999;}
+.black   {color:black}
+
+.redyell {color:red;font-weight:bolder;background-color:yellow;}
+
+.tt {font-family:Courier,monospace;}
+.ttblue {color:blue;font-family:Courier,monospace;}
+.ttmagenta {color:#F0F;font-family:Courier,monospace;}
+.ttred {color:red;font-family:Courier,monospace;}
+.ttgreen {color:green;font-family:Courier,monospace;}
+
+.nbHR {color:#900;font-family:Courier,Monaco,monospace;background-color:#FF9;}
+.index {font-style:italic;}
+.paleindex {font-style:italic;color:#999;}
+.index1 {font-style:italic;font-size:smaller;}
+
+.center {text-align:center;}
+.box {border:1px solid #99F;text-align:center}
+.boxblk    {border-width:1px;border-style:solid;border-color:#CCC;
+            margin:10px 6% 10px 6%;padding:10px;}
+.boxblkcol {margin:10px 6% 10px 6%;padding:10px;color:#333;
+    background-color:#FEE;}
+
+.bold {font-weight:bolder}
+.coords {font-family:monospace;font-size:smaller}
+.eulerstats {font-weight:bolder}
+.bkt {font-size:xx-large;}
+.rule {text-align:center;color:#063;background-color:#CFF;padding:4px;
+        margin-bottom:14pt;margin-top:14pt;font-family:Verdana, Arial, 
+       sans-serif;font-size:100%;}
+.rulebox {text-align:center;background-color:#3FF;padding:12px; color:#093;
+       margin-bottom:14pt;margin-top:14pt;font-family:Verdana, Arial, 
+       sans-serif;font-size:130%;border:#093 solid 2px;}
+.indentrule {color:#093;font-family:Verdana, Arial, sans-serif;margin:3% 3% 3% 5%;font-size:100%;}
+.indent {margin: 1% 1% 1% 5%}
+.small {font-size:80%;}
+
+
+.mathcol {color:#009;}
+.mathbg {background-color:#009;}
+.math, .maths       {font-family:Palatino,"Palatino Linotype","Times New Roman",serif;color:#009; font-style:italic;font-size:120%}
+.math1              {font-family:Palatino,"Palatino Linotype","Times New Roman",serif;color:#009; font-style:italic;}
+.mathsym            {font-family:Palatino,"Palatino Linotype","Times New Roman",serif;color:#009; font-style:normal;}
+   
+   
+.num {vertical-align:super;font-family:"Times New Roman",Palatino,serif;color:#00C;font-style:italic;}
+.den {vertical-align:sub;font-family:"Times New Roman",Palatino,serif;color:#00C;font-style:italic;}
+
+.calc {color:#C63;background-color:#FF9;border:2px #C90 solid;
+    font-family:Verdana,Helvetica,sans-serif;margin:5px;padding-left:1em;padding-right:1em;}
+.calcbg    {background-color:#FF9}
+.calcorange {background-color:#FC6;}    
+.calcbrown {background-color:#C96;}
+.calcred   {background-color:#F66}    
+.calcpeach {background-color:#F96}
+.calccyan  {background-color:#9FC}
+.calcjade  {background-color:#6F9}
+.calcolive {background-color:#996;}
+.calcpink  {background-color:#F69}
+.calcmauve {background-color:#C6F}
+.calcblue  {background-color:#69F}
+
+/* TABLE.biblio {align:left;text-align:left;}
+   TABLE.biblio TD {align:left;text-align:left;vertical-align:top;} */
+TABLE TD.icon {text-align:center;vertical-align:top;}
+TABLE.addr {width:100%;}
+TABLE.lalign {text-align:left;}
+TABLE.ralign {text-align:right;}
+TABLE.calign {text-align:center;}
+TABLE TR TH.rowline,TD.rowline {border-bottom:1px solid gray;}
+
+.ttdtitle {color:red;background-color:#FD9;font-size:120%;font-family:'Comic Sans MS','GillSans',Arial,sans-serif;}
+.ttd  {color:black;background-color:#FD9;text-align:center;font-weight:bolder;
+       margin:  5px 0px 5px 0px;
+       padding:5px 2% 5px 2%;font-family:Helvetica,Arial,'Lucida Grande','Trebuchet MS','Comic Sans MS',sans-serif;
+      }
+.ttd H4 {color:red;font-size:120%;
+         font-family:'Gill Sans','Trebucket MS','Gill Sans','Lucida Grande',Arial,'Comic Sans MS',sans-serif;}
+OL.ttd, UL.ttd {color:black;background-color:#FD9;font-weight:bolder;border:0;}
+OL.ttd LI, UL.ttd LI  {text-align:left;background-color:#FD9;font-weight:normal;margin:0px 0% 8px 0%;}
+UL.biblio {}
+ 
+
+.orangebg {background-color:#FC6;}
+.F99bg {background-color:#F99;}
+.brownbg  {background-color:#C60;}
+.yellowbg {background-color:#FF0;}
+.lemonbg  {background-color:#FF6;}
+.redbg {background-color:red;}
+.whitebg {background-color:#FFF;}
+.greybg {background-color:#CCC;}
+.whitebg {background-color:white}
+
+FORM TEXTAREA {font-family:Courier,monospace;font-size:medium;color:#000;}
+
+.res {border:1px solid #999;overflow:auto;text-align:left;font-family:monospace;
+       background-color:#FFD;padding:2px;color:black;}
+
+.quote {font-family:"Lucida Grande",Arial,sans-serif;color:#C36;}
+.footnote {font-family:"Lucida Grande",Arial,sans-serif;font-size:smaller;}
+
+.cfPER {color:red;font-weight:bolder;}
+
+
+.question {text-align:center;color:#309;font-style:italic;margin-bottom:10pt;margin-top:10pt;}
+.def {color:#936;margin-bottom:14pt;margin-top:14pt;margin-left:20px;}
+.norm {font-style:normal; color:#000; font-weight:normal;font-size:medium;font-family:Verdana,'Trebuchet MS', Lucida, Arial, Helvetica, sans-serif;}
+
+.tri {color:#C00; font-family:"Verdana",'Courier New Italic','Courier New',monospace;}
+.paletri {color:#F69; font-family:"Verdana",'Courier New Italic','Courier New',monospace;}
+.newtri {color:#F33; font-style:italic;font-family:"Verdana",'Courier New Italic','Courier New',monospace;}
+
+.outline {border:1px #CC0 solid;}
+.quote {font-family:"Lucida Grande",Arial,sans-serif;color:#C36;}
+.footnote {font-family:"Lucida Grande",Arial,sans-serif;font-size:smaller;}
+.shade {background-color:#CCC; padding:10px;margin:10px;}
+.border{border:2px solid gray;padding:3px 3px 3px 3px;}
+
+
+      
+.right {text-align:right;}
+.hr {background-color:#990;height:1px}
+.small {font-size:smaller;}
+.dim {color:#666;}
+.mono {font-family:monospace;}
+.green {color:#090}
+.orange {color:#F63}
+.mauve {color:#F0C}
+
+.p {color:#33F;}
+.a {color:#F0C;}
+
+TABLE.nav   {background-color:#CCC;border:1px solid;
+        font-family:Verdana,'Trebuchet MS', Lucida, Arial, Helvetica, sans-serif;}
+.wtn /* What Now para */
+     {background-color:white;color:#C36;font-weight:bolder;text-align:center;}
+
+
+TABLE.right {text-align:right}
+TABLE.left  TD {text-align:left;}
+TABLE.mono {font-family:Courier,monospace;}
+TABLE.ref {text-align:left;}
+TABLE.ref TD {}
+
+INPUT {}
+INPUT.button  {background-color:#C63;color:#FF9; }
+INPUT.clear   {background-color:#CCC;color:#666;}
+
+.icanhide {position:relative;visibility:hidden;}
+
+
+.contentsCalc {list-style-image:url(../images/calcicon.gif);list-style-type:circle;
+   font-size:95%;color:#666;font-style:italic;}
+   
+
+ 
