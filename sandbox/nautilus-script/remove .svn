@@ -1,0 +1,11 @@
+#!/bin/bash
+
+files=`echo "$1" | sed 's/ /\\ /g'`
+files=`pwd $file`/$files
+
+zenity --question --text="Remove all .svn folders in:\n$files"
+
+if [ "$?" -eq "0" ]; then 
+    find "$files" -type d -name .svn -print0 | xargs -0 rm -f -r
+fi
+

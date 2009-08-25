@@ -1,0 +1,23 @@
+#!/bin/bash
+title="Convert image"
+scale="Choose a format"
+
+choice=`gdialog --title "$title" --checklist "$scale" 200 100 6 jpg "" off png "" off gif "" off 2>&1`
+
+if [ -z "$choice" ]; then exit; fi;
+
+declare -a rotations
+array=(`echo $choice | tr '|' ' '`) 
+array=${array[@]} 
+
+while [ $# -gt 0 ]
+do
+	picture=$1
+	for i in $array
+	do
+		f=`echo "$picture" | sed 's/\.\w*$//'`
+		/usr/bin/convert "$picture" $i:"$f".$i
+	done
+	shift
+done
+

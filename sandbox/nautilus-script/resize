@@ -1,0 +1,21 @@
+#!/bin/bash
+title="Scale image"
+scale="Choose which sizes to scale to"
+
+imgsize=`gdialog --title "$title" --checklist "$scale" 200 100 6 1680x1050 16:10 off 1400x1050 4:3 on 1280x960 4:3 off 1024x768 4:3 off 800x600 4:3 off 640x480 4:3 off 2>&1`
+
+if [ -z "$imgsize" ]; then exit; fi;
+
+declare -a sizes
+sizes=(`echo $imgsize | tr '|' ' '`) 
+sizes=${sizes[@]} 
+
+while [ $# -gt 0 ]
+do
+	picture=$1
+	for i in $sizes
+	do
+		/usr/bin/convert -scale $i\! "$picture" $i"_$picture"
+	done
+	shift
+done

@@ -1,0 +1,21 @@
+#!/bin/bash
+title="Rotate image"
+scale="Choose rotation"
+
+choice=`gdialog --title "$title" --checklist "$scale" 200 100 6 90 right off 180 half off 270 left off 2>&1`
+
+if [ -z "$choice" ]; then exit; fi;
+
+declare -a rotations
+rotations=(`echo $choice | tr '|' ' '`) 
+rotations=${rotations[@]} 
+
+while [ $# -gt 0 ]
+do
+	picture=$1
+	for i in $rotations
+	do
+		/usr/bin/convert -rotate $i "$picture" $i"_$picture"
+	done
+	shift
+done
