@@ -15,11 +15,13 @@
  */
 package euler;
 
-import com.mycila.math.Digits;
-import com.mycila.Sieve;
 import com.mycila.distribution.Distribution;
 import com.mycila.distribution.Item;
 import com.mycila.distribution.Maximum;
+import com.mycila.math.Digits;
+import com.mycila.math.list.IntSequence;
+import com.mycila.math.prime.sieve.IntSieve;
+import com.mycila.math.range.IntRange;
 
 import static java.lang.System.*;
 import java.util.HashMap;
@@ -40,13 +42,14 @@ class Problem051 {
         final Digits digits = Digits.base(10);
 
         // create a prime list containing only primes having N digits
-        final Sieve primes = Sieve.range((int) Math.pow(10, length - 1), (int) Math.pow(10, length) - 1);
-        System.out.println(primes);
+        final IntSieve primes = IntSieve.to((int) Math.pow(10, length) - 1);
+        final IntSequence range = primes.asSequence(IntRange.range((int) Math.pow(10, length - 1), primes.range().to));
+        System.out.println(range);
 
         // build a list of patterns having same length
         final Distribution<String> patterns = Distribution.of(String.class);
-        for (int i = 0, max = primes.size(); i < max; i++) {
-            final int prime = primes.get(i);
+        for (int i = 0, max = range.size(); i < max; i++) {
+            final int prime = range.get(i);
             for (Integer item : digits.map(prime).itemsHavingCount(sameDigits)) {
                 patterns.add(Integer.toString(prime).replaceAll(item.toString(), "x"));
             }
@@ -59,7 +62,7 @@ class Problem051 {
             pattern.reset();
             for (int digit = 0; digit <= 10; digit++) {
                 final int number = Integer.parseInt(pattern.value().replaceAll("x", "" + digit));
-                if (primes.contains(number)) {
+                if (range.contains(number)) {
                     pattern.increment();
                     final String current = list.get(pattern);
                     list.put(pattern, number + (current == null ? "" : " " + current));

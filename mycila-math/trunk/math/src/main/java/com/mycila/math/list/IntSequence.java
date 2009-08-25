@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.math.sequence;
+package com.mycila.math.list;
+
+import com.mycila.math.range.IntRange;
 
 import java.util.AbstractList;
 import java.util.Arrays;
@@ -24,42 +26,42 @@ import java.util.Random;
 /**
  * @author Mathieu Carbou
  */
-public final class LongSequence implements Iterable<Long> {
+public final class IntSequence implements Iterable<Integer> {
 
     private static final int DEFAULT_CAPACITY = 10;
 
-    private long[] data;
+    private int[] data;
     public int pos;
 
-    public LongSequence() {
+    public IntSequence() {
         this(DEFAULT_CAPACITY);
     }
 
-    public LongSequence(int capacity) {
-        data = new long[capacity];
+    public IntSequence(int capacity) {
+        data = new int[capacity];
         pos = 0;
     }
 
-    public LongSequence(long... values) {
+    public IntSequence(int... values) {
         this(Math.max(values.length, DEFAULT_CAPACITY));
         add(values);
     }
 
-    public LongSequence ensureCapacity(int capacity) {
+    public IntSequence ensureCapacity(int capacity) {
         if (capacity > data.length) {
             int newCap = Math.max(data.length << 1, capacity);
-            long[] tmp = new long[newCap];
+            int[] tmp = new int[newCap];
             System.arraycopy(data, 0, tmp, 0, data.length);
             data = tmp;
         }
         return this;
     }
 
-    public List<Long> asList() {
-        return new AbstractList<Long>() {
+    public List<Integer> asList() {
+        return new AbstractList<Integer>() {
             @Override
-            public Long get(int index) {
-                return LongSequence.this.get(index);
+            public Integer get(int index) {
+                return IntSequence.this.get(index);
             }
 
             @Override
@@ -70,11 +72,11 @@ public final class LongSequence implements Iterable<Long> {
     }
 
     @Override
-    public Iterator<Long> iterator() {
-        return ReadOnlySequenceIterator.on(data, pos);
+    public Iterator<Integer> iterator() {
+        return ReadOnlySequenceIterator.on(IntRange.range(0, pos), data);
     }
 
-    public long[] internalArray() {
+    public int[] internalArray() {
         return data;
     }
 
@@ -100,9 +102,9 @@ public final class LongSequence implements Iterable<Long> {
      * Sheds any excess capacity above and beyond the current size of
      * the list.
      */
-    public LongSequence trimToSize() {
+    public IntSequence trimToSize() {
         if (data.length > size()) {
-            long[] tmp = new long[size()];
+            int[] tmp = new int[size()];
             toNativeArray(tmp, 0, tmp.length);
             data = tmp;
         }
@@ -114,46 +116,46 @@ public final class LongSequence implements Iterable<Long> {
     /**
      * Adds <tt>val</tt> to the end of the list, growing as needed.
      *
-     * @param val an <code>long</code> value
+     * @param val an <code>int</code> value
      */
-    public LongSequence add(long val) {
+    public IntSequence add(int val) {
         ensureCapacity(pos + 1);
         data[pos++] = val;
         return this;
     }
 
-    public LongSequence addQuick(long val) {
+    public IntSequence addQuick(int val) {
         data[pos++] = val;
         return this;
     }
 
-    public LongSequence addFirst(long val) {
+    public IntSequence addFirst(int val) {
         insert(0, val);
         return this;
     }
 
-    public LongSequence addLast(long val) {
+    public IntSequence addLast(int val) {
         add(val);
         return this;
     }
 
-    public long first() {
+    public int first() {
         return get(0);
     }
 
-    public long firstQuick() {
+    public int firstQuick() {
         return data[0];
     }
 
-    public long last() {
+    public int last() {
         return get(pos - 1);
     }
 
-    public long lastQuick() {
+    public int lastQuick() {
         return data[pos - 1];
     }
 
-    public LongSequence addIfMissing(long n) {
+    public IntSequence addIfMissing(int n) {
         if (lastIndexOf(pos, n) != -1) add(n);
         return this;
     }
@@ -162,14 +164,14 @@ public final class LongSequence implements Iterable<Long> {
      * Adds the values in the array <tt>vals</tt> to the end of the
      * list, in order.
      *
-     * @param vals an <code>long[]</code> value
+     * @param vals an <code>int[]</code> value
      */
-    public LongSequence add(long[] vals) {
+    public IntSequence add(int[] vals) {
         add(0, vals.length, vals);
         return this;
     }
 
-    public LongSequence addAll(long... vals) {
+    public IntSequence addAll(int... vals) {
         add(0, vals.length, vals);
         return this;
     }
@@ -178,11 +180,11 @@ public final class LongSequence implements Iterable<Long> {
      * Adds a subset of the values in the array <tt>vals</tt> to the
      * end of the list, in order.
      *
-     * @param vals   an <code>long[]</code> value
+     * @param vals   an <code>int[]</code> value
      * @param offset the offset at which to start copying
      * @param length the number of values to copy.
      */
-    public LongSequence add(int offset, int length, long... vals) {
+    public IntSequence add(int offset, int length, int... vals) {
         ensureCapacity(pos + length);
         System.arraycopy(vals, offset, data, pos, length);
         pos += length;
@@ -195,9 +197,9 @@ public final class LongSequence implements Iterable<Long> {
      * to the right.
      *
      * @param offset an <code>int</code> value
-     * @param value  an <code>long</code> value
+     * @param value  an <code>int</code> value
      */
-    public LongSequence insert(int offset, long value) {
+    public IntSequence insert(int offset, int value) {
         if (offset == pos) {
             add(value);
             return this;
@@ -217,9 +219,9 @@ public final class LongSequence implements Iterable<Long> {
      * <tt>offset</tt> are shifted to the right.
      *
      * @param offset an <code>int</code> value
-     * @param values an <code>long[]</code> value
+     * @param values an <code>int[]</code> value
      */
-    public LongSequence insert(int offset, long[] values) {
+    public IntSequence insert(int offset, int[] values) {
         insert(offset, 0, values.length, values);
         return this;
     }
@@ -230,12 +232,12 @@ public final class LongSequence implements Iterable<Long> {
      * <tt>offset</tt> are shifted to the right.
      *
      * @param offset    an <code>int</code> value
-     * @param values    an <code>long[]</code> value
+     * @param values    an <code>int[]</code> value
      * @param valOffset the offset in the values array at which to
      *                  start copying.
      * @param len       the number of values to copy from the values array
      */
-    public LongSequence insert(int offset, int valOffset, int len, long... values) {
+    public IntSequence insert(int offset, int valOffset, int len, int... values) {
         if (offset == pos) {
             add(valOffset, len, values);
             return this;
@@ -254,9 +256,9 @@ public final class LongSequence implements Iterable<Long> {
      * Returns the value at the specified offset.
      *
      * @param offset an <code>int</code> value
-     * @return an <code>long</code> value
+     * @return an <code>int</code> value
      */
-    public long get(int offset) {
+    public int get(int offset) {
         if (offset >= pos) {
             throw new ArrayIndexOutOfBoundsException(offset);
         }
@@ -268,9 +270,9 @@ public final class LongSequence implements Iterable<Long> {
      * bounds checking.
      *
      * @param offset an <code>int</code> value
-     * @return an <code>long</code> value
+     * @return an <code>int</code> value
      */
-    public long getQuick(int offset) {
+    public int getQuick(int offset) {
         return data[offset];
     }
 
@@ -278,9 +280,9 @@ public final class LongSequence implements Iterable<Long> {
      * Sets the value at the specified offset.
      *
      * @param offset an <code>int</code> value
-     * @param val    an <code>long</code> value
+     * @param val    an <code>int</code> value
      */
-    public LongSequence set(int offset, long val) {
+    public IntSequence set(int offset, int val) {
         if (offset >= pos) {
             throw new ArrayIndexOutOfBoundsException(offset);
         }
@@ -293,14 +295,14 @@ public final class LongSequence implements Iterable<Long> {
      * previously stored value.
      *
      * @param offset an <code>int</code> value
-     * @param val    an <code>long</code> value
+     * @param val    an <code>int</code> value
      * @return the value previously stored at offset.
      */
-    public long getSet(int offset, long val) {
+    public int getSet(int offset, int val) {
         if (offset >= pos) {
             throw new ArrayIndexOutOfBoundsException(offset);
         }
-        long old = data[offset];
+        int old = data[offset];
         data[offset] = val;
         return old;
     }
@@ -312,7 +314,7 @@ public final class LongSequence implements Iterable<Long> {
      * @param offset the first offset to replace
      * @param values the source of the new values
      */
-    public LongSequence set(int offset, long... values) {
+    public IntSequence set(int offset, int... values) {
         set(offset, 0, values.length, values);
         return this;
     }
@@ -327,7 +329,7 @@ public final class LongSequence implements Iterable<Long> {
      * @param valOffset the first value to copy from the values array
      * @param length    the number of values to copy
      */
-    public LongSequence set(int offset, int valOffset, int length, long... values) {
+    public IntSequence set(int offset, int valOffset, int length, int... values) {
         if (offset < 0 || offset + length > pos) {
             throw new ArrayIndexOutOfBoundsException(offset);
         }
@@ -340,9 +342,9 @@ public final class LongSequence implements Iterable<Long> {
      * checking.
      *
      * @param offset an <code>int</code> value
-     * @param val    an <code>long</code> value
+     * @param val    an <code>int</code> value
      */
-    public LongSequence setQuick(int offset, long val) {
+    public IntSequence setQuick(int offset, int val) {
         data[offset] = val;
         return this;
     }
@@ -351,7 +353,7 @@ public final class LongSequence implements Iterable<Long> {
      * Flushes the internal state of the list, resetting the capacity
      * to the default.
      */
-    public LongSequence clear() {
+    public IntSequence clear() {
         clear(DEFAULT_CAPACITY);
         return this;
     }
@@ -362,8 +364,8 @@ public final class LongSequence implements Iterable<Long> {
      *
      * @param capacity an <code>int</code> value
      */
-    public LongSequence clear(int capacity) {
-        data = new long[capacity];
+    public IntSequence clear(int capacity) {
+        data = new int[capacity];
         pos = 0;
         return this;
     }
@@ -376,9 +378,9 @@ public final class LongSequence implements Iterable<Long> {
      *
      * @see #clear
      */
-    public LongSequence reset() {
+    public IntSequence reset() {
         pos = 0;
-        fill((long) 0);
+        fill(0);
         return this;
     }
 
@@ -396,7 +398,7 @@ public final class LongSequence implements Iterable<Long> {
      * @see #clear
      * @see #getQuick
      */
-    public LongSequence resetQuick() {
+    public IntSequence resetQuick() {
         pos = 0;
         return this;
     }
@@ -407,8 +409,8 @@ public final class LongSequence implements Iterable<Long> {
      * @param offset an <code>int</code> value
      * @return the value previously stored at offset.
      */
-    public long remove(int offset) {
-        long old = get(offset);
+    public int remove(int offset) {
+        int old = get(offset);
         remove(offset, 1);
         return old;
     }
@@ -420,7 +422,7 @@ public final class LongSequence implements Iterable<Long> {
      * @param offset an <code>int</code> value
      * @param length an <code>int</code> value
      */
-    public LongSequence remove(int offset, int length) {
+    public IntSequence remove(int offset, int length) {
         if (offset < 0 || offset >= pos) {
             throw new ArrayIndexOutOfBoundsException(offset);
         }
@@ -434,7 +436,7 @@ public final class LongSequence implements Iterable<Long> {
         } else {
             // data in the middle
             System.arraycopy(data, offset + length,
-                    data, offset, pos - (offset + length));
+                             data, offset, pos - (offset + length));
         }
         pos -= length;
         // no need to clear old values beyond pos, because this is a
@@ -446,7 +448,7 @@ public final class LongSequence implements Iterable<Long> {
     /**
      * Reverse the order of the elements in the list.
      */
-    public LongSequence reverse() {
+    public IntSequence reverse() {
         reverse(0, pos);
         return this;
     }
@@ -457,7 +459,7 @@ public final class LongSequence implements Iterable<Long> {
      * @param from the inclusive index at which to start reversing
      * @param to   the exclusive index at which to stop reversing
      */
-    public LongSequence reverse(int from, int to) {
+    public IntSequence reverse(int from, int to) {
         if (from == to) {
             return this;
         }
@@ -476,7 +478,7 @@ public final class LongSequence implements Iterable<Long> {
      *
      * @param rand a <code>Random</code> value
      */
-    public LongSequence shuffle(Random rand) {
+    public IntSequence shuffle(Random rand) {
         for (int i = pos; i-- > 1;) {
             swap(i, rand.nextInt(i));
         }
@@ -490,7 +492,7 @@ public final class LongSequence implements Iterable<Long> {
      * @param j an offset into the data array
      */
     private void swap(int i, int j) {
-        long tmp = data[i];
+        int tmp = data[i];
         data[i] = data[j];
         data[j] = tmp;
     }
@@ -504,9 +506,9 @@ public final class LongSequence implements Iterable<Long> {
      * @return a deep clone of the list.
      */
     public Object clone() {
-        LongSequence list = null;
+        IntSequence list = null;
         try {
-            list = (LongSequence) super.clone();
+            list = (IntSequence) super.clone();
             list.data = toNativeArray();
         } catch (CloneNotSupportedException e) {
             // it's supported
@@ -524,11 +526,11 @@ public final class LongSequence implements Iterable<Long> {
      * @throws IndexOutOfBoundsException - endpoint out of range
      * @throws IllegalArgumentException  - endpoints out of order (end > begin)
      */
-    public LongSequence subList(int begin, int end) {
+    public IntSequence subList(int begin, int end) {
         if (end < begin) throw new IllegalArgumentException("end index " + end + " greater than begin index " + begin);
         if (begin < 0) throw new IndexOutOfBoundsException("begin index can not be < 0");
         if (end > data.length) throw new IndexOutOfBoundsException("end index < " + data.length);
-        LongSequence list = new LongSequence(end - begin);
+        IntSequence list = new IntSequence(end - begin);
         for (int i = begin; i < end; i++) {
             list.add(data[i]);
         }
@@ -539,9 +541,9 @@ public final class LongSequence implements Iterable<Long> {
     /**
      * Copies the contents of the list into a native array.
      *
-     * @return an <code>long[]</code> value
+     * @return an <code>int[]</code> value
      */
-    public long[] toNativeArray() {
+    public int[] toNativeArray() {
         return toNativeArray(0, pos);
     }
 
@@ -550,10 +552,10 @@ public final class LongSequence implements Iterable<Long> {
      *
      * @param offset the offset at which to start copying
      * @param len    the number of values to copy.
-     * @return an <code>long[]</code> value
+     * @return an <code>int[]</code> value
      */
-    public long[] toNativeArray(int offset, int len) {
-        long[] rv = new long[len];
+    public int[] toNativeArray(int offset, int len) {
+        int[] rv = new int[len];
         toNativeArray(rv, offset, len);
         return rv;
     }
@@ -565,7 +567,7 @@ public final class LongSequence implements Iterable<Long> {
      * @param offset the offset of the first value to copy
      * @param len    the number of values to copy.
      */
-    public LongSequence toNativeArray(long[] dest, int offset, int len) {
+    public IntSequence toNativeArray(int[] dest, int offset, int len) {
         if (len == 0) {
             return this;
         }
@@ -576,7 +578,7 @@ public final class LongSequence implements Iterable<Long> {
         return this;
     }
 
-    public LongSequence copyInto(long[] dest, int offset) {
+    public IntSequence copyInto(int[] dest, int offset) {
         System.arraycopy(data, 0, dest, offset, pos);
         return this;
     }
@@ -587,15 +589,15 @@ public final class LongSequence implements Iterable<Long> {
      * Compares this list to another list, value by value.
      *
      * @param other the object to compare against
-     * @return true if other is a LongArrayList and has exactly the
+     * @return true if other is a intArrayList and has exactly the
      *         same values.
      */
     @Override
     public boolean equals(Object other) {
         if (other == this) {
             return true;
-        } else if (other instanceof LongSequence) {
-            LongSequence that = (LongSequence) other;
+        } else if (other instanceof IntSequence) {
+            IntSequence that = (IntSequence) other;
             if (that.size() != this.size()) {
                 return false;
             } else {
@@ -615,7 +617,7 @@ public final class LongSequence implements Iterable<Long> {
     public int hashCode() {
         int h = 0;
         for (int i = pos; i-- > 0;)
-            h = 37 * h + ((int) (data[i] ^ (data[i] >>> 32))) * 31;
+            h = 37 * h + 31 * data[i];
         return h;
     }
 
@@ -625,10 +627,10 @@ public final class LongSequence implements Iterable<Long> {
      * Applies the procedure to each value in the list in ascending
      * (front to back) order.
      *
-     * @param procedure a <code>LongProcedure</code> value
+     * @param procedure a <code>IntProcedure</code> value
      * @return true if the procedure did not terminate prematurely.
      */
-    public boolean forEach(LongProcedure procedure) {
+    public boolean forEach(IntProcedure procedure) {
         for (int i = 0; i < pos; i++)
             if (!procedure.execute(data[i]))
                 return false;
@@ -639,10 +641,10 @@ public final class LongSequence implements Iterable<Long> {
      * Applies the procedure to each value in the list in descending
      * (back to front) order.
      *
-     * @param procedure a <code>LongProcedure</code> value
+     * @param procedure a <code>IntProcedure</code> value
      * @return true if the procedure did not terminate prematurely.
      */
-    public boolean forEachDescending(LongProcedure procedure) {
+    public boolean forEachDescending(IntProcedure procedure) {
         for (int i = pos; i-- > 0;)
             if (!procedure.execute(data[i]))
                 return false;
@@ -657,7 +659,7 @@ public final class LongSequence implements Iterable<Long> {
      *
      * @see java.util.Arrays#sort
      */
-    public LongSequence sort() {
+    public IntSequence sort() {
         Arrays.sort(data, 0, pos);
         return this;
     }
@@ -670,7 +672,7 @@ public final class LongSequence implements Iterable<Long> {
      * @param toIndex   the index at which to stop sorting (exclusive)
      * @see java.util.Arrays#sort
      */
-    public LongSequence sort(int fromIndex, int toIndex) {
+    public IntSequence sort(int fromIndex, int toIndex) {
         Arrays.sort(data, fromIndex, toIndex);
         return this;
     }
@@ -682,7 +684,7 @@ public final class LongSequence implements Iterable<Long> {
      *
      * @param val the value to use when filling
      */
-    public LongSequence fill(long val) {
+    public IntSequence fill(int val) {
         Arrays.fill(data, 0, pos, val);
         return this;
     }
@@ -694,7 +696,7 @@ public final class LongSequence implements Iterable<Long> {
      * @param toIndex   the offset at which to stop filling (exclusive)
      * @param val       the value to use when filling
      */
-    public LongSequence fill(int fromIndex, int toIndex, long val) {
+    public IntSequence fill(int fromIndex, int toIndex, int val) {
         if (toIndex > pos) {
             ensureCapacity(toIndex);
             pos = toIndex;
@@ -714,7 +716,7 @@ public final class LongSequence implements Iterable<Long> {
      * @return the absolute offset in the list of the value, or its
      *         negative insertion point into the sorted list.
      */
-    public int binarySearch(long value) {
+    public int binarySearch(int value) {
         return binarySearch(value, 0, pos);
     }
 
@@ -729,7 +731,7 @@ public final class LongSequence implements Iterable<Long> {
      * @return the absolute offset in the list of the value, or its
      *         negative insertion point into the sorted list.
      */
-    public int binarySearch(long value, int fromIndex, int toIndex) {
+    public int binarySearch(int value, int fromIndex, int toIndex) {
         if (fromIndex < 0) {
             throw new ArrayIndexOutOfBoundsException(fromIndex);
         }
@@ -740,7 +742,7 @@ public final class LongSequence implements Iterable<Long> {
         int high = toIndex - 1;
         while (low <= high) {
             int mid = (low + high) >>> 1;
-            long midVal = data[mid];
+            int midVal = data[mid];
 
             if (midVal < value) {
                 low = mid + 1;
@@ -757,12 +759,12 @@ public final class LongSequence implements Iterable<Long> {
      * Searches the list front to back for the index of
      * <tt>value</tt>.
      *
-     * @param value an <code>long</code> value
+     * @param value an <code>int</code> value
      * @return the first offset of the value, or -1 if it is not in
      *         the list.
      * @see #binarySearch for faster searches on sorted lists
      */
-    public int indexOf(long value) {
+    public int indexOf(int value) {
         return indexOf(0, value);
     }
 
@@ -772,12 +774,12 @@ public final class LongSequence implements Iterable<Long> {
      *
      * @param offset the offset at which to start the linear search
      *               (inclusive)
-     * @param value  an <code>long</code> value
+     * @param value  an <code>int</code> value
      * @return the first offset of the value, or -1 if it is not in
      *         the list.
      * @see #binarySearch for faster searches on sorted lists
      */
-    public int indexOf(int offset, long value) {
+    public int indexOf(int offset, int value) {
         for (int i = offset; i < pos; i++) {
             if (data[i] == value) {
                 return i;
@@ -790,12 +792,12 @@ public final class LongSequence implements Iterable<Long> {
      * Searches the list back to front for the last index of
      * <tt>value</tt>.
      *
-     * @param value an <code>long</code> value
+     * @param value an <code>int</code> value
      * @return the last offset of the value, or -1 if it is not in
      *         the list.
      * @see #binarySearch for faster searches on sorted lists
      */
-    public int lastIndexOf(long value) {
+    public int lastIndexOf(int value) {
         return lastIndexOf(pos, value);
     }
 
@@ -805,12 +807,12 @@ public final class LongSequence implements Iterable<Long> {
      *
      * @param offset the offset at which to start the linear search
      *               (exclusive)
-     * @param value  an <code>long</code> value
+     * @param value  an <code>int</code> value
      * @return the last offset of the value, or -1 if it is not in
      *         the list.
      * @see #binarySearch for faster searches on sorted lists
      */
-    public int lastIndexOf(int offset, long value) {
+    public int lastIndexOf(int offset, int value) {
         for (int i = offset; i-- > 0;) {
             if (data[i] == value) {
                 return i;
@@ -822,10 +824,10 @@ public final class LongSequence implements Iterable<Long> {
     /**
      * Searches the list for <tt>value</tt>
      *
-     * @param value an <code>long</code> value
+     * @param value an <code>int</code> value
      * @return true if value is in the list.
      */
-    public boolean contains(long value) {
+    public boolean contains(int value) {
         return lastIndexOf(value) >= 0;
     }
 
@@ -835,11 +837,11 @@ public final class LongSequence implements Iterable<Long> {
      * @return the largest value in the list.
      * @throws IllegalStateException if the list is empty
      */
-    public long max() {
+    public int max() {
         if (size() == 0) {
             throw new IllegalStateException("cannot find maximum get an empty list");
         }
-        long max = Long.MIN_VALUE;
+        int max = Integer.MIN_VALUE;
         for (int i = 0; i < pos; i++) {
             if (data[i] > max) {
                 max = data[i];
@@ -854,11 +856,11 @@ public final class LongSequence implements Iterable<Long> {
      * @return the smallest value in the list.
      * @throws IllegalStateException if the list is empty
      */
-    public long min() {
+    public int min() {
         if (size() == 0) {
             throw new IllegalStateException("cannot find minimum get an empty list");
         }
-        long min = Long.MAX_VALUE;
+        int min = Integer.MAX_VALUE;
         for (int i = 0; i < pos; i++) {
             if (data[i] < min) {
                 min = data[i];
@@ -888,10 +890,16 @@ public final class LongSequence implements Iterable<Long> {
         return buf.toString();
     }
 
-    public long sum() {
-        long sum = 0;
+    public int sum() {
+        int sum = 0;
         for (int i = 0; i < pos; i++) sum += data[i];
         return sum;
     }
 
+    public IntSequence appendFrom(int[] src, int srcOffset, int srcLen) {
+        ensureCapacity(pos + srcLen);
+        System.arraycopy(src, srcOffset, data, pos, srcLen);
+        pos = pos + srcLen;
+        return this;
+    }
 }

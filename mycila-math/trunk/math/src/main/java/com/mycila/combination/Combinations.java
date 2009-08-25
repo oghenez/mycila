@@ -34,16 +34,20 @@ public final class Combinations {
      * @return Catalan(i)
      */
     public static long catalan(int index) {
-        return Factorial.trivialDiv(index << 1, index) / Factorial.get(index + 1);
+        return Factorial.trivialDiv(index << 1, index) / Factorial.lookup(index + 1);
     }
 
     //TODO: improve - see commons-math
-    public static long binomial(int n, int r) {
-        return Factorial.trivialDiv(n, n - r) / Factorial.get(r);
+    public static long binomialLong(int n, int r) {
+        return Factorial.trivialDiv(n, n - r) / Factorial.lookup(r);
     }
 
-    public static BigInteger binomial(BigInteger n, BigInteger r) {
-        return Factorial.trivialDiv(n, n.subtract(r)).divide(Factorial.trivial(r));
+    // n <= 4294967294
+    public static BigInteger binomial(long n, int r) {
+        if (n > Integer.MAX_VALUE >> 1)
+            throw new IllegalArgumentException("Too big value for n (" + n + "). Maximum allowed is " + 4294967294L);
+        if (r > n >> 1) r = (int) (n - r);
+        return Factorial.trivialDiv(BigInteger.valueOf(n), BigInteger.valueOf(n - r)).divide(Factorial.get(r));
     }
 
     public static CombinationSet combinations(int n, int r) {

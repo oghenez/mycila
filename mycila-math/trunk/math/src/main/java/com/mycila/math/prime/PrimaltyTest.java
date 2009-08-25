@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila;
+package com.mycila.math.prime;
 
 import com.mycila.math.Mod;
 
@@ -31,6 +31,30 @@ public final class PrimaltyTest {
     private PrimaltyTest() {
     }
 
+    /**
+     * Check if the number is prime against a list of prime.
+     *
+     * @param number   The number to check
+     * @param primes   The prime list, in ascending order
+     * @param maxIndex The maximum index to go in the list, to reduce search if needed
+     * @return True if the number is prime against this prime list
+     */
+    public static boolean isPrime(int number, int[] primes, int maxIndex) {
+        final int sqrtFloor = (int) Math.sqrt(number);
+        for (int i = 0; i < maxIndex; i++) {
+            final int prime = primes[i];
+            if (prime > sqrtFloor) return true;
+            if (number % prime == 0) return false;
+        }
+        return true;
+    }
+
+    /**
+     * Primalty test using <a href="http://en.wikipedia.org/wiki/Trial_division">Trial Division<a/>.
+     *
+     * @param number The number to test
+     * @return True if it is prime
+     */
     public static boolean trialDivision(int number) {
         if (number == 2 || number == 3) return true;
         if (number < 2 || (number & 1) == 0) return false;
@@ -46,6 +70,12 @@ public final class PrimaltyTest {
         return true;
     }
 
+    /**
+     * Primalty test using <a href="http://en.wikipedia.org/wiki/Trial_division">Trial Division<a/>.
+     *
+     * @param number The number to test
+     * @return True if it is prime
+     */
     public static boolean trialDivision(long number) {
         if (number == 2 || number == 3) return true;
         if (number < 2 || (number & 1) == 0) return false;
@@ -61,6 +91,14 @@ public final class PrimaltyTest {
         return true;
     }
 
+    /**
+     * Primalty test using <a href="http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test">Miller–Rabin primality test<a/>.
+     * <p/>
+     * Using <a href="http://en.literateprograms.org/Miller-Rabin_primality_test_(Java)">this implementation</a> to cover all possible primes in 32bits.
+     *
+     * @param number The number to test
+     * @return True if it is prime
+     */
     public static boolean millerRabin(int number) {
         return number > 1
                 && (number == 2
@@ -83,12 +121,22 @@ public final class PrimaltyTest {
         return a_to_power == n - 1;
     }
 
-    public static boolean millerRabin(BigInteger n) {
+    /**
+     * Primalty test using <a href="http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test">Miller–Rabin primality test<a/>.
+     * <p/>
+     * Using <a href="http://en.literateprograms.org/Miller-Rabin_primality_test_(Java)">this implementation</a>.
+     * <p/>
+     * The number of pass has been set to 50.
+     *
+     * @param number The number to test
+     * @return True if it is prime
+     */
+    public static boolean millerRabin(BigInteger number) {
         for (int repeat = 0; repeat < 50; repeat++) {
             BigInteger a;
-            do a = new BigInteger(n.bitLength(), RANDOM);
+            do a = new BigInteger(number.bitLength(), RANDOM);
             while (a.signum() == 0);
-            if (!millerRabinPass(a, n)) return false;
+            if (!millerRabinPass(a, number)) return false;
         }
         return true;
     }
@@ -105,11 +153,29 @@ public final class PrimaltyTest {
         return pow.equals(n_minus_one);
     }
 
-    // http://en.wikipedia.org/wiki/Lucas%E2%80%93Lehmer_test_for_Mersenne_numbers
-    // Determine if Mp = 2p ? 1 is prime with p an odd prime
+    /**
+     * http://en.wikipedia.org/wiki/Lucas%E2%80%93Lehmer_test_for_Mersenne_numbers
+     *
+     *
+     * @param p Odd probable prime
+     * @return true if it is a mersenne prime
+     */
+    /**
+     * Primalty test using <a href="http://en.wikipedia.org/wiki/Lucas%E2%80%93Lehmer_test_for_Mersenne_numbers">Lucas–Lehmer primality test<a/>
+     * for <a href="http://en.wikipedia.org/wiki/Mersenne_prime">Mersenne primes</a>.
+     * <p/>
+     * Determine if Mp = 2^p - 1 is prime with p an odd prime
+     * <p/>
+     * Using <a href="http://en.literateprograms.org/Lucas-Lehmer_test_for_Mersenne_numbers_(Java)">this implementation</a>.
+     * <p/>
+     * The number of pass has been set to 50.
+     *
+     * @param p The number to test
+     * @return True if it is prime
+     */
     public static boolean lucasLehmer(int p) {
         if (p == 2) return true;
-        final BigInteger m = BigInteger.valueOf(2).pow(p).subtract(BigInteger.ONE);
+        final BigInteger m = TWO.pow(p).subtract(BigInteger.ONE);
         BigInteger s = BigInteger.valueOf(4);
         for (int i = 0; i < p - 2; i++)
             s = s.multiply(s).subtract(TWO).mod(m);

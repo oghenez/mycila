@@ -16,7 +16,7 @@
 package euler;
 
 import com.mycila.math.Digits;
-import com.mycila.math.sequence.IntProcedure;
+import com.mycila.math.list.IntProcedure;
 
 import java.util.BitSet;
 import java.util.Set;

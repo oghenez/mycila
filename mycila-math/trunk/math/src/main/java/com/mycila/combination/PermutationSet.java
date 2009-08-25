@@ -19,7 +19,7 @@ public final class PermutationSet<T> implements Iterable<List<T>> {
     PermutationSet(Factoradic factoradic, List<T> objects) {
         this.factoradic = factoradic;
         this.objects = objects;
-        this.max = Factorial.get(objects.size());
+        this.max = Factorial.lookup(objects.size());
     }
 
     public List<T> get(int index) {

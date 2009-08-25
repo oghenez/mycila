@@ -16,7 +16,7 @@
 package euler;
 
 import com.mycila.math.Sequence;
-import com.mycila.math.sequence.LongSequence;
+import com.mycila.math.list.LongSequence;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=14

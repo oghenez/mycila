@@ -19,7 +19,6 @@ import com.mycila.combination.Combinations;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 
 /**
@@ -39,16 +38,11 @@ public final class CombinationsTest {
 
     @Test
     public void test_binomial() {
-        assertEquals(Combinations.binomial(1, 1), 1);
-        assertEquals(Combinations.binomial(4, 1), 4);
-        assertEquals(Combinations.binomial(4, 4), 1);
-        assertEquals(Combinations.binomial(4, 3), 4);
-        assertEquals(Combinations.binomial(23, 2), 253);
-        assertEquals(Combinations.binomial(BigInteger.valueOf(1), BigInteger.valueOf(1)), new BigInteger("1"));
-        assertEquals(Combinations.binomial(BigInteger.valueOf(4), BigInteger.valueOf(1)), new BigInteger("4"));
-        assertEquals(Combinations.binomial(BigInteger.valueOf(4), BigInteger.valueOf(4)), new BigInteger("1"));
-        assertEquals(Combinations.binomial(BigInteger.valueOf(4), BigInteger.valueOf(3)), new BigInteger("4"));
-        assertEquals(Combinations.binomial(BigInteger.valueOf(23), BigInteger.valueOf(2)), new BigInteger("253"));
+        assertEquals(Combinations.binomialLong(1, 1), 1);
+        assertEquals(Combinations.binomialLong(4, 1), 4);
+        assertEquals(Combinations.binomialLong(4, 4), 1);
+        assertEquals(Combinations.binomialLong(4, 3), 4);
+        assertEquals(Combinations.binomialLong(23, 2), 253);
     }
 
     @Test

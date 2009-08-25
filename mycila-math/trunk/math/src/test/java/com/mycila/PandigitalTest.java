@@ -15,6 +15,7 @@
  */
 package com.mycila;
 
+import com.mycila.math.range.IntRange;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -42,13 +43,13 @@ public final class PandigitalTest {
     @Test
     public void test_range() {
         Pandigital pandigital = Pandigital.base(10);
-        assertEquals(pandigital.range(0), Range.range(0, 0));
-        assertEquals(pandigital.range(1), Range.range(1, 1));
-        assertEquals(pandigital.range(57603421), Range.range(0, 7));
-        assertEquals(pandigital.range(5763421), Range.range(1, 7));
-        assertEquals(pandigital.range(10), Range.range(0, 1));
+        assertEquals(pandigital.range(0), IntRange.range(0, 0));
+        assertEquals(pandigital.range(1), IntRange.range(1, 1));
+        assertEquals(pandigital.range(57603421), IntRange.range(0, 7));
+        assertEquals(pandigital.range(5763421), IntRange.range(1, 7));
+        assertEquals(pandigital.range(10), IntRange.range(0, 1));
         assertEquals(pandigital.range(23459), null);
-        assertEquals(pandigital.range(9876543210L), Range.range(0, 9));
+        assertEquals(pandigital.range(9876543210L), IntRange.range(0, 9));
 
     }
 

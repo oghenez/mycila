@@ -16,8 +16,8 @@
 package com.mycila.math;
 
 import com.mycila.distribution.Distribution;
-import com.mycila.math.sequence.IntProcedure;
-import com.mycila.math.sequence.IntSequence;
+import com.mycila.math.list.IntProcedure;
+import com.mycila.math.list.IntSequence;
 
 import java.math.BigInteger;
 import java.util.Arrays;

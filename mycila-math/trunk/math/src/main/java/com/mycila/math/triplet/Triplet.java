@@ -15,7 +15,7 @@
  */
 package com.mycila.math.triplet;
 
-import com.mycila.math.sequence.ReadOnlySequenceIterator;
+import com.mycila.math.list.ReadOnlySequenceIterator;
 
 import java.util.Arrays;
 import java.util.Iterator;

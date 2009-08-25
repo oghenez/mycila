@@ -15,8 +15,8 @@
  */
 package euler;
 
-import com.mycila.Sieve;
-import com.mycila.math.sequence.IntSequence;
+import com.mycila.math.list.IntSequence;
+import com.mycila.math.prime.sieve.IntSieve;
 
 import static java.lang.System.*;
 
@@ -29,7 +29,7 @@ class Problem037 {
     public static void main(String[] args) throws Exception {
         final long time = currentTimeMillis();
         final IntSequence truncables = new IntSequence(11);
-        Sieve sieve = Sieve.to(1000000);
+        IntSieve sieve = IntSieve.to(1000000);
         // sieve(8)=23 is the first truncable prime since 1x is not truncable (1 not prime)
         for (int i = 8; truncables.size() < 11; i++) {
             if (i == sieve.size()) sieve = sieve.grow(10000);
