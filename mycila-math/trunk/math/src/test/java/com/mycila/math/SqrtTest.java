@@ -18,6 +18,8 @@ package com.mycila.math;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import java.math.BigInteger;
+
 /**
  * @author Mathieu Carbou
  */
@@ -42,6 +44,19 @@ public final class SqrtTest {
         for (long i = 10000000000L; i < 1000999999L; i++) {
             assertEquals(Sqrt.sqrtInt(i), (long) (Math.sqrt(i)));
         }
+    }
+
+    @Test
+    public void test_sqrtInt_big() {
+        assertEquals(Sqrt.sqrtInt(BigInteger.valueOf(0)), BigInteger.valueOf(0));
+        assertEquals(Sqrt.sqrtInt(BigInteger.valueOf(1)), BigInteger.valueOf(1));
+        assertEquals(Sqrt.sqrtInt(BigInteger.valueOf(2)), BigInteger.valueOf(1));
+        assertEquals(Sqrt.sqrtInt(BigInteger.valueOf(3)), BigInteger.valueOf(1));
+        assertEquals(Sqrt.sqrtInt(BigInteger.valueOf(4)), BigInteger.valueOf(2));
+        assertEquals(Sqrt.sqrtInt(BigInteger.valueOf(5)), BigInteger.valueOf(2));
+        assertEquals(Sqrt.sqrtInt(BigInteger.valueOf(Integer.MAX_VALUE)), BigInteger.valueOf(46340));
+        assertEquals(Sqrt.sqrtInt(new BigInteger("15241578750190521")), new BigInteger("123456789"));
+        assertEquals(Sqrt.sqrtInt(new BigInteger("15241578750190530")), new BigInteger("123456789"));
     }
 
     @Test

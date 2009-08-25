@@ -15,15 +15,21 @@
  */
 package com.mycila.math;
 
-import sun.security.util.BigInt;
+import java.math.BigInteger;
+import static java.math.BigInteger.*;
 
 /**
  * @author Mathieu Carbou
  */
 public final class Sqrt {
 
+    private static final BigInteger TWO = valueOf(2);
+    private static final BigInteger THREE = valueOf(3);
+
     private Sqrt() {
     }
+
+    //TODO: add intsqrt from http://atoms.alife.co.uk/sqrt/index.html + execute tests + perf
 
     /**
      * Compute the <a href="http://en.wikipedia.org/wiki/Integer_square_root">integer square root</a> of a number.
@@ -40,7 +46,7 @@ public final class Sqrt {
      * @return The integer square root in an int
      */
     public static int sqrtInt(int number) {
-        if(number < 2) return number;
+        if (number < 2) return number;
         int res = 0;
         int one = 1 << 30;
         while (one > number) one >>= 2;
@@ -86,43 +92,19 @@ public final class Sqrt {
         return res;
     }
 
-    //TODO
     /**
      * Compute the <a href="http://en.wikipedia.org/wiki/Integer_square_root">integer square root</a> of a number.
-     * <p/>
-     * <b>Notes:</b>
-     * <p/>
-     * Slower than <code>long sqrt = (long) (Math.sqrt(i));</code>
      *
-     * @param number A positive number from 0 to {@link Long#MAX_VALUE}
-     * @return The integer square root in an int
+     * @param number A positive number
+     * @return The integer square root
      */
-    /*public static long sqrtInt(BigInt number) {
-        result
-            var bigInteger: result is 0_;
-          local
-            var bigInteger: res2 is 0_;
-          begin
-            if number > 0_ then
-              res2 := number;
-              repeat
-                result := res2;
-                res2 := (result + number div result) div 2_;
-              until result <= res2;
-            end if;
-
-        long res = 0;
-        long one = 1L << 62;
-        while (one > number) one >>= 2;
-        while (one != 0) {
-            final long sum = res + one;
-            if (number < sum) res >>= 1;
-            else {
-                number -= sum;
-                res = (res >> 1) + one;
-            }
-            one >>= 2;
+    public static BigInteger sqrtInt(BigInteger number) {
+        BigInteger square = BigInteger.ONE;
+        BigInteger delta = THREE;
+        while (square.compareTo(number) <= 0) {
+            square = square.add(delta);
+            delta = delta.add(TWO);
         }
-        return res;
-    }*/
+        return delta.shiftRight(1).subtract(BigInteger.ONE);
+    }
 }

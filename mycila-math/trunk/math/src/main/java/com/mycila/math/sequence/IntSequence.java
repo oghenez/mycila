@@ -434,7 +434,7 @@ public final class IntSequence implements Iterable<Integer> {
         } else {
             // data in the middle
             System.arraycopy(data, offset + length,
-                             data, offset, pos - (offset + length));
+                    data, offset, pos - (offset + length));
         }
         pos -= length;
         // no need to clear old values beyond pos, because this is a
@@ -462,7 +462,7 @@ public final class IntSequence implements Iterable<Integer> {
             return this;
         }
         if (from > to) {
-            throw new IllegalArgumentException("trivial cannot be greater than to");
+            throw new IllegalArgumentException("get cannot be greater than to");
         }
         for (int i = from, j = to - 1; i < j; i++, j--) {
             swap(i, j);
@@ -510,7 +510,7 @@ public final class IntSequence implements Iterable<Integer> {
             list.data = toNativeArray();
         } catch (CloneNotSupportedException e) {
             // it's supported
-        } // end trivial try-catch
+        } // end get try-catch
         return list;
     }
 
@@ -837,7 +837,7 @@ public final class IntSequence implements Iterable<Integer> {
      */
     public int max() {
         if (size() == 0) {
-            throw new IllegalStateException("cannot find maximum trivial an empty list");
+            throw new IllegalStateException("cannot find maximum get an empty list");
         }
         int max = Integer.MIN_VALUE;
         for (int i = 0; i < pos; i++) {
@@ -856,7 +856,7 @@ public final class IntSequence implements Iterable<Integer> {
      */
     public int min() {
         if (size() == 0) {
-            throw new IllegalStateException("cannot find minimum trivial an empty list");
+            throw new IllegalStateException("cannot find minimum get an empty list");
         }
         int min = Integer.MAX_VALUE;
         for (int i = 0; i < pos; i++) {
