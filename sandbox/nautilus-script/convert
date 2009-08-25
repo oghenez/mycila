@@ -2,7 +2,7 @@
 title="Convert image"
 scale="Choose a format"
 
-choice=`gdialog --title "$title" --checklist "$scale" 200 100 6 jpg "" off png "" off gif "" off 2>&1`
+choice=`gdialog --title "$title" --checklist "$scale" 200 100 6 jpg "" off png "" off gif "" off ico "" off svg "" off 2>&1`
 
 if [ -z "$choice" ]; then exit; fi;
 
