@@ -1,0 +1,416 @@
+.search {
+    font-family: Verdana, Helvetica, sans-serif;
+    font-size: 9px;
+    font-weight: bold;
+    color: #424C74;
+    background-position: center
+}
+
+.teal_header {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    font-size: 12px;
+    font-style: normal;
+    color: #005288;
+    letter-spacing: 1px;
+    margin-left: 0px
+}
+
+.footer_gold_text {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-style: normal;
+    line-height: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    color: #a13006;
+}
+
+.side_related_link1 {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-style: normal;
+    line-height: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    color: #003399;
+}
+
+.footer_red {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-style: normal;
+    line-height: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    color: #bf551d;
+    text-decoration: none;
+}
+
+.embedded_gray {
+    font-family: arial, helvetica;
+    font-size: 12px;
+    color: #666666;
+    line-height: 17px
+}
+
+.footer_gray {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-style: normal;
+    line-height: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    color: #666666;
+    text-decoration: none;
+}
+
+a.footer_gray:link {
+    color: #666666;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* unvisited link */
+a.footer_gray:visited {
+    color: #666666;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* visited link */
+a.footer_gray:hover {
+    color: #666666;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+/* mouse over link */
+a.footer_gray:active {
+    color: #666666;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* selected link */
+
+ul.most_popular {
+    border-style: none;
+    list-style: none;
+    margin-left: 0;
+    margin-top: 5px;
+    padding-left: 0
+}
+
+ul.most_popular li {
+    background: url(http://i.cmpnet.com/embedded/2007/blue_dot.jpg) no-repeat 2px .35em;
+    padding-left: 15px;
+    padding-bottom: 0;
+    line-height: 14px
+}
+
+ul.most_popular a {
+    font-size: 10px;
+    font-family: verdana, arial;
+    font-weight: bold;
+    color: #000000;
+    text-decoration: none
+}
+
+ul.purple {
+    border-style: none;
+    list-style: none;
+    margin-left: 0;
+    margin-top: 0px;
+    padding-left: 0
+}
+
+ul.purple li {
+    background: url(http://i.cmpnet.com/embedded/2007/black_dot.gif) no-repeat 2px .35em;
+    padding-left: 15px;
+    padding-bottom: 0;
+    line-height: 16px
+}
+
+ul.purple a {
+    font-size: 11px;
+    font-family: verdana, arial;
+    font-weight: bold;
+    color: #145e8d;
+    text-decoration: none
+}
+
+.poll {
+    font-family: verdana, arial;
+    font-size: 10px;
+    color: #000000;
+    font-weight: bold;
+    line-height: 150%
+}
+
+.column {
+    font-size: 10px;
+    font-family: verdana, arial;
+    color: #000000;
+    text-align: left;
+    vertical-align: top;
+}
+
+.column a {
+    text-decoration: none
+}
+
+.column_header {
+    font-size: 12px;
+    font-family: verdana, arial;
+    font-weight: bold;
+    color: #bf551d;
+    text-align: left;
+    vertical-align: top;
+    padding-bottom: 3px
+}
+
+.column_header a {
+    text-decoration: none
+}
+
+.top_story_headline {
+    font-family: verdana, arial;
+    font-size: 14px;
+    font-weight: bold;
+    color: #145e8d;
+    text-decoration: none
+}
+
+.top_story_blurb {
+    font-family: verdana, arial;
+    font-size: 11px;
+    line-height: 16px;
+    padding-top: 4px
+}
+
+.story_headline {
+    font-family: verdana, arial;
+    font-size: 12px;
+    font-weight: bold;
+    color: #145e8d;
+    padding-bottom: 3px;
+    text-decoration: none
+}
+
+.story_blurb {
+    font-family: verdana, arial;
+    font-size: 11px;
+    color: #000000;
+    padding-bottom: 12px;
+    line-height: 15px
+}
+
+.tabbed_top_story_content {
+    padding-top: 10px
+}
+
+.tabbed_main_content {
+    padding-top: 7px
+}
+
+.gold_head {
+    font-family: verdana, arial;
+    font-size: 11px;
+    font-weight: bold;
+    color: #bf551d;
+    padding-top: 10px
+}
+
+.more {
+    margin-top: -18px;
+}
+
+.more a {
+    font-family: verdana, arial;
+    font-size: 11px;
+    font-weight: bold;
+    color: #000000;
+    text-decoration: none
+}
+
+.sub_template {
+    margin-top: -5px
+}
+
+.breadcrumb {
+    font-family: arial, helvetica;
+    font-size: 11px;
+    font-weight: bold;
+    color: #666666;
+    letter-spacing: .5px;
+    margin-left: 14px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    padding-top: 3px
+}
+
+.breadcrumb a {
+    text-decoration: none
+}
+
+.vertical_line {
+    background-image: url('http://i.cmpnet.com/embedded/2007/gray_dot.gif');
+    background-repeat: repeat
+}
+
+.archive_link {
+    font-family: verdana, arial;
+    font-size: 12px;
+    font-weight: bold;
+    color: #000000;
+    padding-top: 5px;
+    padding-bottom: 20px;
+    text-decoration: none
+}
+
+.archive_header {
+    font-family: verdana, arial;
+    font-weight: bold;
+    font-size: 17px;
+    color: #145e8d;
+    padding-bottom: 20px
+}
+
+.archive_sort {
+    font-family: verdana, arial;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.archive_gray {
+    font-family: arial, helvetica;
+    font-size: 11px;
+    color: #666666;
+    text-decoration: none
+}
+
+.archive_black {
+    font-family: arial, helvetica;
+    font-size: 11px;
+    color: #000000;
+    font-weight: bold;
+    text-decoration: none
+}
+
+.archive_header_row {
+    background-color: #145e8d;
+    font-family: verdana, arial;
+    font-size: 11px;
+    font-weight: bold;
+    color: #ffffff
+}
+
+.archive_title {
+    font-family: verdana, arial;
+    font-size: 10px;
+    font-weight: bold;
+    color: #145e8d;
+    text-decoration: none
+}
+
+.archive_auth_date {
+    font-family: verdana, arial;
+    font-size: 10px;
+    font-weight: bold;
+    color: #000000
+}
+
+.archive_pagination {
+    font-family: verdana, arial;
+    font-size: 10px;
+    font-weight: bold;
+    color: #145e8d;
+    text-decoration: none;
+    padding-left: 5px
+}
+
+.archive_pagination_current {
+    font-family: verdana, arial;
+    font-size: 10px;
+    font-weight: bold;
+    color: #000000;
+    padding-left: 5px
+}
+
+.article_headline {
+    font-family: verdana, arial;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.article_sub_head {
+    font-family: verdana, arial;
+    font-size: 13px;
+    font-weight: bold;
+    padding-top: 10px
+}
+
+.article_author {
+    font-family: verdana, arial;
+    font-size: 12px;
+    padding-top: 20px
+}
+
+.article_site {
+    font-family: verdana, arial;
+    font-size: 12px;
+    color: #145e8d;
+    font-weight: bold
+}
+
+.article_site a {
+    color: #145e8d
+}
+
+.article_date {
+    font-family: verdana, arial;
+    font-size: 12px
+}
+
+.article_body {
+    font-family: verdana, arial;
+    font-size: 12px;
+    padding-top: 20px;
+    padding-right: 3px
+}
+
+.article_pagination {
+    font-family: verdana, arial;
+    font-size: 10px;
+    font-weight: bold;
+    color: #145e8d;
+    text-align: center;
+    letter-spacing: 4px;
+    padding-top: 5px
+}
+
+.article_pagination a {
+    text-decoration: none;
+    color: #145e8d
+}
+
+.article_icons_wrapper {
+    float: right;
+    width: 105px;
+    padding-top: 20px;
+    padding-left: 30px
+}
+
+.article_icons_main {
+    float: right;
+    border: medium solid #eff3f6;
+    width: 105px;
+    padding: 5px
+}
+
+

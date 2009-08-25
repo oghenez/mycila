@@ -1,0 +1,82 @@
+#cc_container {
+    border: solid 0px #145e8d;
+    font: bold 11px arial;
+    text-align: left;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    overflow: hidden;
+    height: 150px
+}
+
+#cc_container a {
+    color: #145e8d;
+    text-decoration: none;
+}
+
+#cc_header_box {
+    background-color: #145e8d;
+    padding: 4px;
+    font-size: 12px;
+    color: #ffffff
+}
+
+#cc_control_box {
+    height: 40px;
+    padding: 8px
+}
+
+#cc_expression {
+    float: left;
+}
+
+#cc_controls {
+    float: right;
+}
+
+#cc_techcareerbox_left {
+    float: left
+}
+
+#cc_techcareerbox_right {
+    float: right
+}
+
+#sponsorbox {
+    background: #dadee8;
+    text-align: center
+}
+
+.cc_techcareerbox {
+    font: bold 11px arial;
+    text-align: left;
+    padding: 5px
+}
+
+.cc_top_box {
+    height: 125px;
+    width: auto;
+    margin-bottom: 0px;
+    border: solid 1px #145e8d;
+}
+
+.cc_bottom_box {
+    visibility: hidden;
+    height: auto;
+    width: auto;
+    border: solid 1px #145e8d;
+}
+
+ul.jobsearch {
+    border-style: none;
+    list-style: none;
+    margin-left: 0;
+    margin-top: 0px;
+    padding-left: 0
+}
+
+ul.jobsearch li {
+    background: url(http://i.cmpnet.com/embedded/2007/black_dot.gif) no-repeat 2px .35em;
+    padding-left: 15px;
+    padding-bottom: 0;
+    line-height: 15px
+}

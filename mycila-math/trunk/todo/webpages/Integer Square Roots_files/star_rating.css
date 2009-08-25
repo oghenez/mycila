@@ -1,0 +1,171 @@
+.star-rating,
+    .star-rating a:hover,
+    .star-rating a:active,
+    .star-rating a:focus,
+    .star-rating .current-rating {
+    background: url(http://i.cmpnet.com/embedded/v2/star.gif) left -1000px repeat-x;
+}
+
+.star-rating {
+    position: relative;
+    width: 125px;
+    height: 25px;
+    overflow: hidden;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background-position: left top;
+}
+
+.star-rating li {
+    display: inline;
+}
+
+.star-rating a,
+    .star-rating .current-rating {
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-indent: -1000em;
+    height: 25px;
+    line-height: 25px;
+    outline: none;
+    overflow: hidden;
+    border: none;
+}
+
+.star-rating a:hover,
+    .star-rating a:active,
+    .star-rating a:focus {
+    background-position: left bottom;
+}
+
+.star-rating a.one-star {
+    width: 20%;
+    z-index: 6;
+}
+
+.star-rating a.two-stars {
+    width: 40%;
+    z-index: 5;
+}
+
+.star-rating a.three-stars {
+    width: 60%;
+    z-index: 4;
+}
+
+.star-rating a.four-stars {
+    width: 80%;
+    z-index: 3;
+}
+
+.star-rating a.five-stars {
+    width: 100%;
+    z-index: 2;
+}
+
+.star-rating .current-rating {
+    z-index: 1;
+    background-position: left center;
+}
+
+/* for an inline rater */
+.inline-rating {
+    display: -moz-inline-block;
+    display: -moz-inline-box;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* smaller star */
+.small-star {
+    width: 50px;
+    height: 10px;
+}
+
+.small-star,
+    .small-star a:hover,
+    .small-star a:active,
+    .small-star a:focus,
+    .small-star .current-rating {
+    background-image: url(http://i.cmpnet.com/embedded/v2/star_small.gif);
+    line-height: 10px;
+    height: 10px;
+
+}
+
+/* source code star */
+.source-star-rating,
+    .source-star-rating a:hover,
+    .source-star-rating a:active,
+    .source-star-rating a:focus,
+    .source-star-rating .current-rating {
+    background: url(http://i.cmpnet.com/embedded/v2/source_code_star.gif) left -1000px repeat-x;
+}
+
+.source-star-rating {
+    position: relative;
+    width: 75px;
+    height: 15px;
+    overflow: hidden;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    background-position: left top;
+}
+
+.source-star-rating li {
+    display: inline;
+}
+
+.source-star-rating a,
+    .source-star-rating .current-rating {
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-indent: -1000em;
+    height: 15px;
+    line-height: 15px;
+    outline: none;
+    overflow: hidden;
+    border: none;
+}
+
+.source-star-rating a:hover,
+    .source-star-rating a:active,
+    .source-star-rating a:focus {
+    background-position: left bottom;
+}
+
+.source-star-rating a.one-star {
+    width: 20%;
+    z-index: 6;
+}
+
+.source-star-rating a.two-stars {
+    width: 40%;
+    z-index: 5;
+}
+
+.source-star-rating a.three-stars {
+    width: 60%;
+    z-index: 4;
+}
+
+.source-star-rating a.four-stars {
+    width: 80%;
+    z-index: 3;
+}
+
+.source-star-rating a.five-stars {
+    width: 100%;
+    z-index: 2;
+}
+
+.source-star-rating .current-rating {
+    z-index: 1;
+    background-position: left center;
+}
+
+

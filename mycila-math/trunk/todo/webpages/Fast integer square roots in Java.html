@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+
+    <title>ATOMS - Fast integer square root</title>
+    <meta name="description" content="Atoms - Fast integer square root">
+    <meta name="keywords" content="Atoms Square root Simulated Physics Atomic Particle Systems System Simulation Model Machine Engine Virtual WOrld Maths Collision Detection">
+</head>
+<body vlink="#008000" text="#000000" link="#20209f" alink="#ff2020" background="Fast%20integer%20square%20roots%20in%20Java_files/fstblu.jpg" bgcolor="#e8e8e8">
+
+<p>
+
+</p>
+<center>
+    <table height="100%" width="90%">
+        <tbody>
+        <tr>
+            <td valign="CENTER">
+
+                <center><img alt="ATOMS" src="Fast%20integer%20square%20roots%20in%20Java_files/atoms.gif" height="127" width="609"></center>
+                <p>
+
+                </p>
+
+                <h1 align="center">Fast integer square roots in Java</h1>
+
+                Here are several fast integer square root methods, written in Java, including:<p>
+
+                sqrt(x) agrees completely with (int)(java.lang.Math.sqrt(x)) for x &lt; 2147483648 (i.e. 2^31),
+                while executing about three times faster than it<sup><a href="#note1">1</a></sup>.</p>
+
+                <p>
+
+                    fast_sqrt(x) agrees completely with (int)(java.lang.Math.sqrt(x)) for x &lt; 289
+                    (and provides a reasonable approximation thereafter),
+                    while executing about five times faster than it<sup><a href="#note1">1</a></sup>.</p>
+
+                <p>
+
+                </p>
+                <ul>
+                    <li><a href="http://atoms.alife.co.uk/sqrt/SquareRoot.java">SquareRoot.java</a> - fast integer square root class;</li>
+                    <li><a href="http://atoms.alife.co.uk/sqrt/SquareRootTest.java">SquareRootTest.java</a> - basic speed and accuracy test class.</li>
+                </ul>
+
+                Thanks to <a href="http://www.azillionmonkeys.com/qed/sqroot.html">Paul Hsieh's square root page</a>
+                for the accurate algorithm.<p>
+
+                This code has been placed in the public domain.</p>
+
+                <p>
+
+                    Can you improve on the speed or accuracy of these methods (without chewing an
+                    "unreasonable" quantity of cache with a huge look-up table)?</p>
+
+                <p>
+
+                    If so, <a href="mailto:tim@tt1.org">drop us a line</a>, and <em>hopefully</em>
+                    we'll put your name up in lights.</p>
+
+                <p>
+
+                    <a name="note1">[1: your mileage may vary]</a></p>
+
+                <p>
+
+                </p>
+
+                <p>
+                </p>
+                <hr width="25%" align="center">
+                <p>
+
+                </p>
+                <address>
+                </address>
+                <center>
+                    <a name="note1"><em></em></a><em><a href="mailto:tim@tt1.org">tim@tt1.org</a></em> | <em><a href="http://atoms.org.uk/">http://atoms.org.uk/<br></a></em>
+                </center>
+
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</center>
+
+</body>
+</html>
