@@ -1,0 +1,85 @@
+/**
+ * Copyright (C) 2009 Mathieu Carbou <mathieu.carbou@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.mycila.math;
+
+/**
+ * @author Mathieu Carbou
+ */
+public final class Mod {
+
+    private Mod() {
+    }
+
+    /**
+     * Executes: <code>a*b % mod</code>, in 32 bits
+     */
+    public static int multiply(int a, int b, int mod) {
+        long c = (a % mod) * (b % mod);
+        return (int) (c % (long) mod);
+    }
+
+    /**
+     * Executes: <code>a*b % mod</code>, in 64 bits
+     */
+    public static long multiply(long a, long b, long mod) {
+        return ((a % mod) * (b % mod)) % mod;
+    }
+
+    /**
+     * Executes: <code>a+b % mod</code>, in 32 bits
+     */
+    public static int add(int a, int b, int mod) {
+        long c = (a % mod) + (b % mod);
+        return (int) (c % (long) mod);
+    }
+
+    /**
+     * Executes: <code>a+b % mod</code>, in 64 bits
+     */
+    public static long add(long a, long b, long mod) {
+        return ((a % mod) + (b % mod)) % mod;
+    }
+
+    /**
+     * Executes: <code>a^exp % mod</code>, in 32 bits
+     */
+    public static int pow(int a, int exp, int mod) {
+        long power = a;
+        long result = 1;
+        while (exp > 0) {
+            if ((exp & 1) == 1) result = (result * power) % mod;
+            power = (power * power) % mod;
+            exp >>= 1;
+        }
+        return (int) result;
+    }
+
+    /**
+     * Executes: <code>a^exp % mod</code>, in 64 bits
+     */
+    public static long pow(long a, long exp, long mod) {
+        long power = a;
+        long result = 1;
+        while (exp > 0) {
+            if ((exp & 1) == 1) result = (result * power) % mod;
+            power = (power * power) % mod;
+            exp >>= 1;
+        }
+        return result;
+    }
+
+}
+
