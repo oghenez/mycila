@@ -1,0 +1,417 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head>
+
+
+<title>Approximating Pi with Continued Fractions - Wolfram Demonstrations Project</title><meta name="keywords" content="continued fractions, function approximation, Pi"><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link rel="stylesheet" type="text/css" href="ApproximatingPiWithContinuedFractions_files/demos.css">
+<link rel="stylesheet" type="text/css" href="ApproximatingPiWithContinuedFractions_files/subheader.css">
+<link rel="stylesheet" type="text/css" href="ApproximatingPiWithContinuedFractions_files/thumbnail.css">
+<link rel="stylesheet" type="text/css" href="ApproximatingPiWithContinuedFractions_files/topicmenu.css">
+<link rel="stylesheet" type="text/css" href="ApproximatingPiWithContinuedFractions_files/participate.css">
+<link rel="alternate" type="application/xml" title="Demonstrations RSS Feed" href="http://demonstrations.wolfram.com/feeds/rss.xml">
+<link rel="alternate" type="application/atom+xml" title="Demonstrations ATOM Feed" href="http://demonstrations.wolfram.com/feeds/atom.xml">
+
+<script type="text/javascript" src="ApproximatingPiWithContinuedFractions_files/jquery-1.js"></script>
+<script type="text/javascript" src="ApproximatingPiWithContinuedFractions_files/flashobject.js"></script>
+<script type="text/javascript" src="ApproximatingPiWithContinuedFractions_files/flashinstalled.js"></script>
+
+<script type="text/vbscript" src="ApproximatingPiWithContinuedFractions_files/flashinstalled_vb.js"></script>
+<script type="text/javascript" src="ApproximatingPiWithContinuedFractions_files/macromedia.js"></script>
+<script type="text/javascript" src="ApproximatingPiWithContinuedFractions_files/functions.js"></script>
+<script type="text/javascript" src="ApproximatingPiWithContinuedFractions_files/Utf8.js"></script>
+<script type="text/javascript" src="ApproximatingPiWithContinuedFractions_files/downloadNotebook.js"></script>
+<script type="text/javascript" src="ApproximatingPiWithContinuedFractions_files/common.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		if($('.demoflash').width()) {
+			$('.pageWidth').width($('.demoflash').width() + 252);
+		}
+		if($('.searchboxhead').attr('value') != 'SEARCH') {
+					$('.searchboxhead').css('color','black');
+				}
+				$('.searchboxhead').focus(function() { 
+					if($('.searchboxhead').attr('value') == 'SEARCH') {
+						$('.searchboxhead').attr('value','').css('color','black');
+					}
+				});
+				$('.searchboxform').submit(function(){ 
+					if($('.searchboxhead').attr('value') == 'SEARCH') {
+						return false;
+					}
+				});
+				$('.searchboxhead').blur(function() {
+					if(!$('.searchboxhead').attr('value')) {
+						$('.searchboxhead').attr('value','SEARCH').css('color','grey');
+					}
+				});
+
+	});
+</script>
+</head><body>
+<div class="backgroundImage">
+<table align="center" border="0" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td align="left">
+	<div class="subPageHeaderBG">
+		<div class="topStrip"><a href="http://www.wolfram.com/">Wolfram Research</a>&nbsp;<img src="ApproximatingPiWithContinuedFractions_files/divider.gif" alt="" align="absmiddle" border="0" height="13" hspace="0" vspace="0" width="11">&nbsp;<em><a href="http://www.wolfram.com/mathematica/">Mathematica</a></em>&nbsp;&nbsp;&nbsp;&nbsp;<em><a href="http://mathworld.wolfram.com/">MathWorld</a></em>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.wolframscience.com/">Wolfram Science</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://www.wolfram.com/webresources.html">More »&nbsp;&nbsp;&nbsp;&nbsp;<img src="ApproximatingPiWithContinuedFractions_files/WolframWebResources.gif" class="webresources" alt="Wolfram Web Resources" title="Wolfram Web Resources" align="absmiddle" border="0" height="20" width="156"></a>
+			<div title="Wolfram Demonstrations Project" alt="Wolfram Demonstrations Project" onclick="location.href='/index.html'" style="width: 500px; height: 40px;"></div></div>
+		<div class="subnavContainer">
+			<div class="subnavHolder">
+				<div class="subnav" style="padding: 8px 0px 0px 15px;"><a href="http://demonstrations.wolfram.com/index.html">HOME</a></div>
+				<div class="subnav"><a href="http://demonstrations.wolfram.com/topics.html">TOPICS</a></div>
+				<div class="subnav"><a href="http://demonstrations.wolfram.com/new.html">LATEST</a></div>
+				<div class="subnav"><a href="http://demonstrations.wolfram.com/about.html">ABOUT</a></div>
+				<div class="subnav"><a href="http://demonstrations.wolfram.com/FAQ.html">FAQS</a></div>
+				<div class="subnav"><a href="http://demonstrations.wolfram.com/participate.html">PARTICIPATE</a></div>					
+				<div class="subnav"><a href="http://demonstrations.wolfram.com/participate/authoringarea.jsp">AUTHORING AREA</a>
+</div>
+<form class="searchboxform" method="get" action="/search.html">
+<input class="searchboxhead" value="SEARCH" name="query" type="text">
+<input class="searchboxbutton" name="submit" src="ApproximatingPiWithContinuedFractions_files/spacer_002.gif" type="image">
+</form>
+
+			</div>
+		</div>
+	</div>
+</td>
+</tr>
+
+<!-- <table border="0" cellspacing="0" cellpadding="0" style="margin-left: auto; margin-right: auto;"> -->
+<tr>
+<td>	
+	<div style="width: 810px;" class="pageWidth">
+		<div class="mainContentColumn">
+
+
+ 
+<table border="0" cellpadding="0" cellspacing="0"><tbody><tr><td>
+<div class="demobody">
+<h1>Approximating Pi with Continued Fractions</h1>
+<div class="demodownloadbutton"><a href="http://demonstrations.wolfram.com/ApproximatingPiWithContinuedFractions/ApproximatingPiWithContinuedFractions.nbp" onclick="downloadNotebook('ApproximatingPiWithContinuedFractions.nbp');return false"><img src="ApproximatingPiWithContinuedFractions_files/download_02.gif" alt="" border="0"></a></div>
+
+<table class="DemoPreviewTable" border="0" cellpadding="0" cellspacing="0">
+  <tbody><tr>
+    <td colspan="3"><div class="DemoPreviewBarTop"><img src="ApproximatingPiWithContinuedFractions_files/spacer_002.gif" alt=""></div></td>
+  </tr>
+  <tr>  
+    <td class="DemoPreviewFadeTop" valign="top"><img src="ApproximatingPiWithContinuedFractions_files/spacer_002.gif" alt="" height="225" width="1"></td>
+    <td rowspan="2" valign="top">
+    <div class="demoflash"><div id="mainFlash"><embed type="application/x-shockwave-flash" src="ApproximatingPiWithContinuedFractions_files/playback.swf" id="mainFlash" name="mainFlash" bgcolor="#ffffff" quality="high" wmode="transparent" allowscriptaccess="sameDomain" loop="false" menu="false" scale="noscale" salign="lt" height="615" width="554"></div></div>
+    <div class="CaptionSectionGroup"><div class="Caption">Continued
+fractions provide a very effective toolset for approximating functions.
+Usually the continued fraction expansion of a function approximates the
+function better than its Taylor or Fourier series. This Demonstration
+compares the quality of two approximations for <span class="InlineFormula"><img src="ApproximatingPiWithContinuedFractions_files/1.gif" align="absmiddle"></span>.
+One is a continued fraction approximation derived from one for the
+Gamma function and based on that, the other is a continued fraction
+expansion the author has developed as a canonical even contraction.</div></div></td>  
+    <td class="DemoPreviewFadeTop" valign="top"><img src="ApproximatingPiWithContinuedFractions_files/spacer_002.gif" alt="" height="225" width="1"></td>
+  </tr>
+    <tr>
+    <td class="DemoPreviewFadeBottom" valign="top"><img src="ApproximatingPiWithContinuedFractions_files/spacer_002.gif" height="1" width="1"></td>
+    <td class="DemoPreviewFadeBottom" valign="top"><img src="ApproximatingPiWithContinuedFractions_files/spacer_002.gif" height="1" width="1"></td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="ApproximatingPiWithContinuedFractions_files/spacer_002.gif" height="1" width="1"></td>
+    <td>
+       <div class="DownloadSourceWrapper"><div class="DownloadSource"><img src="ApproximatingPiWithContinuedFractions_files/spacer.gif" alt="" border="0"></div></div>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="ApproximatingPiWithContinuedFractions_files/spacer_002.gif" height="1" width="1"></td>
+    <td>
+      <div class="authorBox"><div class="AuthorSectionGroup"><ul class="Author"><li>Contributed by: <a href="http://demonstrations.wolfram.com/author.html?author=Andreas+Lauschke" target="top" class="relatedLink">Andreas Lauschke</a></li></ul></div></div>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top"><img src="ApproximatingPiWithContinuedFractions_files/spacer_002.gif" height="1" width="1"></td>
+    <td class="code">
+      <div><div class="CodeSectionGroup"><a href="javascript:codeshowhide('source');return%20false;" onclick="javascript:codeshowhide('source');return false;" onmouseover="window.status='';return true" onmouseout="window.status='';return true"><span class="innerText"><img src="ApproximatingPiWithContinuedFractions_files/sourcecodeicon-show.gif" id="sourceText" name="sourceText" border="0"></span></a> <a class="downloadLink" href="http://demonstrations.wolfram.com/ApproximatingPiWithContinuedFractions/ApproximatingPiWithContinuedFractions-source.nb"><span class="innerText"><img src="ApproximatingPiWithContinuedFractions_files/DownloadSourceCode.gif" border="0"></span></a><br><div class="sourceGroup_Hide" id="sourceGroup" name="sourceGroup"><div class="manipulateSource"><div class="Input"><img src="ApproximatingPiWithContinuedFractions_files/21.gif" height="854" width="495"></div></div></div></div></div>
+    </td>
+  </tr>  
+</tbody></table>
+
+<div class="SnapshotsSectionGroup"><span class="SnapshotOutput"><a href="javascript:setVisible('2');" onclick="javascript:setVisible('2');return false;"><img src="ApproximatingPiWithContinuedFractions_files/thumbnail_2.gif" border="0" height="173" width="162"></a><div id="popup2" class="popupLayer" style="top: -186px; left: 80px;"><a name="486699909"></a><div class="popupCloseBox"><a name="486699909"></a><a href="javascript:setVisible('2');return%20false;" onclick="javascript:setVisible('2');return false;">X</a></div><div class="popupContent"><a name="486699909"></a><img src="ApproximatingPiWithContinuedFractions_files/popup_2.jpg" border="0"></div></div></span><span class="SnapshotOutput"><a href="javascript:setVisible('3');" onclick="javascript:setVisible('3');return false;"><img src="ApproximatingPiWithContinuedFractions_files/thumbnail_3.gif" border="0" height="173" width="162"></a><div id="popup3" class="popupLayer" style="top: -186px; left: 80px;"><a name="116841607"></a><div class="popupCloseBox"><a name="116841607"></a><a href="javascript:setVisible('3');return%20false;" onclick="javascript:setVisible('3');return false;">X</a></div><div class="popupContent"><a name="116841607"></a><img src="ApproximatingPiWithContinuedFractions_files/popup_3.jpg" border="0"></div></div></span><span class="SnapshotOutput"><a href="javascript:setVisible('4');" onclick="javascript:setVisible('4');return false;"><img src="ApproximatingPiWithContinuedFractions_files/thumbnail_4.gif" border="0" height="173" width="162"></a><div id="popup4" class="popupLayer" style="top: -186px; left: 80px;"><a name="105625071"></a><div class="popupCloseBox"><a name="105625071"></a><a href="javascript:setVisible('4');return%20false;" onclick="javascript:setVisible('4');return false;">X</a></div><div class="popupContent"><a name="105625071"></a><img src="ApproximatingPiWithContinuedFractions_files/popup_4.jpg" border="0"></div></div></span><span class="SnapshotOutput"><a href="javascript:setVisible('5');" onclick="javascript:setVisible('5');return false;"><img src="ApproximatingPiWithContinuedFractions_files/thumbnail_5.gif" border="0" height="173" width="162"></a><div id="popup5" class="popupLayer" style="top: -186px; left: 80px;"><a name="213654602"></a><div class="popupCloseBox"><a name="213654602"></a><a href="javascript:setVisible('5');return%20false;" onclick="javascript:setVisible('5');return false;">X</a></div><div class="popupContent"><a name="213654602"></a><img src="ApproximatingPiWithContinuedFractions_files/popup_5.jpg" border="0"></div></div></span><span class="SnapshotOutput"><a href="javascript:setVisible('6');" onclick="javascript:setVisible('6');return false;"><img src="ApproximatingPiWithContinuedFractions_files/thumbnail_6.gif" border="0" height="173" width="162"></a><div id="popup6" class="popupLayer" style="top: -186px; left: 80px;"><a name="227777797"></a><div class="popupCloseBox"><a name="227777797"></a><a href="javascript:setVisible('6');return%20false;" onclick="javascript:setVisible('6');return false;">X</a></div><div class="popupContent"><a name="227777797"></a><img src="ApproximatingPiWithContinuedFractions_files/popup_6.jpg" border="0"></div></div></span><span class="SnapshotOutput"><a href="javascript:setVisible('7');" onclick="javascript:setVisible('7');return false;"><img src="ApproximatingPiWithContinuedFractions_files/thumbnail_7.gif" border="0" height="173" width="162"></a><div id="popup7" class="popupLayer" style="top: -186px; left: 80px;"><a name="752644275"></a><div class="popupCloseBox"><a name="752644275"></a><a href="javascript:setVisible('7');return%20false;" onclick="javascript:setVisible('7');return false;">X</a></div><div class="popupContent"><a name="752644275"></a><img src="ApproximatingPiWithContinuedFractions_files/popup_7.jpg" border="0"></div></div></span><br clear="all"></div>
+
+<div class="DetailsSectionGroup"><img src="ApproximatingPiWithContinuedFractions_files/details.gif"><br><div class="DetailNotes"><a name="401525039"></a>The number of terms used in the continued fraction expansion is <span class="InlineFormula"><img src="ApproximatingPiWithContinuedFractions_files/8.gif" align="absmiddle"></span>, and <span class="InlineFormula"><img src="ApproximatingPiWithContinuedFractions_files/9.gif" align="absmiddle"></span> is a parameter (natural number). Larger values of <span class="InlineFormula"><img src="ApproximatingPiWithContinuedFractions_files/10.gif" align="absmiddle"></span> increase the quality of the approximation.</div><div class="DetailNotes"><a name="91438893"></a>The <span class="InlineFormula"><img src="ApproximatingPiWithContinuedFractions_files/11.gif" align="absmiddle"></span> approximation using the noncontracted continued fraction is</div><div class="DetailNotes"><a name="413257718"></a><span class="InlineFormula"><img src="ApproximatingPiWithContinuedFractions_files/12.gif" align="absmiddle"></span>.</div><div class="DetailNotes"><a name="676476425"></a>The <span class="InlineFormula"><img src="ApproximatingPiWithContinuedFractions_files/13.gif" align="absmiddle"></span> approximation using the contracted continued fraction is</div><div class="DetailNotes"><a name="2037328"></a><span class="InlineFormula"><img src="ApproximatingPiWithContinuedFractions_files/14.gif" align="absmiddle"></span></div><div class="DetailNotes"><a name="349099801"></a>Additional Information:</div><div class="DetailNotes"><a name="762566641"></a>The
+algorithm uses the backward recurrence method to compute the continued
+fraction expansion. This method has been shown to be extremely stable
+for most continued fraction expansions, which is extremely important on
+numerical platforms that incur truncation/round-off error due to the
+limitations of machine precision. It can be shown that the backward
+recurrence method ("from tail to head") is vastly more stable (even
+self-correcting) than the forward recurrence method ("from head to
+tail") for two important classes of continued fractions: the Stieltjes
+continued fractions (which include the C-fractions) and those that
+fulfill the parabolic convergence region theorem. Several function
+classes with known Stieltjes continued fraction expansions include:
+exponential integrals, incomplete gamma functions, logarithms of gamma
+functions, the error function, ratios of successive Bessel functions of
+the first kind, Euler's hypergeometric function, as well as various
+elementary transcendental functions. The forward recurrence method
+(which solves a second-order linear difference equation), however, can
+be computationally more efficient due to the carry-over of results from
+one step to the next, which is a property the backward recurrence
+method does not possess.</div><div class="DetailNotes"><a name="192089618"></a>Although
+the terms in the canonical contraction are more complex than the ones
+in the original noncontracted continued fraction expansion, the speed
+gain on traditional numerical platforms (Java, .Net, C) is substantial.
+The following uses 10,000 uniformly distributed random numbers between
+3 and 20 for <span class="InlineFormula"><img src="ApproximatingPiWithContinuedFractions_files/15.gif" align="absmiddle"></span> and between 0 and 5 for <span class="InlineFormula"><img src="ApproximatingPiWithContinuedFractions_files/16.gif" align="absmiddle"></span> and outputs the computation time. As the design of the canonical contraction requires only <span class="MR">Floor[n/2]-1</span> steps to produce the same number when <span class="InlineFormula"><img src="ApproximatingPiWithContinuedFractions_files/17.gif" align="absmiddle"></span> steps are used in the original noncontracted continued fraction expansion, <span class="InlineFormula"><img src="ApproximatingPiWithContinuedFractions_files/18.gif" align="absmiddle"></span>
+steps are used for the function "noncontracted" to ensure both methods
+attain the same accuracy. To minimize any possible inaccuracies in the
+Java time measurement due to cycle lapses every computation is carried
+out 1000 times.</div><div class="DetailNotes"><a name="340540722"></a>import java.util.Random;<br><br>public class piapprox {<br>	<br>	final private static int factorial(final int k)<br>	{<br>		int kk=1;<br>		for (int i = 1; i <span class="InlineFormula"><img src="ApproximatingPiWithContinuedFractions_files/19.gif" align="absmiddle"></span> k; i++) {<br>			kk = kk * i;<br>		}<br>		return kk;<br>	}<br><br>	final private static int power(final int k)<br>	{<br>		int kk=1;<br>		for (int i = 1; i <span class="InlineFormula"><img src="ApproximatingPiWithContinuedFractions_files/20.gif" align="absmiddle"></span> k; i++) {<br>			kk = kk * 2;<br>		}<br>		return kk;<br>	}<br>	<br>	final private static double noncontracted(final int steps, final int k)<br>	{<br>		double res=0;<br>		for (int m = steps; m &gt; 0; m--) {<br>			res = (1 + m*(-4 + 4*m))/ (8*k+2 + res);<br>		}<br>		int numerator =factorial(k)*factorial(k);<br>		int denominator=factorial(2*k);<br>		return (double) numerator*numerator/denominator/denominator*power(4*k)* 4/(4*k+1+res);<br>	}<br><br>	final private static double contracted(final int steps, final int k)<br>	{<br>		double res=0;<br>		for (int m = steps-1; m &gt; -1; m--) {<br>			res = (-225 + m*(-960 + m*(-1504 + (-1024 - 256*m)*m)))/ ((78 + k*(32 + 64*k) + m*(96 + 32*m)) + res);<br>		}<br>		int numerator =factorial(k)*factorial(k);<br>		int denominator=factorial(2*k);<br>		return (double) numerator*numerator/denominator/denominator*power(4*k)* 4/(4*k+1+(2 + 8*k)/(13 + k* (32 + 64*k)+res));<br>	}<br>	<br>	final public static void main(String[] args)<br>	{<br>		<br>		Random generator = new Random();<br>		<br>		long t1, t2;<br>		long t3=0;<br>		long t4=0;<br>		double ratio;<br>		int n,k;<br>		for (int c = 0; c &lt; 10000; c++) {<br>			n = 3+generator.nextInt(18);<br>			k = generator.nextInt(5);<br>		<br>			t1 = System.currentTimeMillis();<br>			for (int i = 0; i &lt; 1000; i++) {<br>				noncontracted(2*n+2,k);<br>			}<br>			t2 = System.currentTimeMillis();<br>			t3= t3+t2-t1;<br>			<br>			t1 = System.currentTimeMillis();<br>			for (int i = 0; i &lt; 1000; i++) {<br>				contracted(n,k);<br>			}<br>			t2 = System.currentTimeMillis();<br>			t4= t4+t2-t1;<br>		}<br>		<br>		ratio=(double)t3/t4;<br>		System.out.println("Method: non-contracted, Milliseconds: " + t3);<br>		System.out.println("Method: contracted, Milliseconds: " + t4+", Ratio: "+ratio);<br>	}<br><br>}</div><div class="DetailNotes"><a name="19433960"></a>One can clearly see that the contracted continued fraction approximation outperforms by 30 to 60% in every case.</div><div class="DetailNotes"><a name="282700473"></a>The
+backward recurrence method of the continued fraction expansion is also
+more stable than its conversion to a Padé approximation, even when
+several forms of the efficient <span class="MR">HornerForm</span> of the numerator and denominator polynomials are used.</div></div>
+
+<div class="RelatedLinksSectionGroup"><img src="ApproximatingPiWithContinuedFractions_files/relatedlinks.gif"><br><ul class="RelatedLinks"><div class="RelatedLinks"><a name="163135801"></a><a href="http://mathworld.wolfram.com/ContinuedFraction.html" target="top" class="relatedLink">Continued Fraction</a> (<a href="http://mathworld.wolfram.com/" target="top" class="relatedSiteLink">Wolfram</a> <a href="http://mathworld.wolfram.com/" target="top" class="relatedSiteLink"><i>MathWorld</i></a>)</div><div class="RelatedLinks"><a name="31197952"></a><a href="http://mathworld.wolfram.com/PadeApproximant.html" target="top" class="relatedLink">Padé Approximant</a> (<a href="http://mathworld.wolfram.com/" target="top" class="relatedSiteLink">Wolfram</a> <a href="http://mathworld.wolfram.com/" target="top" class="relatedSiteLink"><i>MathWorld</i></a>)</div><div class="RelatedLinks"><a name="751408669"></a><a href="http://mathworld.wolfram.com/Pi.html" target="top" class="relatedLink">Pi</a> (<a href="http://mathworld.wolfram.com/" target="top" class="relatedSiteLink">Wolfram</a> <a href="http://mathworld.wolfram.com/" target="top" class="relatedSiteLink"><i>MathWorld</i></a>)</div></ul></div>
+
+<div class="CitationSectionGroup"><img src="ApproximatingPiWithContinuedFractions_files/permcitation.gif"><br><div class="Citations">"<a href="http://demonstrations.wolfram.com/ApproximatingPiWithContinuedFractions/" target="top" class="relatedSiteLink">Approximating Pi with Continued Fractions</a>" from <a href="http://demonstrations.wolfram.com/" target="top" class="relatedSiteLink">The Wolfram Demonstrations Project</a><br>&nbsp;<a href="http://demonstrations.wolfram.com/ApproximatingPiWithContinuedFractions/" target="top" class="relatedSiteLink">http://demonstrations.wolfram.com/ApproximatingPiWithContinuedFractions/</a></div><div class="CitationsAuthor">Contributed by: <a href="http://demonstrations.wolfram.com/author.html?author=Andreas+Lauschke" target="top" class="relatedLink">Andreas Lauschke</a></div></div>  
+ <div class="AuthorSectionGroup"> </div>
+
+</div>
+
+
+</td></tr></tbody></table>
+    
+
+    </div><!--closes mainContentColumn-->
+
+
+<script language="JavaScript">
+function popUp(URL) {
+day = new Date();
+id = day.getTime();
+eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=640,height=500');");
+}
+</script>
+<script type="text/javascript">
+	<!--
+	function toggleSlide(objname){if(document.getElementById(objname).style.display == "none") {showSlide(objname);} else {hideSlide(objname);}}
+	function showSlide(objname){document.getElementById(objname).style.display = "block";}
+	function hideSlide(objname){document.getElementById(objname).style.display = "none";}
+	-->
+</script>
+
+
+
+
+
+<!-- ------------------------------ begin footer ------------------------------ -->
+
+		
+<div class="sidebarContentColumn">	
+				
+	
+	
+	<!--	<div style="margin-left:-2px; margin-bottom:12px;">
+		<a href="http://www.wolfram.com/products/player/download.cgi" target="_blank"><img 
+		src="/images/free_dwn_MP.gif" alt="Free Download: Mathematica Player--Runs all Demonstrations & more" 
+		title="Free Download: Mathematica Player--Runs all Demonstrations & more" border="0"></a>
+		</div> -->
+		
+		
+		<script type="text/javascript">
+  var dlimg = new Image();
+  dlimg.src = "/images/download_02_Over.gif";
+</script><div style="margin-left: -10px; margin-bottom: 9px;"><a href="http://www.wolfram.com/products/player/download.cgi" target="_blank"><img src="ApproximatingPiWithContinuedFractions_files/free_dwn_MP.gif" alt="Interact with Demonstrations using the latest version of the free Mathematica Player&#8212;Download Now" title="Interact with Demonstrations using the latest version of the free Mathematica Player&#8212;Download Now" style="position: relative;" border="0"></a></div><div class="sidebargreen"><div class="sidebarheadergreen"><img src="ApproximatingPiWithContinuedFractions_files/spacer_002.gif" height="1" width="1"></div><div class="sidebarInner"><img src="ApproximatingPiWithContinuedFractions_files/related_topics.gif" alt="Related Topics" title="Related Topics" border="0"><br><ul><li><a class="sidebarcategory" href="http://demonstrations.wolfram.com/topic.html?topic=Approximation+Methods&amp;limit=20">Approximation Methods</a></li><li><a class="sidebarcategory" href="http://demonstrations.wolfram.com/topic.html?topic=Calculus&amp;limit=20">Calculus</a></li><li><a class="sidebarcategory" href="http://demonstrations.wolfram.com/topic.html?topic=Pi&amp;limit=20">Pi</a></li><li><a class="sidebarcategory" href="http://demonstrations.wolfram.com/topic.html?topic=Series&amp;limit=20">Series</a></li></ul><div style="border-top: 1px solid rgb(204, 213, 161); font-size: 10px; padding-top: 5px; margin-bottom: 4px;"><a class="sidebarcategory" href="http://demonstrations.wolfram.com/topics.html"><img valign="absmiddle" style="margin: 0px; padding: 0px;" alt="" src="ApproximatingPiWithContinuedFractions_files/opener.gif" border="0"> Browse all topics</a></div></div></div><br><div class="sidebargreen"><div class="sidebarheadergreen"><img src="ApproximatingPiWithContinuedFractions_files/spacer_002.gif" height="1" width="1"></div><div class="sidebarInner"><img src="ApproximatingPiWithContinuedFractions_files/related_demonstratons.gif" alt="Some Related Demonstrations" title="Related Demonstrations" border="0"><br><ul><li><a class="sidebardemo" href="http://demonstrations.wolfram.com/ClassicalApproximationsOfPi/">Classical Approximations of Pi</a></li><li><a class="sidebardemo" href="http://demonstrations.wolfram.com/ApproximatingPiWithInscribedNonRegularPolygons/">Approximating Pi with Inscribed Non-Regular Polygons</a></li><li><a class="sidebardemo" href="http://demonstrations.wolfram.com/ArchimedesApproximationOfPi/">Archimedes' Approximation of Pi</a></li><li><a class="sidebardemo" href="http://demonstrations.wolfram.com/AccuracyOfSeriesApproximations/">Accuracy of Series Approximations</a></li><li><a class="sidebardemo" href="http://demonstrations.wolfram.com/NumericalInversionOfTheLaplaceTransformTheFourierSeriesAppro/">Numerical Inversion of the Laplace Transform: The Fourier Series Approximation</a></li><li><a class="sidebardemo" href="http://demonstrations.wolfram.com/HaarFunctionIntervalPoints/">Haar Function Interval Points</a></li><li><a class="sidebardemo" href="http://demonstrations.wolfram.com/GraphsOfTaylorPolynomials/">Graphs of Taylor Polynomials</a></li><li><a class="sidebardemo" href="http://demonstrations.wolfram.com/NormalDistributionWithContinuedFractions/">Normal Distribution with Continued Fractions</a></li><li><a class="sidebardemo" href="http://demonstrations.wolfram.com/BooleDifferentialEquationWithContinuedFractions/">Boole Differential Equation with Continued Fractions</a></li><li><a class="sidebardemo" href="http://demonstrations.wolfram.com/MultipointPadeApproximants/">Multipoint Padé Approximants</a></li></ul></div></div>
+		
+		<br>
+		
+		  <div class="addthumbwrap"><script type="text/javascript">
+function showBookmarks(id) {
+  var ids = ['link-open','embed-open','bookmark-icons'];
+  jQuery.each(ids, function(){
+    if(this != id) {
+      $("#"+this).hide();
+    }
+  });
+  $("#"+id).toggle();
+}
+</script><div style="margin-bottom: 15px;"><img src="ApproximatingPiWithContinuedFractions_files/Bookmark_Share.gif" alt="Share &amp; Bookmark This Demonstration" title="Share &amp; Bookmark This Demonstration"></div><ul class="bookmark-list"><li><a class="sidebardemo" href="mailto:?Subject=Approximating%20Pi%20with%20Continued%20Fractions&amp;Body=Check%20this%20out%20on%20the%20Wolfram%20Demonstrations%20Project%3A%0A%0Ahttp%3A%2F%2Fdemonstrations.wolfram.com%2FApproximatingPiWithContinuedFractions%2F">Email</a></li><li><a href="javascript:showBookmarks('link-open');" onclick="javascript:showBookmarks('link-open');return false;" class="sidebardemo">Link to URL</a><div id="link-open" style="display: none;"><input class="SideBarShareItBox" value="&lt;a href=&quot;http://demonstrations.wolfram.com/ApproximatingPiWithContinuedFractions/&quot;&gt;Approximating Pi with Continued Fractions&lt;/a&gt;" onfocus="this.select()"></div></li><li><a class="sidebardemo" href="javascript:showBookmarks('embed-open');" onclick="javascript:showBookmarks('embed-open');return false;">Embed</a><div id="embed-open" style="display: none;"><input class="SideBarShareItBox" style="clear: both;" value="&lt;a href=&quot;http://demonstrations.wolfram.com/ApproximatingPiWithContinuedFractions/&quot;&gt;&lt;img src=&quot;http://demonstrations.wolfram.com/ApproximatingPiWithContinuedFractions/thumbnail_174.jpg&quot; border=&quot;0&quot; alt=&quot;&amp;quot;Approximating Pi with Continued Fractions&amp;quot; from the Wolfram Demonstrations Project&quot; title=&quot;&amp;quot;Approximating Pi with Continued Fractions&amp;quot; from the Wolfram Demonstrations Project&quot; /&gt;&lt;/a&gt;" onfocus="this.select()"><img src="ApproximatingPiWithContinuedFractions_files/thumbnail_174.jpg" alt="&quot;Approximating Pi with Continued Fractions&quot; from the Wolfram Demonstrations Project" title="&quot;Approximating Pi with Continued Fractions&quot; from the Wolfram Demonstrations Project" style="margin-top: 5px;" border="0"></div></li><li><a class="sidebardemo" href="" onclick="javascript:showBookmarks('bookmark-icons');return false;">Bookmark</a></li></ul><div id="bookmark-icons" style="display: none;"><div><a href="http://del.icio.us/post?&amp;url=http%3A%2F%2Fdemonstrations.wolfram.com%2FApproximatingPiWithContinuedFractions%2F&amp;title=Approximating+Pi+with+Continued+Fractions+-+Wolfram+Demonstrations+Project" class="linkopacity extl" target="_blank"><img src="ApproximatingPiWithContinuedFractions_files/delicious.png" alt="del.icio.us" title="del.icio.us" border="0"></a><a href="http://technorati.com/faves/?add=http%3A%2F%2Fdemonstrations.wolfram.com%2FApproximatingPiWithContinuedFractions%2F" class="linkopacity extl" target="_blank"><img src="ApproximatingPiWithContinuedFractions_files/technorati.png" alt="Technorati" title="Technorati" border="0"></a><a href="http://digg.com/submit?phase=2&amp;url=http%3A%2F%2Fdemonstrations.wolfram.com%2FApproximatingPiWithContinuedFractions%2F&amp;title=Approximating%20Pi%20with%20Continued%20Fractions" class="linkopacity extl" target="_blank"><img src="ApproximatingPiWithContinuedFractions_files/digg.png" alt="Digg" title="Digg" border="0"></a><a href="http://reddit.com/submit?url=http%3A%2F%2Fdemonstrations.wolfram.com%2FApproximatingPiWithContinuedFractions%2F&amp;title=Approximating+Pi+with+Continued+Fractions+-+Wolfram+Demonstrations+Project" class="linkopacity extl" target="_blank"><img src="ApproximatingPiWithContinuedFractions_files/reddit.gif" alt="reddit" title="reddit" border="0"></a><a href="http://www.stumbleupon.com/submit?url=http%3A%2F%2Fdemonstrations.wolfram.com%2FApproximatingPiWithContinuedFractions%2F&amp;title=Approximating+Pi+with+Continued+Fractions+-+Wolfram+Demonstrations+Project" class="linkopacity extl" target="_blank"><img src="ApproximatingPiWithContinuedFractions_files/su.png" alt="StumbleUpon" title="StumbleUpon" border="0"></a><a href="http://www.spurl.net/spurl.php?url=http%3A%2F%2Fdemonstrations.wolfram.com%2FApproximatingPiWithContinuedFractions%2F&amp;title=Approximating+Pi+with+Continued+Fractions+-+Wolfram+Demonstrations+Project" class="linkopacity extl" target="_blank"><img src="ApproximatingPiWithContinuedFractions_files/spurl.png" alt="Spurl" title="Spurl" border="0"></a></div><div style="margin-top: 7px;"><a href="http://www.facebook.com/sharer.php?u=http%3A%2F%2Fdemonstrations.wolfram.com%2FApproximatingPiWithContinuedFractions%2F" class="linkopacity extl" target="_blank"><img src="ApproximatingPiWithContinuedFractions_files/facebook.gif" alt="Facebook" title="Facebook" border="0"></a><a href="http://www.google.com/bookmarks/mark?op=edit&amp;bkmk=http%3A%2F%2Fdemonstrations.wolfram.com%2FApproximatingPiWithContinuedFractions%2F&amp;title=Approximating+Pi+with+Continued+Fractions+-+Wolfram+Demonstrations+Project" class="linkopacity extl" target="_blank"><img src="ApproximatingPiWithContinuedFractions_files/goog.png" alt="Google" title="Google" border="0"></a><a href="https://favorites.live.com/quickadd.aspx?marklet=1&amp;mkt=en-us&amp;url=http%3A%2F%2Fdemonstrations.wolfram.com%2FApproximatingPiWithContinuedFractions%2F&amp;title=Approximating+Pi+with+Continued+Fractions+-+Wolfram+Demonstrations+Project" onclick="window.open('https://favorites.live.com/quickadd.aspx?marklet=1&amp;mkt=en-us&amp;url=http%3A%2F%2Fdemonstrations.wolfram.com%2FApproximatingPiWithContinuedFractions%2F&amp;title=Approximating+Pi+with+Continued+Fractions+-+Wolfram+Demonstrations+Project','Windows Live','menubar=no,toolar=no'); return false;" class="linkopacity extl" target="_blank"><img src="ApproximatingPiWithContinuedFractions_files/live.gif" alt="Windows Live" title="Windows Live" border="0"></a><a href="http://www.furl.net/store?s=f&amp;to=0&amp;u=http%3A%2F%2Fdemonstrations.wolfram.com%2FApproximatingPiWithContinuedFractions%2F&amp;ti=Approximating+Pi+with+Continued+Fractions+-+Wolfram+Demonstrations+Project" class="linkopacity extl" target="_blank"><img src="ApproximatingPiWithContinuedFractions_files/furl.gif" alt="furl" title="furl" border="0"></a><a href="http://myweb2.search.yahoo.com/myresults/bookmarklet?u=http%3A%2F%2Fdemonstrations.wolfram.com%2FApproximatingPiWithContinuedFractions%2F&amp;t=Approximating+Pi+with+Continued+Fractions+-+Wolfram+Demonstrations+Project" class="linkopacity extl" target="_blank"><img src="ApproximatingPiWithContinuedFractions_files/yahoo-myweb.png" alt="Yahoo: My Web" title="Yahoo: My Web" border="0"></a><a href="http://www.addthis.com/bookmark.php?pub=L4DJFTEHPAW2JE1G&amp;url=http%3A%2F%2Fdemonstrations.wolfram.com%2FApproximatingPiWithContinuedFractions%2F&amp;title=Approximating+Pi+with+Continued+Fractions+-+Wolfram+Demonstrations+Project" class="linkopacity extl" target="_blank"><img src="ApproximatingPiWithContinuedFractions_files/addthis.gif" alt="more..." title="more..." border="0"></a></div></div></div><!-- <div id="popup99" class="popupLayer" style="top: 750px; left: 500px;"><div class="popupCloseBox"><a href="javascript:setVisible('99');" onclick="javascript:setVisible('99');return false;">X</a></div><div class="popupContent"><img border="0" src="thumbnail_174.jpg" alt="Approximating Pi with Continued Fractions" title="Approximating Pi with Continued Fractions" /></div></div> --><br>
+		
+		
+		<div class="sidebarblue">
+			<div class="sidebarheaderblue"><img src="ApproximatingPiWithContinuedFractions_files/spacer_002.gif" height="1" width="1"></div>
+			<div class="sidebarInner">	<img src="ApproximatingPiWithContinuedFractions_files/Contribute.gif" alt="Contribute" title="Contribute" style="margin-top: 6px;"><br>
+			
+				<ul style="margin-top: 10px;">
+				<li><a class="sidebarcategory" href="http://demonstrations.wolfram.com/participate/upload.jsp?id=/ApproximatingPiWithContinuedFractions/">Make a new version of this Demonstration</a></li>
+				<li><a class="sidebarcategory" href="http://demonstrations.wolfram.com/participate/upload.jsp">Upload a new Demonstration</a></li>
+				</ul>
+			
+			</div>
+		</div>
+		<br>
+		
+		
+		
+		
+		
+		
+		
+</div><!--closes sideColumnContent-->
+<div style="clear: both; width: 100%;">&nbsp;</div>
+</div><!--closes pageWidth div-->
+
+
+
+
+<script type="text/javascript" src="ApproximatingPiWithContinuedFractions_files/json-1.js"></script>
+<script type="text/javascript">
+function showFeedback(){
+	var feedbackData = $.parseJSON(getCookie("feedbackformrem"), true);
+	var form = $("#feedbackFormfull");
+	form.css('display','block');
+	if(feedbackData){
+	     $('#country').val(feedbackData.country);
+			 $('#feedback-remme').attr('checked','checked');
+			 $('#feedback-oftspan > input').each(function(){    
+			   if($(this).val() == feedbackData.oft){
+				   $(this).attr('checked','checked');     
+			   }       
+			 });
+			 $('#feedback-email').val(feedbackData.email);
+			 $('#feedback-name').val(feedbackData.name);
+			 $('#feedback-occupation').val(feedbackData.occupation);
+			 $('#feedback-organization').val(feedbackData.organization);
+  }
+	$("#feedbackForm").css('margin-top',"-15px");
+	$("#feedbackForm").addClass("feedbackFormc");
+	$("#feedback").focus();
+	$("#feedbackFormPre").css('display','none');
+	document.getElementById('feedbackFormform').action = "/feedback/feedback.html";
+	if(window.location.toString().length > 55 ){
+		var short_url = window.location.toString().substring(0,54) + "...";
+	} else {
+		var short_url = window.location.toString();
+	}
+	$("#feedbackSourcepage").html(short_url);
+	$("#sourcepage").val(window.location.toString());
+	document.body.scrollTop = 1000000;
+}
+
+function submitFeedback(){
+	var error = "";
+	document.feedbackFormform.feedback.style.backgroundColor = "#FFF";
+	document.feedbackFormform.email.style.backgroundColor = "#FFF";
+  if(document.feedbackFormform.feedback.value.length == 0){
+    error = error+"Please leave your feedback.<br>";
+		document.feedbackFormform.feedback.style.backgroundColor = "#FFEFEF";
+	}
+	
+	var regex = new RegExp('^(.*)@(.*)\.[a-zA-Z]+$');
+	
+	if(!document.feedbackFormform.email.value.match(regex)){
+		error = error+"Please give a valid email address.<br>";
+    document.feedbackFormform.email.style.backgroundColor = "#FFEFEF";
+	}
+	
+	if(error.length > 0){
+		document.getElementById("feedbackError").innerHTML = error;
+		return false;
+	} else {
+		return true;
+	}
+	
+}
+
+
+</script>
+
+<div class="footerContent">
+	<a href="http://www.wolfram.com/products/mathematica/" style="float: left; margin-bottom: 5px;"><img src="ApproximatingPiWithContinuedFractions_files/powered.gif" alt="Powered by Wolfram Mathematica" title="Powered by Wolfram Mathematica" border="0"></a>
+	<div id="feedbackForm" style="float: right;"><span id="feedbackFormPre"><img src="ApproximatingPiWithContinuedFractions_files/feedback.gif" alt="Give us your feedback" title="Give us your feedback" style="vertical-align: middle; margin-right: 5px;"><input id="feedbackBox" style="width: 380px; vertical-align: middle;" onclick="javascript:showFeedback();" type="text"><input src="ApproximatingPiWithContinuedFractions_files/feedbackclosed-send.gif" alt="Send" title="Send" style="border: 0px none ; vertical-align: middle; margin-left: 5px; width: auto;" onclick="javascript:showFeedback();" type="image"></span>
+		<table id="feedbackFormfull">
+		<form id="feedbackFormform" name="feedbackFormform" method="post" onsubmit="return submitFeedback();"></form>
+		<tbody><tr><td rowspan="6" style="vertical-align: top;"><img src="ApproximatingPiWithContinuedFractions_files/feedback.gif" alt="Give us your feedback" title="Give us your feedback" style="margin-right: 5px;"></td><td colspan="2" style="border-bottom: 1px solid rgb(232, 232, 232);"><div id="feedbackError" class="error"></div><textarea style="width: 390px; height: 100px;" name="feedback" id="feedback"></textarea><br><span style="font-size: 10px; color: rgb(153, 153, 153); line-height: 16px;">Source page: </span><span style="font-size: 10px; color: rgb(0, 0, 0);" id="feedbackSourcepage"></span><input name="sourcepage" id="sourcepage" type="hidden"></td></tr>
+		<tr><td><label for="email">Email</label><br><input id="feedback-email" name="email" type="text"></td><td><label for="name">Name (<i>optional</i>)</label><br><input id="feedback-name" name="name" type="text"></td></tr>
+		<tr><td><label for="occupation">Occupation (<i>optional</i>)</label><br><input id="feedback-occupation" name="occupation" type="text"></td> <td><label for="organization">Organization (<i>optional</i>)</label><br><input id="feedback-organization" name="organization" type="text"></td></tr>
+		<tr>
+		<td colspan="2" style="vertical-align: middle; width: 390px;">
+		<label for="oft" style="float: left; position: relative; top: 1px;">I use <i>Mathematica</i></label><span id="feedback-oftspan" style="font-size: 10px; display: block; text-align: center; white-space: nowrap; color: rgb(85, 85, 85);"><input name="oft" class="oftselect" value="often" style="border: 0px none ; width: auto; margin-left: 0px;" type="radio"><span class="alignmiddle">&nbsp;often</span> <input name="oft" class="oftselect" value="occasionally" style="border: 0px none ; width: auto;" type="radio"><span class="alignmiddle">&nbsp;occasionally</span> <input name="oft" class="oftselect" value="never" style="border: 0px none ; width: auto;" type="radio"><span class="alignmiddle">&nbsp;never</span></span>
+		</td>
+		</tr>
+		<tr><td colspan="2">
+		<span style="float: left;">
+		<label for="country">Country (<i>optional</i>)</label><br>
+		<select id="country" name="country"> <option selected="selected">other</option> <option>Afghanistan</option> <option>Albania</option> <option>Algeria</option> <option>American Samoa</option> <option>Andorra</option> <option>Angola</option> <option>Anguilla</option> <option>Antarctica</option> <option>Antigua and Barbuda</option> <option>Argentina</option> <option>Armenia</option> <option>Aruba</option> <option>Australia</option> <option>Austria</option> <option>Azerbaijan</option> <option>Bahamas</option> <option>Bahrain</option>
+		<option>Barbados</option> <option>Belarus</option> <option>Belgium</option> <option>Belize</option> <option>Benin</option> <option>Bermuda</option> <option>Bhutan</option> <option>Bolivia</option> <option>Bosnia and Herzegovina</option> <option>Botswana</option> <option>Bouvet Island</option> <option>Brazil</option> <option>British Ocean Territory</option> <option>Brunei Darussalam</option> <option>Bulgaria</option> <option>Burkina Faso</option> <option>Burundi</option> <option>Cambodia</option> 
+		<option>Cameroon</option> <option>Canada</option> <option>Cape Verde</option> <option>Cayman Islands</option> <option>Central African Republic</option> <option>Chad</option> <option>Chile</option> <option>China</option> <option>Christmas Island</option> <option>Cocos (Keeling) Islands</option> <option>Colombia</option> <option>Comoros</option> <option>Congo</option> <option>Congo, The Democratic Republic of the</option> <option>Cook Islands</option> <option>Costa Rica</option> 
+		<option>Cote d'Ivoire</option> <option>Croatia</option> <option>Cuba</option> <option>Cyprus</option> <option>Czech Republic</option> <option>Denmark</option> <option>Djibouti</option> <option>Dominica</option> <option>Dominican Republic</option> <option>East Timor</option> <option>Ecuador</option> <option>Egypt</option> <option>El Salvador</option> <option>Equatorial Guinea</option> <option>Eritrea</option> <option>Estonia</option> <option>Ethiopia</option> <option>Falkland Islands (Malvinas)</option> 
+		<option>Faroe Islands</option> <option>Fiji</option> <option>Finland</option> <option>France</option> <option>French Guiana</option> <option>French Polynesia</option> <option>French Southern Territories</option> <option>Gabon</option> <option>Gambia</option> <option>Georgia</option> <option>Germany</option> <option>Ghana</option> <option>Gibraltar</option> <option>Greece</option> <option>Greenland</option> <option>Grenada</option> <option>Guadeloupe</option> <option>Guam</option> 
+		<option>Guatemala</option> <option>Guinea</option> <option>Guinea-Bissau</option> <option>Guyana</option> <option>Haiti</option> <option>Heard Island and McDonald Islands</option> <option>Holy See (Vatican City State)</option> <option>Honduras</option> <option>Hong Kong</option> <option>Hungary</option> <option>Iceland</option> <option>India</option> <option>Indonesia</option> <option>Iran (Islamic Republic of)</option> <option>Iraq</option> <option>Ireland</option> <option>Israel</option> 
+		<option>Italy</option> <option>Jamaica</option> <option>Japan</option> <option>Jordan</option> <option>Kazakhstan</option> <option>Kenya</option> <option>Kiribati</option> <option>Korea, Democratic People's Republic of</option> <option>Korea, Republic of</option> <option>Kuwait</option> <option>Kyrgyzstan</option> <option>Lao People's Democratic Republic</option> <option>Latvia</option> <option>Lebanon</option> <option>Lesotho</option> <option>Liberia</option> <option>Libyan Arab Jamahiriya</option> 
+		<option>Liechtenstein</option> <option>Lithuania</option> <option>Luxembourg</option> <option>Macau</option> <option>Macedonia, The Former Yugoslav Republic of</option> <option>Madagascar</option> <option>Malawi</option> <option>Malaysia</option> <option>Maldives</option> <option>Mali</option> <option>Malta</option> <option>Marshall Islands</option> <option>Martinique</option> <option>Mauritania</option> <option>Mauritius</option> <option>Mayotte</option> <option>Mexico</option> 
+		<option>Micronesia (Federated States of)</option> <option>Moldova, Republic of</option> <option>Monaco</option> <option>Mongolia</option> <option>Montserrat</option> <option>Morocco</option> <option>Mozambique</option> <option>Myanmar</option> <option>Namibia</option> <option>Nauru</option> <option>Nepal</option> <option>Netherlands</option> <option>Netherlands Antilles</option> <option>New Caledonia</option> <option>New Zealand</option> <option>Nicaragua</option> <option>Niger</option> 
+		<option>Nigeria</option> <option>Niue</option> <option>Norfolk Island</option> <option>Northern Mariana Islands</option> <option>Norway</option> <option>Oman</option> <option>Pakistan</option> <option>Palau</option> <option>Palestinian Territory,Occupied</option> <option>Panama</option> <option>Papua New Guinea</option> <option>Paraguay</option> <option>People's Republic of Bangladesh</option> <option>Peru</option> <option>Philippines</option> <option>Pitcairn</option> <option>Poland</option> 
+		<option>Portugal</option> <option>Puerto Rico</option> <option>Qatar</option> <option>Reunion</option> <option>Romania</option> <option>Russian Federation</option> <option>Rwanda</option> <option>Saint Helena</option> <option>Saint Kitts and Nevis</option> <option>Saint Lucia</option> <option>Saint Pierre and Miquelon</option> <option>Saint Vincent and the Grenadines</option> <option>Samoa</option> <option>San Marino</option> <option>Sao Tome and Principe</option> <option>Saudi Arabia</option> 
+		<option>Senegal</option> <option>Serbia and Montenegro</option> <option>Seychelles</option> <option>Sierra Leone</option> <option>Singapore</option> <option>Slovakia</option> <option>Slovenia</option> <option>Solomon Islands</option> <option>Somalia</option> <option>South Africa</option> <option>South Georgia and the South Sandwich Island</option> <option>Spain</option> <option>Sri Lanka</option> <option>Sudan</option> <option>Suriname</option> <option>Svalbard and Jan Mayen Islands</option> 
+		<option>Swaziland</option> <option>Sweden</option> <option>Switzerland</option> <option>Syrian Arab Republic</option> <option>Taiwan</option> <option>Tajikistan</option> <option>Tanzania, United Republic of</option> <option>Thailand</option> <option>Timor-Leste</option> <option>Togo</option> <option>Tokelau</option> <option>Tonga</option> <option>Trinidad and Tobago</option> <option>Tunisia</option> <option>Turkey</option> <option>Turkmenistan</option> <option>Turks and Caicos Islands</option> 
+		<option>Tuvalu</option> <option>Uganda</option> <option>Ukraine</option> <option>United Arab Emirates</option> <option>United Kingdom</option> <option selected="selected">United States</option> <option>United States Minor Outlying Islands</option> <option>Uruguay</option> <option>Uzbekistan</option> <option>Vanuatu</option> <option>Venezuela</option> <option>Viet Nam</option> <option>Virgin Islands, British</option> <option>Virgin Islands, U.S.</option> <option>Wallis and Futuna</option> 
+		<option>Western Sahara</option> <option>Yemen</option> <option>Zambia</option> <option>Zimbabwe</option> </select></span>
+		<span style="float: right; margin-top: 17px;"><input id="feedback-remme" name="remme" style="border: 0px none ; margin: 0px; padding: 0px; width: auto; vertical-align: middle;" type="checkbox"><label for="remme" style="margin-left: 4px;">Remember 
+me</label></span>
+		</td></tr>
+		<tr>
+		<td colspan="2" style="padding-top: 10px;">
+<p>
+Note: Please do not include anything you consider
+confidential or proprietary. Your message and contact
+information may be shared with the author of any
+specific Demonstration for which you give feedback,
+but will not otherwise be published or distributed. <br><a href="http://demonstrations.wolfram.com/privacypolicy.html">Privacy Policy »</a></p>
+		<input src="ApproximatingPiWithContinuedFractions_files/feedbackopen-send.gif" style="border: 0pt none ; width: 33px; height: 18px; float: right; margin-top: 10px;" alt="Send" title="Send" type="image"></td>
+		</tr>
+		
+		</tbody></table>
+	</div>
+	<div class="copyright" style="clear: both;">
+	<div>© &nbsp;2009 <a href="http://demonstrations.wolfram.com/" class="termsprivacy">Wolfram 
+Demonstrations Project &amp; Contributors</a>&nbsp; 
+	<img src="ApproximatingPiWithContinuedFractions_files/copyrightline.gif">&nbsp; 
+	<a href="http://www.wolfram.com/" class="termsprivacy">Wolfram Research</a>&nbsp; 
+	<img src="ApproximatingPiWithContinuedFractions_files/copyrightline.gif">&nbsp; 
+	<a href="http://demonstrations.wolfram.com/siteindex.html" class="termsprivacy">Site Index</a>&nbsp; 
+	<img src="ApproximatingPiWithContinuedFractions_files/copyrightline.gif">&nbsp; 
+	<a href="http://demonstrations.wolfram.com/termsofuse.html" class="termsprivacy">Terms of Use</a>&nbsp; 
+	<img src="ApproximatingPiWithContinuedFractions_files/copyrightline.gif">&nbsp; 
+	<a href="http://demonstrations.wolfram.com/privacypolicy.html" class="termsprivacy">Privacy Policy</a>&nbsp; 
+	<img src="ApproximatingPiWithContinuedFractions_files/copyrightline.gif">&nbsp; 
+	<a href="http://demonstrations.wolfram.com/feeds/rss.xml" class="termsprivacy">RSS</a>&nbsp;
+	<img src="ApproximatingPiWithContinuedFractions_files/copyrightline.gif">&nbsp; 
+	<a href="http://demonstrations.wolfram.com/feeds/atom.xml" class="termsprivacy">Atom</a>&nbsp;
+	</div>
+	</div>
+</div><!--closes footerContent-->
+</td>
+</tr>
+</tbody></table>
+</div><!--closes backgroundImage div-->
+
+
+<div id="outerBorder"><div class="noteContainer">
+<div style="margin: 30px 12px 10px 22px;">
+<table border="0" cellpadding="6" cellspacing="0">
+  <tbody><tr>
+    <td><div class="Note1">Note: To run this Demonstration you need the free<em><br>
+      Mathematica Player</em> or <em>Mathematica 7+</em> </div>
+<form action="" id="NotePlayerForm">
+<div class="NoteChoose">
+<input name="dl_player" value="dl" type="radio">  Download or upgrade to <em>Mathematica Player 7</em>
+</div>
+<div class="NoteChoose">
+<input name="dl_player" value="alreadyhave" type="radio"> I already have <em>Mathematica Player</em> or <em>Mathematica 7+</em>
+</div>
+<div class="NoteContinue" title="Continue" alt="Continue">
+    </div></form></td>
+  </tr>
+</tbody></table>
+</div>
+</div></div>
+
+
+</body></html>

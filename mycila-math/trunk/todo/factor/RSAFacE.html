@@ -1,0 +1,72 @@
+<html>
+
+<head>
+<title>Factoring Algorithms</title>
+</head>
+
+<body background="../Pics/cryptobg2.jpg" lang=DE link=blue vlink=purple>
+
+<p><b>2.4.3 RSA Factoring with known secret key</b></p>
+
+
+<p>Factoring of an integer n = p &sdot; q, where p,q are primes is very
+difficult. If you are dealing with the RSA problem you can simplify that
+quite much if you know the secret key a.
+</p>
+
+<p>Relevant numbers for RSA:<br>
+n = p &sdot; q<br>
+&Phi;(n) = (p-1) &sdot; (q-1)<br>
+a &sdot; b &equiv; 1 (mod &Phi;(n))<br>
+n and b are public, while p, q and a are secret. 
+</p>
+
+<p>For the following algorithm we assume that the secret key a is given by
+another algorithm A:<br>
+<br>
+Choose random w with 1 &le; w &le; n-1. If we are lucky, so gcd(w, n) &gt; 1, 
+so we already have a factor of n. If not, we can compute w<sup>r</sup> 
+, w<sup>2r</sup> , w<sup>4r</sup>,..., w<sup>2<sup>t</sup> r</sup> &equiv; 1 
+(mod n) for a special t, if w is prime with respect to n. Since 
+a&sdot;b - 1 = 2<sup>s</sup> &sdot; r &equiv; 0 (mod &Phi;(n)) we know that
+w<sup>2<sup>s</sup> r</sup> &equiv; 1 (mod n).
+So we find a value v<sub>0</sub> with v<sub>0</sub><sup>2</sup> 
+&equiv; 1 (mod n) but v<sub>0</sub> &ne; 1 (mod n). If v<sub>0</sub> 
+&equiv; -1 (mod n) the algorithm fails. Otherwise v<sub>0</sub> is a
+non-trivial root of 1 modulo n and we may factorize n.
+</p>
+
+<p><b>Example</b></p>
+
+<p>Let be n = 29329 and b = 1859. One knows that a = 15059. Now choose a
+random w e.g w = 21.<br>
+1. One computes gcd(w, n) = gcd(21, 29329) = 1<br>
+2. It is a&sdot;b - 1 = 2<sup>s</sup> &sdot; r = 8 &sdot; 3499335<br>
+3. v = w<sup>r</sup> mod n = 21<sup>34499335</sup> mod 29329 = 5698<br>
+4. v<sup>2</sup> = 1 mod n<br>
+5. p = gcd(v + 1, n) = 139 hence q = 29329 / 139 = 211
+</p>
+
+<p><b> Applet RSA factoring</b></p>
+
+<p>
+<applet code="RSAFacSF.java" width="490" height="600">
+</applet>
+
+</p>
+
+<p>Quellcode:<br>
+<a href="RSAFacSF.java">RSAFacSF.java</a> - Surface</br>
+<a href="RSAFac.java">RSAFac.java</a> - Algorithm</br>
+
+<p>
+<table>
+<tr><td width="40"><a href="../Factor/QuadAlgE.html">
+  <img src="../Pics/right.gif" border="0"></a></td>    
+  <td width="320"><a href="../Factor/QuadAlgE.html">2.4.4 Quadratic Sieve</a></td>
+</tr>
+</table>
+</p>
+</body>
+
+</html>

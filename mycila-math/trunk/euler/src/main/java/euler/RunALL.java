@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.Format;
+import com.mycila.math.Format;
 
 import java.lang.reflect.InvocationTargetException;
 

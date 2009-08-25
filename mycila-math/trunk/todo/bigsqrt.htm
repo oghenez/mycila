@@ -1,0 +1,551 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<title>Big Square Roots</title>
+</head><body>
+<h1 align="center">Big Square Roots</h1>
+<h4 align="center">by <a href="http://www.merriampark.com/mgresume.htm">Michael Gilleland</a></h4>
+
+<a href="#Intro">Introduction</a><br>
+<a href="#Algo">Algorithm</a><br>
+<a href="#Source">Source Code</a><br>
+<a href="#Output">Sample Output</a><br>
+<a href="#Links">Links</a><br>
+
+<h2><a name="Intro">Introduction</a></h2>
+<p>
+The base Java class java.lang.Math contains a useful grab bag of
+mathematical goodies:
+</p><ul>
+<li>Trigonometric functions, such as sine, cosine, tangent,
+arcsine, arccosine, arctangent
+</li><li>Constants, such as PI and E
+</li><li>Other miscellaneous functions such as square root, ceiling, floor, etc.
+</li></ul>
+Almost everything in java.lang.Math uses the double data type,
+which is fine for most purposes, but not if you're interested
+in very large numbers.
+For those who are interested in big numbers,
+Java has handy BigInteger and BigDecimal classes in package java.math. 
+The missing ingredient, however, is a "big" counterpart of
+java.lang.Math.
+<p></p>
+<p>
+In the absence of such a class, I needed a simple way
+to find square roots of big numbers in Java, and this paper
+presents a straightforward implementation of what turns
+out to be a very old technique.
+</p>
+<hr>
+<h2><a name="Algo">Algorithm</a></h2>
+My first impulse, when I embarked on this project, was to
+turn to that old standby, A.A. Klaf's <i>Arithmetic Refresher</i>
+(NY: Dover, 1964), in which I did find an algorithm to extract
+square roots (pp. 232-236), the same one I learned (or more accurately,
+was taught) in grade school. 
+This method resembles one used in the
+13th century by the Arab mathematician
+<a href="http://www-gap.dcs.st-and.ac.uk/%7Ehistory/Mathematicians/Al-Banna.html">
+Ibn al-Banna</a>, to judge by the description in
+Jean-Luc Chambert et al., 
+<i>A History of Algorithms: From the Pebble to the Microchip</i>, tr.
+Chris Weeks (Heidelberg: Springer, 1999), pp. 206-208.
+Frankly, as an adult, I find it just as baffling as I did in seventh grade.
+<p></p>
+<p>
+There has to be a simpler way, I thought, and indeed there is.
+You can find it at the Argonne National Laboratory's web site, in the
+archives of the "Ask a Scientist" service for K-12 educators and students.
+Someone asked a scientist "How do you find square roots?", and
+R.C. Winther answered with a lucid
+<a href="http://newton.dep.anl.gov/newton/askasci/1995/math/MATH066.HTM">
+description</a>, which I'll paraphrase here:
+</p><ol>
+<li>Start with an initial guess (g) of what the square root of
+some number (call it n) might be. The initial guess doesn't even
+have to be close. For simplicity's sake, let's always choose g = 1.
+</li><li>Compute result = ((n/g) + g)/2. Let g be the result just computed.
+</li><li>Repeat step 2 until the last two results obtained are the same.
+</li></ol>
+<p></p>
+<p>
+Let's look at some examples. First, let's find the square root of 9
+by this method. In our calculations, we'll round off everything to three decimal places.
+</p>
+<table align="center" border="1" cols="5">
+<tbody><tr>
+<th>n</th>
+<th>g</th>
+<th>n/g</th>
+<th>(n/g) + g</th>
+<th>((n/g) + g)/2</th>
+</tr>
+<tr>
+<td align="center">9</td>
+<td align="center">1</td>
+<td align="center">9</td>
+<td align="center">10</td>
+<td align="center">5</td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td align="center">5</td>
+<td align="center">1.8</td>
+<td align="center">6.8</td>
+<td align="center">3.4</td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td align="center">3.4</td>
+<td align="center">2.65</td>
+<td align="center">6.05</td>
+<td align="center">3.025</td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td align="center">3.025</td>
+<td align="center">2.975</td>
+<td align="center">6</td>
+<td align="center">3</td>
+</tr>
+<tr>
+<td align="center">9</td>
+<td align="center">3</td>
+<td align="center">3</td>
+<td align="center">6</td>
+<td align="center">3</td>
+</tr>
+</tbody></table>
+
+<p>
+Next, let's find the square root of 30
+by this method. This time, we'll round off everything to eight decimal places.
+</p>
+
+<table align="center" border="1" cols="5">
+<tbody><tr>
+<th>n</th>
+<th>g</th>
+<th>n/g</th>
+<th>(n/g) + g</th>
+<th>((n/g) + g)/2</th>
+</tr>
+<tr>
+<td align="center">30</td>
+<td align="center">1</td>
+<td align="center">30</td>
+<td align="center">31</td>
+<td align="center">15.5</td>
+</tr>
+<tr>
+<td align="center">30</td>
+<td align="center">15.5</td>
+<td align="center">1.93548371</td>
+<td align="center">17.43548387</td>
+<td align="center">8.71774194</td>
+</tr>
+<tr>
+<td align="center">30</td>
+<td align="center">8.71774194</td>
+<td align="center">3.44125809</td>
+<td align="center">12.15900003</td>
+<td align="center">6.07950002</td>
+</tr>
+<tr>
+<td align="center">30</td>
+<td align="center">6.07950002</td>
+<td align="center">4.93461632</td>
+<td align="center">11.01411634</td>
+<td align="center">5.50705817</td>
+</tr>
+<tr>
+<td align="center">30</td>
+<td align="center">5.50705817</td>
+<td align="center">5.44755459</td>
+<td align="center">10.95461276</td>
+<td align="center">5.47730638</td>
+</tr>
+<tr>
+<td align="center">30</td>
+<td align="center">5.47730638</td>
+<td align="center">5.47714477</td>
+<td align="center">10.95445115</td>
+<td align="center">5.47722558</td>
+</tr>
+<tr>
+<td align="center">30</td>
+<td align="center">5.47722558</td>
+<td align="center">5.47722557</td>
+<td align="center">10.95445115</td>
+<td align="center">5.47722558</td>
+</tr>
+</tbody></table>
+<p>
+Professional mathematicians are of course familiar with this algorithm,
+which is known as Newton's method, but its pedigree is in fact much
+older than Newton.
+In the first century AD, the Greek mathematician
+<a href="http://www-gap.dcs.st-and.ac.uk/%7Ehistory/Mathematicians/Heron.html">
+Heron of Alexandria</a> used essentially the
+same method in book 1, chapter 8, of his <i>Metrica</i> to determine
+the square root of 720. See Jean-Luc Chambert et al., <i>op. cit.</i>, 
+pp. 202-203, and Thomas Heath, <i>A History of Greek Mathematics, Volume II:
+From Aristarchus to Diophantus</i> (NY: Dover, 1981), pp. 323-326.
+</p>
+<p>
+There is evidence that this method goes even further back, as
+far as the Babylonians. 
+In the Yale University Babylonian Collection, there is a cuneiform
+tablet (dated ca. 2000-1700 BC and catalogued as YBC 7289) that seems
+to use this method to compute the square root of 2.
+See H.L. Resnikoff and R.O. Wells, Jr.,
+<i>Mathematics in Civilization</i> (NY: Dover, 1984), pp. 76-79,
+and also the following links:
+</p><ul>
+<li>Bill Casselman, 
+<a href="http://www.math.ubc.ca/people/faculty/cass/Euclid/ybc/ybc.html">
+YBC 7289</a>, with splendid full-size color photographs
+</li><li>Franz Gnaedinger, 
+<a href="http://www.seshat.ch/home/babylon.htm">
+Babylonian Mathematics (YBC 7289, Plimpton 322)</a>
+</li><li>Duncan J. Melville, 
+<a href="http://it.stlawu.edu/%7Edmelvill/mesomath/tablets/YBC7289.html">
+YBC 7289</a>
+</li><li>J.J. O'Connor and E.F. Robertson,
+<a href="http://www-gap.dcs.st-and.ac.uk/%7Ehistory/HistTopics/Babylonian_Pythagoras.html">
+Babylonian Pythagoras</a>, a very clear explanation
+</li></ul>
+<p></p>
+<p>
+There's one obvious refinement we can make, and that is in the
+choice of our initial guess. We've used 1 as the initial guess
+so far in the examples, but let's try to do a little better.
+We know that the square root of 100 is 10, so a better initial
+guess for the square root of any 3 or 4 digit number is 10.
+Likewise, we know that the square root of 10,000 is 100, so a
+better initial guess for the square root of any 5 or 6 digit number
+is 100. And so forth.
+</p>
+<hr>
+<h2><a name="Source">Source Code</a></h2>
+The following source code (BigSquareRoot.java) 
+is free for you to use in whatever way
+you wish, with no restrictions and no guarantees.
+Improvements and constructive suggestions are welcome.
+Note that, when computing very large square roots, you should
+use a large scale. For numbers of 100 digits, I use a scale of 50.
+<pre>//----------------------------------------------------------
+// Compute square root of large numbers using Heron's method
+//----------------------------------------------------------
+
+import java.math.*;
+
+public class BigSquareRoot {
+
+  private static BigDecimal ZERO = new BigDecimal ("0");
+  private static BigDecimal ONE = new BigDecimal ("1");
+  private static BigDecimal TWO = new BigDecimal ("2");
+  public static final int DEFAULT_MAX_ITERATIONS = 50;
+  public static final int DEFAULT_SCALE = 10;
+
+  private BigDecimal error;
+  private int iterations;
+  private boolean traceFlag;
+  private int scale = DEFAULT_SCALE;
+  private int maxIterations = DEFAULT_MAX_ITERATIONS;
+
+  //---------------------------------------
+  // The error is the original number minus
+  // (sqrt * sqrt). If the original number
+  // was a perfect square, the error is 0.
+  //---------------------------------------
+
+  public BigDecimal getError () {
+    return error;
+  }
+
+  //-------------------------------------------------------------
+  // Number of iterations performed when square root was computed
+  //-------------------------------------------------------------
+
+  public int getIterations () {
+    return iterations;
+  }
+
+  //-----------
+  // Trace flag
+  //-----------
+
+  public boolean getTraceFlag () {
+    return traceFlag;
+  }
+
+  public void setTraceFlag (boolean flag) {
+    traceFlag = flag;
+  }
+
+  //------
+  // Scale
+  //------
+
+  public int getScale () {
+    return scale;
+  }
+
+  public void setScale (int scale) {
+    this.scale = scale;
+  }
+
+  //-------------------
+  // Maximum iterations
+  //-------------------
+
+  public int getMaxIterations () {
+    return maxIterations;
+  }
+
+  public void setMaxIterations (int maxIterations) {
+    this.maxIterations = maxIterations;
+  }
+
+  //--------------------------
+  // Get initial approximation
+  //--------------------------
+
+  private static BigDecimal getInitialApproximation (BigDecimal n) {
+    BigInteger integerPart = n.toBigInteger ();
+    int length = integerPart.toString ().length ();
+    if ((length % 2) == 0) {
+      length--;
+    }
+    length /= 2;
+    BigDecimal guess = ONE.movePointRight (length);
+    return guess;
+  }
+
+  //----------------
+  // Get square root
+  //----------------
+
+  public BigDecimal get (BigInteger n) {
+    return get (new BigDecimal (n));
+  }
+
+  public BigDecimal get (BigDecimal n) {
+
+    // Make sure n is a positive number
+
+    if (n.compareTo (ZERO) &lt;= 0) {
+      throw new IllegalArgumentException ();
+    }
+
+    BigDecimal initialGuess = getInitialApproximation (n);
+    trace ("Initial guess " + initialGuess.toString ());
+    BigDecimal lastGuess = ZERO;
+    BigDecimal guess = new BigDecimal (initialGuess.toString ());
+
+    // Iterate
+
+    iterations = 0;
+    boolean more = true;
+    while (more) {
+      lastGuess = guess;
+      guess = n.divide(guess, scale, BigDecimal.ROUND_HALF_UP);
+      guess = guess.add(lastGuess);
+      guess = guess.divide (TWO, scale, BigDecimal.ROUND_HALF_UP);
+      trace ("Next guess " + guess.toString ());
+      error = n.subtract (guess.multiply (guess));
+      if (++iterations &gt;= maxIterations) {
+        more = false;
+      }
+      else if (lastGuess.equals (guess)) {
+        more = error.abs ().compareTo (ONE) &gt;= 0;
+      }
+    }
+    return guess;
+
+  }
+
+  //------
+  // Trace
+  //------
+
+  private void trace (String s) {
+    if (traceFlag) {
+      System.out.println (s);
+    }
+  }
+
+  //----------------------
+  // Get random BigInteger
+  //----------------------
+
+  public static BigInteger getRandomBigInteger (int nDigits) {
+    StringBuffer sb = new StringBuffer ();
+    java.util.Random r = new java.util.Random ();
+    for (int i = 0; i &lt; nDigits; i++) {
+      sb.append (r.nextInt (10));
+    }
+    return new BigInteger (sb.toString ());
+  }
+
+  //-----
+  // Test
+  //-----
+
+  public static void main (String[] args) {
+
+    BigInteger n;
+    BigDecimal sqrt;
+    BigSquareRoot app = new BigSquareRoot ();
+    app.setTraceFlag (true);
+
+    // Generate a random big integer with a hundred digits
+
+    n = BigSquareRoot.getRandomBigInteger (100);
+
+    // Build an array of test numbers
+
+    String testNums[] = {"9", "30", "720", "1024", n.toString ()};
+
+    for (int i = 0; i &lt; testNums.length; i++) {
+      n = new BigInteger (testNums[i]);
+      if (i &gt; 0) {
+        System.out.println ("----------------------------");
+      }
+      System.out.println ("Computing the square root of");
+      System.out.println (n.toString ());
+      int length = n.toString ().length ();
+      if (length &gt; 20) {
+        app.setScale (length / 2);
+      }
+      sqrt = app.get (n);
+      System.out.println ("Iterations " + app.getIterations ());
+      System.out.println ("Sqrt " + sqrt.toString ());
+      System.out.println (sqrt.multiply (sqrt).toString ());
+      System.out.println (n.toString ());
+      System.out.println ("Error " + app.getError ().toString ());
+    }
+
+  }
+
+}
+</pre>
+<hr>
+<h2><a name="Output">Sample Output</a></h2>
+Here is sample output from executing BigSquareRoot.java:
+<pre>Computing the square root of
+9
+Initial guess 1
+Next guess 5.0000000000
+Next guess 3.4000000000
+Next guess 3.0235294118
+Next guess 3.0000915542
+Next guess 3.0000000014
+Next guess 3.0000000000
+Next guess 3.0000000000
+Iterations 7
+Sqrt 3.0000000000
+9.00000000000000000000
+9
+Error 0.00000000000000000000
+----------------------------
+Computing the square root of
+30
+Initial guess 1
+Next guess 15.5000000000
+Next guess 8.7177419355
+Next guess 6.0795000150
+Next guess 5.5070581682
+Next guess 5.4773063790
+Next guess 5.4772255757
+Next guess 5.4772255751
+Next guess 5.4772255751
+Iterations 8
+Sqrt 5.4772255751
+30.00000000052952574001
+30
+Error -0.00000000052952574001
+----------------------------
+Computing the square root of
+720
+Initial guess 10
+Next guess 41.0000000000
+Next guess 29.2804878049
+Next guess 26.9351210370
+Next guess 26.8330100187
+Next guess 26.8328157307
+Next guess 26.8328157300
+Next guess 26.8328157300
+Iterations 7
+Sqrt 26.8328157300
+720.00000000013543290000
+720
+Error -0.00000000013543290000
+----------------------------
+Computing the square root of
+1024
+Initial guess 10
+Next guess 56.2000000000
+Next guess 37.2103202847
+Next guess 32.3647837114
+Next guess 32.0020557400
+Next guess 32.0000000661
+Next guess 32.0000000000
+Next guess 32.0000000000
+Iterations 7
+Sqrt 32.0000000000
+1024.00000000000000000000
+1024
+Error 0.00000000000000000000
+----------------------------
+Computing the square root of
+4091003901585987357290452999329796564377935868371155936881162018216821980804517176141145508100318254
+Initial guess 10000000000000000000000000000000000000000000000000
+Next guess 209550195079299367864522649966489828218896793418557.79684405810091084109904022585880705727540501591270
+Next guess 114536491223959647614245503583340019583427857317171.39481623120113435750889678042997539315029228108131
+Next guess 75127199810195208191946961814969421616682217230416.51246197944058126421950875584398655254556449079256
+Next guess 64790782017046982096534183561372152130639527179695.34728948529268210319975000563917742728801615162872
+Next guess 63966270184743427189126780349337659174048381406572.22692340512880828760541344926488086150358076940314
+Next guess 63960956292283814083342094802488714859091297948561.14711574274512116433752843287967792579630701229591
+Next guess 63960956071544047910243450536455793538763694049291.28632379657071976628102300495529141197728862876571
+Next guess 63960956071544047529338853709828068953366630815793.34341832696373266833349284427958104709380671225364
+Next guess 63960956071544047529338853709828067819172266042961.42582721313752717361185018697161569618604233390746
+Next guess 63960956071544047529338853709828067819172266042961.42582721313752717360179407668111645754167252074208
+Next guess 63960956071544047529338853709828067819172266042961.42582721313752717360179407668111645754167252074208
+Iterations 11
+Sqrt 63960956071544047529338853709828067819172266042961.42582721313752717360179407668111645754167252074208
+4091003901585987357290452999329796564377935868371155936881162018216821980804517176141145508100318253.9941843294265790729454364307536302861737946912377682142782519700429387214937782005481990878338827264
+4091003901585987357290452999329796564377935868371155936881162018216821980804517176141145508100318254
+Error 0.0058156705734209270545635692463697138262053087622317857217480299570612785062217994518009121661172736
+</pre>
+<hr>
+<h2><a name="Links">Links</a></h2>
+If you're interested in delving further into the
+mysteries of square roots, here are some places to start:
+<ul>
+<li>Harold Abelson and Gerald Jay Sussman, 
+<a href="http://www-mitpress.mit.edu/sicp/chapter1/node9.html">
+Square Roots by Newton's Method</a>,
+from their book
+<i>Structure and Interpretation of Computer Programs</i>
+</li><li>Kevin Brown,
+<a href="http://www.mathpages.com/home/kmath190.htm">
+Ancient Square Roots</a>
+</li><li>Kevin Brown,
+<a href="http://www.mathpages.com/home/kmath038.htm">
+Archimedes and the Square Root of 3</a>
+</li><li>Paul Hsieh, 
+<a href="http://www.azillionmonkeys.com/qed/sqroot.html">
+How to Calculate Square Roots</a>
+</li><li>Mohamed A. Khamsi and Helmut Knaust,
+<a href="http://www.sosmath.com/calculus/diff/der07/der07.html">
+The Newton-Raphson Method</a>
+</li><li>Romuauld Ireneus 'Scibor-Marchocki, 
+<a href="http://www.rism.com/Trig/square.htm">
+Square Roots -- How to Find Them</a>
+</li><li>Ching-Kuang Shene,
+<a href="http://www.cs.mtu.edu/%7Eshene/COURSES/cs201/NOTES/chap04/sqrt.html">
+Computing the Square Root of a Positive Number</a>
+</li></ul>
+
+</body></html>

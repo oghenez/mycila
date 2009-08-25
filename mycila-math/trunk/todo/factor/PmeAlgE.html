@@ -1,0 +1,84 @@
+<html>
+
+<head>
+<title>Factoring Algorithms</title>
+</head>
+
+<body background="../Pics/cryptobg2.jpg" lang=DE link=blue vlink=purple>
+
+<p><b>2.4.2 Pollard's (p-1)-Factoring Algorithm</b></p>
+
+<p><br>Pollard's (p-1)-Factoring Algorithm is a special purpose algorithm for 
+finding efficiently primes p for which p-1 is smooth with respect to some 
+relatively small bound B. Therefor following</p>
+
+<p>Definition:<br>
+Let be 0 &gt; B &isin; <b>Z</b>. An n &isin; <b>Z</b> is said to be B-smooth 
+or smooth with respect to B if all its prime factors are &le; B.<br>
+</p>
+
+<p>The idea behind (p-1)-algorithm is the following:<br>
+Let B be a smoothness bound. Let Q be the least common multiple of all powers
+of primes &le; B, that are &le; n. If g<sup>l</sup> &le; n, then l&sdot;
+ln q &le; ln n and l &le; &lfloor; ln n / ln q &rfloor;. Thus Q = 
+&prod;<sub>q &le; b</sub> q<sup>&lfloor; ln n / ln q &rfloor;</sup> where
+the product is over all distinct q &le; B. If p is prime factor of n, so that 
+p-1 is B-smooth, then p-1|Q and consequently for any a, for which is gcd(a, p)
+ = 1, Fermat's theorem implies that a<sup>Q</sup> &equiv; 1 (mod p). Hence
+if d = gcd(a<sup>Q</sup> - 1, n ), then p|d.<br>
+</p>
+
+<p>It is possible, that d = n. In this case the algorithm fails. However this 
+is unlikely to occur if n has at least two large distinct prime factors.
+</p>
+
+<p><b>Example</b><br><br>
+Let n = 27869. Now choose a smoothness bound B, e.g. B = 8 and choose
+a further number a<sub>0</sub>, where 2 &le; a<sub>0</sub> &le; n-1, in 
+this case e.g. a = 3.<br>
+In the first step we compute gcd(a<sub>0</sub> , n) = gcd(3, 27869) = 
+1. (If we got d &ne; 1 so we would have our non-trivial factor already)
+.<br>
+Now you compute for every single prime factor q<sub>i</sub> &le; B:<br>
+1. l<sub>i</sub> = &lfloor; ln n / ln q<sub>i</sub> &rfloor;<br>
+2. a<sub>i+1</sub> = a<sub>i</sub><sup>q<sup>l</sup><sub>i</sub></sup> mod n
+<br>
+Hence:<br>
+a<sub>0</sub> = 3,<br>
+q<sub>1</sub> = 2, l<sub>1</sub> = &lfloor; ln n / ln q<sub>1</sub> &rfloor; =
+ &lfloor; 10,23527 / 0.69315 &rfloor; = 14, a<sub>1</sub> = 14465<br>
+q<sub>2</sub> = 3, l<sub>2</sub> = 9, a<sub>2</sub> = 17337<br>
+q<sub>3</sub> = 5, l<sub>3</sub> = 6, a<sub>3</sub> = 18787<br>
+q<sub>4</sub> = 7, l<sub>4</sub> = 5, a<sub>4</sub> = 3597<br>
+gcd(a<sub>4</sub> - 1, n) = gcd(3596, 27869) = 899.
+</p>
+
+<p>
+In the Applet the algorithm was implemented in a way that after every 
+computation of a, the greatest common divisor is computed. There are numerous
+other practical improvements of this method.
+</p>
+
+<p><b> Applet (p-1)-Algorithm:</b></p>
+
+<p>
+<applet code="PmeAlgSF.class" width="490" height="550">
+</applet>
+
+</p>
+
+<p>Quellcode:<br>
+<a href="PmeAlgSF.java">PmeAlgSF.java</a> - Applet surface</br>
+<a href="PmeAlg.java">PmeAlg.java</a> - Algorithm class</br>
+
+<p>
+<table>
+<tr><td width="40"><a href="../Factor/RSAFacE.html">
+  <img src="../Pics/right.gif" border="0"></a></td>    
+  <td width="320"><a href="../Factor/RSAFacE.html">2.4.3 RSA-Faktoring</a></td>
+</tr>
+</table>
+</p>
+</body>
+
+</html>

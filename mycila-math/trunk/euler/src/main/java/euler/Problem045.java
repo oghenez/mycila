@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.Polygon;
+import com.mycila.math.Polygon;
 
 import static java.lang.System.*;
 

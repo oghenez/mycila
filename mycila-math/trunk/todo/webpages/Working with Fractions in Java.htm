@@ -1,0 +1,1762 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<title>Working with Fractions in Java</title>
+</head><body><h2 align="center">Working with Fractions in Java</h2>
+<h3 align="center">by 
+<a href="http://www.merriampark.com/mgresume.htm">Michael Gilleland</a></h3>
+<a href="#Intro">Introduction</a><br>
+<a href="#Egypt">Egyptian Fractions</a><br>
+<a href="#Farey">Farey Sequences</a><br>
+<a href="#Continued">Continued Fractions</a><br>
+<a href="#Big">Big Fractions</a><br>
+<a href="#Harmonic">Harmonic Numbers</a><br>
+<a href="#Wolstenholme">Wolstenholme's Theorem</a><br>
+<a href="#Fractran">Fractran Algorithm</a><br>
+<a href="#PrimeGame">Conway's Prime Game</a><br>
+<h2><a name="Intro">Introduction</a></h2>
+<p>
+In his book <i>Mathematics for the Nonmathematician</i>
+(NY: Dover, 1985), pp. 64-65, Morris Kline points out:
+</p><blockquote>
+The disappointing feature of the decimal representation of
+fractions is that some simple fractions cannot be represented
+as fractions with a finite number of digits. Thus when we
+seek to express 1/3 as a decimal, we find that neither 0.3, nor 0.33,
+nor 0.333, and so on, suffices. All one can say in this and
+similar cases is that by carrying more and more decimal digits,
+one comes closer and closer to the fraction, but no finite
+number of digits will ever be the exact answer. This fact is
+expressed by the notation 1/3 = 0.333..., where the dots indicate
+that we must keep on adding threes to approach the fraction 1/3 more
+and more closely.
+</blockquote>
+<p></p>
+In most programming languages, including Java,
+this leads to well-known problems, as the following
+code fragment illustrates:
+<pre>double f = 1.0/7.0;
+double sum = 0.0;
+for (int i = 0; i &lt; 7; i++) {
+  sum += f;
+}
+System.out.println (sum);
+</pre>
+We have attempted to compute the sum of seven sevenths,
+which should of course be one.
+But when these statements are executed, the output is:
+<pre>0.9999999999999998
+</pre>
+<p>
+Close, but no cigar.
+Although the workarounds to such problems are as well-known
+as the problems themselves,
+it often pays to dispense with the decimal representation
+of fractions altogether, and instead deal with fractions simply as fractions.
+Doug Lea of the State University of New York at Oswego
+has written a very useful Java class, Fraction.java, 
+which allows us to do just that. The source code for
+Fraction.java is available
+<a href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/misc/Fraction.java">
+here</a> and is part of package EDU.oswego.cs.dl.util.concurrent.misc --
+if I ruled the universe, it would be part of core package java.math.
+</p>
+<p>
+Let's rewrite the code fragment shown above with its equivalent using
+Fraction.java:
+</p><pre>Fraction f = new Fraction (1, 7);
+Fraction sum = new Fraction (0, 1);
+for (int i = 0; i &lt; 7; i++) {
+  sum = sum.plus (f);
+}
+System.out.println (sum);
+</pre>
+This time, the output is:
+<pre>1
+</pre>
+<p></p>
+<p>
+This paper shows how easy it is, with the help
+of Fraction.java, to explore some interesting highways and byways of
+fractions, such as <a href="#Egypt">Egyptian fractions</a>,
+<a href="#Farey">Farey sequences</a>, and  
+<a href="#Continued">continued fractions</a>.
+</p>
+<p>
+In some cases, we need fractions with very large numerators and denominators,
+and so this paper also contains a modification of Fraction.java, called
+<a href="#Big%22">BigFraction.java</a>. With BigFraction.java as a tool, we 
+also explore <a href="#Harmonic">harmonic numbers</a>,
+test numbers for primality using
+<a href="#Wolstenholme">Wolstenholme's Theorem</a>,
+and implement
+an unusual algorithm (<a href="#Fractran">Fractran</a>) which can be
+used to generate <a href="#PrimeGame">prime numbers</a>.
+</p>
+<p>
+The mathematics in this paper
+can all be understood, with a little patience,
+by anyone who grasps the simple concepts of fractions as learned in elementary school.
+</p>
+<p>
+All source code in this paper is free for you to use as you wish,
+with no restrictions and no guarantees.
+</p>
+
+<hr>
+<h2><a name="Egypt">Egyptian Fractions</a></h2>
+<p>
+The ancient Egyptians represented fractions such as 3/5 as a sum of
+distinct unit fractions, that is, fractions whose numerators are one,
+e.g. 1/2 and 1/10. The sum 1/5 + 1/5 + 1/5 would be unacceptable, because
+the unit fractions (while adding up to 3/5) are not distinct.
+</p>
+<p>
+Egyptian fractions have been the subject of much research by
+mathematicians, who have devised a number of clever algorithms
+to find Egyptian fractions for a given proper fraction.
+One of the easiest to understand is the so-called greedy algorithm, which
+works like this:
+</p><ol>
+<li>Start with an empty list, set denominator = 2 and remainder = fraction
+we're trying to decompose.
+</li><li>Create a candidate unit fraction = 1/denominator.
+</li><li>Increment denominator.
+</li><li>If candidate &gt; remainder, go to step 2.
+</li><li>Add candidate to list.
+</li><li>Subtract candidate from remainder. Result is new remainder.
+</li><li>If remainder is 0, go to step 10.
+</li><li>If remainder is a unit fraction, add it to the list and go to step 10.
+</li><li>Go to to step 2.
+</li><li>Hurrah, we're done! List contains Egyptian fractions
+adding up to original fraction.
+</li></ol>
+<p>
+Let's "play computer" and follow these steps in an attempt to decompose 3/7 into
+Egyptian fractions.
+</p>
+<table align="center" border="1" cols="5">
+<tbody><tr>
+<th>Steps</th>
+<th>Denominator</th>
+<th>Remainder</th>
+<th>Candidate</th>
+<th>List</th>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>3/7</td>
+<td>&nbsp;</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+<td>3/7</td>
+<td>1/2</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>3-4</td>
+<td>3</td>
+<td>3/7</td>
+<td>1/2</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3</td>
+<td>3/7</td>
+<td>1/3</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>3-4</td>
+<td>4</td>
+<td>3/7</td>
+<td>1/3</td>
+<td>[]</td>
+</tr>
+<tr>
+<td>5</td>
+<td>4</td>
+<td>3/7</td>
+<td>1/3</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>6-9</td>
+<td>4</td>
+<td>2/21</td>
+<td>1/3</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>4</td>
+<td>2/21</td>
+<td>1/4</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>3-4</td>
+<td>5</td>
+<td>2/21</td>
+<td>1/4</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>5</td>
+<td>2/21</td>
+<td>1/5</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>3-4</td>
+<td>6</td>
+<td>2/21</td>
+<td>1/5</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>6</td>
+<td>2/21</td>
+<td>1/5</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>3-4</td>
+<td>7</td>
+<td>2/21</td>
+<td>1/6</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>7</td>
+<td>2/21</td>
+<td>1/7</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>3-4</td>
+<td>8</td>
+<td>2/21</td>
+<td>1/7</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>8</td>
+<td>2/21</td>
+<td>1/8</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>3-4</td>
+<td>9</td>
+<td>2/21</td>
+<td>1/8</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>9</td>
+<td>2/21</td>
+<td>1/9</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>3-4</td>
+<td>10</td>
+<td>2/21</td>
+<td>1/9</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>10</td>
+<td>2/21</td>
+<td>1/10</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>3-4</td>
+<td>11</td>
+<td>2/21</td>
+<td>1/10</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>2</td>
+<td>11</td>
+<td>2/21</td>
+<td>1/11</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>3-4</td>
+<td>12</td>
+<td>2/21</td>
+<td>1/11</td>
+<td>[1/3]</td>
+</tr>
+<tr>
+<td>5</td>
+<td>12</td>
+<td>1/231</td>
+<td>1/11</td>
+<td>[1/3, 1/11]</td>
+</tr>
+<tr>
+<td>6-7</td>
+<td>12</td>
+<td>1/231</td>
+<td>1/11</td>
+<td>[1/3, 1/11]</td>
+</tr>
+<tr>
+<td>8</td>
+<td>12</td>
+<td>1/231</td>
+<td>1/11</td>
+<td>[1/3, 1/11, 1/231]</td>
+</tr>
+<tr>
+<td>10</td>
+<td>12</td>
+<td>1/231</td>
+<td>1/11</td>
+<td>[1/3, 1/11, 1/231]</td>
+</tr>
+</tbody></table>
+<p>
+The following Java class, EgyptianFractions.java,
+computes Egyptian fractions for a specified fraction between
+zero and one using the greedy algorithm discussed above.
+</p>
+<pre>//------------------------------------------------
+// Egyptian fractions have a numerator of 1.
+// Any fraction can be decomposed into a series of
+// unique Egyptian fractions.
+//------------------------------------------------
+
+import java.util.Vector;
+import EDU.oswego.cs.dl.util.concurrent.misc.Fraction; 
+
+public abstract class EgyptianFractions {
+
+  //----------
+  // Constants
+  //----------
+
+  private static Fraction ZERO = new Fraction (0, 1);
+  private static Fraction ONE = new Fraction (1, 1);
+
+  //---------------------------------------
+  // Get sum of Vector of Fraction objects.
+  // Used to check accuracy of algorithm.
+  //---------------------------------------
+
+  public static Fraction getSum (Vector v) {
+    Fraction sum = new Fraction (ZERO);
+    for (int i = 0; i &lt; v.size (); i++) {
+      sum = sum.plus ((Fraction) v.elementAt (i));
+    }
+    return sum;
+  }
+
+  //---------------------------------
+  // Decompose using greedy algorithm
+  //---------------------------------
+
+  public static Vector greedyAlgorithm (Fraction f) {
+
+    // Make sure we're starting out with a
+    // fraction between 0 and 1, exclusive
+
+    if (f.compareTo (ZERO) &lt;= 0) {
+      throw new IllegalArgumentException (f.toString ());
+    }
+    if (f.compareTo (ONE) &gt;= 0) {
+      throw new IllegalArgumentException (f.toString ());
+    }
+
+    Fraction remainder = new Fraction (f); // remainder
+    long denominator = 2; // first candidate will be 1/2
+    Vector v = new Vector (); // list of successful candidates
+    boolean done = false; // completion flag
+
+    while (!done) {
+
+      // Get the next candidate
+
+      Fraction candidate = new Fraction (1, denominator);
+
+      // If the candidate is less than the current remainder,
+      // add it to the "successful" list and subtract it from the remainder
+
+      if (candidate.compareTo (remainder) &lt;= 0) {
+        v.addElement (candidate);
+        remainder = remainder.minus (candidate);
+      }
+
+      // If the remainder is 0, we're done.
+
+      if (remainder.equals (ZERO)) {
+        done = true;
+      }
+      else {
+
+        // If the remainder's numerator is 1, add it to
+        // the list and we're done.
+
+        if (remainder.numerator () == 1) {
+          v.addElement (remainder);
+          done = true;
+        }
+        else {
+
+          // Increment the denominator for the next candidate
+
+          denominator++;
+        }
+      }
+    }
+
+    return v;
+
+  }
+
+  //-----
+  // Test
+  //-----
+
+  public static void main (String[] args) {
+    Fraction f = new Fraction (3, 7);
+    Vector v = EgyptianFractions.greedyAlgorithm (f);
+    System.out.println (v.toString ());
+    System.out.println (EgyptianFractions.getSum (v).toString ());
+  }
+
+}
+</pre>
+<p>
+Here are some useful links on Egyptian fractions. Those 
+by Ron Knott and Jim Loy are the easiest to understand.
+</p><ul>
+<li>David Eppstein, <a href="http://www.ics.uci.edu/%7Eeppstein/numth/egypt/">
+Egyptian Fractions</a>
+</li><li>Kevin Gong,
+<a href="http://kevingong.com/Math/EgyptianFractions.pdf">
+Egyptian Fractions</a>
+</li><li>Ron Knott, 
+<a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fractions/egyptian.html">
+Egyptian Fractions</a>
+</li><li>Jim Loy, <a href="http://www.jimloy.com/egypt/fraction.htm">
+Egyptian Fractions</a>
+</li><li>Eric Weisstein, 
+<a href="http://mathworld.wolfram.com/EgyptianFraction.html">
+Egyptian Fractions</a>
+</li></ul>
+In a category by themselves are several thought-provoking pages
+on unit fractions by Kevin Brown:
+<ul>
+<li>
+<a href="http://www.mathpages.com/home/akhmin.htm">
+The Akhmin Papyrus</a>
+</li><li>
+<a href="http://www.mathpages.com/home/kmath455.htm">
+Irrationality of Quadratic Sums</a>
+</li><li>
+<a href="http://www.mathpages.com/home/kmath348.htm">
+Minimizing the Denominators of Unit Fraction Expansions</a>
+</li><li>
+<a href="http://www.mathpages.com/home/kmath454.htm">
+Odd, Greedy, and Stubborn (Unit Fractions)</a>
+</li><li>
+<a href="http://www.mathpages.com/home/kmath453.htm">
+On a Unit Fraction Question of Erdos and Graham</a>
+</li><li>
+<a href="http://www.mathpages.com/home/kmath150.htm">
+Reverse Greed for Unit Fractions</a>
+</li><li>
+<a href="http://www.mathpages.com/home/rhind.htm">
+The Rhind Papyrus 2/n Table</a>
+</li><li>
+<a href="http://www.mathpages.com/home/kmath315.htm">
+Unit Fractions and Fibonacci</a>
+</li><li>
+<a href="http://www.mathpages.com/home/kmath332.htm">
+Unit Fraction Partitions</a>
+</li><li>
+<a href="http://www.mathpages.com/home/kmath478.htm">
+Wagon Trains and Sticky Wickets</a>
+</li><li>
+<a href="http://www.mathpages.com/home/whyunits.htm">
+Why Unit Fractions?</a>
+</li></ul>
+Martin Gardner has a chapter on Egyptian fractions in his book
+<i>Fractal Music, Hypercards and More...</i> 
+(NY: W.H. Freeman, 1992), pp. 100-109, and there is a discussion
+of unit fractions in Paul Hoffman, <i>The Man Who Loved Only
+Numbers</i> (NY: Hyperion, 1998), pp. 153-157.<br><br>
+<hr>
+<h2><a name="Farey">Farey Sequences</a></h2>
+<p>
+Suppose you were asked for a list of all fractions between 0 and 1
+inclusive, whose denominator does not exceed a given number n.
+</p><ul>
+<li>When n is 1, the list contains just 0 and 1, that is, 0/1 and 1/1.
+</li><li>When n is 2, the list contains 0/1, 1/2, 1/1.
+</li><li>When n is 3, the list contains 0/1, 1/3, 1/2, 2/3, 1/1.
+</li><li>When n is 4, the list contains 0/1, 1/4, 1/3, 1/2, 2/3, 3/4, 1/1.
+Note that we have excluded 2/4, as being equivalent to 1/2.
+</li></ul>
+A list like this is known as a Farey sequence. Different lists are
+distinguished by their "order", that is, the number n which represents
+the largest denominator. The following diagram shows all Farey sequences
+from order 1 to 6.
+<pre>[0/1,                                                        1/1]
+[0/1,                          1/2,                          1/1]
+[0/1,                1/3,      1/2,      2/3,                1/1]
+[0/1,           1/4, 1/3,      1/2,      2/3, 3/4,           1/1]
+[0/1,      1/5, 1/4, 1/3, 2/5, 1/2, 3/5, 2/3, 3/4, 4/5,      1/1]
+[0/1, 1/6, 1/5, 1/4, 1/3, 2/5, 1/2, 3/5, 2/3, 3/4, 4/5, 5/6, 1/1]
+</pre>
+Inspection of this illustration reveals many curious properties of
+Farey sequences. We'll just look at a couple.
+<p>
+For every sequence of order &gt;= 2, the fraction 1/2 stands in the
+middle. Any two terms equidistant from 1/2 are complementary, that is to say,
+they add up to 1. Looking at the Farey sequence of order 6, we see that
+</p><ul>
+<li>2/5 and 3/5 are both one away from 1/2. Their sum is 1.
+</li><li>1/3 and 2/3 are both two away from 1/2. Their sum is 1.
+</li><li>1/4 and 3/4 are both three away from 1/2. Their sum is 1.
+</li><li>1/5 and 4/5 are both four away from 1/2. Their sum is 1.
+</li><li>1/6 and 5/6 are both five away from 1/2. Their sum is 1.
+</li><li>0/1 and 1/1 are both six away from 1/2. Their sum is 1.
+</li></ul>
+<p></p>
+<p>
+Another curious property is this. Choose any two adjacent terms,
+say 1/3 and 2/5 in the Farey sequence of order 6.
+Their difference is equal to the reciprocal of the product of their
+denominators. For example, the difference between 1/3 and 2/5 is
+1/15. The product of the denominators of 1/3 and 2/5 is
+15, whose reciprocal is also 1/15.
+</p>
+<p>
+The following Java class, FareySequence.java, generates Farey sequences.
+</p>
+<pre>//-------------------------
+// Farey sequence generator
+//-------------------------
+
+import java.util.Vector;
+import EDU.oswego.cs.dl.util.concurrent.misc.Fraction; 
+
+public class FareySequence {
+
+  private Vector seq;
+  private long order;
+
+  //------
+  // Reset
+  //------
+
+  public void reset () {
+    seq = null;
+    order = 0;
+  }
+
+  //--------------------------------------------
+  // The mediant of a/b and c/d is (a+c) / (b+d)
+  //--------------------------------------------
+
+  public static Fraction getMediant (Fraction f1, Fraction f2) {
+    return new Fraction (f1.numerator () + f2.numerator (),
+                         f1.denominator () + f2.denominator ());
+  }
+
+  public static boolean isMediant (Fraction candidate, Fraction f1, Fraction f2) {
+    return (candidate.numerator () == f1.numerator () + f2.numerator ()) &amp;&amp;
+           (candidate.denominator () == f1.denominator () + f2.denominator ());
+  }
+
+  //------------------
+  // Get next sequence
+  //------------------
+
+  public Vector getNext () {
+
+    if (order == 0) {
+      seq = new Vector ();
+      seq.addElement (new Fraction (0, 1));
+      seq.addElement (new Fraction (1, 1));
+      order = 1;
+    }
+    else {
+      order++;
+      Vector v = new Vector ();
+      for (int i = 0; i &lt; seq.size (); i++) {
+        Fraction f1 = (Fraction) seq.elementAt (i);
+        v.addElement (f1);
+        if (i &lt; seq.size () - 1) {
+          Fraction f2 = (Fraction) seq.elementAt (i + 1);
+          if ((f1.denominator () + f2.denominator ()) &lt;= order) {
+            Fraction child = getMediant (f1, f2);
+            v.addElement (child);
+          }
+        }
+      }
+      seq = v;
+    }
+    return seq;
+
+  }
+
+  //--------------------------------------------
+  // Get the order of the last sequence computed
+  //--------------------------------------------
+
+  public long getOrder () {
+    return order;
+  }
+
+  //--------------------------------
+  // Get sequence of specified order
+  //--------------------------------
+
+  public Vector getSequence (long order) {
+    if (order &lt;= 0) {
+      return null;
+    }
+    reset ();
+    while (this.order &lt;= order ) {
+      getNext ();
+    }
+    return seq;
+  }
+
+  //-----
+  // Test
+  //-----
+
+  public static void main (String[] args) {
+    FareySequence fs = new FareySequence ();
+    Vector next;
+    for (int i = 0; i &lt; 10; i++) {
+      next = fs.getNext ();
+      System.out.println (next);
+    }
+    fs.reset ();
+    System.out.println (fs.getSequence (9));
+  }
+
+}
+</pre>
+<p>
+Here are some useful links on Farey sequences.
+</p><ul>
+<li>Alexander Bogomolny,
+<a href="http://www.cut-the-knot.com/blue/Farey.shtml">
+Farey Series</a>
+</li><li>Alexander Bogomolny,
+<a href="http://www.cut-the-knot.com/blue/FareyHistory.shtml">
+Farey Series, a Story</a>
+</li><li>Alexander Bogomolny,
+<a href="http://www.cut-the-knot.org/ctk/PickToFarey.shtml">
+Pick's Theorem Applies to Farey Series</a>
+</li><li>BCF Group,
+<a href="http://www.ridgenet.net/%7Ejebush/bcf/Farybin2.html">
+The Bins of the Farey Sequence</a>
+</li><li>Matthew R. Watkins,
+<a href="http://www.maths.ex.ac.uk/%7Emwatkins/zeta/farey.html">
+Farey Sequences</a>
+</li><li>University of Ferrara,
+<a href="http://felix.unife.it/Root/d-Mathematics/d-Number-theory/b-Farey-fractions-and-Ford-circles">
+Bibliography on Farey Fractions and Ford Circles</a>
+</li><li>Eric Weisstein,
+<a href="http://mathworld.wolfram.com/FareySequence.html">
+Farey Sequence</a>
+</li></ul>
+<p>
+Here are also some references from books:
+</p><ul>
+<li>Albert H. Beiler, <i>Recreations in the Theory of Numbers</i>, 2nd edition
+(NY: Dover, 1966),
+pp. 168-172 = "Farey Tails"
+</li><li>John H. Conway and Richard K. Guy,
+<i>The Book of Numbers</i>
+(NY: Copernicus, 1996), pp. 152-154 = "Farey Fractions and Ford Circles"
+</li><li>Ross Honsberger,
+<i>Ingenuity in Mathematics</i>
+(Washington: The Mathematical Association of America, 1970), pp. 24-37 = "The
+Farey Series"
+</li><li>Manfred Schroeder, <i>Fractals, Chaos, and Power Laws</i> (NY: W.H. Freeman, 1991),
+pp. 334-340 = "Mediants, Farey Sequences, and the Farey Tree"
+</li></ul>
+
+<hr>
+<h2><a name="Continued">Continued Fractions</a></h2>
+<p>
+A <b>general continued fraction</b> has the form:
+</p><pre>           a1                                
+b0 + --------------------------------------             
+                a2                        
+      b1 + --------------------------------             
+                        a3                
+            b2 + --------------------------             
+                        b3 +              
+                              . . .       
+                                       an 
+                                    + -----
+                                       bn 
+</pre>
+<p></p>
+<p>
+If this looks intimidating, 
+let's consider the slightly less complicated
+<b>simple continued fraction</b>, which has the form:
+</p><pre>           1                                
+b0 + --------------------------------------             
+                1                        
+      b1 + --------------------------------             
+                        1                
+            b2 + --------------------------             
+                        b3 +              
+                              . . .       
+                                       1 
+                                    + -----
+                                       bn 
+</pre>
+<p></p>
+<p>
+If you compare the general with the simple form, you'll see that
+we've just replaced all of the "b"s with "1"s.
+If this still looks intimidating, let's look at a <b>concrete example</b>.
+Any rational number can be represented as a simple continued fraction,
+and so we'll try 45/16. Its representation as a simple continued fraction 
+looks like this:
+</p><pre>        1                                
+2 + ---------------             
+             1                        
+      1 + ---------             
+                 1                
+            4 + ---             
+                 3              
+</pre>
+<p></p>
+<p>
+In order to evaluate this still rather complicated-looking
+expression, let's start at the bottom and work upwards.
+</p><ul>
+<li>4 + 1/3 is 13/3
+</li><li>1 / (13/3) is the reciprocal of 13/3, or 3/13.
+</li><li>1 + 3/13 is 16/13
+</li><li>1 / (16/13) is the reciprocal of 16/13, or 13/16.
+</li><li>2 + 13/16 is 45/16, which is what we started with. Eureka!
+</li></ul>
+Mathematicians are always looking for compact notations,
+and they usually express a simple continued fraction in
+list form, retaining only the "a" values. [2; 1, 4, 3] is
+the list form of the continued fraction for 45/16.
+Here are a few more examples of list forms of continued
+fractions:
+<ul>
+<li>[0; 3] is the list form of the continued fractions for 1/3
+</li><li>[2] is the list form of the continued fractions for 2/1
+</li><li>[0; 1, 1, 2] is the list form of the continued fractions for 3/5
+</li><li>[0; 2] is the list form of the continued fractions for 1/2
+</li></ul>
+Note that the list form for fractions less than 1 always has 0 as the
+first member, as we would expect.
+<p></p>
+<p>
+The following Java class, ContinuedFractions.java, converts
+to and from simple continued fractions.
+</p>
+<pre>//------------------------------------------------
+// Converts to and from simple continued fractions
+//------------------------------------------------
+
+import java.util.Vector;
+import EDU.oswego.cs.dl.util.concurrent.misc.Fraction; 
+
+public abstract class ContinuedFractions {
+
+  //-----------------------------------------------------
+  // Given a proper fraction, return its simple continued
+  // fraction representation in list form
+  //-----------------------------------------------------
+
+  public static Vector to (Fraction f) {
+    Vector v = new Vector ();
+    if (f.denominator () == 1) {
+      v.addElement (new Long (f.numerator ()));
+    }
+    else if (f.numerator () == 1) {
+      v.addElement (new Long (0));
+      v.addElement (new Long (f.denominator ()));
+    }
+    else {
+      Fraction x = new Fraction (f);
+      long quotient, remainder;
+      while (x.denominator () &gt; 1) {
+        quotient = x.numerator () / x.denominator ();
+        remainder = x.numerator () % x.denominator ();
+        v.addElement (new Long (quotient));
+        x = new Fraction (x.denominator (), remainder);
+        if (x.denominator () == 1) {
+          v.addElement (new Long (x.numerator ()));
+        }
+      }
+    }
+    return v;
+  }
+
+  //-----------------------------------------------
+  // Given a continued fraction in list form,
+  // return the proper fraction which it represents
+  //-----------------------------------------------
+
+  public static Fraction from (Vector v) {
+    if (v.size () == 1) {
+      return new Fraction (getLong (v, 0), 1);
+    }
+    Fraction sum = null;
+    Fraction f;
+    long a;
+    for (int i = v.size () - 1; i &gt;= 1; i--) {
+      a = getLong (v, i - 1);
+      if (sum == null) {
+        Fraction f1 = new Fraction (a, 1);
+        Fraction f2 = new Fraction (1, getLong (v, i));
+        sum = f1.plus (f2);
+      }
+      else {
+        sum = sum.inverse ().plus (a);
+      }
+    }
+    return sum;
+  }
+
+  //-----------------------------------------------
+  // Utility function to extract long from a Vector
+  //-----------------------------------------------
+
+  private static long getLong (Vector v, int idx) {
+    Long longObj = (Long) v.elementAt (idx);
+    return longObj.longValue ();
+  }
+
+  //-----
+  // Test
+  //-----
+
+  public static void main (String[] args) {
+    Fraction fractions[] = {new Fraction (45, 16),
+                            new Fraction (1, 3),
+                            new Fraction (2, 1),
+                            new Fraction (3, 5),
+                            new Fraction (8, 16)};
+    Vector v;
+    Fraction f;
+    for (int i = 0; i &lt; fractions.length; i++) {
+      f = fractions[i];
+      v = ContinuedFractions.to (f);
+      System.out.println (v.toString ());
+      f = ContinuedFractions.from (v);
+      System.out.println (f.toString ());
+    }
+  }
+
+}
+</pre>
+<p>
+Here are some useful links about continued fractions. The best
+introductions for amateurs are those by Ron Knott and Adam Van Tuyl.
+</p><ul>
+<li>John D. Barrow, 
+<a href="http://plus.maths.org/issue11/features/cfractions/">
+Chaos in Numberland: The Secret Life of Continued Fractions</a> 
+</li><li>M. Beeler, R.W. Gosper, and R. Schroeppel, 
+<a href="http://www.inwap.com/pdp10/hbaker/hakmem/cf.html">
+Continued Fractions</a>
+</li><li>Darren C. Collins, 
+<a href="http://www-math.mit.edu/phase2/UJM/vol1/COLLIN%7E1.PDF">
+Continued Fractions</a>
+</li><li>Robert M. Corless, 
+<a href="http://www.cecm.sfu.ca/publications/organic/confrac/confrac.html">
+Continued Fractions and Chaos</a>
+</li><li>Edward G. Dunne, 
+<a href="http://www.research.att.com/%7Enjas/sequences/DUNNE/TEMPERAMENT.HTML">
+Pianos and Continued Fractions</a>
+</li><li>Mark Herkommer, 
+<a href="http://www.flash.net/%7Emherk/contfrac.htm">
+Continued Fractions</a>
+</li><li>Ron Knott, 
+<a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/cfINTRO.html">
+An Introduction to Continued Fractions</a>
+</li><li>Christopher Reed, 
+<a href="http://ourworld.cs.com/christopherereed/confracs.htm">
+A Little about Continued Fractions</a>
+</li><li>Adam Van Tuyl, 
+<a href="http://archives.math.utk.edu/articles/atuyl/confrac/">
+Continued Fractions...an Introduction</a>
+</li><li>Eric Weisstein, 
+<a href="http://mathworld.wolfram.com/ContinuedFraction.html">
+Continued Fractions</a>
+</li></ul>
+Here are also some references from books:
+<ul>
+<li>Albert H. Beiler,
+<i>Recreations in the Theory of Numbers</i>, 2nd edition (NY: Dover, 1966),
+pp. 257-267
+</li><li>John H. Conway and Richard K. Guy,
+<i>The Book of Numbers</i>
+(NY: Copernicus, 1996), pp. 176-179
+</li><li>Richard Courant and Herbert Robbins,
+<i>What is Mathematics?</i>, revised by Ian Stewart, 2nd edition
+(Oxford: Oxford University Press, 1996), pp. 49-51, 301-303
+</li><li>A.A. Klaf, <i>Arithmetic Refresher</i> (NY: Dover, 1964),
+pp. 98-101
+</li><li>W.W. Rouse Ball and H.S.M. Coxeter, 
+<i>Mathematical Recreations and Essays</i>, 13th edition
+(NY: Dover, 1987), pp. 54-56, 86-87
+</li></ul>
+Some texts (e.g. Klaf) use the terminology chain fraction, rather than
+continued fraction.
+<p></p>
+<hr>
+<h2><a name="Big">Big Fractions</a></h2>
+If you work with fractions having large numerators and denominators,
+you may find negative fractions cropping up where you don't
+expect them, due to the "wraparound" phenomenon associated with the Java long
+data type. If you add one to the <b>biggest</b> possible value of a Java long,
+the result is the <b>smallest</b> possible value of a Java long, as the following
+code fragment shows:
+<pre>System.out.println (Long.MAX_VALUE);
+System.out.println (Long.MAX_VALUE + 1);
+System.out.println (Long.MIN_VALUE);
+</pre>
+The output is:
+<pre>9223372036854775807
+-9223372036854775808
+-9223372036854775808
+</pre>
+I encountered this snag when I was adding terms in the
+harmonic series (1/1 + 1/2 + 1/3 + 1/4 ...), and to get
+around it I wrote a new BigFraction.java class, in which
+the numerator and denominator are of type java.math.BigInteger.
+<pre>//-------------------------------------------------------
+// An adaptation of Doug Lea's Fraction.java with
+// BigInteger (instead of long) numerator and denominator
+//-------------------------------------------------------
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.io.Serializable;
+
+public class BigFraction implements Cloneable, Comparable, Serializable {
+  protected final BigInteger numerator_;
+  protected final BigInteger denominator_;
+
+  //-----------------
+  // Accessor methods
+  //-----------------
+
+  public BigInteger numerator () {
+    return numerator_;
+  }
+
+  public BigInteger denominator () {
+    return denominator_;
+  }
+
+  //-------------
+  // Constructors
+  //-------------
+
+  public BigFraction (BigInteger num, BigInteger den) {
+    // Reduce to lowest terms
+    boolean numNonnegative = gteq (num, BigInteger.ZERO);
+    boolean denNonnegative = gteq (den, BigInteger.ZERO);
+    BigInteger a = numNonnegative? num : num.negate ();
+    BigInteger b = denNonnegative? den : den.negate ();
+    BigInteger g = a.gcd (b);
+    if (numNonnegative == denNonnegative) {
+      numerator_ = a.divide (g);
+    }
+    else {
+      numerator_ = a.negate ().divide (g);
+    }
+    denominator_ = b.divide (g);
+  }
+
+  public BigFraction (BigFraction f) {
+    numerator_ = f.numerator();
+    denominator_ = f.denominator();
+  }
+
+  public BigFraction (String s) {
+    this (new BigInteger (s.substring (0, s.indexOf ('/'))),
+          new BigInteger (s.substring (s.indexOf ('/') + 1)));
+  }
+
+  public BigFraction (long num, long den) {
+    this (new BigInteger (Long.toString (num)),
+          new BigInteger (Long.toString (den)));
+  }
+
+  //------------------
+  // Override toString
+  //------------------
+
+  public String toString () {
+    return numerator ().toString () + "/" +
+           denominator ().toString ();
+  }
+
+  //--------------------------------
+  // Required to implement Cloneable
+  //--------------------------------
+
+  public Object clone () {
+    return new BigFraction (this);
+  }
+
+  //----------------------------
+  // Utility comparison routines
+  //----------------------------
+
+  private boolean gt (BigInteger x, BigInteger y) {
+    return x.compareTo (y) &gt; 0;
+  }
+
+  private boolean gteq (BigInteger x, BigInteger y) {
+    return x.compareTo (y) &gt;= 0;
+  }
+
+  private boolean lt (BigInteger x, BigInteger y) {
+    return x.compareTo (y) &lt; 0;
+  }
+
+  private boolean lteq (BigInteger x, BigInteger y) {
+    return x.compareTo (y) &lt;= 0;
+  }
+
+  //------------
+  // Get minimum
+  //------------
+
+  public BigFraction min (BigFraction val) {
+    if (compareTo (val) &lt;= 0) {
+      return this;
+    }
+    else {
+      return val;
+    }
+  }
+
+  //------------
+  // Get maximum
+  //------------
+
+  public BigFraction max (BigFraction val) {
+    if (compareTo (val) &gt; 0) {
+      return this;
+    }
+    else {
+      return val;
+    }
+  }
+
+  //-------------------------------------------------------
+  // Convert to BigDecimal
+  // Rounding mode is any of BigDecimal.ROUND_xxx constants
+  //-------------------------------------------------------
+
+  public BigDecimal asBigDecimal (int scale, int roundingMode) {
+    BigDecimal num = new BigDecimal (numerator ());
+    BigDecimal den = new BigDecimal (denominator ());
+    return num.divide (den, scale, roundingMode);
+  }
+
+  //------------------
+  // Get negated value
+  //------------------
+
+  public BigFraction negate () {
+    return new BigFraction (numerator ().negate (), denominator ());
+  }
+
+  //---------------------------
+  // Get multiplicative inverse
+  //---------------------------
+
+  public BigFraction inverse () {
+    return new BigFraction (denominator (), numerator ());
+  }
+
+  //----
+  // Add
+  //----
+
+  public BigFraction add (BigFraction b) {
+    BigInteger an = numerator ();
+    BigInteger ad = denominator ();
+    BigInteger bn = b.numerator ();
+    BigInteger bd = b.denominator ();
+    return new BigFraction (an.multiply (bd).add (bn.multiply (ad)), ad.multiply (bd));
+  }
+
+  public BigFraction add (BigInteger n) {
+    return add (new BigFraction (n, BigInteger.ONE));
+  }
+
+  public BigFraction add (long n) {
+    return add (new BigInteger (Long.toString (n)));
+  }
+
+  //---------
+  // Subtract
+  //---------
+
+  public BigFraction subtract (BigFraction b) {
+    BigInteger an = numerator();
+    BigInteger ad = denominator();
+    BigInteger bn = b.numerator();
+    BigInteger bd = b.denominator();
+    return new BigFraction(an.multiply (bd).subtract (bn.multiply (ad)), ad.multiply (bd));
+  }
+
+  public BigFraction subtract (BigInteger n) {
+    return subtract (new BigFraction (n, BigInteger.ONE));
+  }
+
+  public BigFraction subtract (long n) {
+    return subtract (new BigInteger (Long.toString (n)));
+  }
+
+  //---------
+  // Multiply
+  //---------
+
+  public BigFraction multiply (BigFraction b) {
+    BigInteger an = numerator();
+    BigInteger ad = denominator();
+    BigInteger bn = b.numerator();
+    BigInteger bd = b.denominator();
+    return new BigFraction (an.multiply (bn), ad.multiply (bd));
+  }
+
+  public BigFraction multiply (BigInteger n) {
+    return multiply (new BigFraction (n, BigInteger.ONE));
+  }
+
+  public BigFraction multiply (long n) {
+    return multiply (new BigInteger (Long.toString (n)));
+  }
+
+  //-------
+  // Divide
+  //-------
+
+  public BigFraction divide (BigFraction b) {
+    BigInteger an = numerator ();
+    BigInteger ad = denominator ();
+    BigInteger bn = b.numerator ();
+    BigInteger bd = b.denominator ();
+    return new BigFraction (an.multiply (bd), ad.multiply (bn));
+  }
+
+  public BigFraction divide (BigInteger n) {
+    return divide (new BigFraction (n, BigInteger.ONE));
+  }
+
+  public BigFraction divide (long n) {
+    return divide (new BigInteger (Long.toString (n)));
+  }
+
+  //---------------------------------
+  // Required to implement Comparable
+  //---------------------------------
+
+  public int compareTo (Object other) {
+    BigFraction b = (BigFraction) (other);
+    BigInteger an = numerator ();
+    BigInteger ad = denominator ();
+    BigInteger bn = b.numerator ();
+    BigInteger bd = b.denominator ();
+    BigInteger left = an.multiply (bd);
+    BigInteger right = bn.multiply (ad);
+    if (lt (left, right)) {
+      return -1;
+    }
+    if (left.equals (right)) {
+      return 0;
+    }
+    else {
+      return 1;
+    }
+  }
+
+  public int compareTo (BigInteger n) {
+    Object obj = new BigFraction (n, BigInteger.ONE);
+    return compareTo (obj);
+  }
+
+  //----------------
+  // Override equals
+  //----------------
+
+  public boolean equals (Object other) {
+    return compareTo ((BigFraction) other) == 0;
+  }
+
+  public boolean equals (BigInteger n) {
+    return compareTo (n) == 0;
+  }
+
+  public boolean equals (long n) {
+    return equals (new BigInteger (Long.toString (n)));
+  }
+
+  //------------------
+  // Override hashCode
+  //------------------
+
+  public int hashCode() {
+    int num = numerator().intValue ();
+    int den = denominator ().intValue ();
+    return num ^ den;
+  }
+
+  //-----
+  // Test
+  //----- 
+
+  public static void main (String[] args) {
+    BigFraction f1, f2, f3;
+
+    // Start out with a big fraction whose numerator is 3 followed by 500 zeros
+    // and whose denominator is 6 followed by 500 zeros
+
+    StringBuffer sb = new StringBuffer ("3");
+    for (int i = 0; i &lt; 500; i++) {
+      sb.append ("0");
+    }
+    BigInteger bi1 = new BigInteger (sb.toString ());
+    sb.setCharAt (0, '6');
+    BigInteger bi2 = new BigInteger (sb.toString ());
+    f1 = new BigFraction (bi1, bi2);
+    System.out.println (f1);
+
+    // Add 2/8 to it
+
+    f2 = new BigFraction (2, 8);
+    System.out.println (f2);
+    f3 = f1.add (f2);
+    System.out.println (f3);
+
+    // Express result as decimal
+
+    System.out.println (f3.asBigDecimal (2, BigDecimal.ROUND_UNNECESSARY));
+
+    // Subtract 16/64 from result
+
+    System.out.println (f3.subtract (new BigFraction ("16/64")));
+
+    // Divide result by result * negative inverse of result (i.e. -1)
+
+    System.out.println (f3.divide (f3.multiply (f3.inverse ().negate ())));
+
+  }
+}
+</pre>
+
+<hr>
+<h2><a name="Harmonic">Harmonic Numbers</a></h2>
+<p>
+The harmonic series is the series of reciprocals of positive integers, i.e.
+1/1 + 1/2 + 1/3 + 1/4 .... A harmonic number is a partial sum of that series.
+The first harmonic number is 1/1; the second is 1/1 + 1/2, or 3/2; the third is
+1/1 + 1/2 + 1/3, or 11/6; etc.
+</p>
+<p>
+Here is a table of the first 100 harmonic numbers.
+</p>
+<table align="center" border="1" cols="3">
+<tbody><tr><th>N</th><th>Numerator</th><th>Denominator</th></tr>
+<tr><td>1</td><td>1</td><td>1</td></tr>
+<tr><td>2</td><td>3</td><td>2</td></tr>
+<tr><td>3</td><td>11</td><td>6</td></tr>
+<tr><td>4</td><td>25</td><td>12</td></tr>
+<tr><td>5</td><td>137</td><td>60</td></tr>
+<tr><td>6</td><td>49</td><td>20</td></tr>
+<tr><td>7</td><td>363</td><td>140</td></tr>
+<tr><td>8</td><td>761</td><td>280</td></tr>
+<tr><td>9</td><td>7129</td><td>2520</td></tr>
+<tr><td>10</td><td>7381</td><td>2520</td></tr>
+<tr><td>11</td><td>83711</td><td>27720</td></tr>
+<tr><td>12</td><td>86021</td><td>27720</td></tr>
+<tr><td>13</td><td>1145993</td><td>360360</td></tr>
+<tr><td>14</td><td>1171733</td><td>360360</td></tr>
+<tr><td>15</td><td>1195757</td><td>360360</td></tr>
+<tr><td>16</td><td>2436559</td><td>720720</td></tr>
+<tr><td>17</td><td>42142223</td><td>12252240</td></tr>
+<tr><td>18</td><td>14274301</td><td>4084080</td></tr>
+<tr><td>19</td><td>275295799</td><td>77597520</td></tr>
+<tr><td>20</td><td>55835135</td><td>15519504</td></tr>
+<tr><td>21</td><td>18858053</td><td>5173168</td></tr>
+<tr><td>22</td><td>19093197</td><td>5173168</td></tr>
+<tr><td>23</td><td>444316699</td><td>118982864</td></tr>
+<tr><td>24</td><td>1347822955</td><td>356948592</td></tr>
+<tr><td>25</td><td>34052522467</td><td>8923714800</td></tr>
+<tr><td>26</td><td>34395742267</td><td>8923714800</td></tr>
+<tr><td>27</td><td>312536252003</td><td>80313433200</td></tr>
+<tr><td>28</td><td>315404588903</td><td>80313433200</td></tr>
+<tr><td>29</td><td>9227046511387</td><td>2329089562800</td></tr>
+<tr><td>30</td><td>9304682830147</td><td>2329089562800</td></tr>
+<tr><td>31</td><td>290774257297357</td><td>72201776446800</td></tr>
+<tr><td>32</td><td>586061125622639</td><td>144403552893600</td></tr>
+<tr><td>33</td><td>53676090078349</td><td>13127595717600</td></tr>
+<tr><td>34</td><td>54062195834749</td><td>13127595717600</td></tr>
+<tr><td>35</td><td>54437269998109</td><td>13127595717600</td></tr>
+<tr><td>36</td><td>54801925434709</td><td>13127595717600</td></tr>
+<tr><td>37</td><td>2040798836801833</td><td>485721041551200</td></tr>
+<tr><td>38</td><td>2053580969474233</td><td>485721041551200</td></tr>
+<tr><td>39</td><td>2066035355155033</td><td>485721041551200</td></tr>
+<tr><td>40</td><td>2078178381193813</td><td>485721041551200</td></tr>
+<tr><td>41</td><td>85691034670497533</td><td>19914562703599200</td></tr>
+<tr><td>42</td><td>12309312989335019</td><td>2844937529085600</td></tr>
+<tr><td>43</td><td>532145396070491417</td><td>122332313750680800</td></tr>
+<tr><td>44</td><td>5884182435213075787</td><td>1345655451257488800</td></tr>
+<tr><td>45</td><td>5914085889685464427</td><td>1345655451257488800</td></tr>
+<tr><td>46</td><td>5943339269060627227</td><td>1345655451257488800</td></tr>
+<tr><td>47</td><td>280682601097106968469</td><td>63245806209101973600</td></tr>
+<tr><td>48</td><td>282000222059796592919</td><td>63245806209101973600</td></tr>
+<tr><td>49</td><td>13881256687139135026631</td><td>3099044504245996706400</td></tr>
+<tr><td>50</td><td>13943237577224054960759</td><td>3099044504245996706400</td></tr>
+<tr><td>51</td><td>14004003155738682347159</td><td>3099044504245996706400</td></tr>
+<tr><td>52</td><td>14063600165435720745359</td><td>3099044504245996706400</td></tr>
+<tr><td>53</td><td>748469853272339196210427</td><td>164249358725037825439200</td></tr>
+<tr><td>54</td><td>250503836021181200128409</td><td>54749786241679275146400</td></tr>
+<tr><td>55</td><td>251499286680120823312889</td><td>54749786241679275146400</td></tr>
+<tr><td>56</td><td>252476961434436524654789</td><td>54749786241679275146400</td></tr>
+<tr><td>57</td><td>253437484000080020709989</td><td>54749786241679275146400</td></tr>
+<tr><td>58</td><td>254381445831833111660789</td><td>54749786241679275146400</td></tr>
+<tr><td>59</td><td>15063255090319832863132951</td><td>3230237388259077233637600</td></tr>
+<tr><td>60</td><td>15117092380124150817026911</td><td>3230237388259077233637600</td></tr>
+<tr><td>61</td><td>925372872575832277072279171</td><td>197044480683803711251893600</td></tr>
+<tr><td>62</td><td>928551009361054917576341971</td><td>197044480683803711251893600</td></tr>
+<tr><td>63</td><td>310559566510213034489743057</td><td>65681493561267903750631200</td></tr>
+<tr><td>64</td><td>623171679694215690971693339</td><td>131362987122535807501262400</td></tr>
+<tr><td>65</td><td>625192648726870088010174299</td><td>131362987122535807501262400</td></tr>
+<tr><td>66</td><td>209060999005535159677640233</td><td>43787662374178602500420800</td></tr>
+<tr><td>67</td><td>14050874595745034300902316411</td><td>2933773379069966367528193600</td></tr>
+<tr><td>68</td><td>14094018321907827923954201611</td><td>2933773379069966367528193600</td></tr>
+<tr><td>69</td><td>42409610330030873613929048033</td><td>8801320137209899102584580800</td></tr>
+<tr><td>70</td><td>42535343474848157886823113473</td><td>8801320137209899102584580800</td></tr>
+<tr><td>71</td><td>3028810706851429109067025637383</td><td>624893729741902836283505236800</td></tr>
+<tr><td>72</td><td>9112469359293533278712889630349</td><td>1874681189225708508850515710400</td></tr>
+<tr><td>73</td><td>667084944417653637854891458725877</td><td>136851726813476721146087646859200</td></tr>
+<tr><td>74</td><td>668934292077295215167676426926677</td><td>136851726813476721146087646859200</td></tr>
+<tr><td>75</td><td>670758981768141571449624262218133</td><td>136851726813476721146087646859200</td></tr>
+<tr><td>76</td><td>672559662384108370412072783887333</td><td>136851726813476721146087646859200</td></tr>
+<tr><td>77</td><td>61303359776139104182852056677903</td><td>12441066073952429195098876987200</td></tr>
+<tr><td>78</td><td>61462860623241058403302042280303</td><td>12441066073952429195098876987200</td></tr>
+<tr><td>79</td><td>4868007055309996043055960217131137</td><td>982844219842241906412811281988800</td></tr>
+<tr><td>80</td><td>4880292608058024066886120358155997</td><td>982844219842241906412811281988800</td></tr>
+<tr><td>81</td><td>44031838385838021258243173365847173</td><td>8845597978580177157715301537899200</td></tr>
+<tr><td>82</td><td>44139711531918267321142140457772773</td><td>8845597978580177157715301537899200</td></tr>
+<tr><td>83</td><td>3672441655127796364812512959533039359</td><td>734184632222154704090370027645633600</td></tr>
+<tr><td>84</td><td>3681181948368536301765969745576439759</td><td>734184632222154704090370027645633600</td></tr>
+<tr><td>85</td><td>3689819414629973415931738804725211919</td><td>734184632222154704090370027645633600</td></tr>
+<tr><td>86</td><td>3698356445237207772956045432953649519</td><td>734184632222154704090370027645633600</td></tr>
+<tr><td>87</td><td>3706795349055853229324900260857622319</td><td>734184632222154704090370027645633600</td></tr>
+<tr><td>88</td><td>40866521918642154860585199122889549709</td><td>8076030954443701744994070304101969600</td></tr>
+<tr><td>89</td><td>3645196481713595484337076792241271893701</td><td>718766754945489455304472257065075294400</td></tr>
+<tr><td>90</td><td>3653182778990767589396015372875328285861</td><td>718766754945489455304472257065075294400</td></tr>
+<tr><td>91</td><td>3661081314759399341652108474601318124261</td><td>718766754945489455304472257065075294400</td></tr>
+<tr><td>92</td><td>3668893996878372053122809260004199377461</td><td>718766754945489455304472257065075294400</td></tr>
+<tr><td>93</td><td>3676622671662732154792749821908124918261</td><td>718766754945489455304472257065075294400</td></tr>
+<tr><td>94</td><td>3684269126502577787295988888472646995861</td><td>718766754945489455304472257065075294400</td></tr>
+<tr><td>95</td><td>3691835092344109255246562280652279367381</td><td>718766754945489455304472257065075294400</td></tr>
+<tr><td>96</td><td>3699322246041458103739317199996707235031</td><td>718766754945489455304472257065075294400</td></tr>
+<tr><td>97</td><td>359553024620966925518018240656745677092407</td><td>69720375229712477164533808935312303556800</td></tr>
+<tr><td>98</td><td>360264457021270114060513483605065190394007</td><td>69720375229712477164533808935312303556800</td></tr>
+<tr><td>99</td><td>360968703235711654233892612988250163157207</td><td>69720375229712477164533808935312303556800</td></tr>
+<tr><td>100</td><td>14466636279520351160221518043104131447711</td><td>2788815009188499086581352357412492142272</td></tr>
+</tbody></table>
+<p>
+Some columns of this table correspond to sequences in
+Neil Sloane's 
+<a href="http://www.research.att.com/%7Enjas/sequences/">
+On-Line Encyclopedia of Integer Sequences</a>:
+</p><ul>
+<li>The "Numerator" column is sequence
+<a href="http://www.research.att.com/cgi-bin/access.cgi/as/njas/sequences/eisA.cgi?Anum=A001008">
+A001008</a> 
+</li><li>The "Denominator" column is sequence
+<a href="http://www.research.att.com/cgi-bin/access.cgi/as/njas/sequences/eisA.cgi?Anum=A002805">
+A002805</a> 
+</li></ul>
+<p></p>
+<p>
+Using the BigInteger.java class, it is an easy matter to write
+a harmonic number generator (HarmonicNumbers.java). In fact, the
+table just shown was generated automatically with the aid of
+this class.
+</p><pre>import java.util.Vector;
+import java.math.BigInteger;
+
+public class HarmonicNumbers {
+
+  private BigFraction term = null;
+  private BigFraction sum = null;
+
+  public BigFraction getNext () {
+    if (term == null) {
+      term = new BigFraction (1, 1);
+      sum = new BigFraction (0, 1);
+    }
+    else {
+      BigInteger num = BigInteger.ONE;
+      BigInteger denom = term.denominator ().add (BigInteger.ONE);
+      term = new BigFraction (num, denom);
+    }
+    sum = sum.add (term);
+    return sum;
+  }
+
+  public static void main (String[] args) {
+    HarmonicNumbers gen = new HarmonicNumbers ();
+    BigFraction next;
+    for (int i = 0; i &lt; 20; i++) {
+      next = gen.getNext ();
+      System.out.println (next.toString ());
+    }
+  }
+
+}
+</pre>
+<p></p>
+<p>
+Here are some useful links about the harmonic series and harmonic numbers. The best
+introduction for amateurs is the one by John Webb, which explains the relationship
+between the harmonic series and such phenomena as rainfall records and traffic flow.
+</p><ul>
+<li>Kevin Brown,
+<a href="http://www.mathpages.com/home/kmath284.htm">
+Bernoulli Numbers and the Harmonic Series</a>
+</li><li>Kevin Brown,
+<a href="http://mathpages.com/home/kmath137.htm">
+Recurrences for Harmonic Sums</a>
+</li><li>Kevin Brown,
+<a href="http://mathpages.com/home/kmath134.htm">
+Zeta Function and Harmonic Series</a>
+</li><li>Robert M. Dickau,
+<a href="http://mathforum.org/advanced/robertd/harmonic.html">
+Harmonic Numbers and the Book-Stacking Problem</a>
+</li><li>Jim Loy, 
+<a href="http://www.jimloy.com/algebra/hseries.htm">
+Harmonic Series</a>
+</li><li>Torsten Sillke,
+<a href="http://www.mathematik.uni-bielefeld.de/%7Esillke/PUZZLES/harmonic-series">
+The Harmonic Numbers and Series</a>
+</li><li>
+<a href="http://www.math.hmc.edu/funfacts/ffiles/20005.3.shtml">
+Thinned-Out Harmonic Series</a>
+</li><li>John Webb,
+<a href="http://plus.maths.org/issue12/features/harmonic/index.html">
+In Perfect Harmony</a>
+</li><li>Eric Weisstein,
+<a href="http://mathworld.wolfram.com/HarmonicNumber.html">
+Harmonic Number</a>
+</li><li>Eric Weisstein,
+<a href="http://mathworld.wolfram.com/HarmonicSeries.html">
+Harmonic Series</a>
+</li></ul>
+Here are also some references from books:
+<ul>
+<li>John H. Conway and Richard K. Guy,
+<i>The Book of Numbers</i>
+(NY: Copernicus, 1996), pp. 258-259
+</li><li>Martin Gardner,
+<i>Sixth Book of Mathematical Games from Scientific American</i>
+(NY: Charles Scribner's Sons, 1975),
+pp. 165-170
+</li><li>Ronald L. Graham, Donald E. Knuth, and Oren Patashnik,
+<i>Concrete Mathematics</i>, 2nd edition (Boston: Addison-Wesley,
+1994), pp. 272-282 
+</li></ul>
+<p></p>
+
+<hr>
+<h2><a name="Wolstenholme">Wolstenholme's Theorem</a></h2>
+<p>
+In <i>The Book of Prime Number Records</i> (NY: Springer-Verlag, 1988), p. 21,
+Paulo Ribenboim states that "In 1862, Wolstenholme proved the following
+interesting result: If p is a prime, p &gt;= 5, then the numerator of
+1 + 1/2 + 1/3 + ... + 1/(p-1) is divisible by p^2."
+</p>
+<p>
+<font size="2">
+The character Augustus Carmichael in Virginia Woolf's novel
+<i>To the Lighthouse</i> is based on Joseph Wolstenholme (1829-1891),
+according to a short 
+<a href="http://www-groups.dcs.st-and.ac.uk/%7Ehistory/Mathematicians/Wolstenholme.html">
+biography</a> in the <a href="http://www-groups.dcs.st-and.ac.uk/%7Ehistory/index.html">
+MacTutor History of Mathematics</a> archive.
+</font>
+</p>
+<p>
+Note that 1 + 1/2 + 1/3 + ... + 1/(p-1) in Wolstenholme's Theorem
+is a harmonic number.
+The following table shows how prime numbers &gt;= 5 are related to harmonic numbers
+by Wolstenholme's Theorem.
+</p>
+<table align="center" border="1" cols="6">
+<tbody><tr><th valign="top">Prime</th><th valign="top">Prime - 1</th>
+<th>Harmonic Number<br>Numerator</th>
+<th>Harmonic Number<br>Denominator</th>
+<th valign="top">Prime^2</th><th>Harmonic Number<br>Numerator / Prime^2</th></tr>
+<tr><td>5</td><td>4</td><td>25</td><td>12</td><td>25</td><td>1</td></tr>
+<tr><td>7</td><td>6</td><td>49</td><td>20</td><td>49</td><td>1</td></tr>
+<tr><td>11</td><td>10</td><td>7381</td><td>2520</td><td>121</td><td>61</td></tr>
+<tr><td>13</td><td>12</td><td>86021</td><td>27720</td><td>169</td><td>509</td></tr>
+<tr><td>17</td><td>16</td><td>2436559</td><td>720720</td><td>289</td><td>8431</td></tr>
+<tr><td>19</td><td>18</td><td>14274301</td><td>4084080</td><td>361</td><td>39541</td></tr>
+<tr><td>23</td><td>22</td><td>19093197</td><td>5173168</td><td>529</td><td>36093</td></tr>
+<tr><td>29</td><td>28</td><td>315404588903</td><td>80313433200</td><td>841</td><td>375035183</td></tr>
+<tr><td>31</td><td>30</td><td>9304682830147</td><td>2329089562800</td><td>961</td><td>9682292227</td></tr>
+<tr><td>37</td><td>36</td><td>54801925434709</td><td>13127595717600</td><td>1369</td><td>40030624861</td></tr>
+<tr><td>41</td><td>40</td><td>2078178381193813</td><td>485721041551200</td><td>1681</td><td>1236275063173</td></tr>
+<tr><td>43</td><td>42</td><td>12309312989335019</td><td>2844937529085600</td><td>1849</td><td>6657281227331</td></tr>
+<tr><td>47</td><td>46</td><td>5943339269060627227</td><td>1345655451257488800</td><td>2209</td><td>2690511212793403</td></tr>
+</tbody></table>
+<p>
+Some columns of this table correspond to sequences in
+Neil Sloane's
+<a href="http://www.research.att.com/%7Enjas/sequences/">
+On-Line Encyclopedia of Integer Sequences</a>:
+</p><ul>
+<li>The "Harmonic Number Numerator" column is sequence 
+<a href="http://www.research.att.com/cgi-bin/access.cgi/as/njas/sequences/eisA.cgi?Anum=A076637">
+A076637</a> 
+</li><li>The "Harmonic Number Denominator" column is sequence
+<a href="http://www.research.att.com/cgi-bin/access.cgi/as/njas/sequences/eisA.cgi?Anum=A076638">
+A076638</a> 
+</li><li>The "Harmonic Number Numerator / Prime^2" column is sequence
+<a href="http://www.research.att.com/cgi-bin/access.cgi/as/njas/sequences/eisA.cgi?Anum=A061002">
+A0610002</a> 
+</li></ul>
+<p></p>
+<p>
+Here is a class, WolstenholmeTheorem.java, which applies the primality test inherent in
+Wolstenholme's Theorem to successive harmonic numbers. It re-uses the
+<a href="#Harmonic">Harmonic Number Generator class</a> presented above. 
+</p>
+<pre>import java.math.BigInteger;
+
+public abstract class WolstenholmeTheorem {
+
+  public static boolean isPrime (BigInteger toCheck, BigFraction harmonicNum) {
+    BigInteger squared = toCheck.multiply (toCheck);
+    BigInteger mod = harmonicNum.numerator ().mod (squared);
+    return mod.equals (BigInteger.ZERO);
+  }
+
+  public static void main (String[] args) {
+    BigFraction harmonicNumber;
+    BigInteger intObj;
+    HarmonicNumbers gen = new HarmonicNumbers ();
+    int toCheck;
+    for (int i = 1; i &lt; 20; i++) {
+      harmonicNumber = gen.getNext ();
+      toCheck = i + 1;
+      if (toCheck &gt;= 5) {
+        intObj = new BigInteger (Integer.toString (toCheck));
+        System.out.println ("Testing " + toCheck + ", harmonic number " +
+                            harmonicNumber.toString ());
+        if (WolstenholmeTheorem.isPrime (intObj, harmonicNumber)) {
+          System.out.println (toCheck + " is prime");
+        }
+      }
+    }
+   }
+
+}
+</pre>
+
+<hr>
+<h2><a name="Fractran">Fractran Algorithm</a></h2>
+<p>
+The mathematician 
+<a href="http://www-groups.dcs.st-and.ac.uk/%7Ehistory/Mathematicians/Conway.html">
+John Horton Conway</a> invented an algorithm known as
+Fractran:
+</p><ol>
+<li>Start with a list of fractions (f) and an integer (n).
+</li><li>Find the first fraction in f where the product of
+f(i) and n is an integer. If there is none, stop.
+If there is, set n equal to the product and repeat step 2.
+</li></ol>
+In some cases, this algorithm will never stop, so it's best
+to add some termination condition (e.g. repeat step 2 only 100 times).
+<p></p>
+<p>
+Here are some useful links about the Fractran algorithm.
+</p><ul>
+<li>Ken Monks, 
+<a href="http://seawolf.uofs.edu/%7Emonks/courses/Math320/ChaosNotes.pdf">
+Fun Facts: Chaos and Fractals</a>
+</li><li>Eric Weisstein, 
+<a href="http://mathworld.wolfram.com/Fractran.html">
+Fractran Algorithm</a>
+</li></ul>
+We'll use the Fractran algorithm to generate
+<a href="#PrimeGame">prime numbers</a>, 
+but first here's a general-purpose Fractran.java class:
+<pre>import java.math.BigInteger;
+
+//-------------------
+// Fractran algorithm
+//-------------------
+
+public class Fractran {
+
+  private BigFraction[] fractions; 
+  private BigInteger seed;
+  private BigInteger current;
+
+  //------------
+  // Constructor
+  //------------
+
+  public Fractran (BigFraction[] fractions, BigInteger seed) {
+    this.fractions = fractions;
+    this.seed = seed;
+    current = null;
+  }
+
+  //----------------------------------------
+  // Get log base 2 (-1 if not a power of 2)
+  //----------------------------------------
+
+  public static int getLogBase2 (BigInteger n) {
+    int result = -1;
+    if (n.bitCount () == 1) {
+      result = n.getLowestSetBit ();
+    }
+    return result;
+  }
+
+  //-----------------------------
+  // Get next term (0 if no more)
+  //-----------------------------
+
+  public BigInteger getNext () {
+    if (current == null) {
+      current = seed;
+      return current;
+    }
+
+    BigFraction fraction = null;
+    BigFraction product = null;
+    BigInteger result = BigInteger.ZERO;
+    for (int i = 0; i &lt; fractions.length; i++) {
+      fraction = fractions[i];
+      product = fraction.multiply (current);
+      if (product.denominator ().equals (BigInteger.ONE)) {
+        result = product.numerator ();
+        current = result;
+        break;
+      }
+    }
+    return result;
+  }
+
+}
+</pre>
+<hr>
+<h2><a name="PrimeGame">Conway's Prime Game</a></h2>
+<p>
+The Fractran algorithm is an interesting (but terribly inefficient)
+way to generate prime numbers.
+John H. Conway and Richard K. Guy, in
+<i>The Book of Numbers</i>
+(NY: Copernicus, 1996), pp. 147-148, give
+"Fourteen Fruitful Fractions" which yield prime numbers
+when the Fractran algorithm is applied to them. 
+Here is a Java implementation (PrimeGame.java):
+</p>
+<pre>import java.math.BigInteger;
+
+public class PrimeGame {
+
+  public static void main (String[] args) {
+    BigFraction[] fractions = {
+      new BigFraction ("17/91"),
+      new BigFraction ("78/85"),
+      new BigFraction ("19/51"),
+      new BigFraction ("23/38"),
+      new BigFraction ("29/33"),
+      new BigFraction ("77/29"),
+      new BigFraction ("95/23"),
+      new BigFraction ("77/19"),
+      new BigFraction ("1/17"),
+      new BigFraction ("11/13"),
+      new BigFraction ("13/11"),
+      new BigFraction ("15/2"),
+      new BigFraction ("1/7"),
+      new BigFraction ("55/1")
+    };
+
+    Fractran app = new Fractran (fractions, new BigInteger ("2"));
+    BigInteger next = null;
+    int logBase2 = 0;
+    for (int i = 0; i &lt; 10000; i++) {
+      next = app.getNext ();
+      if (next.equals (BigInteger.ZERO)) {
+        System.out.println ("Terminated");
+        break;
+      }
+      else {
+        logBase2 =  Fractran.getLogBase2 (next);
+        if (logBase2 &gt;= 2) {
+          System.out.println (logBase2 + " (at iteration " + i + ")");
+        }
+      }
+    }
+    System.out.println ("Done");
+  }
+}
+</pre>
+<p>
+Output from the program just shown is
+</p><pre>2 (at iteration 19)
+3 (at iteration 69)
+5 (at iteration 281)
+7 (at iteration 710)
+11 (at iteration 2375)
+13 (at iteration 3893)
+17 (at iteration 8102)
+Done
+</pre>
+In other words, after ten thousand iterations, it has only generated
+the first seven prime numbers! The sequence of steps
+at which it finds primes 
+(19, 69, 281, 710, 2375, 3893, 8102, etc.) is sequence
+<a href="http://www.research.att.com/cgi-bin/access.cgi/as/njas/sequences/eisA.cgi?Anum=A007547">
+A007547</a> in Neil Sloane's 
+<a href="http://www.research.att.com/%7Enjas/sequences/">
+On-Line Encyclopedia of Integer Sequences</a>.
+<p></p>
+</body></html>

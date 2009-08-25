@@ -1,0 +1,52 @@
+
+.thumbnail-closewindow {
+}			
+
+.thumbnail-body {
+  margin-top:30px;
+  margin-left: 30px; 
+  width: 550px;
+}
+
+.thumbnail-table {
+	border-spacing: 0px;
+	border: 0px;
+	width: 580px;
+}
+
+.thumbnail-textarea-small {
+  width: 163px; 
+	height: 55px; 
+	border: solid 1px #666666; 
+	padding: 3px; 
+	font-size: 9px; 
+	font-family: Verdana, Helvetica, Arial, sans-serif; 
+	color: #666666;
+}
+
+.thumbnail-textarea-standard {
+  width: 205px; 
+	height: 55px; 
+	border: solid 1px #666666; 
+	padding: 3px; 
+	font-size: 9px; 
+	font-family: Verdana, Helvetica, Arial, sans-serif; 
+	color: #666666;
+}
+	
+.thumbnail-sizetext {
+	font-family: Verdana, Helvetica, Arial, sans-serif;
+	font-size: 11px;
+	color:#ff6600;
+}
+	
+.thumbnail-pixeltext{
+	font-family: Verdana, Helvetica, Arial, sans-serif;
+	font-size: 11px;
+	color: #888888;
+	margin-top: -15px;
+}			
+
+
+	
+			

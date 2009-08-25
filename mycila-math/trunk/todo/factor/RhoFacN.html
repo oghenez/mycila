@@ -1,0 +1,47 @@
+<html>
+
+<head>
+<title>Factoring using exponential multiplication circuits</title>
+</head>
+
+<body background="../Pics/cryptobg2.jpg" lang=DE link=blue vlink=purple>
+
+<p><b>2.4.1.new  Accelleration of Pollard's Rho-Factoring-Algorithm </b></p>
+
+We modify <a href="../Factor/RhoFacE.html">Rho-Faktoring</a> as follows:
+Instead of testing whether
+gcd(y<sub>m</sub> - y<sub>2m</sub> , n ) &gt; 1
+we test
+<br>
+d=gcd(i, n ) &gt; 1
+with
+e = y<sub>m</sub> - y<sub>2m</sub>;
+f = e * (e + 367) % n;
+g = f * (f + 33642) % n;
+h = g * (g + 125167320) % n;
+i = h * (h + 3665689134307200) % n;
+<br>
+
+In case d=n (which rarely happens) we search in the tree...
+
+<p>
+<applet code="RhoFacSFN.class" width="800" height="440">
+</applet>
+
+</p>
+
+<p>Quellcode:<br>
+<a href="RhoFacSFN.java">RhoFacSF.java</a> - Applet surface class</br>
+<a href="RhoFacN.java">RhoFac.java</a> - Algorithm class</br>
+
+<p>
+<table>
+<tr><td width="40"><a href="../Factor/RhoFacN.html">
+  <img src="../Pics/right.gif" border="0"></a></td>    
+  <td width="320"><a href="../Factor/RhoFacN.html">2.4.1 Rho-Faktoring</a></td>
+</tr>
+</table>
+</p>
+</body>
+
+</html>

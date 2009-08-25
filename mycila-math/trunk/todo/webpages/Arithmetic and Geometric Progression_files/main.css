@@ -1,0 +1,111 @@
+@import url(../../themes/mainstructure1.css);
+@import url(../../themes/maincolors1.css);
+@import url(../../themes/common-1.css);
+
+body {
+	background:#fff url(/community/graphics/themes/bg5.gif) top left repeat-x;
+	color:#222;
+	}
+
+#top {
+	background:#970706 url(/community/graphics/themes/top-opera3.jpg) top right; 
+	border-bottom:1px solid #ddd;
+	color:#fff;
+	}
+
+#top-photo {
+	border:1px solid #d60000;
+	background:#740502;
+	}
+
+#top a {
+	color:#fff;
+	}
+
+#menu {
+	background:#f8f8f8 url(/community/graphics/themes/menu1.gif);
+	border-bottom:1px solid #fff;
+	}
+
+#menu a:link, #menu a:visited, #menu a:active {
+	background:#f8f8f8 url(/community/graphics/themes/menu1.gif);
+	color:#000;
+	border-left:1px solid #fff;
+	border-right:1px solid #ddd;
+	}
+
+#menu a:hover, #menu #selected:link, #menu #selected:visited {
+	background-color:#e7e7e7;
+	}
+
+a:link, a:visited, a:active, #side a.username:link, #side a.username:visited, #calendar tbody a:link, #calendar tbody a:visited {
+	color:#176b9b;
+	}
+
+#side h2, #side .h2, #side caption {
+	background:#eee url(/community/graphics/themes/side1.gif) bottom left repeat-x;
+	}
+
+#side a:link, #side a:visited, #footer a:link, #footer a:visited, .title a:link, .title a:visited, .tags a:link, .tags a:visited {
+	color:#222;
+	}
+
+.title a:hover {
+	color:#176b9b;
+	}
+
+/* mainstructure1 and maincolors1 overrides */
+
+#wrap1, #wrap3 {
+	width:1001px;
+	max-width:100%;
+	}
+
+#wrap3, body #myo2, body #myo-login div, body #editstatus-form div {
+	width:961px;
+	max-width:100%;
+	}
+
+#wrap4 {
+	padding:0 25px;
+	background:#fff url(/community/graphics/themes/line2.gif) top right repeat-y;
+	}
+
+.onecol #wrap4 {
+	background:#fff;
+	}
+
+#top {
+	margin:0 -25px;
+	}
+
+#top2 {
+	padding-left:25px;
+	}
+
+#content, #footer {
+	width:911px;
+	max-width:100%;
+	}
+
+h2 {
+	font-size:1.9em;
+	}
+
+.post {
+	padding:25px 0;
+	}
+
+/* favorites */
+
+.cols3 li {
+	width:295px;
+	}
+
+.cols3 .fav {
+	padding:12px;
+	}
+
+.cols4 li {
+	width:212px;
+	}

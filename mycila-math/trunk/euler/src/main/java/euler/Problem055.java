@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.Digits;
+import com.mycila.math.Digits;
 
 import static java.lang.System.*;
 import java.math.BigInteger;

@@ -16,7 +16,7 @@
 package euler;
 
 import com.mycila.PrimaltyTest;
-import com.mycila.sequence.IntSequence;
+import com.mycila.math.sequence.IntSequence;
 
 import static java.lang.System.*;
 

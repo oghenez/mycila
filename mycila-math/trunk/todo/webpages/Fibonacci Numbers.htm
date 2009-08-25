@@ -1,0 +1,786 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+
+  
+<title>  Fibonacci Numbers, the Golden section and the Golden String</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="author" content="Dr R Knott: fibandphi (AT) ronknott.com">
+<meta name="description" content="Fibonacci numbers and the golden section  in  nature, art, geometry, architecture, music and even for   calculating pi!  Puzzles and investigations.">
+<meta name="keywords" content="Fibonacci, Leonardo, Pisano, Pisa,   Leonardo of Pisa, Leonardo Pisano, Filius Bonacci, Bonacci, Bonnaci, Bonnacci,  numbers, series, sequence, Lucas, formula, formulae, formulas,  golden, section, sections, rectangle, mean, ratio, Gulden Snede, divine proportion,    extreme and mean ratio, goldner, goldener, goldene schnitt, 618, 0.618,    phi, string, rabbit, nature, phyllotaxis, seed, flower, nature,   mathematics, infinite  word, divine proportion,   number representations, integer,  base, binary, decimal,    Wythoff, Stolarsky, array, matrix, table, generalised, generalisation,   art, architecture, music, harmony, design, pattern, Greek,   geometry, puzzle,  Pascal, Pascal's triangle, binomials, binomimial coefficients,   Fibonomials, powers, coefficients, recurrence relations, recursion, recursion equations,   school, college, university, projects, puzzles, recreational, recreation,   combinatorics, discrete, pi,    Da Vinci Code, Leonardo Da Vinci,      fibinocci, fibonaccis, fibonacci's, fibinacci,fibonaci, fibonnaci,fibinaci">
+<link rel="stylesheet" type="text/css" href="Fibonacci%20Numbers_files/global.css"> 
+<style type="text/css">
+     H1.homet,H2.homet,H3.homet,H4.homet {color:#900;}
+     UL.homel1 {list-style-image:url(../images/redsq.gif);}
+     UL.homel2 {list-style-image:url(../images/greensq.gif);}
+     UL.homel3 {list-style-image:url(../images/goldsq.gif);}
+     BODY {background-color:#FEE;}
+</style>
+</head><body> 
+
+<div style="border: 1px solid grey; padding: 3px; float: right; width: 30%; background-color: white; font-size: 70%;">
+<h3> Other Maths Pages at this site:</h3>
+
+<dl>
+<dt><a target="_blank" href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Pythag/pythag.html">Pythagorean triangles</a>
+</dt><dd> Right-angled triangles with integer sides, e.g. <span class="tri">3, 4, 5</span>.
+</dd><dt><a target="_blank" href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/simpleTrig.html">Exact Trig Values for Simple  Angles</a>
+</dt><dd>  Which angles have a simple exact value for their sine,cosine or tangent?
+</dd><dt>Fractions
+ </dt><dd>  <dl>
+   <dt><a target="_blank" href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/FRACTIONS/FractionsCalc.html">Fractions Calculator</a>
+    </dt><dd> Convert fractions to and from  decimal fractions, find their <i>exact</i> decimal fraction and repeating parts
+    </dd><dt><a target="_blank" href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/FRACTIONS/fareyCalc.html">Farey Fractions Calculator</a>
+    </dt><dd>A way of arranging all fractions between 0 and 1 into a tree where those on level N
+        have a denominator no bigger than N
+    </dd><dt><a target="_blank" href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/FRACTIONS/egyptian.html">Egyptian fractions</a>
+    </dt><dd>  The Egyptians only had <i>unit fractions</i> of the form 1/n.
+       How did they use them? 
+    </dd><dt><a target="_blank" href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/cfINTRO.html"> Introduction to Continued Fractions     </a>
+   </dt><dd> An unusual method of writing fractions that has many advantages.
+    </dd></dl>
+ </dd><dt><a target="_blank" href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/runsums/index.html">Runsums</a>
+</dt><dd> Numbers which are the sum of a run of consecutive whole numbers<br>
+    <a target="_blank" href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/runsums/runsumsref.html">More on Runsums</a>
+</dd></dl>
+</div>
+
+
+
+
+
+
+
+
+<h2>         Fibonacci Numbers and the Golden Section    </h2>
+<div align="center">
+   This is the <b>Home page</b> for Dr Ron Knott's 
+   <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/whatsnew.html#multimedia"><i>multimedia</i></a> web site on
+   the Fibonacci numbers, the Golden section  and the Golden string hosted
+   by the Mathematics Department of the University of Surrey, UK.
+   <p>
+<table bgcolor="white" border="2" cellpadding="5" cellspacing="0"><tbody><tr><td valign="top">
+   The <b>Fibonacci numbers</b> are  <span style="color: rgb(204, 0, 0);"><big>
+                         <b>0, 1, 1, 2, 3, 5, 8, 13, ... </b>
+  </big></span>(<a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibseries.html">add the last two to get the next</a>)
+   <p>
+   The <strong>golden section  numbers</strong> are 
+   <span style="color: rgb(204, 0, 0);"><big>
+                <b>±0·61803 39887... and ±1·61803 39887... </b>
+   </big></span></p><p>
+  The <b>golden string</b> is 
+  <span style="color: rgb(204, 0, 0);"><b><big>
+       1 0 1 1 0 1 0 1 1 0 1 1 0 1 0 1 1 0 1  ...</big></b></span><br>
+  a sequence of 0s and 1s that is  closely related to  the Fibonacci numbers and the golden section.
+</p></td></tr></tbody></table>
+  </p><p>
+   <b>There is a large amount of information here on the Fibonacci Numbers and related series and the on the Golden section, 
+   so if all you  want is
+  a quick introduction</b>  then <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibnat.html">the first link</a> takes you to  
+  <b>an introductory page</b> on the Fibonacci numbers and where they appear in Nature.</p><p>
+  
+<table bgcolor="white" border="0" cellpadding="5" cellspacing="0">
+<tbody><tr><td align="center">
+The rest of this page is a brief introduction to all the web pages at this site on<br>
+ <b>Fibonacci Numbers</b> the <b>Golden Section</b> and the
+ <b>Golden String</b><br>together with <b><i>their many applications</i></b>.
+</td></tr></tbody></table>
+</p></div>
+  <p>
+
+
+<!-- hr  style="background-color:red;height:2px;border-style:none;" -->
+<table style="border: 2px solid yellow; padding: 3px; background-color: white;" align="center">
+<tbody><tr><td align="center">
+<a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/whatsnew.html">       What's New? - the FIBLOG</a>  latest entry: 9 August 2009 
+
+          
+</td></tr>
+</tbody></table>
+
+<!-- hr  style="background-color:red;height:2px;border-style:none;" -->
+<br clear="all">
+</p><p>
+
+
+</p><h2>     Fibonacci Numbers and Golden sections in Nature</h2>
+
+    Ron Knott  was on Melvyn Bragg's <b>In Our Time</b>
+    on BBC Radio 4, November 29, 2007 when we discussed <b>The Fibonacci Numbers</b> (45 minutes).
+    You can <a href="http://www.bbc.co.uk/radio4/history/inourtime/inourtime_20071129.shtml">
+    <img src="Fibonacci%20Numbers_files/radio.gif" alt="Radio" border="0" height="16" width="16">listen again</a> online
+    or download the podcast. It is a useful general introduction to the Fibonacci Numbers and the Golden Section.  
+
+<ul class="homel1">
+<li> <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibnat.html"> 
+    
+             Fibonacci Numbers and Nature </a>
+    
+<br> Fibonacci and the original problem about rabbits where the series first appears, 
+  the family trees of cows and bees, the golden ratio and the Fibonacci series, 
+  the Fibonacci Spiral and sea shell shapes, branching plants,
+  flower petal and  seeds, leaves and petal arrangements, on 
+  pineapples and in apples, pine cones and  leaf arrangements.
+   All involve the Fibonacci numbers - and here's how and why. <br>
+ </li>
+
+<li> <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibnat2.html">   
+    
+               The Golden section in Nature </a>
+               
+ <br>  Continuing the theme of the first page but with specific reference to <b>why</b> 
+ the golden section appears  in nature.  Now with a Geometer's Sketchpad dynamic
+ demonstration.
+    
+<br>
+
+<!--FIBHR--><p class="nbHR" align="center">0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, 987 ..<a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibtable.html">More</a>.. <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibCalcX.html"><img src="Fibonacci%20Numbers_files/calcicon.gif" alt="Calculator" align="middle" border="0" height="13" hspace="0" vspace="0" width="34"></a></p>
+<br>
+
+</li></ul>
+ 
+ <h3> The Puzzling World of Fibonacci Numbers
+    </h3>
+
+   A pair of pages with plenty of  playful problems  to perplex the
+   professional and the part-time puzzler!
+<ul class="homel1">
+<li>     The <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibpuzzles.html">        Easier Fibonacci Puzzles page</a>
+   <br> has the Fibonacci numbers in brick wall patterns, 
+      Fibonacci bee lines, seating people in a row and the Fibonacci numbers
+      again, 
+     giving change and a game with match sticks and even
+     with  electrical resistance and lots more puzzles
+     all involve the Fibonacci numbers! 
+     </li>
+  <li>The <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibpuzzles2.html">      Harder Fibonacci Puzzles page</a> 
+     
+    <br> still has problems where
+        the Fibonacci numbers are the answers - well, all but ONE, but WHICH one?  
+    If you know the Fibonacci Jigsaw puzzle where rearranging the 4 wedge-shaped 
+    pieces makes an   additional square appear,
+     did you know the <i>same</i> puzzle can be rearranged to make a 
+     different shape where a square now <i>disappears</i>?<br>
+      For these
+        puzzles, I do not know of any simple explanations of <i><b>why</b></i>
+        the Fibonacci numbers occur - and <b>that's the 
+        real puzzle - can you supply a <b>simple</b> reason why??</b>
+   </li>
+</ul>
+
+ 
+
+ <h3>     The Intriguing Mathematical World of Fibonacci and Phi
+ </h3>
+ The golden section numbers are also written  using the Greek letters Phi 
+ <img src="Fibonacci%20Numbers_files/phi.gif" alt="Phi" height="15" width="11"> and phi
+<img src="Fibonacci%20Numbers_files/phicurly.gif" alt="phi" height="9" width="8">. 
+  
+<ul class="homel1">
+<li> <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibmaths.html">       The Mathematical Magic of the Fibonacci numbers
+       </a>  
+
+      <br> looks at the patterns in the Fibonacci numbers themselves:
+     the Fibonacci numbers in Pascal's Triangle; using the Fibonacci series
+     to generate all right-angled triangles with integers sides based on Pythagoras Theorem. 
+     <ul class="homel2">
+     <li>An auxiliary page: 
+         <ul class="homel3">
+        <li> More on <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Pythag/pythag.html">Pythagorean triangles</a></li>
+     </ul></li>
+     </ul>
+       If you want to look like a number wizard to your friends then 
+       try out the simple Fibonacci numbers trick!<br>
+       The following pages give you lots of opportunities to
+       find your own patterns in the Fibonacci numbers.  We start with a complete
+       list of...
+     <ul class="homel2">
+     <li> <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibtable.html">The first 500 Fibonacci numbers...</a>
+    
+       <br>  completely factorized up to Fib(300) and all the
+           prime Fibonacci numbers are identified up to Fib(500).
+        </li>
+      <li>     <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibFormula.html">
+        
+          A Formula for the Fibonacci numbers
+          
+          </a>       
+         <br>  Is there a direct formula to compute Fib(n) just from n?  
+           Yes there is!  This page shows several and why they
+           involve Phi and phi - the golden section numbers.</li>
+      <li> <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibrep.html">
+      
+             Fibonacci bases and other ways of representing integers
+             
+      </a>
+     <br>
+        We use base 10 (decimal) for written numbers but computers use base 2 (binary).
+        What happens if we use the Fibonacci numbers as the column headers?
+
+     </li></ul>
+    </li>
+
+</ul>
+
+<a name="goldensection"></a>
+ 
+    <h3 class="homelt">            The Golden Section 
+    </h3>
+    
+The golden section number is closely connected with the Fibonacci 
+series and has a value of 
+ (<img src="Fibonacci%20Numbers_files/sqrt.gif" alt="sqrt" height="13" width="8">5 + 1)/2 or:
+
+<!--phiHR--><p class="nbHR" align="center">1·61803 39887 49894 84820 45868 34365 63811 77203 09179 80576 ..<a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/phi.html#phi2000">More</a>.. <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibCalcX.html"><img src="Fibonacci%20Numbers_files/calcicon.gif" alt="Calculator" border="0" height="13" hspace="0" vspace="0" width="34"></a></p>
+
+<br>which we call Phi (note the capital <b>P</b>) on these pages.  
+The other number also called the golden section
+is Phi-1 or 0·61803... with exactly the same decimal fraction part as Phi.  This value we call phi
+(with a small <b>p</b>) here.
+  Phi and phi have some interesting and unique properties such as 1/phi 
+  is the same as 1+phi=Phi. <br>
+  The third of Simon Singh's 
+<a href="http://www.bbc.co.uk/radio4/science/5numbers.shtml">Five Numbers</a> programmes    
+broadcast on 13 March 2002 on BBC Radio 4
+was all about <a href="http://www.bbc.co.uk/radio4/science/5numbers3.shtml">the Golden Ratio</a>.  
+It is an excellent introduction to the golden section.  I spoke on
+it about the occurrence in nature of the golden section and
+also <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibpuzzles.html#change">the Change Puzzle</a>.<br>
+<a href="http://www.bbc.co.uk/radio4/science/rams/5numbers3.ram">
+ <img src="Fibonacci%20Numbers_files/radio.gif" alt="Radio" height="16" width="16">Hear the whole programme</a>
+(14 minutes) using the free
+<a href="http://www.bbc.co.uk/radio4/help/#question5">RealOne Player</a>. 
+<p>   
+
+</p><ul class="homel1">
+<li>     
+     <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/phi.html">      The Golden section and Geometry
+     </a>
+  
+
+   <br>  The golden section is also  called the golden ratio, the golden mean and the
+     divine proportion.<br>
+ 
+  
+   <br>
+    Two more pages look at its  applications in Geometry:
+    first in flat (or two dimensional) geometry and then in
+   the solid geometry of three dimensions.
+  <ul class="homel2">
+   <li>    <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/phi2DGeomTrig.html"> 
+                  Two-dimensional  Geometry and the Golden section
+                  or Fantastic Flat Facts about Phi</a>
+             
+   <br>
+     See some of the 
+       unexpected places that the golden section (Phi) occurs in Geometry and in Trigonometry:  
+     pentagons and decagons,  
+     paper folding
+     and Penrose Tilings where we phind phi phrequently!
+     
+     <ul class="homel3">
+     <li>An auxiliary page on <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/simpleTrig.html">Exact Trig Values for Simple
+         Angles</a>  explores the many places that Phi and phi occur when we try to find the exact values
+           of the sines, cosines and tangents of simple angles like 36° and 54°.
+     </li></ul>
+     </li>
+   <li>  <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/phi3DGeom.html">
+      
+                 The Golden Geometry  of Solids or Phi in 3 dimensions</a>
+       <br>
+        The golden section occurs in the most symmetrical of all the
+        three-dimensional solids - the Platonic solids.  
+        What are the best shapes for fair dice?  Why are there only 5?</li>
+   </ul>
+   <br>
+  
+    The next pages are about the numbers Phi = 1·61803.. and phi = 0·61803... 
+    and their properties. 
+    <ul class="homel2">
+     <li>    <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/propsOfPhi.html"> 
+        
+        
+            Phi's Fascinating Figures - the Golden Section number</a>     
+              
+       <br>
+       All the powers of Phi are just whole multiples of itself 
+       plus another whole number.  Did you guess that these multiples <i>and</i>
+       the whole numbers are,  of course, the Fibonacci numbers again?
+    Each power of Phi is the sum of the previous two - just like the Fibonacci numbers
+    too.
+      <ul class="homel3">
+      <li><a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/cfINTRO.html">             Introduction to Continued Fractions     </a>
+                     
+      <br> is an optional page that expands on the idea of a continued fraction (CF) introduced in
+      the Phi's Fascinating Figures page. </li>
+      <li>There is also a <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/cfCALC.html">Continued Fractions Converter</a> (a web page - needs
+      no downloads or special plug-is) to change decimal values,
+      fractions and square-roots into and from CFs.</li>
+      <li>This page links to another auxiliary page on <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/simpleTrig.html">Simple Exact Trig values</a>
+        such as cos(60°)=1/2 and finds all simple angles with an exact trig expression, many of which involve
+        Phi and phi.</li>
+       </ul></li>
+   <li>  <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/phigits.html">   
+                           Phigits and Base Phi Representations
+     </a> 
+     <br> We have seen that using a <i>base</i> of the Fibonacci Numbers 
+     we can represent all integers in a binary-like way.  
+     Here we show there is an interesting way of representing <i>all</i>
+     integers in a binary-like fashion but using only powers of Phi instead of 
+     powers of  2 (binary) or 10 (decimal). </li>
+    </ul></li>
+</ul>
+
+
+<h3>     The Golden String
+</h3>
+
+   The golden string is also called the <i>Infinite Fibonacci Word</i> or the 
+     <i>Fibonacci Rabbit sequence</i>.   
+    There is another way to look at Fibonacci's Rabbits problem that gives an infinitely
+    long sequence of 1s and 0s called the  Golden String:-
+    <div align="center"><span style="font-size: larger; color: rgb(204, 0, 0);"><b>
+       1 0 1 1 0 1 0 1 1 0 1 1 0 1 0 1 1 0 1  ...
+    </b></span></div><br>
+     This string is a closely related to 
+    the golden section and the Fibonacci numbers.<br>
+  <ul class="homel1">
+  <li>    <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibrab.html"> 
+    
+                 Fibonacci Rabbit Sequence
+                 
+    </a><br>
+   See show how the golden string arises directly from the Rabbit problem and
+   also is used by computers when they compute the Fibonacci numbers.
+   
+     You can hear the Golden sequence as a sound track too.<br>
+     The Fibonacci Rabbit sequence is an example of a <b>fractal</b> - a
+     mathematical object that contains the whole of itself within itself
+      infinitely many times over.</li>
+</ul>
+
+
+<h3>    Fibonacci - the Man and His Times 
+</h3>
+
+<ul class="homel1">
+<li>     <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibBio.html">
+          Who was Fibonacci?
+     </a>
+     
+   <br>
+  Here is a  brief biography of Fibonacci and his  historical
+  achievements in mathematics, and how he helped Europe replace the
+  Roman numeral system with the "algorithms" that we use today.<br>
+    Also there is a guide to some memorials
+  to Fibonacci to see in Pisa, Italy.
+  </li>
+</ul> 
+
+
+
+<h3>    More Applications of Fibonacci Numbers and Phi
+</h3>
+
+<ul class="homel1">
+<li>     <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibpi.html">
+       
+     
+               The Fibonacci numbers in a formula for Pi
+    (<img src="Fibonacci%20Numbers_files/pi.gif" alt=" pi " border="0" height="7" width="9">) </a>
+
+  <br>
+    There are several ways to compute pi (3·14159 26535 ..) accurately.  One 
+   that has been used a lot
+   is based on a nice formula for calculating which angle has a given tangent, discovered
+   by James Gregory.  His formula together with the
+   Fibonacci numbers can be used to compute pi.  
+   This page introduces you to all these concepts from scratch.</li>
+
+
+<li>     <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibforgery.html"> 
+     
+                     Fibonacci Forgeries
+                     
+     </a>
+          
+  <br>
+   Sometimes we find series that for quite a few terms look exactly like the 
+     Fibonacci numbers, but, when we look a bit more closely, they aren't - they are 
+     Fibonacci Forgeries.<br>
+    Since we would not be telling the truth if we said they <i>were</i> the
+     Fibonacci numbers, perhaps we should call them <b>Fibonacci Fibs</b> 
+     <img src="Fibonacci%20Numbers_files/smiley.gif" alt=":-)" height="15" width="15">!!<br>
+    </li>
+
+
+<li>   <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/lucasNbs.html">  The Lucas Numbers</a>
+  <br>
+   Here is a series that is very similar to the Fibonacci series, 
+    <b>the Lucas series</b>, but it starts with 2 and 1 instead
+    of Fibonacci's 0 and 1.  It sometimes pops up in the pages above so here
+    we investigate  it some more and discover its properties.<br>
+    It ends with a number trick
+    which  you can use "to impress your friends with your amazing calculating abilities"
+    as the adverts say.  It uses facts about the golden section and its relationship with
+    the Fibonacci and Lucas numbers.
+    <ul class="homel2">
+    <li> <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/lucas200.html">
+    
+                        The first 200 Lucas numbers and their factors
+    </a>
+    <br> together with some suggestions for investigations you can do.</li>
+    </ul>
+<p class="nbHR" align="center">2, 1, 3, 4, 7, 11, 18, 29, 47, 76, 123, 199, 322, 521,  843 .... 
+<a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibCalcX.html"><img src="Fibonacci%20Numbers_files/calcicon.gif" alt="Calculator" border="0" height="13" hspace="0" vspace="0" width="34"></a></p>
+    </li>
+
+<li>  <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/Fibonomials.html"> The Fibonomials </a> 
+  <br>
+     The basic relationship defining the Fibonacci numbers is F(n) = F(n-1) + F(n+1) where we use some
+     combination of the previous numbers (here, the previous two) to find the next.  Is there such a relationship
+     between the <i>squares of the Fibonacci numbers</i> F(n)<sup>2</sup>? or the <i>cubes</i> F(n)<sup>3</sup>? or other
+     powers?  Yes there is and it involves a triangular table of numbers with similar properties to Pascal's Triangle and
+     the binomial numbers: the Fibonomials.
+</li>
+
+<li><a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibGen.html">
+                              General Fibonacci Series  
+</a>
+     <br>
+     The Lucas numbers change the two starting values of the Fibonacci series from
+     0 and 1 to 2 and 1.  What if we changed these to any two values? These General Fibonacci
+     series are called the G series but <i>the</i> Fibonacci series and Phi again play
+     a prominent role in their mathematical properties.  Also we look at two special 
+     arrays (tables) of numbers, the Wythoff array and the Stolarsky array and show how
+     a these two collections of general Fibonacci series 
+     contain <i>each whole number exactly once</i>.  The secret behind such clever arrays
+     is ... the golden section number Phi!
+     </li>
+</ul>
+<h3>           Fibonacci and Phi in the Arts
+</h3>
+<ul class="homel1">
+<li>    <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibInArt.html">
+              Fibonacci Numbers and The Golden Section In  Art, Architecture and Music </a>
+    
+    <br>
+    The golden section  has been used in many designs, from  the ancient <b>Parthenon</b> 
+    in Athens (400BC) to Stradivari's violins.
+    It was known to artists such as <b>Leonardo da Vinci</b>
+    and musicians and composers, notably <b>Bartók</b> and <b>Debussy</b>.  
+     This is a different kind of page to those above, being concerned with
+    speculations about where Fibonacci numbers and the golden section 
+    both do and do not occur in art,  architecture and music.  
+    All the other pages are factual and verifiable - the material here is a 
+    often a matter of opinion.  What do <i>you</i> think?
+   </li>
+</ul>
+
+<h3>     Reference
+</h3>
+
+<ul class="homel1">
+<li>    <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibFormulae.html"> 
+     
+                 Fibonacci  and Phi Formulae
+                 
+     </a> 
+        
+  <br>  A reference page of about 250 formulae and equations showing the properties
+  of the Fibonacci and Lucas series, the general Fibonacci G series and Phi. 
+    Also available in
+    <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibFormulae.pdf">PDF format</a> (16 pages) for which you will need the
+    free <a href="http://www.adobe.com/products/acrobat/">Acrobat PDF Reader or plug-in for your browser</a>.
+   </li>
+<li>     <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fibrefs.html"> 
+     
+                 Links  and Bibliography
+                 
+     </a>
+        
+      <br>  Links  to other sites on Fibonacci numbers and the 
+        Golden section together with references to books and articles.
+        
+     </li>
+</ul>
+
+ 
+<div align="center">
+<hr>
+</div>
+
+
+
+<a name="awards"></a>
+<!-- ============== AWARDS ================= -->
+<h3>                  Awards for this WWW site
+</h3>
+
+<div align="center">
+Each icon is a link to lists of other Award winning sites that opens in a new window.
+Check them out!<br>
+
+<a href="http://www.intute.ac.uk/sciences/" target="_blank">
+  <img src="Fibonacci%20Numbers_files/intute.jpg" alt="Intute: formerly EEVL" height="47" width="100"></a> 
+
+<a href="http://www.enc.org/" target="_blank">
+  <img src="Fibonacci%20Numbers_files/enc_foc1.gif" alt="www.enc.org" height="52" width="63"></a>
+  
+<a href="http://www.bonus.com/?referrer=award1">
+<img src="Fibonacci%20Numbers_files/bonus_editors1.gif" alt="Games and fun for everyone" border="0" height="118" width="120"></a>
+
+<a href="http://www.merlot.org/merlot/viewCompositeReview.htm?id=163320" target="_blank">
+<img src="Fibonacci%20Numbers_files/MERLOT-classics-2003.gif" alt="MERLOT classic Award 2003" height="63" width="63"></a>
+<!-- May 2003 -->
+
+<a href="http://www.enc.org/" target="_blank">
+    <img src="Fibonacci%20Numbers_files/ddicon.gif" alt="Eisenhower National ClearingHouse: www.enc.org" height="91" width="118"></a>
+    <!-- Jan 98-->
+
+<!-- dead link   A HREF="http://www.studyweb.com/" target="_blank"> <img src="sw_award.gif" width="73" height="94" ALT="StudyWeb Award: www.studyweb.com"></A  -->
+
+<a href="http://www.exploratorium.edu/learning_studio/sciencesites.html" target="_blank">
+    <!--IMG SRC="http://www.exploratorium.edu/learning_studio/cool/images/cool_logo.gif" -->
+    <img src="Fibonacci%20Numbers_files/cool_logo.gif" alt="Exploratorium Ten Cool Sites: www.exploratorium.edu/learning_studio/sciencesites.html" height="80" width="75"></a>
+ 
+<!-- a href="http://www.newscientist.com/weblinks/categories/mathematics11.jsp#453"     target="_blank" -->
+   <!--img src="http://www.newscientist.com/logos/hotspot.gif" --> 
+   <!-- img src="hotspot.gif" width="130" height="100"    alt="New Scientist HotSpot: www.keysites.com/keysites/hotspots/hotspots.html"></a -->
+
+<a href="http://www.surfnetkids.com/" target="_blank" name="Surfing the Net with Kids">
+    <img src="Fibonacci%20Numbers_files/SURFKIDS.GIF" alt="'Surfing the Net with Kids' 5 star site. www.surfnetkids.com" height="101" width="97"></a>
+
+<a href="http://www.britannica.com/" target="Britannica.com">
+  <img src="Fibonacci%20Numbers_files/BritannicaAward.gif" alt="www.britannica.com/" height="60" width="120"></a> 
+
+<a href="http://scout.wisc.edu/Archives/index.php" target="_blank">
+<!-- http://scout.cs.wisc.edu/scout/graphics/select/se-scoutsel.gif -->  
+<img src="Fibonacci%20Numbers_files/se-scoutsel.gif" alt="Scout Report: scout.cs.wisc.edu/report/sci-eng/current/index.html" height="50" width="145"></a>
+
+<a href="http://www.sciencemaster.com/" target="_blank">
+<img src="Fibonacci%20Numbers_files/sm_logo1.jpg" alt="Science Master: www.sciencemaster.com" height="72" width="72"></a>
+
+<a href="http://www.educationplanet.com/" target="_blank">
+<img src="Fibonacci%20Numbers_files/transglobe3.gif" alt="Education Planet: www.educationplanet.com" height="83" width="108"></a>
+
+<a href="http://www.schoolsnet.com/" target="_blank">
+<img src="Fibonacci%20Numbers_files/schoolsnet.gif" alt=" www.schoolsnet.com " height="60" width="120"></a>
+
+<a href="http://www.bigchalk.com/" target="_blank">
+<img src="Fibonacci%20Numbers_files/bigchalk_best.gif" alt=" www.bigchalk.com " height="100" width="100"></a>
+<!-- March 2001 -->
+
+<a href="http://www.coolmath.com/" target="_blank">
+<img src="Fibonacci%20Numbers_files/award_coolmath.gif" alt="www.coolmath.com" height="96" width="168"></a>
+<!-- May 2001 -->
+
+<a href="http://www.yahbooks.com/" target="_blank">
+<img src="Fibonacci%20Numbers_files/logoa-sm.gif" alt="www.yahbooks.com" height="100" width="130"></a>
+<!-- May 2001 -->
+
+<a href="http://www.scientium.com/drmatrix/awards/2002/dma52002.htm#mathematics" target="_blank">
+<img src="Fibonacci%20Numbers_files/drmatrix.gif" alt="scientium.com/drmatrix" height="75" width="100"></a>
+<!-- May 2002 -->
+
+<a href="http://www.cms.math.ca/Kabol/"><img src="Fibonacci%20Numbers_files/knotofbraids.gif" alt="Knot of Braids" height="100" width="100"></a>
+  
+<!-- The Knot a Braid of Links Project</a> at   <a href="http://www.camel.math.ca/">Camel</a> designated this page a  <a href="http://www.camel.math.ca/Recreation/kabol/">cool math site of the week</a>   for 22-28 November 1998   (now available via in the <a href="http://www.camel.math.ca/kabol/search.html">   Kabol Database search engine</a>).<p>-->
+  <!-- <a href='http://lankskafferiet.skolverket.se/'><img src="LinkLarderLogo.gif"   width=115 height=21 alt='Link Larder (Swedish)'></a>  The Link Larder [in Swedish], part of the Swedish Schoolnet.   -->
+ 
+ <br>
+ <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/otherCitations.html">Other citations</a>
+
+<!--     END OF AWARD ICONS -->
+
+</div>
+
+
+
+<!--  STUDYWEB now seems to be defunct :-(!!<A HREF="http://www.studyweb.com/">StudyWeb</a> has given Academic Excellence Awards to four pages at this site:in 3 in January 1998 and 1 in August 1999     <a href="fibpi.html"> The Fibonacci numbers in a formula for Pi</a>,    <a href="fibnat.html"> The Fibonacci numbers and Nature</a>,    <a href="cfINTRO.html"> Introduction to Continued Fractions</a> and    <a href="fibBio.html">Who was Fibonacci?</a><p>-->
+
+<!-- <a href="http://www.links2go.com/topic/Constants">     Links<sup>2</sup>Go</a> has designated November 1998      <a href="fibpi.html"> The Fibonacci numbers in a formula for Pi</a> as a <b>Key Resource</b> on the topic of <b>Constants</b>. -->
+
+
+
+<!-- END OF AWARDS -->
+
+
+
+
+<br>
+
+
+
+
+<a name="searchme"></a>
+
+<div style="background-color: white;" align="center">
+
+<h3>          Looking for something specific on this site?
+</h3>
+
+<form method="get" action="http://www.google.com/search">
+<table bgcolor="#ffffff"><tbody><tr><td>
+<a href="http://www.google.com/"><img src="Fibonacci%20Numbers_files/google.gif" alt="Google" border="0" height="53" width="128"></a></td>
+<td>
+<input name="q" size="25" maxlength="255" style="background-color: rgb(255, 255, 204);" value="                                                          site:www.mcs.surrey.ac.uk +knott " type="text">
+<input name="btnG" value="Search THIS Site" type="submit"></td></tr></tbody></table>
+</form>
+
+</div>
+
+
+<p>
+
+
+
+</p><div align="center">
+<a name="amazon"></a>
+In association with 
+ <b>amazon.com</b> and
+<b>amazon.co.uk</b>
+- on-line sources for ordering books recommended at this site.<br>
+
+<table style="background-color: rgb(255, 102, 102);" border="1" cellpadding="0" cellspacing="0">
+<tbody><tr><td valign="top">For a complete list <br>
+and ordering (from USA):
+</td>
+<td>
+If you are in the UK, try:
+</td></tr>
+<tr><td valign="top">
+
+<form method="get" action="http://www.amazon.com/exec/obidos/external-search">
+<table align="center" border="0" cellpadding="2" cellspacing="0">
+<tbody><tr><td align="right" bgcolor="#000000" valign="middle">
+ <small><b>Search:</b></small></td>
+ <td bgcolor="#000000">
+	<select name="mode">
+	<option value="books">Books
+	</option><option value="music">Popular Music
+	</option><option value="classical-music">Classical Music
+	</option><option value="video">Video
+	</option><option value="toys">Toys
+	</option><option value="electronics">Electronics
+	</option></select>
+ </td></tr>
+ <tr><td bgcolor="#000000">
+	 <small><b>Keywords:</b></small>
+</td><td bgcolor="#000000">
+	<input name="keyword" size="25" value="" type="text">
+	<input name="tag" value="fibonacnumbersan" type="hidden">
+	<input value="Search" name="Search" type="submit">
+</td>
+</tr>
+<tr>
+<td colspan="2" align="center" bgcolor="#000000" height="65" valign="top">
+<a href="http://www.amazon.com/exec/obidos/redirect-home/fibonacnumbersan?tag-id=fibonacnumbersan%26placement=holiday-home-btn-120x90.gif%26site=amazon">
+<img src="Fibonacci%20Numbers_files/Amazon.gif" alt="Shop at Amazon.com!" border="0" height="60" hspace="0" vspace="0" width="125"></a>
+</td>
+</tr>
+</tbody></table>
+</form>
+</td><td>
+<form method="get" action="http://www.amazon.co.uk/exec/obidos/external-search"> 
+<table align="center" bgcolor="#ffffff" border="0" cellpadding="2" cellspacing="0"> 
+<tbody><tr> 
+<td align="right" bgcolor="#000000" valign="middle"> 
+<small><b>Search:</b></small></td> 
+<td align="left" bgcolor="#000000" valign="middle"> 
+<small> 
+<select name="mode"> 
+<option value="blended">All Products 
+</option><option value="books" selected="selected">Books 
+</option><option value="video">DVD &amp; Video 
+</option><option value="music">Popular Music 
+</option><option value="classical">Classical Music 
+</option><option value="software-uk">Software 
+</option><option value="video-games-uk">PC and Video Games 
+</option></select> 
+</small></td> </tr>
+<tr> <td align="right" bgcolor="#000000" valign="middle"> 
+<small><b> Keywords:</b></small></td> 
+<td align="left" bgcolor="#000000" valign="middle"> 
+<small> 
+<input name="keyword" size="25" value="" type="text"> 
+<input name="tag" value="fibonacnumbers04" type="hidden"> 
+<input value="Search" name="Search" type="submit"> 
+</small></td> 
+</tr> 
+<tr> 
+<td colspan="2" align="center" bgcolor="#000000" height="65" valign="middle"> 
+<a href="http://www.amazon.co.uk/exec/obidos/redirect-home/fibonacnumbers04"> 
+<img src="Fibonacci%20Numbers_files/uk_searchbox.jpg" alt="In Association with Amazon.co.uk" border="0" height="33" hspace="0" vspace="0" width="146"></a> 
+</td> 
+</tr> 
+</tbody></table>
+</form>
+</td></tr>
+<tr><td colspan="3" align="center">
+  <iframe src="Fibonacci%20Numbers_files/cm.htm" frameborder="0" height="40" scrolling="no" width="468">
+&lt;table&gt;&lt;tr&gt;&lt;td valign=top&gt;&lt;a
+href="http://www.amazon.com/exec/obidos/redirect-home/fibonacnumbersan"&gt;Shop
+at Amazon.com!&lt;/a&gt;&lt;/td&gt;&lt;/tr&gt; &lt;tr&gt;&lt;td
+width="100%" align=right style="color:#CCC;"&gt;privacy
+policy&lt;/td&gt;&lt;/tr&gt; &lt;/table&gt; </iframe>
+
+
+  </td></tr>
+  </tbody></table>
+
+<p>
+
+</p><hr>
+<br>
+<a name="counter"></a>
+<table><tbody><tr><td valign="top">
+<div title="1,000,000 in June 2001; 2,000,000 in Sept 2003; 3,000,000 on 19 Apr 2005">
+
+<table bgcolor="white" border="0"><tbody><tr><td>
+<a href="http://www.barebones.com/products/bbedit/index.shtml">
+<img src="Fibonacci%20Numbers_files/bw_bbedit_small_3.gif" alt="Built With BBEdit" border="0" height="33" hspace="5" vspace="5" width="88"></a>
+</td>
+<td valign="middle">
+ <small>You are visitor number </small>
+  </td><td valign="middle">
+<img src="Fibonacci%20Numbers_files/Count.gif" alt="counter">
+   </td><td valign="middle"><small>  since March 1996.<br>
+   </small>
+  
+  </td></tr>
+  </tbody></table>
+  
+  </div></td><td>&nbsp;&nbsp;</td><td>
+
+</td>
+
+</tr></tbody></table>
+
+<small>Hosted by the
+<a href="http://www.maths.surrey.ac.uk/">Department of Mathematics</a>,
+<a href="http://www.surrey.ac.uk/">Surrey University</a>, 
+Guildford, UK, 
+where the author was a Lecturer in the Mathematics and Computing departments 1979-1998.
+</small>
+<br clear="all">
+</div>
+Blast From the Past: 
+An archived snapshot of <a href="http://web.archive.org/web/19980625070013/www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/fib.html">
+this site as it was in June 1998</a> and <a href="http://web.archive.org/web/*/http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci">
+at various times from 1999 to 2005</a> from www. archive.org!
+
+
+<hr>
+
+
+<address>
+<a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/copyright.html">©</a> 1996-2009 <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/contactron.html">Dr Ron Knott</a>
+<img src="Fibonacci%20Numbers_files/myemail.gif" alt="email" height="13" width="180">
+<a href="http://validator.w3.org/check/referer"><img src="Fibonacci%20Numbers_files/valid-html401.gif" alt="Valid HTML 4.01!" align="right" border="0" height="31" width="88"></a> 
+</address>  
+<script src="Fibonacci%20Numbers_files/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2009607-1";
+urchinTracker();
+</script></body></html>

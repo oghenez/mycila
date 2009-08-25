@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="author" content="Dr R Knott: fibandphi (AT) ronknott.com">
+<meta name="description" content="A web page calculator to convert fractions and square-root expressions and  decimal values to continued fractions.  Needs no extra plug-ins or downloads --   just your browser and you shold have Scripting (Javascript) enabled.  Finds complete and accurate continued fractions  for expressoins of hte form (R+sqrt(S)/N for integer R,S,N.  An accompanying page gives the complete low-down on  continued fractions for the interested recreational mathematician - at a school level, to encourage your  own experiments with numbers."><meta name="keywords" content="continued fraction calculator, square-root, period, periodic,  decimal fraction, fractional, rational, recurring decimal,  decimal, decimals, converter, computer, evaluate, convert, convertion,  fraction,  approximation, best approximations, best rationals, rational">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<link rel="stylesheet" type="text/css" href="Continued%20Fraction%20Calculator_files/global.css">   
+
+<title>Continued Fraction Calculator</title>
+    
+   
+<style type="text/css">
+.fractSTY  {background-color:#FC6;}
+.fractLabelSTY {color:#C63;text-align:center}
+.inputSTY {background-color:#FC6}
+.cfSTY   {background-color:#F66}
+.decSTY  {background-color:#F96}
+.bgSTY  {background-color:#FF6}
+.resSTY {background-color:#FF9}
+.butSTY  {background-color:#FF6}
+.egSTY   {background-color:#CCC}
+.inoutSTY {font-size:smaller;}
+.const   {color:blue}
+.fn      {color:#C03}
+BODY     {background-color:white; font-family:Lucida Grande,Verdana,sans-serif;}
+.it  {font-style:italic;}
+</style>
+
+<script type="text/javascript" language="JavaScript" src="Continued%20Fraction%20Calculator_files/RAT.js"></script>
+<script type="text/javascript" language="JavaScript" src="Continued%20Fraction%20Calculator_files/CF.js"></script>
+<script type="text/javascript" language="JavaScript" src="Continued%20Fraction%20Calculator_files/cfCALC.js"></script>
+</head><body>
+<h1>  A Continued Fraction Calculator <i><small>version  2Jan2009</small></i>
+</h1>
+This interactive calculator page accompanies <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/cfINTRO.html">a full explanation of Continued Fractions</a>.
+
+<form name="f" action="">
+<table border="0" cellpadding="6" cellspacing="0" width="100%">
+<tbody><tr><td colspan="4">
+ Try these examples...
+          <select name="eg" size="1" onchange="eval(btnoff);egSHOW()">
+          <option value="" selected="selected"> Show me an example...
+          </option><option value="egfr">Fraction to  CF
+          </option><option value="egdec">Decimal to CF
+          </option><option value="egsqrt">Simple Square-root to CF
+          </option><option value="egcfrat1">CF to Fraction
+          </option><option value="egcfrat2">Periodic CF to Fraction
+          </option><option value="egpi">Maths Constant to CF
+          </option><option value="egeval1">Arithmetic expression to CF
+          </option><option value="egeval2">Using pow, sqrt functions
+          </option><option value="egeval3">Using trig functions and pi
+          </option></select>
+          <span style="font-size: smaller;">Select one.  Input boxes will then be filled in for you. 
+           Press the ARROW button that is <span style="color: blue; background-color: yellow; font-weight: bold;">&nbsp;highlighted&nbsp;</span> 
+           to do the conversion.</span>
+          <br>
+           <script language="JavaScript" type="text/javascript">
+            if(debug){document.writeln('    <input type="button" value="Clear Debug window" onClick="DBG()">',
+               '<input type="button" value="Show debug info" onClick="_auxwin.document.close();">')}
+           </script><br>
+</td></tr>
+<tr class="calc"><td colspan="4">C A L C U L A T O R&nbsp;&nbsp;&nbsp;<input value="Clear the input boxes" onclick="clearxcpt()" type="button"></td></tr>
+<tr><td class="fractSTY" align="left"> <!-- (R+sqrt(N))/S -->
+            <b>Fraction:</b><table border="0" cellpadding="0" cellspacing="0" width="100%">
+            <tbody><tr><td rowspan="3" align="left"></td>
+                <td colspan="2" align="center" nowrap="nowrap"><input name="R" value="" size="17" onchange="clearxcpt('fract')" type="text">
+                             <select name="SGN"><option value="+">+</option><option value="-">-</option></select>
+                             <sub><img src="Continued%20Fraction%20Calculator_files/sqrt.gif" alt="sqrt" height="26" width="8"></sub>
+                   <input name="N" value="" size="17" onchange="clearxcpt('fract')" type="text"></td></tr>
+             <tr><td colspan="2" height="8" valign="middle"> <img src="Continued%20Fraction%20Calculator_files/black.gif" alt="--" height="2" width="100%"> </td></tr>
+             <tr><td colspan="2" align="center"><input name="S" value="" size="17" onchange="clearxcpt('fract')"></td></tr>
+             </tbody></table>
+           </td>
+      <td class="fractSTY" align="center">
+                  <a href="#" onmouseover="status='';return true" onclick="eval(btnoff);Sqrt2CF();return false">
+                  <img src="Continued%20Fraction%20Calculator_files/Rbutton.gif" name="ratRbtn" alt="Fraction -&gt; CF" border="0" height="20" width="20"></a>
+              </td>
+      <td class="cfSTY" rowspan="3"><a href="#" onmouseover="status='';return true" onclick="eval(btnoff);CF2Fract();return false">
+          <img src="Continued%20Fraction%20Calculator_files/Lbutton.gif" name="cfLbtn" alt="Fraction &lt;- CF" border="0" height="20" width="20"></a></td>
+      <td class="cfSTY" rowspan="3">
+        <b>                                 Continued Fraction:    </b>
+       <!--  All +:<input type=radio name="CFtyp" value='+' checked onClick='Cf.reset();CFtrunc=Math.floor'>        All -:<input type=radio name="CFtyp" value='-' onClick='Cf.reset();CFtrunc=Math.ceil'>        smallest:<input type=radio name="CFtyp" value="0" onClick='Cf.reset();CFtrunc=Math.ceil'> --><br>
+              <input value="Show the other CF" onclick="CFalt()" type="button"><br>
+              <textarea name="cf" cols="40" rows="2" onchange="clearxcpt('cf');updateCF()"></textarea></td></tr>
+                   
+<tr><td class="decSTY"><b>         Decimal number: </b>
+            <input name="dec" value="" size="40" onchange="clearxcpt('dec')" type="text"><br>
+             </td>
+     <td class="decSTY" align="center" width="30"><a href="#" onmouseover="status='';return true" onclick="eval(btnoff);evalDec();Real2CF();return false">
+             <img src="Continued%20Fraction%20Calculator_files/Rbutton.gif" name="decRbtn" alt="Decimal -&gt; CF" border="0" height="20" width="20"></a>
+     </td></tr>
+<tr><td class="decsty" colspan="2" align="right">
+             <input value="Show all best rational approximations" onclick="evalDec();bestRATS()" type="button">
+     </td></tr>       
+             
+<!-- <tr><td>gcd(<input type="text" name="g1" size=4 onChange="dogcd()">,<input type="text" name="g2" size=4  onChange="dogcd()">)      = <input type="text" name="gcd12" size=4>     </td></tr>  -->
+</tbody></table>
+</form>
+<form name="ans" action="">
+<table border="0" cellpadding="6" cellspacing="0" width="100%">
+<tbody><tr class="calc"><td colspan="4"> O U T P U T&nbsp;&nbsp;&nbsp;<input value="Clear the result areas" type="reset"></td></tr>
+<tr class="calc"><td colspan="2" class="ansSTY" valign="top">
+            <!-- Record results below?  <input type="checkbox" name="Record" checked value="Record">  -->
+           <br><textarea name="Recordtxt" rows="27" cols="50"></textarea></td>
+     <td colspan="2">More about this Continued Fraction:<br>
+              <textarea name="morecf" cols="50" rows="27" onkeypress="return false"></textarea></td></tr>
+</tbody></table>
+</form>
+
+The Mathematical <span class="fn">functions</span> and <span class="const">constants</span> available in the "Decimal" box are:<br>
+<table bgcolor="#cccc99" border="0" cellpadding="4" cellspacing="0">
+<tbody><tr><th>Name</th><th>Description</th><th>Eg</th></tr>
+<tr><th class="fn">abs</th><td class="fn"> the absolute value (size) of a number </td><td class="fn">abs(-3.9)=3.9</td></tr>
+<tr><th class="fn">acos</th><td class="fn"> arc cosine </td><td class="fn">acos(0.5)=1.047197551196598=60° in radians</td></tr>
+<tr><th class="fn">asin</th><td class="fn"> arc sine </td><td class="fn">asin(sqrt(3)/2)=1.047197551196598=60° in radians</td></tr>
+<tr><th class="fn">atan</th><td class="fn"> arc tangent </td><td class="fn">4 * atan(1)=3.141592653589793=90°= Pi radians</td></tr>
+<tr><th class="fn">ceil</th><td class="fn"> round up to the nearest integer </td><td class="fn">ceil(-3.9)=-3,ceil(2.1)=3</td></tr>
+<tr><th class="fn">cos</th><td class="fn"> cosine of an angle (in radians) </td><td class="fn">cos(60*Pi/180)=0.5</td></tr>
+<tr><th class="const">E</th><td class="const"> e </td><td class="const">e=2.718281828459045</td></tr>
+<tr><th class="fn">exp</th><td class="fn"> e to the power of </td><td class="fn">exp(1)=2.718281828459045</td></tr>
+<tr><th class="fn">floor</th><td class="fn"> round down to the nearest integer </td><td class="fn">floor(-3.9)=-4,floor(2.1)=2</td></tr>
+<tr><th class="fn">log</th><td class="fn"> log to base e </td><td class="fn">log(E)=1,log(sqrt(E))=0.5</td></tr>
+<tr><th class="const">Phi</th><td class="const"> golden section </td><td class="const">Phi=1.618033988749895</td></tr>
+<tr><th class="const">phi</th><td class="const"> golden section </td><td class="const">phi=0.618033988749895</td></tr>
+<tr><th class="const">Pi</th><td class="const"> pi </td><td class="const">pi=3.141592653589793</td></tr>
+<tr><th class="fn">pow</th><td class="fn"> pow(x,p) is x<sup>p</sup> </td><td class="fn">pow(2,3)=8</td></tr>
+<tr><th class="fn">random</th><td class="fn"> a random number between 0 and 1 </td><td class="fn">random()=0.42190062543</td></tr>
+<tr><th class="fn">round</th><td class="fn"> round to the nearest integer </td><td class="fn">round(-3.9)=-4, round(3.9)=4</td></tr>
+<tr><th class="fn">sin</th><td class="fn"> sine of an angle (in radians) </td><td class="fn">sin(Pi/2)=1</td></tr>
+<tr><th class="fn">sqrt</th><td class="fn"> square root </td><td class="fn">sqrt(2)=1.414213562373095</td></tr>
+<tr><th class="fn">tan</th><td class="fn"> tangent of an angle (in radians) </td><td class="fn">tan(Pi/4)=1</td></tr>
+</tbody></table>
+
+<hr>
+
+<address>
+<a href="http://validator.w3.org/check/referer"><img src="Continued%20Fraction%20Calculator_files/valid-html401.gif" alt="Valid HTML 4.01!" align="right" border="0" height="31" width="88"></a> 
+<a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/Fibonacci/copyright.html">©</a> 2003-2009 <a href="http://www.mcs.surrey.ac.uk/Personal/R.Knott/contactron.html">Dr Ron Knott</a>
+<br>updated: 2 January 2009
+</address>
+<script src="Continued%20Fraction%20Calculator_files/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2009607-1";
+urchinTracker();
+</script>
+</body></html>

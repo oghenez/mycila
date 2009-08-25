@@ -15,9 +15,9 @@
  */
 package euler;
 
-import com.mycila.Digits;
-import com.mycila.Factorial;
-import com.mycila.sequence.IntProcedure;
+import com.mycila.math.Digits;
+import com.mycila.math.Factorial;
+import com.mycila.math.sequence.IntProcedure;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=34

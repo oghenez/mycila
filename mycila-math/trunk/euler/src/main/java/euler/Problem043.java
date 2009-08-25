@@ -15,10 +15,10 @@
  */
 package euler;
 
-import com.mycila.Digits;
+import com.mycila.math.Digits;
 import com.mycila.Pandigital;
-import com.mycila.sequence.IntSequence;
-import com.mycila.sequence.LongSequence;
+import com.mycila.math.sequence.IntSequence;
+import com.mycila.math.sequence.LongSequence;
 
 import static java.lang.System.*;
 

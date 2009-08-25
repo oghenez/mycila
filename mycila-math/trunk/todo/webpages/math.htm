@@ -1,0 +1,819 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+<title>
+Seed7 Algorithms: Mathematics</title>
+<meta name="author" content="Thomas Mertes">
+<meta name="copyright" content="Thomas Mertes">
+<meta name="keywords" content="Seed7, SeedSeven, Seed, Seven, 7, programming, language, extensible, extendable">
+<meta name="description" content="Seed7 - The extensible programming language">
+<meta name="page-topic" content="programming language, computer, software, downloads">
+<meta name="audience" content="all">
+<meta name="content-language" content="en">
+<meta name="robots" content="index,follow">
+<link rel="shortcut icon" href="http://seed7.sourceforge.net/images/favicon.ico" type="image/x-icon">
+<style type="text/css">
+<!--
+a:visited { color: purple }
+a:link    { color: purple }
+a:hover   { color: red }
+a:active  { color: green }
+
+a.menu:visited { color: purple; background-color: silver }
+a.menu:link    { color: purple; background-color: silver }
+a.menu:hover   { color: red;    background-color: silver }
+a.menu:active  { color: green;  background-color: silver }
+
+a.head:visited { color: cyan;  background-color: blue }
+a.head:link    { color: cyan;  background-color: blue }
+a.head:hover   { color: white; background-color: blue }
+a.head:active  { color: green; background-color: blue }
+
+body {
+    font-size: 12px;
+}
+
+tt {
+    font-size: 10pt;
+}
+
+pre {
+    border: 1pt dashed black;
+    white-space: pre;
+    font-size: 8pt;
+    overflow: auto;
+    padding: 1em 0;
+    background: #F8F8F8;
+    color: black;
+}
+
+//-->
+</style>
+</head><body style="margin: 0pt;">
+<table cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td>
+<img src="math_files/hearts7m.png">
+</td>
+<td>
+<img src="math_files/header3.png">
+</td>
+</tr>
+</tbody></table>
+<br>
+<table cellpadding="0" cellspacing="0">
+<tbody><tr valign="top">
+<td>
+<table width="10">
+</table>
+</td>
+<td>
+<table cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td>
+
+<table bgcolor="blue" border="0" cellpadding="0" cellspacing="1" width="100">
+<tbody><tr bgcolor="blue">
+<td>
+&nbsp;<a class="head" href="http://seed7.sourceforge.net/index.htm"><big>Seed7</big></a>&nbsp;
+</td>
+</tr>
+<tr bgcolor="silver">
+<td>
+&nbsp;<a class="menu" href="http://seed7.sourceforge.net/faq.htm">FAQ</a>&nbsp;
+</td>
+</tr>
+<tr bgcolor="silver">
+<td>
+&nbsp;<a class="menu" href="http://seed7.sourceforge.net/manual/index.htm">Manual</a>&nbsp;
+</td>
+</tr>
+<tr bgcolor="silver">
+<td>
+&nbsp;<a class="menu" href="http://seed7.sourceforge.net/scrshots/index.htm">Screenshots</a>&nbsp;
+</td>
+</tr>
+<tr bgcolor="silver">
+<td>
+&nbsp;<a class="menu" href="http://seed7.sourceforge.net/examples/index.htm">Examples</a>&nbsp;
+</td>
+</tr>
+<tr bgcolor="silver">
+<td>
+&nbsp;<a class="menu" href="http://seed7.sourceforge.net/algorith/index.htm">Algorithms</a>&nbsp;
+</td>
+</tr>
+<tr bgcolor="silver">
+<td>
+&nbsp;<a class="menu" href="http://sourceforge.net/project/showfiles.php?group_id=151126">Download</a>&nbsp;
+</td>
+</tr>
+<tr bgcolor="silver">
+<td>
+&nbsp;<a class="menu" href="http://seed7.sourceforge.net/links.htm">Links</a>&nbsp;
+</td>
+</tr>
+</tbody></table>
+
+<br>
+
+</td>
+</tr>
+<tr>
+<td>
+
+<table bgcolor="blue" border="0" cellpadding="0" cellspacing="1" width="100">
+<tbody><tr bgcolor="blue">
+<td>
+&nbsp;<a class="head" href="http://seed7.sourceforge.net/algorith/index.htm"><big>Algorithms</big></a>&nbsp;
+</td>
+</tr>
+<tr bgcolor="silver">
+<td>
+&nbsp;<a class="menu" href="http://seed7.sourceforge.net/algorith/sorting.htm">Sorting</a>&nbsp;
+</td>
+</tr>
+<tr bgcolor="silver">
+<td>
+&nbsp;<a class="menu" href="http://seed7.sourceforge.net/algorith/search.htm">Searching</a>&nbsp;
+</td>
+</tr>
+<tr bgcolor="silver">
+<td>
+&nbsp;<a class="menu" href="http://seed7.sourceforge.net/algorith/date.htm">Date&nbsp;&amp;&nbsp;Time</a>&nbsp;
+</td>
+</tr>
+<tr bgcolor="silver">
+<td>
+&nbsp;<a class="menu" href="http://seed7.sourceforge.net/algorith/string.htm">String</a>&nbsp;
+</td>
+</tr>
+<tr bgcolor="silver">
+<td>
+&nbsp;<a class="menu" href="http://seed7.sourceforge.net/algorith/math.htm">Mathematics</a>&nbsp;
+</td>
+</tr>
+<tr bgcolor="silver">
+<td>
+&nbsp;<a class="menu" href="http://seed7.sourceforge.net/algorith/file.htm">File</a>&nbsp;
+</td>
+</tr>
+<tr bgcolor="silver">
+<td>
+&nbsp;<a class="menu" href="http://seed7.sourceforge.net/algorith/puzzles.htm">Puzzles</a>&nbsp;
+</td>
+</tr>
+<tr bgcolor="silver">
+<td>
+&nbsp;<a class="menu" href="http://seed7.sourceforge.net/algorith/others.htm">Others</a>&nbsp;
+</td>
+</tr>
+</tbody></table>
+
+</td>
+</tr>
+</tbody></table>
+</td>
+<td>
+<table width="10">
+</table>
+</td>
+<td width="100%">
+
+<table cellpadding="0" cellspacing="0" width="100%">
+<tbody><tr>
+<td align="left" width="80">
+<table bgcolor="blue" border="0" cellpadding="0" cellspacing="1" width="80">
+<tbody><tr bgcolor="blue">
+<td>
+&nbsp;<a class="head" href="http://seed7.sourceforge.net/algorith/index.htm"><big>Algorithms</big></a>&nbsp;
+</td>
+</tr>
+</tbody></table>
+</td>
+<td>
+<table width="10">
+</table>
+</td>
+<td align="left" width="60%">
+<b><big>Mathematics</big></b></td>
+<td align="right">
+<table bgcolor="blue" border="0" cellspacing="1">
+<tbody><tr bgcolor="silver">
+<td>&nbsp;<a class="menu" href="http://seed7.sourceforge.net/algorith/string.htm">previous</a>&nbsp;</td>
+<td>&nbsp;<a class="menu" href="http://seed7.sourceforge.net/algorith/index.htm">up</a>&nbsp;</td>
+<td>&nbsp;<a class="menu" href="http://seed7.sourceforge.net/algorith/file.htm">next</a>&nbsp;</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<p>
+</p>
+<a name="is_prime"><b>Determine wether a given integer number is prime</b></a>
+<p>
+</p><pre><font color="blue">const</font> <font color="red">func boolean</font>: is_prime (<font color="blue">in</font> <font color="red">integer</font>: number) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">boolean</font>: result <font color="blue">is</font> FALSE;
+  <font color="blue">local</font>
+    <font color="blue">var</font> <font color="red">integer</font>: count <font color="blue">is</font> 2;
+  <font color="blue">begin</font>
+    <font color="blue">if</font> number = 2 <font color="blue">then</font>
+      result := TRUE;
+    <font color="blue">elsif</font> number &gt; 2 <font color="blue">then</font>
+      <font color="blue">while</font> number <font color="blue">rem</font> count &lt;&gt; 0 <font color="blue">and</font> count * count &lt;= number <font color="blue">do</font>
+        incr(count);
+      <font color="blue">end while</font>;
+      result := number <font color="blue">rem</font> count &lt;&gt; 0;
+    <font color="blue">end if</font>;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="sieve_of_eratosthenes"><b>Sieve of Eratosthenes</b></a>
+<p>
+</p><pre><font color="blue">const</font> <font color="red">func array boolean</font>: eratosthenes (<font color="blue">in</font> <font color="red">integer</font>: n) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">array boolean</font>: sieve <font color="blue">is</font> 0 <font color="blue">times</font> FALSE;
+  <font color="blue">local</font>
+    <font color="blue">var</font> <font color="red">integer</font>: i <font color="blue">is</font> 0;
+    <font color="blue">var</font> <font color="red">integer</font>: j <font color="blue">is</font> 0;
+  <font color="blue">begin </font>
+    sieve := n <font color="blue">times</font> TRUE;
+    sieve[1] := FALSE;
+    <font color="blue">for</font> i <font color="blue">range</font> 2 <font color="blue">to</font> sqrt(n) <font color="blue">do</font>
+      <font color="blue">if</font> sieve[i] <font color="blue">then</font>
+        <font color="blue">for</font> j <font color="blue">range</font> i * i <font color="blue">to</font> n <font color="blue">step</font> i <font color="blue">do</font>
+          sieve[j] := FALSE;
+        <font color="blue">end for</font>;
+      <font color="blue">end if</font>;
+    <font color="blue">end for</font>;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="factorise"><b>Function to calculate the prime factors of a number</b></a>
+<p>
+</p><pre><font color="blue">const</font> <font color="red">func array integer</font>: factorise (<font color="blue">in var</font> <font color="red">integer</font>: number) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">array integer</font>: result <font color="blue">is</font> 0 <font color="blue">times</font> 0;
+  <font color="blue">local</font>
+    <font color="blue">var</font> <font color="red">integer</font>: checker <font color="blue">is</font> 2;
+  <font color="blue">begin</font>
+    <font color="blue">while</font> checker * checker &lt;= number <font color="blue">do</font>
+      <font color="blue">if</font> number <font color="blue">rem</font> checker = 0 <font color="blue">then</font>
+        result &amp;:= [](checker);
+        number := number <font color="blue">div</font> checker;
+      <font color="blue">else</font>
+        incr(checker);
+      <font color="blue">end if</font>;
+    <font color="blue">end while</font>;
+    <font color="blue">if</font> number &lt;&gt; 1 <font color="blue">then</font>
+      result &amp;:= [](number);
+    <font color="blue">end if</font>;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="mersenne_number_is_prime"><b>Verify if a given Mersenne number is prime</b></a>
+<p>
+A Mersenne number is a number that is one less than a power of two (2**p-1).
+The Lucas-Lehmer test allows to check if a given Mersenne number is prime:
+For the prime p, the Mersenne number 2**p-1 is prime if and
+only if S(p-1) rem 2**p-1 = 0 where S(1)=4 and S(n)=S(n-1)**2-2.
+</p><pre><font color="blue">const</font> <font color="red">func boolean</font>: mersenne_number_is_prime (<font color="blue">in</font> <font color="red">integer</font>: p) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">boolean</font>: result <font color="blue">is</font> FALSE;
+  <font color="blue">local</font>
+    <font color="blue">var</font> <font color="red">bigInteger</font>: m_p <font color="blue">is</font> 0_;
+    <font color="blue">var</font> <font color="red">bigInteger</font>: s <font color="blue">is</font> 4_;
+    <font color="blue">var</font> <font color="red">integer</font>: i <font color="blue">is</font> 0;
+  <font color="blue">begin</font>
+    m_p := 2_ ** p - 1_;
+    <font color="blue">for</font> i <font color="blue">range</font> 2 <font color="blue">to</font> pred(p) <font color="blue">do</font>
+      s := (s ** 2 - 2_) <font color="blue">rem</font> m_p;
+    <font color="blue">end for</font>;
+    result := s = 0_;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="gcd"><b>Determine the greatest common divisor of two positive integer numbers</b></a>
+<p>
+</p><pre><font color="blue">const</font> <font color="red">func integer</font>: gcd (<font color="blue">in var</font> <font color="red">integer</font>: a, <font color="blue">in var</font> <font color="red">integer</font>: b) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">integer</font>: result <font color="blue">is</font> 0;
+  <font color="blue">local</font>
+    <font color="blue">var</font> <font color="red">integer</font>: help <font color="blue">is</font> 0;
+  <font color="blue">begin</font>
+    <font color="blue">while</font> a &lt;&gt; 0 <font color="blue">do</font>
+      help := b <font color="blue">rem</font> a;
+      b := a;
+      a := help;
+    <font color="blue">end while</font>;
+    result := b;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="lcm"><b>Determine the least common multiple of two positive integer numbers</b></a>
+<p>
+</p><pre><font color="blue">const</font> <font color="red">func integer</font>: lcm (<font color="blue">in</font> <font color="red">integer</font>: a, <font color="blue">in</font> <font color="red">integer</font>: b) <font color="blue">is</font>
+  <font color="blue">return</font> a * b div gcd(a, b);
+</pre><p>
+</p>
+<a name="int_binaryGcd"><b>Binary greatest common divisor algorithm for two positive integer numbers</b></a>
+<p>
+</p><pre><font color="blue">const</font> <font color="red">func integer</font>: binaryGcd (<font color="blue">in var</font> <font color="red">integer</font>: a, <font color="blue">in var</font> <font color="red">integer</font>: b) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">integer</font>: result <font color="blue">is</font> 0;
+  <font color="blue">local</font>
+    <font color="blue">var</font> <font color="red">integer</font>: shift <font color="blue">is</font> 0;
+    <font color="blue">var</font> <font color="red">integer</font>: diff <font color="blue">is</font> 0;
+  <font color="blue">begin</font>
+    <font color="blue">if</font> a = 0 <font color="blue">then</font>
+      result := b;
+    <font color="blue">elsif</font> b = 0 <font color="blue">then</font>
+      result := a;
+    <font color="blue">else</font>
+      <font color="green">(* Let shift := log2(K), where K is the greatest power of 2
+         dividing both a and b. *)</font>
+      <font color="blue">while not</font> odd(a) <font color="blue">and not</font> odd(b) <font color="blue">do</font>
+          a &gt;&gt;:= 1;
+          b &gt;&gt;:= 1;
+        incr(shift);
+      <font color="blue">end while</font>;
+
+      <font color="blue">while not</font> odd(a) <font color="blue">do</font>
+        a &gt;&gt;:= 1;
+      <font color="blue">end while</font>;
+
+      <font color="green">(* From here on, a is always odd. *)</font>
+      <font color="blue">repeat</font>
+        <font color="blue">while not</font> odd(b) <font color="blue">do</font>
+          b &gt;&gt;:= 1;
+        <font color="blue">end while</font>;
+
+        <font color="green">(* Now a and b are both odd, so diff(a, b) is even.
+           Let a := min(a, b); b := diff(a, b)/2; *)</font>
+        <font color="blue">if</font> a &lt; b <font color="blue">then</font>
+          b -:= a;
+        <font color="blue">else</font>
+          diff := a - b;
+          a := b;
+          b := diff;
+        <font color="blue">end if</font>;
+        b &gt;&gt;:= 1;
+      <font color="blue">until</font> b = 0;
+
+      result := a &lt;&lt; shift;
+    <font color="blue">end if</font>;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="big_binaryGcd"><b>Binary greatest common divisor algorithm for two bigInteger numbers</b></a>
+<p>
+The bigInteger type already has a gcd function defined which
+can be called with <tt>'gcd(a, b)'</tt>.
+</p><pre><font color="blue">const</font> <font color="red">func bigInteger</font>: binaryGcd (<font color="blue">in var</font> <font color="red">bigInteger</font>: a, <font color="blue">in var</font> <font color="red">bigInteger</font>: b) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">bigInteger</font>: result <font color="blue">is</font> 0_;
+  <font color="blue">local</font>
+    <font color="blue">var</font> <font color="red">integer</font>: lowestSetBitA <font color="blue">is</font> 0;
+    <font color="blue">var</font> <font color="red">integer</font>: lowestSetBitB <font color="blue">is</font> 0;
+    <font color="blue">var</font> <font color="red">integer</font>: shift <font color="blue">is</font> 0;
+    <font color="blue">var</font> <font color="red">bigInteger</font>: diff <font color="blue">is</font> 0_;
+  <font color="blue">begin</font>
+    <font color="blue">if</font> a = 0_ <font color="blue">then</font>
+      result := b;
+    <font color="blue">elsif</font> b = 0_ <font color="blue">then</font>
+      result := a;
+    <font color="blue">else</font>
+      <font color="blue">if</font> a &lt; 0_ <font color="blue">then</font>
+        a := -a;
+      <font color="blue">end if</font>;
+      <font color="blue">if</font> b &lt; 0_ <font color="blue">then</font>
+        b := -b;
+      <font color="blue">end if</font>;
+      lowestSetBitA := lowestSetBit(a);
+      lowestSetBitB := lowestSetBit(b);
+      <font color="blue">if</font> lowestSetBitA &lt; lowestSetBitB <font color="blue">then</font>
+        shift := lowestSetBitA;
+      <font color="blue">else</font>
+        shift := lowestSetBitB;
+      <font color="blue">end if</font>;
+      a &gt;&gt;:= lowestSetBitA;
+      <font color="blue">repeat</font>
+        b &gt;&gt;:= lowestSetBit(b);
+        <font color="blue">if</font> a &lt; b <font color="blue">then</font>
+          b -:= a;
+        <font color="blue">else</font>
+          diff := a - b;
+          a := b;
+          b := diff;
+        <font color="blue">end if</font>;
+      <font color="blue">until</font> b = 0_;
+      result := a &lt;&lt; shift;
+    <font color="blue">end if</font>;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="modInverse"><b>Return the modular multiplicative inverse of a modulo b</b></a>
+<p>
+This function is part of the <font color="maroon">"bigint.s7i"</font> library.
+It returns the modular multiplicative inverse of a modulo b when
+a and b are coprime (gcd(a, b) &lt;&gt; 1). If a and b are not coprime
+(gcd(a, b) &lt;&gt; 1) the exception RANGE_ERROR is raised.
+</p><pre><font color="blue">const</font> <font color="red">func bigInteger</font>: modInverse (<font color="blue">in var</font> <font color="red">bigInteger</font>: a,
+    <font color="blue">in var</font> <font color="red">bigInteger</font>: b) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">bigInteger</font>: result <font color="blue">is</font> 0_;
+  <font color="blue">local</font>
+    <font color="blue">var</font> <font color="red">bigInteger</font>: b_bak <font color="blue">is</font> 0_;
+    <font color="blue">var</font> <font color="red">bigInteger</font>: x <font color="blue">is</font> 0_;
+    <font color="blue">var</font> <font color="red">bigInteger</font>: y <font color="blue">is</font> 1_;
+    <font color="blue">var</font> <font color="red">bigInteger</font>: lastx <font color="blue">is</font> 1_;
+    <font color="blue">var</font> <font color="red">bigInteger</font>: lasty <font color="blue">is</font> 0_;
+    <font color="blue">var</font> <font color="red">bigInteger</font>: temp <font color="blue">is</font> 0_;
+    <font color="blue">var</font> <font color="red">bigInteger</font>: quotient <font color="blue">is</font> 0_;
+  <font color="blue">begin</font>
+    <font color="blue">if</font> b &lt; 0_ <font color="blue">then</font>
+      <font color="blue">raise</font> RANGE_ERROR;
+    <font color="blue">end if</font>;
+    <font color="blue">if</font> a &lt; 0_ <font color="blue">and</font> b &lt;&gt; 0_ <font color="blue">then</font>
+      a := a <font color="blue">mod b</font>;
+    <font color="blue">end if</font>;
+    b_bak := b;
+    <font color="blue">while</font> b &lt;&gt; 0_ <font color="blue">do</font>
+      temp := b;
+      quotient := a <font color="blue">div</font> b;
+      b := a <font color="blue">rem</font> b;
+      a := temp;
+
+      temp := x;
+      x := lastx - quotient * x;
+      lastx := temp;
+
+      temp := y;
+      y := lasty - quotient * y;
+      lasty := temp;
+    <font color="blue">end while</font>;
+    <font color="blue">if</font> a = 1_ <font color="blue">then</font>
+      result := lastx;
+      <font color="blue">if</font> result &lt; 0_ <font color="blue">then</font>
+        result +:= b_bak;
+      <font color="blue">end if</font>;
+    <font color="blue">else</font>
+      <font color="blue">raise</font> RANGE_ERROR;
+    <font color="blue">end if</font>;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="compute_pi_machin"><b>Compute PI with 1000 decimal digits using John Machin's formula</b></a>
+<p>
+</p><pre>$ <font color="blue">include</font> <font color="maroon">"seed7_05.s7i"</font>;
+  <font color="blue">include</font> <font color="maroon">"bigint.s7i"</font>;
+  <font color="blue">include</font> <font color="maroon">"bigrat.s7i"</font>;
+
+<font color="green"># John Machin's formula from 1706:</font>
+<font color="green"># PI = 16 * arctan(1 / 5) - 4 * arctan(1 / 239)</font>
+
+<font color="green"># Taylor series for arctan:</font>
+<font color="green"># arctan(x) = sum_n_from_0_to_inf((-1) ** n / succ(2 * n) * x ** succ(2 * n))</font>
+
+<font color="green"># Taylor series of John Machin's formula:</font>
+<font color="green"># PI = sum_n_from_0_to_inf(16 * (-1) ** n / (succ(2 * n) *   5 ** succ(2 * n)) -</font>
+<font color="green">#                           4 * (-1) ** n / (succ(2 * n) * 239 ** succ(2 * n)))</font>
+
+<font color="blue">const</font> <font color="red">func bigRational</font>: compute_pi_machin <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">bigRational</font>: sum <font color="blue">is</font> 0_ / 1_;
+  <font color="blue">local</font>
+    <font color="blue">var</font> <font color="red">integer</font>: n <font color="blue">is</font> 0;
+  <font color="blue">begin</font>
+    <font color="blue">for</font> n <font color="blue">range</font> 0 <font color="blue">to</font> 713 <font color="blue">do</font>
+      sum +:= 16_ * (-1_) ** n / (<font color="red">bigInteger</font> <font color="blue">conv</font> succ(2 * n) *   5_ ** succ(2 * n)) -
+               4_ * (-1_) ** n / (<font color="red">bigInteger</font> <font color="blue">conv</font> succ(2 * n) * 239_ ** succ(2 * n));
+    <font color="blue">end for</font>;
+  <font color="blue">end func</font>;
+
+ <font color="blue">const</font> <font color="red">proc</font>: main <font color="blue">is func</font>
+   <font color="blue">begin</font>
+     writeln(compute_pi_machin <font color="blue">digits</font> 1000);
+   <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="compute_pi_bailey_borwein_plouffe"><b>Compute PI with 1000 decimal digits using the Bailey/Borwein/Plouffe formula</b></a>
+<p>
+</p><pre>$ <font color="blue">include</font> <font color="maroon">"seed7_05.s7i"</font>;
+  <font color="blue">include</font> <font color="maroon">"bigint.s7i"</font>;
+  <font color="blue">include</font> <font color="maroon">"bigrat.s7i"</font>;
+
+<font color="green"># In 1997, David H. Bailey, Peter Borwein and Simon Plouffe published a</font>
+<font color="green"># paper (Bailey, 1997) on a new formula for PI as an infinite series:</font>
+
+<font color="green"># PI = sum_n_from_0_to_inf(16 ** (-n) *</font>
+<font color="green">#      (4 / (8 * n + 1) - 2 / (8 * n + 4) - 1 / (8 * n + 5) - 1 / (8 * n + 6)))</font>
+
+<font color="blue">const</font> <font color="red">func bigRational</font>: compute_pi_bailey_borwein_plouffe <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">bigRational</font>: sum <font color="blue">is</font> 0_ / 1_;
+  <font color="blue">local</font>
+    <font color="blue">var</font> <font color="red">integer</font>: n <font color="blue">is</font> 0;
+    <font color="blue">var</font> <font color="red">bigInteger</font>: k <font color="blue">is</font> 0_;
+  <font color="blue">begin</font>
+    <font color="blue">for</font> n <font color="blue">range</font> 0 <font color="blue">to</font> 825 <font color="blue">do</font>
+      k := bigInteger <font color="blue">conv</font> n;
+      sum +:= 1_ / 16_ ** n *
+          (4_ / (8_ * k + 1_) - 2_ / (8_ * k + 4_) - 1_ / (8_ * k + 5_) - 1_ / (8_ * k + 6_));
+    <font color="blue">end for</font>;
+  <font color="blue">end func</font>;
+
+ <font color="blue">const</font> <font color="red">proc</font>: main <font color="blue">is func</font>
+   <font color="blue">begin</font>
+     writeln(compute_pi_bailey_borwein_plouffe <font color="blue">digits</font> 1000);
+   <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="compute_pi_newton"><b>Write PI with 1000 decimal digits using Newtons formula</b></a>
+<p>
+</p><pre>$ include <font color="maroon">"seed7_05.s7i"</font>;
+
+<font color="green"># Newtons formula for PI is:</font>
+<font color="green"># PI / 2 = sum_n_from_0_to_inf(n! / (2 * n + 1)!!)</font>
+
+<font color="green"># This can be written as:</font>
+<font color="green"># PI / 2 = 1 + 1/3 * (1 + 2/5 * (1 + 3/7 * (1 + 4/9 * (1 + ... ))))</font>
+
+<font color="green"># This algorithm puts 2 * 1000 on the right side and computes everything from inside out.</font>
+
+<font color="blue">const</font> <font color="red">integer</font>: SCALE <font color="blue">is</font> 10000;
+<font color="blue">const</font> <font color="red">integer</font>: MAXARR <font color="blue">is</font> 3500;
+<font color="blue">const</font> <font color="red">integer</font>: ARRINIT <font color="blue">is</font> 2000;
+
+<font color="blue">const</font> <font color="red">proc</font>: main <font color="blue">is func</font>
+  <font color="blue">local</font>
+    <font color="blue">var</font> <font color="red">integer</font>: i <font color="blue">is</font> 0;
+    <font color="blue">var</font> <font color="red">integer</font>: j <font color="blue">is</font> 0;
+    <font color="blue">var</font> <font color="red">integer</font>: carry <font color="blue">is</font> 0;
+    <font color="blue">var</font> <font color="red">array integer</font>: arr <font color="blue">is</font> MAXARR <font color="blue">times</font> ARRINIT;
+    <font color="blue">var</font> <font color="red">integer</font>: sum <font color="blue">is</font> 0;
+ <font color="blue"> begin</font>
+    <font color="blue">for</font> i <font color="blue">range</font> MAXARR <font color="blue">downto</font> 1 <font color="blue">step</font> 14 <font color="blue">do</font>
+      sum := 0;
+      <font color="blue">for</font> j <font color="blue">range</font> i <font color="blue">downto</font> 1 <font color="blue">do</font>
+        sum := sum*j + SCALE*arr[j];
+        arr[j] := sum <font color="blue">rem</font> pred(j*2);
+        sum := sum <font color="blue">div</font> pred(j*2);
+      <font color="blue">end for</font>;
+      write(carry + sum <font color="blue">div</font> SCALE <font color="blue">lpad0</font> 4);
+      carry := sum <font color="blue">rem</font> SCALE;
+    <font color="blue">end for</font>;
+    writeln;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="intSqrt"><b>Determine the truncated square root of a big integer number</b></a>
+<p>
+The bigInteger type already has an integer square root which
+can be called with <tt>'sqrt(number)'</tt>. A hand written
+version would be:
+</p><pre><font color="blue">const</font> <font color="red">func bigInteger</font>: intSqrt (<font color="blue">in var</font> <font color="red">bigInteger</font>: number) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">bigInteger</font>: result <font color="blue">is</font> 0_;
+  <font color="blue">local</font>
+    <font color="blue">var</font> <font color="red">bigInteger</font>: res2 <font color="blue">is</font> 0_;
+  <font color="blue">begin</font>
+    <font color="blue">if</font> number &gt; 0_ <font color="blue">then</font>
+      res2 := number;
+      <font color="blue">repeat</font>
+        result := res2;
+        res2 := (result + number <font color="blue">div</font> result) <font color="blue">div</font> 2_;
+      <font color="blue">until</font> result &lt;= res2;
+    <font color="blue">end if</font>;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="intPow"><b>Exponentiation function for integer numbers</b></a>
+<p>
+The integer type already has an exponentiation operator which
+can be called with <tt>'base ** exponent'</tt>. A hand written
+version would be:
+</p><pre><font color="blue">const</font> <font color="red">func integer</font>: intPow (<font color="blue">in var</font> <font color="red">integer</font>: base, <font color="blue">in var</font> <font color="red">integer</font>: exponent) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">integer</font>: result <font color="blue">is</font> 0;
+  <font color="blue">begin</font>
+    <font color="blue">if</font> exponent &lt; 0 <font color="blue">then</font>
+      raise(NUMERIC_ERROR);
+    <font color="blue">else</font>
+      <font color="blue">if</font> odd(exponent) <font color="blue">then</font>
+        result := base;
+      <font color="blue">else</font>
+        result := 1;
+      <font color="blue">end if</font>;
+      exponent := exponent <font color="blue">div</font> 2;
+      <font color="blue">while</font> exponent &lt;&gt; 0 <font color="blue">do</font>
+        base *:= base;
+        <font color="blue">if</font> odd(exponent) <font color="blue">then</font>
+          result *:= base;
+        <font color="blue">end if</font>;
+        exponent := exponent <font color="blue">div</font> 2;
+      <font color="blue">end while</font>;
+    <font color="blue">end if</font>;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="peasantMult"><b>Multiply integers using the peasant multiplication</b></a>
+<p>
+</p><pre><font color="blue">const</font> <font color="red">func integer</font>: peasantMult (<font color="blue">in var</font> <font color="red">integer</font>: a, <font color="blue">in var</font> <font color="red">integer</font>: b) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">integer</font>: result <font color="blue">is</font> 0;
+  <font color="blue">begin</font>
+    <font color="blue">while</font> a &lt;&gt; 0 <font color="blue">do</font>
+      <font color="blue">if</font> odd(a) <font color="blue">then</font>
+        result +:= b;
+      <font color="blue">end if</font>;
+      a := a <font color="blue">div</font> 2;
+      b *:= 2;
+    <font color="blue">end while</font>;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="madd"><b>Matrix addition</b></a>
+<p>
+</p><pre><font color="blue">const</font> <font color="red">type</font>: matrix <font color="blue">is</font> <font color="red">array array float</font>;
+
+<font color="blue">const</font> <font color="red">func matrix</font>: (<font color="blue">in</font> <font color="red">matrix</font>: left) + (<font color="blue">in</font> <font color="red">matrix</font>: right) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">matrix</font>: result <font color="blue">is</font> <font color="red">matrix</font>.value;
+  <font color="blue">local</font>
+    <font color="blue">var</font> <font color="red">integer</font>: i <font color="blue">is</font> 0;
+    <font color="blue">var</font> <font color="red">integer</font>: j <font color="blue">is</font> 0;
+  <font color="blue">begin</font>
+    <font color="blue">if</font> length(left) &lt;&gt; length(right) <font color="blue">or</font>
+        length(left[1]) &lt;&gt; length(right[1]) <font color="blue">then</font>
+      <font color="blue">raise</font> RANGE_ERROR;
+    <font color="blue">else</font>
+      result := length(left) <font color="blue">times</font> length(left[1]) <font color="blue">times</font> 0.0;
+      <font color="blue">for</font> i <font color="blue">range</font> 1 <font color="blue">to</font> length(left) <font color="blue">do</font>
+        <font color="blue">for</font> j <font color="blue">range</font> 1 <font color="blue">to</font> length(left[i]) <font color="blue">do</font>
+          result[i][j] := left[i][j] + right[i][j];
+        <font color="blue">end for</font>;
+      <font color="blue">end for</font>;
+    <font color="blue">end if</font>;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="mmult"><b>Matrix multiplication</b></a>
+<p>
+</p><pre><font color="blue">const</font> <font color="red">type</font>: matrix <font color="blue">is</font> <font color="red">array array float</font>;
+
+<font color="blue">const</font> <font color="red">func matrix</font>: (<font color="blue">in</font> <font color="red">matrix</font>: left) * (<font color="blue">in</font> <font color="red">matrix</font>: right) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">matrix</font>: result <font color="blue">is</font> <font color="red">matrix</font>.value;
+  <font color="blue">local</font>
+    <font color="blue">var</font> <font color="red">integer</font>: i <font color="blue">is</font> 0;
+    <font color="blue">var</font> <font color="red">integer</font>: j <font color="blue">is</font> 0;
+    <font color="blue">var</font> <font color="red">integer</font>: k <font color="blue">is</font> 0;
+    <font color="blue">var</font> <font color="red">float</font>: accumulator <font color="blue">is</font> 0.0;
+  <font color="blue">begin</font>
+    <font color="blue">if</font> length(left[1]) &lt;&gt; length(right) <font color="blue">then</font>
+      <font color="blue">raise</font> RANGE_ERROR;
+    <font color="blue">else</font>
+      result := length(left) <font color="blue">times</font> length(right[1]) <font color="blue">times</font> 0.0;
+      <font color="blue">for</font> i <font color="blue">range</font> 1 <font color="blue">to</font> length(left) <font color="blue">do</font>
+        <font color="blue">for</font> j <font color="blue">range</font> 1 <font color="blue">to</font> length(right) <font color="blue">do</font>
+          accumulator := 0.0;
+          <font color="blue">for</font> k <font color="blue">range</font> 1 <font color="blue">to</font> length(left) <font color="blue">do</font>
+            accumulator +:= left[i][k] * right[k][j];
+          <font color="blue">end for</font>;
+          result[i][j] := accumulator;
+        <font color="blue">end for</font>;
+      <font color="blue">end for</font>;
+    <font color="blue">end if</font>;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="rand_32"><b>Random number generator</b></a>
+<p>
+This random generator delivers random numbers between 0 and 2**32-1.
+To get different pseudorandom sequence seed can be initialized with another value.
+</p><pre><font color="blue">var</font> <font color="red">bigInteger</font>: seed <font color="blue">is</font> 987654321_;
+
+<font color="blue">const</font> <font color="red">func bigInteger</font>: rand_32 <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">integer</font>: result <font color="blue">is</font> 0;
+  <font color="blue">begin</font>
+    seed := (seed * 1073741825_ + 1234567891_) <font color="blue">rem</font> 2_ ** 64;
+    result := seed <font color="blue">div</font> 2_ ** 32;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="fib"><b>Recursive fibonacci function</b></a>
+<p>
+This algorithm just uses the recursive definition of the fibonacci function.
+It can be used as benchmark to test the performance of recursive calls.
+For a solution with better scalability use the iterative fibonacci function below.
+</p><pre><font color="blue">const</font> func <font color="red">integer</font>: fib (<font color="blue">in</font> <font color="red">integer</font>: number) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">integer</font>: result <font color="blue">is</font> 1;
+  <font color="blue">begin</font>
+    <font color="blue">if</font> number &gt; 2 <font color="blue">then</font>
+      result := fib(pred(number)) + fib(number - 2);
+    <font color="blue">elsif</font> number = 0 <font color="blue">then</font>
+      result := 0;
+    <font color="blue">end if</font>;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="iterative_fib"><b>Iterative fibonacci function</b></a>
+<p>
+</p><pre><font color="blue">const</font> <font color="red">func bigInteger</font>: fib (<font color="blue">in</font> <font color="red">integer</font>: number) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">bigInteger</font>: result <font color="blue">is</font> 1_;
+  <font color="blue">local</font>
+    <font color="blue">var</font> <font color="red">integer</font>: i <font color="blue">is</font> 0;
+    <font color="blue">var</font> <font color="red">bigInteger</font>: a <font color="blue">is</font> 0_;
+    <font color="blue">var</font> <font color="red">bigInteger</font>: c <font color="blue">is</font> 0_;
+  <font color="blue">begin</font>
+    <font color="blue">for</font> i <font color="blue">range</font> 1 <font color="blue">to</font> pred(number) <font color="blue">do</font>
+      c := a;
+      a := result;
+      result +:= c;
+    <font color="blue">end for</font>;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="fibonacci_sequence"><b>Display 100 numbers of the fibonacci sequence</b></a>
+<p>
+</p><pre>$ <font color="blue">include</font> <font color="maroon">"seed7_05.s7i"</font>;
+  <font color="blue">include</font> <font color="maroon">"bigint.s7i"</font>;
+ 
+<font color="blue">const</font> <font color="red">proc</font>: main <font color="blue">is func</font>
+  <font color="blue">local</font>
+    <font color="blue">var</font> <font color="red">integer</font>: i <font color="blue">is</font> 0;
+    <font color="blue">var</font> <font color="red">bigInteger</font>: a <font color="blue">is</font> 0_;
+    <font color="blue">var</font> <font color="red">bigInteger</font>: b <font color="blue">is</font> 1_;
+    <font color="blue">var</font> <font color="red">bigInteger</font>: c <font color="blue">is</font> 0_;
+  <font color="blue">begin</font>
+    writeln(a);
+    <font color="blue">for</font> i <font color="blue">range</font> 1 <font color="blue">to</font> 100 <font color="blue">do</font>
+      writeln(b);
+      c := a;
+      a := b;
+      b +:= c;
+    <font color="blue">end for</font>;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="tak"><b>The tak function</b></a>
+<p>
+</p><pre><font color="blue">const</font> <font color="red">func integer</font>: tak (<font color="blue">in</font> <font color="red">integer</font>: x, <font color="blue">in</font> <font color="red">integer</font>: y, <font color="blue">in</font> <font color="red">integer</font>: z) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">integer</font>: result <font color="blue">is</font> 0;
+  <font color="blue">begin</font>
+    <font color="blue">if</font> y &gt;= x <font color="blue">then</font>
+      result := z;
+    <font color="blue">else</font>
+      result := tak(tak(pred(x), y, z),
+                    tak(pred(y), z, x),
+                    tak(pred(z), x, y));
+    <font color="blue">end if</font>;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<a name="ackermann"><b>The ackermann function</b></a>
+<p>
+</p><pre><font color="blue">const</font> <font color="red">func integer</font>: ackermann (<font color="blue">in</font> <font color="red">integer</font>: m, <font color="blue">in</font> <font color="red">integer</font>: n) <font color="blue">is func</font>
+  <font color="blue">result</font>
+    <font color="blue">var</font> <font color="red">integer</font>: result <font color="blue">is</font> 0;
+  <font color="blue">begin</font>
+    <font color="blue">if</font> m = 0 <font color="blue">then</font>
+      result := succ(n);
+    <font color="blue">elsif</font> n = 0 <font color="blue">then</font>
+      result := ackermann(pred(m), 1);
+    <font color="blue">else</font>
+      result := ackermann(pred(m), ackermann(m, pred(n)));
+    <font color="blue">end if</font>;
+  <font color="blue">end func</font>;
+</pre><p>
+</p>
+<table cellpadding="0" cellspacing="0" width="100%">
+<tbody><tr>
+<td align="left" width="60%">
+<b><big><hr \=""></big></b></td>
+<td align="right">
+<table bgcolor="blue" border="0" cellspacing="1">
+<tbody><tr bgcolor="silver">
+<td>&nbsp;<a class="menu" href="http://seed7.sourceforge.net/algorith/string.htm">previous</a>&nbsp;</td>
+<td>&nbsp;<a class="menu" href="http://seed7.sourceforge.net/algorith/index.htm">up</a>&nbsp;</td>
+<td>&nbsp;<a class="menu" href="http://seed7.sourceforge.net/algorith/file.htm">next</a>&nbsp;</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+
+</td>
+<td>
+<table width="10">
+</table>
+</td>
+</tr>
+</tbody></table>
+</body></html>

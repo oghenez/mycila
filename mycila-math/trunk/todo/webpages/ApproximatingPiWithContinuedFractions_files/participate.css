@@ -1,0 +1,219 @@
+.participate-text {	
+ 	font-size: 12px;
+	margin-bottom: 10px;	
+}
+
+.participate-text li {
+  font-size: 12px;
+	font-weight: none;
+  padding-top:5px;
+}
+
+.participate-login-text p {
+  font-size: 12px;
+	font-weight: bold;
+	margin-bottom: 10px;	
+}
+
+.participate-upload-text p {
+  font-size: 12px;
+	font-weight: bold;
+	margin-bottom: 10px;	
+	margin-top: 10px;	
+	text-align: left;
+	padding-left: 20px;
+}
+
+.participate-processing-swf {
+	margin-bottom: 15px;	
+}
+
+.participate-error {
+  font-size: 12px;
+	background-color:rgb(100%,88%,88%); 
+  width:515px; 
+  border: 1px solid #888888;
+  margin-bottom:5px;
+  padding-left:5px;
+}
+
+.participate-form {
+	background-color:#F6FFD9; 
+	width:520px; 
+	border: 1px solid #888888;
+}
+
+.participate-form-header {
+	border-top: 2px solid #ff6600;
+	padding-top:20px; 
+}
+	
+.participate-form-table {
+	border-spacing: 0px;
+	border: 0px solid #888888;
+	margin-bottom: 15px;
+	width: 480px;
+	margin-left: 5%;
+}
+
+.participate-form-table td {
+	padding: 3px;
+	font-size: 11px;
+}
+
+.participate-upload-button img {
+   margin-top: 10px;
+   border: 0px;
+}
+
+a.submitforpublication{
+	display: block;
+	width: 177px;
+	height: 17px;
+	overflow: hidden;
+	position: absolute;
+}
+
+a.submitforpublication img {
+	width: auto;
+	height: auto;
+	border: 0px;
+}
+
+a.submitforpublication:hover img, a.submitforpublication:focus img, a.submitforpublication img.hover {
+	margin-top: -17px;
+}
+
+.participate-subheader {
+	color: #84a82d;
+	font-weight: bold;
+	padding-bottom:3px;
+	margin-left:17px;
+	font-size:11px;
+	border-bottom:1px solid #cccccc;
+	width:783px;
+}
+
+.participate-date {
+	font-size: 9px;
+	line-height: 1.6em;
+	color: #676767;
+}
+
+.participate-submit {
+	margin-top:14px;
+}
+
+.participate-delete a, .participate-submit a	{ 
+	text-decoration: none; 
+	color: #000000; 
+	font-size:10px;
+	line-height: 1.5em;
+}
+
+.participate-delete a:visited, .participate-submit a:visited { 
+	color: #505050;
+}
+
+.participate-delete a:hover, .participate-submit a:hover { 
+	color: #ff6600;
+}
+								
+.participate-chevron {
+	color:#FE9205;
+}
+
+.participate-submitted {
+	margin-top:14px;
+	border:1px solid #ff6600;
+	padding:3px 2px 4px 4px;
+	background-color:#f2f2f2;
+	font-size:10px;
+	line-height:1.5em;
+	margin-bottom:10px;
+}
+
+a.uploaddemo {
+	display: block;
+	width: 197px;
+	height: 20px;
+	overflow: hidden;
+}
+
+a.uploaddemo img{
+	width: auto;
+	height: auto;
+	border: 0px;
+}
+
+a.uploaddemo:hover img, a.uploaddemo:focus img, a.uploaddemo img.hover {
+	margin-top: -20px;
+}
+
+.SignUpBoxTop {
+background-color:#ff6c05; 
+
+height:2px; 
+border-top: 1px solid #d2dde3;
+border-left: 1px solid #d2dde3;
+border-right: 1px solid #d2dde3;
+}
+.SignUpBox {
+background-color:#f7ffda; 
+border-bottom: 1px solid #d2dde3;
+border-left: 1px solid #d2dde3;
+border-right: 1px solid #d2dde3;
+padding:9px 10px 12px 14px;
+}
+
+.field1 {
+	margin-top:6px;
+	text-align:right;
+	font-size:9px;
+	color:#333333
+}
+.field1 input {
+background-color:#FFFFFF;
+border:1px solid #999999;
+font-weight:normal;
+width:200px;
+padding:2px;
+font-size:10px;
+color:#555555;
+font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+.login {margin:15px 0px 0px 14px;
+font-size:13px;
+color:#666666;
+letter-spacing:.003em;
+}
+.MoreAbout {margin:8px 0px 10px 0px;
+font-size:13px;
+color:#666666;
+}
+#mypubcount
+{
+    font-size: 11px;
+    text-align: right;
+}
+
+.copyrightspace #version
+{
+    font-size: 10px;
+    padding-top:10px;
+    padding-left: 7px;
+}
+
+.spantext
+{
+    padding-left: 20px;
+}
+
+.participate-html-info
+{
+    color:#444444;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:12px;
+    line-height:1.5em;
+    width:370px;
+}

@@ -1,0 +1,632 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="en"><head>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Dag Rune Sneeggen - Java: (slightly advanced) Optimized Fermat Primality Test</title>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://my.opera.com/duddev/xml/rsd">
+<link rel="stylesheet" href="Optimized%20Fermat%20Primality%20Test_files/mobile.css" type="text/css" media="handheld">
+<link rel="stylesheet" href="Optimized%20Fermat%20Primality%20Test_files/main.css" type="text/css" media="screen,projection,tv,print">
+<link rel="stylesheet" href="Optimized%20Fermat%20Primality%20Test_files/topbar3.css" type="text/css" media="screen,projection,tv,print">
+<style type="text/css" media="handheld,screen,projection,tv,print">
+		#side ul:after {
+			content:".";
+			display:block;
+			height:0;
+			clear:both;
+			visibility:hidden;
+			}
+		</style>
+<link rel="shortcut icon" href="http://my.opera.com/community/favicon.ico" type="image/x-icon">
+<link rel="meta" type="application/rdf+xml" title="FOAF" href="http://my.opera.com/duddev/xml/foaf/">
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0 Feed" href="http://my.opera.com/duddev/xml/rss/blog/">
+<link rel="alternate" type="application/atom+xml" title="Atom 1.0 Feed" href="http://my.opera.com/duddev/xml/atom/blog/">
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0 Feed for comments" href="http://my.opera.com/duddev/xml/rss/comments/298370">
+<link rel="alternate" type="application/atom+xml" title="Atom 1.0 Feed for comments" href="http://my.opera.com/duddev/xml/atom/comments/298370">
+<link rel="alternate" type="application/x-opera-widgets" href="http://widgets.opera.com/widgetize/Feed%20Reader/Advanced/?serve&amp;skin=skin103&amp;widgetname=Development%20and%20miscellaneous%21&amp;rel=myopera&amp;ref=duddev">
+<style type="text/css">.recaptchatable td img {
+/* see http://developer.mozilla.org/en/docs/Images%2C_Tables%2C_and_Mysterious_Gaps */
+display: block;
+}
+.recaptchatable .recaptcha_r1_c1 { background: url(http://api.recaptcha.net/img/white/sprite.png) -0px -63px no-repeat; width: 318px; height: 9px; }
+.recaptchatable .recaptcha_r2_c1 { background: url(http://api.recaptcha.net/img/white/sprite.png) -18px -0px no-repeat; width: 9px; height: 57px; }
+.recaptchatable .recaptcha_r2_c2 { background: url(http://api.recaptcha.net/img/white/sprite.png) -27px -0px no-repeat; width: 9px; height: 57px; }
+.recaptchatable .recaptcha_r3_c1 { background: url(http://api.recaptcha.net/img/white/sprite.png) -0px -0px no-repeat; width: 9px; height: 63px; }
+.recaptchatable .recaptcha_r3_c2 { background: url(http://api.recaptcha.net/img/white/sprite.png) -18px -57px no-repeat; width: 300px; height: 6px; }
+.recaptchatable .recaptcha_r3_c3 { background: url(http://api.recaptcha.net/img/white/sprite.png) -9px -0px no-repeat; width: 9px; height: 63px; }
+.recaptchatable .recaptcha_r4_c1 { background: url(http://api.recaptcha.net/img/white/sprite.png) -43px -0px no-repeat; width: 171px; height: 49px; }
+.recaptchatable .recaptcha_r4_c2 { background: url(http://api.recaptcha.net/img/white/sprite.png) -36px -0px no-repeat; width: 7px; height: 57px; }
+.recaptchatable .recaptcha_r4_c4 { background: url(http://api.recaptcha.net/img/white/sprite.png) -214px -0px no-repeat; width: 97px; height: 57px; }
+.recaptchatable .recaptcha_r7_c1 { background: url(http://api.recaptcha.net/img/white/sprite.png) -43px -49px no-repeat; width: 171px; height: 8px; }
+.recaptchatable .recaptcha_r8_c1 { background: url(http://api.recaptcha.net/img/white/sprite.png) -43px -49px no-repeat; width: 25px; height: 8px; }
+.recaptchatable .recaptcha_image_cell center img { height:57px;}
+.recaptchatable .recaptcha_image_cell center { height:57px;}
+.recaptchatable .recaptcha_image_cell {
+background-color:white; height:57px;
+}
+/* some people break their style sheet, we need to clean up after them */
+#recaptcha_area, #recaptcha_table {
+width: 318px !important;
+}
+.recaptchatable, #recaptcha_area tr, #recaptcha_area td, #recaptcha_area th {
+margin:0px !important;
+border:0px !important;
+padding:0px !important;
+border-collapse: collapse !important;
+vertical-align: middle !important;
+}
+.recaptchatable * {
+margin:0px;
+padding:0px;
+border:0px;
+font-family:helvetica,sans-serif;
+font-size:8pt;
+color:black;
+position:static;
+top:auto;
+left:auto;
+right:auto;
+bottom:auto;
+text-align:left !important;
+}
+.recaptchatable #recaptcha_image {
+margin:auto;
+}
+.recaptchatable img {
+border:0px !important;
+margin:0px !important;
+padding:0px !important;
+}
+.recaptchatable a, .recaptchatable a:hover {
+-moz-outline:none;
+border:0px !important;
+padding:0px !important;
+text-decoration:none;
+color:blue;
+background:none !important;
+font-weight: normal;
+}
+.recaptcha_input_area {
+position:relative !important;
+width:146px !important;
+height:45px !important;
+margin-left:20px !important;
+margin-right:5px !important;
+margin-top:4px !important;
+background:none !important;
+}
+.recaptchatable label.recaptcha_input_area_text {
+margin:0px !important;  
+padding:0px !important;
+position:static !important;
+top:auto !important;
+left:auto !important;
+right:auto !important;
+bottom:auto !important;
+background:none !important;
+height:auto !important;
+width:auto !important;
+}
+.recaptcha_theme_red label.recaptcha_input_area_text,
+.recaptcha_theme_white label.recaptcha_input_area_text {
+color:black !important;
+}
+.recaptcha_theme_blackglass label.recaptcha_input_area_text {
+color:white !important;
+}
+.recaptchatable #recaptcha_response_field  {
+width:145px !important;
+position:absolute !important;
+bottom:7px !important;
+padding:0px !important;
+margin:0px !important;
+font-size:10pt;
+}
+.recaptcha_theme_blackglass #recaptcha_response_field,
+.recaptcha_theme_white #recaptcha_response_field {
+border: 1px solid gray;
+}
+.recaptcha_theme_red #recaptcha_response_field {
+border:1px solid #cca940;
+}
+.recaptcha_audio_cant_hear_link {
+font-size:7pt;
+color:black;
+}
+.recaptchatable {
+line-height:1em;
+}
+#recaptcha_instructions_error {
+color:red !important;
+}
+
+
+.recaptcha_is_showing_audio .recaptcha_only_if_image,.recaptcha_isnot_showing_audio .recaptcha_only_if_audio,.recaptcha_had_incorrect_sol .recaptcha_only_if_no_incorrect_sol,.recaptcha_nothad_incorrect_sol .recaptcha_only_if_incorrect_sol{display:none !important}</style></head><body id="myopera">
+<div id="wrap0"><div id="wrap1"><div id="wrap2"><div id="wrap3">
+<p class="hide"><a href="#content">Skip navigation</a>.</p>
+<div id="myo"><div id="myo2">
+<a href="http://my.opera.com/community/" title="My Opera - Home" id="myo-logo"><img src="Optimized%20Fermat%20Primality%20Test_files/logo.gif" alt="My Opera" class="hidemobile" height="50" width="86"><img src="Optimized%20Fermat%20Primality%20Test_files/logo-mobile.gif" alt="My Opera" class="mobile" height="16" width="60"></a><p id="myo-signup"><a href="http://my.opera.com/community/login/" class="hidemobile" onclick="document.getElementById('myo-login').className = 'show';document.getElementById('username').focus();return false;">
+				Log in</a> <span class="hidemobile"> | </span> <a href="http://my.opera.com/community/signup/">Sign up</a></p>
+<div id="myo-nav" class="hidemobile"><ul>
+<li><a href="http://my.opera.com/community/" accesskey="2">Home</a></li>
+<li><a href="http://my.opera.com/community/explore/" accesskey="3">Community</a></li>
+<li><a href="http://my.opera.com/community/forums/" accesskey="4">Forums</a></li>
+<li><a href="http://my.opera.com/chooseopera/blog/" accesskey="5">Opera</a></li>
+</ul></div>
+<div class="mobileclear"></div>
+</div></div>
+<form action="/community/login/index.pl" method="post" id="myo-login" class="hide" name="toplogin"><div>
+<a href="http://my.opera.com/community/help/" class="hidemobile"><input name="cancel" value=" Help / FAQ " style="margin: 8px 20px 0pt 0pt; float: right; font-size: 10px;" type="button"></a><p><span class="m"><label for="username"><b><span>username:</span></b> <input name="user" value="" maxlength="64" class="login" id="username" type="text"></label> </span><span class="m"><label for="password"><b><span>password:</span></b> <input name="passwd" value="" maxlength="64" class="login" id="password" type="password"></label> </span><span class="m"><label for="rememberme"><span><input name="remember" value="1" id="rememberme" type="checkbox"> remember</span></label></span> <span class="m"><input value="  log in  " type="submit"></span></p>
+<div class="mobileclear"></div>
+</div></form>
+<div id="wrap4">
+<div id="top" class="top-blog">
+<div id="top2"><h1><span>Development and miscellaneous!</span></h1></div>
+<div id="menu">
+<ul>
+<li id="menu_blog"><a href="http://my.opera.com/duddev/blog/" id="selected"><span>Blog</span></a></li>
+<li id="menu_about"><a href="http://my.opera.com/duddev/about/"><span>About</span></a></li>
+</ul>
+<div class="mobile" id="mobmenu"></div>
+</div>
+</div>
+<div id="content" class="blogentry">
+<div id="mainwrap"><div id="main">
+
+
+
+   
+
+   
+
+   
+   
+
+   
+
+   
+
+   
+   
+
+   
+
+   
+
+   
+
+   
+
+   
+
+
+
+
+
+
+
+
+
+
+   
+
+   
+
+   
+
+
+<!--<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/"><rdf:Description rdf:about="http://my.opera.com/duddev/blog/show.dml/298370" dc:identifier="http://my.opera.com/duddev/blog/show.dml/298370" dc:title="Java: (slightly advanced) Optimized Fermat Primality Test" trackback:ping="http://my.opera.com/duddev/blog/trackback.pl/298370/"></rdf:Description></rdf:RDF>--><div class="post" id="firstpost">
+<h2 class="title">Java: (slightly advanced) Optimized Fermat Primality Test</h2>
+<p class="postdate">Wednesday, 14. June 2006, 20:31:20</p>
+<p class="tags"><a href="http://my.opera.com/duddev/blog/index.dml/tag/code" rel="tag">code</a>, <a href="http://my.opera.com/duddev/blog/index.dml/tag/java" rel="tag">java</a>, <a href="http://my.opera.com/duddev/blog/index.dml/tag/mathematics" rel="tag">mathematics</a>, <a href="http://my.opera.com/duddev/blog/index.dml/tag/technical" rel="tag">technical</a>, <a href="http://my.opera.com/duddev/blog/index.dml/tag/primes" rel="tag">primes</a> </p>
+<div class="content">This little class enables you to use <a href="http://en.wikipedia.org/wiki/Fermat%27s_little_theorem" target="_blank">Fermat's Little Theorem</a>,
+to check if a number is a (probable) prime or not. Probable because not
+all positive answers from Fermat's Little Theorem will actually be
+prime. Those "Carmichael numbers" are pretty rare though, Fermat
+Primality Test is actually used in the notorious <a href="http://www.pgp.com/" target="_blank">PGP encryption software</a>. Optimized because it uses a <a href="http://en.wikipedia.org/wiki/Modular_exponentiation#Optimized_methods" target="_blank">much faster algorithm</a> for calculating the modular exponentiation.<br><br><strong>You will need to import these packages:</strong><br><pre>import java.math.BigInteger;
+import java.util.Random;
+</pre>
+<br><strong>ATT: You have to seed your random generator only once</strong><br><pre>Random generator = new Random();
+</pre>
+<br><br><strong>Here is the main class:</strong><br><pre>class FermatPrime {    
+    public static boolean doTest (BigInteger p, int prob) {        
+        for (int c = 0; c &lt; prob; c++) {
+            if(!doModPow(p)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public static boolean doModPow (BigInteger n) {
+        long rndnum = 1 + generator.nextInt(99);
+        BigInteger b = BigInteger.valueOf(rndnum);
+        return b.modPow((n.subtract(n.ONE)), n).equals(n.ONE);
+    }    
+}
+</pre>
+<br>The doTest method takes two arguments. The first argument is the
+actually number you want to test for primality. The second argument is
+how many times you want to run the primality test, in otherwords how
+much certainty you want.<br><br><strong>Example usage:</strong><br><pre>if (FermatPrime.doTest(BigInteger.valueOf(101L), 5)) {
+    System.out.println("We got ourselves a probable prime! :)");
+} else {
+    System.out.println("Doh, not a prime! :(");
+}
+</pre>
+<br><br><strong>Update:</strong><br>With a some friendly help from 'YAT_Archivist' over at the <a href="http://forum.java.sun.com/" target="_blank">Sun Java Forums</a>, I've improved the code. <img class="smilie" src="Optimized%20Fermat%20Primality%20Test_files/smile.gif" alt=":smile:" height="17" width="17">
+</div>
+</div>
+<div id="sharethis">
+<p class="buttons"><a href="#" onclick="toggle('sharelinks');return false;"><span class="i-share">Share this</span></a></p>
+<ul id="sharelinks" style="display: none;">
+<li><a href="http://del.icio.us/post?url=http%3A%2F%2Fmy.opera.com%2Fduddev%2Fblog%2Fshow.dml%2F298370&amp;title=Java:%20%28slightly%20advanced%29%20Optimized%20Fermat%20Primality%20Test" onclick="window.open('http://del.icio.us/post?v=4;noui;jump=close;url='+encodeURIComponent(location.href)+';title='+encodeURIComponent('Java: (slightly advanced) Optimized Fermat Primality Test'),'delicious','location=0,menubar=0,status=0,titlebar=0,toolbar=0,width=700,height=400'); return false;" title="Share on del.icio.us" class="share-delicious">del.icio.us</a></li>
+<li><a href="http://digg.com/submit?url=http%3A%2F%2Fmy.opera.com%2Fduddev%2Fblog%2Fshow.dml%2F298370&amp;title=Java:%20%28slightly%20advanced%29%20Optimized%20Fermat%20Primality%20Test&amp;media=news&amp;topic=people&amp;thumbnails=0" onclick="window.open('http://digg.com/submit?phase=2&amp;url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent('Java: (slightly advanced) Optimized Fermat Primality Test'),'digg','location=0,menubar=0,scrollbars=1,status=0,titlebar=0,toolbar=0,width=1024,height=600'); return false;" title="Share on digg" class="share-digg">digg</a></li>
+<li><a href="http://www.facebook.com/share.php?src=bm&amp;v=4&amp;i=1210255278&amp;u=http%3A%2F%2Fmy.opera.com%2Fduddev%2Fblog%2Fshow.dml%2F298370&amp;t=Java:%20%28slightly%20advanced%29%20Optimized%20Fermat%20Primality%20Test" onclick="window.open('http://www.facebook.com/sharer.php?src=bm&amp;v=4&amp;i=1210255278&amp;u='+encodeURIComponent(location.href)+'&amp;t='+encodeURIComponent('Java: (slightly advanced) Optimized Fermat Primality Test'),'facebook','location=0,menubar=0,status=0,titlebar=0,toolbar=0,scrollbars=no,width=626,height=436'); return false;" title="Share on Facebook" class="share-facebook">Facebook</a></li>
+<li><a href="http://twitter.com/home?status=http%3A%2F%2Fmy.opera.com%2Fduddev%2Fblog%2Fshow.dml%2F298370%20Java:%20%28slightly%20advanced%29%20Optimized%20Fermat%20Primality%20Test" onclick="window.open('http://twitter.com/home?status='+encodeURIComponent(location.href)+' '+encodeURIComponent('Java: (slightly advanced) Optimized Fermat Primality Test'),'twitter','location=0,menubar=0,status=0,titlebar=0,toolbar=0,scrollbars=no,width=626,height=436'); return false;" title="Share on Twitter" class="share-twitter">Twitter</a></li>
+<li><a href="http://reddit.com/submit?url=http%3A%2F%2Fmy.opera.com%2Fduddev%2Fblog%2Fshow.dml%2F298370&amp;title=Java:%20%28slightly%20advanced%29%20Optimized%20Fermat%20Primality%20Test" onclick="window.open('http://reddit.com/submit?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent('Java: (slightly advanced) Optimized Fermat Primality Test'),'reddit','location=0,menubar=0,scrollbars=1,status=0,titlebar=0,toolbar=0,width=800,height=600'); return false;" title="Share on reddit" class="share-reddit">reddit</a></li>
+<li><a href="http://www.technorati.com/faves?add=http%3A%2F%2Fmy.opera.com%2Fduddev%2Fblog%2Fshow.dml%2F298370" onclick="window.open('http://www.technorati.com/faves?sub=favthis&amp;add='+encodeURIComponent(location.href),'technorati','location=0,menubar=0,scrollbars=1,status=0,titlebar=0,toolbar=0,width=1024,height=600'); return false;" title="Share on Technorati" class="share-technorati">Technorati</a></li>
+</ul>
+</div>
+<p class="postnav"><span class="prv"><img src="Optimized%20Fermat%20Primality%20Test_files/prev.gif" alt="" class="arrow-prev" height="8" width="9"><a href="http://my.opera.com/duddev/blog/show.dml/295716"><span>Java: Arithmetic and Geometric Progression (Mathematics)</span></a></span></p>
+<a name="comments"></a><div class="comments">
+<h3>
+<a href="http://my.opera.com/duddev/xml/rss/comments/298370"><img src="Optimized%20Fermat%20Primality%20Test_files/feedicon16.gif" alt="" class="feedicon" height="16" width="16"></a> Comments</h3>
+<div class="comment1" id="comment1792713">
+<div class="avatar"><img src="Optimized%20Fermat%20Primality%20Test_files/avatar.gif" alt=""></div>
+<p class="comment-by"><b>
+                  Anonymous
+                </b> <span class="comment-date"><a href="http://my.opera.com/duddev/blog/show.dml/298370#comment1792713" class="permalink">#</a>  26. June 2006, 04:11</span></p>
+<div class="text">Anonymous writes:<br><br>The generator don't have to be static?</div>
+</div>
+<div class="comment2 ownercomment" id="comment1802292">
+<div class="avatar"><a href="http://my.opera.com/duddev/"><img src="Optimized%20Fermat%20Primality%20Test_files/385775.gif" alt=""></a></div>
+<p class="comment-by"><b><a href="http://my.opera.com/duddev/">duddev</a></b> <span class="comment-date"><a href="http://my.opera.com/duddev/blog/show.dml/298370#comment1802292" class="permalink">#</a>  28. June 2006, 10:54</span></p>
+<div class="text">I suppose that would be logical yes, but I figured I´d let people implement it however they feel like <img class="smilie" src="Optimized%20Fermat%20Primality%20Test_files/wink.gif" alt=":wink:" height="17" width="17"><br><br>But cheers!</div>
+</div>
+<a name="lastcomment"></a><div class="comment1" id="comment3846758">
+<div class="avatar"><a href="http://my.opera.com/alphachapmtl/"><img src="Optimized%20Fermat%20Primality%20Test_files/1084055.gif" alt=""></a></div>
+<p class="comment-by"><b><a href="http://my.opera.com/alphachapmtl/">alphachapmtl</a></b> <span class="comment-date"><a href="http://my.opera.com/duddev/blog/show.dml/298370#comment3846758" class="permalink">#</a>  21. October 2007, 10:01</span></p>
+<div class="text">I tried the class FermatPrime, but it doesn't work.<br><br>The following code line:<br>  long rndnum = 1 + generator.nextInt(99);<br>generate this error:<br>  operator + cannot be applied to int,generator.nextInt</div>
+</div>
+</div>
+<div id="quote_help" class="hide help"><div class="comment1">
+<h2>How to use Quote function:</h2>
+<ol>
+<li>Select some text</li>
+<li>Click on the Quote link</li>
+</ol>
+</div></div>
+<div id="newcomment" class="w100">
+<h3>Write a comment</h3>
+<form action="/duddev/comments/addcomment.pl" method="post" name="addcomment" id="addcomment" onsubmit="            if((this.comment.value.replace(/\s/g,&quot;&quot;)).length == 0) { alert('You have not written a comment.'); return false; }
+          ">
+<div class="avatar hidemobile"><span><img src="Optimized%20Fermat%20Primality%20Test_files/avatar.gif" alt=""></span></div>
+<div class="addcomment">
+<input name="rtype" value="blog" type="hidden"><input name="id" value="298370" type="hidden"><input id="commentid" name="commentid" value="" type="hidden"><input name="key" value="34ea2e3745e779dd9a1c75059c6f6c79d8bca00c" type="hidden"><p><label><b>Your name</b><br><input name="anonymous" value="Anonymous" type="text"></label></p>
+<p style="padding-top: 5px;"><b>Comment</b><br><span class="small clear">(BBcode and HTML is turned off for anonymous user comments.)</span><br></p>
+<textarea name="comment" id="comment" cols="40" rows="6"></textarea><p><b>Type the two words displayed in the image below:</b></p>
+<p id="capt"><script type="text/javascript">
+
+var RecaptchaOptions = {"theme":"white"};
+
+</script>
+<script src="Optimized%20Fermat%20Primality%20Test_files/challenge" type="text/javascript"></script><script type="text/javascript" src="Optimized%20Fermat%20Primality%20Test_files/recaptcha.js"></script></p><div class="recaptcha_nothad_incorrect_sol recaptcha_isnot_showing_audio" id="recaptcha_widget_div" style=""><div id="recaptcha_area"><table id="recaptcha_table" class="recaptchatable recaptcha_theme_white">
+<tbody><tr>
+<td colspan="6" class="recaptcha_r1_c1"></td>
+</tr>
+<tr>
+<td class="recaptcha_r2_c1"></td>
+<td colspan="4" class="recaptcha_image_cell"><div style="width: 300px; height: 57px;" id="recaptcha_image"><img style="display: block;" src="Optimized%20Fermat%20Primality%20Test_files/image.jpeg" height="57" width="300"></div></td>
+<td class="recaptcha_r2_c2"></td>
+</tr>
+<tr>
+<td rowspan="6" class="recaptcha_r3_c1"></td>
+<td colspan="4" class="recaptcha_r3_c2"></td>
+<td rowspan="6" class="recaptcha_r3_c3"></td>
+</tr>
+<tr>
+<td rowspan="3" class="recaptcha_r4_c1" height="49">
+<div class="recaptcha_input_area">
+<label for="recaptcha_response_field" class="recaptcha_input_area_text"><span id="recaptcha_instructions_image" class="recaptcha_only_if_image recaptcha_only_if_no_incorrect_sol">Type the two words:</span><span id="recaptcha_instructions_audio" class="recaptcha_only_if_no_incorrect_sol recaptcha_only_if_audio">Type what you hear:</span><span id="recaptcha_instructions_error" class="recaptcha_only_if_incorrect_sol">Incorrect. Try again.</span></label><br>
+<span style="display: none;" id="recaptcha_challenge_field_holder"><input name="recaptcha_challenge_field" id="recaptcha_challenge_field" value="02guY6fiq__5he6e2uiPQd6hNb655fxy1AZBPB22EobhrGHmcHSXp3Y2sgXbCmFsLh1HfBZPRSm0HJTcwv_swdIHO5-kVEdLLe3OGXDPtTS1SQxeNg9w-_CrIOPJXeHZY7SzGzrmPgVa_hHGMr-EBsfl6UplBhk_sg5Sh7B2X97OEOuYmvODmxxgRRLQC_9XOCuJiVSiUB39y5sSQaArWe1CUoX-DeUV2DBOYhwp96XXrb-UV_0GXBwJd0xFpt8frKT-85hHdmIVuW0DbqsrVtvVYs5fgB" type="hidden"></span><input autocomplete="off" name="recaptcha_response_field" id="recaptcha_response_field" type="text">
+</div>
+</td>
+<td rowspan="4" class="recaptcha_r4_c2"></td>
+<td><a title="Get a new challenge" href="javascript:Recaptcha.reload%20();" id="recaptcha_reload_btn"><img alt="Get a new challenge" src="Optimized%20Fermat%20Primality%20Test_files/refresh.gif" id="recaptcha_reload" height="17" width="25"></a></td>
+<td rowspan="4" class="recaptcha_r4_c4"></td>
+</tr>
+<tr>
+<td><a title="Get an audio challenge" href="javascript:Recaptcha.switch_type('audio');" id="recaptcha_switch_audio_btn" class="recaptcha_only_if_image"><img src="Optimized%20Fermat%20Primality%20Test_files/audio.gif" id="recaptcha_switch_audio" alt="Get an audio challenge" height="16" width="25"></a><a title="Get a visual challenge" href="javascript:Recaptcha.switch_type('image');" id="recaptcha_switch_img_btn" class="recaptcha_only_if_audio"><img src="Optimized%20Fermat%20Primality%20Test_files/text.gif" id="recaptcha_switch_img" alt="Get a visual challenge" height="16" width="25"></a></td>
+</tr>
+<tr>
+<td><a title="Help" target="_blank" href="http://recaptcha.net/popuphelp/" id="recaptcha_whatsthis_btn"><img alt="Help" src="Optimized%20Fermat%20Primality%20Test_files/help.gif" id="recaptcha_whatsthis" height="16" width="25"></a></td>
+</tr>
+<tr>
+<td class="recaptcha_r7_c1"></td>
+<td class="recaptcha_r8_c1"></td>
+</tr>
+</tbody></table>
+</div></div><script>Recaptcha.widget = Recaptcha.$("recaptcha_widget_div"); Recaptcha.challenge_callback();</script>
+<noscript><iframe frameborder="0" height="300"
+src="http://api.recaptcha.net/noscript?k=6LdcSQIAAAAAAD0cqA4hMX7L2P5snlIVaq3geWzv"
+width="500"></iframe><textarea cols="40"
+name="recaptcha_challenge_field" rows="3"></textarea><input
+name="recaptcha_response_field" type="hidden" value="manual_challenge"
+/></noscript>
+<input value="6LdcSQIAAAAAAD0cqA4hMX7L2P5snlIVaq3geWzv" name="publickey" type="hidden"><p></p>
+<br><input name="location" value="/duddev/blog/show.dml/298370" type="hidden"><input name="startidx" value="0" type="hidden"><div id="addsmilies">
+<img src="Optimized%20Fermat%20Primality%20Test_files/smilies.gif" alt="Smilies" onclick="toggle('smilies')" title="Smilies" id="addsmile" class="hidemobile" height="22" width="23"><div id="smilies" class="hidemobile" style="display: none;"><div class="horizontal">
+<p><b>Click on the smiley you want to add:</b></p>
+<a href="#" onclick="smilie(':)'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/smile.gif" alt="" title="smile" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':('); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/frown.gif" alt="" title="frown" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':o'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/blush.gif" alt="" title="embarrasment" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':D'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/bigsmile.gif" alt="" title="big grin" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(';)'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/wink.gif" alt="" title="wink" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':p'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/tongue.gif" alt="" title="stick out tongue" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':cool:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/cool.gif" alt="" title="cool" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':happy:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/pleased.gif" alt="" title="happy" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':rolleyes:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/rolleyes.gif" alt="" title="roll eyes (sarcastic)" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':lol:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/haha.gif" alt="" title="laugh" height="22" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':eek:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/eek.gif" alt="" title="eek!" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':worried:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/worried.gif" alt="" title="worried" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':awww:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/awww.gif" alt="" title="awww" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':cry:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/weeping.gif" alt="" title="crying" height="18" width="27"></a>&nbsp;
+<a href="#" onclick="smilie(':mad:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/mad.gif" alt="" title="mad" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':irked:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/irked.gif" alt="" title="irked" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':yuck:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/yuck.gif" alt="" title="yuck" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':eyes:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/bigeyes.gif" alt="" title="eye popping" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':yikes:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/yikes.gif" alt="" title="yikes!" height="26" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':ko:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/knockout.gif" alt="" title="knockout" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':left:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/left.gif" alt="" title="looking left" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':right:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/right.gif" alt="" title="looking right" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':whistle:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/whistle.gif" alt="" title="whistle" height="17" width="18"></a>&nbsp;
+<a href="#" onclick="smilie(':zip:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/zipped.gif" alt="" title="zipped lips" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':confused:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/confused.gif" alt="" title="confused" height="17" width="24"></a>&nbsp;
+<a href="#" onclick="smilie(':wait:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/waiting.gif" alt="" title="waiting" height="17" width="27"></a>&nbsp;
+<a href="#" onclick="smilie(':zzz:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/zzz.gif" alt="" title="sleeping" height="22" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':faint:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/faint.gif" alt="" title="faint" height="23" width="19"></a>&nbsp;
+<a href="#" onclick="smilie(':idea:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/idea.gif" alt="" title="idea" height="17" width="26"></a>&nbsp;
+<a href="#" onclick="smilie(':sst:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/sst.gif" alt="" title="pssst" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':angel:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/angel.gif" alt="" title="angel" height="19" width="15"></a>&nbsp;
+<a href="#" onclick="smilie(':devil:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/devil.gif" alt="" title="devil" height="18" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':nervous:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/nervous.gif" alt="" title="nervous" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':insane:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/scared.gif" alt="" title="paranoid" height="18" width="27"></a>&nbsp;
+<a href="#" onclick="smilie(':bomb:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/bomb.gif" alt="" title="bomb" height="20" width="25"></a>&nbsp;
+<a href="#" onclick="smilie(':furious:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/furious.gif" alt="" title="furious" height="27" width="30"></a>&nbsp;
+<a href="#" onclick="smilie(':love:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/love.gif" alt="" title="love" height="17" width="26"></a>&nbsp;
+<a href="#" onclick="smilie(':flirt:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/flirt.gif" alt="" title="love" height="17" width="25"></a>&nbsp;
+<a href="#" onclick="smilie(':heart:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/heart.gif" alt="" title="Heart" height="15" width="15"></a>&nbsp;
+<a href="#" onclick="smilie(':cheers:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/cheers.gif" alt="" title="cheers" height="17" width="27"></a>&nbsp;
+<a href="#" onclick="smilie(':yes:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/yes.gif" alt="" title="Yes" height="17" width="43"></a>&nbsp;
+<a href="#" onclick="smilie(':no:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/no.gif" alt="" title="No" height="20" width="45"></a>&nbsp;
+<a href="#" onclick="smilie(':up:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/thumbsup.gif" alt="" title="thumbs up" height="17" width="27"></a>&nbsp;
+<a href="#" onclick="smilie(':down:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/thumbsdown.gif" alt="" title="thumbs down" height="17" width="27"></a>&nbsp;
+<a href="#" onclick="smilie(':coffee:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/coffee.gif" alt="" title="coffee" height="20" width="31"></a>&nbsp;
+<a href="#" onclick="smilie(':sing:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/sing.gif" alt="" title="singing" height="26" width="26"></a>&nbsp;
+<a href="#" onclick="smilie(':wine:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/wine.gif" alt="" title="wine" height="16" width="10"></a>&nbsp;
+<a href="#" onclick="smilie(':beer:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/beeer.gif" alt="" title="beer" height="15" width="15"></a>&nbsp;
+<a href="#" onclick="smilie(':star:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/star.gif" alt="" title="star" height="17" width="12"></a>&nbsp;
+<a href="#" onclick="smilie(':alien:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/alien.gif" alt="" title="alien" height="17" width="15"></a>&nbsp;
+<a href="#" onclick="smilie(':cat:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/cat.gif" alt="" title="cat" height="19" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':psmurf:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/papasmurf.gif" alt="" title="papa smurf" height="22" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':smurf:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/smurf.gif" alt="" title="smurf" height="22" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':pirate:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/pirate.gif" alt="" title="pirate" height="19" width="26"></a>&nbsp;
+<a href="#" onclick="smilie(':ninja:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/ninja.gif" alt="" title="ninja" height="17" width="27"></a>&nbsp;
+<a href="#" onclick="smilie(':bandit:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/bandit.gif" alt="" title="Bandit" height="17" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':spock:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/spock.gif" alt="" title="live long and prosper" height="16" width="27"></a>&nbsp;
+<a href="#" onclick="smilie(':knight:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/knight.gif" alt="" title="knight" height="28" width="23"></a>&nbsp;
+<a href="#" onclick="smilie(':chef:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/chef.gif" alt="" title="chef" height="26" width="29"></a>&nbsp;
+<a href="#" onclick="smilie(':clown:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/sadclown.gif" alt="" title="clown" height="21" width="19"></a>&nbsp;
+<a href="#" onclick="smilie(':hat:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/party.gif" alt="" title="party" height="25" width="24"></a>&nbsp;
+<a href="#" onclick="smilie(':drunk:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/drunk.gif" alt="" title="drunk" height="25" width="26"></a>&nbsp;
+<a href="#" onclick="smilie(':wizard:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/wizard.gif" alt="" title="wizard" height="27" width="29"></a>&nbsp;
+<a href="#" onclick="smilie(':king:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/king.gif" alt="" title="king" height="20" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':queen:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/queen.gif" alt="" title="queen" height="22" width="17"></a>&nbsp;
+<a href="#" onclick="smilie(':sherlock:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/detective.gif" alt="" title="detective" height="30" width="28"></a>&nbsp;
+<a href="#" onclick="smilie(':troll:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/troll.gif" alt="" title="troll" height="22" width="52"></a>&nbsp;
+<a href="#" onclick="smilie(':jester:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/jester.gif" alt="" title="jester" height="26" width="36"></a>&nbsp;
+<a href="#" onclick="smilie(':headbang:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/headbang.gif" alt="" title="Headbang" height="22" width="28"></a>&nbsp;
+<a href="#" onclick="smilie(':doh:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/doh.gif" alt="" title="Homer: doh!" height="20" width="44"></a>&nbsp;
+<a href="#" onclick="smilie(':banana:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/banana.gif" alt="" title="banana" height="16" width="15"></a>&nbsp;
+<a href="#" onclick="smilie(':monkey:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/monkey.gif" alt="" title="monkey" height="17" width="19"></a>&nbsp;
+<a href="#" onclick="smilie(':pingu:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/pingu.gif" alt="" title="penguin" height="19" width="15"></a>&nbsp;
+<a href="#" onclick="smilie(':cow:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/cow.gif" alt="" title="cow" height="16" width="21"></a>&nbsp;
+<a href="#" onclick="smilie(':dragonfly:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/dragonfly.gif" alt="" title="dragonfly" height="15" width="19"></a>&nbsp;
+<a href="#" onclick="smilie(':bug:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/bug.gif" alt="" title="bug" height="17" width="18"></a>&nbsp;
+<a href="#" onclick="smilie(':rip:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/rip.gif" alt="" title="RIP" height="17" width="19"></a>&nbsp;
+<a href="#" onclick="smilie(':hi:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/hi.gif" alt="" title="hi" height="12" width="16"></a>&nbsp;
+<a href="#" onclick="smilie(':bye:'); return false;"><img src="Optimized%20Fermat%20Primality%20Test_files/bye.gif" alt="" title="bye" height="12" width="22"></a>&nbsp;
+</div></div>
+<p class="dsmilies"><input id="smiliesoff" name="disablesmilies" value="1" type="checkbox"> <label for="smiliesoff">Disable smilies</label></p>
+</div>
+<input class="submit" name="submit" value=" Post comment " accesskey="s" type="submit">
+</div>
+<div class="clear"></div>
+</form>
+</div>
+
+</div></div>
+<div id="sidewrap"><div id="side">
+<div class="sidebox hidemobile" id="qp">
+<h2>Dag Rune Sneeggen</h2>
+<div id="myphoto"><a href="http://my.opera.com/duddev/about/"><img src="Optimized%20Fermat%20Primality%20Test_files/385775_l.jpg" alt="photo" height="165" width="220"></a></div>
+</div>
+<div id="blogsearch" class="sidebox">
+<label for="searchbox" class="h2">Blog search</label><form action="/duddev/search/?" method="get"><div class="pad">
+<input name="search" value="" id="searchbox" maxlength="128" type="text"><input value="search" id="submitsearch" type="submit">
+</div></form>
+</div>
+<table id="calendar">
+<caption><a href="http://my.opera.com/duddev/archive/monthly/?month=200905" id="calendarmonth">May 2009</a></caption>
+<thead><tr>
+<th scope="col" title="Sunday" abbr="Sunday">S</th>
+<th scope="col" title="Monday" abbr="Monday">M</th>
+<th scope="col" title="Tuesday" abbr="Tuesday">T</th>
+<th scope="col" title="Wednesday" abbr="Wednesday">W</th>
+<th scope="col" title="Thursday" abbr="Thursday">T</th>
+<th scope="col" title="Friday" abbr="Friday">F</th>
+<th scope="col" title="Saturday" abbr="Saturday">S</th>
+</tr></thead>
+<tfoot><tr><td colspan="7">
+<span id="prevmonth" class="left"><img src="Optimized%20Fermat%20Primality%20Test_files/prev.gif" alt="" class="arrow-prev" height="8" width="9"><a href="http://my.opera.com/duddev/archive/monthly/?month=200904" title="April 2009">April 2009</a></span><span id="nextmonth" class="right"><a href="http://my.opera.com/duddev/archive/monthly/?month=200906" title="June 2009">June 2009</a><img src="Optimized%20Fermat%20Primality%20Test_files/next.gif" alt="" class="arrow-next" height="8" width="9"></span>
+</td></tr></tfoot>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+</tr>
+<tr>
+<td>10</td>
+<td>11</td>
+<td>12</td>
+<td>13</td>
+<td>14</td>
+<td>15</td>
+<td>16</td>
+</tr>
+<tr>
+<td>17</td>
+<td>18</td>
+<td>19</td>
+<td>20</td>
+<td>21</td>
+<td>22</td>
+<td>23</td>
+</tr>
+<tr>
+<td>24</td>
+<td>25</td>
+<td>26</td>
+<td>27</td>
+<td>28</td>
+<td>29</td>
+<td>30</td>
+</tr>
+</tbody>
+</table>
+<div class="sidebox" id="tagcloud">
+<h2>Tags</h2>
+<div class="pad"><ul class="nobullets clearfix">
+<li class="size5"><a href="http://my.opera.com/duddev/blog/index.dml/tag/code" rel="tag">code</a></li>
+<li class="size5"><a href="http://my.opera.com/duddev/blog/index.dml/tag/java" rel="tag">java</a></li>
+<li class="size5"><a href="http://my.opera.com/duddev/blog/index.dml/tag/javascript" rel="tag">javascript</a></li>
+<li class="size5"><a href="http://my.opera.com/duddev/blog/index.dml/tag/mathematics" rel="tag">mathematics</a></li>
+<li class="size1"><a href="http://my.opera.com/duddev/blog/index.dml/tag/primes" rel="tag">primes</a></li>
+<li class="size5"><a href="http://my.opera.com/duddev/blog/index.dml/tag/technical" rel="tag">technical</a></li>
+</ul></div>
+</div>
+<div class="sidebox" id="visitors">
+<h2>Recent visitors</h2>
+<div class="pad">
+<ul class="nobullets userlist">
+<li><a href="http://my.opera.com/jasisz/"><img src="Optimized%20Fermat%20Primality%20Test_files/307840_s.jpg" alt="jasisz" height="51" width="68"><span class="block">jasisz</span></a></li>
+<li class="mid"><a href="http://my.opera.com/Over_and_over/"><img src="Optimized%20Fermat%20Primality%20Test_files/748916_s.jpg" alt="Over_and_over" height="51" width="68"><span class="block">Over_and_over</span></a></li>
+<li><a href="http://my.opera.com/extremix/"><img src="Optimized%20Fermat%20Primality%20Test_files/475125_s.jpg" alt="extremix" height="51" width="68"><span class="block">extremix</span></a></li>
+<li><a href="http://my.opera.com/Caterpillar/"><img src="Optimized%20Fermat%20Primality%20Test_files/125974_s.jpg" alt="Caterpillar" height="51" width="68"><span class="block">Caterpillar</span></a></li>
+<li class="mid"><a href="http://my.opera.com/pandomaci/"><img src="Optimized%20Fermat%20Primality%20Test_files/1306816_s.jpg" alt="pandomaci" height="51" width="68"><span class="block">pandomaci</span></a></li>
+<li><a href="http://my.opera.com/galanga/"><img src="Optimized%20Fermat%20Primality%20Test_files/789363_s.jpg" alt="galanga" height="51" width="68"><span class="block">galanga</span></a></li>
+</ul>
+<div class="clear"></div>
+</div>
+</div>
+</div></div>
+<div id="footer"><div id="footer2">
+<p id="meta"><a href="http://my.opera.com/duddev/xml/rss/blog/"><img src="Optimized%20Fermat%20Primality%20Test_files/feedicon12.gif" alt="" class="feedicon" height="12" width="12"></a> <a href="http://my.opera.com/duddev/xml/rss/blog/" title="RSS 2.0 Feed for latest blog posts"><acronym>RSS</acronym></a> | <a href="http://my.opera.com/duddev/xml/atom/blog/" title="Atom 1.0 Feed for latest blog posts">ATOM</a> <a href="http://widgets.opera.com/widgetize/Feed%20Reader/Advanced/?serve&amp;skin=skin103&amp;widgetname=Development%20and%20miscellaneous%21&amp;rel=myopera&amp;ref=duddev" id="widgetize-blog" class="widgetize"><img src="Optimized%20Fermat%20Primality%20Test_files/widgetize12.gif" alt="widgetize" height="12" width="12"> WIDGETIZE</a></p>
+<p>
+		A proud member of the <a href="http://my.opera.com/community/" id="o">My Opera community</a>. | <a href="http://my.opera.com/community/help/">Help</a> | <a href="http://my.opera.com/community/disclaimer/">Disclaimer</a>
+            | <a href="http://my.opera.com/community/terms-of-service/" class="black">Terms of service</a><br><a href="http://os.hitslink.com/">Web analytics powered by HitsLink</a></p>
+<form action="/community/change-language.dml" method="get" name="sitelang" id="sitelang"><div>
+<input name="return_url" value="/duddev/blog/show.dml/298370" type="hidden"><label for="chooselang"><b>Site language:</b></label><select name="lang" id="chooselang"><option value="bg">
+	Български
+	</option>
+<option value="cs">
+	Čeština
+	</option>
+<option value="da">
+	Dansk
+	</option>
+<option value="en" selected="selected">
+	English
+	</option>
+<option value="es">
+	Español
+	</option>
+<option value="fi">
+	Suomi
+	</option>
+<option value="fy">
+	Frysk
+	</option>
+<option value="hu">
+	Magyar
+	</option>
+<option value="it">
+	Italiano
+	</option>
+<option value="ja">
+	日本語
+	</option>
+<option value="no">
+	Norsk Bokmål
+	</option>
+<option value="pl">
+	Polski
+	</option>
+<option value="ru">
+	Русский
+	</option>
+<option value="tr">
+	Türkçe
+	</option>
+<option value="uk">
+	Українська
+	</option>
+<option value="vn">
+	Tiếng Việt
+	</option>
+<option value="xx-lol">
+	LOLCATZ
+	</option>
+<option value="zh-cn">
+	简体中文
+	</option></select> </div></form>
+<p class="buttons" id="mobileswitch"><a href="http://my.opera.com/community/change-mobile-full-view.dml?mobile=true" title="click to see what My Opera looks like if you surf with Opera on your mobile"><span class="i-mobile">view mobile site</span></a></p>
+</div></div>
+</div>
+</div>
+</div></div></div></div>
+<script type="text/javascript" src="Optimized%20Fermat%20Primality%20Test_files/cookies.js"></script><script type="text/javascript"><!--
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+--></script><script src="Optimized%20Fermat%20Primality%20Test_files/ga.js" type="text/javascript"></script><script type="text/javascript"><!--
+var pageTracker = _gat._getTracker("UA-4118503-7");
+pageTracker._trackPageview();
+--></script><script type="text/javascript"><!--
+document.cookie='__support_check=1';
+wa_tz=new Date();wa_data='&an='+escape(navigator.appName)+
+'&hr='+escape(location.href)+'&tks='+wa_tz.getTime()+
+'&ck='+document.cookie.length+
+'&rf='+escape(document.referrer)+'&sl='+escape(navigator.systemLanguage)+
+'&av='+escape(navigator.appVersion)+'&l='+escape(navigator.language)+
+'&pf='+escape(navigator.platform)+'&pg='+escape(location.pathname);
+wa_data=wa_data+'&cd='+
+screen.colorDepth+'&rs='+escape(screen.width+' x '+screen.height)+
+'&tz='+wa_tz.getTimezoneOffset()+'&je='+ navigator.javaEnabled(); wa_img=new
+Image();wa_img.src='http://profiles.hitslink.com/statistics.aspx'+
+'?profile=1'+wa_data+'&tks='+wa_tz.getTime();
+--></script>
+<!-- hostname: b14.opera.com --></body></html>

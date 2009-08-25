@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.Digits;
+import com.mycila.math.Digits;
 import com.mycila.Sieve;
 
 import static java.lang.System.*;

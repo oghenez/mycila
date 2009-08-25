@@ -1,0 +1,18 @@
+@import url(../../themes/mobile.css);
+
+#top {
+	color:#fff;
+	border-top:1px solid #ce031b;
+	background:#9f0b15 url(/community/graphics/users/3/mobile/top.jpg) top right no-repeat;
+	}
+
+#side h2, #side h2 a:link, #side h2 a:visited, #side caption {
+	margin:1px 0;
+	background:#000;
+	color:#fff;
+	}
+
+#side caption a:link, #side caption a:visited, #top2 a {
+	color:#fff;
+	text-decoration:none;
+	}

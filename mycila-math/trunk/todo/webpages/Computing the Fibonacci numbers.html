@@ -1,0 +1,306 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html><head lang="en-GB">
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+<title>Computing the Fibonacci numbers</title>
+<link rel="stylesheet" href="Computing%20the%20Fibonacci%20numbers_files/math.css">
+<meta name="description" content="Computing the Fibonacci numbers">
+<meta name="keywords" content="Computing the Fibonacci numbers">
+</head><body lang="en-GB"><h1 id="Begin">Computing the Fibonacci numbers</h1>
+
+<p> This page is really about how to tell a computer what to do <em>in such a
+way that it goes about it efficiently</em>; so it has to involve some
+mathematics (so that we can work out <em>how much work</em> the computer has to
+do to complete the computation), so it may as well address an entirely
+mathematical problem. </p>
+
+<p> Fibonacci's sequence is defined by: </p><ul>
+ <li> f(1) = 1 = f(2)</li>
+ <li> f(i+2) = f(i+1) + f(i)</li>
+
+</ul><p> Formally, this only specifies f(i) in so far as i is a whole number
+(i.e. one with no fractional part); but it does specify f(i) for every whole
+number.  We can work forwards to see that f(3) = 2, f(4) = 3, f(5) = 5, f(6) =
+8, f(7) = 13, f(8) = 21 and so on.  We can turn the second rule around to say
+f(i) = f(i+2) &#8722;f(i+1) and work backwards to get f(0) = 0, f(&#8722;1) = 1,
+f(&#8722;2) = &#8722;1, f(&#8722;3) = 2, f(&#8722;4) = &#8722;3, f(&#8722;5) =
+5, f(&#8722;6) = &#8722;8 and so on.  None of this gives us any clue as to the
+value of f at f(1/2) or f(&#960;), so Fibonacci's specification only tells us f's
+values at whole numbers (positive, zero and negative; collectively known as
+integers). </p>
+
+<p> Notice that f(0) = 0, f(1) = 1 would work as an entirely adequate
+replacement for the first rule.  Also, observe that f(&#8722;odd) = f(odd) but
+f(&#8722;even) = &#8722;f(even) for each odd or even input explored above.  If
+we suppose this to be true for each even or odd j &lt; i, for some positive
+whole number i (e.g., we've already shown this for i = 7), we can induce that:
+</p><dl class="derivation">
+
+ <dt>if i is even</dt>
+ <dd>f(&#8722;i) = f(2&#8722;i) &#8722;f(1&#8722;i)</dd>
+ <dd><p> but i is even, so 2&#8722;i is also even and 1&#8722;i is odd, so </p></dd>
+ <dd>f(&#8722;i) = &#8722;f(i&#8722;2) &#8722;f(i&#8722;1) = &#8722;f(i)</dd>
+ <dt>otherwise, i is odd, yielding</dt>
+ <dd>f(&#8722;i) = f(2&#8722;i) &#8722;f(1&#8722;i)</dd>
+ <dd><p> with i odd, so 2&#8722;i is odd and 1&#8722;i is even, whence </p></dd>
+ <dd>f(&#8722;i) = f(i&#8722;2) +f(i&#8722;1) = f(i)</dd>
+
+</dl><p> so the rule we supposed to hold for j &lt; i also holds for j = i;
+hence for each j &lt; i+1, whence for j = i+1 and so on; hence for all j.  We
+can exploit this to simplify our computations. </p>
+
+<p> I can use some simple theory to work out that any f satisfying the second
+rule (ignoring, for the moment, the first) must be a sum of terms, each of which
+is of form f(i) = k.power(i, q) with k arbitrary and q.q = q +1 &#8211; which
+implies that (2.q&#8722;1).(2.q&#8722;1) = 4.q.q &#8722;4.q +1 = 4.(q +1)
+&#8722;4.q +1 = 5, whence 2.q = 1 ±&#8730;5 &#8211; so that our actual f
+must be f(i) = k.power(i, (1+&#8730;5)/2) +h.power(i, (1&#8722;&#8730;5)/2) for
+some k and h.  We could apply the first rule to work out k and h; but it's
+easier to apply f(0) = 0 to infer k+h=0 and then use f(1) = 1 to infer 1 =
+k.((1+&#8730;5)/2 +(1&#8722;&#8730;5)/2) = k, so that f(i) = power(i,
+(1+&#8730;5)/2) &#8722;power(i, (1&#8722;&#8730;5)/2).  If I'm happy with the
+precision of <q>floating point arithmetic</q> this lets me compute f very
+efficiently; however, floating point arithmetic is all about adequate
+approximations and tends to produce mildly embarrasing results like 4 ×
+0.035 = 0.14000000000000001 (when it's easy to see that the right answer is 0.14
+exactly).  The first rule gives f(1) and f(2) as whole numbers (they're both 1,
+which is as obviously whole as a number can be) and the second rule gives any
+other f value by adding or subtracting f values for inputs closer to 1 and 2
+than the new one we're obtaining, we can safely infer that all f values are
+whole numbers, with no fractional part; which makes it silly to compute them via
+<q>floating point numbers</q> (i.e. ones with a fractional part).  So I'll be
+looking at how we can compute f's values <em>precisely</em> and ignore the
+short-cut via this nice piece of theory.  None the less, notice that the value
+of f(i) grows exponentially with i's magnitude. </p>
+
+<p> For this page's purposes, I'm going to use <a href="http://www.python.org/">python</a> as the programming language in my
+examples: however, the reader is welcome to read the code as <q>pseudo-code</q>,
+understanding indented lines as being subordinates controlled by the last
+less-indented line.  The key-word <tt>def</tt> begins the definition of a
+function. </p>
+
+<h2>The really obvious way</h2>
+
+<p> Most modern programming languages (for these purposes, ForTran isn't modern)
+allow one to write functions which call themselves; this is called
+<em>recursion</em>.  A language can be clever enough to dodge the problem I'm
+about to point out, but it's instructive to see why simple-minded languages run
+into problems with the <q>obvious</q> way to implement Fibonacci's sequence.  We
+see how it was originally specified, so we can write ourselves a function:
+</p><pre>
+def Fibspec(i):
+	if i == 1 or i == 2: return 1
+	if i &gt; 1: return Fibspec(i-2) +Fibspec(i-1)
+	return Fibspec(i+2) -Fibspec(i+1)
+
+</pre><p> This simply states the rules given above: the first rule is the first
+line, f(1) = f(2) = 1 (the <code>==</code> operator <em>tests</em> for equality,
+as distinct from the <code>=</code> operator, assignment, which causes its left
+operand to have the same value as its right operand previously had). </p>
+
+<p> Unless the programming language you're using is very clever, it's going to
+do an awful lot of computation, if you use a definition like this.  Let me
+explain why.  First, observe that if I ask for Fibspec(1) or Fibspec(2), I get
+my answer back immediately: it's 1.  Thus far, Fibspec is doing well.  Next, if
+I ask for Fibspec(3) it'll test that 3 isn't 1 or 2, notice that 3 &gt; 1 and
+proceed to work out (as its answer) Fibspec(1) +Fibspec(2) &#8211; each of which
+it works out directly; so (aside from some over-head, which I'll ignore, in how
+the language lets a function call itself recursively) it has to do one addition
+to get the answer 2.  If I ask for Fibspec(4), it'll likewise do one addition to
+combine Fibspec(2) with Fibspec(3); computing the latter costs it one addition,
+as before, so it costs two additions to get the answer Fibspec(4) = 3.  Notice
+that the number of additions we've needed to do, each time, is just one less
+than the answer we obtained.  For Fibspec(5), we work out the previous, costing
+us 2 +1 additions, and do one more addition, getting the answer 5 for 4
+additions.  Again, the number of additions is only one less than the answer.
+</p>
+
+<p> In fact, if we can compute f(i) and f(i+1) at a cost of one addition less
+than their respective values, then computing f(1+2) costs us one addition to add
+them together plus f(i)&#8722;1 to compute f(i) and f(i+1)&#8722;1 to compute
+f(i+1); for a total of 1 +f(i)&#8722;1 +f(i+1)&#8722;1 = f(i) +f(i+1) &#8722;1 =
+f(i+2)&#8722;1 &#8211; so the number of additions we have to do to compute
+Fibspec(i) is going to be only one less than the answer we get.  It shouldn't be
+hard to see that similar applies for i &lt; 1; computing Fibspec(i) requires
+slightly more (rather than less) additions than the magnitude of the answer, in
+this case.  Given that this answer grows exponentially with the magnitude of i,
+this means that Fibspec is a horribly expensive way to compute the Fibonacci
+numbers. </p>
+
+<h2>The obviously better way</h2>
+
+<p> So let's look for a better way to compute f(i).  If you look at what we were
+doing before, you should be able to see that the real problem is that, when
+computing f(i+2), we first compute f(i), then compute f(i+1); but, in the course
+of doing the latter, we <em>re-compute</em> f(i).  That's obviously dumb: if
+we'd just remembered it from before, we could save that extra computation.
+Since the same applies at each step back towards 1 and 2, we're clearly better
+off simply working forwards: </p><pre>
+def Fibiter(i):
+	if -1 &lt; i &lt; 1: return 0
+	old = 0
+	ans = 1
+	while i &gt; 1:
+		new = ans + old
+		old = ans
+		ans = new
+		i = i - 1
+
+	while i &lt; -1:
+		new = old - ans
+		old = ans
+		ans = new
+		i = i+1
+
+	return ans
+
+</pre><p> This time, we're just keeping track of two values &#8211; initially
+old = f(0) and ans = f(1), which is also f(&#8722;1) &#8211; and working our way
+up or down to i one step at a time, so it should be clear that the number of
+additions we have to do and the number of subtractions we have to do are, each,
+equal to the magnitude of i, give or take one.  Notice, also, that I've thrown
+in a piece of robustness for the computation: if i isn't a whole number, the
+function shall still return an answer (rather than, say, spinning forever in a
+loop that's been confused by an unexpected value); and that answer is something
+reasonably similar to the answer you would have had if you'd called Fibiter with
+the whole number nearest to i. </p>
+
+<p> So, with a little easy thinking, we've now got a way to compute f(i) at cost
+proportional to i rather than proportional to f(i); given that the latter grows
+much faster than i, this is clearly an improvement. </p>
+
+<p> The interested reader would do well to think for a while about how it might
+be possible to do even better than this. </p>
+
+<h2>The deviously clever way</h2>
+
+<p> Some clever person <a href="http://www.inwap.com/pdp10/hbaker/hakmem/hakmem.html">noticed (many years
+ago)</a> something marvelously subtle that we can exploit.  However, before I
+can explain how <em>that</em> works, I need to introduce you to the efficient
+way to compute powers, given a multiplication. </p>
+
+<p> While you can compute a power by repeated multiplication </p><pre>
+def powiter(n, x):
+	if n &lt; 0: return powiter(-n, 1./x)
+	ans = 1
+	while n &gt; 0:
+		ans = ans * x
+		n = n - 1
+	return ans
+
+</pre><p> (in which the number of multiplications or divisions we do (and,
+incidentally, the number of additions or subtractions we do) is equal to the
+power we're raising to) there's a much more efficient way to do it, in which the
+number of multiplications we do is just the number of digits it takes to write
+out n (that is, the logarithm of n to base two).  Once you understand that, I'll
+be able to show you how to compute Fibonacci more efficiently. </p>
+
+<h3>Efficient power</h3><pre>
+def powbits(n, x):
+	if n &lt; 0: return powbits(-n, 1./x)
+	ans = 1
+	while n &gt; 0:
+		if n % 2: # n is odd
+			ans = ans * x
+			n = n - 1
+		n = n / 2
+		x = x * x
+	return ans
+
+</pre><p> I encourage the interested reader to think about why this is correct
+before reading on.  The % operator computes a remainder: p &#8722; (p % q) is
+always a multiple of q; so n % 2 is one (which <code>if</code> considers to be
+true) when n is odd and zero (which <code>if</code> considers false) when n is
+even. </p>
+
+<p> What <code>powbits</code> does is to express <code>n</code> in binary and
+multiply <code>ans</code> by power(power(i, 2), x) if one of the non-zero digits
+in n corresponds to power(i, 2).  To help you understand how powbits works,
+consider this recursive form of it: </p><pre>
+def powrecurse(n, x):
+	if n &lt; 0: return powrecurse(-n, 1./x)
+	if n % 2: return x * powrecurse((n -1) / 2, x * x)
+	if n &gt; 0: return powrecurse(n / 2, x * x)
+	return 1
+
+</pre><p> The first line hasn't changed.  If n is zero, we'll fall all the way
+through to the end and get 1, which is just power(n, x) with n = 0.  If n is
+even and positive, we get to the last but one line: power(n, x) is, in this
+case, just power(n/2, x*x), so that's what we return.  For positive odd n, n-1
+is even, so power(n-1, x) is just power((n-1)/2, x*x) and multiplying it by x
+yields power(n, x).  So I hope you can see that powrecurse does compute power(n,
+x). </p>
+
+<p> In a really clever programming language, powrecurse might even be compiled
+efficiently: but most imperative languages aren't that clever, so let's see why
+powbits is doing the same thing as powerecurse.  Each time we go round the loop
+in powbits is equivalent to one layer of recursion in our call to powrecurse:
+the first time round the loop, we have our original x; if n is odd, we multiply
+ans up by x and leave the subsequent iterations to multiply ans by pow((n-1)/2,
+x*x); otherwise, we simply leave those subsequent iterations to multiply ans by
+pow(n/2, x*x).  By the time we've fallen off the end of the loop, we've worked
+out what we were originally asked for, but we've only gone round the loop once
+per binary digit of n (and we've done it without relying on our language to be
+clever enough to implement tail recursion with an accumulator). </p>
+
+<h3>Fast Fibonacci</h3>
+
+<p> Now, let's do a piece of seemingly arbitrary algebra: let's introduce a
+<q>multiplication</q> on pairs of numbers.  If we have a pair (A, B) and a pair
+(C, D), this <q>multiplication</q> combines them to yield the pair (A.C +A.D
++B.C, A.C +B.D). </p>
+
+<p class="aside"> This may well seem odd and arbitrary; but we can interpret it
+via polynomials, as follows.  If we read (A, B) as the polynomial (: A.x +B
+&#8592;x :), whence likewise (C, D) as (: C.x +D &#8592;x :), the usual
+multiplication on polynomials combines these to yield (: A.C.x.x +(A.D +B.C).x
++B.D &#8592;x :).  Earlier, we saw that our solutions are obtained by adding
+together geometric series whose factors, q, satisfy q.q = q +1; if we reduce our
+result of multiplication via this equality, with x in place of q, we get (: (A.D
++B.C +A.C).x +(B.D +A.C) &#8592;x :), which is exactly the polynomial described
+by the pair our <q>multiplication</q> produced.  The interested reader is
+encouraged to explore why that causes the following to work. </p>
+
+<p> Now, if we <q>multiply</q> (f(i+1), f(i)) by (1, 0), we get (f(i+1) +f(i),
+f(i+1)) = (f(i+2), f(i+1)); thus repeated <q>multiplication</q> performs our
+Fibonacci calculation for us, in the same manner as the previous section's
+solution to the problem.  However, repeated multiplication, always by the same
+factor, should be familiar as multiplying by a power of that factor.  Which
+we now know how to do rather efficiently.  So first we define </p><pre>
+def fibtimes((a,b), (c,d)):
+	return a * (c + d) + b * c, a * c + b * d
+
+</pre><p> which is just our peculiar multiplication; then we implement the
+<q>power</q> operation for this <q>multiplication</q> (exploiting the fact that
+(A, B) times (0, 1) is just (A, B), so (0, 1) serves as an identity for our
+multiplication) restricted to only computing powers of (1, 0), as </p><pre>
+def Fibpow(i):
+	(a, b) = (1, 0) # x
+	(c, d) = (0, 1) # ans
+	while i &gt; 0:
+		n = i % 2
+		if n:
+			c, d = fibtimes((a,b),(c,d))
+			i = i - 1
+		i = i / 2
+		(a, b) = fibtimes((a,b), (a,b))
+	return (c, d) # x**i
+
+</pre><p> Then we can compute (C, D) = Fibpow(n) to obtain C as f(n) for
+positive n; and use the even/odd sign games above to work out the answer for
+negative n.  Since we've now reduced our computation to an analogue of power,
+the amount of computation needed to compute f(i) only grows, with i, as fast as
+the number of digits it takes to write i out in binary (i.e. the logarithm of i
+to base two), which grows much less rapidly than i.  We <em>are</em> doing
+rather more computation at each of these fewer steps (rather than just one
+addition, we're doing: either four multplications, three additions and some easy
+binary stuff (taking remainder by two and dividing by two is really cheap); or
+eight multiplications, six additions, one subtraction and the cheap binary
+stuff), so the Fibiter solution is faster for small values of i; but the Fibpow
+solution wins for larger values of i.  If you're always computing answers for
+small values of i, and doing so often enough that you care about performance,
+Fibiter is easily beaten by an implementation which remembers the answers it's
+worked out in the past; which can be just as efficiently implemented using a
+variant of Fibspec which caches its answers as by using Fibiter. </p>
+
+<address title="$Id: Fibonacci.html,v 1.3 2008-05-01 10:51:24 eddy Exp $"><object data="Computing%20the%20Fibonacci%20numbers_files/RightEyes.png" type="image/png" width="100%"><hr></object><a href="http://jigsaw.w3.org/css-validator/check/referer"><img alt="Valid CSS" src="Computing%20the%20Fibonacci%20numbers_files/valid-css.png"></a><a href="http://www.chaos.org.uk/%7Eeddy/validator/check?uri=referer"><img alt="Valid HTML 4.01" src="Computing%20the%20Fibonacci%20numbers_files/valid-html401.png"></a>
+Written by <a href="http://www.chaos.org.uk/%7Eeddy/">Eddy</a>. </address></body></html>
