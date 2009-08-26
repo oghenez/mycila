@@ -1,0 +1,178 @@
+/* Zero results style */
+.zeroHtmlResultsLink {
+    cursor: hand;
+}
+
+.zeroHtmlResultsLink img {
+    border: none;
+}
+
+/* Main related links container. */
+.eraLinksContainer {
+    padding: 0;
+    margin: 0;
+    background: #fff;
+    border-left: 1px solid #145E8D;
+    border-right: 1px solid #145E8D;
+
+}
+
+/* Related Microsites container. */
+div.eraRelatedMicrosites, div.eraMoreRelatedMicrosites {
+    display: block;
+    padding: 0;
+    margin: 0;
+
+}
+
+.eraHeader, .eraeraHeader {
+    display: none;
+}
+
+.eraRelatedMicrosites .eraeraHeader {
+}
+
+.eraRelatedContent, .eraRelatedContent, .eraRelatedNews {
+
+}
+
+/* Styles for the organization sort */
+.eraRelatedMicrosites .eraIndentedSiteName {
+    font-weight: bold;
+    padding: 0 5px 0 10px;
+}
+
+.eraRelatedMicrosites .eraIndentedLink {
+    padding: 0 0 0 0;
+}
+
+.eraMoreRelatedMicrosites .eraIndentedLink {
+    padding: 0 0 0 0;
+    font-weight: bold;
+}
+
+.eraMoreRelatedMicrosites .eraIndentedSiteName {
+    padding: 0 0 0 5px;
+    font-weight: bold;
+}
+
+.eraMoreeraHeader {
+    font-weight: bold;
+    font-size: 12px;
+    font-family: arial;
+    padding: 5px;
+    color: #0066CC;
+    display: none;
+}
+
+/* HTML related links script helper classes */
+body {
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    font-family: arial;
+}
+
+a {
+    display: block;
+    color: #145e8d;
+    text-decoration: none;
+    padding: 0 5px 4px 0;
+    font-size: 11px;
+    width: auto;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+b {
+    font-weight: normal;
+}
+
+#relatedLinksScroll .eraLinksContainer {
+    overflow: hidden;
+}
+
+#relatedLinksHeaderWrapper {
+    background: url('../images/header_img.gif') no-repeat #FFF;
+    margin: 0;
+    height: 40px;
+    border-left: 1px solid #145e8d;
+    border-right: 1px solid #145e8d;
+    border-top: 1px solid #145e8d;
+}
+
+#relatedLinksFooterWrapper {
+    background: #fff;
+    border-left: 1px solid #145e8d;
+    border-right: 1px solid #145e8d;
+    border-bottom: 1px solid #145e8d;
+}
+
+#relatedLinksScroll #eraLinksScrollUp, #relatedLinksScroll #eraLinksScrollDown {
+
+}
+
+#relatedLinksDrop #eraLinksScrollUp, #relatedLinksDrop #eraLinksScrollDown {
+
+}
+
+.eraRelatedMicrosites {
+    padding: 0;
+}
+
+.eraRelatedMicrosites div, .eraMoreRelatedMicrosites div {
+    padding: 0px 0 0px 0;
+    margin: 0;
+    border-top: 0;
+    font-weight: bold;
+}
+
+.eraRelatedMicrosites div A, .eraMoreRelatedMicrosites div A {
+    padding: 3px 10px 3px 10px;
+    color: #145E8D;
+    text-decoration: none;
+    font-family: verdana;
+    border-bottom: 1px solid #BBEAFE;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+div.eraMoreRelatedLinks {
+    padding: 5px 0 0 11px;
+    margin: 0;
+    line-height: 1em;
+    background: #105d8c;
+
+}
+
+div.eraMoreRelatedLinks A {
+    color: #fff;
+    font-weight: bold;
+}
+
+.eraLinksContainer div a strong, .eraRelatedMicrosites div a strong {
+    font-family: verdana;
+    color: #1458d;
+    font-weight: bold;
+
+}
+
+.eraLinksContainer div a:hover strong, .eraRelatedMicrosites div A:hover strong {
+    text-decoration: underline;
+    color: #BF551D;
+}
+
+.eraRelatedMicrosites div A:hover, div.eraMoreRelatedMicrosites A:hover {
+    text-decoration: underline;
+    color: #BF551D;
+}
+
+div.eraMoreRelatedLinks A:hover {
+    text-decoration: underline;
+}
+
+.eraRelatedMicrositeItem strong {
+    color: 145 e8d;
+}
