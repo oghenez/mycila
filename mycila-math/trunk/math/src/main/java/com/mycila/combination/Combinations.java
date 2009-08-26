@@ -34,12 +34,12 @@ public final class Combinations {
      * @return Catalan(i)
      */
     public static long catalan(int index) {
-        return Factorial.trivialDiv(index << 1, index) / Factorial.lookup(index + 1);
+        return binomialLong(index << 1, index) / (index + 1);
     }
 
     //TODO: improve - see commons-math
     public static long binomialLong(int n, int r) {
-        return Factorial.trivialDiv(n, n - r) / Factorial.lookup(r);
+        return Factorial.falling(n, r) / Factorial.lookup(r);
     }
 
     // n <= 4294967294
@@ -47,7 +47,7 @@ public final class Combinations {
         if (n > Integer.MAX_VALUE >> 1)
             throw new IllegalArgumentException("Too big value for n (" + n + "). Maximum allowed is " + 4294967294L);
         if (r > n >> 1) r = (int) (n - r);
-        return Factorial.trivialDiv(BigInteger.valueOf(n), BigInteger.valueOf(n - r)).divide(Factorial.get(r));
+        return Factorial.falling(BigInteger.valueOf(n), BigInteger.valueOf(r)).divide(Factorial.get(r));
     }
 
     public static CombinationSet combinations(int n, int r) {

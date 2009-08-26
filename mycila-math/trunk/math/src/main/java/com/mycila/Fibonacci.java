@@ -28,6 +28,8 @@ public final class Fibonacci {
 
     private static final int MAX_FIB_FOR_LONG = 92;
 
+    //TODO: cf bigal-2.4.0.zip
+
     public static long fibonacciNext(long fibonacci) {
         return round(fibonacci * GOLD);
     }
