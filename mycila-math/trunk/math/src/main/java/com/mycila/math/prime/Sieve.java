@@ -28,7 +28,9 @@ import java.util.Iterator;
  */
 public final class Sieve {
 
-    private int[] primes;
+    private static Sieve CACHED_SIEVE = Sieve.to(10000);
+
+    private final int[] primes;
     private final IntRange sieveRange;
     private final Iterable<Integer> iterable = new Iterable<Integer>() {
         @Override
@@ -120,17 +122,18 @@ public final class Sieve {
      * @return The product of all primes in this Sieve
      */
     public BigInteger primorial() {
-        return primorial(sieveRange);
+        return primorial(sieveRange.from, sieveRange.to);
     }
 
     /**
      * Computes the <a href="http://en.wikipedia.org/wiki/Primorial">Primorial</a> for all primes from this Sieve contained in the provided range.
      *
-     * @param range Th range of prime to include
+     * @param from The minimum number in the range
+     * @param to   The maximum number in the range
      * @return The product of all primes in this Sieve matching given range
      */
-    public BigInteger primorial(IntRange range) {
-        range = primeIndexes(range);
+    public BigInteger primorial(int from, int to) {
+        IntRange range = primeIndexes(from, to);
         BigInteger prd = BigInteger.ONE;
         if (range.isEmpty()) return prd;
         for (int i = range.from; i <= range.to; i++)
@@ -235,16 +238,41 @@ public final class Sieve {
     /**
      * Returns an iterable over the primes of this Sieve which are included in the given range
      *
-     * @param range The range
+     * @param from The minimum number in the range
+     * @param to   The maximum number in the range
      * @return An iterable to be used in for loops
      */
-    public Iterable<Integer> iterable(final IntRange range) {
+    public Iterable<Integer> iterable(final int from, final int to) {
         return new Iterable<Integer>() {
             @Override
             public Iterator<Integer> iterator() {
-                return ReadOnlySequenceIterator.on(primeIndexes(range), primes);
+                return ReadOnlySequenceIterator.on(primeIndexes(from, to), primes);
             }
         };
+    }
+
+    /**
+     * Create an array from the prime numbers of this Sieve
+     *
+     * @return an arraycontaining all primes in order
+     */
+    public int[] asArray() {
+        return Arrays.copyOf(primes, primes.length);
+    }
+
+    /**
+     * Create an array from the prime numbers of this Sieve which are included in given range
+     *
+     * @param from The minimum number in the range
+     * @param to   The maximum number in the range
+     * @return an array containing all primes in order which are contained in the range
+     */
+    public int[] asArray(int from, int to) {
+        IntRange range = primeIndexes(from, to);
+        if (range.isEmpty()) return new int[0];
+        int[] p = new int[range.length()];
+        System.arraycopy(primes, range.from, p, 0, range.length());
+        return p;
     }
 
     /**
@@ -259,23 +287,38 @@ public final class Sieve {
     /**
      * Create an {@link com.mycila.math.list.IntSequence} from the prime numbers of this Sieve which are included in given range
      *
-     * @param range The range of prime to select
+     * @param from The minimum number in the range
+     * @param to   The maximum number in the range
      * @return an {@link com.mycila.math.list.IntSequence} containing all primes in order which are contained in the range
      */
-    public IntSequence asSequence(IntRange range) {
-        range = primeIndexes(range);
+    public IntSequence asSequence(int from, int to) {
+        IntRange range = primeIndexes(from, to);
         if (range.isEmpty()) return new IntSequence(0);
         IntSequence seq = new IntSequence(range.length());
         seq.appendFrom(primes, range.from, range.length());
         return seq;
     }
 
-    private IntRange primeIndexes(IntRange range) {
-        if (primes.length == 0 || range.isEmpty()) return IntRange.empty();
-        int start = Arrays.binarySearch(primes, range.from);
+    /**
+     * From this sieve, create another sieve containing only primes in the range [1, max]
+     *
+     * @param max Maximum limit, which must be contained in this.range()
+     * @return Another sieve containing primes in the range [1, max]
+     */
+    public Sieve subSieve(int max) {
+        if (!sieveRange.contains(max))
+            throw new IllegalArgumentException(max + " is not included in range " + sieveRange);
+        int end = Arrays.binarySearch(primes, max);
+        if (end < 0) end = -end - 2;
+        return new Sieve(IntRange.range(1, max), Arrays.copyOf(primes, end + 1));
+    }
+
+    private IntRange primeIndexes(int from, int to) {
+        if (primes.length == 0 || to < from) return IntRange.empty();
+        int start = Arrays.binarySearch(primes, from);
         if (start < 0) start = -start - 1;
         if (start >= primes.length) return IntRange.range(primes.length - 1, primes.length - 1);
-        int end = Arrays.binarySearch(primes, range.to);
+        int end = Arrays.binarySearch(primes, to);
         if (end < 0) end = -end - 2;
         return end >= primes.length ?
                 IntRange.range(start, primes.length - 1) :
@@ -289,8 +332,11 @@ public final class Sieve {
      * @return The sieve
      */
     public static Sieve to(int max) {
-        IntRange range = IntRange.range(1, max);
-        return new Sieve(range, buildPrimes(range));
+        if (CACHED_SIEVE != null && CACHED_SIEVE.range().contains(max))
+            return CACHED_SIEVE.subSieve(max);
+        final IntRange range = IntRange.range(1, max);
+        CACHED_SIEVE = new Sieve(range, buildPrimes(range));
+        return CACHED_SIEVE;
     }
 
     private static int[] buildPrimes(IntRange sieveRange) {

@@ -15,6 +15,9 @@
  */
 package com.mycila.math;
 
+import com.mycila.math.list.IntSequence;
+import com.mycila.math.prime.Sieve;
+
 import java.math.BigInteger;
 import static java.math.BigInteger.*;
 
@@ -23,18 +26,15 @@ import static java.math.BigInteger.*;
  */
 public final class Factorial {
 
-    /**
-     * All long-representable factorials
-     */
-    private static final long[] factorials = new long[]
-            {1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800,
-                    479001600, 6227020800l, 87178291200l, 1307674368000l, 20922789888000l,
-                    355687428096000l, 6402373705728000l, 121645100408832000l,
-                    2432902008176640000l};
-    private static final BigInteger TWO = valueOf(2);
-
     private Factorial() {
     }
+
+    // All long-representable factorials
+    private static final long[] factorials = new long[]
+            {1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800,
+             479001600, 6227020800L, 87178291200L, 1307674368000L, 20922789888000L,
+             355687428096000L, 6402373705728000L, 121645100408832000L,
+             2432902008176640000L};
 
     /**
      * Compute the factorial of a number by using a lookup table
@@ -51,38 +51,47 @@ public final class Factorial {
 
     /**
      * Compute the factorial of a number by using a lookup table if the number is low, or
-     * the <a href="http://www.luschny.de/math/factorial/index.html">Split algorithm</a>
+     * the <a href="http://www.luschny.de/math/factorial/java/FactorialPrimeSwingLuschny.java.html">Luschny's Prime Swing algorithm</a>
      *
      * @param number A positive number
      * @return The factorial
      */
-    public static BigInteger get(int number) {
+    //TODO: optimize
+    public static BigInteger primeSwingLuschny(final int number) {
         if (number <= 20) return valueOf(lookup(number));
-        BigInteger oddProduct = ONE;
-        BigInteger factorialProduct = oddProduct;
-        int exponentOfTwo = 0;
-        for (int i = 30 - Integer.numberOfLeadingZeros(number); i >= 0; i--) {
-            int m = number >>> i;
-            int k = m >>> 1;
-            exponentOfTwo += k;
-            oddProduct = oddProduct.multiply(oddProduct(k + 1, m));
-            factorialProduct = factorialProduct.multiply(oddProduct);
-        }
-        return factorialProduct.multiply(TWO.pow(exponentOfTwo));
+        final Sieve sieve = Sieve.to(number);
+        final double pow2Count = Math.log(number) * 1.4426950408889634D;
+        final IntSequence primeList = new IntSequence((int) (2.0 * ((int) Math.sqrt(number) + number / (pow2Count - 1))));
+        int[] toStwing = new int[(int) pow2Count];
+        for (int i = toStwing.length - 1, n = number; i >= 0; i--, n >>= 1)
+            toStwing[i] = n;
+        BigInteger recFactorial = BigInteger.ONE;
+        for (int i = 0, max = toStwing.length; i < max; i++)
+            recFactorial = recFactorial.pow(2).multiply(swing(toStwing[i], sieve, primeList));
+        return recFactorial.shiftLeft(number - Integer.bitCount(number));
     }
 
-    private static BigInteger oddProduct(long n, long m) {
-        n = n | 1;       // Round n up to the next odd number
-        m = (m - 1) | 1; // Round m down to the next odd number
-        if (n > m) return ONE;
-        else if (n == m) return BigInteger.valueOf(n);
-        else {
-            long k = (n + m) >>> 1;
-            return oddProduct(n, k).multiply(oddProduct(k + 1, m));
-        }
-    }
+    /*private static BigInteger recFactorial(int number) {
+        return number < 2 ? BigInteger.ONE : recFactorial(number / 2).pow(2).multiply(swing(number));
+    }*/
 
-    //TODO: factorial for big integers: http://www.luschny.de/math/factorial/index.html + http://www.luschny.de/math/factorial/java/PrimeSieve.java.html
+    private static final int[] smallOddSwing = {1, 1, 1, 3, 3, 15, 5, 35, 35, 315, 63, 693, 231, 3003, 429, 6435, 6435, 109395, 12155, 230945, 46189, 969969, 88179, 2028117, 676039, 16900975, 1300075, 35102025, 5014575, 145422675, 9694845, 300540195, 300540195};
+
+    private static BigInteger swing(final int number, Sieve sieve, IntSequence primeList) {
+        if (number < 33) return BigInteger.valueOf(smallOddSwing[number]);
+        final int sqrtN = (int) Math.sqrt(number);
+        final int[] pIter0 = sieve.asArray(3, sqrtN);
+        final int[] pIter1 = sieve.asArray(sqrtN + 1, number / 3);
+        primeList.resetQuick();
+        for (int prime : pIter0) {
+            int q = number, p = 1;
+            while ((q /= prime) > 0) if ((q & 1) == 1) p *= prime;
+            if (p > 1) primeList.addQuick(p);
+        }
+        for (int prime : pIter1) if (((number / prime) & 1) == 1) primeList.addQuick(prime);
+        BigInteger primorial = sieve.primorial((number >> 1) + 1, number);
+        return primorial.multiply(primeList.productBig());
+    }
 
     /**
      * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">falling factorial</a>

@@ -18,8 +18,9 @@ package com.mycila.math;
 import com.mycila.math.distribution.Distribution;
 import com.mycila.math.list.IntProcedure;
 import com.mycila.math.list.IntSequence;
+import com.mycila.math.number.BigInteger;
+import static com.mycila.math.number.BigInteger.*;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 
 /**
@@ -103,7 +104,7 @@ public final class Digits {
      * @return the representation of the number in this base
      */
     public BigInteger rebase(BigInteger number) {
-        return new BigInteger(number.toString(base), 10);
+        return bigInt(number.toString(base), 10);
     }
 
     /**
@@ -203,7 +204,7 @@ public final class Digits {
         final char chars[] = new char[max + 1];
         for (int i = 0; i <= max; i++)
             chars[i] = s.charAt(max - i);
-        return new BigInteger(String.valueOf(chars), base);
+        return bigInt(String.valueOf(chars), base);
     }
 
     /**
@@ -266,7 +267,7 @@ public final class Digits {
         offset %= len;
         if (offset == 0) return number;
         if (offset < 0) offset = len + offset;
-        return new BigInteger(s.substring(len - offset) + s.substring(0, len - offset), base);
+        return bigInt(s.substring(len - offset) + s.substring(0, len - offset), base);
     }
 
     /**
@@ -392,7 +393,7 @@ public final class Digits {
         final StringBuilder sb = new StringBuilder().append(number.toString(base));
         for (int i = 0, max = numbers.length; i < max; i++)
             sb.append(numbers[i].toString(base));
-        return new BigInteger(sb.toString(), base);
+        return bigInt(sb.toString(), base);
     }
 
     /**
@@ -440,7 +441,7 @@ public final class Digits {
     public BigInteger sort(BigInteger number) {
         final char c[] = number.toString(base).toCharArray();
         Arrays.sort(c);
-        return new BigInteger(String.valueOf(c), base);
+        return bigInt(String.valueOf(c), base);
     }
 
     /**
