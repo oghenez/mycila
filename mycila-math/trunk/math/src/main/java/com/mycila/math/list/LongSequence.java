@@ -73,7 +73,7 @@ public final class LongSequence implements Iterable<Long> {
 
     @Override
     public Iterator<Long> iterator() {
-        return ReadOnlySequenceIterator.on(IntRange.range(0, pos), data);
+        return ReadOnlySequenceIterator.on(pos == 0 ? IntRange.empty() : IntRange.range(0, pos), data);
     }
 
     public long[] internalArray() {
@@ -436,7 +436,7 @@ public final class LongSequence implements Iterable<Long> {
         } else {
             // data in the middle
             System.arraycopy(data, offset + length,
-                             data, offset, pos - (offset + length));
+                    data, offset, pos - (offset + length));
         }
         pos -= length;
         // no need to clear old values beyond pos, because this is a

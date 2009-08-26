@@ -16,7 +16,7 @@
 package euler;
 
 import com.mycila.math.Digits;
-import com.mycila.math.prime.sieve.IntSieve;
+import com.mycila.math.prime.Sieve;
 
 import static java.lang.System.*;
 
@@ -30,7 +30,7 @@ class Problem049 {
         long time = currentTimeMillis();
         // create a sieve up to maximum prime number having 4 digits
         final Digits digits = Digits.base(10);
-        final IntSieve sieve = IntSieve.to(9999);
+        final Sieve sieve = Sieve.to(9999);
         for (int i = 0, max = sieve.size(); i < max - 2; i++) {
             final int prime = sieve.get(i);
             if (prime > 1000 && prime < 9999

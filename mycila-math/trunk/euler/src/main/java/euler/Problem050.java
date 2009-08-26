@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.math.prime.sieve.IntSieve;
+import com.mycila.math.prime.Sieve;
 
 import static java.lang.System.*;
 
@@ -27,7 +27,7 @@ import static java.lang.System.*;
 class Problem050 {
     public static void main(String[] args) throws Exception {
         long time = currentTimeMillis();
-        final IntSieve sieve = IntSieve.to(999999);
+        final Sieve sieve = Sieve.to(999999);
         int maxSum = 0, maxStart = 0, maxEnd = 0, maxTerms = 0;
         main:
         for (int start = 0, max = sieve.size() - 22; start < max; start++) {

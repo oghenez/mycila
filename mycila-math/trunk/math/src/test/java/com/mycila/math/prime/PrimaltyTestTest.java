@@ -15,7 +15,6 @@
  */
 package com.mycila.math.prime;
 
-import com.mycila.math.prime.sieve.IntSieve;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -50,7 +49,7 @@ public final class PrimaltyTestTest {
 
     @Test
     public void test_perf() {
-        IntSieve sieve = IntSieve.to(1000000);
+        Sieve sieve = Sieve.to(1000000);
 
         long time = System.currentTimeMillis();
         for (int prime : sieve.iterable()) assertTrue(PrimaltyTest.millerRabin(prime));
