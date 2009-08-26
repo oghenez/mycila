@@ -21,7 +21,6 @@ import com.mycila.math.distribution.Item;
 import com.mycila.math.distribution.Maximum;
 import com.mycila.math.list.IntSequence;
 import com.mycila.math.prime.Sieve;
-import com.mycila.math.range.IntRange;
 
 import static java.lang.System.*;
 import java.util.HashMap;
@@ -43,7 +42,7 @@ class Problem051 {
 
         // create a prime list containing only primes having N digits
         final Sieve primes = Sieve.to((int) Math.pow(10, length) - 1);
-        final IntSequence range = primes.asSequence(IntRange.range((int) Math.pow(10, length - 1), primes.range().to));
+        final IntSequence range = primes.asSequence((int) Math.pow(10, length - 1), primes.range().to);
         System.out.println(range);
 
         // build a list of patterns having same length

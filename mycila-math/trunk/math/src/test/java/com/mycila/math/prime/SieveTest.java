@@ -15,8 +15,6 @@
  */
 package com.mycila.math.prime;
 
-import com.mycila.math.range.IntRange;
-import static com.mycila.math.range.IntRange.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -43,7 +41,26 @@ public final class SieveTest {
     public void test_primorial() {
         Sieve sieve = Sieve.to(20);
         assertEquals(sieve.primorial(), BigInteger.valueOf(9699690));
-        assertEquals(sieve.primorial(IntRange.range(4, 12)), BigInteger.valueOf(385));
+        assertEquals(sieve.primorial(4, 12), BigInteger.valueOf(385));
+    }
+
+    @Test
+    public void test_subSieve() {
+        Sieve sieve = Sieve.to(22);
+        assertEquals(sieve.subSieve(22).toString(), "[2, 3, 5, 7, 11, 13, 17, 19]");
+        assertEquals(sieve.subSieve(1).toString(), "[]");
+        assertEquals(sieve.subSieve(2).toString(), "[2]");
+        assertEquals(sieve.subSieve(10).toString(), "[2, 3, 5, 7]");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_subSieve_err1() {
+        Sieve.to(22).subSieve(23);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_subSieve_err() {
+        Sieve.to(22).subSieve(0);
     }
 
     @Test
@@ -56,11 +73,11 @@ public final class SieveTest {
 
     @Test
     public void test_range() {
-        assertEquals(Sieve.to(0).asSequence(range(0, 0)).toString(), "{}");
-        assertEquals(Sieve.to(1).asSequence(range(0, 1)).toString(), "{}");
-        assertEquals(Sieve.to(2).asSequence(range(2, 2)).toString(), "{2}");
-        assertEquals(Sieve.to(20).asSequence(range(4, 12)).toString(), "{5, 7, 11}");
-        assertEquals(Sieve.to(20).asSequence(range(3, 17)).toString(), "{3, 5, 7, 11, 13, 17}");
+        assertEquals(Sieve.to(0).asSequence(0, 0).toString(), "{}");
+        assertEquals(Sieve.to(1).asSequence(0, 1).toString(), "{}");
+        assertEquals(Sieve.to(2).asSequence(2, 2).toString(), "{2}");
+        assertEquals(Sieve.to(20).asSequence(4, 12).toString(), "{5, 7, 11}");
+        assertEquals(Sieve.to(20).asSequence(3, 17).toString(), "{3, 5, 7, 11, 13, 17}");
     }
 
     @Test
