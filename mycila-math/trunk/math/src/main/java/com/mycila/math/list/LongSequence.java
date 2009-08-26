@@ -73,7 +73,7 @@ public final class LongSequence implements Iterable<Long> {
 
     @Override
     public Iterator<Long> iterator() {
-        return ReadOnlySequenceIterator.on(pos == 0 ? IntRange.empty() : IntRange.range(0, pos), data);
+        return ReadOnlySequenceIterator.on(pos == 0 ? IntRange.empty() : IntRange.range(0, pos - 1), data);
     }
 
     public long[] internalArray() {
