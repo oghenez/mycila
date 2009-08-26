@@ -73,7 +73,7 @@ public final class IntSequence implements Iterable<Integer> {
 
     @Override
     public Iterator<Integer> iterator() {
-        return ReadOnlySequenceIterator.on(pos == 0 ? IntRange.empty() : IntRange.range(0, pos), data);
+        return ReadOnlySequenceIterator.on(pos == 0 ? IntRange.empty() : IntRange.range(0, pos - 1), data);
     }
 
     public int[] internalArray() {
