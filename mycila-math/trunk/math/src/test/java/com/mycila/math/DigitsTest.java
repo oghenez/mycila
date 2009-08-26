@@ -55,6 +55,8 @@ public final class DigitsTest {
         assertEquals("reverse(1230)", Digits.base(10).reverse(1230), 321);
         assertEquals("reverse(1000)", Digits.base(10).reverse(1000), 1);
         assertEquals("reverse(9999)", Digits.base(10).reverse(9999), 9999);
+        assertEquals(Digits.base(10).reverse(new BigInteger("123456789123456789123456789")), new BigInteger("987654321987654321987654321"));
+        assertEquals(Digits.base(2).reverse(BigInteger.valueOf(733007751850L)).toString(), "366503875925"); // 101010101010101010101010101010101010101
     }
 
     @Test
@@ -70,6 +72,18 @@ public final class DigitsTest {
         assertEquals(Digits.base(10).rotate(1234, -3), 4123);
         assertEquals(Digits.base(10).rotate(1234, -4), 1234);
         assertEquals(Digits.base(10).rotate(1234, -5), 2341);
+
+        assertEquals(Digits.base(10).rotate(BigInteger.valueOf(1234), 0).intValue(), 1234);
+        assertEquals(Digits.base(10).rotate(BigInteger.valueOf(1234), 1).intValue(), 4123);
+        assertEquals(Digits.base(10).rotate(BigInteger.valueOf(1234), 2).intValue(), 3412);
+        assertEquals(Digits.base(10).rotate(BigInteger.valueOf(1234), 3).intValue(), 2341);
+        assertEquals(Digits.base(10).rotate(BigInteger.valueOf(1234), 4).intValue(), 1234);
+        assertEquals(Digits.base(10).rotate(BigInteger.valueOf(1234), 5).intValue(), 4123);
+        assertEquals(Digits.base(10).rotate(BigInteger.valueOf(1234), -1).intValue(), 2341);
+        assertEquals(Digits.base(10).rotate(BigInteger.valueOf(1234), -2).intValue(), 3412);
+        assertEquals(Digits.base(10).rotate(BigInteger.valueOf(1234), -3).intValue(), 4123);
+        assertEquals(Digits.base(10).rotate(BigInteger.valueOf(1234), -4).intValue(), 1234);
+        assertEquals(Digits.base(10).rotate(BigInteger.valueOf(1234), -5).intValue(), 2341);
         assertEquals(Digits.base(10).rotate(new BigInteger("123456789123456789123456789"), -5), new BigInteger("678912345678912345678912345"));
     }
 
@@ -135,6 +149,14 @@ public final class DigitsTest {
         assertEquals(Digits.base(10).list(1234567890).toString(), "{1, 2, 3, 4, 5, 6, 7, 8, 9, 0}");
         assertEquals(Digits.base(10).list(BigInteger.valueOf(9999999999L)).toString(), "{9, 9, 9, 9, 9, 9, 9, 9, 9, 9}");
         assertEquals(Digits.base(10).list(BigInteger.valueOf(1234567890)).toString(), "{1, 2, 3, 4, 5, 6, 7, 8, 9, 0}");
+        assertEquals(Digits.base(10).list(BigInteger.valueOf(9999999999L)).toString(), "{9, 9, 9, 9, 9, 9, 9, 9, 9, 9}");
+        assertEquals(Digits.base(10).list(BigInteger.valueOf(1234567890)).toString(), "{1, 2, 3, 4, 5, 6, 7, 8, 9, 0}");
+
+        long time = System.currentTimeMillis();
+        for (int j = 2; j < 11; j++)
+            for (long i = 10000000000L; i < 10000100000L; i++)
+                Digits.base(j).list(BigInteger.valueOf(i));
+        System.out.println(System.currentTimeMillis() - time);
     }
 
     @Test
@@ -158,7 +180,7 @@ public final class DigitsTest {
         assertEquals(Digits.base(10).sort(900002), 29);
         assertEquals(Digits.base(10).sort(9002), 29);
         assertEquals(Digits.base(10).sort(900200), 29);
-        assertEquals(Digits.base(2).sort(BigInteger.valueOf(733007751850L)).toString(), "11111111111111111111");
+        assertEquals(Digits.base(2).sort(BigInteger.valueOf(733007751850L)).toString(), "1048575"); // == 11111111111111111111
     }
 
     @Test

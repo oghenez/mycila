@@ -902,4 +902,12 @@ public final class IntSequence implements Iterable<Integer> {
         pos = pos + srcLen;
         return this;
     }
+
+    public static IntSequence from(int... array) {
+        IntSequence seq = new IntSequence(0);
+        seq.data = array;
+        seq.pos = array.length;
+        return seq;
+    }
+
 }

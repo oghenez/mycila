@@ -15,9 +15,9 @@
  */
 package euler;
 
-import com.mycila.distribution.Distribution;
-import com.mycila.distribution.Item;
-import com.mycila.distribution.SortOrder;
+import com.mycila.math.distribution.Distribution;
+import com.mycila.math.distribution.Item;
+import com.mycila.math.distribution.SortOrder;
 
 import static java.lang.System.*;
 import java.util.Scanner;

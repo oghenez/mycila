@@ -15,7 +15,7 @@
  */
 package com.mycila.math;
 
-import com.mycila.distribution.Distribution;
+import com.mycila.math.distribution.Distribution;
 import com.mycila.math.list.IntProcedure;
 import com.mycila.math.list.IntSequence;
 
@@ -28,11 +28,9 @@ import java.util.Arrays;
 public final class Digits {
 
     private final int base;
-    private final BigInteger bigBase;
 
     private Digits(int base) {
         this.base = base;
-        this.bigBase = BigInteger.valueOf(base);
     }
 
     /**
@@ -105,13 +103,7 @@ public final class Digits {
      * @return the representation of the number in this base
      */
     public BigInteger rebase(BigInteger number) {
-        BigInteger num = BigInteger.ZERO;
-        for (BigInteger p = BigInteger.ONE; number.signum() > 0; p = p.multiply(BigInteger.TEN)) {
-            final BigInteger qr[] = number.divideAndRemainder(bigBase);
-            num = num.add(p.multiply(qr[1]));
-            number = qr[0];
-        }
-        return num;
+        return new BigInteger(number.toString(base), 10);
     }
 
     /**
@@ -123,7 +115,7 @@ public final class Digits {
      * @return the list of digits
      */
     public IntSequence list(long number) {
-        IntSequence list = new IntSequence();
+        IntSequence list = new IntSequence(length(number));
         do list.add((int) (number % base));
         while ((number /= base) > 0);
         list.reverse();
@@ -139,15 +131,11 @@ public final class Digits {
      * @return the list of digits
      */
     public IntSequence list(BigInteger number) {
-        IntSequence list = new IntSequence();
-        BigInteger qr[];
-        do {
-            qr = number.divideAndRemainder(bigBase);
-            list.add(qr[1].intValue());
-        }
-        while ((number = qr[0]).signum() == 1);
-        list.reverse();
-        return list;
+        final String s = number.toString(base);
+        final int[] digits = new int[s.length()];
+        for (int i = s.length() - 1; i >= 0; i--)
+            digits[i] = s.charAt(i) - 48;
+        return IntSequence.from(digits);
     }
 
     /**
@@ -170,14 +158,7 @@ public final class Digits {
      * @return the digit sum
      */
     public int sum(BigInteger number) {
-        int sum = 0;
-        do {
-            final BigInteger[] qr = number.divideAndRemainder(bigBase);
-            sum += qr[1].intValue();
-            number = qr[0];
-        }
-        while (number.signum() == 1);
-        return sum;
+        return list(number).sum();
     }
 
     /**
@@ -217,13 +198,12 @@ public final class Digits {
      * @return the reversed number
      */
     public BigInteger reverse(BigInteger number) {
-        BigInteger reverse = BigInteger.ZERO;
-        while (number.signum() == 1) {
-            final BigInteger[] qr = number.divideAndRemainder(bigBase);
-            reverse = reverse.multiply(bigBase).add(qr[1]);
-            number = qr[0];
-        }
-        return reverse;
+        final String s = number.toString(base);
+        final int max = s.length() - 1;
+        final char chars[] = new char[max + 1];
+        for (int i = 0; i <= max; i++)
+            chars[i] = s.charAt(max - i);
+        return new BigInteger(String.valueOf(chars), base);
     }
 
     /**
@@ -258,6 +238,7 @@ public final class Digits {
      * @return The rotated number
      */
     public long rotate(long number, int offset) {
+        if (offset == 0) return number;
         final int len = length(number);
         offset %= len;
         if (offset == 0) return number;
@@ -278,12 +259,14 @@ public final class Digits {
      * @return The rotated number
      */
     public BigInteger rotate(BigInteger number, int offset) {
-        final int len = length(number);
+        if (offset == 0) return number;
+        final String s = number.toString(base);
+        final int len = s.length();
+        offset %= s.length();
         offset %= len;
         if (offset == 0) return number;
         if (offset < 0) offset = len + offset;
-        final BigInteger mask = bigBase.pow(offset);
-        return number.divide(mask).add((number.mod(mask).multiply(bigBase.pow(len - offset))));
+        return new BigInteger(s.substring(len - offset) + s.substring(0, len - offset), base);
     }
 
     /**
@@ -309,12 +292,11 @@ public final class Digits {
      *         The callback can return false at any time to stop processing.
      */
     public boolean each(BigInteger number, IntProcedure procedure) {
-        do {
-            final BigInteger[] qr = number.divideAndRemainder(bigBase);
-            if (!procedure.execute(qr[1].intValue())) return false;
-            number = qr[0];
-        }
-        while (number.signum() > 0);
+        final String s = number.toString(base);
+        final int max = s.length();
+        for (int i = 0; i < max; i++)
+            if (!procedure.execute(s.charAt(i) - 48))
+                return false;
         return true;
     }
 
@@ -322,7 +304,7 @@ public final class Digits {
      * Returns the distribution (frequencies) of the digits on this number
      *
      * @param number The number
-     * @return a {@link com.mycila.distribution.Distribution} containing all digit frequencies for this number
+     * @return a {@link com.mycila.math.distribution.Distribution} containing all digit frequencies for this number
      */
     public Distribution<Integer> map(long number) {
         final Distribution<Integer> distribution = Distribution.of(Integer.class);
@@ -337,15 +319,14 @@ public final class Digits {
      * Returns the distribution (frequencies) of the digits on this number
      *
      * @param number The number
-     * @return a {@link com.mycila.distribution.Distribution} containing all digit frequencies for this number
+     * @return a {@link com.mycila.math.distribution.Distribution} containing all digit frequencies for this number
      */
     public Distribution<Integer> map(BigInteger number) {
         final Distribution<Integer> distribution = Distribution.of(Integer.class);
-        do {
-            final BigInteger[] qr = number.divideAndRemainder(bigBase);
-            distribution.add(qr[1].intValue());
-            number = qr[0];
-        } while (number.signum() > 0);
+        final String s = number.toString(base);
+        final int max = s.length();
+        for (int i = 0; i < max; i++)
+            distribution.add(s.charAt(i) - 48);
         return distribution;
     }
 
@@ -408,10 +389,10 @@ public final class Digits {
      * @return The concatenated number
      */
     public BigInteger concat(BigInteger number, BigInteger... numbers) {
-        final StringBuilder sb = new StringBuilder().append(number);
+        final StringBuilder sb = new StringBuilder().append(number.toString(base));
         for (int i = 0, max = numbers.length; i < max; i++)
-            sb.append(numbers[i]);
-        return new BigInteger(sb.toString());
+            sb.append(numbers[i].toString(base));
+        return new BigInteger(sb.toString(), base);
     }
 
     /**
@@ -459,7 +440,7 @@ public final class Digits {
     public BigInteger sort(BigInteger number) {
         final char c[] = number.toString(base).toCharArray();
         Arrays.sort(c);
-        return new BigInteger(String.valueOf(c), 10);
+        return new BigInteger(String.valueOf(c), base);
     }
 
     /**
@@ -482,13 +463,7 @@ public final class Digits {
      * @return Its digit list
      */
     public IntSequence signature(BigInteger number) {
-        final char chars[] = number.toString(base).toCharArray();
-        final int len = chars.length;
-        Arrays.sort(chars);
-        final int[] digits = new int[len];
-        for (int i = 0; i < len; i++)
-            digits[i] = chars[i] - 48;
-        return new IntSequence(digits);
+        return list(number).sort();
     }
 
     /**
