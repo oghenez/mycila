@@ -43,10 +43,10 @@ public final class FactorialTest {
 
     @Test
     public void test_trivialDiv() {
-        assertEquals(Factorial.trivialDiv(0, 0), 1);
-        assertEquals(Factorial.trivialDiv(1, 1), 1);
-        assertEquals(Factorial.trivialDiv(2, 1), 2);
-        assertEquals(Factorial.trivialDiv(20L, 10L), 670442572800L);
+        assertEquals(Factorial.falling(0, 0), 1);
+        assertEquals(Factorial.falling(1, 1), 1);
+        assertEquals(Factorial.falling(2, 1), 2);
+        assertEquals(Factorial.falling(20L, 10L), 670442572800L);
     }
 
     @Test

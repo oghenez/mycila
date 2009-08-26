@@ -28,9 +28,9 @@ public final class Factorial {
      */
     private static final long[] factorials = new long[]
             {1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800,
-             479001600, 6227020800l, 87178291200l, 1307674368000l, 20922789888000l,
-             355687428096000l, 6402373705728000l, 121645100408832000l,
-             2432902008176640000l};
+                    479001600, 6227020800l, 87178291200l, 1307674368000l, 20922789888000l,
+                    355687428096000l, 6402373705728000l, 121645100408832000l,
+                    2432902008176640000l};
     private static final BigInteger TWO = valueOf(2);
 
     private Factorial() {
@@ -85,17 +85,15 @@ public final class Factorial {
     //TODO: factorial for big integers: http://www.luschny.de/math/factorial/index.html + http://www.luschny.de/math/factorial/java/PrimeSieve.java.html
 
     /**
-     * Computes <code>a! / b! for a > b</code>
-     * <p/>
-     * <b>Implementation:</b>
-     * <p/>
-     * Uses the trivial algorithm
+     * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">falling factorial</a>
+     * <code>(a)n = a! / (a-n)!</code>
      *
      * @param a A positive number
-     * @param b A positive number
+     * @param n A positive number
      * @return The factorial
      */
-    public static long trivialDiv(long a, long b) {
+    public static long falling(long a, long n) {
+        long b = a - n;
         b++;
         long res = a > 1 ? a : 1;
         while (a-- > b) res *= a;
@@ -103,17 +101,15 @@ public final class Factorial {
     }
 
     /**
-     * Computes <code>a! / b! for a > b</code>
-     * <p/>
-     * <b>Implementation:</b>
-     * <p/>
-     * Uses the trivial algorithm
+     * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">falling factorial</a>
+     * <code>(a)n = a! / (a-n)!</code>
      *
      * @param a A positive number
-     * @param b A positive number
+     * @param n A positive number
      * @return The factorial
      */
-    public static BigInteger trivialDiv(BigInteger a, BigInteger b) {
+    public static BigInteger falling(BigInteger a, BigInteger n) {
+        BigInteger b = a.subtract(n);
         BigInteger res = ONE;
         while (a.compareTo(b) > 0) {
             res = res.multiply(a);
@@ -121,5 +117,8 @@ public final class Factorial {
         }
         return res;
     }
+
+    //TODO: better multipliction algorithms: cf BigInteger.java.multiply() in TODO...
+    // - Karatsuba algorithm  · Toom–Cook multiplication · Schönhage–Strassen algorithm
 
 }
