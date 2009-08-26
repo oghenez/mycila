@@ -37,26 +37,26 @@ public final class ReadOnlySequenceIterator<T> implements Iterator<T> {
     }
 
     public static <T> Iterator<T> on(T... array) {
-        return on(IntRange.range(0, array.length - 1), array);
+        return on(array.length == 0 ? IntRange.empty() : IntRange.range(0, array.length - 1), array);
     }
 
     public static <T> Iterator<T> on(IntRange range, T... array) {
         return new ReadOnlySequenceIterator<T>(array, range);
     }
 
-    public static Iterator<Integer> on(int... array) {
-        return on(IntRange.range(0, array.length - 1), array);
+    public static Iterator<Integer> on(int[] array) {
+        return on(array.length == 0 ? IntRange.empty() : IntRange.range(0, array.length - 1), array);
     }
 
-    public static Iterator<Integer> on(IntRange range, int... array) {
+    public static Iterator<Integer> on(IntRange range, int[] array) {
         return new ReadOnlySequenceIterator<Integer>(array, range);
     }
 
-    public static Iterator<Long> on(long... array) {
-        return on(IntRange.range(0, array.length - 1), array);
+    public static Iterator<Long> on(long[] array) {
+        return on(array.length == 0 ? IntRange.empty() : IntRange.range(0, array.length - 1), array);
     }
 
-    public static Iterator<Long> on(IntRange range, long... array) {
+    public static Iterator<Long> on(IntRange range, long[] array) {
         return new ReadOnlySequenceIterator<Long>(array, range);
     }
 

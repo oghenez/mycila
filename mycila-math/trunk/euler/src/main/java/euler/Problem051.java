@@ -20,7 +20,7 @@ import com.mycila.distribution.Item;
 import com.mycila.distribution.Maximum;
 import com.mycila.math.Digits;
 import com.mycila.math.list.IntSequence;
-import com.mycila.math.prime.sieve.IntSieve;
+import com.mycila.math.prime.Sieve;
 import com.mycila.math.range.IntRange;
 
 import static java.lang.System.*;
@@ -42,7 +42,7 @@ class Problem051 {
         final Digits digits = Digits.base(10);
 
         // create a prime list containing only primes having N digits
-        final IntSieve primes = IntSieve.to((int) Math.pow(10, length) - 1);
+        final Sieve primes = Sieve.to((int) Math.pow(10, length) - 1);
         final IntSequence range = primes.asSequence(IntRange.range((int) Math.pow(10, length - 1), primes.range().to));
         System.out.println(range);
 

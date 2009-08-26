@@ -17,7 +17,7 @@ package euler;
 
 import com.mycila.math.Digits;
 import com.mycila.math.list.IntSequence;
-import com.mycila.math.prime.sieve.IntSieve;
+import com.mycila.math.prime.Sieve;
 
 import static java.lang.System.*;
 
@@ -30,7 +30,7 @@ class Problem035 {
     public static void main(String[] args) throws Exception {
         final long time = currentTimeMillis();
         // prime list before 1000000
-        final IntSieve sieve = IntSieve.to(1000000);
+        final Sieve sieve = Sieve.to(1000000);
         final IntSequence circulars = new IntSequence(sieve.size());
         final Digits digits = Digits.base(10);
         // for each prime, check if it is a circular prime

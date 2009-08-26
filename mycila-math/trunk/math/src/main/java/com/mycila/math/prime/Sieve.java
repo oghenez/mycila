@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.math.prime.sieve;
+package com.mycila.math.prime;
 
 import com.mycila.math.list.IntSequence;
 import com.mycila.math.list.ReadOnlySequenceIterator;
-import com.mycila.math.prime.PrimaltyTest;
-import com.mycila.math.prime.Primes;
 import com.mycila.math.range.IntRange;
 
 import java.math.BigInteger;
@@ -28,7 +26,7 @@ import java.util.Iterator;
 /**
  * @author Mathieu Carbou
  */
-public final class IntSieve {
+public final class Sieve {
 
     private int[] primes;
     private final IntRange sieveRange;
@@ -39,7 +37,7 @@ public final class IntSieve {
         }
     };
 
-    private IntSieve(IntRange sieveRange, int[] primes) {
+    private Sieve(IntRange sieveRange, int[] primes) {
         this.sieveRange = sieveRange;
         this.primes = primes;
     }
@@ -50,7 +48,7 @@ public final class IntSieve {
      * @param number The number to extend the sieve to
      * @return A new extended sieve
      */
-    public IntSieve growTo(int number) {
+    public Sieve growTo(int number) {
         if ((number & 1) == 0) number--;
         if (sieveRange.to >= number) return this;
         int maxNum = limit();
@@ -67,7 +65,7 @@ public final class IntSieve {
                 newPrimes[newPrimesPos++] = p;
         final int[] array = Arrays.copyOf(primes, primes.length + newPrimesPos);
         System.arraycopy(newPrimes, 0, array, primes.length, newPrimesPos);
-        return new IntSieve(sieveRange.extendTo(number), array);
+        return new Sieve(sieveRange.extendTo(number), array);
     }
 
     /**
@@ -76,7 +74,7 @@ public final class IntSieve {
      * @param numberOfPrimesToAdd Number of primes to add to this sieve
      * @return The new extended sieve.
      */
-    public IntSieve grow(int numberOfPrimesToAdd) {
+    public Sieve grow(int numberOfPrimesToAdd) {
         int pos = primes.length;
         final int max = pos + numberOfPrimesToAdd;
         final int[] newPrimes = Arrays.copyOf(primes, max);
@@ -88,7 +86,7 @@ public final class IntSieve {
         for (p = maxNum + 2; pos < max; p += 2)
             if (PrimaltyTest.isPrime(p, newPrimes, pos))
                 newPrimes[pos++] = p;
-        return new IntSieve(sieveRange.extendTo(newPrimes[pos - 1]), newPrimes);
+        return new Sieve(sieveRange.extendTo(newPrimes[pos - 1]), newPrimes);
     }
 
     private int limit() {
@@ -211,7 +209,7 @@ public final class IntSieve {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        IntSieve sieve = (IntSieve) o;
+        Sieve sieve = (Sieve) o;
         return Arrays.equals(primes, sieve.primes);
     }
 
@@ -290,9 +288,9 @@ public final class IntSieve {
      * @param max The maxmimu range for this sieve
      * @return The sieve
      */
-    public static IntSieve to(int max) {
+    public static Sieve to(int max) {
         IntRange range = IntRange.range(1, max);
-        return new IntSieve(range, buildPrimes(range));
+        return new Sieve(range, buildPrimes(range));
     }
 
     private static int[] buildPrimes(IntRange sieveRange) {
