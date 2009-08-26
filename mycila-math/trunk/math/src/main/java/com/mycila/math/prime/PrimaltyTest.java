@@ -92,7 +92,7 @@ public final class PrimaltyTest {
     }
 
     /**
-     * Primalty test using <a href="http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test">Miller–Rabin primality test<a/>.
+     * Primalty test using <a href="http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test">Miller-Rabin primality test<a/>.
      * <p/>
      * Using <a href="http://en.literateprograms.org/Miller-Rabin_primality_test_(Java)">this implementation</a> to cover all possible primes in 32bits.
      *
@@ -122,7 +122,7 @@ public final class PrimaltyTest {
     }
 
     /**
-     * Primalty test using <a href="http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test">Miller–Rabin primality test<a/>.
+     * Primalty test using <a href="http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test">Miller-Rabin primality test<a/>.
      * <p/>
      * Using <a href="http://en.literateprograms.org/Miller-Rabin_primality_test_(Java)">this implementation</a>.
      * <p/>
@@ -161,7 +161,7 @@ public final class PrimaltyTest {
      * @return true if it is a mersenne prime
      */
     /**
-     * Primalty test using <a href="http://en.wikipedia.org/wiki/Lucas%E2%80%93Lehmer_test_for_Mersenne_numbers">Lucas–Lehmer primality test<a/>
+     * Primalty test using <a href="http://en.wikipedia.org/wiki/Lucas%E2%80%93Lehmer_test_for_Mersenne_numbers">Lucas-Lehmer primality test<a/>
      * for <a href="http://en.wikipedia.org/wiki/Mersenne_prime">Mersenne primes</a>.
      * <p/>
      * Determine if Mp = 2^p - 1 is prime with p an odd prime

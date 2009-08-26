@@ -21,6 +21,7 @@ import com.mycila.math.prime.PrimaltyTest;
 import com.mycila.math.prime.Primes;
 import com.mycila.math.range.IntRange;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -30,7 +31,6 @@ import java.util.Iterator;
 public final class IntSieve {
 
     private int[] primes;
-    private final int maxPrime;
     private final IntRange sieveRange;
     private final Iterable<Integer> iterable = new Iterable<Integer>() {
         @Override
@@ -42,17 +42,22 @@ public final class IntSieve {
     private IntSieve(IntRange sieveRange, int[] primes) {
         this.sieveRange = sieveRange;
         this.primes = primes;
-        maxPrime = primes.length > 0 ? primes[primes.length - 1] : 0;
     }
 
+    /**
+     * Grow the sieve up to given number
+     *
+     * @param number The number to extend the sieve to
+     * @return A new extended sieve
+     */
     public IntSieve growTo(int number) {
         if ((number & 1) == 0) number--;
         if (sieveRange.to >= number) return this;
-        int maxNum = maxPrime * maxPrime;
+        int maxNum = limit();
         if (number < maxNum) maxNum = number;
         final int[] newPrimes = new int[Primes.getPiHighBound(number) - primes.length];
         int newPrimesPos = 0;
-        int p = maxPrime + 2;
+        int p = primes[primes.length - 1] + 2;
         for (; p <= maxNum; p += 2)
             if (PrimaltyTest.isPrime(p, primes, primes.length))
                 newPrimes[newPrimesPos++] = p;
@@ -65,12 +70,18 @@ public final class IntSieve {
         return new IntSieve(sieveRange.extendTo(number), array);
     }
 
+    /**
+     * Extend this Sieve to add more primes into.
+     *
+     * @param numberOfPrimesToAdd Number of primes to add to this sieve
+     * @return The new extended sieve.
+     */
     public IntSieve grow(int numberOfPrimesToAdd) {
         int pos = primes.length;
         final int max = pos + numberOfPrimesToAdd;
         final int[] newPrimes = Arrays.copyOf(primes, max);
-        final int maxNum = maxPrime * maxPrime;
-        int p = maxPrime + 2;
+        final int maxNum = limit();
+        int p = primes[primes.length - 1] + 2;
         for (; p < maxNum && pos < max; p += 2)
             if (PrimaltyTest.isPrime(p, primes, primes.length))
                 newPrimes[pos++] = p;
@@ -80,36 +91,117 @@ public final class IntSieve {
         return new IntSieve(sieveRange.extendTo(newPrimes[pos - 1]), newPrimes);
     }
 
-    public boolean isPrime(int number) {
-        return sieveRange.contains(number) ?
-                Arrays.binarySearch(primes, number) >= 0 :
-                PrimaltyTest.isPrime(number, primes, primes.length);
+    private int limit() {
+        if (primes.length == 0) throw new IllegalStateException("Sieve is empty !");
+        final long tmp = (long) primes[primes.length - 1] * (long) primes[primes.length - 1];
+        return tmp > Integer.MAX_VALUE || tmp < 0 ? Integer.MAX_VALUE : (int) tmp;
     }
 
+    /**
+     * Check wheter the number is prime.
+     * <p/>
+     * Implementation note:<br>
+     * - if the number is contained in the sieve range, check if the sieve contains the number.<br>
+     * - If number <= last()^2, check is some primes of this sieve divides the number
+     * - Otherwise, if the number is greater than last()^2, the Miller-Rabin test is executed
+     *
+     * @param number Numberto check
+     * @return True if it is prime
+     */
+    public boolean isPrime(int number) {
+        if (sieveRange.contains(number))
+            return Arrays.binarySearch(primes, number) >= 0;
+        if (number <= limit())
+            return PrimaltyTest.isPrime(number, primes, primes.length);
+        return PrimaltyTest.millerRabin(number);
+    }
+
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Primorial">Primorial</a> for all primes in this sieve
+     *
+     * @return The product of all primes in this Sieve
+     */
+    public BigInteger primorial() {
+        return primorial(sieveRange);
+    }
+
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Primorial">Primorial</a> for all primes from this Sieve contained in the provided range.
+     *
+     * @param range Th range of prime to include
+     * @return The product of all primes in this Sieve matching given range
+     */
+    public BigInteger primorial(IntRange range) {
+        range = primeIndexes(range);
+        BigInteger prd = BigInteger.ONE;
+        if (range.isEmpty()) return prd;
+        for (int i = range.from; i <= range.to; i++)
+            prd = prd.multiply(BigInteger.valueOf(primes[i]));
+        return prd;
+    }
+
+    /**
+     * The number of prime in the sieve
+     *
+     * @return The number of prime in the sieve
+     */
     public int size() {
         return primes.length;
     }
 
+    /**
+     * The range of numbers used to create the sieve
+     *
+     * @return A range
+     */
     public IntRange range() {
         return sieveRange;
     }
 
+    /**
+     * Get a prime
+     *
+     * @param pos Prime index in the sieve
+     * @return the prime
+     */
     public int get(int pos) {
         return primes[pos];
     }
 
+    /**
+     * Check wheter the Sieve contains a prime
+     *
+     * @param prime The prime
+     * @return True if the Sieve contains the prime
+     */
     public boolean contains(int prime) {
         return Arrays.binarySearch(primes, prime) >= 0;
     }
 
+    /**
+     * Get the first prime of this sieve
+     *
+     * @return the first prime of this sieve
+     */
     public int first() {
         return primes[0];
     }
 
+    /**
+     * Get the last prime of this sieve
+     *
+     * @return the last prime of this sieve
+     */
     public int last() {
         return primes[primes.length - 1];
     }
 
+    /**
+     * Get the index of a prime
+     *
+     * @param number Prime number
+     * @return the position of the prime in the sieve, starting from 0, or -1 if not found
+     */
     public int indexOf(int number) {
         final int pos = Arrays.binarySearch(primes, number);
         return pos >= 0 ? pos : -1;
@@ -133,10 +225,21 @@ public final class IntSieve {
         return Arrays.toString(primes);
     }
 
+    /**
+     * Returns an iterable over this prime to be used in for loops
+     *
+     * @return This Sieve's iterable
+     */
     public Iterable<Integer> iterable() {
         return iterable;
     }
 
+    /**
+     * Returns an iterable over the primes of this Sieve which are included in the given range
+     *
+     * @param range The range
+     * @return An iterable to be used in for loops
+     */
     public Iterable<Integer> iterable(final IntRange range) {
         return new Iterable<Integer>() {
             @Override
@@ -146,10 +249,21 @@ public final class IntSieve {
         };
     }
 
+    /**
+     * Create an {@link com.mycila.math.list.IntSequence} from the prime numbers of this Sieve
+     *
+     * @return an {@link com.mycila.math.list.IntSequence} containing all primes in order
+     */
     public IntSequence asSequence() {
         return new IntSequence(primes);
     }
 
+    /**
+     * Create an {@link com.mycila.math.list.IntSequence} from the prime numbers of this Sieve which are included in given range
+     *
+     * @param range The range of prime to select
+     * @return an {@link com.mycila.math.list.IntSequence} containing all primes in order which are contained in the range
+     */
     public IntSequence asSequence(IntRange range) {
         range = primeIndexes(range);
         if (range.isEmpty()) return new IntSequence(0);
@@ -170,6 +284,12 @@ public final class IntSieve {
                 IntRange.range(start, end);
     }
 
+    /**
+     * Build a Sieve up to this number.
+     *
+     * @param max The maxmimu range for this sieve
+     * @return The sieve
+     */
     public static IntSieve to(int max) {
         IntRange range = IntRange.range(1, max);
         return new IntSieve(range, buildPrimes(range));
