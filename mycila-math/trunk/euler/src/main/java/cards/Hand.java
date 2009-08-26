@@ -15,7 +15,7 @@
  */
 package cards;
 
-import com.mycila.distribution.Distribution;
+import com.mycila.math.distribution.Distribution;
 
 import java.util.ArrayList;
 import java.util.Arrays;

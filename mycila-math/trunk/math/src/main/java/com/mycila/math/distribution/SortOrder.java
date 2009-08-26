@@ -1,4 +1,4 @@
-package com.mycila.distribution;
+package com.mycila.math.distribution;
 
 /**
  * @author Mathieu Carbou

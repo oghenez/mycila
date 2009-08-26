@@ -15,10 +15,10 @@
  */
 package euler;
 
-import com.mycila.distribution.Distribution;
-import com.mycila.distribution.Item;
-import com.mycila.distribution.Maximum;
 import com.mycila.math.Digits;
+import com.mycila.math.distribution.Distribution;
+import com.mycila.math.distribution.Item;
+import com.mycila.math.distribution.Maximum;
 import com.mycila.math.list.IntSequence;
 import com.mycila.math.prime.Sieve;
 import com.mycila.math.range.IntRange;

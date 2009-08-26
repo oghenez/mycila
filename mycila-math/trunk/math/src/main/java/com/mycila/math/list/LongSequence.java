@@ -902,4 +902,12 @@ public final class LongSequence implements Iterable<Long> {
         pos = pos + srcLen;
         return this;
     }
+
+    public static LongSequence from(long... array) {
+        LongSequence seq = new LongSequence(0);
+        seq.data = array;
+        seq.pos = array.length;
+        return seq;
+    }
+
 }
