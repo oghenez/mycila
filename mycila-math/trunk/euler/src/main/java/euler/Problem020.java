@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.math.number.BigInteger;
+import com.mycila.math.number.BigInt;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=20
@@ -25,8 +25,8 @@ import com.mycila.math.number.BigInteger;
 class Problem020 {
     public static void main(String[] args) {
         long time = System.currentTimeMillis();
-        BigInteger res = BigInteger.big(1);
-        for (int i = 2; i <= 100; i++) res = res.multiply(BigInteger.big(i));
+        BigInt res = BigInt.big(1);
+        for (int i = 2; i <= 100; i++) res = res.multiply(BigInt.big(i));
         char[] digits = res.toString().toCharArray();
         long sum = 0;
         for (char digit : digits) sum += digit - 48;

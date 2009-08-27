@@ -1,6 +1,6 @@
 package com.mycila.math.number;
 
-import static com.mycila.math.number.BigInteger.*;
+import static com.mycila.math.number.BigInt.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -81,7 +81,7 @@ public final class JDKBigIntegerTest {
 
     @Test
     public void test_euclide_extended() {
-        BigInteger[] abc = big(123456789).euclidExtended(big(987654321));
+        BigInt[] abc = big(123456789).euclidExtended(big(987654321));
         assertEquals(abc[0], big(-8));
         assertEquals(abc[1], big(1));
         assertEquals(abc[2], big(9));

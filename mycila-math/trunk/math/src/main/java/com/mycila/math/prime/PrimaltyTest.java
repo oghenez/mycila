@@ -16,7 +16,7 @@
 package com.mycila.math.prime;
 
 import com.mycila.math.Mod;
-import com.mycila.math.number.BigInteger;
+import com.mycila.math.number.BigInt;
 
 import java.util.Random;
 
@@ -25,7 +25,7 @@ import java.util.Random;
  */
 public final class PrimaltyTest {
 
-    private static final BigInteger TWO = BigInteger.big(2);
+    private static final BigInt TWO = BigInt.big(2);
     private static final Random RANDOM = new Random();
 
     private PrimaltyTest() {
@@ -131,21 +131,21 @@ public final class PrimaltyTest {
      * @param number The number to test
      * @return True if it is prime
      */
-    public static boolean millerRabin(BigInteger number) {
+    public static boolean millerRabin(BigInt number) {
         for (int repeat = 0; repeat < 50; repeat++) {
-            BigInteger a;
-            do a = BigInteger.random(number.bitLength());
+            BigInt a;
+            do a = BigInt.random(number.bitLength());
             while (a.signum() == 0);
             if (!millerRabinPass(a, number)) return false;
         }
         return true;
     }
 
-    private static boolean millerRabinPass(BigInteger a, BigInteger n) {
-        final BigInteger n_minus_one = n.subtract(BigInteger.one());
+    private static boolean millerRabinPass(BigInt a, BigInt n) {
+        final BigInt n_minus_one = n.subtract(BigInt.one());
         final int s = n_minus_one.lowestSetBit();
-        BigInteger pow = a.modPow(n_minus_one.shiftRight(s), n);
-        if (pow.equals(BigInteger.one())) return true;
+        BigInt pow = a.modPow(n_minus_one.shiftRight(s), n);
+        if (pow.equals(BigInt.one())) return true;
         for (int i = 0; i < s - 1; i++) {
             if (pow.equals(n_minus_one)) return true;
             pow = pow.multiply(pow).mod(n);
@@ -175,11 +175,11 @@ public final class PrimaltyTest {
      */
     public static boolean lucasLehmer(int p) {
         if (p == 2) return true;
-        final BigInteger m = TWO.pow(p).subtract(BigInteger.one());
-        BigInteger s = BigInteger.big(4);
+        final BigInt m = TWO.pow(p).subtract(BigInt.one());
+        BigInt s = BigInt.big(4);
         for (int i = 0; i < p - 2; i++)
             s = s.multiply(s).subtract(TWO).mod(m);
-        return s.equals(BigInteger.zero());
+        return s.equals(BigInt.zero());
     }
 
 }

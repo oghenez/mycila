@@ -1,7 +1,7 @@
 package com.mycila.math;
 
-import com.mycila.math.number.BigInteger;
-import static com.mycila.math.number.BigInteger.*;
+import com.mycila.math.number.BigInt;
+import static com.mycila.math.number.BigInt.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -12,7 +12,7 @@ public final class Product {
     }
 
     //TODO: improve perf
-    public static BigInteger productBig(int[] numbers, int offset, int length) {
+    public static BigInt productBig(int[] numbers, int offset, int length) {
         if (offset < 0 || offset + length > numbers.length)
             throw new IllegalArgumentException("Bad offset or length: " + offset + " / " + length);
         if (length < 3) {
@@ -20,7 +20,7 @@ public final class Product {
             if (length == 1) return big(numbers[offset]);
             return big((long) numbers[offset] * (long) numbers[offset + 1]);
         }
-        BigInteger product = one();
+        BigInt product = one();
         int i = offset + length - 2;
         // Integer.MAX_VALUE * Integer.MAX_VALUE fits in a long, so we can multiply both at once
         for (; i >= offset; i -= 2)

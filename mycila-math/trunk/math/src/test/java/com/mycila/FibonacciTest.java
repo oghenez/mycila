@@ -15,7 +15,7 @@
  */
 package com.mycila;
 
-import com.mycila.math.number.BigInteger;
+import com.mycila.math.number.BigInt;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -37,8 +37,8 @@ public final class FibonacciTest {
     public void test_gen() {
         for (int i = 0, max = expected.length; i < max; i++) {
             assertEquals(Fibonacci.binet(i), expected[i]);
-            assertEquals(Fibonacci.iterative(i), BigInteger.big(expected[i]));
-            assertEquals(Fibonacci.logarithmic(i), BigInteger.big(expected[i]));
+            assertEquals(Fibonacci.iterative(i), BigInt.big(expected[i]));
+            assertEquals(Fibonacci.logarithmic(i), BigInt.big(expected[i]));
         }
     }
 

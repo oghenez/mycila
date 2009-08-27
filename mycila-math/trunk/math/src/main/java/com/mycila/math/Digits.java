@@ -18,7 +18,7 @@ package com.mycila.math;
 import com.mycila.math.distribution.Distribution;
 import com.mycila.math.list.IntProcedure;
 import com.mycila.math.list.IntSequence;
-import com.mycila.math.number.BigInteger;
+import com.mycila.math.number.BigInt;
 
 import java.util.Arrays;
 
@@ -218,7 +218,7 @@ public final class Digits {
      * @return True if all digits have been processed.
      *         The callback can return false at any time to stop processing.
      */
-    public boolean each(BigInteger number, IntProcedure procedure) {
+    public boolean each(BigInt number, IntProcedure procedure) {
         final String s = number.toString(base);
         final int max = s.length();
         for (int i = 0; i < max; i++)
@@ -248,7 +248,7 @@ public final class Digits {
      * @param number The number
      * @return a {@link com.mycila.math.distribution.Distribution} containing all digit frequencies for this number
      */
-    public Distribution<Integer> map(BigInteger number) {
+    public Distribution<Integer> map(BigInt number) {
         final Distribution<Integer> distribution = Distribution.of(Integer.class);
         final String s = number.toString(base);
         final int max = s.length();

@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.math.number.BigInteger;
+import com.mycila.math.number.BigInt;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=15
@@ -38,13 +38,13 @@ class Problem015 {
         // R(n) = [(n+1)*P(1,n)*P(n+1,2n)]/[P(1,n+1)*P(1,n)]
         // R(n) = [(n+1)*P(n+1,2n)]/[P(1,n+1)]
         // R(n) = P(n+1,2n)/P(1,n)
-        BigInteger r = p(21, 40).divide(p(1, 20));
+        BigInt r = p(21, 40).divide(p(1, 20));
         System.out.println(r + " in " + (System.currentTimeMillis() - time) + "ms");
     }
 
-    private static BigInteger p(long a, long b) {
-        BigInteger res = BigInteger.big(b);
-        while (b-- > a) res = res.multiply(BigInteger.big(b));
+    private static BigInt p(long a, long b) {
+        BigInt res = BigInt.big(b);
+        while (b-- > a) res = res.multiply(BigInt.big(b));
         return res;
     }
 }

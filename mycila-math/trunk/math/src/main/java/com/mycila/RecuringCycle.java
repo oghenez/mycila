@@ -16,7 +16,7 @@
 package com.mycila;
 
 import com.mycila.math.Format;
-import com.mycila.math.number.BigInteger;
+import com.mycila.math.number.BigInt;
 
 /**
  * @author Mathieu Carbou
@@ -24,18 +24,18 @@ import com.mycila.math.number.BigInteger;
 public final class RecuringCycle {
 
     private int length = 0;
-    private BigInteger cycle = BigInteger.zero();
+    private BigInt cycle = BigInt.zero();
     private final int prime;
 
     private RecuringCycle(int prime) {
         this.prime = prime;
         // if p is prime, we check the least number that satisfy 10^l mod p = 1
-        BigInteger p = BigInteger.big(prime);
+        BigInt p = BigInt.big(prime);
         for (int l = 1; l < prime; l++) {
-            BigInteger[] qr = BigInteger.ten().pow(l).divideAndRemainder(p);
+            BigInt[] qr = BigInt.ten().pow(l).divideAndRemainder(p);
             // qr[0] is the quotient. It is also equals to the cycle get 1/primeNumber
             // qr[1] is the remainder.
-            if (qr[1].equals(BigInteger.one())) {
+            if (qr[1].equals(BigInt.one())) {
                 // we found the length l get the cycle get 1/p
                 cycle = qr[0];
                 length = l;
@@ -48,7 +48,7 @@ public final class RecuringCycle {
         return length;
     }
 
-    public BigInteger cycle() {
+    public BigInt cycle() {
         return cycle;
     }
 

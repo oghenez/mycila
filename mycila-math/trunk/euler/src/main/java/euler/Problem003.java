@@ -15,8 +15,8 @@
  */
 package euler;
 
-import com.mycila.math.number.BigInteger;
-import static com.mycila.math.number.BigInteger.*;
+import com.mycila.math.number.BigInt;
+import static com.mycila.math.number.BigInt.*;
 
 import static java.lang.Math.*;
 import static java.lang.System.*;
@@ -103,15 +103,15 @@ class Problem003 {
         return factors;
     }
 
-    public static List<BigInteger> factor(BigInteger n) {
-        List<BigInteger> factors = new LinkedList<BigInteger>();
+    public static List<BigInt> factor(BigInt n) {
+        List<BigInt> factors = new LinkedList<BigInt>();
         if (n.signum() == -1) {
             n = n.abs();
         }
         if (n.signum() == 0 || n.equals(one())) {
             return factors;
         }
-        for (BigInteger p = big(2); p.compareTo(n) <= 0; p = p.nextPrime())
+        for (BigInt p = big(2); p.compareTo(n) <= 0; p = p.nextPrime())
             while (n.remainder(p).signum() == 0) {
                 n = n.divide(p);
                 factors.add(p);

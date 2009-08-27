@@ -15,7 +15,7 @@
  */
 package com.mycila;
 
-import com.mycila.math.number.BigInteger;
+import com.mycila.math.number.BigInt;
 
 import static java.lang.Math.*;
 
@@ -57,7 +57,7 @@ public final class Fibonacci {
         return round(pow(GOLD, i) / SQRT_5);
     }
 
-    public static BigInteger iterative(long i) {
+    public static BigInt iterative(long i) {
         if (i <= MAX_FIB_FOR_LONG) {
             long first = 0, second = 1;
             while (i-- > 0) {
@@ -65,11 +65,11 @@ public final class Fibonacci {
                 first = second;
                 second = tmp;
             }
-            return BigInteger.big(first);
+            return BigInt.big(first);
         } else {
-            BigInteger first = BigInteger.zero(), second = BigInteger.one();
+            BigInt first = BigInt.zero(), second = BigInt.one();
             while (i-- > 0) {
-                BigInteger tmp = first.add(second);
+                BigInt tmp = first.add(second);
                 first = second;
                 second = tmp;
             }
@@ -77,7 +77,7 @@ public final class Fibonacci {
         }
     }
 
-    public static BigInteger logarithmic(long i) {
+    public static BigInt logarithmic(long i) {
         if (i > MAX_FIB_FOR_LONG)
             throw new UnsupportedOperationException("Fibonacci.Logarithmic() not implemented for numbers > " + MAX_FIB_FOR_LONG);
         long a = 1, b = 0;
@@ -88,7 +88,7 @@ public final class Fibonacci {
             a = aa;
             c >>>= 1;
         }
-        return BigInteger.big(b);
+        return BigInt.big(b);
     }
 
 }

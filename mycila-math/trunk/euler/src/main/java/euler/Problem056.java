@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.math.number.BigInteger;
+import com.mycila.math.number.BigInt;
 
 import static java.lang.System.*;
 import java.util.TreeSet;
@@ -30,14 +30,14 @@ class Problem056 {
     public static void main(String[] args) throws Exception {
         long time = currentTimeMillis();
 
-        System.out.println("Maximum digits: " + BigInteger.big(99).pow(99).toString().length());
-        System.out.println("Sum for 99^99:" + BigInteger.big(99).pow(99).digitsSum());
-        System.out.println("Sum for 90^90:" + BigInteger.big(90).pow(90).digitsSum());
+        System.out.println("Maximum digits: " + BigInt.big(99).pow(99).toString().length());
+        System.out.println("Sum for 99^99:" + BigInt.big(99).pow(99).digitsSum());
+        System.out.println("Sum for 90^90:" + BigInt.big(90).pow(90).digitsSum());
 
         final TreeSet<String> results = new TreeSet<String>();
         for (int a = 91; a <= 99; a++)
             for (int b = 91; b <= 99; b++)
-                results.add(BigInteger.big(a).pow(b).digitsSum() + " for " + a + "^" + b);
+                results.add(BigInt.big(a).pow(b).digitsSum() + " for " + a + "^" + b);
         for (String result : results)
             System.out.println(result);
         out.println(results.last() + " in " + (currentTimeMillis() - time) + "ms");

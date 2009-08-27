@@ -18,8 +18,8 @@ package com.mycila.math.prime;
 import com.mycila.math.Product;
 import com.mycila.math.list.IntSequence;
 import com.mycila.math.list.ReadOnlySequenceIterator;
-import com.mycila.math.number.BigInteger;
-import static com.mycila.math.number.BigInteger.*;
+import com.mycila.math.number.BigInt;
+import static com.mycila.math.number.BigInt.*;
 import com.mycila.math.range.IntRange;
 
 import java.util.Arrays;
@@ -123,7 +123,7 @@ public final class Sieve {
      *
      * @return The product of all primes in this Sieve
      */
-    public BigInteger primorial() {
+    public BigInt primorial() {
         return primorial(sieveRange.from, sieveRange.to);
     }
 
@@ -134,7 +134,7 @@ public final class Sieve {
      * @param to   The maximum number in the range
      * @return The product of all primes in this Sieve matching given range
      */
-    public BigInteger primorial(int from, int to) {
+    public BigInt primorial(int from, int to) {
         IntRange range = primeIndexes(from, to);
         if (range.isEmpty() || range.length() == 0) return one();
         return Product.productBig(primes, range.from, range.length());
