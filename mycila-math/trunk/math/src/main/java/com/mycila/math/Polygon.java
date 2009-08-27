@@ -35,7 +35,7 @@ public final class Polygon {
     }
 
     public static long pentagonal(long index) {
-        return (index * (3 * index - 1)) >> 1;
+        return (index * (3 * index - 1)) >>> 1;
     }
 
     public static long isPentagonal(long number) {
@@ -44,7 +44,7 @@ public final class Polygon {
     }
 
     public static long triangle(long index) {
-        return (index * (index + 1)) >> 1;
+        return (index * (index + 1)) >>> 1;
     }
 
     public static long isTriangle(long number) {
@@ -62,7 +62,7 @@ public final class Polygon {
     }
 
     public static long heptagonal(long index) {
-        return (index * (5 * index - 3)) >> 1;
+        return (index * (5 * index - 3)) >>> 1;
     }
 
     public static long isHeptagonal(long number) {

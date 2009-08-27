@@ -56,7 +56,7 @@ public final class Pandigital {
         for (; mask <= 512 && (bitset & mask) == 0; mask <<= 1) from++;
         int to = from;
         for (; mask <= 512 && (bitset & mask) == mask; mask <<= 1) to++;
-        return (bitset >> to) == 0 ? IntRange.range(from, to - 1) : null;
+        return (bitset >>> to) == 0 ? IntRange.range(from, to - 1) : null;
     }
 
     public static Pandigital base(int base) {

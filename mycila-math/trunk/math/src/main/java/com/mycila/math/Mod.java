@@ -62,7 +62,7 @@ public final class Mod {
         while (exp > 0) {
             if ((exp & 1) == 1) result = (result * power) % mod;
             power = (power * power) % mod;
-            exp >>= 1;
+            exp >>>= 1;
         }
         return (int) result;
     }
@@ -76,7 +76,7 @@ public final class Mod {
         while (exp > 0) {
             if ((exp & 1) == 1) result = (result * power) % mod;
             power = (power * power) % mod;
-            exp >>= 1;
+            exp >>>= 1;
         }
         return result;
     }

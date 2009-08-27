@@ -33,7 +33,7 @@ public final class Sequence {
      * @return The sum from start to end
      */
     public static int sum(int start, int end) {
-        return ((end - start + 1) * (start + end)) >> 1;
+        return ((end - start + 1) * (start + end)) >>> 1;
     }
 
     /**
@@ -47,7 +47,7 @@ public final class Sequence {
         final LongSequence sequence = new LongSequence();
         if (number > 0) {
             for (; number > 1; sequence.add(number), number = (number & 1) == 0 ?
-                    number >> 1 :
+                    number >>> 1 :
                     (number << 1) + number + 1)
                 ;
             sequence.add(1L);

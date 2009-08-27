@@ -110,7 +110,7 @@ public final class PrimaltyTest {
     private static boolean millerRabinPass(final int a, final int n) {
         int d = n - 1;
         int s = Integer.numberOfTrailingZeros(d);
-        d >>= s;
+        d >>>= s;
         int a_to_power = Mod.pow(a, d, n);
         s--;
         if (a_to_power == 1) return true;

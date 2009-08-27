@@ -320,7 +320,7 @@ final class JDKBigInteger extends BigInteger {
         if (isPalindromic != null) return isPalindromic;
         final String s = toString();
         final int len = s.length() - 1;
-        for (int i = (s.length() - 1) >> 1; i >= 0; i--)
+        for (int i = (s.length() - 1) >>> 1; i >= 0; i--)
             if (s.charAt(i) != s.charAt(len - i))
                 return (isPalindromic = false);
         return (isPalindromic = true);
@@ -367,7 +367,7 @@ final class JDKBigInteger extends BigInteger {
         if (impl.signum() == 0 || impl.equals(java.math.BigInteger.ONE))
             return new BigInteger[]{this, zero()};
         java.math.BigInteger lastGuess = java.math.BigInteger.ZERO;
-        java.math.BigInteger guess = java.math.BigInteger.ONE.shiftLeft(bitLength() >> 1);
+        java.math.BigInteger guess = java.math.BigInteger.ONE.shiftLeft(bitLength() >>> 1);
         java.math.BigInteger test = lastGuess.subtract(guess);
         java.math.BigInteger remainder = impl.subtract(guess.pow(2));
         while (test.signum() != 0 && !test.equals(java.math.BigInteger.ONE) || remainder.signum() < 0) {

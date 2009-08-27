@@ -92,7 +92,7 @@ class Problem003 {
             return factors;
         }
         while ((n & 1L) == 0L) {
-            n >>= 1L;
+            n >>>= 1L;
             factors.add(2L);
         }
         for (long p = 3L; p <= n; p += 2)
