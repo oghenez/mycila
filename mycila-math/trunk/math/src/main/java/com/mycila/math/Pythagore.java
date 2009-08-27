@@ -37,11 +37,11 @@ public final class Pythagore {
      */
     public static List<IntTriplet> triplet(int sum) {
         List<IntTriplet> set = new ArrayList<IntTriplet>();
-        sum >>= 1;
+        sum >>>= 1;
         for (int m = 2, max = (int) (Math.sqrt(sum) + 1); m < max; m++) {
             if (sum % m == 0) {
                 int sm = sum / m;
-                while ((sm & 1) == 0) sm >>= 1;
+                while ((sm & 1) == 0) sm >>>= 1;
                 for (int k = (m & 1) == 1 ? m + 2 : m + 1, m2 = m << 1; k < m2 && k <= sm; k += 2) {
                     if (sm % k == 0 && Divisors.gcd(k, m) == 1) {
                         int d = sum / (k * m);
@@ -63,11 +63,11 @@ public final class Pythagore {
      */
     public static List<LongTriplet> triplet(long sum) {
         List<LongTriplet> set = new ArrayList<LongTriplet>();
-        sum >>= 1;
+        sum >>>= 1;
         for (long m = 2, max = (long) (Math.sqrt(sum) + 1); m < max; m++) {
             if (sum % m == 0) {
                 long sm = sum / m;
-                while ((sm & 1) == 0) sm >>= 1;
+                while ((sm & 1) == 0) sm >>>= 1;
                 for (long k = (m & 1) == 1 ? m + 2 : m + 1, m2 = m << 1; k < m2 && k <= sm; k += 2) {
                     if (sm % k == 0 && Divisors.gcd(k, m) == 1) {
                         long d = sum / (k * m);

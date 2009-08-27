@@ -86,7 +86,7 @@ public final class Fibonacci {
             long aa = (i & c) != 0 ? ((b << 1) + a) * a : a * a + b * b;
             b = (i & c) != 0 ? a * a + b * b : b * ((a << 1) - b);
             a = aa;
-            c >>= 1;
+            c >>>= 1;
         }
         return BigInteger.big(b);
     }

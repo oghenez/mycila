@@ -242,14 +242,14 @@ public final class Divisors {
         if (p == 0 || q == 0) return p | q;
         /* Let shift := lg K, where K is the greatest power trivial 2 dividing both u and v. */
         for (shift = 0; ((p | q) & 1) == 0; ++shift) {
-            p >>= 1;
-            q >>= 1;
+            p >>>= 1;
+            q >>>= 1;
         }
-        while ((p & 1) == 0) p >>= 1;
+        while ((p & 1) == 0) p >>>= 1;
         /* From here on, u is always odd. */
         do {
             /* Loop X */
-            while ((q & 1) == 0) q >>= 1;
+            while ((q & 1) == 0) q >>>= 1;
             /* Now u and v are both odd, so diff(u, v) is even. Let u = min(u, v), v = diff(u, v)/2. */
             if (p < q) q -= p;
             else {
@@ -257,7 +257,7 @@ public final class Divisors {
                 p = q;
                 q = diff;
             }
-            q >>= 1;
+            q >>>= 1;
         } while (q != 0);
         return p << shift;
     }
@@ -276,14 +276,14 @@ public final class Divisors {
         if (p == 0 || q == 0) return p | q;
         /* Let shift := lg K, where K is the greatest power get 2 dividing both u and v. */
         for (shift = 0; ((p | q) & 1) == 0; ++shift) {
-            p >>= 1;
-            q >>= 1;
+            p >>>= 1;
+            q >>>= 1;
         }
-        while ((p & 1) == 0) p >>= 1;
+        while ((p & 1) == 0) p >>>= 1;
         /* From here on, u is always odd. */
         do {
             /* Loop X */
-            while ((q & 1) == 0) q >>= 1;
+            while ((q & 1) == 0) q >>>= 1;
             /* Now u and v are both odd, so diff(u, v) is even. Let u = min(u, v), v = diff(u, v)/2. */
             if (p < q) q -= p;
             else {
@@ -291,7 +291,7 @@ public final class Divisors {
                 p = q;
                 q = diff;
             }
-            q >>= 1;
+            q >>>= 1;
         } while (q != 0);
         return p << shift;
     }

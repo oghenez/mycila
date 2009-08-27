@@ -75,7 +75,7 @@ public final class Decomposition {
             if ((number & 1) == 0) {
                 Factor factor = Factor.valueOf(2);
                 decomp.add(factor);
-                while (((np >>= 1) & 1) == 0)
+                while (((np >>>= 1) & 1) == 0)
                     factor.incrementExponent();
             }
             int p = 3;

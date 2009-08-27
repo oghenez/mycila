@@ -39,7 +39,7 @@ class Problem046 {
                 else {
                     int pos = -1;
                     for (int pIndex = 1, max = primes.size(), p; pIndex < max && (p = primes.getQuick(pIndex)) < i; pIndex++) {
-                        pos = squares.binarySearch((i - p) >> 1);
+                        pos = squares.binarySearch((i - p) >>> 1);
                         if (pos >= 0) {
                             //out.println(i + "=" + p + "+2*" + squares.getQuick(pos));
                             break;

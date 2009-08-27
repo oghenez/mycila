@@ -31,7 +31,7 @@ class Problem053 {
         int count = 0;
         final BigInteger LIMIT = BigInteger.big(1000000);
         for (int n = 23; n <= 100; n++) {
-            for (int p = 2, max = n >> 1; p <= max; p++) {
+            for (int p = 2, max = n >>> 1; p <= max; p++) {
                 final BigInteger c = Combinations.binomial(n, p);
                 if (c.compareTo(LIMIT) > 0)
                     count += p << 1 == n ? 1 : 2;

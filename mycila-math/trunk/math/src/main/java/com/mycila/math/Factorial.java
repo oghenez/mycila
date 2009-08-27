@@ -60,7 +60,7 @@ public final class Factorial {
         final double pow2Count = Math.log(number) * 1.4426950408889634D;
         final int[] primeList = new int[(int) (2.0 * ((int) Math.sqrt(number) + number / (pow2Count - 1)))];
         int[] toStwing = new int[(int) pow2Count];
-        for (int i = toStwing.length - 1, n = number; i >= 0; i--, n >>= 1)
+        for (int i = toStwing.length - 1, n = number; i >= 0; i--, n >>>= 1)
             toStwing[i] = n;
         BigInteger recFactorial = one();
         for (int i = 0, max = toStwing.length; i < max; i++)
@@ -82,7 +82,7 @@ public final class Factorial {
             if (p > 1) primeList[count++] = p;
         }
         for (int prime : pIter1) if (((number / prime) & 1) == 1) primeList[count++] = prime;
-        BigInteger primorial = sieve.primorial((number >> 1) + 1, number);
+        BigInteger primorial = sieve.primorial((number >>> 1) + 1, number);
         return primorial.multiply(Product.productBig(primeList, 0, count));
     }
 

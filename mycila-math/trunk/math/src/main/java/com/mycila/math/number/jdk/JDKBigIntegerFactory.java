@@ -20,7 +20,7 @@ public final class JDKBigIntegerFactory implements BigIntegerFactory {
 
     @Override
     public BigInteger create(int number) {
-        return (number >> 12) == 0 ?
+        return (number >>> 12) == 0 ?
                 CACHE[number] :
                 new JDKBigInteger(java.math.BigInteger.valueOf(number), 10);
     }
