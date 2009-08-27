@@ -548,4 +548,27 @@ public abstract class BigInteger implements Comparable<BigInteger> {
      * @return the radix
      */
     public abstract int radix();
+
+    /**
+     * Compute the <a href="http://en.wikipedia.org/wiki/Extended_Euclidean_algorithm">Extended Euclidean algorithm</a>.
+     * <p/>
+     * <b>Implementation:</b>
+     * <p/>
+     * Uses <a href="http://en.literateprograms.org/Extended_Euclidean_algorithm_(Python)">this algorithm</a>
+     * <p/>
+     * <b>Notes:</b>
+     * <p/>
+     * For 'this' and 'val', this algorithm finds (a, b, c) such that <code>this * a + val * b = c = this.gcd(val)</code>.
+     *
+     * @param val a number
+     * @return An array of length 3 containing the values a, b, c at respective positions 0, 1, 2
+     */
+    public abstract BigInteger[] euclidExtended(BigInteger val);
+
+    /**
+     * Compute the <a href="http://en.wikipedia.org/wiki/Integer_square_root">integer square root</a> of a number.
+     *
+     * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>2</sup> + r = number</code>.
+     */
+    public abstract BigInteger[] sqrtInt();
 }
