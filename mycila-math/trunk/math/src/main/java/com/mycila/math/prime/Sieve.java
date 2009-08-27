@@ -15,6 +15,7 @@
  */
 package com.mycila.math.prime;
 
+import com.mycila.math.Product;
 import com.mycila.math.list.IntSequence;
 import com.mycila.math.list.ReadOnlySequenceIterator;
 import com.mycila.math.number.BigInteger;
@@ -135,11 +136,8 @@ public final class Sieve {
      */
     public BigInteger primorial(int from, int to) {
         IntRange range = primeIndexes(from, to);
-        BigInteger prd = one();
-        if (range.isEmpty()) return prd;
-        for (int i = range.from; i <= range.to; i++)
-            prd = prd.multiply(big(primes[i]));
-        return prd;
+        if (range.isEmpty() || range.length() == 0) return one();
+        return Product.productBig(primes, range.from, range.length());
     }
 
     /**
@@ -321,9 +319,10 @@ public final class Sieve {
         if (start >= primes.length) return IntRange.range(primes.length - 1, primes.length - 1);
         int end = Arrays.binarySearch(primes, to);
         if (end < 0) end = -end - 2;
-        return end >= primes.length ?
-                IntRange.range(start, primes.length - 1) :
-                IntRange.range(start, end);
+        return end < start ? IntRange.empty() :
+                end >= primes.length ?
+                        IntRange.range(start, primes.length - 1) :
+                        IntRange.range(start, end);
     }
 
     /**

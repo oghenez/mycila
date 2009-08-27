@@ -15,7 +15,7 @@
  */
 package com.mycila.math.prime;
 
-import com.mycila.math.number.BigInteger;
+import static com.mycila.math.number.BigInteger.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -39,8 +39,12 @@ public final class SieveTest {
     @Test
     public void test_primorial() {
         Sieve sieve = Sieve.to(20);
-        assertEquals(sieve.primorial(), BigInteger.big(9699690));
-        assertEquals(sieve.primorial(4, 12), BigInteger.big(385));
+        assertEquals(sieve.primorial(), big(9699690));
+        assertEquals(sieve.primorial(4, 12), big(385));
+        assertEquals(sieve.primorial(4, 4), big(1));
+        assertEquals(sieve.primorial(0, 0), big(1));
+        assertEquals(sieve.primorial(0, 1), big(1));
+        assertEquals(sieve.primorial(0, 2), big(2));
     }
 
     @Test

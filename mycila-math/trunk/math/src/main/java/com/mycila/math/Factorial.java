@@ -68,10 +68,6 @@ public final class Factorial {
         return recFactorial.shiftLeft(number - Integer.bitCount(number));
     }
 
-    /*private static BigInteger recFactorial(int number) {
-        return number < 2 ? BigInteger.one() : recFactorial(number / 2).pow(2).multiply(swing(number));
-    }*/
-
     private static final int[] smallOddSwing = {1, 1, 1, 3, 3, 15, 5, 35, 35, 315, 63, 693, 231, 3003, 429, 6435, 6435, 109395, 12155, 230945, 46189, 969969, 88179, 2028117, 676039, 16900975, 1300075, 35102025, 5014575, 145422675, 9694845, 300540195, 300540195};
 
     private static BigInteger swing(final int number, Sieve sieve, int[] primeList) {
@@ -124,7 +120,7 @@ public final class Factorial {
         return res;
     }
 
-    //TODO: better multipliction algorithms: cf BigInteger.java.multiply() in TODO...
+    //TODO: better multipliction + pow algorithms: cf BigInteger.java in TODO...
     // - Karatsuba algorithm  · Toom–Cook multiplication · Schönhage–Strassen algorithm
 
 }
