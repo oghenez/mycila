@@ -15,10 +15,9 @@
  */
 package com.mycila;
 
+import com.mycila.math.number.BigInteger;
 import static org.junit.Assert.*;
 import org.junit.Test;
-
-import java.math.BigInteger;
 
 /**
  * @author Mathieu Carbou
@@ -29,17 +28,17 @@ public final class RecuringCycleTest {
     public void test() {
         RecuringCycle recuringCycle = RecuringCycle.of(2);
         assertEquals(recuringCycle.length(), 0);
-        assertEquals(recuringCycle.cycle(), BigInteger.ZERO);
+        assertEquals(recuringCycle.cycle(), BigInteger.zero());
         System.out.println(recuringCycle);
 
         recuringCycle = RecuringCycle.of(5);
         assertEquals(recuringCycle.length(), 0);
-        assertEquals(recuringCycle.cycle(), BigInteger.ZERO);
+        assertEquals(recuringCycle.cycle(), BigInteger.zero());
         System.out.println(recuringCycle);
 
         recuringCycle = RecuringCycle.of(3);
         assertEquals(recuringCycle.length(), 1);
-        assertEquals(recuringCycle.cycle(), BigInteger.valueOf(3));
+        assertEquals(recuringCycle.cycle(), BigInteger.big(3));
         System.out.println(recuringCycle);
 
         recuringCycle = RecuringCycle.of(983);

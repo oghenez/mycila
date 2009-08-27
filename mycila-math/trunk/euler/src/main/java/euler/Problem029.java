@@ -15,7 +15,8 @@
  */
 package euler;
 
-import java.math.BigInteger;
+import com.mycila.math.number.BigInteger;
+
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -30,7 +31,7 @@ class Problem029 {
         Set<BigInteger> numbers = new TreeSet<BigInteger>();
         for (int i = 2; i <= 100; i++)
             for (int j = 2; j <= 100; j++)
-                numbers.add(BigInteger.valueOf(i).pow(j));
+                numbers.add(BigInteger.big(i).pow(j));
         System.out.println(numbers.size() + " in " + (System.currentTimeMillis() - time) + "ms");
     }
 }

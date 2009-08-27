@@ -16,29 +16,26 @@
 package com.mycila;
 
 import com.mycila.math.Format;
-
-import java.math.BigInteger;
+import com.mycila.math.number.BigInteger;
 
 /**
  * @author Mathieu Carbou
  */
 public final class RecuringCycle {
 
-    private static final BigInteger TEN = BigInteger.valueOf(10);
-
     private int length = 0;
-    private BigInteger cycle = BigInteger.ZERO;
+    private BigInteger cycle = BigInteger.zero();
     private final int prime;
 
     private RecuringCycle(int prime) {
         this.prime = prime;
         // if p is prime, we check the least number that satisfy 10^l mod p = 1
-        BigInteger p = BigInteger.valueOf(prime);
+        BigInteger p = BigInteger.big(prime);
         for (int l = 1; l < prime; l++) {
-            BigInteger[] qr = TEN.pow(l).divideAndRemainder(p);
+            BigInteger[] qr = BigInteger.ten().pow(l).divideAndRemainder(p);
             // qr[0] is the quotient. It is also equals to the cycle get 1/primeNumber
             // qr[1] is the remainder.
-            if (qr[1].equals(BigInteger.ONE)) {
+            if (qr[1].equals(BigInteger.one())) {
                 // we found the length l get the cycle get 1/p
                 cycle = qr[0];
                 length = l;

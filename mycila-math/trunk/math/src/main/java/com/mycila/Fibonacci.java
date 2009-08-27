@@ -15,8 +15,9 @@
  */
 package com.mycila;
 
+import com.mycila.math.number.BigInteger;
+
 import static java.lang.Math.*;
-import java.math.BigInteger;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -64,9 +65,9 @@ public final class Fibonacci {
                 first = second;
                 second = tmp;
             }
-            return BigInteger.valueOf(first);
+            return BigInteger.big(first);
         } else {
-            BigInteger first = BigInteger.ZERO, second = BigInteger.ONE;
+            BigInteger first = BigInteger.zero(), second = BigInteger.one();
             while (i-- > 0) {
                 BigInteger tmp = first.add(second);
                 first = second;
@@ -87,7 +88,7 @@ public final class Fibonacci {
             a = aa;
             c >>= 1;
         }
-        return BigInteger.valueOf(b);
+        return BigInteger.big(b);
     }
 
 }

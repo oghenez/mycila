@@ -15,9 +15,9 @@
  */
 package euler;
 
+import com.mycila.math.number.BigInteger;
+
 import static java.lang.System.*;
-import java.math.BigInteger;
-import static java.math.BigInteger.*;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=7
@@ -26,8 +26,8 @@ import static java.math.BigInteger.*;
  */
 class Problem007 {
     public static void main(String[] args) {
-        BigInteger p = valueOf(2);
-        for (int i = 1; i < 10001; p = p.nextProbablePrime(), i++) ;
+        BigInteger p = BigInteger.big(2);
+        for (int i = 1; i < 10001; p = p.nextPrime(), i++) ;
         out.println(p);
     }
 }

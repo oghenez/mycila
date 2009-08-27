@@ -17,9 +17,10 @@ package com.mycila.math.prime;
 
 import com.mycila.math.list.IntSequence;
 import com.mycila.math.list.ReadOnlySequenceIterator;
+import com.mycila.math.number.BigInteger;
+import static com.mycila.math.number.BigInteger.*;
 import com.mycila.math.range.IntRange;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -134,10 +135,10 @@ public final class Sieve {
      */
     public BigInteger primorial(int from, int to) {
         IntRange range = primeIndexes(from, to);
-        BigInteger prd = BigInteger.ONE;
+        BigInteger prd = one();
         if (range.isEmpty()) return prd;
         for (int i = range.from; i <= range.to; i++)
-            prd = prd.multiply(BigInteger.valueOf(primes[i]));
+            prd = prd.multiply(big(primes[i]));
         return prd;
     }
 

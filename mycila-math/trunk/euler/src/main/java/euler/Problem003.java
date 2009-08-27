@@ -15,10 +15,11 @@
  */
 package euler;
 
+import com.mycila.math.number.BigInteger;
+import static com.mycila.math.number.BigInteger.*;
+
 import static java.lang.Math.*;
 import static java.lang.System.*;
-import java.math.BigInteger;
-import static java.math.BigInteger.*;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,25 +55,25 @@ class Problem003 {
 
         System.out.println("SOLUTION 2: Using BigInteger:");
 
-        out.println("-1: " + valueOf(-1).isProbablePrime(100));
-        out.println("0: " + valueOf(0).isProbablePrime(100));
-        out.println("1: " + valueOf(1).isProbablePrime(100));
-        out.println("2: " + valueOf(2).isProbablePrime(100));
-        out.println("3: " + valueOf(3).isProbablePrime(100));
-        out.println("4: " + valueOf(4).isProbablePrime(100));
-        out.println("5: " + valueOf(5).isProbablePrime(100));
-        out.println("6: " + valueOf(6).isProbablePrime(100));
-        out.println("600851475143: " + valueOf(600851475143L).isProbablePrime(100));
+        out.println("-1: " + big(-1).isPrime());
+        out.println("0: " + big(0).isPrime());
+        out.println("1: " + big(1).isPrime());
+        out.println("2: " + big(2).isPrime());
+        out.println("3: " + big(3).isPrime());
+        out.println("4: " + big(4).isPrime());
+        out.println("5: " + big(5).isPrime());
+        out.println("6: " + big(6).isPrime());
+        out.println("600851475143: " + big(600851475143L).isPrime());
 
-        out.println("factor(-1): " + factor(valueOf(-1)));
-        out.println("factor(0): " + factor(valueOf(0)));
-        out.println("factor(1): " + factor(valueOf(1)));
-        out.println("factor(2): " + factor(valueOf(2)));
-        out.println("factor(3): " + factor(valueOf(3)));
-        out.println("factor(4): " + factor(valueOf(4)));
-        out.println("factor(5): " + factor(valueOf(5)));
-        out.println("factor(6): " + factor(valueOf(6)));
-        out.println("factor(600851475143): " + factor(valueOf(600851475143L)));
+        out.println("factor(-1): " + factor(big(-1)));
+        out.println("factor(0): " + factor(big(0)));
+        out.println("factor(1): " + factor(big(1)));
+        out.println("factor(2): " + factor(big(2)));
+        out.println("factor(3): " + factor(big(3)));
+        out.println("factor(4): " + factor(big(4)));
+        out.println("factor(5): " + factor(big(5)));
+        out.println("factor(6): " + factor(big(6)));
+        out.println("factor(600851475143): " + factor(big(600851475143L)));
     }
 
     private static boolean isPrime(long n) {
@@ -107,11 +108,11 @@ class Problem003 {
         if (n.signum() == -1) {
             n = n.abs();
         }
-        if (n.equals(ZERO) || n.equals(ONE)) {
+        if (n.signum() == 0 || n.equals(one())) {
             return factors;
         }
-        for (BigInteger p = valueOf(2); p.compareTo(n) <= 0; p = p.nextProbablePrime())
-            while (n.remainder(p).equals(ZERO)) {
+        for (BigInteger p = big(2); p.compareTo(n) <= 0; p = p.nextPrime())
+            while (n.remainder(p).signum() == 0) {
                 n = n.divide(p);
                 factors.add(p);
             }

@@ -17,11 +17,9 @@ package com.mycila.math;
 
 import com.mycila.math.triplet.IntTriplet;
 import com.mycila.math.triplet.LongTriplet;
-import com.mycila.math.triplet.Triplet;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.math.BigInteger;
 
 /**
  * @author Mathieu Carbou

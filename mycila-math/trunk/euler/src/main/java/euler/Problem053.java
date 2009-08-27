@@ -16,9 +16,9 @@
 package euler;
 
 import com.mycila.combination.Combinations;
+import com.mycila.math.number.BigInteger;
 
 import static java.lang.System.*;
-import java.math.BigInteger;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=53
@@ -29,7 +29,7 @@ class Problem053 {
     public static void main(String[] args) throws Exception {
         long time = currentTimeMillis();
         int count = 0;
-        final BigInteger LIMIT = BigInteger.valueOf(1000000);
+        final BigInteger LIMIT = BigInteger.big(1000000);
         for (int n = 23; n <= 100; n++) {
             for (int p = 2, max = n >> 1; p <= max; p++) {
                 final BigInteger c = Combinations.binomial(n, p);

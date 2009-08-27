@@ -15,11 +15,10 @@
  */
 package com.mycila.math;
 
+import com.mycila.math.number.BigInteger;
 import com.mycila.math.triplet.IntTriplet;
 import com.mycila.math.triplet.LongTriplet;
 import com.mycila.math.triplet.Triplet;
-
-import java.math.BigInteger;
 
 /**
  * @author Mathieu Carbou
@@ -119,11 +118,11 @@ public final class Euclid {
      * @return The triplet (a, b, c)
      */
     public static Triplet<BigInteger> extended(BigInteger u, BigInteger v) {
-        BigInteger u1 = BigInteger.ONE,
-                u2 = BigInteger.ZERO,
+        BigInteger u1 = BigInteger.one(),
+                u2 = BigInteger.zero(),
                 u3 = u,
-                v1 = BigInteger.ZERO,
-                v2 = BigInteger.ONE,
+                v1 = BigInteger.zero(),
+                v2 = BigInteger.one(),
                 v3 = v;
         while (v3.signum() != 0) {
             BigInteger q = u3.divide(v3);

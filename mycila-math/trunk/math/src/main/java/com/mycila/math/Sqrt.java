@@ -15,8 +15,8 @@
  */
 package com.mycila.math;
 
-import java.math.BigInteger;
-import static java.math.BigInteger.*;
+import com.mycila.math.number.BigInteger;
+import static com.mycila.math.number.BigInteger.*;
 
 /**
  * @author Mathieu Carbou
@@ -41,12 +41,12 @@ public final class Sqrt {
      * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>2</sup> + r = number</code>.
      */
     public static BigInteger[] sqrtInt(BigInteger number) {
-        if (number.signum() == 0 || number.equals(ONE)) return new BigInteger[]{number, ZERO};
-        BigInteger lastGuess = ZERO;
-        BigInteger guess = ONE.shiftLeft(number.bitLength() >> 1);
+        if (number.signum() == 0 || number.equals(one())) return new BigInteger[]{number, zero()};
+        BigInteger lastGuess = zero();
+        BigInteger guess = one().shiftLeft(number.bitLength() >> 1);
         BigInteger test = lastGuess.subtract(guess);
         BigInteger reminder = number.subtract(guess.pow(2));
-        while (test.signum() != 0 && !test.equals(ONE) || reminder.signum() < 0) {
+        while (test.signum() != 0 && !test.equals(one()) || reminder.signum() < 0) {
             lastGuess = guess;
             guess = number.divide(guess).add(lastGuess).shiftRight(1);
             test = lastGuess.subtract(guess);

@@ -15,7 +15,7 @@
  */
 package euler;
 
-import java.math.BigInteger;
+import com.mycila.math.number.BigInteger;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=15
@@ -43,8 +43,8 @@ class Problem015 {
     }
 
     private static BigInteger p(long a, long b) {
-        BigInteger res = BigInteger.valueOf(b);
-        while (b-- > a) res = res.multiply(BigInteger.valueOf(b));
+        BigInteger res = BigInteger.big(b);
+        while (b-- > a) res = res.multiply(BigInteger.big(b));
         return res;
     }
 }

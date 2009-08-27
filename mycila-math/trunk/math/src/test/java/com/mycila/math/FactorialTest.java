@@ -15,13 +15,10 @@
  */
 package com.mycila.math;
 
+import com.mycila.math.number.BigInteger;
+import static com.mycila.math.number.BigInteger.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
-
-import java.math.BigInteger;
-import static java.math.BigInteger.*;
-
-import de.luschny.math.factorial.FactorialPrimeSwingLuschny;
 
 /**
  * @author Mathieu Carbou
@@ -40,7 +37,7 @@ public final class FactorialTest {
     @Test
     public void test_primeSwingLuschny() {
         for (int i = 0; i <= 20; i++)
-            assertEquals(Factorial.primeSwingLuschny(i), BigInteger.valueOf(Factorial.lookup(i)));
+            assertEquals(Factorial.primeSwingLuschny(i), big(Factorial.lookup(i)));
         assertEquals(Factorial.primeSwingLuschny(21).toString(), "51090942171709440000");
         assertEquals(Factorial.primeSwingLuschny(22).toString(), "1124000727777607680000");
         assertEquals(Factorial.primeSwingLuschny(30).toString(), "265252859812191058636308480000000");
@@ -65,10 +62,10 @@ public final class FactorialTest {
 
     @Test
     public void test_log() {
-        assertEquals(63 - Long.numberOfLeadingZeros(0), valueOf(0).bitLength() - 1);
-        assertEquals(63 - Long.numberOfLeadingZeros(1), valueOf(1).bitLength() - 1);
-        assertEquals(63 - Long.numberOfLeadingZeros(10), valueOf(10).bitLength() - 1);
-        assertEquals(63 - Long.numberOfLeadingZeros(Long.MAX_VALUE), valueOf(Long.MAX_VALUE).bitLength() - 1);
+        assertEquals(63 - Long.numberOfLeadingZeros(0), big(0).bitLength() - 1);
+        assertEquals(63 - Long.numberOfLeadingZeros(1), big(1).bitLength() - 1);
+        assertEquals(63 - Long.numberOfLeadingZeros(10), big(10).bitLength() - 1);
+        assertEquals(63 - Long.numberOfLeadingZeros(Long.MAX_VALUE), big(Long.MAX_VALUE).bitLength() - 1);
     }
 
 }

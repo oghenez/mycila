@@ -15,10 +15,9 @@
  */
 package euler;
 
-import com.mycila.math.Digits;
+import com.mycila.math.number.BigInteger;
 
 import static java.lang.System.*;
-import java.math.BigInteger;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=57
@@ -30,16 +29,15 @@ class Problem057 {
     public static void main(String[] args) throws Exception {
         long time = currentTimeMillis();
 
-        BigInteger p = BigInteger.valueOf(1);
-        BigInteger q = BigInteger.valueOf(1);
-        final Digits digits = Digits.base(10);
-        final BigInteger TWO = BigInteger.valueOf(2);
+        BigInteger p = BigInteger.big(1);
+        BigInteger q = BigInteger.big(1);
+        final BigInteger TWO = BigInteger.big(2);
         int count = 0;
         for (long i = 1; i <= 1000; i++) {
             final BigInteger nextP = p.add(q.multiply(TWO));
             q = p.add(q);
             p = nextP;
-            if (digits.length(p) > digits.length(q)) {
+            if (p.length() > q.length()) {
                 count++;
                 System.out.println(p + "/" + q);
             }

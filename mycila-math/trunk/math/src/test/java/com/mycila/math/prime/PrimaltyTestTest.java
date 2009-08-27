@@ -15,10 +15,9 @@
  */
 package com.mycila.math.prime;
 
+import com.mycila.math.number.BigInteger;
 import static org.junit.Assert.*;
 import org.junit.Test;
-
-import java.math.BigInteger;
 
 /**
  * @author Mathieu Carbou
@@ -44,7 +43,7 @@ public final class PrimaltyTestTest {
         assertTrue(PrimaltyTest.millerRabin(7));
         assertTrue(PrimaltyTest.millerRabin(179));
         assertTrue(PrimaltyTest.millerRabin(Integer.MAX_VALUE)); // 2147483647
-        assertTrue(PrimaltyTest.millerRabin(BigInteger.valueOf(9223372036854775783L)));
+        assertTrue(PrimaltyTest.millerRabin(BigInteger.big(9223372036854775783L)));
     }
 
     @Test

@@ -15,10 +15,9 @@
  */
 package com.mycila;
 
+import com.mycila.math.number.BigInteger;
 import static org.junit.Assert.*;
 import org.junit.Test;
-
-import java.math.BigInteger;
 
 /**
  * @author Mathieu Carbou
@@ -38,8 +37,8 @@ public final class FibonacciTest {
     public void test_gen() {
         for (int i = 0, max = expected.length; i < max; i++) {
             assertEquals(Fibonacci.binet(i), expected[i]);
-            assertEquals(Fibonacci.iterative(i), BigInteger.valueOf(expected[i]));
-            assertEquals(Fibonacci.logarithmic(i), BigInteger.valueOf(expected[i]));
+            assertEquals(Fibonacci.iterative(i), BigInteger.big(expected[i]));
+            assertEquals(Fibonacci.logarithmic(i), BigInteger.big(expected[i]));
         }
     }
 
