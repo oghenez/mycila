@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.math.number.BigInteger;
+import com.mycila.math.number.BigInt;
 
 import static java.lang.System.*;
 
@@ -29,12 +29,12 @@ class Problem057 {
     public static void main(String[] args) throws Exception {
         long time = currentTimeMillis();
 
-        BigInteger p = BigInteger.big(1);
-        BigInteger q = BigInteger.big(1);
-        final BigInteger TWO = BigInteger.big(2);
+        BigInt p = BigInt.big(1);
+        BigInt q = BigInt.big(1);
+        final BigInt TWO = BigInt.big(2);
         int count = 0;
         for (long i = 1; i <= 1000; i++) {
-            final BigInteger nextP = p.add(q.multiply(TWO));
+            final BigInt nextP = p.add(q.multiply(TWO));
             q = p.add(q);
             p = nextP;
             if (p.length() > q.length()) {

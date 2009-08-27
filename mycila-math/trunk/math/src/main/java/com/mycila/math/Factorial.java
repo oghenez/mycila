@@ -15,8 +15,8 @@
  */
 package com.mycila.math;
 
-import com.mycila.math.number.BigInteger;
-import static com.mycila.math.number.BigInteger.*;
+import com.mycila.math.number.BigInt;
+import static com.mycila.math.number.BigInt.*;
 import com.mycila.math.prime.Sieve;
 
 /**
@@ -54,7 +54,7 @@ public final class Factorial {
      * @param number A positive number
      * @return The factorial
      */
-    public static BigInteger primeSwingLuschny(final int number) {
+    public static BigInt primeSwingLuschny(final int number) {
         if (number <= 20) return big(lookup(number));
         final Sieve sieve = Sieve.to(number);
         final double pow2Count = Math.log(number) * 1.4426950408889634D;
@@ -62,7 +62,7 @@ public final class Factorial {
         int[] toStwing = new int[(int) pow2Count];
         for (int i = toStwing.length - 1, n = number; i >= 0; i--, n >>>= 1)
             toStwing[i] = n;
-        BigInteger recFactorial = one();
+        BigInt recFactorial = one();
         for (int i = 0, max = toStwing.length; i < max; i++)
             recFactorial = recFactorial.pow(2).multiply(swing(toStwing[i], sieve, primeList));
         return recFactorial.shiftLeft(number - Integer.bitCount(number));
@@ -70,7 +70,7 @@ public final class Factorial {
 
     private static final int[] smallOddSwing = {1, 1, 1, 3, 3, 15, 5, 35, 35, 315, 63, 693, 231, 3003, 429, 6435, 6435, 109395, 12155, 230945, 46189, 969969, 88179, 2028117, 676039, 16900975, 1300075, 35102025, 5014575, 145422675, 9694845, 300540195, 300540195};
 
-    private static BigInteger swing(final int number, Sieve sieve, int[] primeList) {
+    private static BigInt swing(final int number, Sieve sieve, int[] primeList) {
         if (number < 33) return big(smallOddSwing[number]);
         final int sqrtN = (int) Math.sqrt(number);
         final int[] pIter0 = sieve.asArray(3, sqrtN);
@@ -82,7 +82,7 @@ public final class Factorial {
             if (p > 1) primeList[count++] = p;
         }
         for (int prime : pIter1) if (((number / prime) & 1) == 1) primeList[count++] = prime;
-        BigInteger primorial = sieve.primorial((number >>> 1) + 1, number);
+        BigInt primorial = sieve.primorial((number >>> 1) + 1, number);
         return primorial.multiply(Product.productBig(primeList, 0, count));
     }
 
@@ -110,9 +110,9 @@ public final class Factorial {
      * @param n A positive number
      * @return The factorial
      */
-    public static BigInteger falling(BigInteger a, BigInteger n) {
-        BigInteger b = a.subtract(n);
-        BigInteger res = one();
+    public static BigInt falling(BigInt a, BigInt n) {
+        BigInt b = a.subtract(n);
+        BigInt res = one();
         while (a.compareTo(b) > 0) {
             res = res.multiply(a);
             a = a.subtract(one());
@@ -120,7 +120,7 @@ public final class Factorial {
         return res;
     }
 
-    //TODO: better multipliction + pow algorithms: cf BigInteger.java in TODO...
+    //TODO: better multipliction + pow algorithms: cf BigInt.java in TODO...
     // - Karatsuba algorithm  · Toom–Cook multiplication · Schönhage–Strassen algorithm
 
 }

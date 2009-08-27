@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.math.number.BigInteger;
+import com.mycila.math.number.BigInt;
 
 import static java.lang.System.*;
 import java.util.Set;
@@ -32,17 +32,17 @@ class Problem055 {
         long time = currentTimeMillis();
         final int maxNumber = 10000;
         final int maxIterations = 50;
-        final Set<BigInteger> lychrel = new TreeSet<BigInteger>();
-        final Set<BigInteger> nonLychrel = new TreeSet<BigInteger>();
-        final Set<BigInteger> stack = new TreeSet<BigInteger>();
+        final Set<BigInt> lychrel = new TreeSet<BigInt>();
+        final Set<BigInt> nonLychrel = new TreeSet<BigInt>();
+        final Set<BigInt> stack = new TreeSet<BigInt>();
         for (int n = 0; n < maxNumber; n++) {
-            BigInteger test = BigInteger.big(n);
+            BigInt test = BigInt.big(n);
             // do not do anything if this number as already be marked
             if (lychrel.contains(test))
                 continue;
             // if it is not marked, we must find what it is in a maximum of 'maxIterations' iterations
             stack.add(test);
-            BigInteger reverse = test.reverseDigits();
+            BigInt reverse = test.reverseDigits();
             // iterate while we not found a palindrom in some maximum iterations
             for (int it = 1; it < maxIterations; it++) {
                 test = test.add(reverse);
@@ -68,8 +68,8 @@ class Problem055 {
         out.println(lychrel.size() + " in " + (currentTimeMillis() - time) + "ms");
 
         int count = 0;
-        BigInteger max = BigInteger.big(maxNumber);
-        for (BigInteger l : lychrel) if (l.compareTo(max) <= 0) count++;
+        BigInt max = BigInt.big(maxNumber);
+        for (BigInt l : lychrel) if (l.compareTo(max) <= 0) count++;
 
         out.println(count + " under " + maxNumber);
     }

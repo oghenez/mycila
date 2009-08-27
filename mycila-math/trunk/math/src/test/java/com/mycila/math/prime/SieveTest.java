@@ -15,7 +15,7 @@
  */
 package com.mycila.math.prime;
 
-import static com.mycila.math.number.BigInteger.*;
+import static com.mycila.math.number.BigInt.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 

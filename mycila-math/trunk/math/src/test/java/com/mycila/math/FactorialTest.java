@@ -15,8 +15,8 @@
  */
 package com.mycila.math;
 
-import com.mycila.math.number.BigInteger;
-import static com.mycila.math.number.BigInteger.*;
+import com.mycila.math.number.BigInt;
+import static com.mycila.math.number.BigInt.*;
 import de.luschny.math.factorial.FactorialPrimeSwingLuschny;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public final class FactorialTest {
         System.out.println(new FactorialPrimeSwingLuschny().factorial(1000000));
     }
 
-    //TODO: profiler juste com.mycila + java.math.BigInteger
+    //TODO: profiler juste com.mycila + java.math.BigInt
     //@Test
     // -Xbootclasspath:/home/kha/workspace/perso/mycila-math/math/target/test-classes:/usr/lib/jvm/java-6-sun/jre/lib/management-agent.jar:/usr/lib/jvm/java-6-sun/jre/lib/resources.jar:/usr/lib/jvm/java-6-sun/jre/lib/jce.jar:/usr/lib/jvm/java-6-sun/jre/lib/jsse.jar:/usr/lib/jvm/java-6-sun/jre/lib/charsets.jar:/usr/lib/jvm/java-6-sun/jre/lib/javaws.jar:/usr/lib/jvm/java-6-sun/jre/lib/deploy.jar:/usr/lib/jvm/java-6-sun/jre/lib/rt.jar:/usr/lib/jvm/java-6-sun/jre/lib/plugin.jar:/usr/lib/jvm/java-6-sun/jre/lib/ext/sunpkcs11.jar:/usr/lib/jvm/java-6-sun/jre/lib/ext/sunjce_provider.jar:/usr/lib/jvm/java-6-sun/jre/lib/ext/dnsns.jar:/usr/lib/jvm/java-6-sun/jre/lib/ext/localedata.jar:/home/kha/workspace/perso/mycila-math/math/target/test-classes:/home/kha/workspace/perso/mycila-math/math/target/classes:/unsafe/.m2/repository/junit/junit/4.6/junit-4.6.jar:/home/kha/workspace/perso/mycila-math/todo/java/Factorial2008.jar:/unsafe/opt/idea/lib/idea_rt.jar
     public void test2() {
@@ -55,7 +55,7 @@ public final class FactorialTest {
         assertEquals(Factorial.primeSwingLuschny(21).toString(), "51090942171709440000");
         assertEquals(Factorial.primeSwingLuschny(22).toString(), "1124000727777607680000");
         assertEquals(Factorial.primeSwingLuschny(30).toString(), "265252859812191058636308480000000");
-        BigInteger fact = Factorial.primeSwingLuschny(99);
+        BigInt fact = Factorial.primeSwingLuschny(99);
         System.out.println("99! = " + fact);
         assertEquals(fact.toString(), "933262154439441526816992388562667004907159682643816214685929638952175999932299156089414639761565182862536979208272237582511852109168640000000000000000000000");
         fact = Factorial.primeSwingLuschny(100);

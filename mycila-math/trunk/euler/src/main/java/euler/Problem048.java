@@ -16,7 +16,7 @@
 package euler;
 
 import com.mycila.math.Mod;
-import com.mycila.math.number.BigInteger;
+import com.mycila.math.number.BigInt;
 
 import static java.lang.System.*;
 
@@ -28,8 +28,8 @@ import static java.lang.System.*;
 class Problem048 {
     public static void main(String[] args) throws Exception {
         long time = currentTimeMillis();
-        BigInteger sum = BigInteger.zero();
-        for (int n = 1; n <= 1000; n++) sum = sum.add(BigInteger.big(n).pow(n));
+        BigInt sum = BigInt.zero();
+        for (int n = 1; n <= 1000; n++) sum = sum.add(BigInt.big(n).pow(n));
         out.println(sum + " in " + (currentTimeMillis() - time) + "ms");
 
         time = currentTimeMillis();

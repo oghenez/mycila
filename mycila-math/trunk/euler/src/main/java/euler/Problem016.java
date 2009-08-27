@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.math.number.BigInteger;
+import com.mycila.math.number.BigInt;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=16
@@ -25,7 +25,7 @@ import com.mycila.math.number.BigInteger;
 class Problem016 {
     public static void main(String[] args) {
         long time = System.currentTimeMillis();
-        BigInteger n = BigInteger.big(2).pow(1000);
+        BigInt n = BigInt.big(2).pow(1000);
         char[] digits = n.toString().toCharArray();
         long sum = 0;
         for (int i = 0; i < digits.length; i++) sum += digits[i] - 48;
