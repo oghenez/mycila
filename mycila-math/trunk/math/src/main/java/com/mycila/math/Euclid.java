@@ -15,10 +15,8 @@
  */
 package com.mycila.math;
 
-import com.mycila.math.number.BigInteger;
 import com.mycila.math.triplet.IntTriplet;
 import com.mycila.math.triplet.LongTriplet;
-import com.mycila.math.triplet.Triplet;
 
 /**
  * @author Mathieu Carbou
@@ -102,40 +100,4 @@ public final class Euclid {
         return LongTriplet.of(u1, u2, u3);
     }
 
-    /**
-     * Compute the <a href="http://en.wikipedia.org/wiki/Extended_Euclidean_algorithm">Extended Euclidean algorithm</a>.
-     * <p/>
-     * <b>Implementation:</b>
-     * <p/>
-     * Uses <a href="http://en.literateprograms.org/Extended_Euclidean_algorithm_(Python)">this algorithm</a>
-     * <p/>
-     * <b>Notes:</b>
-     * <p/>
-     * For u and v, this algorithm finds (a, b, c) such that <code>ua + vb = c = gcd(u,v)</code>.
-     *
-     * @param u a number
-     * @param v a number
-     * @return The triplet (a, b, c)
-     */
-    public static Triplet<BigInteger> extended(BigInteger u, BigInteger v) {
-        BigInteger u1 = BigInteger.one(),
-                u2 = BigInteger.zero(),
-                u3 = u,
-                v1 = BigInteger.zero(),
-                v2 = BigInteger.one(),
-                v3 = v;
-        while (v3.signum() != 0) {
-            BigInteger q = u3.divide(v3);
-            BigInteger t1 = u1.subtract(q.multiply(v1));
-            BigInteger t2 = u2.subtract(q.multiply(v2));
-            BigInteger t3 = u3.subtract(q.multiply(v3));
-            u1 = v1;
-            u2 = v2;
-            u3 = v3;
-            v1 = t1;
-            v2 = t2;
-            v3 = t3;
-        }
-        return Triplet.of(u1, u2, u3);
-    }
 }

@@ -335,4 +335,49 @@ final class JDKBigInteger extends BigInteger {
     public int radix() {
         return radix;
     }
+
+    @Override
+    public BigInteger[] euclidExtended(BigInteger val) {
+        java.math.BigInteger u1 = java.math.BigInteger.ONE,
+                u2 = java.math.BigInteger.ZERO,
+                u3 = impl,
+                v1 = java.math.BigInteger.ZERO,
+                v2 = java.math.BigInteger.ONE,
+                v3 = val.internal();
+        while (v3.signum() != 0) {
+            java.math.BigInteger q = u3.divide(v3);
+            java.math.BigInteger t1 = u1.subtract(q.multiply(v1));
+            java.math.BigInteger t2 = u2.subtract(q.multiply(v2));
+            java.math.BigInteger t3 = u3.subtract(q.multiply(v3));
+            u1 = v1;
+            u2 = v2;
+            u3 = v3;
+            v1 = t1;
+            v2 = t2;
+            v3 = t3;
+        }
+        return new BigInteger[]{
+                new JDKBigInteger(u1, radix),
+                new JDKBigInteger(u2, radix),
+                new JDKBigInteger(u3, radix)};
+    }
+
+    @Override
+    public BigInteger[] sqrtInt() {
+        if (impl.signum() == 0 || impl.equals(java.math.BigInteger.ONE))
+            return new BigInteger[]{this, zero()};
+        java.math.BigInteger lastGuess = java.math.BigInteger.ZERO;
+        java.math.BigInteger guess = java.math.BigInteger.ONE.shiftLeft(bitLength() >> 1);
+        java.math.BigInteger test = lastGuess.subtract(guess);
+        java.math.BigInteger remainder = impl.subtract(guess.pow(2));
+        while (test.signum() != 0 && !test.equals(java.math.BigInteger.ONE) || remainder.signum() < 0) {
+            lastGuess = guess;
+            guess = impl.divide(guess).add(lastGuess).shiftRight(1);
+            test = lastGuess.subtract(guess);
+            remainder = impl.subtract(guess.pow(2));
+        }
+        return new BigInteger[]{
+                new JDKBigInteger(guess, radix),
+                new JDKBigInteger(remainder, radix)};
+    }
 }

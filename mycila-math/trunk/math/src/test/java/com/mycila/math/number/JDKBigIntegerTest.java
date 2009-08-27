@@ -79,4 +79,35 @@ public final class JDKBigIntegerTest {
         assertArrayEquals(big(733007751850L).digitsSignature(), new int[]{0, 0, 0, 1, 3, 3, 5, 5, 7, 7, 7, 8});
     }
 
+    @Test
+    public void test_euclide_extended() {
+        BigInteger[] abc = big(123456789).euclidExtended(big(987654321));
+        assertEquals(abc[0], big(-8));
+        assertEquals(abc[1], big(1));
+        assertEquals(abc[2], big(9));
+        assertEquals(abc[2], big(123456789).gcd(big(987654321)));
+        assertEquals(big(123456789).multiply(abc[0]).add(big(987654321).multiply(abc[1])), abc[2]);
+    }
+
+    @Test
+    public void test_sqrtInt_big() {
+        assertEquals(big(0).sqrtInt()[0], big(0));
+        assertEquals(big(1).sqrtInt()[0], big(1));
+        assertEquals(big(2).sqrtInt()[0], big(1));
+        assertEquals(big(3).sqrtInt()[0], big(1));
+        assertEquals(big(4).sqrtInt()[0], big(2));
+        assertEquals(big(5).sqrtInt()[0], big(2));
+        assertEquals(big(Integer.MAX_VALUE).sqrtInt()[0], big(46340));
+        assertEquals(big("15241578750190521").sqrtInt()[0], big("123456789"));
+        assertEquals(big("15241578750190521").sqrtInt()[1], zero());
+        assertEquals(big("15241578750190530").sqrtInt()[0], big("123456789"));
+        assertEquals(big("15241578750190530").sqrtInt()[1], big("9"));
+        for (int i = 0; i < 1000000; i++)
+            assertEquals("" + i, big(i).sqrtInt()[0], big((int) Math.sqrt(i)));
+        for (int i = Integer.MAX_VALUE - 1000000; i < Integer.MAX_VALUE; i++)
+            assertEquals("" + i, big(i).sqrtInt()[0], big((int) Math.sqrt(i)));
+        for (long i = Long.MAX_VALUE - 1000000; i < Long.MAX_VALUE; i++)
+            assertEquals("" + i, big(i).sqrtInt()[0], big((long) Math.sqrt(i)));
+    }
+
 }

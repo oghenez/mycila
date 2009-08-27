@@ -58,11 +58,13 @@ public final class Triplet<T> implements Iterable<T> {
         return "(" + a + ',' + b + ',' + c + ')';
     }
 
+    @SuppressWarnings({"unchecked"})
     public List<T> asList() {
         return Arrays.asList(a, b, c);
     }
 
     @Override
+    @SuppressWarnings({"unchecked"})
     public Iterator<T> iterator() {
         return ReadOnlySequenceIterator.on(a, b, c);
     }
