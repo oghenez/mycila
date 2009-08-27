@@ -8,7 +8,6 @@ import java.math.BigInteger;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-//TODO: put in this class all methods relative to bigInt, like Factorials, ...
 //TODO: optimize all methods
 final class JDKBigInt extends BigInt {
 

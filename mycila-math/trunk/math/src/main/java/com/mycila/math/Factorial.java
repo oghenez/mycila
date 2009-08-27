@@ -120,7 +120,4 @@ public final class Factorial {
         return res;
     }
 
-    //TODO: better multipliction + pow algorithms: cf BigInt.java in TODO...
-    // - Karatsuba algorithm  · Toom–Cook multiplication · Schönhage–Strassen algorithm
-
 }

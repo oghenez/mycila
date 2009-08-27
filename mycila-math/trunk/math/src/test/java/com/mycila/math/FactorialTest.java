@@ -35,16 +35,12 @@ public final class FactorialTest {
         assertEquals(Factorial.lookup(20), 2432902008176640000L);
     }
 
+    //TODO: profile multiplications and factorial algorithms
     //@Test
     // -Xbootclasspath:/home/kha/workspace/perso/mycila-math/math/target/test-classes:/usr/lib/jvm/java-6-sun/jre/lib/management-agent.jar:/usr/lib/jvm/java-6-sun/jre/lib/resources.jar:/usr/lib/jvm/java-6-sun/jre/lib/jce.jar:/usr/lib/jvm/java-6-sun/jre/lib/jsse.jar:/usr/lib/jvm/java-6-sun/jre/lib/charsets.jar:/usr/lib/jvm/java-6-sun/jre/lib/javaws.jar:/usr/lib/jvm/java-6-sun/jre/lib/deploy.jar:/usr/lib/jvm/java-6-sun/jre/lib/rt.jar:/usr/lib/jvm/java-6-sun/jre/lib/plugin.jar:/usr/lib/jvm/java-6-sun/jre/lib/ext/sunpkcs11.jar:/usr/lib/jvm/java-6-sun/jre/lib/ext/sunjce_provider.jar:/usr/lib/jvm/java-6-sun/jre/lib/ext/dnsns.jar:/usr/lib/jvm/java-6-sun/jre/lib/ext/localedata.jar:/home/kha/workspace/perso/mycila-math/math/target/test-classes:/home/kha/workspace/perso/mycila-math/math/target/classes:/unsafe/.m2/repository/junit/junit/4.6/junit-4.6.jar:/home/kha/workspace/perso/mycila-math/todo/java/Factorial2008.jar:/unsafe/opt/idea/lib/idea_rt.jar
-    public void test1() {
-        System.out.println(new FactorialPrimeSwingLuschny().factorial(1000000));
-    }
-
-    //TODO: profiler juste com.mycila + java.math.BigInt
-    //@Test
-    // -Xbootclasspath:/home/kha/workspace/perso/mycila-math/math/target/test-classes:/usr/lib/jvm/java-6-sun/jre/lib/management-agent.jar:/usr/lib/jvm/java-6-sun/jre/lib/resources.jar:/usr/lib/jvm/java-6-sun/jre/lib/jce.jar:/usr/lib/jvm/java-6-sun/jre/lib/jsse.jar:/usr/lib/jvm/java-6-sun/jre/lib/charsets.jar:/usr/lib/jvm/java-6-sun/jre/lib/javaws.jar:/usr/lib/jvm/java-6-sun/jre/lib/deploy.jar:/usr/lib/jvm/java-6-sun/jre/lib/rt.jar:/usr/lib/jvm/java-6-sun/jre/lib/plugin.jar:/usr/lib/jvm/java-6-sun/jre/lib/ext/sunpkcs11.jar:/usr/lib/jvm/java-6-sun/jre/lib/ext/sunjce_provider.jar:/usr/lib/jvm/java-6-sun/jre/lib/ext/dnsns.jar:/usr/lib/jvm/java-6-sun/jre/lib/ext/localedata.jar:/home/kha/workspace/perso/mycila-math/math/target/test-classes:/home/kha/workspace/perso/mycila-math/math/target/classes:/unsafe/.m2/repository/junit/junit/4.6/junit-4.6.jar:/home/kha/workspace/perso/mycila-math/todo/java/Factorial2008.jar:/unsafe/opt/idea/lib/idea_rt.jar
-    public void test2() {
+    // -Dmycila.bigint.factory=<new factory for improved BigInteger>
+    public void profiling() {
+        //System.out.println(new FactorialPrimeSwingLuschny().factorial(1000000));
         System.out.println(Factorial.primeSwingLuschny(1000000));
     }
 
