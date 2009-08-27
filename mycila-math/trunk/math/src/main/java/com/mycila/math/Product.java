@@ -11,7 +11,8 @@ public final class Product {
     private Product() {
     }
 
-    //TODO: improve perf
+    //TODO: improve perf of multiplication (Karatsuba algorithm, Toom–Cook multiplication, Schönhage–Strassen algorithm): see improved BigInteger
+    
     public static BigInt productBig(int[] numbers, int offset, int length) {
         if (offset < 0 || offset + length > numbers.length)
             throw new IllegalArgumentException("Bad offset or length: " + offset + " / " + length);

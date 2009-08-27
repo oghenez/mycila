@@ -104,7 +104,7 @@ import java.io.*;
 // - http://futureboy.us/temp/BigInteger.java
 // - http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/001761.html
 //
-//TODO: make wrapper for this class
+//TODO: make wrapper ImprovedJDKBigInt
 final class BigInteger extends Number implements Comparable<BigInteger> {
     /**
      * The signum of this BigInteger: -1 for negative, 0 for zero, or

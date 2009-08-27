@@ -3,7 +3,7 @@ package com.mycila.math.number;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-//TODO: add sqrt(), square(), binomial, fact, fallingFact, ...
+//TODO: as classes are moved to math package, add methods to this class
 public abstract class BigInt implements Comparable<BigInt> {
 
     private static BigIntFactory factory;
@@ -390,11 +390,11 @@ public abstract class BigInt implements Comparable<BigInt> {
     public abstract BigInt remainder(BigInt val);
 
     /**
-     * Returns a BigInteger whose value is {@code (this}<sup>-1</sup> {@codemodm)}.
+     * Returns a BigInteger whose value is <tt>(this<sup>-1</sup> mod m)</tt>.
      *
      * @param m the modulus.
-     * @return {@code this}<sup>-1</sup> {@code mod m}.
-     * @throws ArithmeticException {@code m <= 0}, or this BigInteger
+     * @return <tt>this<sup>-1</sup> mod m</tt>.
+     * @throws ArithmeticException <tt> m &lt;= 0</tt>, or this BigInteger
      *                             has no multiplicative inverse mod m (that is, this BigInteger
      *                             is not <i>relatively prime</i> to m).
      */
@@ -412,6 +412,24 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @see #modInverse
      */
     public abstract BigInt modPow(BigInt exponent, BigInt m);
+
+    /**
+     * Returns a BigInteger whose value is {@code (this * val) % m}.
+     *
+     * @param val value by which this BigInteger is to be multiplied
+     * @param m   the modulus.
+     * @return {@code (this * val) % m}
+     */
+    public abstract BigInt modMultiply(BigInt val, BigInt m);
+
+    /**
+     * Returns a BigInteger whose value is {@code (this + val) % m}.
+     *
+     * @param val value by which this BigInteger is to be added
+     * @param m   the modulus.
+     * @return {@code (this + val) % m}
+     */
+    public abstract BigInt modAdd(BigInt val, BigInt m);
 
     /* DIVISORS */
 
@@ -576,4 +594,57 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>2</sup> + r = number</code>.
      */
     public abstract BigInt[] sqrtInt();
+
+    /**
+     * Compute <code>this * this</code>
+     *
+     * @return The square of this number
+     */
+    public abstract BigInt square();
+
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Binomial_coefficient">Binomial Coefficient</a>
+     * <code>C(this, k)</code>
+     *
+     * @param k Coefficient
+     * @return The binomial coefficient
+     */
+    public abstract BigInt binomialCoeff(int k);
+
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Factorial">Factorial of this number</a>
+     * <code>this!</code>
+     *
+     * @return this!
+     */
+    public abstract BigInt factorial();
+
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">Falling Factorial</a>
+     * <code>this! / (this-n)!</code>
+     *
+     * @param n The falling factor to substract from this number
+     * @return this! / (this-n)!
+     */
+    public abstract BigInt fallingFactorial(BigInt n);
+
+    /**
+     * Computes the sum of the consecutive numbers from this to n
+     * <code>S = this + (this+1) + ... + n
+     *
+     * @param n The limit which will determine
+     *          the direction of the sum, from this to n or n to this
+     * @return the consecutive sum
+     */
+    public abstract BigInt sumTo(BigInt n);
+
+    /**
+     * Computes the product of the consecutive numbers from this to n
+     * <code>S = this * (this+1) * ... * n
+     *
+     * @param n The limit which will determine
+     *          the direction of the product, from this to n or n to this
+     * @return the consecutive product
+     */
+    public abstract BigInt productTo(BigInt n);
 }

@@ -18,15 +18,12 @@ package com.mycila.math.prime;
 import com.mycila.math.Mod;
 import com.mycila.math.number.BigInt;
 
-import java.util.Random;
-
 /**
  * @author Mathieu Carbou
  */
 public final class PrimaltyTest {
 
     private static final BigInt TWO = BigInt.big(2);
-    private static final Random RANDOM = new Random();
 
     private PrimaltyTest() {
     }
