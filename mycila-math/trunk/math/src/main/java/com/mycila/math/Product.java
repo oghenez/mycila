@@ -19,7 +19,7 @@ public final class Product {
             if (length == 1) return big(numbers[offset]);
             return big((long) numbers[offset] * (long) numbers[offset + 1]);
         }
-        com.mycila.math.number.BigInteger product = one();
+        BigInteger product = one();
         int i = offset + length - 2;
         // Integer.MAX_VALUE * Integer.MAX_VALUE fits in a long, so we can multiply both at once
         for (; i >= offset; i -= 2)
