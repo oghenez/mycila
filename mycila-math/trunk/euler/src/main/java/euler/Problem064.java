@@ -26,7 +26,6 @@ class Problem064 {
     public static void main(String[] args) throws Exception {
         final long time = currentTimeMillis();
 
-        
 
         System.out.println(" in " + (System.currentTimeMillis() - time) + "ms");
     }

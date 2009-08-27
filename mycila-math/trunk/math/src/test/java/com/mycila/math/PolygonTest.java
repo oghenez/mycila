@@ -17,7 +17,6 @@ package com.mycila.math;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import com.mycila.math.Polygon;
 
 /**
  * @author Mathieu Carbou

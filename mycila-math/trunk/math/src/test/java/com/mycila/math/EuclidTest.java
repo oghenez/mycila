@@ -15,13 +15,12 @@
  */
 package com.mycila.math;
 
+import static com.mycila.math.number.BigInteger.*;
 import com.mycila.math.triplet.IntTriplet;
 import com.mycila.math.triplet.Triplet;
 import org.junit.Assert;
 import static org.junit.Assert.*;
 import org.junit.Test;
-
-import static java.math.BigInteger.*;
 
 /**
  * @author Mathieu Carbou
@@ -33,7 +32,7 @@ public final class EuclidTest {
         Assert.assertEquals(Euclid.extended(352, 168), IntTriplet.of(-10, 21, 8));
         assertEquals(Euclid.extended(168, 352), IntTriplet.of(21, -10, 8));
         assertEquals(Euclid.extended(3458, 4864), IntTriplet.of(-45, 32, 38));
-        assertEquals(Euclid.extended(valueOf(123456789), valueOf(987654321)), Triplet.of(valueOf(-8), valueOf(1), valueOf(9)));
+        assertEquals(Euclid.extended(big(123456789), big(987654321)), Triplet.of(big(-8), big(1), big(9)));
     }
 
 }

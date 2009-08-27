@@ -16,9 +16,9 @@
 package euler;
 
 import com.mycila.RecuringCycle;
+import com.mycila.math.number.BigInteger;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Arrays;
 
@@ -38,17 +38,17 @@ class Problem026 {
         // depending respectively whether its period is: p − 1 or a factor of p − 1
         // also, the cycle's lenth L is such that 10^L mod p = 1 for prime number in 1/p, L being as small as possible and lower than p. 
 
-        BigInteger TEN = BigInteger.valueOf(10), cycle = BigInteger.valueOf(142857);
+        BigInteger cycle = BigInteger.big(142857);
         int res = 7, maxCycleLength = 6;
         // for each prime numbers, starting at the maximum possible value (999 and 008 are not primes)
         for (int p = 997; p > 7; p -= 2) {
-            if (BigInteger.valueOf(p).isProbablePrime(100)) {
+            if (BigInteger.big(p).isPrime()) {
                 // if p is prime, we check the least number that satisfy 10^l mod p = 1 
                 for (int l = 1; l < p; l++) {
-                    BigInteger[] qr = TEN.pow(l).divideAndRemainder(BigInteger.valueOf(p));
+                    BigInteger[] qr = BigInteger.ten().pow(l).divideAndRemainder(BigInteger.big(p));
                     // qr[0] is the quotient. It is also equals to the cycle of 1/p
                     // qr[1] is the remainder.
-                    if (qr[1].equals(BigInteger.ONE)) {
+                    if (qr[1].equals(BigInteger.one())) {
                         // we found the length l of the cycle of 1/p
                         System.out.println("1/" + p + " has a recuring cycle length of " + l + ": " + leftPad(qr[0].toString(), l, '0'));
                         System.out.println("1/" + p + " = " + BigDecimal.ONE.divide(BigDecimal.valueOf(p), 2000, RoundingMode.HALF_UP));

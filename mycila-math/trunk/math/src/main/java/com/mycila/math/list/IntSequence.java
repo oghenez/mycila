@@ -17,7 +17,6 @@ package com.mycila.math.list;
 
 import com.mycila.math.range.IntRange;
 
-import java.math.BigInteger;
 import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -437,7 +436,7 @@ public final class IntSequence implements Iterable<Integer> {
         } else {
             // data in the middle
             System.arraycopy(data, offset + length,
-                             data, offset, pos - (offset + length));
+                    data, offset, pos - (offset + length));
         }
         pos -= length;
         // no need to clear old values beyond pos, because this is a
@@ -895,28 +894,6 @@ public final class IntSequence implements Iterable<Integer> {
         int sum = 0;
         for (int i = 0; i < pos; i++) sum += data[i];
         return sum;
-    }
-
-    public BigInteger productBig() {
-        return productBig(0, pos);
-    }
-
-    public BigInteger productBig(final int offset, final int len) {
-        if (offset < 0 || offset + len > pos)
-            throw new IllegalArgumentException("Too little offset: " + offset);
-        if (len < 3) {
-            if (len <= 0) return BigInteger.ONE;
-            if (len == 1) return BigInteger.valueOf(data[offset]);
-            return BigInteger.valueOf((long) data[offset] * (long) data[offset + 1]);
-        }
-        BigInteger product = BigInteger.ONE;
-        int i = offset + len - 2;
-        // Integer.MAX_VALUE * Integer.MAX_VALUE fits in a long, so we can multiply both at once
-        for (; i >= offset; i -= 2)
-            product = product.multiply(BigInteger.valueOf((long) data[i] * (long) data[i + 1]));
-        if (i + 1 == offset)
-            product = product.multiply(BigInteger.valueOf(data[offset]));
-        return product;
     }
 
     public IntSequence appendFrom(int[] src, int srcOffset, int srcLen) {

@@ -19,7 +19,6 @@ import com.mycila.math.distribution.Distribution;
 import com.mycila.math.list.IntProcedure;
 import com.mycila.math.list.IntSequence;
 import com.mycila.math.number.BigInteger;
-import static com.mycila.math.number.BigInteger.*;
 
 import java.util.Arrays;
 
@@ -98,16 +97,6 @@ public final class Digits {
     }
 
     /**
-     * Convert a number to this base. In example, Digits.base(2).rebase(10) gives 1010
-     *
-     * @param number The number
-     * @return the representation of the number in this base
-     */
-    public BigInteger rebase(BigInteger number) {
-        return bigInt(number.toString(base), 10);
-    }
-
-    /**
      * List all digits of a number in this base, in descending order of powers.
      * <p/>
      * I.e. 123 gives {1, 2, 3}
@@ -124,22 +113,6 @@ public final class Digits {
     }
 
     /**
-     * List all digits of a number in this base, in descending order of powers.
-     * <p/>
-     * I.e. 123 gives {1, 2, 3}
-     *
-     * @param number The number
-     * @return the list of digits
-     */
-    public IntSequence list(BigInteger number) {
-        final String s = number.toString(base);
-        final int[] digits = new int[s.length()];
-        for (int i = s.length() - 1; i >= 0; i--)
-            digits[i] = s.charAt(i) - 48;
-        return IntSequence.from(digits);
-    }
-
-    /**
      * Returns the digit sum of a number in this base
      *
      * @param number The number
@@ -150,16 +123,6 @@ public final class Digits {
         do sum += number % base;
         while ((number /= base) > 0);
         return sum;
-    }
-
-    /**
-     * Returns the digit sum of a number in this base
-     *
-     * @param number The number
-     * @return the digit sum
-     */
-    public int sum(BigInteger number) {
-        return list(number).sum();
     }
 
     /**
@@ -190,21 +153,6 @@ public final class Digits {
             number /= base;
         }
         return reverse;
-    }
-
-    /**
-     * Reverse the digits of a number
-     *
-     * @param number The number
-     * @return the reversed number
-     */
-    public BigInteger reverse(BigInteger number) {
-        final String s = number.toString(base);
-        final int max = s.length() - 1;
-        final char chars[] = new char[max + 1];
-        for (int i = 0; i <= max; i++)
-            chars[i] = s.charAt(max - i);
-        return bigInt(String.valueOf(chars), base);
     }
 
     /**
@@ -246,28 +194,6 @@ public final class Digits {
         if (offset < 0) offset = len + offset;
         final long mask = (long) Math.pow(base, offset);
         return number / mask + (number % mask) * (long) Math.pow(base, len - offset);
-    }
-
-    /**
-     * Rotate digits of a number.<br>
-     * - The rotation direction is specified by the sign of offset<br>
-     * - The rotation length is determined by the value of the offset
-     * <p/>
-     * I.e., rotate(1234, 3) and rotate(1234, -1) will both give 2341
-     *
-     * @param number Number to rotate
-     * @param offset The direction and length of the rotation
-     * @return The rotated number
-     */
-    public BigInteger rotate(BigInteger number, int offset) {
-        if (offset == 0) return number;
-        final String s = number.toString(base);
-        final int len = s.length();
-        offset %= s.length();
-        offset %= len;
-        if (offset == 0) return number;
-        if (offset < 0) offset = len + offset;
-        return bigInt(s.substring(len - offset) + s.substring(0, len - offset), base);
     }
 
     /**
@@ -345,16 +271,6 @@ public final class Digits {
     }
 
     /**
-     * Get the number length. Note: 0 as a length of 1.
-     *
-     * @param number A positive number
-     * @return Its length
-     */
-    public int length(BigInteger number) {
-        return number.toString(base).length();
-    }
-
-    /**
      * Concatenate positive numbers
      *
      * @param number  The starting number
@@ -380,20 +296,6 @@ public final class Digits {
         for (int i = 0, max = numbers.length; i < max; i++)
             sb.append(numbers[i]);
         return Long.parseLong(sb.toString());
-    }
-
-    /**
-     * Concatenate positive numbers
-     *
-     * @param number  The starting number
-     * @param numbers Other numbers to concatenate
-     * @return The concatenated number
-     */
-    public BigInteger concat(BigInteger number, BigInteger... numbers) {
-        final StringBuilder sb = new StringBuilder().append(number.toString(base));
-        for (int i = 0, max = numbers.length; i < max; i++)
-            sb.append(numbers[i].toString(base));
-        return bigInt(sb.toString(), base);
     }
 
     /**
@@ -433,18 +335,6 @@ public final class Digits {
     }
 
     /**
-     * Sort the digits of a number
-     *
-     * @param number The number
-     * @return Another number with the same digits, sorted
-     */
-    public BigInteger sort(BigInteger number) {
-        final char c[] = number.toString(base).toCharArray();
-        Arrays.sort(c);
-        return bigInt(String.valueOf(c), base);
-    }
-
-    /**
      * Returns the signature of a number. The signature is composed of all the digit of the number, sorted.
      *
      * @param number The number
@@ -455,16 +345,6 @@ public final class Digits {
         do digits.addQuick((int) (number % base));
         while ((number /= base) > 0);
         return digits.sort();
-    }
-
-    /**
-     * Returns the signature of a number. The signature is composed of all the digit of the number, sorted.
-     *
-     * @param number The number
-     * @return Its digit list
-     */
-    public IntSequence signature(BigInteger number) {
-        return list(number).sort();
     }
 
     /**
@@ -483,21 +363,6 @@ public final class Digits {
     }
 
     /**
-     * Check wheter the given numbers are permutations of tehir digits
-     *
-     * @param number  The first number
-     * @param numbers Other number to be checked against
-     * @return True if all numbers are digit permutations of number
-     */
-    public boolean arePermutations(final BigInteger number, final BigInteger... numbers) {
-        final IntSequence sign = signature(number);
-        for (BigInteger n : numbers)
-            if (!sign.equals(signature(n)))
-                return false;
-        return true;
-    }
-
-    /**
      * Check if the number is a palyndrom
      *
      * @param number The number
@@ -505,16 +370,6 @@ public final class Digits {
      */
     public boolean isPalindromic(long number) {
         return number == reverse(number);
-    }
-
-    /**
-     * Check if the number is a palyndrom
-     *
-     * @param number The number
-     * @return tru if it is
-     */
-    public boolean isPalindromic(BigInteger number) {
-        return number.equals(reverse(number));
     }
 
     public static Digits base(int base) {

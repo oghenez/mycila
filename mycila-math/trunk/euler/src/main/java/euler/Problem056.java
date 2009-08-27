@@ -15,10 +15,9 @@
  */
 package euler;
 
-import com.mycila.math.Digits;
+import com.mycila.math.number.BigInteger;
 
 import static java.lang.System.*;
-import java.math.BigInteger;
 import java.util.TreeSet;
 
 /**
@@ -31,24 +30,16 @@ class Problem056 {
     public static void main(String[] args) throws Exception {
         long time = currentTimeMillis();
 
-        final Digits digits = Digits.base(10);
-
-        System.out.println("Maximum digits: " + BigInteger.valueOf(99).pow(99).toString().length());
-        System.out.println("Sum for 99^99:" + digits.sum(BigInteger.valueOf(99).pow(99)));
-        System.out.println("Sum for 90^90:" + digits.sum(BigInteger.valueOf(90).pow(90)));
+        System.out.println("Maximum digits: " + BigInteger.big(99).pow(99).toString().length());
+        System.out.println("Sum for 99^99:" + BigInteger.big(99).pow(99).digitsSum());
+        System.out.println("Sum for 90^90:" + BigInteger.big(90).pow(90).digitsSum());
 
         final TreeSet<String> results = new TreeSet<String>();
-        for (int a = 91; a <= 99; a++) {
-            for (int b = 91; b <= 99; b++) {
-                final BigInteger n = BigInteger.valueOf(a).pow(b);
-                final int sum = digits.sum(n);
-                results.add(sum + " for " + a + "^" + b);
-            }
-        }
-
-        for (String result : results) {
+        for (int a = 91; a <= 99; a++)
+            for (int b = 91; b <= 99; b++)
+                results.add(BigInteger.big(a).pow(b).digitsSum() + " for " + a + "^" + b);
+        for (String result : results)
             System.out.println(result);
-        }
         out.println(results.last() + " in " + (currentTimeMillis() - time) + "ms");
     }
 

@@ -15,7 +15,9 @@
  */
 package euler;
 
-import java.math.BigInteger;
+import com.mycila.math.number.BigInteger;
+import static com.mycila.math.number.BigInteger.*;
+
 import java.util.Scanner;
 
 /**
@@ -27,8 +29,8 @@ class Problem013 {
     public static void main(String[] args) {
         long time = System.currentTimeMillis();
         Scanner scanner = new Scanner(table);
-        BigInteger sum = BigInteger.ZERO;
-        while (scanner.hasNext()) sum = sum.add(new BigInteger(scanner.next()));
+        BigInteger sum = zero();
+        while (scanner.hasNext()) sum = sum.add(big(scanner.next()));
         System.out.println(sum + " in " + (System.currentTimeMillis() - time) + "ms");
     }
 

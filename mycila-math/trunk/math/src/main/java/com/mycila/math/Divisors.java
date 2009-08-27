@@ -18,8 +18,6 @@ package com.mycila.math;
 import com.mycila.math.list.IntSequence;
 import com.mycila.math.list.LongSequence;
 
-import java.math.BigInteger;
-
 /**
  * @author Mathieu Carbou
  */
@@ -180,21 +178,6 @@ public final class Divisors {
     }
 
     /**
-     * Returns the least common multiple between all provided numbers
-     *
-     * @param n1 A number
-     * @param n2 A number
-     * @param n  Other numbers
-     * @return lcm(n1,n2,...n)
-     */
-    public static BigInteger lcm(BigInteger n1, BigInteger n2, BigInteger... n) {
-        BigInteger lcm = lcm(n1, n2);
-        for (int i = 0, max = n.length; i < max; i++)
-            lcm = lcm(lcm, n[i]);
-        return lcm;
-    }
-
-    /**
      * Returns the least common multiple between two numbers
      *
      * @param n1 A number
@@ -214,17 +197,6 @@ public final class Divisors {
      */
     public static long lcm(long n1, long n2) {
         return (n1 / gcd(n1, n2)) * n2;
-    }
-
-    /**
-     * Returns the least common multiple between two numbers
-     *
-     * @param n1 A number
-     * @param n2 A number
-     * @return lcm(n1,n2)
-     */
-    public static BigInteger lcm(BigInteger n1, BigInteger n2) {
-        return n1.divide(n1.gcd(n2)).multiply(n2);
     }
 
     /**
@@ -255,33 +227,6 @@ public final class Divisors {
         for (int i = 0, max = n.length; i < max; i++)
             gcd = gcd(gcd, n[i]);
         return gcd;
-    }
-
-    /**
-     * Returns the greatest common divisor between two numbers or plus
-     *
-     * @param n1 A number
-     * @param n2 A number
-     * @param n  Other numbers
-     * @return gcd(n1,n2,...n)
-     */
-    public static BigInteger gcd(BigInteger n1, BigInteger n2, BigInteger... n) {
-        BigInteger gcd = gcd(n1, n2);
-        for (int i = 0, max = n.length; i < max; i++)
-            gcd = gcd(gcd, n[i]);
-        return gcd;
-    }
-
-    /**
-     * Returns the greatest common divisor between two numbers.<br>
-     * Implementation from <a href="http://en.wikipedia.org/wiki/Binary_GCD_algorithm">http://en.wikipedia.org/wiki/Binary_GCD_algorithm</a>
-     *
-     * @param p A number
-     * @param q A number
-     * @return gcd(n1,n2)
-     */
-    public static BigInteger gcd(BigInteger p, BigInteger q) {
-        return p.gcd(q);
     }
 
     /**
