@@ -11,6 +11,7 @@ public final class Product {
     private Product() {
     }
 
+    //TODO: improve perf
     public static BigInteger productBig(int[] numbers, int offset, int length) {
         if (offset < 0 || offset + length > numbers.length)
             throw new IllegalArgumentException("Bad offset or length: " + offset + " / " + length);
