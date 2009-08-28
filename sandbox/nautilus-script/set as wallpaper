@@ -36,8 +36,8 @@ WALLPAPER=$(gdialog --title "Wallpaper Options" --radiolist "Picture Options:" 6
 
 if [ -z "$WALLPAPER" ]; then exit; fi;
 
-cp $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS /home/kha/doc/perso/conf/wallpaper
-NAUTILUS_SCRIPT_SELECTED_FILE_PATHS="/home/kha/doc/perso/conf/wallpaper/`basename $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS`"
+cp $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS /home/kha/images/wallpaper
+NAUTILUS_SCRIPT_SELECTED_FILE_PATHS="/home/kha/images/wallpaper/`basename $NAUTILUS_SCRIPT_SELECTED_FILE_PATHS`"
 
 if [ $WALLPAPER = "1" ]; then
 	gconftool-2 --type=string --set /desktop/gnome/background/picture_options wallpaper
