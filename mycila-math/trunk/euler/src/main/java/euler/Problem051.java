@@ -42,7 +42,7 @@ class Problem051 {
 
         // create a prime list containing only primes having N digits
         final Sieve primes = Sieve.to((int) Math.pow(10, length) - 1);
-        final IntSequence range = primes.asSequence((int) Math.pow(10, length - 1), primes.range().to);
+        final IntSequence range = primes.asSequence((int) Math.pow(10, length - 1), primes.sieveEnd());
         System.out.println(range);
 
         // build a list of patterns having same length

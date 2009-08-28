@@ -15,6 +15,8 @@
  */
 package com.mycila.math.prime;
 
+import java.util.BitSet;
+
 /**
  * @author Mathieu Carbou
  */
@@ -39,10 +41,10 @@ public final class Primes {
      * Prime number sieve, Eratosthenes (276-194 B. T.)
      *
      * @param upTo Upper bound of the sieve.
-     * @return Returns the sieve computed by {@link #sieveOfEratosthenes(boolean[])}
+     * @return Returns the sieve computed by {@link #sieveOfEratosthenes(BitSet)}
      */
-    public static boolean[] sieveOfEratosthenes(int upTo) {
-        final boolean[] composite = new boolean[upTo / 3];
+    public static BitSet sieveOfEratosthenes(int upTo) {
+        final BitSet composite = new BitSet(upTo / 3);
         sieveOfEratosthenes(composite);
         return composite;
     }
@@ -56,10 +58,10 @@ public final class Primes {
      * Note: There is no multiplication operation in this function.
      *
      * @param composite After execution of the function this
-     *                  boolean array includes all composite numbers in [5,n]
+     *                  BitList includes all composite numbers in [5,n]
      *                  disregarding multiples of 2 and 3.
      */
-    public static void sieveOfEratosthenes(final boolean[] composite) {
+    public static void sieveOfEratosthenes(final BitSet composite) {
         int d1 = 8;
         int d2 = 8;
         int p1 = 3;
@@ -67,20 +69,16 @@ public final class Primes {
         int s1 = 7;
         int s2 = 3;
         int n = 0;
-        int len = composite.length;
+        int len = composite.size();
         boolean toggle = false;
-        // --  scan the sieve
         while (s1 < len) {
-            // --  if a prime is found
-            if (!composite[n++]) {
-                // --  cancel its multiples
+            if (!composite.get(n++)) {
                 int inc = p1 + p2;
                 for (int k = s1; k < len; k += inc)
-                    composite[k] = true;
+                    composite.set(k);
                 for (int k = s1 + s2; k < len; k += inc)
-                    composite[k] = true;
+                    composite.set(k);
             }
-            // -- Never mind, it's ok.
             if (toggle = !toggle) {
                 s1 += d2;
                 d1 += 16;

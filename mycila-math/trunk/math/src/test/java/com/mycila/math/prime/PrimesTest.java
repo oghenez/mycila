@@ -18,8 +18,6 @@ package com.mycila.math.prime;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 /**
  * @author Mathieu Carbou
  */
@@ -27,12 +25,12 @@ public final class PrimesTest {
 
     @Test
     public void test_sieveOfEratosthenes() {
-        assertEquals(Arrays.toString(Primes.sieveOfEratosthenes(2)), "[]");
-        assertEquals(Arrays.toString(Primes.sieveOfEratosthenes(3)), "[false]");
-        assertEquals(Arrays.toString(Primes.sieveOfEratosthenes(4)), "[false]");
-        assertEquals(Arrays.toString(Primes.sieveOfEratosthenes(5)), "[false]");
-        assertEquals(Arrays.toString(Primes.sieveOfEratosthenes(20)), "[false, false, false, false, false, false]");
-        assertEquals(Arrays.toString(Primes.sieveOfEratosthenes(30)), "[false, false, false, false, false, false, false, true, false, false]");
+        assertEquals(Primes.sieveOfEratosthenes(2).toString(), "{}");
+        assertEquals(Primes.sieveOfEratosthenes(3).toString(), "{7, 10, 15, 17, 20, 24, 27, 29, 30, 37, 38, 39, 40, 43, 46, 47, 50, 52, 55, 57, 60, 61}");
+        assertEquals(Primes.sieveOfEratosthenes(4).toString(), "{7, 10, 15, 17, 20, 24, 27, 29, 30, 37, 38, 39, 40, 43, 46, 47, 50, 52, 55, 57, 60, 61}");
+        assertEquals(Primes.sieveOfEratosthenes(5).toString(), "{7, 10, 15, 17, 20, 24, 27, 29, 30, 37, 38, 39, 40, 43, 46, 47, 50, 52, 55, 57, 60, 61}");
+        assertEquals(Primes.sieveOfEratosthenes(20).toString(), "{7, 10, 15, 17, 20, 24, 27, 29, 30, 37, 38, 39, 40, 43, 46, 47, 50, 52, 55, 57, 60, 61}");
+        assertEquals(Primes.sieveOfEratosthenes(30).toString(), "{7, 10, 15, 17, 20, 24, 27, 29, 30, 37, 38, 39, 40, 43, 46, 47, 50, 52, 55, 57, 60, 61}");
     }
 
 }

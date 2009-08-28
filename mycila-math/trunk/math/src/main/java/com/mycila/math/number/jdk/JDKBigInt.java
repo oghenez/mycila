@@ -2,8 +2,8 @@ package com.mycila.math.number.jdk;
 
 import com.mycila.math.number.BigInt;
 
-import java.util.Arrays;
 import java.math.BigInteger;
+import java.util.Arrays;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -381,4 +381,47 @@ final class JDKBigInt extends BigInt {
                 new JDKBigInt(guess, radix),
                 new JDKBigInt(remainder, radix)};
     }
+
+    //TODO: implement
+
+    @Override
+    public BigInt modMultiply(BigInt val, BigInt m) {
+        return null;
+    }
+
+    @Override
+    public BigInt modAdd(BigInt val, BigInt m) {
+        return null;
+    }
+
+    @Override
+    public BigInt square() {
+        return null;
+    }
+
+    @Override
+    public BigInt binomialCoeff(int k) {
+        return null;
+    }
+
+    @Override
+    public BigInt factorial() {
+        return null;
+    }
+
+    @Override
+    public BigInt fallingFactorial(BigInt n) {
+        return null;
+    }
+
+    @Override
+    public BigInt sumTo(BigInt n) {
+        return null;
+    }
+
+    @Override
+    public BigInt productTo(BigInt n) {
+        return null;
+    }
+
 }
