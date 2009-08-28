@@ -54,16 +54,12 @@ public final class SieveTest {
         assertEquals(sieve.subSieve(1).toString(), "[]");
         assertEquals(sieve.subSieve(2).toString(), "[2]");
         assertEquals(sieve.subSieve(10).toString(), "[2, 3, 5, 7]");
+        assertEquals(sieve.subSieve(0).toString(), "[]");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void test_subSieve_err1() {
         Sieve.to(22).subSieve(23);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void test_subSieve_err() {
-        Sieve.to(22).subSieve(0);
     }
 
     @Test
@@ -102,6 +98,14 @@ public final class SieveTest {
         assertEquals(Sieve.to(5).size(), 3);
         assertEquals(Sieve.to(179).size(), 41);
         assertEquals(Sieve.to(5).grow(38).toString(), "[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179]");
+    }
+
+    @Test
+    public void test_can_get_all_32bits_primes() {
+        Sieve sieve = Sieve.to(Integer.MAX_VALUE);
+        assertEquals(sieve.size(), 105097565);
+        assertEquals(sieve.first(), 2);
+        assertEquals(sieve.last(), Integer.MAX_VALUE);
     }
 
 }

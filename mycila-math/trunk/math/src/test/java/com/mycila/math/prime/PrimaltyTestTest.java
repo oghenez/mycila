@@ -76,6 +76,7 @@ public final class PrimaltyTestTest {
         assertTrue(PrimaltyTest.lucasLehmer(2));
         assertTrue(PrimaltyTest.lucasLehmer(3));
         assertTrue(PrimaltyTest.lucasLehmer(5));
+        assertTrue(PrimaltyTest.lucasLehmer(31)); // matches 2^31-1 = Integer.MAX_VALUE
     }
 
 }

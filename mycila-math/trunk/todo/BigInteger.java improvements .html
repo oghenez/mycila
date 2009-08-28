@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+<head>
+
+
+    <title> Further BigInteger performance improvements
+    </title>
+    <link rel="Index" href="http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/index.html">
+    <link rel="made" href="mailto:core-libs-dev%40openjdk.java.net?Subject=Further%20BigInteger%20performance%20improvements&amp;In-Reply-To=47E89FE3.6080203%40mindspring.com">
+    <meta name="robots" content="index,nofollow">
+    <meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+    <link rel="Previous" href="http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/001759.html">
+    <link rel="Next" href="http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/001762.html">
+</head>
+<body bgcolor="#ffffff">
+<h1>Further BigInteger performance improvements</h1>
+<b>Alan Eliasen</b>
+<a href="mailto:core-libs-dev%40openjdk.java.net?Subject=Further%20BigInteger%20performance%20improvements&amp;In-Reply-To=47E89FE3.6080203%40mindspring.com" title="Further BigInteger performance improvements">eliasen at mindspring.com
+</a><br>
+<i>Thu Jun 4 05:02:50 PDT 2009</i>
+
+<p></p>
+<ul>
+    <li>Previous message: <a href="http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/001759.html">hg: jdk7/tl/jdk: 6847459: Allow trust anchor self-issued intermediate version 1 and version 2 certificate
+    </a></li>
+    <li>Next message: <a href="http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/001762.html">Further BigInteger performance improvements
+    </a></li>
+    <li><b>Messages sorted by:</b>
+        <a href="http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/date.html#1761">[ date ]</a>
+        <a href="http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/thread.html#1761">[ thread ]</a>
+        <a href="http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/subject.html#1761">[ subject ]</a>
+        <a href="http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/author.html#1761">[ author ]</a>
+    </li>
+</ul>
+<hr>
+<!--beginarticle-->
+<pre style="white-space: pre-wrap;">   16 months ago, I posted the first of several patches to vastly
+improve the performance of the BigInteger class.  These included
+implementation of Karatsuba and 3-way Toom-Cook multiplication and
+Karatsuba and Toom-Cook squaring.  The particular algorithm used for
+multiplication or squaring is chosen according to the size of the
+numbers, and are these algorithms are asymptotically faster than the
+O(n^2) algorithms in previous versions of Java. (Karatsuba is
+O(n^1.585), 3-way Toom Cook is O(n^1.465)).
+
+   Unfortunately, none of these patches has yet been applied or reviewed
+ in any way by Sun.  (Although they have been reviewed by some of the
+top researchers in the field of high-performance multiplication.)  Nor
+have I received answers to my questions about how long Sun wants
+regression tests to run, size of output, etc., nor have I been provided
+with promised existing regression tests for BigInteger to see if they
+need improvement.  (If I can find these somewhere, please let me know.
+They're not apparently in my checkout.)
+
+   I'm still hoping to get these changes into Java 1.7, because the
+performance increase is so significant, and because this is necessary to
+make Java a feasible platform for number theory and numerics.
+
+   Recently, Xiaobin Lu submitted patches to improve the performance of
+BigDecimal, and also improved BigInteger's performance in the process.
+Great job!
+
+   Luckily, the overlap between our patches was negligible.  Xiaobin may
+now be the person most suited to look over my patches, as he has worked
+intimately in the class recently.  My fixes are further improved by his
+fixes to give some truly spectacular improvements in performance for big
+numbers, which should also help large BigDecimals.  I was disappointed,
+though, that Sun knew about my larger performance improvements for a
+long time and didn't use this opportunity to evaluate and apply them,
+nor communicate with me, despite my repeated attempts and my frankly
+hard work on this.
+
+  Below, interspersed among my previous statements, are
+some updated performance numbers with my patches and Xiaobin's.
+
+   For multiplying the numbers 3^1000000 * 3^1000001,
+(with my fixes to do the exponentiation hundreds of thousands of times
+faster factored out; without these, JDK 1.6 would be thousands of times
+slower,) the times for 20 iterations are:
+
+   JDK 1.6                    292987 ms
+   OpenJDK1.7 + my Karatsuba   28650 ms
+   OpenJDK1.7 + my Toom/Cook   18054 ms
+   Plus Xiaobin's improvements 12880 ms
+
+   *** Performance improvement over Java 1.6:  22.7x
+
+   For multiplying numbers 3^14000000 * 3^14000001, the time for 1
+iteration is:
+
+   JDK 1.6	             3499115 ms
+   OpenJDK1.7 + my Karatsuba   89505 ms
+   OpenJDK1.7 + my Toom/Cook   43636 ms
+   Plus Xiaobin's improvements 29813 ms
+
+   *** Performance improvement over Java 1.6:  117.3x
+
+   You can see that operations that weren't even feasible to consider in
+JDK 1.6 are now possible in Java.  Operations that used to take almost
+an hour can be done in less than 30 seconds.
+
+   This encompasses a lot of different bug reports:
+
+4228681:  Some BigInteger operations are slow with very large numbers
+<a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4228681">http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4228681</a>
+
+   (This was closed but never fixed.)
+
+
+4837946: Implement Karatsuba multiplication algorithm in BigInteger
+<a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4837946">http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4837946</a>
+
+    This is done, along with Toom-Cook multiplication.  My
+implementation is intended to be easy to read, understand, and check.
+It significantly improves multiplication performance for large numbers.
+
+
+4646474: BigInteger.pow() algorithm slow in 1.4.0
+<a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4646474">http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4646474</a>
+
+   This is improved in many ways:
+
+   * Rewrote pow() to use Karatsuba and Toom-Cook multiplication
+   * Implemented Karatsuba squaring
+   * Immplemented 3-way Toom-Cook squaring
+   * Found good threshholds for Karatsuba and Toom-Cook squaring
+   * Added an optimization to use left-shifting for multiples of 2 in
+the base.  This improved speed by thousands of times for things like
+Mersenne numbers, and may be one of the most significant improvements
+for practical prgrams.
+
+
+4641897: BigInteger.toString() algorithm slow for large numbers
+<a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4641897">http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4641897</a>
+
+   This algorithm uses a very inefficient algorithm for large numbers.
+ I plan to replace it with a recursive divide-and-conquer algorithm
+devised by Schoenhage and Strassen.  I have developed and tested this in
+my own software.  This operates hundreds or thousands of times faster
+than the current version for large numbers.  What takes a day in Java
+1.6, I can do in 5 minutes.  It will also benefit from faster
+multiplication and exponentiation.  This is likely to be the most
+controversial algorithm because it has potential threading and
+synchronization and caching and memory-vs-speed tradeoffs, so I'm going
+to submit it separately, if I can get Sun to review the multiply and pow
+patches first.
+
+   My patches are designed to be as readable and simple as possible.
+They all build on existing functions, and eschew lots of low-level
+bit-fiddling, as those types of changes are harder to understand and
+debug.  I think it's best to get working algorithms with better
+asymptotic efficiency, as those will vastly improve performance
+for large numbers, and tune them by doing more low-level bit fiddling
+later if necessary.  Even without being tuned to the nth degree, the new
+algorithms are vastly faster for large numbers, and identical for small
+numbers.
+
+   I've been asked by Sun to submit my patches in small chunks, so I
+plan to submit just the multiplication and squaring patch, and leave the
+patches for pow() for later unless I hear otherwise.  I'd rather they
+had it *all* and got it tested and integrated as soon as possible, after
+all this waiting, and the work it takes to separate out working code to
+make a smaller patch.
+
+   I will be submitting a patch in the next day or two.  I'm running my
+*huge* regression tests which produce about 250 GB of output and take at
+least a day to run.  (And you have to run it twice against a known good
+platform to have something to compare to... luckily I've done that.)
+
+   For those who'd just like to replace their file with my improved
+version (includes Xiaobin's patches), it's available at:
+<a href="http://futureboy.us/temp/BigInteger.java">http://futureboy.us/temp/BigInteger.java</a>
+
+   From the queries I get, this is important to a lot of people.  The
+performance of BigInteger can be improved by tens or hundreds or
+thousands of times (or even more in the case of certain arguments of
+pow()), and should be done to make Java a more viable platform for numerics.
+
+   This work has been in Sun's hands for a long time, and really needs
+to get into 1.7.
+
+--
+   Alan Eliasen
+   <a href="http://mail.openjdk.java.net/mailman/listinfo/core-libs-dev">eliasen at mindspring.com</a>
+   <a href="http://futureboy.us/">http://futureboy.us/</a>
+
+</pre>
+
+<!--endarticle-->
+<hr>
+<p></p>
+<ul>
+    <!--threads-->
+    <li>Previous message: <a href="http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/001759.html">hg: jdk7/tl/jdk: 6847459: Allow trust anchor self-issued intermediate version 1 and version 2 certificate
+    </a></li>
+    <li>Next message: <a href="http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/001762.html">Further BigInteger performance improvements
+    </a></li>
+    <li><b>Messages sorted by:</b>
+        <a href="http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/date.html#1761">[ date ]</a>
+        <a href="http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/thread.html#1761">[ thread ]</a>
+        <a href="http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/subject.html#1761">[ subject ]</a>
+        <a href="http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/author.html#1761">[ author ]</a>
+    </li>
+</ul>
+
+<hr>
+<a href="http://mail.openjdk.java.net/mailman/listinfo/core-libs-dev">More information about the core-libs-dev
+    mailing list</a><br>
+</body>
+</html>
