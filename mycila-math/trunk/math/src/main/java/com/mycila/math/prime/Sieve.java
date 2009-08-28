@@ -39,7 +39,7 @@ public final class Sieve {
     private final Iterable<Integer> iterable = new Iterable<Integer>() {
         @Override
         public Iterator<Integer> iterator() {
-            return ReadOnlySequenceIterator.on(primes);
+            return ReadOnlySequenceIterator.on(IntRange.range(0, sieveLength - 1), primes);
         }
     };
 
@@ -127,7 +127,7 @@ public final class Sieve {
      * @return The product of all primes in this Sieve
      */
     public BigInt primorial() {
-        return Product.productBig(primes, 0, sieveEnd - 1);
+        return Product.productBig(primes, 0, sieveLength);
     }
 
     /**
@@ -178,7 +178,7 @@ public final class Sieve {
      * @return True if the Sieve contains the prime
      */
     public boolean contains(int prime) {
-        return Arrays.binarySearch(primes, prime) >= 0;
+        return Arrays.binarySearch(primes, 0, sieveLength, prime) >= 0;
     }
 
     /**
@@ -202,11 +202,11 @@ public final class Sieve {
     /**
      * Get the index of a prime
      *
-     * @param number Prime number
+     * @param prime Prime number
      * @return the position of the prime in the sieve, starting from 0, or -1 if not found
      */
-    public int indexOf(int number) {
-        final int pos = Arrays.binarySearch(primes, number);
+    public int indexOf(int prime) {
+        final int pos = Arrays.binarySearch(primes, 0, sieveLength, prime);
         return pos >= 0 ? pos : -1;
     }
 
@@ -214,18 +214,32 @@ public final class Sieve {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Sieve sieve = (Sieve) o;
-        return Arrays.equals(primes, sieve.primes);
+        Sieve that = (Sieve) o;
+        if (that.size() != this.size()) return false;
+        for (int i = sieveLength; i-- > 0;)
+            if (this.primes[i] != that.primes[i])
+                return false;
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(primes);
+        int h = 0;
+        for (int i = sieveLength; i-- > 0;)
+            h = 37 * h + 31 * primes[i];
+        return h;
     }
 
     @Override
     public String toString() {
-        return Arrays.toString(primes);
+        final StringBuilder buf = new StringBuilder("{");
+        for (int i = 0, end = sieveLength - 1; i < end; i++) {
+            buf.append(primes[i]);
+            buf.append(", ");
+        }
+        if (size() > 0) buf.append(primes[sieveLength - 1]);
+        buf.append("}");
+        return buf.toString();
     }
 
     /**
@@ -283,7 +297,7 @@ public final class Sieve {
      * @return an {@link com.mycila.math.list.IntSequence} containing all primes in order
      */
     public IntSequence asSequence() {
-        return new IntSequence(primes);
+        return new IntSequence(sieveLength).appendFrom(primes, 0, sieveLength);
     }
 
     /**
@@ -310,7 +324,7 @@ public final class Sieve {
     public Sieve subSieve(int max) {
         if (max > this.sieveEnd)
             throw new IllegalArgumentException(max + " is not included in this sieve range");
-        int end = Arrays.binarySearch(primes, max);
+        int end = Arrays.binarySearch(primes, 0, sieveLength, max);
         if (end < 0) end = -end - 2;
         end++;
         return new Sieve(max, Arrays.copyOf(primes, end), end);
@@ -318,10 +332,10 @@ public final class Sieve {
 
     private IntRange getIndexes(int from, int to) {
         if (sieveLength == 0 || to < from) return IntRange.empty();
-        int start = Arrays.binarySearch(primes, from);
+        int start = Arrays.binarySearch(primes, 0, sieveLength, from);
         if (start < 0) start = -start - 1;
         if (start >= sieveLength) return IntRange.range(sieveLength - 1, sieveLength - 1);
-        int end = Arrays.binarySearch(primes, to);
+        int end = Arrays.binarySearch(primes, 0, sieveLength, to);
         if (end < 0) end = -end - 2;
         return end < start ? IntRange.empty() :
                 end >= sieveLength ?
