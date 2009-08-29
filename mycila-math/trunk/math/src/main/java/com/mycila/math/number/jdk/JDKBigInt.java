@@ -142,8 +142,10 @@ final class JDKBigInt extends BigInt {
     }
 
     @Override
-    public BigInt pow(int exponent) {
-        return new JDKBigInt(impl.pow(exponent), radix);
+    public BigInt pow(long exponent) {
+        return exponent <= Integer.MAX_VALUE ?
+                new JDKBigInt(impl.pow((int) exponent), radix) :
+                pow(BigInt.big(exponent));
     }
 
     @Override
@@ -388,7 +390,19 @@ final class JDKBigInt extends BigInt {
                 new JDKBigInt(remainder, radix)};
     }
 
+
     //TODO: implement
+
+
+    @Override
+    public BigInt[] rootInt(BigInt root) {
+        return new BigInt[0];
+    }
+
+    @Override
+    public BigInt[] rootInt(long root) {
+        return new BigInt[0];
+    }
 
     @Override
     public BigInt add(long val) {

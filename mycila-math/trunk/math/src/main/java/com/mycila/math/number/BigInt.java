@@ -279,7 +279,7 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @throws ArithmeticException {@code exponent} is negative.  (This would
      *                             cause the operation to yield a non-integer value.)
      */
-    public abstract BigInt pow(int exponent);
+    public abstract BigInt pow(long exponent);
 
     /**
      * Returns a BigInteger whose value is {@code (this + val)}.
@@ -728,6 +728,22 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>2</sup> + r = number</code>.
      */
     public abstract BigInt[] sqrtInt();
+
+    /**
+     * Compute the integer root q of a number so that q^root + r = number
+     *
+     * @param root The root to compute
+     * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>root</sup> + r = number</code>.
+     */
+    public abstract BigInt[] rootInt(BigInt root);
+
+    /**
+     * Compute the integer root q of a number so that q^root + r = number
+     *
+     * @param root The root to compute
+     * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>root</sup> + r = number</code>.
+     */
+    public abstract BigInt[] rootInt(long root);
 
     /**
      * Compute <code>this * this</code>
