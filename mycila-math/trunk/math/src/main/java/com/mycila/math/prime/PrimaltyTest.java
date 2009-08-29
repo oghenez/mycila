@@ -118,6 +118,11 @@ public final class PrimaltyTest {
         return a_to_power == n - 1;
     }
 
+    //TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
+    //TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
+    //TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet
+    //TODO: Milelr-Rabin in BigIntegerMath
+
     /**
      * Primalty test using <a href="http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test">Miller-Rabin primality test<a/>.
      * <p/>
@@ -150,13 +155,6 @@ public final class PrimaltyTest {
         return pow.equals(n_minus_one);
     }
 
-    /**
-     * http://en.wikipedia.org/wiki/Lucas%E2%80%93Lehmer_test_for_Mersenne_numbers
-     *
-     *
-     * @param p Odd probable prime
-     * @return true if it is a mersenne prime
-     */
     /**
      * Primalty test using <a href="http://en.wikipedia.org/wiki/Lucas%E2%80%93Lehmer_test_for_Mersenne_numbers">Lucas-Lehmer primality test<a/>
      * for <a href="http://en.wikipedia.org/wiki/Mersenne_prime">Mersenne primes</a>.

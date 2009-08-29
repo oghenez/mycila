@@ -1,39 +1,47 @@
-<html><head>
-<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-<title>Big Square Roots</title>
-</head><body>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+    <title>Big Square Roots</title>
+</head>
+<body>
 <h1 align="center">Big Square Roots</h1>
 <h4 align="center">by <a href="http://www.merriampark.com/mgresume.htm">Michael Gilleland</a></h4>
 
-<a href="#Intro">Introduction</a><br>
-<a href="#Algo">Algorithm</a><br>
-<a href="#Source">Source Code</a><br>
-<a href="#Output">Sample Output</a><br>
-<a href="#Links">Links</a><br>
+<a href="bigsqrt.htm#Intro">Introduction</a><br>
+<a href="bigsqrt.htm#Algo">Algorithm</a><br>
+<a href="bigsqrt.htm#Source">Source Code</a><br>
+<a href="bigsqrt.htm#Output">Sample Output</a><br>
+<a href="bigsqrt.htm#Links">Links</a><br>
 
 <h2><a name="Intro">Introduction</a></h2>
+
 <p>
-The base Java class java.lang.Math contains a useful grab bag of
-mathematical goodies:
-</p><ul>
-<li>Trigonometric functions, such as sine, cosine, tangent,
-arcsine, arccosine, arctangent
-</li><li>Constants, such as PI and E
-</li><li>Other miscellaneous functions such as square root, ceiling, floor, etc.
-</li></ul>
+    The base Java class java.lang.Math contains a useful grab bag of
+    mathematical goodies:
+</p>
+<ul>
+    <li>Trigonometric functions, such as sine, cosine, tangent,
+        arcsine, arccosine, arctangent
+    </li>
+    <li>Constants, such as PI and E
+    </li>
+    <li>Other miscellaneous functions such as square root, ceiling, floor, etc.
+    </li>
+</ul>
 Almost everything in java.lang.Math uses the double data type,
 which is fine for most purposes, but not if you're interested
 in very large numbers.
 For those who are interested in big numbers,
-Java has handy BigInteger and BigDecimal classes in package java.math. 
+Java has handy BigInteger and BigDecimal classes in package java.math.
 The missing ingredient, however, is a "big" counterpart of
 java.lang.Math.
 <p></p>
+
 <p>
-In the absence of such a class, I needed a simple way
-to find square roots of big numbers in Java, and this paper
-presents a straightforward implementation of what turns
-out to be a very old technique.
+    In the absence of such a class, I needed a simple way
+    to find square roots of big numbers in Java, and this paper
+    presents a straightforward implementation of what turns
+    out to be a very old technique.
 </p>
 <hr>
 <h2><a name="Algo">Algorithm</a></h2>
@@ -41,193 +49,210 @@ My first impulse, when I embarked on this project, was to
 turn to that old standby, A.A. Klaf's <i>Arithmetic Refresher</i>
 (NY: Dover, 1964), in which I did find an algorithm to extract
 square roots (pp. 232-236), the same one I learned (or more accurately,
-was taught) in grade school. 
+was taught) in grade school.
 This method resembles one used in the
 13th century by the Arab mathematician
 <a href="http://www-gap.dcs.st-and.ac.uk/%7Ehistory/Mathematicians/Al-Banna.html">
-Ibn al-Banna</a>, to judge by the description in
-Jean-Luc Chambert et al., 
+    Ibn al-Banna</a>, to judge by the description in
+Jean-Luc Chambert et al.,
 <i>A History of Algorithms: From the Pebble to the Microchip</i>, tr.
 Chris Weeks (Heidelberg: Springer, 1999), pp. 206-208.
 Frankly, as an adult, I find it just as baffling as I did in seventh grade.
 <p></p>
-<p>
-There has to be a simpler way, I thought, and indeed there is.
-You can find it at the Argonne National Laboratory's web site, in the
-archives of the "Ask a Scientist" service for K-12 educators and students.
-Someone asked a scientist "How do you find square roots?", and
-R.C. Winther answered with a lucid
-<a href="http://newton.dep.anl.gov/newton/askasci/1995/math/MATH066.HTM">
-description</a>, which I'll paraphrase here:
-</p><ol>
-<li>Start with an initial guess (g) of what the square root of
-some number (call it n) might be. The initial guess doesn't even
-have to be close. For simplicity's sake, let's always choose g = 1.
-</li><li>Compute result = ((n/g) + g)/2. Let g be the result just computed.
-</li><li>Repeat step 2 until the last two results obtained are the same.
-</li></ol>
-<p></p>
-<p>
-Let's look at some examples. First, let's find the square root of 9
-by this method. In our calculations, we'll round off everything to three decimal places.
-</p>
-<table align="center" border="1" cols="5">
-<tbody><tr>
-<th>n</th>
-<th>g</th>
-<th>n/g</th>
-<th>(n/g) + g</th>
-<th>((n/g) + g)/2</th>
-</tr>
-<tr>
-<td align="center">9</td>
-<td align="center">1</td>
-<td align="center">9</td>
-<td align="center">10</td>
-<td align="center">5</td>
-</tr>
-<tr>
-<td align="center">9</td>
-<td align="center">5</td>
-<td align="center">1.8</td>
-<td align="center">6.8</td>
-<td align="center">3.4</td>
-</tr>
-<tr>
-<td align="center">9</td>
-<td align="center">3.4</td>
-<td align="center">2.65</td>
-<td align="center">6.05</td>
-<td align="center">3.025</td>
-</tr>
-<tr>
-<td align="center">9</td>
-<td align="center">3.025</td>
-<td align="center">2.975</td>
-<td align="center">6</td>
-<td align="center">3</td>
-</tr>
-<tr>
-<td align="center">9</td>
-<td align="center">3</td>
-<td align="center">3</td>
-<td align="center">6</td>
-<td align="center">3</td>
-</tr>
-</tbody></table>
 
 <p>
-Next, let's find the square root of 30
-by this method. This time, we'll round off everything to eight decimal places.
+    There has to be a simpler way, I thought, and indeed there is.
+    You can find it at the Argonne National Laboratory's web site, in the
+    archives of the "Ask a Scientist" service for K-12 educators and students.
+    Someone asked a scientist "How do you find square roots?", and
+    R.C. Winther answered with a lucid
+    <a href="http://newton.dep.anl.gov/newton/askasci/1995/math/MATH066.HTM">
+        description</a>, which I'll paraphrase here:
+</p>
+<ol>
+    <li>Start with an initial guess (g) of what the square root of
+        some number (call it n) might be. The initial guess doesn't even
+        have to be close. For simplicity's sake, let's always choose g = 1.
+    </li>
+    <li>Compute result = ((n/g) + g)/2. Let g be the result just computed.
+    </li>
+    <li>Repeat step 2 until the last two results obtained are the same.
+    </li>
+</ol>
+<p></p>
+
+<p>
+    Let's look at some examples. First, let's find the square root of 9
+    by this method. In our calculations, we'll round off everything to three decimal places.
+</p>
+<table align="center" border="1" cols="5">
+    <tbody>
+    <tr>
+        <th>n</th>
+        <th>g</th>
+        <th>n/g</th>
+        <th>(n/g) + g</th>
+        <th>((n/g) + g)/2</th>
+    </tr>
+    <tr>
+        <td align="center">9</td>
+        <td align="center">1</td>
+        <td align="center">9</td>
+        <td align="center">10</td>
+        <td align="center">5</td>
+    </tr>
+    <tr>
+        <td align="center">9</td>
+        <td align="center">5</td>
+        <td align="center">1.8</td>
+        <td align="center">6.8</td>
+        <td align="center">3.4</td>
+    </tr>
+    <tr>
+        <td align="center">9</td>
+        <td align="center">3.4</td>
+        <td align="center">2.65</td>
+        <td align="center">6.05</td>
+        <td align="center">3.025</td>
+    </tr>
+    <tr>
+        <td align="center">9</td>
+        <td align="center">3.025</td>
+        <td align="center">2.975</td>
+        <td align="center">6</td>
+        <td align="center">3</td>
+    </tr>
+    <tr>
+        <td align="center">9</td>
+        <td align="center">3</td>
+        <td align="center">3</td>
+        <td align="center">6</td>
+        <td align="center">3</td>
+    </tr>
+    </tbody>
+</table>
+
+<p>
+    Next, let's find the square root of 30
+    by this method. This time, we'll round off everything to eight decimal places.
 </p>
 
 <table align="center" border="1" cols="5">
-<tbody><tr>
-<th>n</th>
-<th>g</th>
-<th>n/g</th>
-<th>(n/g) + g</th>
-<th>((n/g) + g)/2</th>
-</tr>
-<tr>
-<td align="center">30</td>
-<td align="center">1</td>
-<td align="center">30</td>
-<td align="center">31</td>
-<td align="center">15.5</td>
-</tr>
-<tr>
-<td align="center">30</td>
-<td align="center">15.5</td>
-<td align="center">1.93548371</td>
-<td align="center">17.43548387</td>
-<td align="center">8.71774194</td>
-</tr>
-<tr>
-<td align="center">30</td>
-<td align="center">8.71774194</td>
-<td align="center">3.44125809</td>
-<td align="center">12.15900003</td>
-<td align="center">6.07950002</td>
-</tr>
-<tr>
-<td align="center">30</td>
-<td align="center">6.07950002</td>
-<td align="center">4.93461632</td>
-<td align="center">11.01411634</td>
-<td align="center">5.50705817</td>
-</tr>
-<tr>
-<td align="center">30</td>
-<td align="center">5.50705817</td>
-<td align="center">5.44755459</td>
-<td align="center">10.95461276</td>
-<td align="center">5.47730638</td>
-</tr>
-<tr>
-<td align="center">30</td>
-<td align="center">5.47730638</td>
-<td align="center">5.47714477</td>
-<td align="center">10.95445115</td>
-<td align="center">5.47722558</td>
-</tr>
-<tr>
-<td align="center">30</td>
-<td align="center">5.47722558</td>
-<td align="center">5.47722557</td>
-<td align="center">10.95445115</td>
-<td align="center">5.47722558</td>
-</tr>
-</tbody></table>
+    <tbody>
+    <tr>
+        <th>n</th>
+        <th>g</th>
+        <th>n/g</th>
+        <th>(n/g) + g</th>
+        <th>((n/g) + g)/2</th>
+    </tr>
+    <tr>
+        <td align="center">30</td>
+        <td align="center">1</td>
+        <td align="center">30</td>
+        <td align="center">31</td>
+        <td align="center">15.5</td>
+    </tr>
+    <tr>
+        <td align="center">30</td>
+        <td align="center">15.5</td>
+        <td align="center">1.93548371</td>
+        <td align="center">17.43548387</td>
+        <td align="center">8.71774194</td>
+    </tr>
+    <tr>
+        <td align="center">30</td>
+        <td align="center">8.71774194</td>
+        <td align="center">3.44125809</td>
+        <td align="center">12.15900003</td>
+        <td align="center">6.07950002</td>
+    </tr>
+    <tr>
+        <td align="center">30</td>
+        <td align="center">6.07950002</td>
+        <td align="center">4.93461632</td>
+        <td align="center">11.01411634</td>
+        <td align="center">5.50705817</td>
+    </tr>
+    <tr>
+        <td align="center">30</td>
+        <td align="center">5.50705817</td>
+        <td align="center">5.44755459</td>
+        <td align="center">10.95461276</td>
+        <td align="center">5.47730638</td>
+    </tr>
+    <tr>
+        <td align="center">30</td>
+        <td align="center">5.47730638</td>
+        <td align="center">5.47714477</td>
+        <td align="center">10.95445115</td>
+        <td align="center">5.47722558</td>
+    </tr>
+    <tr>
+        <td align="center">30</td>
+        <td align="center">5.47722558</td>
+        <td align="center">5.47722557</td>
+        <td align="center">10.95445115</td>
+        <td align="center">5.47722558</td>
+    </tr>
+    </tbody>
+</table>
 <p>
-Professional mathematicians are of course familiar with this algorithm,
-which is known as Newton's method, but its pedigree is in fact much
-older than Newton.
-In the first century AD, the Greek mathematician
-<a href="http://www-gap.dcs.st-and.ac.uk/%7Ehistory/Mathematicians/Heron.html">
-Heron of Alexandria</a> used essentially the
-same method in book 1, chapter 8, of his <i>Metrica</i> to determine
-the square root of 720. See Jean-Luc Chambert et al., <i>op. cit.</i>, 
-pp. 202-203, and Thomas Heath, <i>A History of Greek Mathematics, Volume II:
-From Aristarchus to Diophantus</i> (NY: Dover, 1981), pp. 323-326.
+    Professional mathematicians are of course familiar with this algorithm,
+    which is known as Newton's method, but its pedigree is in fact much
+    older than Newton.
+    In the first century AD, the Greek mathematician
+    <a href="http://www-gap.dcs.st-and.ac.uk/%7Ehistory/Mathematicians/Heron.html">
+        Heron of Alexandria</a> used essentially the
+    same method in book 1, chapter 8, of his <i>Metrica</i> to determine
+    the square root of 720. See Jean-Luc Chambert et al., <i>op. cit.</i>,
+    pp. 202-203, and Thomas Heath, <i>A History of Greek Mathematics, Volume II:
+    From Aristarchus to Diophantus</i> (NY: Dover, 1981), pp. 323-326.
 </p>
+
 <p>
-There is evidence that this method goes even further back, as
-far as the Babylonians. 
-In the Yale University Babylonian Collection, there is a cuneiform
-tablet (dated ca. 2000-1700 BC and catalogued as YBC 7289) that seems
-to use this method to compute the square root of 2.
-See H.L. Resnikoff and R.O. Wells, Jr.,
-<i>Mathematics in Civilization</i> (NY: Dover, 1984), pp. 76-79,
-and also the following links:
-</p><ul>
-<li>Bill Casselman, 
-<a href="http://www.math.ubc.ca/people/faculty/cass/Euclid/ybc/ybc.html">
-YBC 7289</a>, with splendid full-size color photographs
-</li><li>Franz Gnaedinger, 
-<a href="http://www.seshat.ch/home/babylon.htm">
-Babylonian Mathematics (YBC 7289, Plimpton 322)</a>
-</li><li>Duncan J. Melville, 
-<a href="http://it.stlawu.edu/%7Edmelvill/mesomath/tablets/YBC7289.html">
-YBC 7289</a>
-</li><li>J.J. O'Connor and E.F. Robertson,
-<a href="http://www-gap.dcs.st-and.ac.uk/%7Ehistory/HistTopics/Babylonian_Pythagoras.html">
-Babylonian Pythagoras</a>, a very clear explanation
-</li></ul>
+    There is evidence that this method goes even further back, as
+    far as the Babylonians.
+    In the Yale University Babylonian Collection, there is a cuneiform
+    tablet (dated ca. 2000-1700 BC and catalogued as YBC 7289) that seems
+    to use this method to compute the square root of 2.
+    See H.L. Resnikoff and R.O. Wells, Jr.,
+    <i>Mathematics in Civilization</i> (NY: Dover, 1984), pp. 76-79,
+    and also the following links:
+</p>
+<ul>
+    <li>Bill Casselman,
+        <a href="http://www.math.ubc.ca/people/faculty/cass/Euclid/ybc/ybc.html">
+            YBC 7289</a>, with splendid full-size color photographs
+    </li>
+    <li>Franz Gnaedinger,
+        <a href="http://www.seshat.ch/home/babylon.htm">
+            Babylonian Mathematics (YBC 7289, Plimpton 322)</a>
+    </li>
+    <li>Duncan J. Melville,
+        <a href="http://it.stlawu.edu/%7Edmelvill/mesomath/tablets/YBC7289.html">
+            YBC 7289</a>
+    </li>
+    <li>J.J. O'Connor and E.F. Robertson,
+        <a href="http://www-gap.dcs.st-and.ac.uk/%7Ehistory/HistTopics/Babylonian_Pythagoras.html">
+            Babylonian Pythagoras</a>, a very clear explanation
+    </li>
+</ul>
 <p></p>
+
 <p>
-There's one obvious refinement we can make, and that is in the
-choice of our initial guess. We've used 1 as the initial guess
-so far in the examples, but let's try to do a little better.
-We know that the square root of 100 is 10, so a better initial
-guess for the square root of any 3 or 4 digit number is 10.
-Likewise, we know that the square root of 10,000 is 100, so a
-better initial guess for the square root of any 5 or 6 digit number
-is 100. And so forth.
+    There's one obvious refinement we can make, and that is in the
+    choice of our initial guess. We've used 1 as the initial guess
+    so far in the examples, but let's try to do a little better.
+    We know that the square root of 100 is 10, so a better initial
+    guess for the square root of any 3 or 4 digit number is 10.
+    Likewise, we know that the square root of 10,000 is 100, so a
+    better initial guess for the square root of any 5 or 6 digit number
+    is 100. And so forth.
 </p>
 <hr>
 <h2><a name="Source">Source Code</a></h2>
-The following source code (BigSquareRoot.java) 
+The following source code (BigSquareRoot.java)
 is free for you to use in whatever way
 you wish, with no restrictions and no guarantees.
 Improvements and constructive suggestions are welcome.
@@ -523,29 +548,37 @@ Error 0.005815670573420927054563569246369713826205308762231785721748029957061278
 If you're interested in delving further into the
 mysteries of square roots, here are some places to start:
 <ul>
-<li>Harold Abelson and Gerald Jay Sussman, 
-<a href="http://www-mitpress.mit.edu/sicp/chapter1/node9.html">
-Square Roots by Newton's Method</a>,
-from their book
-<i>Structure and Interpretation of Computer Programs</i>
-</li><li>Kevin Brown,
-<a href="http://www.mathpages.com/home/kmath190.htm">
-Ancient Square Roots</a>
-</li><li>Kevin Brown,
-<a href="http://www.mathpages.com/home/kmath038.htm">
-Archimedes and the Square Root of 3</a>
-</li><li>Paul Hsieh, 
-<a href="http://www.azillionmonkeys.com/qed/sqroot.html">
-How to Calculate Square Roots</a>
-</li><li>Mohamed A. Khamsi and Helmut Knaust,
-<a href="http://www.sosmath.com/calculus/diff/der07/der07.html">
-The Newton-Raphson Method</a>
-</li><li>Romuauld Ireneus 'Scibor-Marchocki, 
-<a href="http://www.rism.com/Trig/square.htm">
-Square Roots -- How to Find Them</a>
-</li><li>Ching-Kuang Shene,
-<a href="http://www.cs.mtu.edu/%7Eshene/COURSES/cs201/NOTES/chap04/sqrt.html">
-Computing the Square Root of a Positive Number</a>
-</li></ul>
+    <li>Harold Abelson and Gerald Jay Sussman,
+        <a href="http://www-mitpress.mit.edu/sicp/chapter1/node9.html">
+            Square Roots by Newton's Method</a>,
+        from their book
+        <i>Structure and Interpretation of Computer Programs</i>
+    </li>
+    <li>Kevin Brown,
+        <a href="http://www.mathpages.com/home/kmath190.htm">
+            Ancient Square Roots</a>
+    </li>
+    <li>Kevin Brown,
+        <a href="http://www.mathpages.com/home/kmath038.htm">
+            Archimedes and the Square Root of 3</a>
+    </li>
+    <li>Paul Hsieh,
+        <a href="http://www.azillionmonkeys.com/qed/sqroot.html">
+            How to Calculate Square Roots</a>
+    </li>
+    <li>Mohamed A. Khamsi and Helmut Knaust,
+        <a href="http://www.sosmath.com/calculus/diff/der07/der07.html">
+            The Newton-Raphson Method</a>
+    </li>
+    <li>Romuauld Ireneus 'Scibor-Marchocki,
+        <a href="http://www.rism.com/Trig/square.htm">
+            Square Roots -- How to Find Them</a>
+    </li>
+    <li>Ching-Kuang Shene,
+        <a href="http://www.cs.mtu.edu/%7Eshene/COURSES/cs201/NOTES/chap04/sqrt.html">
+            Computing the Square Root of a Positive Number</a>
+    </li>
+</ul>
 
-</body></html>
+</body>
+</html>

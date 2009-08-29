@@ -47,6 +47,8 @@ public final class Factorial {
         return factorials[number];
     }
 
+    //TODO: paralell prime swing http://www.luschny.de/math/factorial/java/FactorialPrimeParallelSwingLuschny.java.html
+
     /**
      * Compute the factorial of a number by using a lookup table if the number is low, or
      * the <a href="http://www.luschny.de/math/factorial/java/FactorialPrimeSwingLuschny.java.html">Luschny's Prime Swing algorithm</a>
@@ -81,7 +83,9 @@ public final class Factorial {
             while ((q /= prime) > 0) if ((q & 1) == 1) p *= prime;
             if (p > 1) primeList[count++] = p;
         }
-        for (int prime : pIter1) if (((number / prime) & 1) == 1) primeList[count++] = prime;
+        for (int prime : pIter1)
+            if (((number / prime) & 1) == 1)
+                primeList[count++] = prime;
         BigInt primorial = sieve.primorial((number >>> 1) + 1, number);
         return primorial.multiply(Product.productBig(primeList, 0, count));
     }

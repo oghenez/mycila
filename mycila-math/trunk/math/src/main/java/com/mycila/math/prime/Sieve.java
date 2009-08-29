@@ -22,6 +22,7 @@ import com.mycila.math.number.BigInt;
 import static com.mycila.math.number.BigInt.*;
 import com.mycila.math.range.IntRange;
 
+import java.lang.ref.SoftReference;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Iterator;
@@ -31,7 +32,7 @@ import java.util.Iterator;
  */
 public final class Sieve {
 
-    private static Sieve CACHED_SIEVE = Sieve.to(10000);
+    private static SoftReference<Sieve> CACHED_SIEVE = new SoftReference<Sieve>(Sieve.to(10000));
 
     private final int[] primes;
     private final int sieveEnd;
@@ -350,9 +351,14 @@ public final class Sieve {
      * @return The sieve
      */
     public static Sieve to(int max) {
-        if (CACHED_SIEVE != null && max <= CACHED_SIEVE.sieveEnd())
-            return CACHED_SIEVE.subSieve(max);
-        if (max < 2) return CACHED_SIEVE = new Sieve(1, new int[0], -1);
+        Sieve cached = CACHED_SIEVE.get();
+        if (cached != null && max <= cached.sieveEnd())
+            return cached.subSieve(max);
+        if (max < 2) {
+            cached = new Sieve(1, new int[0], -1);
+            CACHED_SIEVE = new SoftReference<Sieve>(cached);
+            return cached;
+        }
         BitSet composite = Primes.sieveOfEratosthenes(max);
         int approxim = Primes.getPiHighBound(max);
         // there are 105097565 primes <= Integer.MAX_VALUE (2147483647) and 2147483647 is the latest
@@ -368,7 +374,16 @@ public final class Sieve {
             p += (toggle = !toggle) ? 2 : 4;
         }
         composite = null; //free mem
-        return CACHED_SIEVE = new Sieve(max, primes, j);
+        cached = new Sieve(max, primes, j);
+        CACHED_SIEVE = new SoftReference<Sieve>(cached);
+        return cached;
+    }
+
+    /**
+     * Removes the cached sieve so that memory can be free by garbadge collector
+     */
+    public static void clearCachedSieve() {
+        CACHED_SIEVE = null;
     }
 
 }

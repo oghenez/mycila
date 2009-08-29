@@ -9,6 +9,7 @@ import java.util.Arrays;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 //TODO: optimize all methods
+//TODO: see BigIntegerMath.java for general implementations
 final class JDKBigInt extends BigInt {
 
     private final BigInteger impl;
@@ -21,7 +22,7 @@ final class JDKBigInt extends BigInt {
     private int digitsSum = -1;
     private int[] digits;
     private int[] digitsSignature;
-    private Boolean isPrime;
+    private Double isPrime;
     private Boolean isPalindromic;
 
     JDKBigInt(BigInteger bigInteger, int radix) {
@@ -63,6 +64,11 @@ final class JDKBigInt extends BigInt {
     @Override
     public byte toByte() {
         return impl.byteValue();
+    }
+
+    @Override
+    public short toShort() {
+        return impl.shortValue();
     }
 
     @Override
@@ -226,8 +232,8 @@ final class JDKBigInt extends BigInt {
     }
 
     @Override
-    public boolean isPrime() {
-        return isPrime == null ? (isPrime = impl.isProbablePrime(100)) : isPrime;
+    public double isPrime() {
+        return isPrime == null ? (isPrime = impl.isProbablePrime(100) ? 1.0 - Math.pow(0.5, 100) : 0) : isPrime;
     }
 
     @Override
@@ -385,12 +391,72 @@ final class JDKBigInt extends BigInt {
     //TODO: implement
 
     @Override
+    public BigInt add(long val) {
+        return null;
+    }
+
+    @Override
+    public BigInt subtract(long val) {
+        return null;
+    }
+
+    @Override
+    public BigInt multiply(long val) {
+        return null;
+    }
+
+    @Override
+    public BigInt divide(long val) {
+        return null;
+    }
+
+    @Override
+    public BigInt[] divideAndRemainder(long val) {
+        return new BigInt[0];
+    }
+
+    @Override
+    public BigInt mod(long m) {
+        return null;
+    }
+
+    @Override
+    public BigInt remainder(long val) {
+        return null;
+    }
+
+    @Override
+    public BigInt modInverse(long m) {
+        return null;
+    }
+
+    @Override
+    public BigInt modPow(long exponent, long m) {
+        return null;
+    }
+
+    @Override
     public BigInt modMultiply(BigInt val, BigInt m) {
         return null;
     }
 
     @Override
+    public BigInt modMultiply(long val, long m) {
+        return null;
+    }
+
+    @Override
     public BigInt modAdd(BigInt val, BigInt m) {
+        return null;
+    }
+
+    @Override
+    public BigInt modAdd(long val, long m) {
+        return null;
+    }
+
+    @Override
+    public BigInt concat(long... numbers) {
         return null;
     }
 
@@ -415,13 +481,38 @@ final class JDKBigInt extends BigInt {
     }
 
     @Override
+    public BigInt fallingFactorial(long n) {
+        return null;
+    }
+
+    @Override
     public BigInt sumTo(BigInt n) {
+        return null;
+    }
+
+    @Override
+    public BigInt sumTo(long n) {
         return null;
     }
 
     @Override
     public BigInt productTo(BigInt n) {
         return null;
+    }
+
+    @Override
+    public BigInt productTo(long n) {
+        return null;
+    }
+
+    @Override
+    public BigInt pow(BigInt exponent) {
+        return null; // TODO: http://www.coderanch.com/t/385132/Java-General/java/BigInteger-Power-Exponent-BigInteger
+    }
+
+    @Override
+    public double isMersennePrime() {
+        return 0;
     }
 
 }

@@ -1,15 +1,7 @@
 
 - ALGOS MATH
-	- algos maths / projects euler
-	- prendre algos sites rippés
 	- trier bookmarks
-	- pour int, long et bigint:
-		- is prime, next prime, prime(a, b)
-		- perfect number, abundant, inverse of abundant, aliquot
-	- http://en.wikibooks.org/wiki/Algorithm_implementation
 	- http://www2-fs.informatik.uni-tuebingen.de/~reinhard/krypto/
-	- http://en.literateprograms.org/LiteratePrograms:Welcome
-	- http://rosettacode.org/wiki/Main_Page
 	- http://www.luschny.de/math/
 	- http://www.alpertron.com.ar/
 	- LIB COLT: faire jar src
@@ -31,10 +23,11 @@
 		- http://en.wikipedia.org/wiki/Integer_square_root
 		- http://en.wikipedia.org/wiki/Category:Root-finding_algorithms
 		- http://www.merriampark.com/bigsqrt.htm
-		- sqrt(N) == N pow 0.5
 	- recup code commons-math
 	- faire big fraction
 	- avec euclid: http://demonstrations.wolfram.com/TheEuclideanAlgorithmAndSimpleContinuedFractions/
 	- javadoc
 	- http://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Continued_fraction_expansion
-		
+    - cont. fractions: http://www.luschny.de/math/factorial/approx/continuedfraction.html
+    - totient
+    - prime pi
