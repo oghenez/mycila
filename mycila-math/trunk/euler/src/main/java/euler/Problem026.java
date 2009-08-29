@@ -42,7 +42,7 @@ class Problem026 {
         int res = 7, maxCycleLength = 6;
         // for each prime numbers, starting at the maximum possible value (999 and 008 are not primes)
         for (int p = 997; p > 7; p -= 2) {
-            if (BigInt.big(p).isPrime()) {
+            if (BigInt.big(p).isPrime() == 1) {
                 // if p is prime, we check the least number that satisfy 10^l mod p = 1 
                 for (int l = 1; l < p; l++) {
                     BigInt[] qr = BigInt.ten().pow(l).divideAndRemainder(BigInt.big(p));

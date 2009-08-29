@@ -21,6 +21,8 @@ import java.util.List;
 /**
  * @author Mathieu Carbou
  */
+//TODO: from ECM: totient, moebius, factors, sum divisor, divisor count, ...
+//TODO: create class to decompose BigInts
 public final class Decomposition {
 
     private final int number;

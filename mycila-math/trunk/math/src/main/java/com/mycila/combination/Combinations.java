@@ -36,7 +36,7 @@ public final class Combinations {
         return binomialLong(index << 1, index) / (index + 1);
     }
 
-    //TODO: improve - see commons-math
+    //TODO: improve - see commons-math + http://www.luschny.de/math/factorial/FastBinomialFunction.html
     public static long binomialLong(int n, int r) {
         return Factorial.falling(n, r) / Factorial.lookup(r);
     }

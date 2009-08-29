@@ -38,7 +38,9 @@ public final class Primes {
     }
 
     /**
-     * Prime number sieve, Eratosthenes (276-194 B. T.)
+     * Prime number sieve, Eratosthenes (276-194 B. T.).
+     * <p/>
+     * Algorithm from <a href="http://www.luschny.de/math/primes/PrimeSieveForJavaAndCsharp.html">Peter Luschny</a>
      *
      * @param upTo Upper bound of the sieve.
      * @return Returns the sieve computed by {@link #sieveOfEratosthenes(BitSet)}
@@ -56,6 +58,8 @@ public final class Primes {
      * greater than 3, so the smallest value has to be mapped to 5.
      * <p/>
      * Note: There is no multiplication operation in this function.
+     * <p/>
+     * Algorithm from <a href="http://www.luschny.de/math/primes/PrimeSieveForJavaAndCsharp.html">Peter Luschny</a>
      *
      * @param composite After execution of the function this
      *                  BitList includes all composite numbers in [5,n]
