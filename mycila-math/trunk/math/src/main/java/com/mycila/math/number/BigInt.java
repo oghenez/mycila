@@ -4,7 +4,8 @@ package com.mycila.math.number;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 //TODO: as classes are moved to math package, add methods to this class
-public abstract class BigInt implements Comparable<BigInt> {
+//TODO: add methods: factorize(), fibonacci(), isFibonacci(), digitMap, recurringCycle, panDigitalRange, isPandifital,  
+public abstract class BigInt<T> implements Comparable<BigInt> {
 
     private static BigIntFactory factory;
 
@@ -34,10 +35,6 @@ public abstract class BigInt implements Comparable<BigInt> {
         return factory.create(number, radix);
     }
 
-    public static BigInt wrap(Object internal) {
-        return factory.wrap(internal);
-    }
-
     public static BigInt random(int length) {
         return factory.random(length);
     }
@@ -58,20 +55,20 @@ public abstract class BigInt implements Comparable<BigInt> {
         return factory.create(10);
     }
 
-    private final Object impl;
+    public final T internal;
 
-    protected BigInt(Object impl) {
-        this.impl = impl;
+    protected BigInt(T internal) {
+        this.internal = internal;
     }
 
     @SuppressWarnings({"unchecked"})
-    public final <T> T internal() {
-        return (T) impl;
+    protected T impl(Object o) {
+        return (T) o;
     }
 
     @Override
     public final int hashCode() {
-        return impl.hashCode();
+        return internal.hashCode();
     }
 
     @SuppressWarnings({"unchecked"})
@@ -79,11 +76,9 @@ public abstract class BigInt implements Comparable<BigInt> {
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null) return false;
-        if (o.getClass() == impl.getClass()) return impl.equals(o);
-        return o.getClass() == getClass() && impl.equals(((BigInt) o).impl);
+        if (o.getClass() == internal.getClass()) return internal.equals(o);
+        return o.getClass() == getClass() && internal.equals(((BigInt) o).internal);
     }
-
-    /* CONVERSIONS */
 
     @Override
     public abstract String toString();
@@ -97,8 +92,6 @@ public abstract class BigInt implements Comparable<BigInt> {
     public abstract byte toByte();
 
     public abstract short toShort();
-
-    /* INFO */
 
     /**
      * Returns the number of bits in the minimal two's-complement
@@ -133,50 +126,6 @@ public abstract class BigInt implements Comparable<BigInt> {
     public abstract int lowestSetBit();
 
     /**
-     * Returns the signum function of this BigInteger.
-     *
-     * @return -1, 0 or 1 as the value of this BigInteger is negative, zero or
-     *         positive.
-     */
-    public abstract int signum();
-
-    /**
-     * Returns {@code true} if and only if the designated bit is set.
-     * (Computes {@code ((this & (1<<n)) != 0)}.)
-     *
-     * @param n index of bit to test.
-     * @return {@code true} if and only if the designated bit is set.
-     * @throws ArithmeticException {@code n} is negative.
-     */
-    public abstract boolean testBit(int n);
-
-    /* BIT MANIPULATION */
-
-    /**
-     * Returns a BigInteger whose value is {@code (this << n)}.
-     * The shift distance, {@code n}, may be negative, in which case
-     * this method performs a right shift.
-     * (Computes <tt>floor(this * 2<sup>n</sup>)</tt>.)
-     *
-     * @param n shift distance, in bits.
-     * @return {@code this << n}
-     * @see #shiftRight
-     */
-    public abstract BigInt shiftLeft(int n);
-
-    /**
-     * Returns a BigInteger whose value is {@code (this >> n)}.  Sign
-     * extension is performed.  The shift distance, {@code n}, may be
-     * negative, in which case this method performs a left shift.
-     * (Computes <tt>floor(this / 2<sup>n</sup>)</tt>.)
-     *
-     * @param n shift distance, in bits.
-     * @return {@code this >> n}
-     * @see #shiftLeft
-     */
-    public abstract BigInt shiftRight(int n);
-
-    /**
      * Returns a BigInteger whose value is {@code (this & val)}.  (This
      * method returns a negative BigInteger if and only if this and val are
      * both negative.)
@@ -185,40 +134,6 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @return {@code this & val}
      */
     public abstract BigInt and(BigInt n);
-
-    /**
-     * Returns a BigInteger whose value is {@code (this & ~val)}.  This
-     * method, which is equivalent to {@code and(val.not())}, is provided as
-     * a convenience for masking operations.  (This method returns a negative
-     * BigInteger if and only if {@code this} is negative and {@code val} is
-     * positive.)
-     *
-     * @param n value to be complemented and AND'ed with this BigInteger.
-     * @return {@code this & ~val}
-     */
-    public abstract BigInt andNot(BigInt n);
-
-    /**
-     * Returns a BigInteger whose value is equivalent to this BigInteger
-     * with the designated bit cleared.
-     * (Computes {@code (this & ~(1<<n))}.)
-     *
-     * @param n index of bit to clear.
-     * @return {@code this & ~(1<<n)}
-     * @throws ArithmeticException {@code n} is negative.
-     */
-    public abstract BigInt clearBit(int n);
-
-    /**
-     * Returns a BigInteger whose value is equivalent to this BigInteger
-     * with the designated bit flipped.
-     * (Computes {@code (this ^ (1<<n))}.)
-     *
-     * @param n index of bit to flip.
-     * @return {@code this ^ (1<<n)}
-     * @throws ArithmeticException {@code n} is negative.
-     */
-    public abstract BigInt flipBit(int n);
 
     /**
      * Returns a BigInteger whose value is {@code (~this)}.  (This method
@@ -250,18 +165,6 @@ public abstract class BigInt implements Comparable<BigInt> {
     public abstract BigInt xor(BigInt val);
 
     /**
-     * Returns a BigInteger whose value is equivalent to this BigInteger
-     * with the designated bit set.  (Computes {@code (this | (1<<n))}.)
-     *
-     * @param n index of bit to set.
-     * @return {@code this | (1<<n)}
-     * @throws ArithmeticException {@code n} is negative.
-     */
-    public abstract BigInt setBit(int n);
-
-    /* BASICS */
-
-    /**
      * Returns a BigInteger whose value is <tt>(this<sup>exponent</sup>)</tt>.
      *
      * @param exponent exponent to which this BigInteger is to be raised.
@@ -272,30 +175,12 @@ public abstract class BigInt implements Comparable<BigInt> {
     public abstract BigInt pow(BigInt exponent);
 
     /**
-     * Returns a BigInteger whose value is <tt>(this<sup>exponent</sup>)</tt>.
-     *
-     * @param exponent exponent to which this BigInteger is to be raised.
-     * @return <tt>this<sup>exponent</sup></tt>
-     * @throws ArithmeticException {@code exponent} is negative.  (This would
-     *                             cause the operation to yield a non-integer value.)
-     */
-    public abstract BigInt pow(long exponent);
-
-    /**
      * Returns a BigInteger whose value is {@code (this + val)}.
      *
      * @param val value to be added to this BigInteger.
      * @return {@code this + val}
      */
     public abstract BigInt add(BigInt val);
-
-    /**
-     * Returns a BigInteger whose value is {@code (this + val)}.
-     *
-     * @param val value to be added to this BigInteger.
-     * @return {@code this + val}
-     */
-    public abstract BigInt add(long val);
 
     /**
      * Returns a BigInteger whose value is {@code (this - val)}.
@@ -306,28 +191,12 @@ public abstract class BigInt implements Comparable<BigInt> {
     public abstract BigInt subtract(BigInt val);
 
     /**
-     * Returns a BigInteger whose value is {@code (this - val)}.
-     *
-     * @param val value to be subtracted from this BigInteger.
-     * @return {@code this - val}
-     */
-    public abstract BigInt subtract(long val);
-
-    /**
      * Returns a BigInteger whose value is {@code (this * val)}.
      *
      * @param val value to be multiplied by this BigInteger.
      * @return {@code this * val}
      */
     public abstract BigInt multiply(BigInt val);
-
-    /**
-     * Returns a BigInteger whose value is {@code (this * val)}.
-     *
-     * @param val value to be multiplied by this BigInteger.
-     * @return {@code this * val}
-     */
-    public abstract BigInt multiply(long val);
 
     /**
      * Returns a BigInteger whose value is {@code (this / val)}.
@@ -339,56 +208,11 @@ public abstract class BigInt implements Comparable<BigInt> {
     public abstract BigInt divide(BigInt val);
 
     /**
-     * Returns a BigInteger whose value is {@code (this / val)}.
-     *
-     * @param val value by which this BigInteger is to be divided.
-     * @return {@code this / val}
-     * @throws ArithmeticException {@code val==0}
-     */
-    public abstract BigInt divide(long val);
-
-    /**
-     * Returns an array of two BigIntegers containing {@code (this / val)}
-     * followed by {@code (this % val)}.
-     *
-     * @param val value by which this BigInteger is to be divided, and the
-     *            remainder computed.
-     * @return an array of two BigIntegers: the quotient {@code (this / val)}
-     *         is the initial element, and the remainder {@code (this % val)}
-     *         is the final element.
-     * @throws ArithmeticException {@code val==0}
-     */
-    public abstract BigInt[] divideAndRemainder(BigInt val);
-
-    /**
-     * Returns an array of two BigIntegers containing {@code (this / val)}
-     * followed by {@code (this % val)}.
-     *
-     * @param val value by which this BigInteger is to be divided, and the
-     *            remainder computed.
-     * @return an array of two BigIntegers: the quotient {@code (this / val)}
-     *         is the initial element, and the remainder {@code (this % val)}
-     *         is the final element.
-     * @throws ArithmeticException {@code val==0}
-     */
-    public abstract BigInt[] divideAndRemainder(long val);
-
-    /* OTHERS */
-
-    /**
-     * Returns a BigInteger whose value is the absolute value of this
-     * BigInteger.
-     *
-     * @return {@code abs(this)}
-     */
-    public abstract BigInt abs();
-
-    /**
      * Returns a BigInteger whose value is {@code (-this)}.
      *
      * @return {@code -this}
      */
-    public abstract BigInt negate();
+    public abstract BigInt opposite();
 
     /**
      * Compares this BigInteger with the specified BigInteger.  This
@@ -406,13 +230,214 @@ public abstract class BigInt implements Comparable<BigInt> {
     public abstract int compareTo(BigInt val);
 
     /**
+     * Returns the signum function of this BigInteger.
+     *
+     * @return -1, 0 or 1 as the value of this BigInteger is negative, zero or
+     *         positive.
+     */
+    public int signum() {
+        int comp = this.compareTo(zero());
+        return comp < 0 ? -1 : comp == 0 ? 0 : 1;
+    }
+
+    /**
+     * Returns {@code true} if and only if the designated bit is set.
+     * (Computes {@code ((this & (1<<n)) != 0)}.)
+     *
+     * @param n index of bit to test.
+     * @return {@code true} if and only if the designated bit is set.
+     * @throws ArithmeticException {@code n} is negative.
+     */
+    public boolean testBit(int n) {
+        return !zero().equals(this.and(one().shiftLeft(n)));
+    }
+
+    /**
+     * Returns a BigInteger whose value is {@code (this << n)}.
+     * The shift distance, {@code n}, may be negative, in which case
+     * this method performs a right shift.
+     * (Computes <tt>floor(this * 2<sup>n</sup>)</tt>.)
+     *
+     * @param n shift distance, in bits.
+     * @return {@code this << n}
+     * @see #shiftRight
+     */
+    public BigInt shiftLeft(int n) {
+        return this.multiply(two().pow(n));
+    }
+
+    /**
+     * Returns a BigInteger whose value is {@code (this >> n)}.  Sign
+     * extension is performed.  The shift distance, {@code n}, may be
+     * negative, in which case this method performs a left shift.
+     * (Computes <tt>floor(this / 2<sup>n</sup>)</tt>.)
+     *
+     * @param n shift distance, in bits.
+     * @return {@code this >> n}
+     * @see #shiftLeft
+     */
+    public BigInt shiftRight(int n) {
+        return this.divide(two().pow(n));
+    }
+
+    /**
+     * Returns a BigInteger whose value is {@code (this & ~val)}.  This
+     * method, which is equivalent to {@code and(val.not())}, is provided as
+     * a convenience for masking operations.  (This method returns a negative
+     * BigInteger if and only if {@code this} is negative and {@code val} is
+     * positive.)
+     *
+     * @param val value to be complemented and AND'ed with this BigInteger.
+     * @return {@code this & ~val}
+     */
+    public BigInt andNot(BigInt val) {
+        return this.and(val.not());
+    }
+
+    /**
+     * Returns a BigInteger whose value is equivalent to this BigInteger
+     * with the designated bit cleared.
+     * (Computes {@code (this & ~(1<<n))}.)
+     *
+     * @param n index of bit to clear.
+     * @return {@code this & ~(1<<n)}
+     * @throws ArithmeticException {@code n} is negative.
+     */
+    public BigInt clearBit(int n) {
+        return this.and(one().shiftLeft(n).not());
+    }
+
+    /**
+     * Returns a BigInteger whose value is equivalent to this BigInteger
+     * with the designated bit flipped.
+     * (Computes {@code (this ^ (1<<n))}.)
+     *
+     * @param n index of bit to flip.
+     * @return {@code this ^ (1<<n)}
+     * @throws ArithmeticException {@code n} is negative.
+     */
+    public BigInt flipBit(int n) {
+        return this.xor(one().shiftLeft(n).not());
+    }
+
+    /**
+     * Returns a BigInteger whose value is equivalent to this BigInteger
+     * with the designated bit set.  (Computes {@code (this | (1<<n))}.)
+     *
+     * @param n index of bit to set.
+     * @return {@code this | (1<<n)}
+     * @throws ArithmeticException {@code n} is negative.
+     */
+    public BigInt setBit(int n) {
+        return this.or(one().shiftLeft(n).not());
+    }
+
+    /**
+     * Returns a BigInteger whose value is <tt>(this<sup>exponent</sup>)</tt>.
+     *
+     * @param exponent exponent to which this BigInteger is to be raised.
+     * @return <tt>this<sup>exponent</sup></tt>
+     * @throws ArithmeticException {@code exponent} is negative.  (This would
+     *                             cause the operation to yield a non-integer value.)
+     */
+    public BigInt pow(long exponent) {
+        return pow(big(exponent));
+    }
+
+    /**
+     * Returns a BigInteger whose value is {@code (this + val)}.
+     *
+     * @param val value to be added to this BigInteger.
+     * @return {@code this + val}
+     */
+    public BigInt add(long val) {
+        return add(big(val));
+    }
+
+    /**
+     * Returns a BigInteger whose value is {@code (this - val)}.
+     *
+     * @param val value to be subtracted from this BigInteger.
+     * @return {@code this - val}
+     */
+    public BigInt subtract(long val) {
+        return subtract(big(val));
+    }
+
+    /**
+     * Returns a BigInteger whose value is {@code (this * val)}.
+     *
+     * @param val value to be multiplied by this BigInteger.
+     * @return {@code this * val}
+     */
+    public BigInt multiply(long val) {
+        return multiply(big(val));
+    }
+
+    /**
+     * Returns a BigInteger whose value is {@code (this / val)}.
+     *
+     * @param val value by which this BigInteger is to be divided.
+     * @return {@code this / val}
+     * @throws ArithmeticException {@code val==0}
+     */
+    public BigInt divide(long val) {
+        return divide(big(val));
+    }
+
+    /**
+     * Returns an array of two BigIntegers containing {@code (this / val)}
+     * followed by {@code (this % val)}.
+     *
+     * @param val value by which this BigInteger is to be divided, and the
+     *            remainder computed.
+     * @return an array of two BigIntegers: the quotient {@code (this / val)}
+     *         is the initial element, and the remainder {@code (this % val)}
+     *         is the final element.
+     * @throws ArithmeticException {@code val==0}
+     */
+    public BigInt[] divideAndRemainder(BigInt val) {
+        BigInt[] res = new BigInt[2];
+        res[0] = divide(val);
+        res[1] = subtract(val.multiply(res[0]));
+        return res;
+    }
+
+    /**
+     * Returns an array of two BigIntegers containing {@code (this / val)}
+     * followed by {@code (this % val)}.
+     *
+     * @param val value by which this BigInteger is to be divided, and the
+     *            remainder computed.
+     * @return an array of two BigIntegers: the quotient {@code (this / val)}
+     *         is the initial element, and the remainder {@code (this % val)}
+     *         is the final element.
+     * @throws ArithmeticException {@code val==0}
+     */
+    public BigInt[] divideAndRemainder(long val) {
+        return divideAndRemainder(big(val));
+    }
+
+    /**
+     * Returns a BigInteger whose value is the absolute value of this
+     * BigInteger.
+     *
+     * @return {@code abs(this)}
+     */
+    public BigInt abs() {
+        return signum() == -1 ? opposite() : this;
+    }
+
+    /**
      * Returns the maximum of this BigInteger and {@code val}.
      *
      * @param val value with which the maximum is to be computed.
      * @return the BigInteger whose value is the greater of this and
      *         {@code val}.  If they are equal, either may be returned.
      */
-    public abstract BigInt max(BigInt val);
+    public BigInt max(BigInt val) {
+        return compareTo(val) > 0 ? this : val;
+    }
 
     /**
      * Returns the minimum of this BigInteger and {@code val}.
@@ -421,12 +446,12 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @return the BigInteger whose value is the lesser of this BigInteger and
      *         {@code val}.  If they are equal, either may be returned.
      */
-    public abstract BigInt min(BigInt val);
-
-    /* MODULO OPERATIONS */
+    public BigInt min(BigInt val) {
+        return compareTo(val) < 0 ? this : val;
+    }
 
     /**
-     * Returns a BigInteger whose value is {@code (thismodm}).  This method
+     * Returns a BigInteger whose value is {@code (thismodm)}.  This method
      * differs from {@code remainder} in that it always returns a
      * <i>non-negative</i> BigInteger.
      *
@@ -434,10 +459,13 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @return {@code this mod m}
      * @throws ArithmeticException {@code m <= 0}
      */
-    public abstract BigInt mod(BigInt m);
+    public BigInt mod(BigInt m) {
+        BigInt result = remainder(m);
+        return result.signum() >= 0 ? result : result.add(m);
+    }
 
     /**
-     * Returns a BigInteger whose value is {@code (thismodm}).  This method
+     * Returns a BigInteger whose value is {@code (thismodm)}.  This method
      * differs from {@code remainder} in that it always returns a
      * <i>non-negative</i> BigInteger.
      *
@@ -445,7 +473,9 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @return {@code this mod m}
      * @throws ArithmeticException {@code m <= 0}
      */
-    public abstract BigInt mod(long m);
+    public BigInt mod(long m) {
+        return mod(big(m));
+    }
 
     /**
      * Returns a BigInteger whose value is {@code (this % val)}.
@@ -455,7 +485,9 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @return {@code this % val}
      * @throws ArithmeticException {@code val==0}
      */
-    public abstract BigInt remainder(BigInt val);
+    public BigInt remainder(BigInt val) {
+        return subtract(val.multiply(divide(val)));
+    }
 
     /**
      * Returns a BigInteger whose value is {@code (this % val)}.
@@ -465,10 +497,12 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @return {@code this % val}
      * @throws ArithmeticException {@code val==0}
      */
-    public abstract BigInt remainder(long val);
+    public BigInt remainder(long val) {
+        return remainder(big(val));
+    }
 
     /**
-     * Returns a BigInteger whose value is <tt>(this<sup>-1</sup> mod m)</tt>.
+     * Returns a BigInteger whose value is <tt>x = this<sup>-1</sup> mod m, this*x mod m = 1</tt>.
      *
      * @param m the modulus.
      * @return <tt>this<sup>-1</sup> mod m</tt>.
@@ -476,10 +510,35 @@ public abstract class BigInt implements Comparable<BigInt> {
      *                             has no multiplicative inverse mod m (that is, this BigInteger
      *                             is not <i>relatively prime</i> to m).
      */
-    public abstract BigInt modInverse(BigInt m);
+    public BigInt modInverse(BigInt m) {
+        // Extended Euclidean algorithm
+        if (m.signum() < 0)
+            throw new ArithmeticException("Modulus is not a positive number");
+        BigInt a = this;
+        BigInt b = m;
+        BigInt p = one();
+        BigInt q = zero();
+        BigInt r = zero();
+        BigInt s = one();
+        while (b.signum() != 0) {
+            BigInt[] qr = a.divideAndRemainder(b);
+            a = b;
+            b = qr[1];
+            BigInt newR = p.subtract(qr[0].multiply(r));
+            BigInt newS = q.subtract(qr[0].multiply(s));
+            p = r;
+            q = s;
+            r = newR;
+            s = newS;
+        }
+        if (!a.abs().equals(one())) // (a != 1) || (a != -1)
+            throw new ArithmeticException("GCD(" + this + ", " + m + ") = " + a);
+        return a.signum() == -1 ? p.opposite().mod(m) : p.mod(m);
+
+    }
 
     /**
-     * Returns a BigInteger whose value is <tt>(this<sup>-1</sup> mod m)</tt>.
+     * Returns a BigInteger whose value is <tt>x = this<sup>-1</sup> mod m, this*x mod m = 1</tt>.
      *
      * @param m the modulus.
      * @return <tt>this<sup>-1</sup> mod m</tt>.
@@ -487,7 +546,9 @@ public abstract class BigInt implements Comparable<BigInt> {
      *                             has no multiplicative inverse mod m (that is, this BigInteger
      *                             is not <i>relatively prime</i> to m).
      */
-    public abstract BigInt modInverse(long m);
+    public BigInt modInverse(long m) {
+        return modInverse(big(m));
+    }
 
     /**
      * Returns a BigInteger whose value is
@@ -500,7 +561,9 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @throws ArithmeticException {@code m <= 0}
      * @see #modInverse
      */
-    public abstract BigInt modPow(BigInt exponent, BigInt m);
+    public BigInt modPow(BigInt exponent, BigInt m) {
+        return mod(m).pow(exponent).mod(m);
+    }
 
     /**
      * Returns a BigInteger whose value is
@@ -513,7 +576,9 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @throws ArithmeticException {@code m <= 0}
      * @see #modInverse
      */
-    public abstract BigInt modPow(long exponent, long m);
+    public BigInt modPow(long exponent, long m) {
+        return modPow(big(exponent), big(m));
+    }
 
     /**
      * Returns a BigInteger whose value is {@code (this * val) % m}.
@@ -522,7 +587,9 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @param m   the modulus.
      * @return {@code (this * val) % m}
      */
-    public abstract BigInt modMultiply(BigInt val, BigInt m);
+    public BigInt modMultiply(BigInt val, BigInt m) {
+        return mod(m).multiply(val.mod(m)).mod(m);
+    }
 
     /**
      * Returns a BigInteger whose value is {@code (this * val) % m}.
@@ -531,7 +598,9 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @param m   the modulus.
      * @return {@code (this * val) % m}
      */
-    public abstract BigInt modMultiply(long val, long m);
+    public BigInt modMultiply(long val, long m) {
+        return modMultiply(big(val), big(m));
+    }
 
     /**
      * Returns a BigInteger whose value is {@code (this + val) % m}.
@@ -540,7 +609,9 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @param m   the modulus.
      * @return {@code (this + val) % m}
      */
-    public abstract BigInt modAdd(BigInt val, BigInt m);
+    public BigInt modAdd(BigInt val, BigInt m) {
+        return mod(m).add(val.mod(m)).mod(m);
+    }
 
     /**
      * Returns a BigInteger whose value is {@code (this + val) % m}.
@@ -549,9 +620,9 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @param m   the modulus.
      * @return {@code (this + val) % m}
      */
-    public abstract BigInt modAdd(long val, long m);
-
-    /* DIVISORS */
+    public BigInt modAdd(long val, long m) {
+        return modAdd(big(val), big(m));
+    }
 
     /**
      * Returns a BigInteger whose value is the greatest common divisor of
@@ -562,7 +633,7 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @param others Other numbers
      * @return {@code GCD(abs(this), abs(val), ...)}
      */
-    public abstract BigInt gcd(BigInt val, BigInt... others);
+    public abstract BigInt gcd(BigInt val, BigInt... others); //FIXME - jsciense LargeInteger
 
     /**
      * Returns a BigInteger whose value is the least common multiple of
@@ -574,35 +645,6 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @return {@code GCD(abs(this), abs(val), ...)}
      */
     public abstract BigInt lcm(BigInt val, BigInt... others);
-
-    /* PRIMALTY */
-
-    /**
-     * Returns {@code true} if this BigInteger is prime,
-     * {@code false} if it's definitely composite.
-     *
-     * @return the probabilty it is prime. O if the BigInteger is determined to be composite, 1 if it is prime
-     */
-    public abstract double isPrime();
-
-    /**
-     * Check wheter this number is a Mersenne Prime <code>Mp = 2^this - 1</code>
-     *
-     * @return the probabilty it is prime. O if the BigInteger is determined to be composite, 1 if it is prime
-     */
-    public abstract double isMersennePrime();
-
-    /**
-     * Returns the first integer greater than this {@code BigInteger} that
-     * is prime.  This method will
-     * never skip over a prime when searching: if it returns {@code p}, there
-     * is no prime {@code q} such that {@code this < q < p}.
-     *
-     * @return the first integer greater than this {@code BigInteger} that
-     *         is prime.
-     * @throws ArithmeticException {@code this < 0}.
-     */
-    public abstract BigInt nextPrime();
 
     /**
      * Convert a number to the given radix.
@@ -708,10 +750,6 @@ public abstract class BigInt implements Comparable<BigInt> {
 
     /**
      * Compute the <a href="http://en.wikipedia.org/wiki/Extended_Euclidean_algorithm">Extended Euclidean algorithm</a>.
-     * <p/>
-     * <b>Implementation:</b>
-     * <p/>
-     * Uses <a href="http://en.literateprograms.org/Extended_Euclidean_algorithm_(Python)">this algorithm</a>
      * <p/>
      * <b>Notes:</b>
      * <p/>
@@ -826,5 +864,36 @@ public abstract class BigInt implements Comparable<BigInt> {
      * @return the consecutive product
      */
     public abstract BigInt productTo(long n);
+
+    /* PRIMALTY */
+
+    //TODO: keep this methods or use PrimaltyTest ?
+
+    /**
+     * Returns {@code true} if this BigInteger is prime,
+     * {@code false} if it's definitely composite.
+     *
+     * @return the probabilty it is prime. O if the BigInteger is determined to be composite, 1 if it is prime
+     */
+    //public abstract double isPrime();
+
+    /**
+     * Check wheter this number is a Mersenne Prime <code>Mp = 2^this - 1</code>
+     *
+     * @return the probabilty it is prime. O if the BigInteger is determined to be composite, 1 if it is prime
+     */
+    //public abstract double isMersennePrime();
+
+    /**
+     * Returns the first integer greater than this {@code BigInteger} that
+     * is prime.  This method will
+     * never skip over a prime when searching: if it returns {@code p}, there
+     * is no prime {@code q} such that {@code this < q < p}.
+     *
+     * @return the first integer greater than this {@code BigInteger} that
+     *         is prime.
+     * @throws ArithmeticException {@code this < 0}.
+     */
+    //public abstract BigInt nextPrime();
 
 }

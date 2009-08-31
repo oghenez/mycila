@@ -3,7 +3,7 @@ package com.mycila.math.number;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface BigIntFactory {
+public interface BigIntFactory<T> {
     BigInt create(int number);
 
     BigInt create(long number);
@@ -12,7 +12,7 @@ public interface BigIntFactory {
 
     BigInt create(String number, int radix);
 
-    BigInt wrap(Object internal);
+    BigInt wrap(T internal);
 
     BigInt random(int length);
 }

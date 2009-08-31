@@ -11,7 +11,7 @@ public final class Product {
     private Product() {
     }
 
-    //TODO: improve perf of multiplication (Karatsuba algorithm, Toom-Cook multiplication, Sch-nhage-Strassen algorithm): see improved BigInteger
+    //TODO: improve perf of multiplication (Karatsuba algorithm, Toom-Cook multiplication, Sch-nhage-Strassen algorithm): see improved BigInteger + see paralewll computing in jscience
     // - http://en.wikipedia.org/wiki/Karatsuba_algorithm
     // - http://en.wikipedia.org/wiki/Sch%C3%B6nhage-Strassen_algorithm
     // - http://en.wikipedia.org/wiki/Toom%E2%80%93Cook_multiplication
