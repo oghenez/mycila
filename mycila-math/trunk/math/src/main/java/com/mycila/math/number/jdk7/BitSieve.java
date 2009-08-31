@@ -23,7 +23,7 @@
  * have any questions.
  */
 
-package com.mycila.math.number.jdk;
+package com.mycila.math.number.jdk7;
 
 /**
  * A simple bit sieve used for finding prime number candidates. Allows setting
