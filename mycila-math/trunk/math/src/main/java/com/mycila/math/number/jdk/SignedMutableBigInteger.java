@@ -23,10 +23,7 @@
  * have any questions.
  */
 
-package com.mycila.math.number.jdk7;
-
-import com.mycila.math.number.jdk7.*;
-import com.mycila.math.number.jdk7.MutableBigInteger;
+package com.mycila.math.number.jdk;
 
 /**
  * A class used to represent multiprecision integers that makes efficient
@@ -38,18 +35,18 @@ import com.mycila.math.number.jdk7.MutableBigInteger;
  * calculations to occur on the same number without having to create
  * a new number for every step of the calculation as occurs with
  * BigIntegers.
- *
+ * <p/>
  * Note that SignedMutableBigIntegers only support signed addition and
  * subtraction. All other operations occur as with MutableBigIntegers.
  *
- * @see     com.mycila.math.number.jdk7.BigInteger
- * @author  Michael McCloskey
- * @since   1.3
+ * @author Michael McCloskey
+ * @see BigInteger
+ * @since 1.3
  */
 
-class SignedMutableBigInteger extends com.mycila.math.number.jdk7.MutableBigInteger {
+class SignedMutableBigInteger extends MutableBigInteger {
 
-   /**
+    /**
      * The sign of this MutableBigInteger.
      */
     int sign = 1;
@@ -76,13 +73,13 @@ class SignedMutableBigInteger extends com.mycila.math.number.jdk7.MutableBigInte
      * Construct a new MutableBigInteger with a magnitude equal to the
      * specified MutableBigInteger.
      */
-    SignedMutableBigInteger(com.mycila.math.number.jdk7.MutableBigInteger val) {
+    SignedMutableBigInteger(MutableBigInteger val) {
         super(val);
     }
 
-   // Arithmetic Operations
+    // Arithmetic Operations
 
-   /**
+    /**
      * Signed addition built upon unsigned add and subtract.
      */
     void signedAdd(SignedMutableBigInteger addend) {
@@ -93,10 +90,10 @@ class SignedMutableBigInteger extends com.mycila.math.number.jdk7.MutableBigInte
 
     }
 
-   /**
+    /**
      * Signed addition built upon unsigned add and subtract.
      */
-    void signedAdd(com.mycila.math.number.jdk7.MutableBigInteger addend) {
+    void signedAdd(MutableBigInteger addend) {
         if (sign == 1)
             add(addend);
         else
@@ -104,7 +101,7 @@ class SignedMutableBigInteger extends com.mycila.math.number.jdk7.MutableBigInte
 
     }
 
-   /**
+    /**
      * Signed subtraction built upon unsigned add and subtract.
      */
     void signedSubtract(SignedMutableBigInteger addend) {
@@ -115,16 +112,16 @@ class SignedMutableBigInteger extends com.mycila.math.number.jdk7.MutableBigInte
 
     }
 
-   /**
+    /**
      * Signed subtraction built upon unsigned add and subtract.
      */
-    void signedSubtract(com.mycila.math.number.jdk7.MutableBigInteger addend) {
+    void signedSubtract(MutableBigInteger addend) {
         if (sign == 1)
             sign = sign * subtract(addend);
         else
             add(addend);
         if (intLen == 0)
-             sign = 1;
+            sign = 1;
     }
 
     /**

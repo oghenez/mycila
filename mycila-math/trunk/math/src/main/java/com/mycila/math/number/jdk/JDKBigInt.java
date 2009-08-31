@@ -2,22 +2,17 @@ package com.mycila.math.number.jdk;
 
 import com.mycila.math.number.BigInt;
 
-import java.math.BigInteger;
-import java.util.Arrays;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 //TODO: optimize all methods
 //TODO: see BigIntegerMath.java for general implementations
-final class JDKBigInt extends BigInt {
+final class JDKBigInt extends BigInt<BigInteger> {
 
-    private final BigInteger impl;
+    private static final BigInteger MaxInt = BigInteger.valueOf(Integer.MAX_VALUE);
+
     private final int radix;
 
-    private int bitLength = -1;
-    private int bitCount = -1;
-    private int lowestSetBit = -1;
     private int length = -1;
     private int digitsSum = -1;
     private int[] digits;
@@ -27,151 +22,187 @@ final class JDKBigInt extends BigInt {
 
     JDKBigInt(BigInteger bigInteger, int radix) {
         super(bigInteger);
-        this.impl = bigInteger;
         this.radix = radix;
     }
 
     @Override
     public String toString(int tradix) {
-        return impl.toString(tradix);
+        return internal.toString(tradix);
     }
 
     @Override
     public String toString() {
-        return impl.toString(radix);
+        return internal.toString(radix);
     }
 
     @Override
     public int toInt() {
-        return impl.intValue();
-    }
-
-    @Override
-    public int bitLength() {
-        return bitLength == -1 ? (bitLength = impl.bitLength()) : bitLength;
+        return internal.intValue();
     }
 
     @Override
     public long toLong() {
-        return impl.longValue();
-    }
-
-    @Override
-    public int compareTo(BigInt o) {
-        return impl.compareTo(o.<BigInteger>internal());
+        return internal.longValue();
     }
 
     @Override
     public byte toByte() {
-        return impl.byteValue();
+        return internal.byteValue();
     }
 
     @Override
     public short toShort() {
-        return impl.shortValue();
+        return internal.shortValue();
+    }
+
+    @Override
+    public int bitLength() {
+        return internal.bitLength();
     }
 
     @Override
     public int bitCount() {
-        return bitCount == -1 ? (bitCount = impl.bitCount()) : bitCount;
+        return internal.bitCount();
     }
 
     @Override
     public int lowestSetBit() {
-        return lowestSetBit == -1 ? (lowestSetBit = impl.getLowestSetBit()) : lowestSetBit;
-    }
-
-    @Override
-    public int signum() {
-        return impl.signum();
-    }
-
-    @Override
-    public boolean testBit(int n) {
-        return impl.testBit(n);
-    }
-
-    @Override
-    public BigInt shiftLeft(int n) {
-        return new JDKBigInt(impl.shiftLeft(n), radix);
-    }
-
-    @Override
-    public BigInt shiftRight(int n) {
-        return new JDKBigInt(impl.shiftRight(n), radix);
+        return internal.getLowestSetBit();
     }
 
     @Override
     public BigInt and(BigInt n) {
-        return new JDKBigInt(impl.and(n.<BigInteger>internal()), radix);
-    }
-
-    @Override
-    public BigInt andNot(BigInt n) {
-        return new JDKBigInt(impl.andNot(n.<BigInteger>internal()), radix);
-    }
-
-    @Override
-    public BigInt clearBit(int n) {
-        return new JDKBigInt(impl.clearBit(n), radix);
-    }
-
-    @Override
-    public BigInt flipBit(int n) {
-        return new JDKBigInt(impl.flipBit(n), radix);
+        return wrap(internal.and(impl(n)));
     }
 
     @Override
     public BigInt not() {
-        return new JDKBigInt(impl.not(), radix);
+        return new JDKBigInt(internal.not(), radix);
     }
 
     @Override
     public BigInt or(BigInt val) {
-        return new JDKBigInt(impl.or(val.<BigInteger>internal()), radix);
+        return new JDKBigInt(internal.or(impl(val)), radix);
     }
 
     @Override
     public BigInt xor(BigInt val) {
-        return new JDKBigInt(impl.xor(val.<BigInteger>internal()), radix);
+        return new JDKBigInt(internal.xor(impl(val)), radix);
+    }
+
+    // from http://www.coderanch.com/t/385132/Java-General/java/BigInteger-Power-Exponent-BigInteger
+    @Override
+    public BigInt pow(BigInt exponent) {
+        BigInteger exp = impl(exponent);
+        if (exp.signum() == 0)
+            return one();
+        if (exp.compareTo(MaxInt) <= 0)
+            return wrap(internal.pow(exp.intValue()));
+        BigInteger z = internal;
+        // z will successively become x^2, x^4, x^8, x^16, x^32...
+        BigInteger result = BigInteger.ONE;
+        final byte[] bytes = exp.toByteArray();
+        for (int i = bytes.length - 1; i >= 0; i--) {
+            byte bits = bytes[i];
+            for (int j = 0; j < 8; j++) {
+                if ((bits & 1) != 0)
+                    result = result.multiply(z);
+                // short cut out if there are no more bits to handle:
+                if ((bits >>= 1) == 0 && i == 0)
+                    return wrap(result);
+                z = z.multiply(z);
+            }
+        }
+        return wrap(result);
+    }
+
+    @Override
+    public BigInt add(BigInt val) {
+        return new JDKBigInt(internal.add(impl(val)), radix);
+    }
+
+    @Override
+    public BigInt subtract(BigInt val) {
+        return new JDKBigInt(internal.subtract(impl(val)), radix);
+    }
+
+    @Override
+    public BigInt multiply(BigInt val) {
+        return new JDKBigInt(internal.multiply(impl(val)), radix);
+    }
+
+    @Override
+    public BigInt divide(BigInt val) {
+        return new JDKBigInt(internal.divide(impl(val)), radix);
+    }
+
+    @Override
+    public BigInt opposite() {
+        return new JDKBigInt(internal.negate(), radix);
+    }
+
+    @Override
+    public int compareTo(BigInt o) {
+        return internal.compareTo(impl(o));
+    }
+
+    private JDKBigInt wrap(BigInteger bi) {
+        return new JDKBigInt(bi, radix);
+    }
+
+    // OVERRIDEN FOR BETTER PERF.
+
+    /*@Override
+    public int signum() {
+        return internal.signum();
+    }
+
+    @Override
+    public boolean testBit(int n) {
+        return internal.testBit(n);
+    }
+
+    @Override
+    public BigInt shiftLeft(int n) {
+        return new JDKBigInt(internal.shiftLeft(n), radix);
+    }
+
+    @Override
+    public BigInt shiftRight(int n) {
+        return new JDKBigInt(internal.shiftRight(n), radix);
+    }
+
+    @Override
+    public BigInt andNot(BigInt n) {
+        return new JDKBigInt(internal.andNot(impl(n)), radix);
+    }
+
+    @Override
+    public BigInt clearBit(int n) {
+        return new JDKBigInt(internal.clearBit(n), radix);
+    }
+
+    @Override
+    public BigInt flipBit(int n) {
+        return new JDKBigInt(internal.flipBit(n), radix);
     }
 
     @Override
     public BigInt setBit(int n) {
-        return new JDKBigInt(impl.setBit(n), radix);
+        return new JDKBigInt(internal.setBit(n), radix);
     }
 
     @Override
     public BigInt pow(long exponent) {
         return exponent <= Integer.MAX_VALUE ?
-                new JDKBigInt(impl.pow((int) exponent), radix) :
-                pow(BigInt.big(exponent));
-    }
-
-    @Override
-    public BigInt add(BigInt val) {
-        return new JDKBigInt(impl.add(val.<BigInteger>internal()), radix);
-    }
-
-    @Override
-    public BigInt subtract(BigInt val) {
-        return new JDKBigInt(impl.subtract(val.<BigInteger>internal()), radix);
-    }
-
-    @Override
-    public BigInt multiply(BigInt val) {
-        return new JDKBigInt(impl.multiply(val.<BigInteger>internal()), radix);
-    }
-
-    @Override
-    public BigInt divide(BigInt val) {
-        return new JDKBigInt(impl.divide(val.<BigInteger>internal()), radix);
+                new JDKBigInt(internal.pow((int) exponent), radix) :
+                pow(big(exponent));
     }
 
     @Override
     public BigInt[] divideAndRemainder(BigInt val) {
         BigInt[] bi = new JDKBigInt[2];
-        BigInteger[] qr = impl.divideAndRemainder(val.<BigInteger>internal());
+        BigInteger[] qr = internal.divideAndRemainder(impl(val));
         bi[0] = new JDKBigInt(qr[0], radix);
         bi[1] = new JDKBigInt(qr[1], radix);
         return bi;
@@ -179,74 +210,69 @@ final class JDKBigInt extends BigInt {
 
     @Override
     public BigInt abs() {
-        return new JDKBigInt(impl.abs(), radix);
-    }
-
-    @Override
-    public BigInt negate() {
-        return new JDKBigInt(impl.negate(), radix);
+        return new JDKBigInt(internal.abs(), radix);
     }
 
     @Override
     public BigInt max(BigInt val) {
-        return new JDKBigInt(impl.max(val.<BigInteger>internal()), radix);
+        return new JDKBigInt(internal.max(impl(val)), radix);
     }
 
     @Override
     public BigInt min(BigInt val) {
-        return new JDKBigInt(impl.min(val.<BigInteger>internal()), radix);
+        return new JDKBigInt(internal.min(impl(val)), radix);
     }
 
     @Override
     public BigInt mod(BigInt m) {
-        return new JDKBigInt(impl.mod(m.<BigInteger>internal()), radix);
+        return new JDKBigInt(internal.mod(impl(m)), radix);
     }
 
     @Override
     public BigInt remainder(BigInt val) {
-        return new JDKBigInt(impl.remainder(val.<BigInteger>internal()), radix);
+        return new JDKBigInt(internal.remainder(impl(val)), radix);
     }
 
     @Override
     public BigInt modInverse(BigInt m) {
-        return new JDKBigInt(impl.modInverse(m.<BigInteger>internal()), radix);
+        return new JDKBigInt(internal.modInverse(impl(m)), radix);
     }
 
     @Override
     public BigInt modPow(BigInt exponent, BigInt m) {
-        return new JDKBigInt(impl.modPow(exponent.<BigInteger>internal(), m.<BigInteger>internal()), radix);
+        return new JDKBigInt(internal.modPow(impl(exponent), impl(m)), radix);
     }
 
     @Override
     public BigInt gcd(BigInt val, BigInt... others) {
-        BigInteger gcd = impl.gcd(val.<BigInteger>internal());
+        BigInteger gcd = internal.gcd(impl(val));
         for (int i = 0, max = others.length; i < max; i++)
-            gcd = gcd.gcd(others[i].<BigInteger>internal());
+            gcd = gcd.gcd(impl(others[i]));
         return new JDKBigInt(gcd, radix);
     }
 
     @Override
     public BigInt lcm(BigInt val, BigInt... others) {
-        BigInteger lcm = impl.divide(impl.gcd(val.<BigInteger>internal())).multiply(impl);
+        BigInteger lcm = internal.divide(internal.gcd(impl(val))).multiply(internal);
         for (int i = 0, max = others.length; i < max; i++)
-            lcm = lcm.divide(lcm.gcd(others[i].<BigInteger>internal())).multiply(lcm);
+            lcm = lcm.divide(lcm.gcd(impl(others[i]))).multiply(lcm);
         return new JDKBigInt(lcm, radix);
     }
 
     @Override
     public double isPrime() {
-        return isPrime == null ? (isPrime = impl.isProbablePrime(100) ? 1.0 - Math.pow(0.5, 100) : 0) : isPrime;
+        return isPrime == null ? (isPrime = internal.isProbablePrime(100) ? 1.0 - Math.pow(0.5, 100) : 0) : isPrime;
     }
 
     @Override
     public BigInt nextPrime() {
-        return new JDKBigInt(impl.nextProbablePrime(), radix);
+        return new JDKBigInt(internal.nextProbablePrime(), radix);
     }
 
     @Override
     public BigInt toRadix(int radix) {
         if (this.radix == radix) return this;
-        return new JDKBigInt(impl, radix);
+        return new JDKBigInt(internal, radix);
     }
 
     @Override
@@ -254,7 +280,7 @@ final class JDKBigInt extends BigInt {
         if (others.length == 0) return this;
         final StringBuilder sb = new StringBuilder().append(toString());
         for (int i = 0, max = others.length; i < max; i++)
-            sb.append(others[i].<BigInteger>internal().toString());
+            sb.append(others[i].internal.toString());
         return new JDKBigInt(new BigInteger(sb.toString(), this.radix), radix);
     }
 
@@ -347,51 +373,48 @@ final class JDKBigInt extends BigInt {
 
     @Override
     public BigInt[] euclidExtended(BigInt val) {
-        BigInteger u1 = BigInteger.ONE,
-                u2 = BigInteger.ZERO,
-                u3 = impl,
-                v1 = BigInteger.ZERO,
-                v2 = BigInteger.ONE,
-                v3 = val.internal();
-        while (v3.signum() != 0) {
-            BigInteger q = u3.divide(v3);
-            BigInteger t1 = u1.subtract(q.multiply(v1));
-            BigInteger t2 = u2.subtract(q.multiply(v2));
-            BigInteger t3 = u3.subtract(q.multiply(v3));
-            u1 = v1;
-            u2 = v2;
-            u3 = v3;
-            v1 = t1;
-            v2 = t2;
-            v3 = t3;
+        BigInteger p = BigInteger.ONE,
+                q = BigInteger.ZERO,
+                a = internal,
+                r = BigInteger.ZERO,
+                s = BigInteger.ONE,
+                b = impl(val);
+        while (b.signum() != 0) {
+            BigInteger quot = a.divide(b);
+            BigInteger t1 = p.subtract(quot.multiply(r));
+            BigInteger t2 = q.subtract(quot.multiply(s));
+            BigInteger t3 = a.subtract(quot.multiply(b));
+            p = r;
+            q = s;
+            a = b;
+            r = t1;
+            s = t2;
+            b = t3;
         }
         return new BigInt[]{
-                new JDKBigInt(u1, radix),
-                new JDKBigInt(u2, radix),
-                new JDKBigInt(u3, radix)};
+                new JDKBigInt(p, radix),
+                new JDKBigInt(q, radix),
+                new JDKBigInt(a, radix)};
     }
 
     @Override
     public BigInt[] sqrtInt() {
-        if (impl.signum() == 0 || impl.equals(BigInteger.ONE))
+        if (internal.signum() == 0 || internal.equals(BigInteger.ONE))
             return new BigInt[]{this, zero()};
         BigInteger lastGuess = BigInteger.ZERO;
         BigInteger guess = BigInteger.ONE.shiftLeft(bitLength() >>> 1);
         BigInteger test = lastGuess.subtract(guess);
-        BigInteger remainder = impl.subtract(guess.pow(2));
+        BigInteger remainder = internal.subtract(guess.pow(2));
         while (test.signum() != 0 && !test.equals(BigInteger.ONE) || remainder.signum() < 0) {
             lastGuess = guess;
-            guess = impl.divide(guess).add(lastGuess).shiftRight(1);
+            guess = internal.divide(guess).add(lastGuess).shiftRight(1);
             test = lastGuess.subtract(guess);
-            remainder = impl.subtract(guess.pow(2));
+            remainder = internal.subtract(guess.pow(2));
         }
         return new BigInt[]{
                 new JDKBigInt(guess, radix),
                 new JDKBigInt(remainder, radix)};
     }
-
-
-    //TODO: implement
 
 
     @Override
@@ -520,13 +543,8 @@ final class JDKBigInt extends BigInt {
     }
 
     @Override
-    public BigInt pow(BigInt exponent) {
-        return null; // TODO: http://www.coderanch.com/t/385132/Java-General/java/BigInteger-Power-Exponent-BigInteger
-    }
-
-    @Override
     public double isMersennePrime() {
         return 0;
-    }
+    }*/
 
 }
