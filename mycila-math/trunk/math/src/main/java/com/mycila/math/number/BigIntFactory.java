@@ -12,7 +12,7 @@ public interface BigIntFactory<T> {
 
     BigInt create(String number, int radix);
 
-    BigInt wrap(T internal);
+    BigInt wrap(T internal, int radix);
 
     BigInt random(int length);
 }

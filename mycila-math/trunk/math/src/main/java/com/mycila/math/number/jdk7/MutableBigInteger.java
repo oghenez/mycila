@@ -23,7 +23,7 @@
  * have any questions.
  */
 
-package com.mycila.math.number.jdk;
+package com.mycila.math.number.jdk7;
 
 /**
  * A class used to represent multiprecision integers that makes efficient
@@ -41,7 +41,7 @@ package com.mycila.math.number.jdk;
  * @since 1.3
  */
 
-import static com.mycila.math.number.jdk.BigInteger.*;
+import static com.mycila.math.number.jdk7.BigInteger.*;
 
 import java.util.Arrays;
 

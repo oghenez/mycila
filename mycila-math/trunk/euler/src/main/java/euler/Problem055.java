@@ -42,11 +42,11 @@ class Problem055 {
                 continue;
             // if it is not marked, we must find what it is in a maximum of 'maxIterations' iterations
             stack.add(test);
-            BigInt reverse = test.reverseDigits();
+            BigInt reverse = test.digitsReversed();
             // iterate while we not found a palindrom in some maximum iterations
             for (int it = 1; it < maxIterations; it++) {
                 test = test.add(reverse);
-                reverse = test.reverseDigits();
+                reverse = test.digitsReversed();
                 stack.add(test);
                 if (test.equals(reverse) || nonLychrel.contains(test)) {
                     nonLychrel.addAll(stack);

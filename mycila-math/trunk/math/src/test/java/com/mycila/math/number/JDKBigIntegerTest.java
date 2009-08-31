@@ -4,10 +4,76 @@ import static com.mycila.math.number.BigInt.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.Random;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class JDKBigIntegerTest {
+
+    @Test
+    public void test_euclid_extended() {
+        assertEquals(Arrays.toString(big(13).euclidExtended(big(168))), "[13, -1, 1]");
+        assertEquals(Arrays.toString(big(17).euclidExtended(big(352))), "[145, -7, 1]");
+        assertEquals(Arrays.toString(big(31).euclidExtended(big(4864))), "[-1569, 10, 1]");
+        BigInt[] abc = big(123456789).euclidExtended(big(987654321));
+        assertEquals(abc[0], big(-8));
+        assertEquals(abc[1], big(1));
+        assertEquals(abc[2], big(9));
+        assertEquals(abc[2], big(123456789).gcd(big(987654321)));
+        assertEquals(big(123456789).multiply(abc[0]).add(big(987654321).multiply(abc[1])), abc[2]);
+    }
+
+    @Test
+    public void test_modInverse() {
+        System.out.println(BigInteger.valueOf(13).modInverse(BigInteger.valueOf(168)));
+        System.out.println(BigInteger.valueOf(17).modInverse(BigInteger.valueOf(352)));
+        System.out.println(BigInteger.valueOf(31).modInverse(BigInteger.valueOf(4864)));
+        System.out.println(BigInteger.valueOf(-45).modInverse(BigInteger.valueOf(4864)));
+        System.out.println(BigInteger.valueOf(-31).modInverse(BigInteger.valueOf(3675)));
+        assertEquals(big(13).modInverse(big(168)).toString(), "13");
+        assertEquals(big(17).modInverse(big(352)).toString(), "145");
+        assertEquals(big(31).modInverse(big(4864)).toString(), "3295");
+        assertEquals(big(-31).modInverse(big(3675)).toString(), "1304");
+        assertEquals(big(-45).modInverse(big(4864)).toString(), "3675");
+
+        for (int i = 1; i < 1000;) {
+            try {
+                Random r = new SecureRandom();
+                BigInteger x = BigInteger.valueOf(i);
+                BigInteger m = new BigInteger(10, r);
+                BigInteger inv = x.modInverse(m);
+                BigInteger prod = inv.multiply(x).remainder(m);
+                if (prod.signum() == -1) prod = prod.add(m);
+                if (prod.equals(BigInteger.ONE))
+                    assertEquals(wrap(x, 10).modInverse(wrap(m, 10)), wrap(inv, 10));
+                i++;
+            } catch (ArithmeticException e) {
+            }
+        }
+    }
+
+    @Test
+    public void test_gcd() {
+        assertEquals(big(644).gcd(big(645)), big(1));
+        assertEquals(big(1000).gcd(big(100)), big(100));
+        assertEquals(big(15).gcd(big(17)), big(1));
+        assertEquals(big(15).gcd(big(18)), big(3));
+        assertEquals(big(15).gcd(big(18), big(27), big(36), big(20)), big(1));
+        assertEquals(big(15).gcd(big(18), big(27), big(36)), big(3));
+        assertEquals(big(15).gcd(big(18), big(27)), big(3));
+    }
+
+    @Test
+    public void test_lcm() {
+        assertEquals(big(14).lcm(big(15)), big(210));
+        assertEquals(big(15).lcm(big(18), big(27)), big(270));
+        assertEquals(big(644).lcm(big(645)), big(415380));
+        assertEquals(big(644).lcm(big(646)), big(208012));
+    }
 
     @Test
     public void test_toRadix() {
@@ -19,25 +85,25 @@ public final class JDKBigIntegerTest {
 
     @Test
     public void test_reverse() {
-        assertEquals(big("123456789123456789123456789").reverseDigits(), big("987654321987654321987654321"));
-        assertEquals(big(733007751850L).toRadix(2).reverseDigits().toRadix(10).toString(), "366503875925"); // 101010101010101010101010101010101010101
-        assertEquals(big("ABCDEF", 16).reverseDigits().toString(), "fedcba"); // 101010101010101010101010101010101010101
+        assertEquals(big("123456789123456789123456789").digitsReversed(), big("987654321987654321987654321"));
+        assertEquals(big(733007751850L).toRadix(2).digitsReversed().toRadix(10).toString(), "366503875925"); // 101010101010101010101010101010101010101
+        assertEquals(big("ABCDEF", 16).digitsReversed().toString(), "fedcba"); // 101010101010101010101010101010101010101
     }
 
     @Test
     public void test_rotate() {
-        assertEquals(big(1234).rotateDigits(0).toInt(), 1234);
-        assertEquals(big(1234).rotateDigits(1).toInt(), 4123);
-        assertEquals(big(1234).rotateDigits(2).toInt(), 3412);
-        assertEquals(big(1234).rotateDigits(3).toInt(), 2341);
-        assertEquals(big(1234).rotateDigits(4).toInt(), 1234);
-        assertEquals(big(1234).rotateDigits(5).toInt(), 4123);
-        assertEquals(big(1234).rotateDigits(-1).toInt(), 2341);
-        assertEquals(big(1234).rotateDigits(-2).toInt(), 3412);
-        assertEquals(big(1234).rotateDigits(-3).toInt(), 4123);
-        assertEquals(big(1234).rotateDigits(-4).toInt(), 1234);
-        assertEquals(big(1234).rotateDigits(-5).toInt(), 2341);
-        assertEquals(big("123456789123456789123456789").rotateDigits(-5), big("678912345678912345678912345"));
+        assertEquals(big(1234).digitsRotated(0).toInt(), 1234);
+        assertEquals(big(1234).digitsRotated(1).toInt(), 4123);
+        assertEquals(big(1234).digitsRotated(2).toInt(), 3412);
+        assertEquals(big(1234).digitsRotated(3).toInt(), 2341);
+        assertEquals(big(1234).digitsRotated(4).toInt(), 1234);
+        assertEquals(big(1234).digitsRotated(5).toInt(), 4123);
+        assertEquals(big(1234).digitsRotated(-1).toInt(), 2341);
+        assertEquals(big(1234).digitsRotated(-2).toInt(), 3412);
+        assertEquals(big(1234).digitsRotated(-3).toInt(), 4123);
+        assertEquals(big(1234).digitsRotated(-4).toInt(), 1234);
+        assertEquals(big(1234).digitsRotated(-5).toInt(), 2341);
+        assertEquals(big("123456789123456789123456789").digitsRotated(-5), big("678912345678912345678912345"));
     }
 
     @Test
@@ -80,34 +146,45 @@ public final class JDKBigIntegerTest {
     }
 
     @Test
-    public void test_euclide_extended() {
-        BigInt[] abc = big(123456789).euclidExtended(big(987654321));
-        assertEquals(abc[0], big(-8));
-        assertEquals(abc[1], big(1));
-        assertEquals(abc[2], big(9));
-        assertEquals(abc[2], big(123456789).gcd(big(987654321)));
-        assertEquals(big(123456789).multiply(abc[0]).add(big(987654321).multiply(abc[1])), abc[2]);
+    public void test_sqrtInt_big() {
+        assertEquals(big(0).sqrtIntAndRemainder()[0], big(0));
+        assertEquals(big(1).sqrtIntAndRemainder()[0], big(1));
+        assertEquals(big(2).sqrtIntAndRemainder()[0], big(1));
+        assertEquals(big(3).sqrtIntAndRemainder()[0], big(1));
+        assertEquals(big(4).sqrtIntAndRemainder()[0], big(2));
+        assertEquals(big(5).sqrtIntAndRemainder()[0], big(2));
+        assertEquals(big(Integer.MAX_VALUE).sqrtIntAndRemainder()[0], big(46340));
+        assertEquals(big("15241578750190521").sqrtIntAndRemainder()[0], big("123456789"));
+        assertEquals(big("15241578750190521").sqrtIntAndRemainder()[1], zero());
+        assertEquals(big("15241578750190530").sqrtIntAndRemainder()[0], big("123456789"));
+        assertEquals(big("15241578750190530").sqrtIntAndRemainder()[1], big("9"));
+        for (int i = 0; i < 1000000; i++)
+            assertEquals("" + i, big(i).sqrtIntAndRemainder()[0], big((int) Math.sqrt(i)));
+        for (int i = Integer.MAX_VALUE - 1000000; i < Integer.MAX_VALUE; i++)
+            assertEquals("" + i, big(i).sqrtIntAndRemainder()[0], big((int) Math.sqrt(i)));
+        for (long i = Long.MAX_VALUE - 1000000; i < Long.MAX_VALUE; i++)
+            assertEquals("" + i, big(i).sqrtIntAndRemainder()[0], big((long) Math.sqrt(i)));
     }
 
     @Test
-    public void test_sqrtInt_big() {
-        assertEquals(big(0).sqrtInt()[0], big(0));
-        assertEquals(big(1).sqrtInt()[0], big(1));
-        assertEquals(big(2).sqrtInt()[0], big(1));
-        assertEquals(big(3).sqrtInt()[0], big(1));
-        assertEquals(big(4).sqrtInt()[0], big(2));
-        assertEquals(big(5).sqrtInt()[0], big(2));
-        assertEquals(big(Integer.MAX_VALUE).sqrtInt()[0], big(46340));
-        assertEquals(big("15241578750190521").sqrtInt()[0], big("123456789"));
-        assertEquals(big("15241578750190521").sqrtInt()[1], zero());
-        assertEquals(big("15241578750190530").sqrtInt()[0], big("123456789"));
-        assertEquals(big("15241578750190530").sqrtInt()[1], big("9"));
-        for (int i = 0; i < 1000000; i++)
-            assertEquals("" + i, big(i).sqrtInt()[0], big((int) Math.sqrt(i)));
-        for (int i = Integer.MAX_VALUE - 1000000; i < Integer.MAX_VALUE; i++)
-            assertEquals("" + i, big(i).sqrtInt()[0], big((int) Math.sqrt(i)));
-        for (long i = Long.MAX_VALUE - 1000000; i < Long.MAX_VALUE; i++)
-            assertEquals("" + i, big(i).sqrtInt()[0], big((long) Math.sqrt(i)));
+    public void test_millerRabin() {
+        assertEquals(zero().millerRabin(), 0.0, 0.000000001);
+        assertEquals(one().millerRabin(), 0.0, 0.000000001);
+        assertEquals(two().millerRabin(), 1.0, 0.000000001);
+        assertEquals(big(7).millerRabin(), 1.0, 0.000000001);
+        assertEquals(big(179).millerRabin(), 1.0, 0.000000001);
+        //assertEquals(big(Integer.MAX_VALUE).millerRabin(), 1.0, 0.000000001);
+        //assertEquals(big((long) Integer.MAX_VALUE + 1L).millerRabin(), 1.0, 0.000000001);
+    }
+
+    @Test
+    public void test_lucasLehmer() {
+        assertFalse(zero().lucasLehmer());
+        assertFalse(big(4).lucasLehmer());
+        assertTrue(two().lucasLehmer());
+        assertTrue(big(3).lucasLehmer());
+        assertTrue(big(5).lucasLehmer());
+        assertTrue(big(31).lucasLehmer()); // matches 2^31-1 = Integer.MAX_VALUE
     }
 
 }

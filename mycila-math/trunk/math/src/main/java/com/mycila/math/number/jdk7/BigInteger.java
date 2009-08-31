@@ -27,7 +27,7 @@
  * Portions Copyright (c) 1995  Colin Plumb.  All rights reserved.
  */
 
-package com.mycila.math.number.jdk;
+package com.mycila.math.number.jdk7;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

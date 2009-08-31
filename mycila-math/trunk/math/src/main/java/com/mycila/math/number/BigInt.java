@@ -1,13 +1,16 @@
 package com.mycila.math.number;
 
+import java.util.Arrays;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 //TODO: as classes are moved to math package, add methods to this class
-//TODO: add methods: factorize(), fibonacci(), isFibonacci(), digitMap, recurringCycle, panDigitalRange, isPandifital,  
+//TODO: add methods: factorize(), fibonacci(), isFibonacci(), digitMap, recurringCycle, panDigitalRange, isPandifital,
+//TODO: make wrapper for optimized BigInteger + see BigIntegerMath.java, apflot, jscience
 public abstract class BigInt<T> implements Comparable<BigInt> {
 
-    private static BigIntFactory factory;
+    private static final BigIntFactory factory;
 
     static {
         try {
@@ -21,6 +24,11 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public static <T> BigInt wrap(T number, int radix) {
+        return factory.wrap(number, radix);
     }
 
     public static BigInt big(long number) {
@@ -62,8 +70,8 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     }
 
     @SuppressWarnings({"unchecked"})
-    protected T impl(Object o) {
-        return (T) o;
+    protected T impl(BigInt o) {
+        return (T) o.internal;
     }
 
     @Override
@@ -79,9 +87,6 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         if (o.getClass() == internal.getClass()) return internal.equals(o);
         return o.getClass() == getClass() && internal.equals(((BigInt) o).internal);
     }
-
-    @Override
-    public abstract String toString();
 
     public abstract String toString(int tradix);
 
@@ -230,6 +235,46 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     public abstract int compareTo(BigInt val);
 
     /**
+     * Convert a number to the given radix.
+     *
+     * @param radix new radix
+     * @return this number is the new radix
+     */
+    public abstract BigInt toRadix(int radix);
+
+    /**
+     * Get the current radix used to display this number
+     *
+     * @return the current radix
+     */
+    public abstract int radix();
+
+    /**
+     * Returns {@code true} if this BigInteger is prime,
+     * {@code false} if it's definitely composite.
+     *
+     * @return the probabilty it is prime. O if the BigInteger is determined to be composite, 1 if it is prime
+     */
+    public abstract boolean isPrime();
+
+    /**
+     * Returns the first integer greater than this {@code BigInteger} that
+     * is prime.  This method will
+     * never skip over a prime when searching: if it returns {@code p}, there
+     * is no prime {@code q} such that {@code this < q < p}.
+     *
+     * @return the first integer greater than this {@code BigInteger} that
+     *         is prime.
+     * @throws ArithmeticException {@code this < 0}.
+     */
+    public abstract BigInt nextPrime();
+
+    @Override
+    public String toString() {
+        return toString(radix());
+    }
+
+    /**
      * Returns the signum function of this BigInteger.
      *
      * @return -1, 0 or 1 as the value of this BigInteger is negative, zero or
@@ -342,6 +387,15 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      */
     public BigInt pow(long exponent) {
         return pow(big(exponent));
+    }
+
+    /**
+     * Returns this^2
+     *
+     * @return this^2
+     */
+    public BigInt square() {
+        return pow(2);
     }
 
     /**
@@ -502,6 +556,38 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     }
 
     /**
+     * Compute the <a href="http://en.wikipedia.org/wiki/Extended_Euclidean_algorithm">Extended Euclidean algorithm</a>.
+     * <p/>
+     * <b>Notes:</b>
+     * <p/>
+     * For 'this' and 'val', this algorithm finds (a, b, c) such that <code>this * a + val * b = c = this.gcd(val)</code>.
+     *
+     * @param val a number
+     * @return An array of length 3 containing the values a, b, c at respective positions 0, 1, 2
+     */
+    public BigInt[] euclidExtended(BigInt val) {
+        BigInt p = one(),
+                q = zero(),
+                a = this,
+                r = zero(),
+                s = one(),
+                b = val;
+        while (b.signum() != 0) {
+            BigInt quot = a.divide(b);
+            BigInt t1 = p.subtract(quot.multiply(r));
+            BigInt t2 = q.subtract(quot.multiply(s));
+            BigInt t3 = a.subtract(quot.multiply(b));
+            p = r;
+            q = s;
+            a = b;
+            r = t1;
+            s = t2;
+            b = t3;
+        }
+        return new BigInt[]{p, q, a};
+    }
+
+    /**
      * Returns a BigInteger whose value is <tt>x = this<sup>-1</sup> mod m, this*x mod m = 1</tt>.
      *
      * @param m the modulus.
@@ -510,31 +596,13 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *                             has no multiplicative inverse mod m (that is, this BigInteger
      *                             is not <i>relatively prime</i> to m).
      */
-    public BigInt modInverse(BigInt m) {//FIXME: use extended euclide http://en.wikipedia.org/wiki/Extended_Euclidean_algorithm
-        // Extended Euclidean algorithm
-        if (m.signum() < 0)
-            throw new ArithmeticException("Modulus is not a positive number");
-        BigInt a = this;
-        BigInt b = m;
-        BigInt p = one();
-        BigInt q = zero();
-        BigInt r = zero();
-        BigInt s = one();
-        while (b.signum() != 0) {
-            BigInt[] qr = a.divideAndRemainder(b);
-            a = b;
-            b = qr[1];
-            BigInt newR = p.subtract(qr[0].multiply(r));
-            BigInt newS = q.subtract(qr[0].multiply(s));
-            p = r;
-            q = s;
-            r = newR;
-            s = newS;
-        }
-        if (!a.abs().equals(one())) // (a != 1) || (a != -1)
-            throw new ArithmeticException("GCD(" + this + ", " + m + ") = " + a);
-        return a.signum() == -1 ? p.opposite().mod(m) : p.mod(m);
-
+    public BigInt modInverse(BigInt m) {
+        BigInt[] euclid = euclidExtended(m);
+        if (euclid[2].equals(one()))
+            return euclid[0].signum() < 0 ? euclid[0].add(m) : euclid[0];
+        if (euclid[2].equals(one().opposite()))
+            return m.subtract(euclid[0]);
+        throw new ArithmeticException("BigInt not invertible: gcd(" + this + ", " + m + ") = " + euclid[2]);
     }
 
     /**
@@ -626,14 +694,44 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
 
     /**
      * Returns a BigInteger whose value is the greatest common divisor of
+     * given numbers, using {@link #gcd(BigInt, BigInt[])}
+     *
+     * @param val value with which the GCD is to be computed.
+     * @return {@code GCD(abs(this), abs(val))}
+     */
+    public BigInt gcd(BigInt val) {
+        if (signum() == 0) return val;
+        if (val.signum() == 0) return this;
+        return abs().euclidExtended(val.abs())[2];
+    }
+
+    /**
+     * Returns a BigInteger whose value is the greatest common divisor of
      * {@code abs(this)} and {@code abs(val)}.  Returns 0 if
      * {@code this==0 && val==0}.
      *
      * @param val    value with which the GCD is to be computed.
-     * @param others Other numbers
+     * @param others Additional numbers to include in GCD computation
      * @return {@code GCD(abs(this), abs(val), ...)}
      */
-    public abstract BigInt gcd(BigInt val, BigInt... others); //FIXME - jsciense LargeInteger
+    public BigInt gcd(BigInt val, BigInt... others) {
+        BigInt gcd = gcd(val);
+        for (int i = others.length - 1; i >= 0; i--)
+            gcd = gcd.gcd(others[i]);
+        return gcd;
+    }
+
+    /**
+     * Returns a BigInteger whose value is the least common multiple of
+     * {@code abs(this)} and {@code abs(val)}.  Returns 0 if
+     * {@code this==0 && val==0}.
+     *
+     * @param val value with which the GCD is to be computed.
+     * @return {@code GCD(abs(this), abs(val))}
+     */
+    public BigInt lcm(BigInt val) {
+        return divide(gcd(val)).multiply(val);
+    }
 
     /**
      * Returns a BigInteger whose value is the least common multiple of
@@ -644,15 +742,12 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param others Other numbers
      * @return {@code GCD(abs(this), abs(val), ...)}
      */
-    public abstract BigInt lcm(BigInt val, BigInt... others);
-
-    /**
-     * Convert a number to the given radix.
-     *
-     * @param radix new radix
-     * @return this number is the new radix
-     */
-    public abstract BigInt toRadix(int radix);
+    public BigInt lcm(BigInt val, BigInt... others) {
+        BigInt lcm = lcm(val);
+        for (int i = others.length - 1; i >= 0; i--)
+            lcm = lcm.lcm(others[i]);
+        return lcm;
+    }
 
     /**
      * Concatenate positive numbers
@@ -660,7 +755,13 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param numbers Numbers to concatenate to this number
      * @return The concatenated number
      */
-    public abstract BigInt concat(BigInt... numbers);
+    public BigInt concat(long... numbers) {
+        if (numbers.length == 0) return this;
+        StringBuilder sb = new StringBuilder().append(numbers[0]);
+        for (int i = 1, max = numbers.length; i < max; i++)
+            sb.append(numbers[i]);
+        return concat(big(sb.toString(), radix()));
+    }
 
     /**
      * Concatenate positive numbers
@@ -668,21 +769,37 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param numbers Numbers to concatenate to this number
      * @return The concatenated number
      */
-    public abstract BigInt concat(long... numbers);
+    public BigInt concat(BigInt... numbers) {
+        if (numbers.length == 0) return this;
+        StringBuilder sb = new StringBuilder().append(toString());
+        for (int i = 0, max = numbers.length; i < max; i++)
+            sb.append(numbers[i].internal.toString());
+        return big(sb.toString(), radix());
+    }
+
+    protected int length = -1;
 
     /**
      * Get the number of digits. Note: 0 as a length of 1.
      *
      * @return Its length
      */
-    public abstract int length();
+    public int length() {
+        return length == -1 ? (length = toString().length()) : length;
+    }
 
     /**
      * Sort the digits of a number
      *
      * @return Another number with the same digits, sorted
      */
-    public abstract BigInt sort();
+    public BigInt sort() {
+        final char c[] = toString().toCharArray();
+        Arrays.sort(c);
+        return big(String.valueOf(c), radix());
+    }
+
+    protected int[] digits;
 
     /**
      * List all digits of a number in this base, in descending order of powers.
@@ -691,21 +808,44 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *
      * @return the list of digits
      */
-    public abstract int[] digits();
+    public int[] digits() {
+        if (digits != null) return Arrays.copyOf(digits, digits.length);
+        final String s = toString();
+        final int[] digits = new int[s.length()];
+        for (int i = s.length() - 1; i >= 0; i--)
+            digits[i] = s.charAt(i) - 48;
+        return this.digits = digits;
+    }
+
+    protected int digitsSum = -1;
 
     /**
      * Returns the digit sum of a number in this base
      *
      * @return the digit sum
      */
-    public abstract int digitsSum();
+    public int digitsSum() {
+        if (digitsSum != -1) return digitsSum;
+        int sum = 0;
+        final String s = toString();
+        for (int i = s.length() - 1; i >= 0; i--)
+            sum += s.charAt(i) - 48;
+        return this.digitsSum = sum;
+    }
 
     /**
      * Reverse the digits of a number
      *
      * @return the reversed number
      */
-    public abstract BigInt reverseDigits();
+    public BigInt digitsReversed() {
+        final String s = toString();
+        final int max = s.length() - 1;
+        final char chars[] = new char[max + 1];
+        for (int i = 0; i <= max; i++)
+            chars[i] = s.charAt(max - i);
+        return big(String.valueOf(chars), radix());
+    }
 
     /**
      * Rotate digits of a number.<br>
@@ -717,21 +857,50 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param offset The direction and length of the rotation
      * @return The rotated number
      */
-    public abstract BigInt rotateDigits(int offset);
+    public BigInt digitsRotated(int offset) {
+        if (offset == 0) return this;
+        final String s = toString();
+        final int len = s.length();
+        offset %= s.length();
+        offset %= len;
+        if (offset == 0) return this;
+        if (offset < 0) offset = len + offset;
+        return big(s.substring(len - offset) + s.substring(0, len - offset), radix());
+    }
+
+    protected int[] digitsSignature;
 
     /**
      * Returns the signature of a number. The signature is composed of all the digit of the number, sorted.
      *
      * @return Its digit list
      */
-    public abstract int[] digitsSignature();
+    public int[] digitsSignature() {
+        if (digitsSignature != null) return Arrays.copyOf(digitsSignature, digitsSignature.length);
+        final String s = toString();
+        final int[] digits = new int[s.length()];
+        for (int i = s.length() - 1; i >= 0; i--)
+            digits[i] = s.charAt(i) - 48;
+        Arrays.sort(digits);
+        return digitsSignature = digits;
+    }
+
+    protected Boolean isPalindromic;
 
     /**
      * Check if the number is a palyndrom
      *
      * @return true if it is
      */
-    public abstract boolean isPalindromic();
+    public boolean isPalindromic() {
+        if (isPalindromic != null) return isPalindromic;
+        final String s = toString();
+        final int len = s.length() - 1;
+        for (int i = (s.length() - 1) >>> 1; i >= 0; i--)
+            if (s.charAt(i) != s.charAt(len - i))
+                return isPalindromic = false;
+        return isPalindromic = true;
+    }
 
     /**
      * Check wheter the given numbers is a permutations of the digits of this number
@@ -739,33 +908,39 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param val The  number to check
      * @return True if the numbers is a permutation of number
      */
-    public abstract boolean isPermutation(BigInt val);
+    public boolean isPermutation(BigInt val) {
+        return Arrays.equals(this.digitsSignature(), val.digitsSignature());
+    }
 
     /**
-     * Get the radix in which the number is represented for
+     * Compute the <a href="http://en.wikipedia.org/wiki/Integer_square_root">integer square root</a> of a number.
      *
-     * @return the radix
+     * @return The maximum possible number n so that n^2 <= this
      */
-    public abstract int radix();
-
-    /**
-     * Compute the <a href="http://en.wikipedia.org/wiki/Extended_Euclidean_algorithm">Extended Euclidean algorithm</a>.
-     * <p/>
-     * <b>Notes:</b>
-     * <p/>
-     * For 'this' and 'val', this algorithm finds (a, b, c) such that <code>this * a + val * b = c = this.gcd(val)</code>.
-     *
-     * @param val a number
-     * @return An array of length 3 containing the values a, b, c at respective positions 0, 1, 2
-     */
-    public abstract BigInt[] euclidExtended(BigInt val);
+    public BigInt sqrtInt() {
+        return sqrtIntAndRemainder()[0];
+    }
 
     /**
      * Compute the <a href="http://en.wikipedia.org/wiki/Integer_square_root">integer square root</a> of a number.
      *
      * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>2</sup> + r = number</code>.
      */
-    public abstract BigInt[] sqrtInt();
+    public BigInt[] sqrtIntAndRemainder() {
+        if (signum() == 0 || equals(one()))
+            return new BigInt[]{this, zero()};
+        BigInt lastGuess = zero();
+        BigInt guess = one().shiftLeft(bitLength() >>> 1);
+        BigInt test = lastGuess.subtract(guess);
+        BigInt remainder = subtract(guess.pow(2));
+        while (test.signum() != 0 && !test.equals(one()) || remainder.signum() < 0) {
+            lastGuess = guess;
+            guess = divide(guess).add(lastGuess).shiftRight(1);
+            test = lastGuess.subtract(guess);
+            remainder = subtract(guess.pow(2));
+        }
+        return new BigInt[]{guess, remainder};
+    }
 
     /**
      * Compute the integer root q of a number so that q^root + r = number
@@ -773,7 +948,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param root The root to compute
      * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>root</sup> + r = number</code>.
      */
-    public abstract BigInt[] rootInt(BigInt root);
+    //public abstract BigInt[] rootInt(BigInt root);
 
     /**
      * Compute the integer root q of a number so that q^root + r = number
@@ -781,14 +956,14 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param root The root to compute
      * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>root</sup> + r = number</code>.
      */
-    public abstract BigInt[] rootInt(long root);
+    //public abstract BigInt[] rootInt(long root);
 
     /**
      * Compute <code>this * this</code>
      *
      * @return The square of this number
      */
-    public abstract BigInt square();
+    //public abstract BigInt square();
 
     /**
      * Computes the <a href="http://en.wikipedia.org/wiki/Binomial_coefficient">Binomial Coefficient</a>
@@ -797,7 +972,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param k Coefficient
      * @return The binomial coefficient
      */
-    public abstract BigInt binomialCoeff(int k);
+    //public abstract BigInt binomialCoeff(int k);
 
     /**
      * Computes the <a href="http://en.wikipedia.org/wiki/Factorial">Factorial of this number</a>
@@ -805,7 +980,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *
      * @return this!
      */
-    public abstract BigInt factorial();
+    //public abstract BigInt factorial();
 
     /**
      * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">Falling Factorial</a>
@@ -814,7 +989,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param n The falling factor to substract from this number
      * @return this! / (this-n)!
      */
-    public abstract BigInt fallingFactorial(BigInt n);
+    //public abstract BigInt fallingFactorial(BigInt n);
 
     /**
      * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">Falling Factorial</a>
@@ -823,7 +998,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param n The falling factor to substract from this number
      * @return this! / (this-n)!
      */
-    public abstract BigInt fallingFactorial(long n);
+    //public abstract BigInt fallingFactorial(long n);
 
     /**
      * Computes the sum of the consecutive numbers from this to n
@@ -833,7 +1008,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *          the direction of the sum, from this to n or n to this
      * @return the consecutive sum
      */
-    public abstract BigInt sumTo(BigInt n);
+    //public abstract BigInt sumTo(BigInt n);
 
     /**
      * Computes the sum of the consecutive numbers from this to n
@@ -843,7 +1018,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *          the direction of the sum, from this to n or n to this
      * @return the consecutive sum
      */
-    public abstract BigInt sumTo(long n);
+    //public abstract BigInt sumTo(long n);
 
     /**
      * Computes the product of the consecutive numbers from this to n
@@ -853,7 +1028,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *          the direction of the product, from this to n or n to this
      * @return the consecutive product
      */
-    public abstract BigInt productTo(BigInt n);
+    //public abstract BigInt productTo(BigInt n);
 
     /**
      * Computes the product of the consecutive numbers from this to n
@@ -863,37 +1038,93 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *          the direction of the product, from this to n or n to this
      * @return the consecutive product
      */
-    public abstract BigInt productTo(long n);
+    //public abstract BigInt productTo(long n);
 
-    /* PRIMALTY */
+    // PRIMALTY
 
-    //TODO: keep this methods or use PrimaltyTest ?
+    //TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
+    //TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
+    //TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet
 
     /**
-     * Returns {@code true} if this BigInteger is prime,
-     * {@code false} if it's definitely composite.
+     * Primalty test using <a href="http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test">Miller-Rabin primality test<a/>.
+     * <p/>
+     * If the BigInteger passes all tests, returns the probabilty it is prime as a double. Number of passes is set to 50
      *
-     * @return the probabilty it is prime. O if the BigInteger is determined to be composite, 1 if it is prime
+     * @return zero if the BigInteger is determined to be composite.
      */
-    //public abstract double isPrime();
+    public double millerRabin() {
+        return millerRabin(50);
+    }
+
+    /**
+     * Primalty test using <a href="http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test">Miller-Rabin primality test<a/>.
+     * <p/>
+     * If the BigInteger passes all tests, returns the probabilty it is prime as a double.
+     *
+     * @param numPasses Number of different bases to try is passed in as an int
+     * @return zero if the BigInteger is determined to be composite.
+     */
+    public double millerRabin(int numPasses) {
+        if (compareTo(two()) < 0) return 0;
+        if (compareTo(big(Integer.MAX_VALUE)) <= 0)
+            return millerRabinInt(toInt()) ? 1.0 : 0.0;
+        BigInt b, x;
+        BigInt nMinusOne = subtract(one());
+        if (numPasses < 1)
+            throw new IllegalArgumentException("Number of bases must be positive!");
+        for (int i = 0; i < numPasses; i++) {
+            b = random(bitLength() - 1);
+            x = b.modPow(nMinusOne, this);
+            if (!x.equals(one())) return 0.0;
+            BigInt[] dr = nMinusOne.divideAndRemainder(two());
+            while (dr[1].signum() == 0) {
+                x = b.modPow(dr[0], this);
+                if (x.equals(nMinusOne)) break;
+                if (!x.equals(one())) return 0.0;
+                dr = dr[0].divideAndRemainder(two());
+            }
+        }
+        return 1.0 - Math.pow(0.25, numPasses);
+    }
+
+    private static boolean millerRabinInt(int number) {
+        return number > 1
+                && (number == 2
+                || millerRabinPass(2, number)
+                && (number <= 7 || millerRabinPass(7, number))
+                && (number <= 61 || millerRabinPass(61, number)));
+    }
+
+    private static boolean millerRabinPass(final int a, final int n) {
+        int d = n - 1;
+        int s = Integer.numberOfTrailingZeros(d);
+        d >>>= s;
+        int a_to_power = big(a).pow(d).mod(n).toInt();
+        s--;
+        if (a_to_power == 1) return true;
+        for (int i = 0; i < s; i++) {
+            if (a_to_power == n - 1) return true;
+            a_to_power = big(a_to_power).square().mod(n).toInt();
+        }
+        return a_to_power == n - 1;
+    }
 
     /**
      * Check wheter this number is a Mersenne Prime <code>Mp = 2^this - 1</code>
+     * <p/>
+     * Using <a href="http://en.wikipedia.org/wiki/Lucas%E2%80%93Lehmer_test_for_Mersenne_numbers">Lucas-Lehmer primality test<a/>
      *
      * @return the probabilty it is prime. O if the BigInteger is determined to be composite, 1 if it is prime
      */
-    //public abstract double isMersennePrime();
-
-    /**
-     * Returns the first integer greater than this {@code BigInteger} that
-     * is prime.  This method will
-     * never skip over a prime when searching: if it returns {@code p}, there
-     * is no prime {@code q} such that {@code this < q < p}.
-     *
-     * @return the first integer greater than this {@code BigInteger} that
-     *         is prime.
-     * @throws ArithmeticException {@code this < 0}.
-     */
-    //public abstract BigInt nextPrime();
+    public boolean lucasLehmer() {
+        BigInt p = this.subtract(two());
+        if (p.signum() == 0) return true;
+        final BigInt m = two().pow(this).subtract(one());
+        BigInt s = big(4);
+        for (BigInt i = zero(); i.compareTo(p) < 0; i = i.add(1))
+            s = s.multiply(s).subtract(two()).mod(m);
+        return s.equals(zero());
+    }
 
 }

@@ -18,6 +18,7 @@ package com.mycila.math;
 import com.mycila.math.triplet.IntTriplet;
 import org.junit.Assert;
 import static org.junit.Assert.*;
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
@@ -27,7 +28,7 @@ public final class EuclidTest {
 
     @Test
     public void test_extended() {
-        Assert.assertEquals(Euclid.extended(352, 168), IntTriplet.of(-10, 21, 8));
+        assertEquals(Euclid.extended(352, 168), IntTriplet.of(-10, 21, 8));
         assertEquals(Euclid.extended(168, 352), IntTriplet.of(21, -10, 8));
         assertEquals(Euclid.extended(3458, 4864), IntTriplet.of(-45, 32, 38));
     }
