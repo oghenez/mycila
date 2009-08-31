@@ -510,7 +510,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *                             has no multiplicative inverse mod m (that is, this BigInteger
      *                             is not <i>relatively prime</i> to m).
      */
-    public BigInt modInverse(BigInt m) {
+    public BigInt modInverse(BigInt m) {//FIXME: use extended euclide http://en.wikipedia.org/wiki/Extended_Euclidean_algorithm
         // Extended Euclidean algorithm
         if (m.signum() < 0)
             throw new ArithmeticException("Modulus is not a positive number");
