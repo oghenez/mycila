@@ -1009,7 +1009,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         if (root.signum() <= 0)
             throw new ArithmeticException("Root must be strictly positive");
         //Finds the integer component of the n'th root of x, an integer such that y ** n <= x < (y + 1) ** n.
-        //fixme: shift bits
+        //fixme: shift bits http://stackoverflow.com/questions/356090/how-to-compute-the-nth-root-of-a-very-big-integer-in-python
         high = 1
         while
         high **n<x:
