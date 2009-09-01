@@ -83,7 +83,7 @@ class Matrix {
 	return ((Vector)row.firstElement()).size();
     }
 
-    public void zero() {            // sets all elements to zero
+    public void ZERO {            // sets all elements to zero
 	for (int i = 0; i != Rsize(); i++) {
 	    for (int j = 0; j != Csize(); j++) 
 		set(i, j, new Integer(0));

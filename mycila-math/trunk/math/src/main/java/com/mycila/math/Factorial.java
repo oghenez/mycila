@@ -64,7 +64,7 @@ public final class Factorial {
         int[] toStwing = new int[(int) pow2Count];
         for (int i = toStwing.length - 1, n = number; i >= 0; i--, n >>>= 1)
             toStwing[i] = n;
-        BigInt recFactorial = one();
+        BigInt recFactorial = ONE;
         for (int i = 0, max = toStwing.length; i < max; i++)
             recFactorial = recFactorial.pow(2).multiply(swing(toStwing[i], sieve, primeList));
         return recFactorial.shiftLeft(number - Integer.bitCount(number));
@@ -116,10 +116,10 @@ public final class Factorial {
      */
     public static BigInt falling(BigInt a, BigInt n) {
         BigInt b = a.subtract(n);
-        BigInt res = one();
+        BigInt res = ONE;
         while (a.compareTo(b) > 0) {
             res = res.multiply(a);
-            a = a.subtract(one());
+            a = a.subtract(ONE);
         }
         return res;
     }

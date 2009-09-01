@@ -45,10 +45,10 @@ class Problem026 {
             if (BigInt.big(p).isPrime()) {
                 // if p is prime, we check the least number that satisfy 10^l mod p = 1 
                 for (int l = 1; l < p; l++) {
-                    BigInt[] qr = BigInt.ten().pow(l).divideAndRemainder(BigInt.big(p));
+                    BigInt[] qr = BigInt.TEN.pow(l).divideAndRemainder(BigInt.big(p));
                     // qr[0] is the quotient. It is also equals to the cycle of 1/p
                     // qr[1] is the remainder.
-                    if (qr[1].equals(BigInt.one())) {
+                    if (qr[1].equals(BigInt.ONE)) {
                         // we found the length l of the cycle of 1/p
                         System.out.println("1/" + p + " has a recuring cycle length of " + l + ": " + leftPad(qr[0].toString(), l, '0'));
                         System.out.println("1/" + p + " = " + BigDecimal.ONE.divide(BigDecimal.valueOf(p), 2000, RoundingMode.HALF_UP));

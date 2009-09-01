@@ -37,7 +37,7 @@ class Problem057 {
             final BigInt nextP = p.add(q.multiply(TWO));
             q = p.add(q);
             p = nextP;
-            if (p.length() > q.length()) {
+            if (p.digitsCount() > q.digitsCount()) {
                 count++;
                 System.out.println(p + "/" + q);
             }

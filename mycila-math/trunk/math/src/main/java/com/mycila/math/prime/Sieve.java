@@ -32,7 +32,7 @@ import java.util.Iterator;
  */
 public final class Sieve {
 
-    private static SoftReference<Sieve> CACHED_SIEVE = new SoftReference<Sieve>(Sieve.to(10000));
+    private static SoftReference<Sieve> CACHED_SIEVE = new SoftReference<Sieve>(Sieve.toInternal(10000));
 
     private final int[] primes;
     private final int sieveEnd;
@@ -140,7 +140,7 @@ public final class Sieve {
      */
     public BigInt primorial(int from, int to) {
         IntRange indexes = getIndexes(from, to);
-        if (indexes.isEmpty() || indexes.length() == 0) return one();
+        if (indexes.isEmpty() || indexes.length() == 0) return ONE;
         return Product.productBig(primes, indexes.from, indexes.length());
     }
 
@@ -359,6 +359,12 @@ public final class Sieve {
             CACHED_SIEVE = new SoftReference<Sieve>(cached);
             return cached;
         }
+        cached = toInternal(max);
+        CACHED_SIEVE = new SoftReference<Sieve>(cached);
+        return cached;
+    }
+
+    private static Sieve toInternal(int max) {
         BitSet composite = Primes.sieveOfEratosthenes(max);
         int approxim = Primes.getPiHighBound(max);
         // there are 105097565 primes <= Integer.MAX_VALUE (2147483647) and 2147483647 is the latest
@@ -374,9 +380,7 @@ public final class Sieve {
             p += (toggle = !toggle) ? 2 : 4;
         }
         composite = null; //free mem
-        cached = new Sieve(max, primes, j);
-        CACHED_SIEVE = new SoftReference<Sieve>(cached);
-        return cached;
+        return new Sieve(max, primes, j);
     }
 
     /**

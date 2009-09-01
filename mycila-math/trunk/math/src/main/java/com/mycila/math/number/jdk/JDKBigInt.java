@@ -34,16 +34,6 @@ final class JDKBigInt extends BigInt<BigInteger> {
     }
 
     @Override
-    public byte toByte() {
-        return internal.byteValue();
-    }
-
-    @Override
-    public short toShort() {
-        return internal.shortValue();
-    }
-
-    @Override
     public int bitLength() {
         return internal.bitLength();
     }
@@ -83,7 +73,7 @@ final class JDKBigInt extends BigInt<BigInteger> {
         // from http://www.coderanch.com/t/385132/Java-General/java/BigInteger-Power-Exponent-BigInteger
         BigInteger exp = impl(exponent);
         if (exp.signum() == 0)
-            return one();
+            return ONE;
         if (exp.compareTo(MaxInt) <= 0)
             return wrap(internal.pow(exp.intValue()));
         BigInteger z = internal;
@@ -137,7 +127,7 @@ final class JDKBigInt extends BigInt<BigInteger> {
     @Override
     public BigInt toRadix(int radix) {
         if (this.radix == radix) return this;
-        return wrap(internal);
+        return wrapBig(internal, radix);
     }
 
     @Override
@@ -146,7 +136,7 @@ final class JDKBigInt extends BigInt<BigInteger> {
     }
 
     private BigInt wrap(BigInteger bi) {
-        return wrap(bi, radix());
+        return wrapBig(bi, radix());
     }
 
     // OVERRIDEN FOR BETTER PERF.
@@ -252,6 +242,11 @@ final class JDKBigInt extends BigInt<BigInteger> {
     @Override
     public BigInt nextPrime() {
         return wrap(internal.nextProbablePrime());
+    }
+
+    @Override
+    public BigInt gcd(BigInt val) {
+        return wrap(internal.gcd(impl(val)));
     }
 
 }

@@ -15,7 +15,6 @@
  */
 package com.mycila.math.prime;
 
-import com.mycila.math.number.BigInt;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -43,7 +42,6 @@ public final class PrimaltyTestTest {
         assertTrue(PrimaltyTest.millerRabin(7));
         assertTrue(PrimaltyTest.millerRabin(179));
         assertTrue(PrimaltyTest.millerRabin(Integer.MAX_VALUE)); // 2147483647
-        assertTrue(PrimaltyTest.millerRabin(BigInt.big(9223372036854775783L)));
     }
 
     @Test
@@ -65,18 +63,6 @@ public final class PrimaltyTestTest {
         time = System.currentTimeMillis();
         for (int prime : sieve.iterable()) assertTrue(PrimaltyTest.trialDivision(prime));
         System.out.println(System.currentTimeMillis() - time);
-    }
-
-
-    @Test
-    public void test_lucasLehmer() {
-        assertFalse(PrimaltyTest.lucasLehmer(0));
-        assertFalse(PrimaltyTest.lucasLehmer(0));
-        assertFalse(PrimaltyTest.lucasLehmer(4));
-        assertTrue(PrimaltyTest.lucasLehmer(2));
-        assertTrue(PrimaltyTest.lucasLehmer(3));
-        assertTrue(PrimaltyTest.lucasLehmer(5));
-        assertTrue(PrimaltyTest.lucasLehmer(31)); // matches 2^31-1 = Integer.MAX_VALUE
     }
 
 }

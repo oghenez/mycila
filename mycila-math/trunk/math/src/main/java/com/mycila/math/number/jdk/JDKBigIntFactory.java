@@ -25,24 +25,29 @@ public final class JDKBigIntFactory implements BigIntFactory<BigInteger> {
     public BigInt create(int number) {
         return (number >>> 12) == 0 ?
                 CACHE[number] :
-                new JDKBigInt(BigInteger.valueOf(number), 10);
+                wrap(BigInteger.valueOf(number), 10);
     }
 
     @Override
     public BigInt create(long number) {
         return (number >>> 12) == 0 ?
                 CACHE[((int) number)] :
-                new JDKBigInt(BigInteger.valueOf(number), 10);
+                wrap(BigInteger.valueOf(number), 10);
     }
 
     @Override
     public BigInt create(String number) {
-        return new JDKBigInt(new BigInteger(number, 10), 10);
+        return wrap(new BigInteger(number, 10), 10);
     }
 
     @Override
     public BigInt create(String number, int radix) {
-        return new JDKBigInt(new BigInteger(number, radix), radix);
+        return wrap(new BigInteger(number, radix), radix);
+    }
+
+    @Override
+    public BigInt random(int length) {
+        return wrap(new BigInteger(length, RANDOM), 10);
     }
 
     @Override
@@ -50,8 +55,4 @@ public final class JDKBigIntFactory implements BigIntFactory<BigInteger> {
         return new JDKBigInt(internal, radix);
     }
 
-    @Override
-    public BigInt random(int length) {
-        return new JDKBigInt(new BigInteger(length, RANDOM), 10);
-    }
 }
