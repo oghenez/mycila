@@ -952,8 +952,8 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return <code>k<code> such as <code>k^2 <= this < (k + 1)^2</code>
      * @throws ArithmeticException if this integer is negative.
      */
-    public BigInt sqrtInt() {
-        return sqrtIntAndRemainder()[0];
+    public BigInt sqrt() {
+        return sqrtAndRemainder()[0];
     }
 
     /**
@@ -961,7 +961,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *
      * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>2</sup> + r = number</code>.
      */
-    public BigInt[] sqrtIntAndRemainder() {
+    public BigInt[] sqrtAndRemainder() {
         if (signum() < 0)
             throw new ArithmeticException("Square root of negative integer");
         if (signum() == 0 || equals(ONE))
@@ -1003,32 +1003,60 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * Compute the integer root q of a number so that q^root + r = number
      *
      * @param root The root to compute
-     * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>root</sup> + r = number</code>.
+     * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>root</sup> + r = this</code>.
      */
     public BigInt[] rootAndRemainder(BigInt root) {
-        if (root.signum() <= 0)
-            throw new ArithmeticException("Root must be strictly positive");
-        //Finds the integer component of the n'th root of x, an integer such that y ** n <= x < (y + 1) ** n.
-        //fixme: shift bits http://stackoverflow.com/questions/356090/how-to-compute-the-nth-root-of-a-very-big-integer-in-python
-        high = 1
-        while
-        high **n<x:
-        high *= 2
-        low = high / 2
-        while
-        low<high:
-        mid = (low + high) // 2
-        if
-        low<mid and
-        mid **n<x:
-        low = mid
-        elif high>mid and
-        mid **n > x:
-        high = mid
-        else:
-        return mid
-        return mid + 1
+        if (root.signum() <= 0 || signum() < 0)
+            throw new ArithmeticException("Root and this number must be strictly positive");
+        if (signum() == 0) return new BigInt[]{ZERO, ZERO};
+        if (equals(ONE)) return new BigInt[]{ONE, ZERO};
 
+        BigInt lastGuess = this;
+        BigInt guess = root.bitLength() <= 31 ?
+                ONE.shiftLeft(bitLength() / root.toInt()) :
+                TWO.pow(big(bitLength()).divide(root).subtract(1));
+        BigInt test = lastGuess.subtract(guess);
+        BigInt remainder = subtract(guess.pow(root));
+        BigInt rootMin1 = root.subtract(ONE);
+        while (test.signum() != 0 && !test.equals(ONE) || remainder.signum() < 0) {
+            lastGuess = guess;
+            guess = rootMin1.multiply(guess).add(lastGuess.divide(guess.pow(rootMin1))).divide(guess);
+            test = lastGuess.subtract(guess);
+            remainder = subtract(guess.pow(root));
+        }
+        return new BigInt[]{guess, remainder};
+
+        BigInt prev = this;
+
+
+        double x_prev = A;
+        double x = A / n;  // starting "guessed" value...
+        while (Math.abs(x - x_prev) > p) {
+            x_prev = x;
+            x = ((n - 1.0) * x + A / Math.pow(x, n - 1.0)) / n;
+        }
+        return x;
+
+
+
+        while (low.compareTo(this) > 0)
+            low = low.shiftRight(1);
+        BigInt high = low;
+        while (high.compareTo(this) < 0)
+            high = high.shiftLeft(1);
+        BigInt mid = ZERO;
+        while (low.compareTo(high) < 0) {
+            mid = low.add(high).shiftRight(1).add(ONE);
+            BigInt remainder = subtract(mid.pow(root));
+            if (low.compareTo(mid) < 0 && remainder.signum() > 0)
+                low = mid;
+            else if (high.compareTo(mid) > 0 && remainder.signum() < 0)
+                high = mid;
+            else
+                return new BigInt[]{mid, remainder};
+        }
+        mid = mid.add(ONE);
+        return new BigInt[]{mid, subtract(mid.pow(root))};
     }
 
     /**
@@ -1206,7 +1234,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
 
 }
 
-//TODO: add methods: factorize(), fibonacci(), isFibonacci(), digitMap, recurringCycle, panDigitalRange, isPandifital,
+//TODO: add methods: factorial(), factorize(), fibonacci(), isFibonacci(), digitMap + each digits from Digits, recurringCycle, panDigitalRange, isPandifital,
 //TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
 //TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
 //TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet
