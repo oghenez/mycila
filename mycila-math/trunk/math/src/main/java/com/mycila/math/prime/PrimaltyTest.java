@@ -16,14 +16,11 @@
 package com.mycila.math.prime;
 
 import com.mycila.math.Mod;
-import com.mycila.math.number.BigInt;
 
 /**
  * @author Mathieu Carbou
  */
 public final class PrimaltyTest {
-
-    private static final BigInt TWO = BigInt.big(2);
 
     private PrimaltyTest() {
     }
@@ -117,64 +114,4 @@ public final class PrimaltyTest {
         }
         return a_to_power == n - 1;
     }
-
-    //TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
-    //TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
-    //TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet
-    //TODO: Milelr-Rabin in BigIntegerMath
-
-    /**
-     * Primalty test using <a href="http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test">Miller-Rabin primality test<a/>.
-     * <p/>
-     * Using <a href="http://en.literateprograms.org/Miller-Rabin_primality_test_(Java)">this implementation</a>.
-     * <p/>
-     * The number of pass has been set to 50.
-     *
-     * @param number The number to test
-     * @return True if it is prime
-     */
-    public static boolean millerRabin(BigInt number) {
-        for (int repeat = 0; repeat < 50; repeat++) {
-            BigInt a;
-            do a = BigInt.random(number.bitLength());
-            while (a.signum() == 0);
-            if (!millerRabinPass(a, number)) return false;
-        }
-        return true;
-    }
-
-    private static boolean millerRabinPass(BigInt a, BigInt n) {
-        final BigInt n_minus_one = n.subtract(BigInt.one());
-        final int s = n_minus_one.lowestSetBit();
-        BigInt pow = a.modPow(n_minus_one.shiftRight(s), n);
-        if (pow.equals(BigInt.one())) return true;
-        for (int i = 0; i < s - 1; i++) {
-            if (pow.equals(n_minus_one)) return true;
-            pow = pow.multiply(pow).mod(n);
-        }
-        return pow.equals(n_minus_one);
-    }
-
-    /**
-     * Primalty test using <a href="http://en.wikipedia.org/wiki/Lucas%E2%80%93Lehmer_test_for_Mersenne_numbers">Lucas-Lehmer primality test<a/>
-     * for <a href="http://en.wikipedia.org/wiki/Mersenne_prime">Mersenne primes</a>.
-     * <p/>
-     * Determine if Mp = 2^p - 1 is prime with p an odd prime
-     * <p/>
-     * Using <a href="http://en.literateprograms.org/Lucas-Lehmer_test_for_Mersenne_numbers_(Java)">this implementation</a>.
-     * <p/>
-     * The number of pass has been set to 50.
-     *
-     * @param p The number to test
-     * @return True if it is prime
-     */
-    public static boolean lucasLehmer(int p) {
-        if (p == 2) return true;
-        final BigInt m = TWO.pow(p).subtract(BigInt.one());
-        BigInt s = BigInt.big(4);
-        for (int i = 0; i < p - 2; i++)
-            s = s.multiply(s).subtract(TWO).mod(m);
-        return s.equals(BigInt.zero());
-    }
-
 }

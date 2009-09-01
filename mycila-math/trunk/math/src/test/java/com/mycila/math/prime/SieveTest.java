@@ -101,7 +101,7 @@ public final class SieveTest {
         assertEquals(Sieve.to(5).grow(38).toString(), "{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179}");
     }
 
-    @Test // run with -Xms1g -Xmx1g
+    //@Test // run with -Xms1g -Xmx1g
     public void test_can_get_all_32bits_primes() {
         Sieve sieve = Sieve.to(Integer.MAX_VALUE);
         assertEquals(sieve.size(), 105097565);

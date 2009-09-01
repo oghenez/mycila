@@ -6,11 +6,17 @@ import java.util.Arrays;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 //TODO: as classes are moved to math package, add methods to this class
-//TODO: add methods: factorize(), fibonacci(), isFibonacci(), digitMap, recurringCycle, panDigitalRange, isPandifital,
-//TODO: make wrapper for optimized BigInteger + see BigIntegerMath.java, apflot, jscience
+//TODO: make wrapper for optimized BigInteger + BigIntegerMath.java, apflot, jscience, ... + Javolution contexts and factories
 public abstract class BigInt<T> implements Comparable<BigInt> {
 
-    private static final BigIntFactory factory;
+    public static final BigInt ZERO;
+    public static final BigInt ONE;
+    public static final BigInt TWO;
+    public static final BigInt TEN;
+    public static final BigInt INT_MAX;
+    public static final BigInt LONG_MAX;
+
+    private static final BigIntFactory FACTORY;
 
     static {
         try {
@@ -20,47 +26,37 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
             Class<BigIntFactory> fClass = (Class<BigIntFactory>) Thread.currentThread().getContextClassLoader().loadClass(cname);
             if (!BigIntFactory.class.isAssignableFrom(fClass))
                 throw new RuntimeException(cname + " does not implement " + BigIntFactory.class.getName());
-            factory = fClass.newInstance();
+            FACTORY = fClass.newInstance();
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+        ZERO = big(0);
+        ONE = big(1);
+        TWO = big(2);
+        TEN = big(10);
+        INT_MAX = big(Integer.MAX_VALUE);
+        LONG_MAX = big(Long.MAX_VALUE);
     }
 
     @SuppressWarnings({"unchecked"})
-    public static <T> BigInt wrap(T number, int radix) {
-        return factory.wrap(number, radix);
+    public static <T> BigInt wrapBig(T number, int radix) {
+        return FACTORY.wrap(number, radix);
     }
 
     public static BigInt big(long number) {
-        return factory.create(number);
+        return FACTORY.create(number);
     }
 
     public static BigInt big(String number) {
-        return factory.create(number);
+        return FACTORY.create(number);
     }
 
     public static BigInt big(String number, int radix) {
-        return factory.create(number, radix);
+        return FACTORY.create(number, radix);
     }
 
-    public static BigInt random(int length) {
-        return factory.random(length);
-    }
-
-    public static BigInt zero() {
-        return factory.create(0);
-    }
-
-    public static BigInt one() {
-        return factory.create(1);
-    }
-
-    public static BigInt two() {
-        return factory.create(2);
-    }
-
-    public static BigInt ten() {
-        return factory.create(10);
+    public static BigInt randomBig(int length) {
+        return FACTORY.random(length);
     }
 
     public final T internal;
@@ -70,7 +66,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     }
 
     @SuppressWarnings({"unchecked"})
-    protected T impl(BigInt o) {
+    protected final T impl(BigInt o) {
         return (T) o.internal;
     }
 
@@ -90,13 +86,39 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
 
     public abstract String toString(int tradix);
 
+    /**
+     * Converts this BigInteger to an {@code int}.  This
+     * conversion is analogous to a <a
+     * href="http://java.sun.com/docs/books/jls/second_edition/html/conversions.doc.html#25363"><i>narrowing
+     * primitive conversion</i></a> from {@code long} to
+     * {@code int} as defined in the <a
+     * href="http://java.sun.com/docs/books/jls/html/">Java Language
+     * Specification</a>: if this BigInteger is too big to fit in an
+     * {@code int}, only the low-order 32 bits are returned.
+     * Note that this conversion can lose information about the
+     * overall magnitude of the BigInteger value as well as return a
+     * result with the opposite sign.
+     *
+     * @return this BigInteger converted to an {@code int}.
+     */
     public abstract int toInt();
 
+    /**
+     * Converts this BigInteger to a {@code long}.  This
+     * conversion is analogous to a <a
+     * href="http://java.sun.com/docs/books/jls/second_edition/html/conversions.doc.html#25363"><i>narrowing
+     * primitive conversion</i></a> from {@code long} to
+     * {@code int} as defined in the <a
+     * href="http://java.sun.com/docs/books/jls/html/">Java Language
+     * Specification</a>: if this BigInteger is too big to fit in a
+     * {@code long}, only the low-order 64 bits are returned.
+     * Note that this conversion can lose information about the
+     * overall magnitude of the BigInteger value as well as return a
+     * result with the opposite sign.
+     *
+     * @return this BigInteger converted to a {@code long}.
+     */
     public abstract long toLong();
-
-    public abstract byte toByte();
-
-    public abstract short toShort();
 
     /**
      * Returns the number of bits in the minimal two's-complement
@@ -281,7 +303,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *         positive.
      */
     public int signum() {
-        int comp = this.compareTo(zero());
+        int comp = this.compareTo(ZERO);
         return comp < 0 ? -1 : comp == 0 ? 0 : 1;
     }
 
@@ -294,7 +316,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @throws ArithmeticException {@code n} is negative.
      */
     public boolean testBit(int n) {
-        return !zero().equals(this.and(one().shiftLeft(n)));
+        return !ZERO.equals(this.and(ONE.shiftLeft(n)));
     }
 
     /**
@@ -308,7 +330,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @see #shiftRight
      */
     public BigInt shiftLeft(int n) {
-        return this.multiply(two().pow(n));
+        return this.multiply(TWO.pow(n));
     }
 
     /**
@@ -322,7 +344,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @see #shiftLeft
      */
     public BigInt shiftRight(int n) {
-        return this.divide(two().pow(n));
+        return this.divide(TWO.pow(n));
     }
 
     /**
@@ -349,7 +371,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @throws ArithmeticException {@code n} is negative.
      */
     public BigInt clearBit(int n) {
-        return this.and(one().shiftLeft(n).not());
+        return this.and(ONE.shiftLeft(n).not());
     }
 
     /**
@@ -362,7 +384,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @throws ArithmeticException {@code n} is negative.
      */
     public BigInt flipBit(int n) {
-        return this.xor(one().shiftLeft(n).not());
+        return this.xor(ONE.shiftLeft(n).not());
     }
 
     /**
@@ -374,7 +396,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @throws ArithmeticException {@code n} is negative.
      */
     public BigInt setBit(int n) {
-        return this.or(one().shiftLeft(n).not());
+        return this.or(ONE.shiftLeft(n).not());
     }
 
     /**
@@ -395,7 +417,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return this^2
      */
     public BigInt square() {
-        return pow(2);
+        return this.multiply(this);
     }
 
     /**
@@ -528,6 +550,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @throws ArithmeticException {@code m <= 0}
      */
     public BigInt mod(long m) {
+        if (bitLength() <= 63) return big(toLong() % m);
         return mod(big(m));
     }
 
@@ -566,11 +589,11 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return An array of length 3 containing the values a, b, c at respective positions 0, 1, 2
      */
     public BigInt[] euclidExtended(BigInt val) {
-        BigInt p = one(),
-                q = zero(),
+        BigInt p = ONE,
+                q = ZERO,
                 a = this,
-                r = zero(),
-                s = one(),
+                r = ZERO,
+                s = ONE,
                 b = val;
         while (b.signum() != 0) {
             BigInt quot = a.divide(b);
@@ -598,9 +621,9 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      */
     public BigInt modInverse(BigInt m) {
         BigInt[] euclid = euclidExtended(m);
-        if (euclid[2].equals(one()))
+        if (euclid[2].equals(ONE))
             return euclid[0].signum() < 0 ? euclid[0].add(m) : euclid[0];
-        if (euclid[2].equals(one().opposite()))
+        if (euclid[2].equals(ONE.opposite()))
             return m.subtract(euclid[0]);
         throw new ArithmeticException("BigInt not invertible: gcd(" + this + ", " + m + ") = " + euclid[2]);
     }
@@ -777,15 +800,15 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         return big(sb.toString(), radix());
     }
 
-    protected int length = -1;
+    protected int digitsCount = -1;
 
     /**
      * Get the number of digits. Note: 0 as a length of 1.
      *
      * @return Its length
      */
-    public int length() {
-        return length == -1 ? (length = toString().length()) : length;
+    public int digitsCount() {
+        return digitsCount == -1 ? (digitsCount = toString().length()) : digitsCount;
     }
 
     /**
@@ -832,6 +855,17 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
             sum += s.charAt(i) - 48;
         return this.digitsSum = sum;
     }
+
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Digital_root">Digital Root</a> of this number
+     *
+     * @return The <a href="http://en.wikipedia.org/wiki/Digital_root">Digital Root</a> of this number
+     */
+    public int digitalRoot() {
+        if (signum() == 0) return 0;
+        return ONE.add(this.subtract(ONE).mod(9)).toInt();
+    }
+
 
     /**
      * Reverse the digits of a number
@@ -913,9 +947,10 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     }
 
     /**
-     * Compute the <a href="http://en.wikipedia.org/wiki/Integer_square_root">integer square root</a> of a number.
+     * Returns the integer square root of this integer.
      *
-     * @return The maximum possible number n so that n^2 <= this
+     * @return <code>k<code> such as <code>k^2 <= this < (k + 1)^2</code>
+     * @throws ArithmeticException if this integer is negative.
      */
     public BigInt sqrtInt() {
         return sqrtIntAndRemainder()[0];
@@ -927,17 +962,19 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>2</sup> + r = number</code>.
      */
     public BigInt[] sqrtIntAndRemainder() {
-        if (signum() == 0 || equals(one()))
-            return new BigInt[]{this, zero()};
-        BigInt lastGuess = zero();
-        BigInt guess = one().shiftLeft(bitLength() >>> 1);
+        if (signum() < 0)
+            throw new ArithmeticException("Square root of negative integer");
+        if (signum() == 0 || equals(ONE))
+            return new BigInt[]{this, ZERO};
+        BigInt lastGuess = ZERO;
+        BigInt guess = ONE.shiftLeft(bitLength() >>> 1);
         BigInt test = lastGuess.subtract(guess);
-        BigInt remainder = subtract(guess.pow(2));
-        while (test.signum() != 0 && !test.equals(one()) || remainder.signum() < 0) {
+        BigInt remainder = subtract(guess.square());
+        while (test.signum() != 0 && !test.equals(ONE) || remainder.signum() < 0) {
             lastGuess = guess;
             guess = divide(guess).add(lastGuess).shiftRight(1);
             test = lastGuess.subtract(guess);
-            remainder = subtract(guess.pow(2));
+            remainder = subtract(guess.square());
         }
         return new BigInt[]{guess, remainder};
     }
@@ -946,9 +983,21 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * Compute the integer root q of a number so that q^root + r = number
      *
      * @param root The root to compute
-     * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>root</sup> + r = number</code>.
+     * @return q such that q is the maximum number so that <code>q<sup>root</sup> <= number</code>.
      */
-    //public abstract BigInt[] rootInt(BigInt root);
+    public BigInt root(BigInt root) {
+        return rootAndRemainder(root)[0];
+    }
+
+    /**
+     * Compute the integer root q of a number so that q^root + r = number
+     *
+     * @param root The root to compute
+     * @return q such that q is the maximum number so that <code>q<sup>root</sup> <= number</code>.
+     */
+    public BigInt root(long root) {
+        return root(big(root));
+    }
 
     /**
      * Compute the integer root q of a number so that q^root + r = number
@@ -956,7 +1005,41 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param root The root to compute
      * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>root</sup> + r = number</code>.
      */
-    //public abstract BigInt[] rootInt(long root);
+    public BigInt[] rootAndRemainder(BigInt root) {
+        if (root.signum() <= 0)
+            throw new ArithmeticException("Root must be strictly positive");
+        //Finds the integer component of the n'th root of x, an integer such that y ** n <= x < (y + 1) ** n.
+        //fixme: shift bits
+        high = 1
+        while
+        high **n<x:
+        high *= 2
+        low = high / 2
+        while
+        low<high:
+        mid = (low + high) // 2
+        if
+        low<mid and
+        mid **n<x:
+        low = mid
+        elif high>mid and
+        mid **n > x:
+        high = mid
+        else:
+        return mid
+        return mid + 1
+
+    }
+
+    /**
+     * Compute the integer root q of a number so that q^root + r = number
+     *
+     * @param root The root to compute
+     * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>root</sup> + r = number</code>.
+     */
+    public BigInt[] rootAndRemainder(long root) {
+        return rootAndRemainder(big(root));
+    }
 
     /**
      * Compute <code>this * this</code>
@@ -1040,12 +1123,6 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      */
     //public abstract BigInt productTo(long n);
 
-    // PRIMALTY
-
-    //TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
-    //TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
-    //TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet
-
     /**
      * Primalty test using <a href="http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test">Miller-Rabin primality test<a/>.
      * <p/>
@@ -1053,8 +1130,8 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *
      * @return zero if the BigInteger is determined to be composite.
      */
-    public double millerRabin() {
-        return millerRabin(50);
+    public double isPrimeMillerRabin() {
+        return isPrimeMillerRabin(50);
     }
 
     /**
@@ -1065,24 +1142,24 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param numPasses Number of different bases to try is passed in as an int
      * @return zero if the BigInteger is determined to be composite.
      */
-    public double millerRabin(int numPasses) {
-        if (compareTo(two()) < 0) return 0;
+    public double isPrimeMillerRabin(int numPasses) {
+        if (compareTo(TWO) < 0) return 0;
         if (compareTo(big(Integer.MAX_VALUE)) <= 0)
             return millerRabinInt(toInt()) ? 1.0 : 0.0;
         BigInt b, x;
-        BigInt nMinusOne = subtract(one());
+        BigInt nMinusOne = subtract(ONE);
         if (numPasses < 1)
             throw new IllegalArgumentException("Number of bases must be positive!");
         for (int i = 0; i < numPasses; i++) {
-            b = random(bitLength() - 1);
+            b = randomBig(bitLength() - 1);
             x = b.modPow(nMinusOne, this);
-            if (!x.equals(one())) return 0.0;
-            BigInt[] dr = nMinusOne.divideAndRemainder(two());
+            if (!x.equals(ONE)) return 0.0;
+            BigInt[] dr = nMinusOne.divideAndRemainder(TWO);
             while (dr[1].signum() == 0) {
                 x = b.modPow(dr[0], this);
                 if (x.equals(nMinusOne)) break;
-                if (!x.equals(one())) return 0.0;
-                dr = dr[0].divideAndRemainder(two());
+                if (!x.equals(ONE)) return 0.0;
+                dr = dr[0].divideAndRemainder(TWO);
             }
         }
         return 1.0 - Math.pow(0.25, numPasses);
@@ -1117,14 +1194,19 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *
      * @return the probabilty it is prime. O if the BigInteger is determined to be composite, 1 if it is prime
      */
-    public boolean lucasLehmer() {
-        BigInt p = this.subtract(two());
+    public boolean isPrimeLucasLehmer() {
+        BigInt p = this.subtract(TWO);
         if (p.signum() == 0) return true;
-        final BigInt m = two().pow(this).subtract(one());
+        final BigInt m = TWO.pow(this).subtract(ONE);
         BigInt s = big(4);
-        for (BigInt i = zero(); i.compareTo(p) < 0; i = i.add(1))
-            s = s.multiply(s).subtract(two()).mod(m);
-        return s.equals(zero());
+        for (BigInt i = ZERO; i.compareTo(p) < 0; i = i.add(1))
+            s = s.multiply(s).subtract(TWO).mod(m);
+        return s.equals(ZERO);
     }
 
 }
+
+//TODO: add methods: factorize(), fibonacci(), isFibonacci(), digitMap, recurringCycle, panDigitalRange, isPandifital,
+//TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
+//TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
+//TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet

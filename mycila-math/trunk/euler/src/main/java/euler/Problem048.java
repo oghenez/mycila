@@ -28,7 +28,7 @@ import static java.lang.System.*;
 class Problem048 {
     public static void main(String[] args) throws Exception {
         long time = currentTimeMillis();
-        BigInt sum = BigInt.zero();
+        BigInt sum = BigInt.ZERO;
         for (int n = 1; n <= 1000; n++) sum = sum.add(BigInt.big(n).pow(n));
         out.println(sum + " in " + (currentTimeMillis() - time) + "ms");
 

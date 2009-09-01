@@ -28,12 +28,12 @@ public final class RecuringCycleTest {
     public void test() {
         RecuringCycle recuringCycle = RecuringCycle.of(2);
         assertEquals(recuringCycle.length(), 0);
-        assertEquals(recuringCycle.cycle(), BigInt.zero());
+        assertEquals(recuringCycle.cycle(), BigInt.ZERO);
         System.out.println(recuringCycle);
 
         recuringCycle = RecuringCycle.of(5);
         assertEquals(recuringCycle.length(), 0);
-        assertEquals(recuringCycle.cycle(), BigInt.zero());
+        assertEquals(recuringCycle.cycle(), BigInt.ZERO);
         System.out.println(recuringCycle);
 
         recuringCycle = RecuringCycle.of(3);

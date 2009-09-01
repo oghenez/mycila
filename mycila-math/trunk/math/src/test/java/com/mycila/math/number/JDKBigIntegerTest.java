@@ -49,11 +49,21 @@ public final class JDKBigIntegerTest {
                 BigInteger prod = inv.multiply(x).remainder(m);
                 if (prod.signum() == -1) prod = prod.add(m);
                 if (prod.equals(BigInteger.ONE))
-                    assertEquals(wrap(x, 10).modInverse(wrap(m, 10)), wrap(inv, 10));
+                    assertEquals(wrapBig(x, 10).modInverse(wrapBig(m, 10)), wrapBig(inv, 10));
                 i++;
             } catch (ArithmeticException e) {
             }
         }
+    }
+
+    @Test
+    public void test_mod() {
+        assertEquals(big(Long.MAX_VALUE).mod(Long.MAX_VALUE), big(0));
+        assertEquals(big(Long.MAX_VALUE).add(1).mod(Long.MAX_VALUE), big(1));
+        assertEquals(big(Long.MAX_VALUE).subtract(1).mod(Long.MAX_VALUE), big(9223372036854775806L));
+        assertEquals(big(Long.MAX_VALUE).add(12345).mod(Long.MAX_VALUE), big(12345));
+        assertEquals(big(Long.MAX_VALUE).add(Long.MAX_VALUE).mod(Long.MAX_VALUE), big(0));
+        assertEquals(big(Long.MAX_VALUE).square().mod(Long.MAX_VALUE), big(0));
     }
 
     @Test
@@ -108,17 +118,17 @@ public final class JDKBigIntegerTest {
 
     @Test
     public void test_sum() {
-        assertEquals(zero().digitsSum(), 0);
-        assertEquals(one().digitsSum(), 1);
+        assertEquals(ZERO.digitsSum(), 0);
+        assertEquals(ONE.digitsSum(), 1);
         assertEquals(big(9999999999L).digitsSum(), 90);
     }
 
     @Test
     public void test_length() {
-        assertEquals(zero().length(), 1);
-        assertEquals(one().length(), 1);
-        assertEquals(big(9999999999L).length(), 10);
-        assertEquals(big(10000).length(), 5);
+        assertEquals(ZERO.digitsCount(), 1);
+        assertEquals(ONE.digitsCount(), 1);
+        assertEquals(big(9999999999L).digitsCount(), 10);
+        assertEquals(big(10000).digitsCount(), 5);
     }
 
     @Test
@@ -140,6 +150,15 @@ public final class JDKBigIntegerTest {
     }
 
     @Test
+    public void test_digitalRoot() {
+        for (int i = 0; i < 10; i++)
+            assertEquals(big(i).digitalRoot(), i);
+        assertEquals(big(65536).digitalRoot(), 7);
+        assertEquals(big(0).digitalRoot(), 0);
+        assertEquals(big(Long.MAX_VALUE).digitalRoot(), 7);
+    }
+
+    @Test
     public void test_signature() {
         assertArrayEquals(big(733007751850L).toRadix(2).digitsSignature(), new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1});
         assertArrayEquals(big(733007751850L).digitsSignature(), new int[]{0, 0, 0, 1, 3, 3, 5, 5, 7, 7, 7, 8});
@@ -155,7 +174,7 @@ public final class JDKBigIntegerTest {
         assertEquals(big(5).sqrtIntAndRemainder()[0], big(2));
         assertEquals(big(Integer.MAX_VALUE).sqrtIntAndRemainder()[0], big(46340));
         assertEquals(big("15241578750190521").sqrtIntAndRemainder()[0], big("123456789"));
-        assertEquals(big("15241578750190521").sqrtIntAndRemainder()[1], zero());
+        assertEquals(big("15241578750190521").sqrtIntAndRemainder()[1], ZERO);
         assertEquals(big("15241578750190530").sqrtIntAndRemainder()[0], big("123456789"));
         assertEquals(big("15241578750190530").sqrtIntAndRemainder()[1], big("9"));
         for (int i = 0; i < 1000000; i++)
@@ -168,23 +187,23 @@ public final class JDKBigIntegerTest {
 
     @Test
     public void test_millerRabin() {
-        assertEquals(zero().millerRabin(), 0.0, 0.000000001);
-        assertEquals(one().millerRabin(), 0.0, 0.000000001);
-        assertEquals(two().millerRabin(), 1.0, 0.000000001);
-        assertEquals(big(7).millerRabin(), 1.0, 0.000000001);
-        assertEquals(big(179).millerRabin(), 1.0, 0.000000001);
-        //assertEquals(big(Integer.MAX_VALUE).millerRabin(), 1.0, 0.000000001);
-        //assertEquals(big((long) Integer.MAX_VALUE + 1L).millerRabin(), 1.0, 0.000000001);
+        assertEquals(ZERO.isPrimeMillerRabin(), 0.0, 0.000000001);
+        assertEquals(ONE.isPrimeMillerRabin(), 0.0, 0.000000001);
+        assertEquals(TWO.isPrimeMillerRabin(), 1.0, 0.000000001);
+        assertEquals(big(7).isPrimeMillerRabin(), 1.0, 0.000000001);
+        assertEquals(big(179).isPrimeMillerRabin(), 1.0, 0.000000001);
+        //assertEquals(big(Integer.MAX_VALUE).isPrimeMillerRabin(), 1.0, 0.000000001);
+        //assertEquals(big((long) Integer.MAX_VALUE + 1L).isPrimeMillerRabin(), 1.0, 0.000000001);
     }
 
     @Test
     public void test_lucasLehmer() {
-        assertFalse(zero().lucasLehmer());
-        assertFalse(big(4).lucasLehmer());
-        assertTrue(two().lucasLehmer());
-        assertTrue(big(3).lucasLehmer());
-        assertTrue(big(5).lucasLehmer());
-        assertTrue(big(31).lucasLehmer()); // matches 2^31-1 = Integer.MAX_VALUE
+        assertFalse(ZERO.isPrimeLucasLehmer());
+        assertFalse(big(4).isPrimeLucasLehmer());
+        assertTrue(TWO.isPrimeLucasLehmer());
+        assertTrue(big(3).isPrimeLucasLehmer());
+        assertTrue(big(5).isPrimeLucasLehmer());
+        assertTrue(big(31).isPrimeLucasLehmer()); // matches 2^31-1 = Integer.MAX_VALUE
     }
 
 }

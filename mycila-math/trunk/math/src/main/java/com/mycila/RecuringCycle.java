@@ -24,7 +24,7 @@ import com.mycila.math.number.BigInt;
 public final class RecuringCycle {
 
     private int length = 0;
-    private BigInt cycle = BigInt.zero();
+    private BigInt cycle = BigInt.ZERO;
     private final int prime;
 
     private RecuringCycle(int prime) {
@@ -32,10 +32,10 @@ public final class RecuringCycle {
         // if p is prime, we check the least number that satisfy 10^l mod p = 1
         BigInt p = BigInt.big(prime);
         for (int l = 1; l < prime; l++) {
-            BigInt[] qr = BigInt.ten().pow(l).divideAndRemainder(p);
+            BigInt[] qr = BigInt.TEN.pow(l).divideAndRemainder(p);
             // qr[0] is the quotient. It is also equals to the cycle get 1/primeNumber
             // qr[1] is the remainder.
-            if (qr[1].equals(BigInt.one())) {
+            if (qr[1].equals(BigInt.ONE)) {
                 // we found the length l get the cycle get 1/p
                 cycle = qr[0];
                 length = l;

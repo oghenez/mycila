@@ -29,7 +29,7 @@ class Problem013 {
     public static void main(String[] args) {
         long time = System.currentTimeMillis();
         Scanner scanner = new Scanner(table);
-        BigInt sum = zero();
+        BigInt sum = ZERO;
         while (scanner.hasNext()) sum = sum.add(big(scanner.next()));
         System.out.println(sum + " in " + (System.currentTimeMillis() - time) + "ms");
     }

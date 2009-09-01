@@ -67,7 +67,7 @@ public final class Fibonacci {
             }
             return BigInt.big(first);
         } else {
-            BigInt first = BigInt.zero(), second = BigInt.one();
+            BigInt first = BigInt.ZERO, second = BigInt.ONE;
             while (i-- > 0) {
                 BigInt tmp = first.add(second);
                 first = second;

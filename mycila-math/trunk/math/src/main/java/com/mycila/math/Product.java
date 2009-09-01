@@ -20,11 +20,11 @@ public final class Product {
         if (offset < 0 || offset + length > numbers.length)
             throw new IllegalArgumentException("Bad offset or length: " + offset + " / " + length);
         if (length < 3) {
-            if (length <= 0) return one();
+            if (length <= 0) return ONE;
             if (length == 1) return big(numbers[offset]);
             return big((long) numbers[offset] * (long) numbers[offset + 1]);
         }
-        BigInt product = one();
+        BigInt product = ONE;
         int i = offset + length - 2;
         // Integer.MAX_VALUE * Integer.MAX_VALUE fits in a long, so we can multiply both at once
         for (; i >= offset; i -= 2)
@@ -32,6 +32,20 @@ public final class Product {
         if (i + 1 == offset)
             product = product.multiply(big(numbers[offset]));
         return product;
+    }
+
+    public static boolean isPerfectSquare(long n) {
+        if (n < 0) return false;
+        switch ((int) (n & 0xF)) {
+            case 0:
+            case 1:
+            case 4:
+            case 9:
+                long tst = (long) Math.sqrt(n);
+                return tst * tst == n;
+            default:
+                return false;
+        }
     }
 
 }
