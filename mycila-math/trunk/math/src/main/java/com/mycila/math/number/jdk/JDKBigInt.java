@@ -9,8 +9,6 @@ import java.math.BigInteger;
  */
 final class JDKBigInt extends BigInt<BigInteger> {
 
-    private static final BigInteger MaxInt = BigInteger.valueOf(Integer.MAX_VALUE);
-
     private final int radix;
 
     JDKBigInt(BigInteger bigInteger, int radix) {
@@ -74,7 +72,7 @@ final class JDKBigInt extends BigInt<BigInteger> {
         BigInteger exp = impl(exponent);
         if (exp.signum() == 0)
             return ONE;
-        if (exp.compareTo(MaxInt) <= 0)
+        if (exp.bitLength() <= 0)
             return wrap(internal.pow(exp.intValue()));
         BigInteger z = internal;
         // z will successively become x^2, x^4, x^8, x^16, x^32...
