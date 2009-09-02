@@ -166,50 +166,51 @@ public final class JDKBigIntegerTest {
 
     @Test
     public void test_root() {
-        assertEquals(big(0).rootAndRemainder(2)[0], big(0));
+        assertArrayEquals(big(14).irootAndRemainder(5), new BigInt[]{big(1), big(13)});
 
-        assertEquals(big(1).rootAndRemainder(2)[0], big(1));
-        assertEquals(big(1).rootAndRemainder(2)[1], big(0));
+        assertArrayEquals(big(Integer.MAX_VALUE).irootAndRemainder(4), new BigInt[]{big(215), big(10733022)});
+        assertArrayEquals(big("15241578750190521").irootAndRemainder(2), new BigInt[]{big("123456789"), big(0)});
+        assertArrayEquals(big("15241578750190530").irootAndRemainder(2), new BigInt[]{big("123456789"), big(9)});
+        assertArrayEquals(big("1881676371789154860897089").irootAndRemainder(3), new BigInt[]{big("123456789"), big(20)});
 
-        assertEquals(big(2).rootAndRemainder(2)[0], big(1));
-        assertEquals(big(2).rootAndRemainder(2)[1], big(1));
+        assertArrayEquals(big(0).irootAndRemainder(2), new BigInt[]{big(0), big(0)});
+        assertArrayEquals(big(1).irootAndRemainder(2), new BigInt[]{big(1), big(0)});
+        assertArrayEquals(big(2).irootAndRemainder(2), new BigInt[]{big(1), big(1)});
+        assertArrayEquals(big(3).irootAndRemainder(2), new BigInt[]{big(1), big(2)});
+        assertArrayEquals(big(3).irootAndRemainder(3), new BigInt[]{big(1), big(2)});
+        assertArrayEquals(big(4).irootAndRemainder(2), new BigInt[]{big(2), big(0)});
+        assertArrayEquals(big(5).irootAndRemainder(2), new BigInt[]{big(2), big(1)});
 
-        assertEquals(big(3).rootAndRemainder(2)[0], big(1));
-        assertEquals(big(4).rootAndRemainder(2)[0], big(2));
-        assertEquals(big(5).rootAndRemainder(2)[0], big(2));
-        assertEquals(big(Integer.MAX_VALUE).rootAndRemainder(2)[0], big(46340));
-        assertEquals(big("15241578750190521").rootAndRemainder(2)[0], big("123456789"));
-        assertEquals(big("15241578750190521").rootAndRemainder(2)[1], ZERO);
-        assertEquals(big("15241578750190530").rootAndRemainder(2)[0], big("123456789"));
-        assertEquals(big("15241578750190530").rootAndRemainder(2)[1], big("9"));
-        assertEquals(big("1881676371789154860897089").rootAndRemainder(3)[0], big("123456789"));
-        assertEquals(big("1881676371789154860897089").rootAndRemainder(3)[1], big("20"));
-
-        for (int i = 0; i < 100000; i++) {
-            BigInt[] qr = big(i).sqrtAndRemainder();
-            assertEquals("" + i, big(i), qr[0].pow(i).add(qr[1]));
+        Random m = new Random();
+        for (int i = 1; i < 10000; i++) {
+            int root = m.nextInt(10) + 1;
+            BigInt[] qr = big(i).irootAndRemainder(root);
+            assertEquals("" + i, big(i), qr[0].pow(root).add(qr[1]));
         }
     }
 
     @Test
     public void test_sqrt() {
-        assertEquals(big(0).sqrtAndRemainder()[0], big(0));
-        assertEquals(big(1).sqrtAndRemainder()[0], big(1));
-        assertEquals(big(2).sqrtAndRemainder()[0], big(1));
-        assertEquals(big(3).sqrtAndRemainder()[0], big(1));
-        assertEquals(big(4).sqrtAndRemainder()[0], big(2));
-        assertEquals(big(5).sqrtAndRemainder()[0], big(2));
-        assertEquals(big(Integer.MAX_VALUE).sqrtAndRemainder()[0], big(46340));
-        assertEquals(big("15241578750190521").sqrtAndRemainder()[0], big("123456789"));
-        assertEquals(big("15241578750190521").sqrtAndRemainder()[1], ZERO);
-        assertEquals(big("15241578750190530").sqrtAndRemainder()[0], big("123456789"));
-        assertEquals(big("15241578750190530").sqrtAndRemainder()[1], big("9"));
-        for (int i = 0; i < 100000; i++)
-            assertEquals("" + i, big(i).sqrtAndRemainder()[0], big((int) Math.sqrt(i)));
-        for (int i = Integer.MAX_VALUE - 100000; i < Integer.MAX_VALUE; i++)
-            assertEquals("" + i, big(i).sqrtAndRemainder()[0], big((int) Math.sqrt(i)));
-        for (long i = Long.MAX_VALUE - 100000; i < Long.MAX_VALUE; i++)
-            assertEquals("" + i, big(i).sqrtAndRemainder()[0], big((long) Math.sqrt(i)));
+        assertArrayEquals(big(0).isqrtAndRemainder(), new BigInt[]{big(0), big(0)});
+        assertArrayEquals(big(1).isqrtAndRemainder(), new BigInt[]{big(1), big(0)});
+        assertArrayEquals(big(2).isqrtAndRemainder(), new BigInt[]{big(1), big(1)});
+        assertArrayEquals(big(3).isqrtAndRemainder(), new BigInt[]{big(1), big(2)});
+        assertArrayEquals(big("15241578750190521").irootAndRemainder(2), new BigInt[]{big("123456789"), big(0)});
+        assertArrayEquals(big("15241578750190530").irootAndRemainder(2), new BigInt[]{big("123456789"), big(9)});
+        assertArrayEquals(big(Integer.MAX_VALUE).irootAndRemainder(2), new BigInt[]{big(46340), big(88047)});
+
+        for (int i = 1; i < 10000; i++) {
+            BigInt[] qr = big(i).isqrtAndRemainder();
+            assertEquals("" + i, big(i), qr[0].square().add(qr[1]));
+        }
+        for (int i = Integer.MAX_VALUE - 100000; i < Integer.MAX_VALUE; i++) {
+            BigInt[] qr = big(i).isqrtAndRemainder();
+            assertEquals("" + i, big(i), qr[0].square().add(qr[1]));
+        }
+        for (long i = Long.MAX_VALUE - 100000; i < Long.MAX_VALUE; i++) {
+            BigInt[] qr = big(i).isqrtAndRemainder();
+            assertEquals("" + i, big(i), qr[0].square().add(qr[1]));
+        }
     }
 
     @Test
