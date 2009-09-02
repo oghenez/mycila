@@ -7,6 +7,7 @@ import java.util.Arrays;
  */
 //TODO: as classes are moved to math package, add methods to this class
 //TODO: make wrapper for optimized BigInteger + BigIntegerMath.java, apflot, jscience, ... + Javolution contexts and factories
+//TODO: make wrapper for GMP java avec https://jna.dev.java.net/ + http://code.google.com/p/jnaerator/
 public abstract class BigInt<T> implements Comparable<BigInt> {
 
     public static final BigInt ZERO;
@@ -952,8 +953,8 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return <code>k<code> such as <code>k^2 <= this < (k + 1)^2</code>
      * @throws ArithmeticException if this integer is negative.
      */
-    public BigInt sqrt() {
-        return sqrtAndRemainder()[0];
+    public BigInt isqrt() {
+        return isqrtAndRemainder()[0];
     }
 
     /**
@@ -961,22 +962,19 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *
      * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>2</sup> + r = number</code>.
      */
-    public BigInt[] sqrtAndRemainder() {
+    public BigInt[] isqrtAndRemainder() {
+        // Newton's algorithm (http://en.wikipedia.org/wiki/Nth_root_algorithm)
         if (signum() < 0)
             throw new ArithmeticException("Square root of negative integer");
         if (signum() == 0 || equals(ONE))
             return new BigInt[]{this, ZERO};
-        BigInt lastGuess = ZERO;
         BigInt guess = ONE.shiftLeft(bitLength() >>> 1);
-        BigInt test = lastGuess.subtract(guess);
-        BigInt remainder = subtract(guess.square());
-        while (test.signum() != 0 && !test.equals(ONE) || remainder.signum() < 0) {
-            lastGuess = guess;
-            guess = divide(guess).add(lastGuess).shiftRight(1);
-            test = lastGuess.subtract(guess);
-            remainder = subtract(guess.square());
+        while (true) {
+            BigInt newGuess = guess.add(divide(guess)).shiftRight(1);
+            if (newGuess.compareTo(guess) >= 0) break;
+            guess = newGuess;
         }
-        return new BigInt[]{guess, remainder};
+        return new BigInt[]{guess, subtract(guess.square())};
     }
 
     /**
@@ -985,8 +983,8 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param root The root to compute
      * @return q such that q is the maximum number so that <code>q<sup>root</sup> <= number</code>.
      */
-    public BigInt root(BigInt root) {
-        return rootAndRemainder(root)[0];
+    public BigInt iroot(BigInt root) {
+        return irootAndRemainder(root)[0];
     }
 
     /**
@@ -995,8 +993,8 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param root The root to compute
      * @return q such that q is the maximum number so that <code>q<sup>root</sup> <= number</code>.
      */
-    public BigInt root(long root) {
-        return root(big(root));
+    public BigInt iroot(long root) {
+        return iroot(big(root));
     }
 
     /**
@@ -1005,58 +1003,22 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param root The root to compute
      * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>root</sup> + r = this</code>.
      */
-    public BigInt[] rootAndRemainder(BigInt root) {
+    public BigInt[] irootAndRemainder(BigInt root) {
+        // Newton's algorithm (http://en.wikipedia.org/wiki/Nth_root_algorithm)
         if (root.signum() <= 0 || signum() < 0)
             throw new ArithmeticException("Root and this number must be strictly positive");
-        if (signum() == 0) return new BigInt[]{ZERO, ZERO};
-        if (equals(ONE)) return new BigInt[]{ONE, ZERO};
-
-        BigInt lastGuess = this;
+        if (signum() == 0 || equals(ONE))
+            return new BigInt[]{this, ZERO};
         BigInt guess = root.bitLength() <= 31 ?
-                ONE.shiftLeft(bitLength() / root.toInt()) :
-                TWO.pow(big(bitLength()).divide(root).subtract(1));
-        BigInt test = lastGuess.subtract(guess);
-        BigInt remainder = subtract(guess.pow(root));
+                ONE.shiftLeft(bitLength() / root.toInt() + 1) :
+                TWO.pow(big(bitLength()).divide(root).add(1));
         BigInt rootMin1 = root.subtract(ONE);
-        while (test.signum() != 0 && !test.equals(ONE) || remainder.signum() < 0) {
-            lastGuess = guess;
-            guess = rootMin1.multiply(guess).add(lastGuess.divide(guess.pow(rootMin1))).divide(guess);
-            test = lastGuess.subtract(guess);
-            remainder = subtract(guess.pow(root));
+        while (true) {
+            BigInt newGuess = rootMin1.multiply(guess).add(this.divide(guess.pow(rootMin1))).divide(root);
+            if (newGuess.compareTo(guess) >= 0) break;
+            guess = newGuess;
         }
-        return new BigInt[]{guess, remainder};
-
-        BigInt prev = this;
-
-
-        double x_prev = A;
-        double x = A / n;  // starting "guessed" value...
-        while (Math.abs(x - x_prev) > p) {
-            x_prev = x;
-            x = ((n - 1.0) * x + A / Math.pow(x, n - 1.0)) / n;
-        }
-        return x;
-
-
-
-        while (low.compareTo(this) > 0)
-            low = low.shiftRight(1);
-        BigInt high = low;
-        while (high.compareTo(this) < 0)
-            high = high.shiftLeft(1);
-        BigInt mid = ZERO;
-        while (low.compareTo(high) < 0) {
-            mid = low.add(high).shiftRight(1).add(ONE);
-            BigInt remainder = subtract(mid.pow(root));
-            if (low.compareTo(mid) < 0 && remainder.signum() > 0)
-                low = mid;
-            else if (high.compareTo(mid) > 0 && remainder.signum() < 0)
-                high = mid;
-            else
-                return new BigInt[]{mid, remainder};
-        }
-        mid = mid.add(ONE);
-        return new BigInt[]{mid, subtract(mid.pow(root))};
+        return new BigInt[]{guess, subtract(guess.pow(root))};
     }
 
     /**
@@ -1065,51 +1027,9 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param root The root to compute
      * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>root</sup> + r = number</code>.
      */
-    public BigInt[] rootAndRemainder(long root) {
-        return rootAndRemainder(big(root));
+    public BigInt[] irootAndRemainder(long root) {
+        return irootAndRemainder(big(root));
     }
-
-    /**
-     * Compute <code>this * this</code>
-     *
-     * @return The square of this number
-     */
-    //public abstract BigInt square();
-
-    /**
-     * Computes the <a href="http://en.wikipedia.org/wiki/Binomial_coefficient">Binomial Coefficient</a>
-     * <code>C(this, k)</code>
-     *
-     * @param k Coefficient
-     * @return The binomial coefficient
-     */
-    //public abstract BigInt binomialCoeff(int k);
-
-    /**
-     * Computes the <a href="http://en.wikipedia.org/wiki/Factorial">Factorial of this number</a>
-     * <code>this!</code>
-     *
-     * @return this!
-     */
-    //public abstract BigInt factorial();
-
-    /**
-     * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">Falling Factorial</a>
-     * <code>this! / (this-n)!</code>
-     *
-     * @param n The falling factor to substract from this number
-     * @return this! / (this-n)!
-     */
-    //public abstract BigInt fallingFactorial(BigInt n);
-
-    /**
-     * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">Falling Factorial</a>
-     * <code>this! / (this-n)!</code>
-     *
-     * @param n The falling factor to substract from this number
-     * @return this! / (this-n)!
-     */
-    //public abstract BigInt fallingFactorial(long n);
 
     /**
      * Computes the sum of the consecutive numbers from this to n
@@ -1150,6 +1070,41 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return the consecutive product
      */
     //public abstract BigInt productTo(long n);
+
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">Falling Factorial</a>
+     * <code>this! / (this-n)!</code>
+     *
+     * @param n The falling factor to substract from this number
+     * @return this! / (this-n)!
+     */
+    //public abstract BigInt fallingFactorial(BigInt n);
+
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">Falling Factorial</a>
+     * <code>this! / (this-n)!</code>
+     *
+     * @param n The falling factor to substract from this number
+     * @return this! / (this-n)!
+     */
+    //public abstract BigInt fallingFactorial(long n);
+
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Binomial_coefficient">Binomial Coefficient</a>
+     * <code>C(this, k)</code>
+     *
+     * @param k Coefficient
+     * @return The binomial coefficient
+     */
+    //public abstract BigInt binomialCoeff(int k);
+
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Factorial">Factorial of this number</a>
+     * <code>this!</code>
+     *
+     * @return this!
+     */
+    //public abstract BigInt factorial();
 
     /**
      * Primalty test using <a href="http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test">Miller-Rabin primality test<a/>.
