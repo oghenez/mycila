@@ -17,8 +17,13 @@ final class JDKBigInt extends BigInt<BigInteger> {
     }
 
     @Override
-    public String toString(int tradix) {
-        return internal.toString(tradix);
+    public String toString(int radix) {
+        return internal.toString(radix);
+    }
+
+    @Override
+    public String toString() {
+        return internal.toString(radix);
     }
 
     @Override
@@ -48,32 +53,32 @@ final class JDKBigInt extends BigInt<BigInteger> {
 
     @Override
     public BigInt and(BigInt n) {
-        return wrap(internal.and(impl(n)));
+        return new JDKBigInt(internal.and((BigInteger) n.internal), radix);
     }
 
     @Override
     public BigInt not() {
-        return wrap(internal.not());
+        return new JDKBigInt(internal.not(), radix);
     }
 
     @Override
     public BigInt or(BigInt val) {
-        return wrap(internal.or(impl(val)));
+        return new JDKBigInt(internal.or((BigInteger) val.internal), radix);
     }
 
     @Override
     public BigInt xor(BigInt val) {
-        return wrap(internal.xor(impl(val)));
+        return new JDKBigInt(internal.xor((BigInteger) val.internal), radix);
     }
 
     @Override
     public BigInt pow(BigInt exponent) {
         // from http://www.coderanch.com/t/385132/Java-General/java/BigInteger-Power-Exponent-BigInteger
-        BigInteger exp = impl(exponent);
+        BigInteger exp = (BigInteger) exponent.internal;
         if (exp.signum() == 0)
             return ONE;
         if (exp.bitLength() <= 0)
-            return wrap(internal.pow(exp.intValue()));
+            return new JDKBigInt(internal.pow(exp.intValue()), radix);
         BigInteger z = internal;
         // z will successively become x^2, x^4, x^8, x^16, x^32...
         BigInteger result = BigInteger.ONE;
@@ -85,56 +90,52 @@ final class JDKBigInt extends BigInt<BigInteger> {
                     result = result.multiply(z);
                 // short cut out if there are no more bits to handle:
                 if ((bits >>= 1) == 0 && i == 0)
-                    return wrap(result);
+                    return new JDKBigInt(result, radix);
                 z = z.multiply(z);
             }
         }
-        return wrap(result);
+        return new JDKBigInt(result, radix);
     }
 
     @Override
     public BigInt add(BigInt val) {
-        return wrap(internal.add(impl(val)));
+        return new JDKBigInt(internal.add((BigInteger) val.internal), radix);
     }
 
     @Override
     public BigInt subtract(BigInt val) {
-        return wrap(internal.subtract(impl(val)));
+        return new JDKBigInt(internal.subtract((BigInteger) val.internal), radix);
     }
 
     @Override
     public BigInt multiply(BigInt val) {
-        return wrap(internal.multiply(impl(val)));
+        return new JDKBigInt(internal.multiply((BigInteger) val.internal), radix);
     }
 
     @Override
     public BigInt divide(BigInt val) {
-        return wrap(internal.divide(impl(val)));
+        return new JDKBigInt(internal.divide((BigInteger) val.internal), radix);
     }
 
     @Override
     public BigInt opposite() {
-        return wrap(internal.negate());
+        return new JDKBigInt(internal.negate(), radix);
     }
 
     @Override
     public int compareTo(BigInt o) {
-        return internal.compareTo(impl(o));
+        return internal.compareTo((BigInteger) o.internal);
     }
 
     @Override
     public BigInt toRadix(int radix) {
         if (this.radix == radix) return this;
-        return wrapBig(internal, radix);
+        return new JDKBigInt(internal, radix);
     }
 
     @Override
     public int radix() {
         return radix;
-    }
-
-    private BigInt wrap(BigInteger bi) {
-        return wrapBig(bi, radix());
     }
 
     // OVERRIDEN FOR BETTER PERF.
@@ -151,83 +152,83 @@ final class JDKBigInt extends BigInt<BigInteger> {
 
     @Override
     public BigInt shiftLeft(int n) {
-        return wrap(internal.shiftLeft(n));
+        return new JDKBigInt(internal.shiftLeft(n), radix);
     }
 
     @Override
     public BigInt shiftRight(int n) {
-        return wrap(internal.shiftRight(n));
+        return new JDKBigInt(internal.shiftRight(n), radix);
     }
 
     @Override
     public BigInt andNot(BigInt n) {
-        return wrap(internal.andNot(impl(n)));
+        return new JDKBigInt(internal.andNot((BigInteger) n.internal), radix);
     }
 
     @Override
     public BigInt clearBit(int n) {
-        return wrap(internal.clearBit(n));
+        return new JDKBigInt(internal.clearBit(n), radix);
     }
 
     @Override
     public BigInt flipBit(int n) {
-        return wrap(internal.flipBit(n));
+        return new JDKBigInt(internal.flipBit(n), radix);
     }
 
     @Override
     public BigInt setBit(int n) {
-        return wrap(internal.setBit(n));
+        return new JDKBigInt(internal.setBit(n), radix);
     }
 
     @Override
     public BigInt pow(long exponent) {
         return exponent <= Integer.MAX_VALUE ?
-                wrap(internal.pow((int) exponent)) :
+                new JDKBigInt(internal.pow((int) exponent), radix) :
                 pow(big(exponent));
     }
 
     @Override
     public BigInt[] divideAndRemainder(BigInt val) {
         BigInt[] bi = new JDKBigInt[2];
-        BigInteger[] qr = internal.divideAndRemainder(impl(val));
-        bi[0] = wrap(qr[0]);
-        bi[1] = wrap(qr[1]);
+        BigInteger[] qr = internal.divideAndRemainder((BigInteger) val.internal);
+        bi[0] = new JDKBigInt(qr[0], radix);
+        bi[1] = new JDKBigInt(qr[1], radix);
         return bi;
     }
 
     @Override
     public BigInt abs() {
-        return wrap(internal.abs());
+        return new JDKBigInt(internal.abs(), radix);
     }
 
     @Override
     public BigInt max(BigInt val) {
-        return wrap(internal.max(impl(val)));
+        return new JDKBigInt(internal.max((BigInteger) val.internal), radix);
     }
 
     @Override
     public BigInt min(BigInt val) {
-        return wrap(internal.min(impl(val)));
+        return new JDKBigInt(internal.min((BigInteger) val.internal), radix);
     }
 
     @Override
     public BigInt mod(BigInt m) {
-        return wrap(internal.mod(impl(m)));
+        return new JDKBigInt(internal.mod((BigInteger) m.internal), radix);
     }
 
     @Override
     public BigInt remainder(BigInt val) {
-        return wrap(internal.remainder(impl(val)));
+        return new JDKBigInt(internal.remainder((BigInteger) val.internal), radix);
     }
 
     @Override
     public BigInt modInverse(BigInt m) {
-        return wrap(internal.modInverse(impl(m)));
+        return new JDKBigInt(internal.modInverse((BigInteger) m.internal), radix);
     }
 
     @Override
     public BigInt modPow(BigInt exponent, BigInt m) {
-        return wrap(internal.modPow(impl(exponent), impl(m)));
+        return new JDKBigInt(internal.modPow((BigInteger) exponent.internal, (BigInteger) m.internal), radix);
     }
 
     private Boolean isPrime;
@@ -239,12 +240,12 @@ final class JDKBigInt extends BigInt<BigInteger> {
 
     @Override
     public BigInt nextPrime() {
-        return wrap(internal.nextProbablePrime());
+        return new JDKBigInt(internal.nextProbablePrime(), radix);
     }
 
     @Override
     public BigInt gcd(BigInt val) {
-        return wrap(internal.gcd(impl(val)));
+        return new JDKBigInt(internal.gcd((BigInteger) val.internal), radix);
     }
 
 }
