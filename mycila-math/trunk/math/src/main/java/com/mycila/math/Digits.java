@@ -18,7 +18,6 @@ package com.mycila.math;
 import com.mycila.math.distribution.Distribution;
 import com.mycila.math.list.IntProcedure;
 import com.mycila.math.list.IntSequence;
-import com.mycila.math.number.BigInt;
 
 import java.util.Arrays;
 
@@ -211,23 +210,6 @@ public final class Digits {
     }
 
     /**
-     * Executes a callback for each digit of the number
-     *
-     * @param number    The number
-     * @param procedure The callback to run for each digit
-     * @return True if all digits have been processed.
-     *         The callback can return false at any time to stop processing.
-     */
-    public boolean each(BigInt number, IntProcedure procedure) {
-        final String s = number.toString(base);
-        final int max = s.length();
-        for (int i = 0; i < max; i++)
-            if (!procedure.execute(s.charAt(i) - 48))
-                return false;
-        return true;
-    }
-
-    /**
      * Returns the distribution (frequencies) of the digits on this number
      *
      * @param number The number
@@ -239,21 +221,6 @@ public final class Digits {
             distribution.add((int) (number % base));
             number /= base;
         } while (number > 0);
-        return distribution;
-    }
-
-    /**
-     * Returns the distribution (frequencies) of the digits on this number
-     *
-     * @param number The number
-     * @return a {@link com.mycila.math.distribution.Distribution} containing all digit frequencies for this number
-     */
-    public Distribution<Integer> map(BigInt number) {
-        final Distribution<Integer> distribution = Distribution.of(Integer.class);
-        final String s = number.toString(base);
-        final int max = s.length();
-        for (int i = 0; i < max; i++)
-            distribution.add(s.charAt(i) - 48);
         return distribution;
     }
 

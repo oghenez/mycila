@@ -1,5 +1,8 @@
 package com.mycila.math.number;
 
+import com.mycila.math.distribution.Distribution;
+import com.mycila.math.list.IntProcedure;
+
 import java.util.Arrays;
 
 /**
@@ -66,11 +69,6 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         this.internal = internal;
     }
 
-    @SuppressWarnings({"unchecked"})
-    protected final T impl(BigInt o) {
-        return (T) o.internal;
-    }
-
     @Override
     public final int hashCode() {
         return internal.hashCode();
@@ -85,7 +83,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         return o.getClass() == getClass() && internal.equals(((BigInt) o).internal);
     }
 
-    public abstract String toString(int tradix);
+    public abstract String toString(int radix);
 
     /**
      * Converts this BigInteger to an {@code int}.  This
@@ -817,8 +815,8 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *
      * @return Another number with the same digits, sorted
      */
-    public BigInt sort() {
-        final char c[] = toString().toCharArray();
+    public BigInt digitsSorted() {
+        char c[] = toString().toCharArray();
         Arrays.sort(c);
         return big(String.valueOf(c), radix());
     }
@@ -834,8 +832,8 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      */
     public int[] digits() {
         if (digits != null) return Arrays.copyOf(digits, digits.length);
-        final String s = toString();
-        final int[] digits = new int[s.length()];
+        String s = toString();
+        int[] digits = new int[s.length()];
         for (int i = s.length() - 1; i >= 0; i--)
             digits[i] = s.charAt(i) - 48;
         return this.digits = digits;
@@ -851,10 +849,42 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     public int digitsSum() {
         if (digitsSum != -1) return digitsSum;
         int sum = 0;
-        final String s = toString();
+        String s = toString();
         for (int i = s.length() - 1; i >= 0; i--)
             sum += s.charAt(i) - 48;
         return this.digitsSum = sum;
+    }
+
+    protected Distribution<Integer> digitsMap;
+
+    /**
+     * Returns the digit distribution for this BigInteger
+     *
+     * @return the digit sum
+     */
+    public Distribution<Integer> digitsMap() {
+        if (digitsMap != null) return digitsMap;
+        Distribution<Integer> distribution = Distribution.of(Integer.class);
+        String s = toString();
+        for (int i = s.length() - 1; i >= 0; i--)
+            distribution.add(s.charAt(i) - 48);
+        return digitsMap = distribution;
+    }
+
+    /**
+     * Executes a callback for each digit of the number
+     *
+     * @param procedure The callback to run for each digit
+     * @return True if all digits have been processed.
+     *         The callback can return false at any time to stop processing.
+     */
+    public boolean eachDigit(IntProcedure procedure) {
+        String s = toString();
+        int max = s.length();
+        for (int i = 0; i < max; i++)
+            if (!procedure.execute(s.charAt(i) - 48))
+                return false;
+        return true;
     }
 
     /**
@@ -874,9 +904,9 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return the reversed number
      */
     public BigInt digitsReversed() {
-        final String s = toString();
-        final int max = s.length() - 1;
-        final char chars[] = new char[max + 1];
+        String s = toString();
+        int max = s.length() - 1;
+        char chars[] = new char[max + 1];
         for (int i = 0; i <= max; i++)
             chars[i] = s.charAt(max - i);
         return big(String.valueOf(chars), radix());
@@ -894,8 +924,8 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      */
     public BigInt digitsRotated(int offset) {
         if (offset == 0) return this;
-        final String s = toString();
-        final int len = s.length();
+        String s = toString();
+        int len = s.length();
         offset %= s.length();
         offset %= len;
         if (offset == 0) return this;
@@ -912,8 +942,8 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      */
     public int[] digitsSignature() {
         if (digitsSignature != null) return Arrays.copyOf(digitsSignature, digitsSignature.length);
-        final String s = toString();
-        final int[] digits = new int[s.length()];
+        String s = toString();
+        int[] digits = new int[s.length()];
         for (int i = s.length() - 1; i >= 0; i--)
             digits[i] = s.charAt(i) - 48;
         Arrays.sort(digits);
@@ -929,8 +959,8 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      */
     public boolean isPalindromic() {
         if (isPalindromic != null) return isPalindromic;
-        final String s = toString();
-        final int len = s.length() - 1;
+        String s = toString();
+        int len = s.length() - 1;
         for (int i = (s.length() - 1) >>> 1; i >= 0; i--)
             if (s.charAt(i) != s.charAt(len - i))
                 return isPalindromic = false;
@@ -943,7 +973,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param val The  number to check
      * @return True if the numbers is a permutation of number
      */
-    public boolean isPermutation(BigInt val) {
+    public boolean isDigitsPermutation(BigInt val) {
         return Arrays.equals(this.digitsSignature(), val.digitsSignature());
     }
 
@@ -1030,6 +1060,31 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     public BigInt[] irootAndRemainder(long root) {
         return irootAndRemainder(big(root));
     }
+
+    /**
+     * Get the recurring cycle of the inverse of this number 1/this. The recurring cycle is the length of
+     * the period of the floating part of the decimal 1/this.
+     * <p/>
+     * We find the least number l that satisfy 10^l mod this = 1
+     * <p/>
+     * In example, 1/7 = 0.142857142857142857142 has a period of 142857, length 6
+     *
+     * @return An array containing the period at position 0 and its length at position 1
+     */
+    public BigInt[] recuringCycle() {
+        // We check the least number that satisfy 10^l mod p = 1
+        BigInt l = ZERO, pow = ONE;
+        do {
+            l = l.add(ONE);
+            pow = TEN.multiply(pow);
+            BigInt[] qr = pow.divideAndRemainder(this);
+            if (qr[1].equals(ONE))
+                return new BigInt[]{qr[0], l};
+        } while (l.compareTo(this) < 0);
+        return new BigInt[]{ZERO, ZERO};
+    }
+
+    //FIXME: continue to implement...
 
     /**
      * Computes the sum of the consecutive numbers from this to n
@@ -1156,7 +1211,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
                 && (number <= 61 || millerRabinPass(61, number)));
     }
 
-    private static boolean millerRabinPass(final int a, final int n) {
+    private static boolean millerRabinPass(int a, int n) {
         int d = n - 1;
         int s = Integer.numberOfTrailingZeros(d);
         d >>>= s;
@@ -1180,7 +1235,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     public boolean isPrimeLucasLehmer() {
         BigInt p = this.subtract(TWO);
         if (p.signum() == 0) return true;
-        final BigInt m = TWO.pow(this).subtract(ONE);
+        BigInt m = TWO.pow(this).subtract(ONE);
         BigInt s = big(4);
         for (BigInt i = ZERO; i.compareTo(p) < 0; i = i.add(1))
             s = s.multiply(s).subtract(TWO).mod(m);
@@ -1189,7 +1244,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
 
 }
 
-//TODO: add methods: factorial(), factorize(), fibonacci(), isFibonacci(), digitMap + each digits from Digits, recurringCycle, panDigitalRange, isPandifital,
+//TODO: add methods: factorial(), factorize(), fibonacci(), isFibonacci(), panDigitalRange, isPandifital,
 //TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
 //TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
 //TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet

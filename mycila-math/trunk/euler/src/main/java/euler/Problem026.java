@@ -15,12 +15,9 @@
  */
 package euler;
 
-import com.mycila.RecuringCycle;
+import static com.mycila.math.Format.*;
 import com.mycila.math.number.BigInt;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Arrays;
+import static com.mycila.math.number.BigInt.*;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=26
@@ -38,45 +35,28 @@ class Problem026 {
         // depending respectively whether its period is: p − 1 or a factor of p − 1
         // also, the cycle's lenth L is such that 10^L mod p = 1 for prime number in 1/p, L being as small as possible and lower than p. 
 
-        BigInt cycle = BigInt.big(142857);
-        int res = 7, maxCycleLength = 6;
+        BigInt cycle = big(142857);
+        BigInt res = big(7), maxCycleLength = big(6);
         // for each prime numbers, starting at the maximum possible value (999 and 008 are not primes)
         for (int p = 997; p > 7; p -= 2) {
-            if (BigInt.big(p).isPrime()) {
-                // if p is prime, we check the least number that satisfy 10^l mod p = 1 
-                for (int l = 1; l < p; l++) {
-                    BigInt[] qr = BigInt.TEN.pow(l).divideAndRemainder(BigInt.big(p));
-                    // qr[0] is the quotient. It is also equals to the cycle of 1/p
-                    // qr[1] is the remainder.
-                    if (qr[1].equals(BigInt.ONE)) {
-                        // we found the length l of the cycle of 1/p
-                        System.out.println("1/" + p + " has a recuring cycle length of " + l + ": " + leftPad(qr[0].toString(), l, '0'));
-                        System.out.println("1/" + p + " = " + BigDecimal.ONE.divide(BigDecimal.valueOf(p), 2000, RoundingMode.HALF_UP));
-                        // we save these values if the current cycle is greater
-                        if (maxCycleLength < l) {
-                            maxCycleLength = l;
-                            res = p;
-                            cycle = qr[0];
-                        }
-                        break;
-                    }
+            BigInt bp = big(p);
+            if (bp.isPrime()) {
+                BigInt[] cl = bp.recuringCycle();
+                if (maxCycleLength.compareTo(cl[1]) < 0) {
+                    System.out.println("1/" + bp + " has a recuring cycle length of " + cl[1] + ": " + leftPad(cl[0].toString(), cl[1].toInt(), '0'));
+                    maxCycleLength = cl[1];
+                    res = bp;
+                    cycle = cl[0];
                 }
             }
         }
 
         System.out.println("=== RESULT ===");
 
-        System.out.println("1/" + res + " has a recuring cycle length of " + maxCycleLength + ": " + leftPad(cycle.toString(), maxCycleLength, '0') + " in " + (System.currentTimeMillis() - time) + "ms");
-        System.out.println(BigDecimal.ONE.divide(BigDecimal.valueOf(res), 2000, RoundingMode.HALF_UP));
+        System.out.println("1/" + res + " has a recuring cycle length of " + maxCycleLength + ": " + leftPad(cycle.toString(), maxCycleLength.toInt(), '0') + " in " + (System.currentTimeMillis() - time) + "ms");
 
-        System.out.println(RecuringCycle.of(983));
     }
 
-    private static String leftPad(String s, int length, char c) {
-        char[] missing = new char[length - s.length()];
-        Arrays.fill(missing, c);
-        return new String(missing).concat(s);
-    }
 }
 
 // 983
