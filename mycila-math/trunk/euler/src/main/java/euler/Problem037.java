@@ -20,6 +20,8 @@ import com.mycila.math.prime.Sieve;
 
 import static java.lang.System.*;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=37
  *
@@ -57,5 +59,6 @@ class Problem037 {
             if (truncable) truncables.add(sieve.get(i));
         }
         out.println(truncables.sum() + " : " + truncables + " in " + (currentTimeMillis() - time) + "ms");
+        assertEquals(748317, truncables.sum());
     }
 }

@@ -23,6 +23,8 @@ import static java.lang.System.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=62
  *
@@ -42,6 +44,7 @@ class Problem062 {
             if (nums.size() == 5) {
                 System.out.println(nums + " => " + (nums.first() * nums.first() * nums.first())
                         + " in " + (System.currentTimeMillis() - time) + "ms");
+                assertEquals(127035954683L, nums.first() * nums.first() * nums.first());
                 break;
             }
         }

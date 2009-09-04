@@ -21,6 +21,8 @@ import com.mycila.math.list.LongSequence;
 
 import static java.lang.System.*;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=43
  *
@@ -92,6 +94,7 @@ class Problem043 {
             sum += list_d1d2d3d4d5d6d7d8d9d10.getQuick(i);
         }
         out.println("sum: " + sum + " in " + (currentTimeMillis() - time) + "ms");
+        assertEquals(16695334890L, sum);
     }
 }
 

@@ -25,6 +25,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=61
  *
@@ -52,6 +54,7 @@ class Problem061 {
         }
 
         System.out.println(sum + " in " + (System.currentTimeMillis() - time) + "ms");
+        assertEquals(28684, sum);
     }
 
     private static boolean findNextNumber(int twoDgts, Map<POLYGON, Integer> pass) {

@@ -19,6 +19,8 @@ import com.mycila.math.number.BigInt;
 
 import static java.lang.System.*;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=57
  *
@@ -44,6 +46,7 @@ class Problem057 {
         }
 
         out.println(count + " in " + (currentTimeMillis() - time) + "ms");
+        assertEquals(153, count);
     }
 
 }

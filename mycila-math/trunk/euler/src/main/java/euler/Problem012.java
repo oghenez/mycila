@@ -16,8 +16,7 @@
 package euler;
 
 import com.mycila.Decomposition;
-
-import static java.lang.System.*;
+import static org.junit.Assert.*;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=12
@@ -36,11 +35,11 @@ class Problem012 {
         // So all the divisors of the triangle number will be composed of some of these 501 primes
         for (int i = 1, triangle = 1; ; i++, triangle = i * (1 + i) / 2) {
             if (Decomposition.of(triangle).divisorCount() > 500) {
-                out.println(triangle);
-                break;
+                System.out.println(triangle + " in " + (System.currentTimeMillis() - time) + "ms");
+                assertEquals(76576500, triangle);
+                return;
             }
         }
-        System.out.println(System.currentTimeMillis() - time + "ms");
     }
 }
 

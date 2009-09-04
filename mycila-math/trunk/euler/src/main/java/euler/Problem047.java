@@ -22,6 +22,8 @@ import static java.lang.System.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=47
  *
@@ -56,7 +58,8 @@ class Problem047 {
             if (consecutive == 4) {
                 for (int i = 0; i < numbers.length; i++)
                     System.out.println(numbers[i] + ": " + results.get(i));
-                out.println(" in " + (currentTimeMillis() - time) + "ms");
+                out.println(numbers[0] + " in " + (currentTimeMillis() - time) + "ms");
+                assertEquals(134043, numbers[0]);
                 break;
             }
         }

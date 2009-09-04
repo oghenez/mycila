@@ -19,6 +19,8 @@ import com.mycila.math.Polygon;
 
 import static java.lang.System.*;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=45
  *
@@ -36,7 +38,8 @@ class Problem045 {
                 out.println("T(" + i + ")=" + Polygon.triangle(i));
                 out.println("P(" + m + ")=" + Polygon.pentagonal(m));
                 out.println("H(" + n + ")=" + Polygon.hexagonal(n));
-                out.println(" in " + (currentTimeMillis() - time) + "ms");
+                out.println(ti + " in " + (currentTimeMillis() - time) + "ms");
+                assertEquals(1533776805L, ti);
                 break;
             }
         }

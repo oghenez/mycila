@@ -16,9 +16,9 @@
 package euler;
 
 import com.mycila.math.Digits;
+import static org.junit.Assert.*;
 
 import static java.lang.System.*;
-import java.util.Set;
 import java.util.TreeSet;
 
 /**
@@ -31,12 +31,14 @@ class Problem004 {
 
         final Digits digits = Digits.base(10);
 
-        Set<Integer> palindroms = new TreeSet<Integer>();
+        TreeSet<Integer> palindroms = new TreeSet<Integer>();
         for (int i = 999; i >= 100; i--) for (int j = i, prod = i * j; j >= 100; j--, prod = i * j) if (prod % 11 == 0 && ("" + prod).equals(new StringBuilder("" + prod).reverse().toString())) palindroms.add(prod);
         out.println(palindroms);
 
         palindroms.clear();
         for (int i = 999; i >= 100; i--) for (int j = i, prod = i * j; j >= 100; j--, prod = i * j) if (prod % 11 == 0 && digits.isPalindromic(prod)) palindroms.add(prod);
         out.println(palindroms);
+
+        assertEquals(906609, palindroms.last().intValue());
     }
 }

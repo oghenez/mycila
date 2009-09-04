@@ -21,6 +21,8 @@ import static java.lang.System.*;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=55
  *
@@ -72,6 +74,8 @@ class Problem055 {
         for (BigInt l : lychrel) if (l.compareTo(max) <= 0) count++;
 
         out.println(count + " under " + maxNumber);
+        assertEquals(249, count);
+        assertEquals(10000, maxNumber);
     }
 }
 

@@ -18,6 +18,7 @@ package euler;
 import static com.mycila.math.Format.*;
 import com.mycila.math.number.BigInt;
 import static com.mycila.math.number.BigInt.*;
+import static org.junit.Assert.*;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=26
@@ -54,7 +55,7 @@ class Problem026 {
         System.out.println("=== RESULT ===");
 
         System.out.println("1/" + res + " has a recuring cycle length of " + maxCycleLength + ": " + leftPad(cycle.toString(), maxCycleLength.toInt(), '0') + " in " + (System.currentTimeMillis() - time) + "ms");
-
+        assertEquals(big(983), res);
     }
 
 }

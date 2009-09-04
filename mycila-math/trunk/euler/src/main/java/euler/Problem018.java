@@ -19,6 +19,7 @@ import com.mycila.Matrix;
 import org.jgrapht.alg.BellmanFordShortestPath;
 import org.jgrapht.experimental.dag.DirectedAcyclicGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import static org.junit.Assert.*;
 
 import java.util.Scanner;
 
@@ -78,6 +79,7 @@ class Problem018 {
             sb.append((int) -edge.getWeight()).append(" ");
         }
         System.out.println("PATH: " + sb);
+        assertEquals("93 73 58 78 91 32 83 28 73 75 82 87 82 64 75 ", sb.toString());
     }
 
     private static DirectedAcyclicGraph<String, Edge> createDAG(Matrix<Integer> matrix) throws DirectedAcyclicGraph.CycleFoundException {

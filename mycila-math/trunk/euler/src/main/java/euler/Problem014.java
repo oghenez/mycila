@@ -17,6 +17,7 @@ package euler;
 
 import com.mycila.math.Sequence;
 import com.mycila.math.list.LongSequence;
+import static org.junit.Assert.*;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=14
@@ -32,6 +33,8 @@ class Problem014 {
             if (seq.size() > sequence.size()) sequence = seq;
         }
         System.out.println("Collatz(" + sequence.first() + ") has " + sequence.size() + " terms, in " + (System.currentTimeMillis() - time) + "ms\n" + sequence);
+        assertEquals(837799, sequence.first());
+        assertEquals(525, sequence.size());
     }
 }
 

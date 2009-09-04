@@ -1155,6 +1155,59 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     //public abstract BigInt binomial(int k);
 
     /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Jacobi_symbol">Jacobi symbol</a> (a/n) where this = n
+     * <p/>
+     * Sample implementation <a href="http://primes.utm.edu/glossary/page.php?sort=JacobiSymbol">here</a>
+     * <p/>
+     * Precondition: this = n = 1 mod 4<br>
+     * Postcondition: Result is jacobi symbol (a / n) or -1 if gcd(a, n) > 1
+     *
+     * @param a Positive odd number
+     * @return The Jacobi symbol (this/n)
+     */
+    public int jacobiSymbol(long a) {
+        if (a == 0) return 0;
+        int j = 1;
+        long u = toLong();
+        // Make p positive
+        if (a < 0) {
+            a = -a;
+            long n8 = u & 7;
+            if (n8 == 3 || n8 == 7) j = -j; // 3 (011) or 7 (111) mod 8
+        }
+        // Get rid of factors of 2 in p
+        while ((a & 3) == 0) a >>= 2;
+        if ((a & 1) == 0) {
+            a >>= 1;
+            if (((u ^ (u >> 1)) & 2) != 0) j = -j; // 3 (011) or 5 (101) mod 8
+        }
+        if (a == 1) return j;
+        // Then, apply quadratic reciprocity
+        if ((a & u & 2) != 0) j = -j; // p = u = 3 (mod 4)
+        // And reduce u mod p
+        u = mod(big(a)).toLong();
+        // Get rid of factors of 2 in p
+        while ((a & 3) == 0) a >>= 2;
+        // Now compute Jacobi(u,p), u < p
+        while (u != 0) {
+            while ((u & 3) == 0) u >>= 2;
+            if ((u & 1) == 0) {
+                u >>= 1;
+                if (((a ^ (a >> 1)) & 2) != 0) j = -j; // 3 (011) or 5 (101) mod 8
+            }
+            if (u == 1) return j;
+            // Now both u and p are odd, so use quadratic reciprocity
+            long t = u;
+            u = a;
+            a = t;
+            if ((u & a & 2) != 0) j = -j; // u = p = 3 (mod 4)
+            // Now u >= p, so it can be reduced
+            u %= a;
+        }
+        return 0;
+    }
+
+    /**
      * Primalty test using <a href="http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test">Miller-Rabin primality test<a/>.
      * <p/>
      * If the BigInteger passes all tests, returns the probabilty it is prime as a double. Number of passes is set to maximum 50 depending on the number's length.
@@ -1174,7 +1227,8 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return true if the BigInteger is determined to be prime for given number of iterations
      */
     public boolean isPrimeMillerRabin(int numPasses) {
-        if (compareTo(TWO) < 0) return false;
+        if (equals(TWO)) return true;
+        if (!testBit(0) || equals(ONE)) return false;
         if (compareTo(big(Integer.MAX_VALUE)) <= 0)
             return PrimaltyTest.millerRabin(toInt());
         // Find a and m such that m is odd and this == 1 + 2**a * m
@@ -1202,69 +1256,59 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * <p/>
      * Using <a href="http://en.wikipedia.org/wiki/Lucas%E2%80%93Lehmer_test_for_Mersenne_numbers">Lucas-Lehmer primality test<a/>
      *
-     * @return the probabilty it is prime. O if the BigInteger is determined to be composite, 1 if it is prime
+     * @return True if it is a Mersenne prime
      */
     public boolean isPrimeMersenne() {
         if (bitLength() > 63)
             throw new ArithmeticException("Number too big to be an exponent. Must be <= Integer.MAX_VALUE");
-        BigInt p = this.subtract(TWO);
-        if (p.signum() == 0) return true;
-        BigInt m = TWO.pow(toInt()).subtract(ONE);
-        BigInt s = big(4);
-        for (BigInt i = ZERO; i.compareTo(p) < 0; i = i.add(1))
-            s = s.multiply(s).subtract(TWO).mod(m);
-        return s.equals(ZERO);
+        return equals(TWO) || !(!testBit(0) || equals(ONE))
+                && ONE.shiftLeft(toInt()).subtract(ONE).isPrimeLucasLehmer();
     }
 
     /**
-     * Computes the <a href="http://en.wikipedia.org/wiki/Jacobi_symbol">Jacobi symbol</a> (this/n).
-     * <p/>
-     * Sample implementation <a href="http://primes.utm.edu/glossary/page.php?sort=JacobiSymbol">here</a>
+     * Returns true iff this BigInteger is a Lucas-Lehmer prime.
+     * The following assumptions are made:
+     * This BigInteger is a positive, odd number.
      *
-     * @param n Positive odd number
-     * @return The Jacobi symbol (this/n)
+     * @return True is the number is prime
      */
-    public BigInt jacobiSymbol(BigInt n) {
-        if (!n.testBit(0))
-            throw new ArithmeticException("Requires a positive odd number");
-        BigInt j = ONE;
-        BigInt a = this.mod(n);
-        while (a.signum() != 0) {
-            a = a.shiftRight(a.lowestSetBit());
-
+    public boolean isPrimeLucasLehmer() {
+        if (equals(TWO)) return true;
+        if (!testBit(0) || equals(ONE)) return false;
+        BigInt thisPlusOne = this.add(ONE);
+        int d = 5;
+        while (jacobiSymbol(d) != -1)
+            d = (d < 0) ? Math.abs(d) + 2 : -(d + 2); // 5, -7, 9, -11, ...
+        // Lucas-Lehmer sequence
+        BigInt z = big(d);
+        BigInt u = ONE;
+        BigInt u2;
+        BigInt v = ONE;
+        BigInt v2;
+        for (int i = thisPlusOne.bitLength() - 2; i >= 0; i--) {
+            u2 = u.multiply(v).mod(this);
+            v2 = v.square().add(z.multiply(u.square())).mod(this);
+            if (v2.testBit(0)) v2 = v2.subtract(this);
+            v2 = v2.shiftRight(1);
+            u = u2;
+            v = v2;
+            if (thisPlusOne.testBit(i)) {
+                u2 = u.add(v).mod(this);
+                if (u2.testBit(0)) u2 = u2.subtract(this);
+                u2 = u2.shiftRight(1);
+                v2 = v.add(z.multiply(u)).mod(this);
+                if (v2.testBit(0)) v2 = v2.subtract(this);
+                v2 = v2.shiftRight(1);
+                u = u2;
+                v = v2;
+            }
         }
-        return null;//FIXME: impl using jdk BigInteger + tester - rendre publique methode
+        return u.mod(this).equals(ZERO);
     }
-
-    /*while (a != 0)
-   {
-      while (a mod 2 == 0)        // a is even
-      {
-         a = a / 2
-         res = n mod 8
-         if res == 3 or res == 5
-            j = -j
-      }
-      temp = a
-      a = n
-      n = temp
-
-      if ((a mod 4) ==3) and ((n mod 4) ==3)
-         j = -j
-
-      a = a mod n
-   }
-
-   if (n==1)
-      return j
-   else
-      return 0
-    }*/
-
 }
 
-//TODO: add methods: binomial(), factorial(), factorize(), fibonacci(), isFibonacci(), panDigitalRange, isPandifital, quadratic residue, chineese remainder, (math.mtu.edu)
-//TODO: Prime.java - jacobi symbol, lucas lhemer sequence, euler criterion (http://en.wikipedia.org/wiki/Euler_criterion), fermat little theorem (http://en.wikipedia.org/wiki/Fermat%27s_little_theorem + http://my.opera.com/duddev/blog/show.dml/298370)
+//TODO: add methods: binomial(), factorial(), factorize(), fibonacci(), isFibonacci(), pandigitalRange, isPandifital isPandigital(from, to, ...), quadratic residue (http://primes.utm.edu/glossary/xpage/QuadraticResidue.html), Quadratic reciprocity, chineese remainder, (math.mtu.edu)
+//TODO: Prime.java, FourSquare - euler criterion (http://en.wikipedia.org/wiki/Euler_criterion), fermat little theorem (http://en.wikipedia.org/wiki/Fermat%27s_little_theorem + http://my.opera.com/duddev/blog/show.dml/298370)
 //TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
 //TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
 //TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet

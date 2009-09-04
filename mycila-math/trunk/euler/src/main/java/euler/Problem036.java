@@ -19,6 +19,8 @@ import com.mycila.math.Digits;
 
 import static java.lang.System.*;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=36
  *
@@ -34,6 +36,7 @@ class Problem036 {
             if (digits10.isPalindromic(i) && digits2.isPalindromic(i)) sum += i;
         }
         out.println(sum + " in " + (currentTimeMillis() - time) + "ms");
+        assertEquals(872187, sum);
     }
 }
 

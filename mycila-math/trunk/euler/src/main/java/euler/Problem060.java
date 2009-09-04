@@ -20,6 +20,8 @@ import com.mycila.math.prime.Sieve;
 
 import static java.lang.System.*;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=60
  *
@@ -68,8 +70,9 @@ class Problem060 {
                                     || !sieve.isPrime(Integer.parseInt(primes[p5] + "" + primes[p3]))
                                     || !sieve.isPrime(Integer.parseInt(primes[p5] + "" + primes[p4])))
                                 continue;
-                            System.out.println(primes[p1] + " " + primes[p2] + " " + primes[p3] + " " + primes[p4] + " " + primes[p5] + " => " +
-                                    (primes[p1] + primes[p2] + primes[p3] + primes[p4] + primes[p5]));
+                            int sum = primes[p1] + primes[p2] + primes[p3] + primes[p4] + primes[p5];
+                            System.out.println(primes[p1] + " " + primes[p2] + " " + primes[p3] + " " + primes[p4] + " " + primes[p5] + " => " + sum);
+                            assertEquals(26033, sum);
                             break main;
                         }
                     }

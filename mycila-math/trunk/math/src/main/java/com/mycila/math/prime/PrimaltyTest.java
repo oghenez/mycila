@@ -15,8 +15,6 @@
  */
 package com.mycila.math.prime;
 
-import com.mycila.math.Mod;
-
 /**
  * @author Mathieu Carbou
  */
@@ -105,13 +103,24 @@ public final class PrimaltyTest {
         int d = n - 1;
         int s = Integer.numberOfTrailingZeros(d);
         d >>>= s;
-        int a_to_power = Mod.pow(a, d, n);
+        int a_to_power = modularExponent32(a, d, n);
         s--;
         if (a_to_power == 1) return true;
         for (int i = 0; i < s; i++) {
             if (a_to_power == n - 1) return true;
-            a_to_power = Mod.pow(a_to_power, 2, n);
+            a_to_power = modularExponent32(a_to_power, 2, n);
         }
         return a_to_power == n - 1;
     }
+
+    private static int modularExponent32(long base, int exp, int mod) {
+        long result = 1;
+        while (exp > 0) {
+            if ((exp & 1) == 1) result = (result * base) % mod;
+            exp >>>= 1;
+            base = (base * base) % mod;
+        }
+        return (int) result;
+    }
+
 }

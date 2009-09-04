@@ -1,10 +1,10 @@
 package com.mycila.math.number;
 
 import static com.mycila.math.number.BigInt.*;
+import com.mycila.math.number.jdk7.BigInteger;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Random;
@@ -13,6 +13,24 @@ import java.util.Random;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class JDKBigIntegerTest {
+
+    @Test
+    public void test_jacobiSymbol() throws Exception {
+        Random r = new SecureRandom();
+
+        assertEquals(BigInteger.jacobiSymbol(79, BigInteger.valueOf(3)), 1);
+        assertEquals(big(3).jacobiSymbol(79), 1);
+
+        assertEquals(BigInteger.jacobiSymbol(81, BigInteger.valueOf(7)), 1);
+        assertEquals(big(7).jacobiSymbol(81), 1);
+
+        for (int i = 3; i < 100000; i += 2) {
+            int a = r.nextInt(1000001);
+            assertEquals("(" + a + "/" + i + ")",
+                         BigInteger.jacobiSymbol(a, BigInteger.valueOf(i)),
+                         big(i).jacobiSymbol(a));
+        }
+    }
 
     @Test
     public void test_falling() {
@@ -70,16 +88,16 @@ public final class JDKBigIntegerTest {
         assertEquals(big(-31).modInverse(big(3675)).toString(), "1304");
         assertEquals(big(-45).modInverse(big(4864)).toString(), "3675");
 
+        Random r = new SecureRandom();
         for (int i = 1; i < 1000;) {
             try {
-                Random r = new SecureRandom();
                 BigInteger x = BigInteger.valueOf(i);
                 BigInteger m = new BigInteger(10, r);
                 BigInteger inv = x.modInverse(m);
                 BigInteger prod = inv.multiply(x).remainder(m);
                 if (prod.signum() == -1) prod = prod.add(m);
                 if (prod.equals(BigInteger.ONE))
-                    assertEquals(wrapBig(x, 10).modInverse(wrapBig(m, 10)), wrapBig(inv, 10));
+                    assertEquals(big(x.toString()).modInverse(big(m.toString())), big(inv.toString()));
                 i++;
             } catch (ArithmeticException e) {
             }
@@ -256,14 +274,28 @@ public final class JDKBigIntegerTest {
     }
 
     @Test
-    public void test_lucasLehmer() {
+    public void test_isPrimeLucasLehmer() {
+        assertFalse(ZERO.isPrimeLucasLehmer());
+        assertFalse(big(4).isPrimeLucasLehmer());
+        assertTrue(TWO.isPrimeLucasLehmer());
+        assertTrue(big(3).isPrimeLucasLehmer());
+        assertTrue(big(5).isPrimeLucasLehmer());
+        assertTrue(big(31).isPrimeLucasLehmer()); // matches 2^31-1 = Integer.MAX_VALUE
+        assertTrue(big(Integer.MAX_VALUE).isPrimeLucasLehmer()); // matches 2^31-1 = Integer.MAX_VALUE
+        assertTrue(big(Integer.MAX_VALUE).nextPrime().nextPrime().isPrimeLucasLehmer());
+        assertTrue(big(Integer.MAX_VALUE).square().nextPrime().nextPrime().isPrimeLucasLehmer());
+    }
+
+    @Test
+    public void test_isPrimeMersenne() {
         assertFalse(ZERO.isPrimeMersenne());
         assertFalse(big(4).isPrimeMersenne());
         assertTrue(TWO.isPrimeMersenne());
         assertTrue(big(3).isPrimeMersenne());
         assertTrue(big(5).isPrimeMersenne());
         assertTrue(big(31).isPrimeMersenne()); // matches 2^31-1 = Integer.MAX_VALUE
-        assertTrue(big(Integer.MAX_VALUE).isPrimeMersenne()); // matches 2^31-1 = Integer.MAX_VALUE
+        assertFalse(big(63).isPrimeMersenne()); // matches 2^63-1 = Long.MAX_VALUE
+        assertFalse(big(1023).isPrimeMersenne());
     }
 
 }

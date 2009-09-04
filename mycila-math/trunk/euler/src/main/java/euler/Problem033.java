@@ -16,6 +16,7 @@
 package euler;
 
 import com.mycila.math.Divisors;
+import static org.junit.Assert.*;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=33
@@ -58,6 +59,8 @@ class Problem033 {
         }
         int gcd = Divisors.gcd(N, D);
         System.out.println((N / gcd) + "/" + (D / gcd) + " in " + (System.currentTimeMillis() - time) + "ms");
+        assertEquals(1, N / gcd);
+        assertEquals(100, D / gcd);
     }
 }
 

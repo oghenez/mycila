@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=23
  *
@@ -57,6 +59,7 @@ class Problem023 {
                 sum += i;
 
         System.out.println(sum + " in " + (System.currentTimeMillis() - time) + "ms");
+        assertEquals(4179871, sum);
     }
 
 }
