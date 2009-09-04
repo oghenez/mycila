@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.Pandigital;
+import com.mycila.math.Digits;
 
 import static java.lang.System.*;
 
@@ -27,7 +27,7 @@ import static java.lang.System.*;
 class Problem038 {
     public static void main(String[] args) throws Exception {
         final long time = currentTimeMillis();
-        Pandigital pandigital = Pandigital.base(10);
+        Digits pandigital = Digits.base(10);
         for (int n = 9876; n >= 9183; n--) {
             // equivalent to 100000*n + 2*n to create the concatenation of the pandigital number
             final int number = (n << 5) * 3125 + (n << 1);

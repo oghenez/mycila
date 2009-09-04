@@ -15,7 +15,6 @@
  */
 package euler;
 
-import com.mycila.Pandigital;
 import com.mycila.math.Digits;
 import com.mycila.math.list.IntSequence;
 import com.mycila.math.list.LongSequence;
@@ -67,7 +66,7 @@ class Problem043 {
 
         // now builds the whole number
         final LongSequence list_d1d2d3d4d5d6d7d8d9d10 = new LongSequence();
-        final Pandigital pandigital = Pandigital.base(10);
+        final Digits pandigital = Digits.base(10);
         for (int i = 0, max_i = list_d2d3d4d5d6.size(); i < max_i; i++) {
             for (int j = 0, max_j = list_d7d8d9d10.size(); j < max_j; j++) {
                 final int d2d3d4d5d6 = list_d2d3d4d5d6.getQuick(i);

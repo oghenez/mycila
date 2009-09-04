@@ -72,29 +72,8 @@ final class JDKBigInt extends BigInt<BigInteger> {
     }
 
     @Override
-    public BigInt pow(BigInt exponent) {
-        // from http://www.coderanch.com/t/385132/Java-General/java/BigInteger-Power-Exponent-BigInteger
-        BigInteger exp = (BigInteger) exponent.internal;
-        if (exp.signum() == 0)
-            return ONE;
-        if (exp.bitLength() <= 0)
-            return new JDKBigInt(internal.pow(exp.intValue()), radix);
-        BigInteger z = internal;
-        // z will successively become x^2, x^4, x^8, x^16, x^32...
-        BigInteger result = BigInteger.ONE;
-        final byte[] bytes = exp.toByteArray();
-        for (int i = bytes.length - 1; i >= 0; i--) {
-            byte bits = bytes[i];
-            for (int j = 0; j < 8; j++) {
-                if ((bits & 1) != 0)
-                    result = result.multiply(z);
-                // short cut out if there are no more bits to handle:
-                if ((bits >>= 1) == 0 && i == 0)
-                    return new JDKBigInt(result, radix);
-                z = z.multiply(z);
-            }
-        }
-        return new JDKBigInt(result, radix);
+    public BigInt pow(int exponent) {
+        return new JDKBigInt(internal.pow(exponent), radix);
     }
 
     @Override
@@ -178,13 +157,6 @@ final class JDKBigInt extends BigInt<BigInteger> {
     @Override
     public BigInt setBit(int n) {
         return new JDKBigInt(internal.setBit(n), radix);
-    }
-
-    @Override
-    public BigInt pow(long exponent) {
-        return exponent <= Integer.MAX_VALUE ?
-                new JDKBigInt(internal.pow((int) exponent), radix) :
-                pow(big(exponent));
     }
 
     @Override

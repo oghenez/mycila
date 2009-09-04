@@ -17,6 +17,7 @@ package com.mycila.combination;
 
 import com.mycila.math.Factorial;
 import com.mycila.math.number.BigInt;
+import static com.mycila.math.number.BigInt.*;
 
 /**
  * @author Mathieu Carbou
@@ -46,7 +47,7 @@ public final class Combinations {
         if (n > Integer.MAX_VALUE >>> 1)
             throw new IllegalArgumentException("Too big value for n (" + n + "). Maximum allowed is " + 4294967294L);
         if (r > n >>> 1) r = (int) (n - r);
-        return Factorial.falling(BigInt.big(n), BigInt.big(r)).divide(Factorial.primeSwingLuschny(r));
+        return big(n).fallingFactorial(r).divide(Factorial.primeSwingLuschny(r));
     }
 
     public static CombinationSet combinations(int n, int r) {
