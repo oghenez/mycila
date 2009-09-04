@@ -20,6 +20,8 @@ import com.mycila.math.prime.PrimaltyTest;
 
 import static java.lang.System.*;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=46
  *
@@ -47,6 +49,7 @@ class Problem046 {
                     }
                     if (pos < 0) {
                         out.println("Not valid for: " + i + " in " + (currentTimeMillis() - time) + "ms");
+                        assertEquals(5777, i);
                         return;
                     }
                 }

@@ -20,6 +20,8 @@ import com.mycila.math.number.BigInt;
 import static java.lang.System.*;
 import java.util.TreeSet;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=56
  *
@@ -38,9 +40,10 @@ class Problem056 {
         for (int a = 91; a <= 99; a++)
             for (int b = 91; b <= 99; b++)
                 results.add(BigInt.big(a).pow(b).digitsSum() + " for " + a + "^" + b);
-        for (String result : results)
-            System.out.println(result);
+        //for (String result : results)
+        //    System.out.println(result);
         out.println(results.last() + " in " + (currentTimeMillis() - time) + "ms");
+        assertEquals("972 for 99^95", results.last());
     }
 
 }

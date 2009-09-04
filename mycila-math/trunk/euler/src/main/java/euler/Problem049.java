@@ -20,6 +20,8 @@ import com.mycila.math.prime.Sieve;
 
 import static java.lang.System.*;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=49
  *
@@ -31,15 +33,17 @@ class Problem049 {
         // create a sieve up to maximum prime number having 4 digits
         final Digits digits = Digits.base(10);
         final Sieve sieve = Sieve.to(9999);
+        String concat = "";
         for (int i = 0, max = sieve.size(); i < max - 2; i++) {
             final int prime = sieve.get(i);
             if (prime > 1000 && prime < 9999
                     && sieve.contains(prime + 3330)
                     && sieve.contains(prime + 6660)
                     && digits.arePermutations(prime, prime + 3330, prime + 6660))
-                System.out.println(prime + " " + (prime + 3330) + " " + (prime + 6660));
+                System.out.println(concat = prime + " " + (prime + 3330) + " " + (prime + 6660));
         }
-        out.println(" in " + (currentTimeMillis() - time) + "ms");
+        out.println(concat + " in " + (currentTimeMillis() - time) + "ms");
+        assertEquals("2969 6299 9629", concat);
     }
 
 }

@@ -27,6 +27,7 @@ public final class DigitsTest {
     @Test
     public void test_isPandigital() {
         Digits pandigital = Digits.base(10);
+        assertTrue(pandigital.isPandigital(932718654, 1, 9));
         assertFalse(pandigital.isPandigital(33, 1, 9));
         assertTrue(pandigital.isPandigital(123456789, 1, 9));
         assertTrue(pandigital.isPandigital(946138257, 1, 9));

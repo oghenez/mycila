@@ -21,6 +21,8 @@ import com.mycila.math.prime.Sieve;
 
 import static java.lang.System.*;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=35
  *
@@ -73,6 +75,8 @@ class Problem035 {
 
         out.println(circulars);
         out.println(circulars.size() + " in " + (currentTimeMillis() - time) + "ms");
+
+        assertEquals(55, circulars.size());
     }
 }
 

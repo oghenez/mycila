@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=24
  *
@@ -61,8 +63,10 @@ class Problem024 {
         for (int digit : digits) sb.append(numbers.remove(digit));
 
         System.out.println("1000000th permutation is " + sb + " in " + (System.currentTimeMillis() - time) + "ms");
-
         System.out.println(Factoradic.base(10).permutations(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).get(1000000 - 1));
+
+        assertEquals("2783915460", sb.toString());
+        assertEquals("[2, 7, 8, 3, 9, 1, 5, 4, 6, 0]", Factoradic.base(10).permutations(0, 1, 2, 3, 4, 5, 6, 7, 8, 9).get(1000000 - 1).toString());
     }
 
     private static int fact(int n) {

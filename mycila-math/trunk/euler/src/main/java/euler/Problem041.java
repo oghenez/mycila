@@ -20,6 +20,8 @@ import com.mycila.math.prime.PrimaltyTest;
 
 import static java.lang.System.*;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=41
  *
@@ -32,6 +34,7 @@ class Problem041 {
         for (int i = 7654321; i >= 1234567; i -= 2) {
             if (pandigital.isPandigital(i, 1, 7) && PrimaltyTest.millerRabin(i)) {
                 out.println(i + " in " + (currentTimeMillis() - time) + "ms");
+                assertEquals(7652413, i);
                 break;
             }
         }

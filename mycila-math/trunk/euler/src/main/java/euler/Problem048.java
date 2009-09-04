@@ -15,8 +15,9 @@
  */
 package euler;
 
-import com.mycila.math.Mod;
 import com.mycila.math.number.BigInt;
+import static com.mycila.math.number.BigInt.*;
+import static org.junit.Assert.*;
 
 import static java.lang.System.*;
 
@@ -28,15 +29,10 @@ import static java.lang.System.*;
 class Problem048 {
     public static void main(String[] args) throws Exception {
         long time = currentTimeMillis();
-        BigInt sum = BigInt.ZERO;
-        for (int n = 1; n <= 1000; n++) sum = sum.add(BigInt.big(n).pow(n));
+        BigInt sum = ZERO;
+        for (int n = 1; n <= 1000; n++) sum = sum.modAdd(big(n).modPow(n, 10000000000L), big(10000000000L));
         out.println(sum + " in " + (currentTimeMillis() - time) + "ms");
-
-        time = currentTimeMillis();
-        final long mod = 10000000000L;
-        long s = 0;
-        for (int n = 1; n <= 1000; n++) s = Mod.add(Mod.pow(n, n, mod), s, mod);
-        out.println(s + " in " + (currentTimeMillis() - time) + "ms");
+        assertEquals(big(9110846700L), sum);
     }
 
 }

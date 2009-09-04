@@ -20,6 +20,8 @@ import com.mycila.math.list.IntSequence;
 
 import static java.lang.System.*;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=44
  *
@@ -37,6 +39,7 @@ class Problem044 {
                 final int d = pk - pentagonals.getQuick(j);
                 if (pentagonals.binarySearch(d) > 0 && Polygon.isPentagonal(pk + pentagonals.getQuick(j)) != -1) {
                     out.println(d + " in " + (currentTimeMillis() - time) + "ms");
+                    assertEquals(5482660, d);
                     return;
                 }
             }

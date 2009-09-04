@@ -22,6 +22,8 @@ import java.util.BitSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=32
  *
@@ -71,6 +73,7 @@ class Problem032 {
         int sum = 0;
         for (Integer product : products) sum += product;
         System.out.println(sum + " in " + (System.currentTimeMillis() - time) + "ms");
+        assertEquals(45228, sum);
     }
 }
 

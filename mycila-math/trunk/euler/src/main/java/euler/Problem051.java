@@ -21,6 +21,7 @@ import com.mycila.math.distribution.Item;
 import com.mycila.math.distribution.Maximum;
 import com.mycila.math.list.IntSequence;
 import com.mycila.math.prime.Sieve;
+import static org.junit.Assert.*;
 
 import static java.lang.System.*;
 import java.util.HashMap;
@@ -55,33 +56,29 @@ class Problem051 {
         }
         System.out.println(patterns);
 
-        // find in the prime list all numbers matching each patterns
-        final Map<Item<String>, String> list = new HashMap<Item<String>, String>();
-        for (Item<String> pattern : patterns) {
-            pattern.reset();
+        Maximum<String> maximum = Maximum.of(patterns);
+        System.out.println(maximum);
+
+        Map<String, IntSequence> map = new HashMap<String, IntSequence>(maximum.itemCount());
+        for (Item<String> item : maximum) {
+            IntSequence seq = new IntSequence(maximum.value());
+            map.put(item.value(), seq);
             for (int digit = 0; digit <= 10; digit++) {
-                final int number = Integer.parseInt(pattern.value().replaceAll("x", "" + digit));
-                if (range.contains(number)) {
-                    pattern.increment();
-                    final String current = list.get(pattern);
-                    list.put(pattern, number + (current == null ? "" : " " + current));
-                }
+                final int number = Integer.parseInt(item.value().replaceAll("x", "" + digit));
+                if (range.contains(number)) seq.add(number);
             }
+            seq.sort();
         }
 
-        // display all patterns found
-        System.out.println("\nALL PATTERNS:");
-        for (Map.Entry<Item<String>, String> entry : list.entrySet()) {
-            System.out.println(entry.getKey().value() + ": " + entry.getValue());
+        IntSequence maxList = null;
+        for (Map.Entry<String, IntSequence> entry : map.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+            if(maxList == null || maxList.size() < entry.getValue().size())
+                maxList = entry.getValue();
         }
 
-        // display the maximum pattern
-        System.out.println("\nMAXIMUM:");
-        for (Item<String> max : Maximum.of(patterns)) {
-            System.out.println(max.value() + ": " + list.get(max));
-        }
-
-        out.println("in " + (currentTimeMillis() - time) + "ms");
+        out.println(maxList.first() + " in " + (currentTimeMillis() - time) + "ms");
+        assertEquals(121313, maxList.first());
     }
 
 }

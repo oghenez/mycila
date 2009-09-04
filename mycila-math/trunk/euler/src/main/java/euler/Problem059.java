@@ -22,6 +22,8 @@ import com.mycila.math.distribution.SortOrder;
 import static java.lang.System.*;
 import java.util.Scanner;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=59
  *
@@ -69,6 +71,7 @@ class Problem059 {
         System.out.println('\n');
 
         out.println(count + " in " + (currentTimeMillis() - time) + "ms");
+        assertEquals(107359, count);
     }
 
 }

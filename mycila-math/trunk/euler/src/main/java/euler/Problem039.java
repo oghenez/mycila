@@ -21,6 +21,8 @@ import com.mycila.math.triplet.IntTriplet;
 import static java.lang.System.*;
 import java.util.List;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=39
  *
@@ -35,5 +37,7 @@ class Problem039 {
             if (triplets.size() > max.size()) max = triplets;
         }
         out.println(max.get(0).sum() + " : " + max + " in " + (currentTimeMillis() - time) + "ms");
+        assertEquals(840, max.get(0).sum());
+        assertEquals("[(210,280,350), (140,336,364), (315,168,357), (252,240,348), (350,120,370), (390,56,394), (399,40,401)]", max.toString());
     }
 }

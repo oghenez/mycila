@@ -20,6 +20,8 @@ import com.mycila.math.Divisors;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=21
  *
@@ -49,5 +51,6 @@ class Problem021 {
             }
         }
         System.out.println(sumOfAmicables + " in " + (System.currentTimeMillis() - time) + "ms");
+        assertEquals(31626, sumOfAmicables);
     }
 }

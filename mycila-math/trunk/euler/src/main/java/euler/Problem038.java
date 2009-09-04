@@ -19,6 +19,8 @@ import com.mycila.math.Digits;
 
 import static java.lang.System.*;
 
+import static org.junit.Assert.*;
+
 /**
  * http://projecteuler.net/index.php?section=problems&id=38
  *
@@ -28,14 +30,17 @@ class Problem038 {
     public static void main(String[] args) throws Exception {
         final long time = currentTimeMillis();
         Digits pandigital = Digits.base(10);
+        int max = 0;
         for (int n = 9876; n >= 9183; n--) {
             // equivalent to 100000*n + 2*n to create the concatenation of the pandigital number
-            final int number = (n << 5) * 3125 + (n << 1);
-            if (n % 5 != 0 && pandigital.isPandigital(number, 1, 10)) {
+            int number = (n << 5) * 3125 + (n << 1);
+            if (n % 5 != 0 && pandigital.isPandigital(number, 1, 9)) {
                 System.out.println(number);
+                if (number > max) max = number;
             }
         }
-        out.println(" in " + (currentTimeMillis() - time) + "ms");
+        out.println(max + " in " + (currentTimeMillis() - time) + "ms");
+        assertEquals(932718654, max);
     }
 }
 /*

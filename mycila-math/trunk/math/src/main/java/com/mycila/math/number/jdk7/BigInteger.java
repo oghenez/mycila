@@ -106,7 +106,7 @@ import java.util.Random;
 // - http://futureboy.us/temp/BigInteger.java
 // - http://mail.openjdk.java.net/pipermail/core-libs-dev/2009-June/001761.html
 //
-final class BigInteger extends Number implements Comparable<BigInteger> {
+public final class BigInteger extends Number implements Comparable<BigInteger> {
     /**
      * The signum of this BigInteger: -1 for negative, 0 for zero, or
      * 1 for positive.  Note that the BigInteger zero <i>must</i> have
@@ -826,7 +826,7 @@ final class BigInteger extends Number implements Comparable<BigInteger> {
      * Computes Jacobi(p,n).
      * Assumes n positive, odd, n>=3.
      */
-    private static int jacobiSymbol(int p, BigInteger n) {
+    public static int jacobiSymbol(int p, BigInteger n) {
         if (p == 0)
             return 0;
 
@@ -3461,147 +3461,4 @@ final class BigInteger extends Number implements Comparable<BigInteger> {
         return fn;
     }
 
-    /**
-     * use serialVersionUID from JDK 1.1. for interoperability
-     */
-    private static final long serialVersionUID = -8287574255936472291L;
-
-    /**
-     * Serializable fields for BigInteger.
-     *
-     * @serialField signum  int
-     * signum of this BigInteger.
-     * @serialField magnitude int[]
-     * magnitude array of this BigInteger.
-     * @serialField bitCount  int
-     * number of bits in this BigInteger
-     * @serialField bitLength int
-     * the number of bits in the minimal two's-complement
-     * representation of this BigInteger
-     * @serialField lowestSetBit int
-     * lowest set bit in the twos complement representation
-     */
-    private static final ObjectStreamField[] serialPersistentFields = {
-            new ObjectStreamField("signum", Integer.TYPE),
-            new ObjectStreamField("magnitude", byte[].class),
-            new ObjectStreamField("bitCount", Integer.TYPE),
-            new ObjectStreamField("bitLength", Integer.TYPE),
-            new ObjectStreamField("firstNonzeroByteNum", Integer.TYPE),
-            new ObjectStreamField("lowestSetBit", Integer.TYPE)
-    };
-
-    /**
-     * Reconstitute the {@code BigInteger} instance from a stream (that is,
-     * deserialize it). The magnitude is read in as an array of bytes
-     * for historical reasons, but it is converted to an array of ints
-     * and the byte array is discarded.
-     * Note:
-     * The current convention is to initialize the cache fields, bitCount,
-     * bitLength and lowestSetBit, to 0 rather than some other marker value.
-     * Therefore, no explicit action to set these fields needs to be taken in
-     * readObject because those fields already have a 0 value be default since
-     * defaultReadObject is not being used.
-     */
-    private void readObject(java.io.ObjectInputStream s)
-            throws java.io.IOException, ClassNotFoundException {
-        /*
-         * In order to maintain compatibility with previous serialized forms,
-         * the magnitude of a BigInteger is serialized as an array of bytes.
-         * The magnitude field is used as a temporary store for the byte array
-         * that is deserialized. The cached computation fields should be
-         * transient but are serialized for compatibility reasons.
-         */
-
-        // prepare to read the alternate persistent fields
-        ObjectInputStream.GetField fields = s.readFields();
-
-        // Read the alternate persistent fields that we care about
-        int sign = fields.get("signum", -2);
-        byte[] magnitude = (byte[]) fields.get("magnitude", null);
-
-        // Validate signum
-        if (sign < -1 || sign > 1) {
-            String message = "BigInteger: Invalid signum value";
-            if (fields.defaulted("signum"))
-                message = "BigInteger: Signum not present in stream";
-            throw new java.io.StreamCorruptedException(message);
-        }
-        if ((magnitude.length == 0) != (sign == 0)) {
-            String message = "BigInteger: signum-magnitude mismatch";
-            if (fields.defaulted("magnitude"))
-                message = "BigInteger: Magnitude not present in stream";
-            throw new java.io.StreamCorruptedException(message);
-        }
-
-        // Commit final fields via Unsafe
-        unsafe.putIntVolatile(this, signumOffset, sign);
-
-        // Calculate mag field from magnitude and discard magnitude
-        unsafe.putObjectVolatile(this, magOffset,
-                stripLeadingZeroBytes(magnitude));
-    }
-
-    // Support for resetting final fields while deserializing
-    private static final sun.misc.Unsafe unsafe = sun.misc.Unsafe.getUnsafe();
-    private static final long signumOffset;
-    private static final long magOffset;
-
-    static {
-        try {
-            signumOffset = unsafe.objectFieldOffset
-                    (BigInteger.class.getDeclaredField("signum"));
-            magOffset = unsafe.objectFieldOffset
-                    (BigInteger.class.getDeclaredField("mag"));
-        } catch (Exception ex) {
-            throw new Error(ex);
-        }
-    }
-
-    /**
-     * Save the {@code BigInteger} instance to a stream.
-     * The magnitude of a BigInteger is serialized as a byte array for
-     * historical reasons.
-     *
-     * @serialData two necessary fields are written as well as obsolete
-     * fields for compatibility with older versions.
-     */
-    private void writeObject(ObjectOutputStream s) throws IOException {
-        // set the values of the Serializable fields
-        ObjectOutputStream.PutField fields = s.putFields();
-        fields.put("signum", signum);
-        fields.put("magnitude", magSerializedForm());
-        // The values written for cached fields are compatible with older
-        // versions, but are ignored in readObject so don't otherwise matter.
-        fields.put("bitCount", -1);
-        fields.put("bitLength", -1);
-        fields.put("lowestSetBit", -2);
-        fields.put("firstNonzeroByteNum", -2);
-
-        // save them
-        s.writeFields();
-    }
-
-    /**
-     * Returns the mag array as an array of bytes.
-     */
-    private byte[] magSerializedForm() {
-        int len = mag.length;
-
-        int bitLen = (len == 0 ? 0 : ((len - 1) << 5) + bitLengthForInt(mag[0]));
-        int byteLen = (bitLen + 7) >>> 3;
-        byte[] result = new byte[byteLen];
-
-        for (int i = byteLen - 1, bytesCopied = 4, intIndex = len - 1, nextInt = 0;
-             i >= 0; i--) {
-            if (bytesCopied == 4) {
-                nextInt = mag[intIndex--];
-                bytesCopied = 1;
-            } else {
-                nextInt >>>= 8;
-                bytesCopied++;
-            }
-            result[i] = (byte) nextInt;
-        }
-        return result;
-    }
 }

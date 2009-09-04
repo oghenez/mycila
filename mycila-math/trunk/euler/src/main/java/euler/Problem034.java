@@ -18,6 +18,7 @@ package euler;
 import com.mycila.math.Digits;
 import com.mycila.math.Factorial;
 import com.mycila.math.list.IntProcedure;
+import static org.junit.Assert.*;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=34
@@ -44,6 +45,7 @@ class Problem034 {
             }
         }
         System.out.println(s + " in " + (System.currentTimeMillis() - time) + "ms");
+        assertEquals(40730, s);
     }
 }
 
