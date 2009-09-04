@@ -128,7 +128,7 @@ public final class Sieve {
      * @return The product of all primes in this Sieve
      */
     public BigInt primorial() {
-        return Product.productBig(primes, 0, sieveLength);
+        return Product.product(primes, 0, sieveLength);
     }
 
     /**
@@ -141,7 +141,7 @@ public final class Sieve {
     public BigInt primorial(int from, int to) {
         IntRange indexes = getIndexes(from, to);
         if (indexes.isEmpty() || indexes.length() == 0) return ONE;
-        return Product.productBig(primes, indexes.from, indexes.length());
+        return Product.product(primes, indexes.from, indexes.length());
     }
 
     /**

@@ -15,7 +15,7 @@
  */
 package euler;
 
-import com.mycila.Pandigital;
+import com.mycila.math.Digits;
 import com.mycila.math.prime.PrimaltyTest;
 
 import static java.lang.System.*;
@@ -28,7 +28,7 @@ import static java.lang.System.*;
 class Problem041 {
     public static void main(String[] args) throws Exception {
         long time = currentTimeMillis();
-        Pandigital pandigital = Pandigital.base(10);
+        Digits pandigital = Digits.base(10);
         for (int i = 7654321; i >= 1234567; i -= 2) {
             if (pandigital.isPandigital(i, 1, 7) && PrimaltyTest.millerRabin(i)) {
                 out.println(i + " in " + (currentTimeMillis() - time) + "ms");

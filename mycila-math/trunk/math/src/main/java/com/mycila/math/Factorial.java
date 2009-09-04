@@ -87,7 +87,7 @@ public final class Factorial {
             if (((number / prime) & 1) == 1)
                 primeList[count++] = prime;
         BigInt primorial = sieve.primorial((number >>> 1) + 1, number);
-        return primorial.multiply(Product.productBig(primeList, 0, count));
+        return primorial.multiply(Product.product(primeList, 0, count));
     }
 
     /**
@@ -103,24 +103,6 @@ public final class Factorial {
         b++;
         long res = a > 1 ? a : 1;
         while (a-- > b) res *= a;
-        return res;
-    }
-
-    /**
-     * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">falling factorial</a>
-     * <code>(a)n = a! / (a-n)!</code>
-     *
-     * @param a A positive number
-     * @param n A positive number
-     * @return The factorial
-     */
-    public static BigInt falling(BigInt a, BigInt n) {
-        BigInt b = a.subtract(n);
-        BigInt res = ONE;
-        while (a.compareTo(b) > 0) {
-            res = res.multiply(a);
-            a = a.subtract(ONE);
-        }
         return res;
     }
 

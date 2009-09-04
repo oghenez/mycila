@@ -16,7 +16,7 @@ public final class Product {
     // - http://en.wikipedia.org/wiki/Sch%C3%B6nhage-Strassen_algorithm
     // - http://en.wikipedia.org/wiki/Toom%E2%80%93Cook_multiplication
 
-    public static BigInt productBig(int[] numbers, int offset, int length) {
+    public static BigInt product(int[] numbers, int offset, int length) {
         if (offset < 0 || offset + length > numbers.length)
             throw new IllegalArgumentException("Bad offset or length: " + offset + " / " + length);
         if (length < 3) {

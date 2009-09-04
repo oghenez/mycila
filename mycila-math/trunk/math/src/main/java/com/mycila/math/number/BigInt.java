@@ -2,14 +2,14 @@ package com.mycila.math.number;
 
 import com.mycila.math.distribution.Distribution;
 import com.mycila.math.list.IntProcedure;
+import com.mycila.math.prime.PrimaltyTest;
 
 import java.util.Arrays;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-//TODO: as classes are moved to math package, add methods to this class
-//TODO: make wrapper for optimized BigInteger + BigIntegerMath.java, apflot, jscience, ... + Javolution contexts and factories
+//TODO: make wrapper for optimized BigInteger + BigIntegerMath.java, apflot, jscience, ... + Javolution contexts and factories + impl. paralell computing (factorial, products, ...)
 //TODO: make wrapper for GMP java avec https://jna.dev.java.net/ + http://code.google.com/p/jnaerator/
 public abstract class BigInt<T> implements Comparable<BigInt> {
 
@@ -198,7 +198,20 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @throws ArithmeticException {@code exponent} is negative.  (This would
      *                             cause the operation to yield a non-integer value.)
      */
-    public abstract BigInt pow(BigInt exponent);
+    public abstract BigInt pow(int exponent);
+
+    /**
+     * Returns a BigInteger whose value is
+     * <tt>(this<sup>exponent</sup> mod m)</tt>.  (Unlike {@code pow}, this
+     * method permits negative exponents.)
+     *
+     * @param exponent the exponent.
+     * @param m        the modulus.
+     * @return <tt>this<sup>exponent</sup> mod m</tt>
+     * @throws ArithmeticException {@code m <= 0}
+     * @see #modInverse
+     */
+    public abstract BigInt modPow(BigInt exponent, BigInt m);
 
     /**
      * Returns a BigInteger whose value is {@code (this + val)}.
@@ -399,24 +412,12 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     }
 
     /**
-     * Returns a BigInteger whose value is <tt>(this<sup>exponent</sup>)</tt>.
-     *
-     * @param exponent exponent to which this BigInteger is to be raised.
-     * @return <tt>this<sup>exponent</sup></tt>
-     * @throws ArithmeticException {@code exponent} is negative.  (This would
-     *                             cause the operation to yield a non-integer value.)
-     */
-    public BigInt pow(long exponent) {
-        return pow(big(exponent));
-    }
-
-    /**
      * Returns this^2
      *
      * @return this^2
      */
     public BigInt square() {
-        return this.multiply(this);
+        return pow(2);
     }
 
     /**
@@ -638,21 +639,6 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      */
     public BigInt modInverse(long m) {
         return modInverse(big(m));
-    }
-
-    /**
-     * Returns a BigInteger whose value is
-     * <tt>(this<sup>exponent</sup> mod m)</tt>.  (Unlike {@code pow}, this
-     * method permits negative exponents.)
-     *
-     * @param exponent the exponent.
-     * @param m        the modulus.
-     * @return <tt>this<sup>exponent</sup> mod m</tt>
-     * @throws ArithmeticException {@code m <= 0}
-     * @see #modInverse
-     */
-    public BigInt modPow(BigInt exponent, BigInt m) {
-        return mod(m).pow(exponent).mod(m);
     }
 
     /**
@@ -1013,18 +999,8 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param root The root to compute
      * @return q such that q is the maximum number so that <code>q<sup>root</sup> <= number</code>.
      */
-    public BigInt iroot(BigInt root) {
+    public BigInt iroot(int root) {
         return irootAndRemainder(root)[0];
-    }
-
-    /**
-     * Compute the integer root q of a number so that q^root + r = number
-     *
-     * @param root The root to compute
-     * @return q such that q is the maximum number so that <code>q<sup>root</sup> <= number</code>.
-     */
-    public BigInt iroot(long root) {
-        return iroot(big(root));
     }
 
     /**
@@ -1033,32 +1009,21 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param root The root to compute
      * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>root</sup> + r = this</code>.
      */
-    public BigInt[] irootAndRemainder(BigInt root) {
+    public BigInt[] irootAndRemainder(int root) {
         // Newton's algorithm (http://en.wikipedia.org/wiki/Nth_root_algorithm)
-        if (root.signum() <= 0 || signum() < 0)
+        if (root <= 0 || signum() < 0)
             throw new ArithmeticException("Root and this number must be strictly positive");
         if (signum() == 0 || equals(ONE))
             return new BigInt[]{this, ZERO};
-        BigInt guess = root.bitLength() <= 31 ?
-                ONE.shiftLeft(bitLength() / root.toInt() + 1) :
-                TWO.pow(big(bitLength()).divide(root).add(1));
-        BigInt rootMin1 = root.subtract(ONE);
+        BigInt guess = ONE.shiftLeft(bitLength() / root + 1);
+        int rootMin1 = root - 1;
+        BigInt bigRootMin1 = big(rootMin1);
         while (true) {
-            BigInt newGuess = rootMin1.multiply(guess).add(this.divide(guess.pow(rootMin1))).divide(root);
+            BigInt newGuess = bigRootMin1.multiply(guess).add(this.divide(guess.pow(rootMin1))).divide(root);
             if (newGuess.compareTo(guess) >= 0) break;
             guess = newGuess;
         }
         return new BigInt[]{guess, subtract(guess.pow(root))};
-    }
-
-    /**
-     * Compute the integer root q of a number so that q^root + r = number
-     *
-     * @param root The root to compute
-     * @return An array of two BigIntegers: <code>[q, r]</code>, where <code>q<sup>root</sup> + r = number</code>.
-     */
-    public BigInt[] irootAndRemainder(long root) {
-        return irootAndRemainder(big(root));
     }
 
     /**
@@ -1084,7 +1049,22 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         return new BigInt[]{ZERO, ZERO};
     }
 
-    //FIXME: continue to implement...
+    /**
+     * Computes the sum of the consecutive numbers from this to n
+     * <code>S = this + (this+1) + ... + n
+     *
+     * @param n The limit which will determine
+     *          the direction of the sum, from this to n or n to this
+     * @return the consecutive sum
+     */
+    public BigInt sumTo(BigInt n) {
+        BigInt start = this;
+        if (compareTo(n) > 0) {
+            start = n;
+            n = this;
+        }
+        return n.subtract(start).add(ONE).multiply(start.add(n)).shiftRight(1);
+    }
 
     /**
      * Computes the sum of the consecutive numbers from this to n
@@ -1094,17 +1074,9 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *          the direction of the sum, from this to n or n to this
      * @return the consecutive sum
      */
-    //public abstract BigInt sumTo(BigInt n);
-
-    /**
-     * Computes the sum of the consecutive numbers from this to n
-     * <code>S = this + (this+1) + ... + n
-     *
-     * @param n The limit which will determine
-     *          the direction of the sum, from this to n or n to this
-     * @return the consecutive sum
-     */
-    //public abstract BigInt sumTo(long n);
+    public BigInt sumTo(long n) {
+        return sumTo(big(n));
+    }
 
     /**
      * Computes the product of the consecutive numbers from this to n
@@ -1114,7 +1086,21 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *          the direction of the product, from this to n or n to this
      * @return the consecutive product
      */
-    //public abstract BigInt productTo(BigInt n);
+    public BigInt productTo(BigInt n) {
+        BigInt start = this;
+        if (compareTo(n) > 0) {
+            start = n;
+            n = this;
+        }
+        BigInt res = ONE;
+        int shifts = 0;
+        for (; start.compareTo(n) <= 0; start = start.add(ONE)) {
+            int s = start.lowestSetBit();
+            shifts += s;
+            res = res.multiply(start.shiftRight(s));
+        }
+        return res.shiftLeft(shifts);
+    }
 
     /**
      * Computes the product of the consecutive numbers from this to n
@@ -1124,7 +1110,9 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *          the direction of the product, from this to n or n to this
      * @return the consecutive product
      */
-    //public abstract BigInt productTo(long n);
+    public BigInt productTo(long n) {
+        return productTo(big(n));
+    }
 
     /**
      * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">Falling Factorial</a>
@@ -1133,7 +1121,10 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param n The falling factor to substract from this number
      * @return this! / (this-n)!
      */
-    //public abstract BigInt fallingFactorial(BigInt n);
+    public BigInt fallingFactorial(BigInt n) {
+        if (n.signum() == 0) return ONE;
+        return subtract(n).add(ONE).productTo(this);
+    }
 
     /**
      * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">Falling Factorial</a>
@@ -1142,16 +1133,9 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @param n The falling factor to substract from this number
      * @return this! / (this-n)!
      */
-    //public abstract BigInt fallingFactorial(long n);
-
-    /**
-     * Computes the <a href="http://en.wikipedia.org/wiki/Binomial_coefficient">Binomial Coefficient</a>
-     * <code>C(this, k)</code>
-     *
-     * @param k Coefficient
-     * @return The binomial coefficient
-     */
-    //public abstract BigInt binomialCoeff(int k);
+    public BigInt fallingFactorial(long n) {
+        return fallingFactorial(big(n));
+    }
 
     /**
      * Computes the <a href="http://en.wikipedia.org/wiki/Factorial">Factorial of this number</a>
@@ -1162,13 +1146,22 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     //public abstract BigInt factorial();
 
     /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Binomial_coefficient">Binomial Coefficient</a>
+     * <code>C(this, k)</code>
+     *
+     * @param k Coefficient
+     * @return The binomial coefficient
+     */
+    //public abstract BigInt binomial(int k);
+
+    /**
      * Primalty test using <a href="http://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test">Miller-Rabin primality test<a/>.
      * <p/>
-     * If the BigInteger passes all tests, returns the probabilty it is prime as a double. Number of passes is set to 50
+     * If the BigInteger passes all tests, returns the probabilty it is prime as a double. Number of passes is set to maximum 50 depending on the number's length.
      *
-     * @return zero if the BigInteger is determined to be composite.
+     * @return true if the BigInteger is determined to be prime for 50 iterations
      */
-    public double isPrimeMillerRabin() {
+    public boolean isPrimeMillerRabin() {
         return isPrimeMillerRabin(50);
     }
 
@@ -1178,51 +1171,30 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * If the BigInteger passes all tests, returns the probabilty it is prime as a double.
      *
      * @param numPasses Number of different bases to try is passed in as an int
-     * @return zero if the BigInteger is determined to be composite.
+     * @return true if the BigInteger is determined to be prime for given number of iterations
      */
-    public double isPrimeMillerRabin(int numPasses) {
-        if (compareTo(TWO) < 0) return 0;
+    public boolean isPrimeMillerRabin(int numPasses) {
+        if (compareTo(TWO) < 0) return false;
         if (compareTo(big(Integer.MAX_VALUE)) <= 0)
-            return millerRabinInt(toInt()) ? 1.0 : 0.0;
-        BigInt b, x;
-        BigInt nMinusOne = subtract(ONE);
-        if (numPasses < 1)
-            throw new IllegalArgumentException("Number of bases must be positive!");
+            return PrimaltyTest.millerRabin(toInt());
+        // Find a and m such that m is odd and this == 1 + 2**a * m
+        BigInt thisMinusOne = subtract(ONE);
+        int a = thisMinusOne.lowestSetBit();
+        BigInt m = thisMinusOne.shiftRight(a);
         for (int i = 0; i < numPasses; i++) {
-            b = randomBig(bitLength() - 1);
-            x = b.modPow(nMinusOne, this);
-            if (!x.equals(ONE)) return 0.0;
-            BigInt[] dr = nMinusOne.divideAndRemainder(TWO);
-            while (dr[1].signum() == 0) {
-                x = b.modPow(dr[0], this);
-                if (x.equals(nMinusOne)) break;
-                if (!x.equals(ONE)) return 0.0;
-                dr = dr[0].divideAndRemainder(TWO);
+            // Generate a uniform random on (1, this)
+            BigInt b;
+            do b = randomBig(bitLength());
+            while (b.compareTo(ONE) <= 0 || b.compareTo(this) >= 0);
+            int j = 0;
+            BigInt z = b.modPow(m, this);
+            while (!(j == 0 && z.equals(ONE) || z.equals(thisMinusOne))) {
+                if (j > 0 && z.equals(ONE) || ++j == a)
+                    return false;
+                z = z.modPow(TWO, this);
             }
         }
-        return 1.0 - Math.pow(0.25, numPasses);
-    }
-
-    private static boolean millerRabinInt(int number) {
-        return number > 1
-                && (number == 2
-                || millerRabinPass(2, number)
-                && (number <= 7 || millerRabinPass(7, number))
-                && (number <= 61 || millerRabinPass(61, number)));
-    }
-
-    private static boolean millerRabinPass(int a, int n) {
-        int d = n - 1;
-        int s = Integer.numberOfTrailingZeros(d);
-        d >>>= s;
-        int a_to_power = big(a).pow(d).mod(n).toInt();
-        s--;
-        if (a_to_power == 1) return true;
-        for (int i = 0; i < s; i++) {
-            if (a_to_power == n - 1) return true;
-            a_to_power = big(a_to_power).square().mod(n).toInt();
-        }
-        return a_to_power == n - 1;
+        return true;
     }
 
     /**
@@ -1232,19 +1204,67 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *
      * @return the probabilty it is prime. O if the BigInteger is determined to be composite, 1 if it is prime
      */
-    public boolean isPrimeLucasLehmer() {
+    public boolean isPrimeMersenne() {
+        if (bitLength() > 63)
+            throw new ArithmeticException("Number too big to be an exponent. Must be <= Integer.MAX_VALUE");
         BigInt p = this.subtract(TWO);
         if (p.signum() == 0) return true;
-        BigInt m = TWO.pow(this).subtract(ONE);
+        BigInt m = TWO.pow(toInt()).subtract(ONE);
         BigInt s = big(4);
         for (BigInt i = ZERO; i.compareTo(p) < 0; i = i.add(1))
             s = s.multiply(s).subtract(TWO).mod(m);
         return s.equals(ZERO);
     }
 
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Jacobi_symbol">Jacobi symbol</a> (this/n).
+     * <p/>
+     * Sample implementation <a href="http://primes.utm.edu/glossary/page.php?sort=JacobiSymbol">here</a>
+     *
+     * @param n Positive odd number
+     * @return The Jacobi symbol (this/n)
+     */
+    public BigInt jacobiSymbol(BigInt n) {
+        if (!n.testBit(0))
+            throw new ArithmeticException("Requires a positive odd number");
+        BigInt j = ONE;
+        BigInt a = this.mod(n);
+        while (a.signum() != 0) {
+            a = a.shiftRight(a.lowestSetBit());
+
+        }
+        return null;//FIXME: impl using jdk BigInteger + tester - rendre publique methode
+    }
+
+    /*while (a != 0)
+   {
+      while (a mod 2 == 0)        // a is even
+      {
+         a = a / 2
+         res = n mod 8
+         if res == 3 or res == 5
+            j = -j
+      }
+      temp = a
+      a = n
+      n = temp
+
+      if ((a mod 4) ==3) and ((n mod 4) ==3)
+         j = -j
+
+      a = a mod n
+   }
+
+   if (n==1)
+      return j
+   else
+      return 0
+    }*/
+
 }
 
-//TODO: add methods: factorial(), factorize(), fibonacci(), isFibonacci(), panDigitalRange, isPandifital,
+//TODO: add methods: binomial(), factorial(), factorize(), fibonacci(), isFibonacci(), panDigitalRange, isPandifital, quadratic residue, chineese remainder, (math.mtu.edu)
+//TODO: Prime.java - jacobi symbol, lucas lhemer sequence, euler criterion (http://en.wikipedia.org/wiki/Euler_criterion), fermat little theorem (http://en.wikipedia.org/wiki/Fermat%27s_little_theorem + http://my.opera.com/duddev/blog/show.dml/298370)
 //TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
 //TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
 //TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet
