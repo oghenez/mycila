@@ -30,6 +30,37 @@ import java.util.Random;
 public final class JDKBigIntegerTest {
 
     @Test
+    public void test_isPandigital() {
+        assertTrue(big(932718654).isPandigital(1, 9));
+        assertTrue(big(9327186540L).isPandigital());
+        assertTrue(big(93271888654000L).isPandigital());
+        assertFalse(big(33).isPandigital(1, 9));
+        assertTrue(big(123456789).isPandigital(1, 9));
+        assertTrue(big(946138257).isPandigital(1, 9));
+        assertTrue(big(1234).isPandigital(1, 4));
+        assertFalse(big(1244).isPandigital(1, 4));
+        assertFalse(big(946108257).isPandigital(1, 9));
+        assertTrue(big(1234567899).isPandigital(1, 9));
+        assertFalse(big(1234567899).isPandigital());
+        assertFalse(big(100).isPandigital(1, 2));
+        assertTrue(big(100).isPandigital(0, 1));
+        assertTrue(big(100).toRadix(2).isPandigital());
+        assertTrue(big(120).isPandigital(0, 2));
+        assertTrue(big(342).isPandigital(2, 4));
+    }
+
+    @Test
+    public void test_range() {
+        assertArrayEquals(big(0).pandigitalRange(), new int[]{0, 0});
+        assertArrayEquals(big(1).pandigitalRange(), new int[]{1, 1});
+        assertArrayEquals(big(57603421).pandigitalRange(), new int[]{0, 7});
+        assertArrayEquals(big(5763421).pandigitalRange(), new int[]{1, 7});
+        assertArrayEquals(big(10).pandigitalRange(), new int[]{0, 1});
+        assertArrayEquals(big(23459).pandigitalRange(), null);
+        assertArrayEquals(big(9876543210L).pandigitalRange(), new int[]{0, 9});
+    }
+
+    @Test
     public void test_jacobiSymbol() throws Exception {
         Random r = new SecureRandom();
 
