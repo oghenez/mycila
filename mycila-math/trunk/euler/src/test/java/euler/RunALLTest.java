@@ -16,15 +16,18 @@
 package euler;
 
 import com.mycila.math.Format;
+import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Mathieu Carbou
  */
-final class RunALL {
+public final class RunALLTest {
+
+    @Test
     @SuppressWarnings({"RedundantArrayCreation"})
-    public static void main(String[] args) throws Exception {
+    public void runAll() throws Exception {
         for (int i = 1; i < 300; i++) {
             String num = Format.leftPad(i, 3, '0');
             Class c = null;
@@ -44,4 +47,5 @@ final class RunALL {
             }
         }
     }
+
 }
