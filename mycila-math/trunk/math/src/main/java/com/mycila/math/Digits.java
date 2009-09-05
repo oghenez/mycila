@@ -47,7 +47,7 @@ public final class Digits {
         return (bitset & mask) == mask;
     }
 
-    public IntRange range(long number) {
+    public IntRange pandigitalRange(long number) {
         if (number == 0) return IntRange.range(0, 0);
         int bitset = 0;
         for (; number > 0; number /= base) {

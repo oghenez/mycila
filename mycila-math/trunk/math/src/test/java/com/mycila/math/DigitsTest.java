@@ -44,13 +44,13 @@ public final class DigitsTest {
     @Test
     public void test_range() {
         Digits pandigital = Digits.base(10);
-        assertEquals(pandigital.range(0), IntRange.range(0, 0));
-        assertEquals(pandigital.range(1), IntRange.range(1, 1));
-        assertEquals(pandigital.range(57603421), IntRange.range(0, 7));
-        assertEquals(pandigital.range(5763421), IntRange.range(1, 7));
-        assertEquals(pandigital.range(10), IntRange.range(0, 1));
-        assertEquals(pandigital.range(23459), null);
-        assertEquals(pandigital.range(9876543210L), IntRange.range(0, 9));
+        assertEquals(pandigital.pandigitalRange(0), IntRange.range(0, 0));
+        assertEquals(pandigital.pandigitalRange(1), IntRange.range(1, 1));
+        assertEquals(pandigital.pandigitalRange(57603421), IntRange.range(0, 7));
+        assertEquals(pandigital.pandigitalRange(5763421), IntRange.range(1, 7));
+        assertEquals(pandigital.pandigitalRange(10), IntRange.range(0, 1));
+        assertEquals(pandigital.pandigitalRange(23459), null);
+        assertEquals(pandigital.pandigitalRange(9876543210L), IntRange.range(0, 9));
 
     }
 
