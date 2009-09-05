@@ -982,6 +982,60 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     }
 
     /**
+     * Check if this number is <a href="http://en.wikipedia.org/wiki/Pandigital_number">pandigital</a>, meaning
+     * that it contains at least once each digit of its base.
+     * <p/>
+     * In example, 1223334444555567890 is pandigital in base 10.
+     *
+     * @return true if this number is pandigital for its radix (base)
+     */
+    public boolean isPandigital() {
+        return isPandigital(0, radix() - 1);
+    }
+
+    /**
+     * Check if this number is <a href="http://en.wikipedia.org/wiki/Pandigital_number">from-to pandigital</a>, meaning
+     * that it contains at least once each digit from 'from' to 'to' all inclusive.
+     * <p/>
+     * In example, 1223334444555567890 is 0-9 pandigital.
+     *
+     * @param from The lower digit
+     * @param to   The higher digit
+     * @return true if this number is from-to pandigital
+     */
+    public boolean isPandigital(int from, int to) {
+        int length = to - from + 1;
+        int bitset = 0;
+        byte[] digits = digits();
+        for (byte digit : digits) {
+            if (digit < from || digit > to) return false;
+            int bit = 1 << digit - from;
+            bitset |= bit;
+        }
+        int mask = (1 << length) - 1;
+        return (bitset & mask) == mask;
+    }
+
+    /**
+     * Check wheter this number is pandigital and if yes returns its range: the number is then a-b pandigital, where
+     * a and b are the values returned
+     *
+     * @return An array of tewo values a (position 0) and b (position b) if the number is a to b pandigital. Otherwise, returns null.
+     */
+    public int[] pandigitalRange() {
+        if (signum() == 0) return new int[]{0, 0};
+        int bitset = 0;
+        byte[] digits = digits();
+        for (byte digit : digits) bitset |= 1 << digit;
+        int from = 0;
+        int mask = 1;
+        for (; mask <= 512 && (bitset & mask) == 0; mask <<= 1) from++;
+        int to = from;
+        for (; mask <= 512 && (bitset & mask) == mask; mask <<= 1) to++;
+        return (bitset >>> to) == 0 ? new int[]{from, to - 1} : null;
+    }
+
+    /**
      * Returns the integer square root of this integer.
      *
      * @return <code>k<code> such as <code>k^2 <= this < (k + 1)^2</code>
@@ -1325,7 +1379,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     }
 }
 
-//TODO: add methods: binomial(), factorial(), factorize(), fibonacci(), isFibonacci(), pandigitalRange, isPandifital isPandigital(from, to, ...), quadratic residue (http://primes.utm.edu/glossary/xpage/QuadraticResidue.html), Quadratic reciprocity, chineese remainder, (math.mtu.edu)
+//TODO: add methods: binomial(), factorial(), factorize(), fibonacci(), isFibonacci(), quadratic residue (http://primes.utm.edu/glossary/xpage/QuadraticResidue.html), Quadratic reciprocity, chineese remainder, (math.mtu.edu)
 //TODO: Prime.java, FourSquare - euler criterion (http://en.wikipedia.org/wiki/Euler_criterion), fermat little theorem (http://en.wikipedia.org/wiki/Fermat%27s_little_theorem + http://my.opera.com/duddev/blog/show.dml/298370)
 //TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
 //TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
