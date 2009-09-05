@@ -29,10 +29,6 @@
 
 package com.mycila.math.number.jdk7;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.ObjectStreamField;
 import java.util.Random;
 
 /**
@@ -334,7 +330,7 @@ public final class BigInteger extends Number implements Comparable<BigInteger> {
         int len = val.length();
 
         if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX)
-            throw new NumberFormatException("Radix out of range");
+            throw new NumberFormatException("Radix out of pandigitalRange");
         if (val.length() == 0)
             throw new NumberFormatException("Zero length BigInteger");
 

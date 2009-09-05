@@ -27,8 +27,8 @@ public final class JDKBigIntegerTest {
         for (int i = 3; i < 100000; i += 2) {
             int a = r.nextInt(1000001);
             assertEquals("(" + a + "/" + i + ")",
-                         BigInteger.jacobiSymbol(a, BigInteger.valueOf(i)),
-                         big(i).jacobiSymbol(a));
+                    BigInteger.jacobiSymbol(a, BigInteger.valueOf(i)),
+                    big(i).jacobiSymbol(a));
         }
     }
 
@@ -150,12 +150,15 @@ public final class JDKBigIntegerTest {
 
     @Test
     public void test_rotate() {
-        assertEquals(big(1234).digitsRotated(0).toInt(), 1234);
+        /*assertEquals(big(1234).digitsRotated(0).toInt(), 1234);
         assertEquals(big(1234).digitsRotated(1).toInt(), 4123);
         assertEquals(big(1234).digitsRotated(2).toInt(), 3412);
         assertEquals(big(1234).digitsRotated(3).toInt(), 2341);
         assertEquals(big(1234).digitsRotated(4).toInt(), 1234);
-        assertEquals(big(1234).digitsRotated(5).toInt(), 4123);
+        assertEquals(big(1234).digitsRotated(5).toInt(), 4123);*/
+        assertEquals(big(123456).digitsRotated(3).toInt(), 456123);
+        assertEquals(big(123456).digitsRotated(2).toInt(), 561234);
+        assertEquals(big(1234567).digitsRotated(3).toInt(), 5671234);
         assertEquals(big(1234).digitsRotated(-1).toInt(), 2341);
         assertEquals(big(1234).digitsRotated(-2).toInt(), 3412);
         assertEquals(big(1234).digitsRotated(-3).toInt(), 4123);
@@ -181,10 +184,10 @@ public final class JDKBigIntegerTest {
 
     @Test
     public void test_list() {
-        assertArrayEquals(big(9999999999L).digits(), new int[]{9, 9, 9, 9, 9, 9, 9, 9, 9, 9});
-        assertArrayEquals(big(1234567890).digits(), new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 0});
-        assertArrayEquals(big(9999999999L).digits(), new int[]{9, 9, 9, 9, 9, 9, 9, 9, 9, 9});
-        assertArrayEquals(big(1234567890).digits(), new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 0});
+        assertArrayEquals(big(9999999999L).digits(), new byte[]{9, 9, 9, 9, 9, 9, 9, 9, 9, 9});
+        assertArrayEquals(big(1234567890).digits(), new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 0});
+        assertArrayEquals(big(9999999999L).digits(), new byte[]{9, 9, 9, 9, 9, 9, 9, 9, 9, 9});
+        assertArrayEquals(big(1234567890).digits(), new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 0});
         long time = System.currentTimeMillis();
         for (int j = 2; j < 11; j++)
             for (long i = 10000000000L; i < 10000100000L; i++)
@@ -195,6 +198,8 @@ public final class JDKBigIntegerTest {
     @Test
     public void test_sort() {
         assertEquals(big(733007751850L).toRadix(2).digitsSorted().toRadix(10).toString(), "1048575"); // == 11111111111111111111
+        assertEquals(big(1234567890L).digitsSorted().toString(), "123456789");
+        assertEquals(big(9876543210L).digitsSorted().toString(), "123456789");
     }
 
     @Test
@@ -208,8 +213,8 @@ public final class JDKBigIntegerTest {
 
     @Test
     public void test_signature() {
-        assertArrayEquals(big(733007751850L).toRadix(2).digitsSignature(), new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1});
-        assertArrayEquals(big(733007751850L).digitsSignature(), new int[]{0, 0, 0, 1, 3, 3, 5, 5, 7, 7, 7, 8});
+        assertArrayEquals(big(733007751850L).toRadix(2).digitsSignature(), new byte[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1});
+        assertArrayEquals(big(733007751850L).digitsSignature(), new byte[]{0, 0, 0, 1, 3, 3, 5, 5, 7, 7, 7, 8});
     }
 
     @Test

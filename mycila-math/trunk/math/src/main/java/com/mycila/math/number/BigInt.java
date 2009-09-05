@@ -1,7 +1,7 @@
 package com.mycila.math.number;
 
 import com.mycila.math.distribution.Distribution;
-import com.mycila.math.list.IntProcedure;
+import com.mycila.math.list.ByteProcedure;
 import com.mycila.math.prime.PrimaltyTest;
 
 import java.util.Arrays;
@@ -64,6 +64,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     }
 
     public final T internal;
+    protected byte[] digits;
 
     protected BigInt(T internal) {
         this.internal = internal;
@@ -785,15 +786,13 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         return big(sb.toString(), radix());
     }
 
-    protected int digitsCount = -1;
-
     /**
      * Get the number of digits. Note: 0 as a length of 1.
      *
      * @return Its length
      */
     public int digitsCount() {
-        return digitsCount == -1 ? (digitsCount = toString().length()) : digitsCount;
+        return digitsInternal().length;
     }
 
     /**
@@ -802,12 +801,13 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return Another number with the same digits, sorted
      */
     public BigInt digitsSorted() {
-        char c[] = toString().toCharArray();
-        Arrays.sort(c);
-        return big(String.valueOf(c), radix());
+        byte[] digits = digitsInternal();
+        char[] chars = new char[digits.length];
+        for (int i = digits.length - 1; i >= 0; i--)
+            chars[i] = (char) (digits[i] + 48);
+        Arrays.sort(chars);
+        return big(String.valueOf(chars), radix());
     }
-
-    protected int[] digits;
 
     /**
      * List all digits of a number in this base, in descending order of powers.
@@ -816,12 +816,17 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *
      * @return the list of digits
      */
-    public int[] digits() {
-        if (digits != null) return Arrays.copyOf(digits, digits.length);
-        String s = toString();
-        int[] digits = new int[s.length()];
+    public byte[] digits() {
+        byte[] digits = digitsInternal();
+        return Arrays.copyOf(digits, digits.length);
+    }
+
+    private byte[] digitsInternal() {
+        if (digits != null) return digits;
+        String s = signum() < 0 ? opposite().toString() : toString();
+        byte[] digits = new byte[s.length()];
         for (int i = s.length() - 1; i >= 0; i--)
-            digits[i] = s.charAt(i) - 48;
+            digits[i] = (byte) (s.charAt(i) - 48);
         return this.digits = digits;
     }
 
@@ -835,25 +840,25 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     public int digitsSum() {
         if (digitsSum != -1) return digitsSum;
         int sum = 0;
-        String s = toString();
-        for (int i = s.length() - 1; i >= 0; i--)
-            sum += s.charAt(i) - 48;
+        byte[] digits = digitsInternal();
+        for (int i = digits.length - 1; i >= 0; i--)
+            sum += digits[i];
         return this.digitsSum = sum;
     }
 
-    protected Distribution<Integer> digitsMap;
+    protected Distribution<Byte> digitsMap;
 
     /**
      * Returns the digit distribution for this BigInteger
      *
      * @return the digit sum
      */
-    public Distribution<Integer> digitsMap() {
+    public Distribution<Byte> digitsMap() {
         if (digitsMap != null) return digitsMap;
-        Distribution<Integer> distribution = Distribution.of(Integer.class);
-        String s = toString();
-        for (int i = s.length() - 1; i >= 0; i--)
-            distribution.add(s.charAt(i) - 48);
+        Distribution<Byte> distribution = Distribution.of(Byte.class);
+        byte[] digits = digitsInternal();
+        for (int i = digits.length - 1; i >= 0; i--)
+            distribution.add(digits[i]);
         return digitsMap = distribution;
     }
 
@@ -864,11 +869,10 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return True if all digits have been processed.
      *         The callback can return false at any time to stop processing.
      */
-    public boolean eachDigit(IntProcedure procedure) {
-        String s = toString();
-        int max = s.length();
-        for (int i = 0; i < max; i++)
-            if (!procedure.execute(s.charAt(i) - 48))
+    public boolean eachDigit(ByteProcedure procedure) {
+        byte[] digits = digitsInternal();
+        for (int i = 0, max = digits.length; i < max; i++)
+            if (!procedure.execute(digits[i]))
                 return false;
         return true;
     }
@@ -890,11 +894,10 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return the reversed number
      */
     public BigInt digitsReversed() {
-        String s = toString();
-        int max = s.length() - 1;
-        char chars[] = new char[max + 1];
-        for (int i = 0; i <= max; i++)
-            chars[i] = s.charAt(max - i);
+        byte[] digits = digitsInternal();
+        char chars[] = new char[digits.length];
+        for (int i = digits.length - 1, max = i; i >= 0; i--)
+            chars[i] = (char) (digits[max - i] + 48);
         return big(String.valueOf(chars), radix());
     }
 
@@ -909,31 +912,31 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return The rotated number
      */
     public BigInt digitsRotated(int offset) {
+        byte[] digits = digits();
+        if (digits.length < 2) return this;
+        offset %= digits.length;
+        if (offset < 0) offset += digits.length;
         if (offset == 0) return this;
-        String s = toString();
-        int len = s.length();
-        offset %= s.length();
-        offset %= len;
-        if (offset == 0) return this;
-        if (offset < 0) offset = len + offset;
-        return big(s.substring(len - offset) + s.substring(0, len - offset), radix());
+        int end = digits.length - 1;
+        while (offset-- > 0) {
+            byte tmp = digits[end];
+            System.arraycopy(digits, 0, digits, 1, end);
+            digits[0] = tmp;
+        }
+        for (int i = end; i >= 0; i--)
+            digits[i] += 48;
+        return big(new String(digits), radix());
     }
-
-    protected int[] digitsSignature;
 
     /**
      * Returns the signature of a number. The signature is composed of all the digit of the number, sorted.
      *
      * @return Its digit list
      */
-    public int[] digitsSignature() {
-        if (digitsSignature != null) return Arrays.copyOf(digitsSignature, digitsSignature.length);
-        String s = toString();
-        int[] digits = new int[s.length()];
-        for (int i = s.length() - 1; i >= 0; i--)
-            digits[i] = s.charAt(i) - 48;
+    public byte[] digitsSignature() {
+        byte[] digits = digits();
         Arrays.sort(digits);
-        return digitsSignature = digits;
+        return digits;
     }
 
     protected Boolean isPalindromic;
@@ -945,10 +948,10 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      */
     public boolean isPalindromic() {
         if (isPalindromic != null) return isPalindromic;
-        String s = toString();
-        int len = s.length() - 1;
-        for (int i = (s.length() - 1) >>> 1; i >= 0; i--)
-            if (s.charAt(i) != s.charAt(len - i))
+        byte[] digits = digitsInternal();
+        int len = digits.length - 1;
+        for (int i = (digits.length - 1) >>> 1; i >= 0; i--)
+            if (digits[i] != digits[len - i])
                 return isPalindromic = false;
         return isPalindromic = true;
     }
