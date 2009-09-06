@@ -1,0 +1,1762 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en">
+<head>
+
+
+    <link rel="icon" href="http://www.cs.princeton.edu/introcs/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="http://www.cs.princeton.edu/introcs/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="Cryptography_files/introcs.css" type="text/css">
+
+    <!-- IE HACKS -->
+    <!--[if IE]>
+    <style type="text/css" media="screen">
+     #menu ul li {float: left; width: 100%;}
+    </style>
+    <![endif]-->
+    <!--[if lt IE 7]>
+    <style type="text/css" media="screen">
+    body {
+    behavior: url(/introcs/csshover.htc);
+    }
+    #menu ul li {float: left; width: 100%;}
+    #menu ul li a {height: 1%;}
+
+    #menu a, #menu h2 {
+    font: bold 0.9em/1.5em arial, helvetica, sans-serif;
+    }
+
+    </style>
+    <![endif]-->
+
+
+    <title>
+        Cryptography</title>
+    <script type="text/javascript" src="Cryptography_files/swfobject.html"></script>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <meta name="AUTHOR" content="Kevin Wayne">
+    <meta name="KEYWORDS" content="Cryptography,Java,Programming,interdisciplinary,Computer science,cs,intro,introduction">
+    <meta name="DESCRIPTION" content="Cryptography,Java,Introduction to Programming in Java by Sedgewick and Wayne">
+    <meta name="TITLE" content="Cryptography,Java,Introduction to Programming in Java by Sedgewick and Wayne">
+    <meta name="ROBOTS" content="INDEX,FOLLOW">
+    <meta name="verify-v1" content="D4o9ikkHbNKapHncCP8ZmiD9Z2DBbrJyaSV0lyce+3w=">
+
+
+</head>
+<body>
+
+<div id="menu">
+    <div align="center">
+        <a class="picture" href="http://www.cs.princeton.edu/introcs/home/">
+            <img src="Cryptography_files/cover.jpg" alt="Introduction to Programming in Java" height="233" width="188" border="0"></a></div>
+
+
+    <!--
+    <div align="center"><img src="/introcs/cs.jpg" width=188 height=210 border=0
+    alt = "Computer Science Building, Princeton University"></div>
+    -->
+
+
+    <ul>
+        <li><a class="title" href="http://www.cs.princeton.edu/introcs/home">Intro to Programming</a>
+            <ul>
+
+                <li><a href="http://www.cs.princeton.edu/introcs/10elements">1.&nbsp;&nbsp;Elements of Programming</a>
+                    <ul>
+                        <li><a href="http://www.cs.princeton.edu/introcs/11hello">1.1&nbsp;&nbsp;Your First Program</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/12types">1.2&nbsp;&nbsp;Built-in Types of Data</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/13flow">1.3&nbsp;&nbsp;Conditionals and Loops</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/14array">1.4&nbsp;&nbsp;Arrays</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/15inout">1.5&nbsp;&nbsp;Input and Output</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/16pagerank">1.6&nbsp;&nbsp;Case Study: PageRank</a>
+                        </li>
+                    </ul>
+
+                </li>
+                <li><a href="http://www.cs.princeton.edu/introcs/20functions">2.&nbsp;&nbsp;Functions</a>
+                    <ul>
+                        <li><a href="http://www.cs.princeton.edu/introcs/21function">2.1&nbsp;&nbsp;Static Methods</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/22library">2.2&nbsp;&nbsp;Libraries and Clients</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/23recursion">2.3&nbsp;&nbsp;Recursion</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/24percolation">2.4&nbsp;&nbsp;Case Study: Percolation</a>
+                        </li>
+                    </ul>
+
+                </li>
+                <li><a href="http://www.cs.princeton.edu/introcs/30oop">3.&nbsp;&nbsp;OOP</a>
+                    <ul>
+                        <li><a href="http://www.cs.princeton.edu/introcs/31datatype">3.1&nbsp;&nbsp;Data Types</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/32class">3.2&nbsp;&nbsp;Creating Data Types</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/33design">3.3&nbsp;&nbsp;Designing Data Types</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/34nbody">3.4&nbsp;&nbsp;Case Study: N-Body</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/35purple">3.5&nbsp;&nbsp;Purple America</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/36inheritance">3.6&nbsp;&nbsp;Inheritance</a>
+                        </li>
+                    </ul>
+
+                </li>
+                <li><a href="http://www.cs.princeton.edu/introcs/40algorithms">4.&nbsp;&nbsp;Data Structures</a>
+                    <ul>
+                        <li><a href="http://www.cs.princeton.edu/introcs/41analysis">4.1&nbsp;&nbsp;Performance</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/42sort">4.2&nbsp;&nbsp;Sorting and Searching</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/43stack">4.3&nbsp;&nbsp;Stacks and Queues</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/44st">4.4&nbsp;&nbsp;Symbol Tables</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/45graph">4.5&nbsp;&nbsp;Case Study: Small World</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+
+    <ul>
+        <li><a class="title" href="http://www.cs.princeton.edu/introcs/cs">Intro to CS</a>
+            <ul>
+
+                <li><a href="http://www.cs.princeton.edu/introcs/00prologue">0.&nbsp;&nbsp;Prologue</a>
+                    <ul>
+                    </ul>
+
+                </li>
+                <li><a href="http://www.cs.princeton.edu/introcs/50machine">5.&nbsp;&nbsp;A Computing Machine</a>
+                    <ul>
+                        <li><a href="http://www.cs.princeton.edu/introcs/51data">5.1&nbsp;&nbsp;Data Representations</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/52toy">5.2&nbsp;&nbsp;TOY Machine</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/53isa">5.3&nbsp;&nbsp;TOY Instruction Set</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/54programming">5.4&nbsp;&nbsp;TOY Programming</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/55simulator">5.5&nbsp;&nbsp;TOY Simulator</a>
+                        </li>
+                    </ul>
+
+                </li>
+                <li><a href="http://www.cs.princeton.edu/introcs/60circuits">6.&nbsp;&nbsp;Building a Computer</a>
+                    <ul>
+                        <li><a href="http://www.cs.princeton.edu/introcs/61combinational">6.1&nbsp;&nbsp;Combinational Circuits</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/62sequential">6.2&nbsp;&nbsp;Sequential Circuits</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/63architecture">6.3&nbsp;&nbsp;Building a TOY</a>
+                        </li>
+                    </ul>
+
+                </li>
+                <li><a href="http://www.cs.princeton.edu/introcs/70theory">7.&nbsp;&nbsp;Theory of Computation</a>
+                    <ul>
+                        <li><a href="http://www.cs.princeton.edu/introcs/71language">7.1&nbsp;&nbsp;Formal Languages</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/72regular">7.2&nbsp;&nbsp;Regular Expressions</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/73fsa">7.3&nbsp;&nbsp;Finite State Automata</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/74turing">7.4&nbsp;&nbsp;Turing Machines</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/75universality">7.5&nbsp;&nbsp;Universality</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/76computability">7.6&nbsp;&nbsp;Computability</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/77intractability">7.7&nbsp;&nbsp;Intractability</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/78crypto">7.8&nbsp;&nbsp;Cryptography</a>
+                        </li>
+                    </ul>
+
+                </li>
+                <li><a href="http://www.cs.princeton.edu/introcs/80systems">8.&nbsp;&nbsp;Systems</a>
+                    <ul>
+                        <li><a href="http://www.cs.princeton.edu/introcs/81library">8.1&nbsp;&nbsp;Library Programming</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/82compiler">8.2&nbsp;&nbsp;Compilers</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/83os">8.3&nbsp;&nbsp;Operating Systems</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/84network">8.4&nbsp;&nbsp;Networking</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/85application">8.5&nbsp;&nbsp;Applications Systems</a>
+                        </li>
+                    </ul>
+
+                </li>
+                <li><a href="http://www.cs.princeton.edu/introcs/90scientific">9.&nbsp;&nbsp;Scientific Computation</a>
+                    <ul>
+                        <li><a href="http://www.cs.princeton.edu/introcs/91float">9.1&nbsp;&nbsp;Floating Point</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/92symbolic">9.2&nbsp;&nbsp;Symbolic Methods</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/93integration">9.3&nbsp;&nbsp;Numerical Integration</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/94diffeq">9.4&nbsp;&nbsp;Differential Equations</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/95linear">9.5&nbsp;&nbsp;Linear Algebra</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/96optimization">9.6&nbsp;&nbsp;Optimization</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/97data">9.7&nbsp;&nbsp;Data Analysis</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/98simulation">9.8&nbsp;&nbsp;Simulation</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+
+    <ul>
+
+        <li><a class="title" href="http://www.cs.princeton.edu/introcs">Web Resources</a>
+            <ul>
+
+                <li><a href="http://www.cs.princeton.edu/introcs/faq">FAQ</a>
+                </li>
+                <li><a href="http://www.cs.princeton.edu/introcs/errata">Errata</a>
+                    <ul>
+                        <li><a href="http://www.cs.princeton.edu/introcs/errata-1">Chapter 1</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/errata-2">Chapter 2</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/errata-3">Chapter 3</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/errata-4">Chapter 4</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/errata-6">Chapter 6</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/errata-7">Chapter 7</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="http://www.cs.princeton.edu/introcs/data">Data Sets</a>
+                </li>
+                <li><a href="http://www.cs.princeton.edu/introcs/11appendix">Appendices</a>
+                    <ul>
+                        <li><a href="http://www.cs.princeton.edu/introcs/11precedence">A. &nbsp; Operator Precedence</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/11style">B. &nbsp; Writing Clear Code</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/11gaussian">C. &nbsp; Gaussian Distribution</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/11cheatsheet">D. &nbsp; Java Cheatsheet</a>
+                        </li>
+                        <li><a href="http://www.cs.princeton.edu/introcs/11matlab">E. &nbsp; Matlab</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="http://www.cs.princeton.edu/introcs/lectures">Lecture Slides</a>
+                    <!--
+                            <ul>
+                              <li> <a href = "/introcs/lectures/11hello.pdf">1.1 &nbsp; Your First Program</a>
+                              <li> <a href = "/introcs/lectures/12types.pdf">1.2 &nbsp; Built-In Types of Data</a>
+                              <li> <a href = "/introcs/lectures/13flow.pdf">1.3 &nbsp; Conditionals and Loops</a>
+                              <li> <a href = "/introcs/lectures/14array.pdf">1.4 &nbsp; Arrays</a>
+                              <li> <a href = "/introcs/lectures/15inout.pdf">1.5 &nbsp; Input and Output</a>
+                              <li> <a href = "/introcs/lectures/16pagerank.pdf">1.6 &nbsp; PageRank</a>
+                              <li> <a href = "/introcs/lectures/21function.pdf">2.1 &nbsp; Functions</a>
+                              <li> <a href = "/introcs/lectures/22library.pdf">2.2 &nbsp; Libraries and Clients</a>
+                              <li> <a href = "/introcs/lectures/23recursion.pdf">2.3 &nbsp; Recursion</a>
+                              <li> <a href = "/introcs/lectures/24percolation.pdf">2.4 &nbsp; Percolation</a>
+                              <li> <a href = "/introcs/lectures/31datatype.pdf">3.1 &nbsp; Data Types</a>
+                              <li> <a href = "/introcs/lectures/32datatype.pdf">3.2 &nbsp; Creating Data Types</a>
+                              <li> <a href = "/introcs/lectures/33design.pdf">3.3 &nbsp; Designing Data Types</a>
+                              <li> <a href = "/introcs/lectures/34nbody.pdf">3.4 &nbsp; N-Body Simulation</a>
+                              <li> <a href = "/introcs/lectures/41analysis.pdf">4.1 &nbsp; Performance</a>
+                              <li> <a href = "/introcs/lectures/42sort.pdf">4.2 &nbsp; Sorting and Searching</a>
+                              <li> <a href = "/introcs/lectures/43stack.pdf">4.3 &nbsp; Stacks and Queues</a>
+                              <li> <a href = "/introcs/lectures/44st.pdf">4.4 &nbsp; Symbol Tables</a>
+                              <li> <a href = "/introcs/lectures/45graph.pdf">4.5 &nbsp; Small World</a>
+                            </ul>
+                    -->
+                </li>
+                <li><a href="http://www.cs.princeton.edu/introcs/assignments">Programming Assignments</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+
+    <p><br>
+    </p>
+
+    <form name="search" method="GET" action="http://search.cs.princeton.edu/">
+        &nbsp;&nbsp;
+        <input name="q" value="Search booksite..." class="search" style="background: rgb(221, 221, 221) none repeat scroll 0% 0%; color: rgb(34, 30, 22); -moz-background-clip: border; -moz-background-origin: padding; -moz-background-inline-policy: continuous;" size="18" maxlength="80"
+               onfocus="this.form.q.value='';" onblur="this.form.q.value='Search booksite...';" type="text">&nbsp;&nbsp;
+        <input name="restrict" value="IntroCS" type="HIDDEN">
+    </form>
+
+
+    <br>
+
+</div>
+
+<div id="content">
+<h1>7.8 Cryptography</h1>
+
+<p><br>
+
+    <font color="red">
+        This section under major construction.
+    </font>
+
+
+</p>
+
+<p><b>Cryptology.</b>
+    <em>Cryptology</em> is the science of secret communication.
+    It has two main subfields: <em>cryptography</em> is the science of
+    creating secret codes; <em>cryptanalysis</em> is the science of
+    breaking codes. There are five pillars of cryptology:
+</p>
+<ul>
+    <li>Confidentiality: keep communication private.
+    </li>
+    <li>Integrity: detect unauthorized alteration to communication.
+    </li>
+    <li>Authentication: confirm identity of sender.
+    </li>
+    <li>Authorization: establish level of access for trusted parties.
+    </li>
+    <li>Non-repudiation: prove that communication was received.
+    </li>
+</ul>
+
+<p>
+    We will focus primarily on confidentiality,
+    the most romantic of these endeavors.
+    Highly recommended reading for entertainment: The Code Book.
+    Useful Flash demo:
+    <a href="http://www.rsasecurity.com/experience/esecurity/index.html">e-Security history</a>
+    from rsa.com.
+
+</p>
+
+<p><b>Some applications of crypto.</b>
+    Phil Zimmermann asserts "Cryptography used to be an obscure science, of little
+    relevance to everyday life. Historically, it always had a special role in
+    military and diplomatic communications. But in the Information Age, cryptography
+    is about political power, and in particular, about the power relationship
+    between a government and its people. It is about the right to privacy, freedom
+    of speech, freedom of political association, freedom of the press, freedom
+    from unreasonable search and seizure, freedom to be left alone."
+    (Code Book, p. 296).
+    Crypo benefits both ordinary citizens and terrorists.
+    Enables e-commerce.
+    Below is a table of activities that we would like to be able to implement
+    digitally and securely. We all list a number of everyday
+    analog implementation of each task.
+
+</p>
+
+<p>
+</p>
+<center>
+    <table cellpadding="5" cellspacing="1" width="500" border="0">
+        <tbody>
+        <tr>
+            <th>Task</th>
+            <th>Analog Implementations</th>
+        </tr>
+
+        <tr bgcolor="#ebebeb">
+            <td>Protect information
+            </td>
+            <td>Code book, lock and key
+            </td>
+        </tr>
+
+        <tr bgcolor="#ffffff">
+            <td>Identification
+            </td>
+            <td>Driver's license, Social Security number, password, bioinformatics, secret handshake
+            </td>
+        </tr>
+
+        <tr bgcolor="#ebebeb">
+            <td>Contract
+            </td>
+            <td>Handwritten signature, notary
+            </td>
+        </tr>
+
+        <tr bgcolor="#ffffff">
+            <td>Money transfer
+            </td>
+            <td>Coin, bill, check, credit card
+            </td>
+        </tr>
+
+        <tr bgcolor="#ebebeb">
+            <td>Public auction
+            </td>
+            <td>Sealed envelope
+            </td>
+        </tr>
+
+        <tr bgcolor="#ffffff">
+            <td>Public election
+            </td>
+            <td>Anonymous ballot
+            </td>
+        </tr>
+
+        <tr bgcolor="#ebebeb">
+            <td>Poker
+            </td>
+            <td>Cards with concealed backs
+            </td>
+        </tr>
+
+        <tr bgcolor="#ffffff">
+            <td>Public lottery
+            </td>
+            <td>Dice, coins, rock-paper-scissors
+            </td>
+        </tr>
+
+        <tr bgcolor="#ebebeb">
+            <td>Anonymous communication
+            </td>
+            <td>Pseudonym, ransom note
+            </td>
+        </tr>
+
+
+        </tbody>
+    </table>
+</center>
+
+<p>
+    A malicious adversary can sometimes subvert these analog implementations:
+    forgery, lock picks, counterfeiters, card cheats, ballot-stuffing, loaded dice.
+
+
+</p>
+
+<p><b>Our goal.</b>
+    Our goal is to implement all of these tasks digitally and securely.
+    We would also like to implement additional tasks that can't be done with physics!
+    For example: play poker variant where dealer wins if no one has an Ace,
+    have an anonymous election where everyone learns winner, but nothing else.
+    Is any of this possible? If so, how? In the remainder of this section,
+    we will give a flavor of modern (digital) cryptography,
+    implement a few of these tasks, and sketch a few technical details.
+
+
+</p>
+
+<p><b>History.</b>
+    Decryption of Mary Stuart's encrypted letters revealed her intent
+    to assassinate Elizabeth I.
+    In the 1800s, Edgar Allen Poe boasted that he could break anyone's
+    cypher using frequency analysis.
+    Alan Turing led a team at Bletchley Park which cracked the German Enigma cipher.
+    Many historians believe this was the turning point of World War II.
+    Here's an <a href="http://russells.freeshell.org/enigma">Enigma applet</a>.
+
+
+</p>
+
+<p><b>Security by obscurity.</b>
+    The Content Scrambling System (CSS) is used by Hollywood to
+    encrypt DVDs. Each disc has three 40-bit keys.
+    Each DVD decoder has unique 40-bit key. In principle it is
+    "not possible" to play back on computer without disc.
+    In 1999, two Norwegians (Canman and SoupaFrog, 1999) wrote a decryption
+    algorithm that cracked the CSS system.
+    CSS was a proprietary algorithm and Hollywood was banking on the
+    fact that nobody would discover the algorithm. Moreover, the size of the
+    keys was too small, so brute force attacks were possible.
+    Other high profile failures due to ad hoc approach: GSM cell phones,
+    Windows XP product activiation, RIAA digital music watermarking, VCR+ codes,
+    and Adobe eBooks, Diebold AccuVote-TS electronic voting machines,
+    <a href="http://rfidanalysis.org/">ExxonMobil SpeedPass RFIDs</a>.
+
+</p>
+
+<p>
+    In 1883, The Dutch linguist
+    <a href="http://en.wikipedia.org/wiki/Auguste_Kerckhoffs">Auguste Kerckhoffs von
+        Nieuwenhof</a>
+    embodied the underlying principle guiding modern cryptography in his paper
+    <a href="http://www.petitcolas.net/fabien/kerckhoffs/la_cryptographie_militaire_i.htm">
+        Cryptographie militaire</a>:
+
+</p>
+<blockquote>
+    Il faut qu'il n'exige pas le secret, et qu'il puisse sans inconvenient tomber
+    entre les mains de l'ennemi.
+    <br>
+    The system must not require secrecy and can be stolen by the enemy without
+    causing trouble.
+</blockquote>
+
+<p>
+    This is now known as <em>Kerckhoffs' Principle</em>.
+    The security of a cryptosystem should not depend on keeping the algorithm
+    secret, but only on keeping the numeric key secret.
+    There are two primary distinctions between the algorithm and the numeric key.
+    (<a href="http://www.freedom-to-tinker.com/archives/2004_09.html">Ed Felten</a>)
+    First, since we generate the numeric key at random, we can accurately
+    model and quantify how long it would take an adversary to guess (under general
+    technical conditions); in contrast, it is much harder to predict or
+    quantify how long it would take an adverary to guess our algorithm.
+    Second, it's easy to use different numeric keys for different purposes of
+    people, or to stop using a key that has been compromised; it's more
+    difficult to design new algorithms.
+
+</p>
+
+<p>
+    It says that systems based on
+    "security by obscurity" are fatally flawed.
+    This is equivalent to Shannon's maxim is "The enemy knows the system."
+    The design of secure systems
+    should be left to the experts. Despite this, we can still explore the
+    basic ideas of cryptography that the experts use.
+
+</p>
+
+<p><b>The participants.</b>
+    In keeping with the rich tradition of cryptographers, Alice and
+    Bob are the two people trying to communicate securely over an insecure
+    communication channel. We will assume
+    that the message is already encoded in binary, so we can treat it
+    as a (potentially huge) integer <em>m</em>. We let N denote the number
+    of bits in the message m. Alice applies an
+    encryption function E to the message, which produces another N bit
+    integer E(m). Bob receives E(m) and applies his decryption function D
+    to this. An obvious condition for this to make any sense is that
+    D(E(m)) = m. In other words, Bob recovers the original message.
+    Eve is a third party who wishes to intercept the message. Eve
+    can observe E(m), so for the scheme to be secure, it should be
+    prohibitively difficult for Eve to recover m from E(m) alone.
+
+</p>
+
+<p><b>Private key cryptography.</b>
+    Private key = two parties share a secret key prior to their communication.
+    One-time pads (Chapter 1) are provably secure if the bits in the key
+    are generated from a truly random source.
+    It is also extremely easy to implement.
+    Nevertheless, one-time pads have several mitigating factors that
+    render it impractical in most situations.
+    First, it is a challenge to generate truly random bits,
+    free of biases and correlations.
+    One must go outside the world of digital computers and extract
+    them from some physical source (e.g., time between emission
+    of particles due to radioactive decay, sound from a microphone,
+    elapsed time between keystrokes). Such sources are often
+    biased and we would need to take great care to prevent Eve
+    from observing or tampering with the process.
+    The scheme is called one-time since we need
+    new key for each message or part of the message.
+    If we re-use a one-time pad, then the system is no longer secure.
+    Signature? Non-repudiation?
+    Perhaps the most limiting factor is key distribution.
+    Alice and Bob must know each other and exchange the key
+    sending the secret message.
+    The Kremlin and White House used to communicate with each other
+    using this method. A trusted courier would be sent across the Atlantic
+    Ocean with a briefcase of one-time pads handcuffed to his arm.
+    This method is ridiculously impractical for if Alice wants to
+    purchase a product from Bob over the Internet.
+
+</p>
+
+<p>
+    Other private key encryption schemes.
+    Data Encryption Standard (DES).
+    Advanced Encryption Standard (AES, Rijndael algorithm).
+    Blowfish.
+    Methods are not provably secure like one-time pads,
+    but have withstood the test of time of mathematical scrutiny.
+    Efficient.
+    However, these schemes suffer from the same key-distribution
+    problem that plagues one-time pads.
+    One emerging solution to the key distribution problem is to
+    use quantum mechanics. This is known as Quantum Key Distribution.
+    It is an unconditionally secure way for two parties to share
+    a one-time pad. Moreover, there is an intrusion detection component
+    so that if Eve observes even one bit, both parties will learn
+    about the attempted eavesdropping.
+
+
+</p>
+
+<p><b>Modern cryptography.</b>
+    The modern theory of cryptography leverages the theory of hard problems.
+    The goal is to show that breaking security system is equivalent to
+    solving some of the world's greatest unsolved problems!
+    Bruce Schneier, a noted electronic security expert, wrote in Applied Cryptography,
+    "It is insufficient to protect ourselves with laws, we need to protect ourselves with
+    mathematics."
+    The foundations of modern cryptography hinges on three crucial
+    axioms and one important fact.
+</p>
+<ul>
+    <li><em>Axiom 1. Players can toss coins.</em>
+        Crypto is impossible without randomness so this axiom is essential.
+        In practice we can generate truly random bits by using quantum phenomenon
+        or the radioactive decay of particles.
+
+    </li>
+    <li><em>Axiom 2. Players are computationally limited.</em>
+        We express this notion formally by restricting the participants
+        (communicating parties and malicious adversaries)
+        to use only polynomial time algorithms.
+
+    </li>
+    <li><em>Axiom 3. Factoring is hard computationally.</em>
+        We assume that it is not possible to factor an N-bit integer
+        in time polynomial in N. Given an integer (e.g., 1541)
+        it appears difficult to find its prime factorization.
+        However, given the factors (e.g., 23 * 67) it is easy
+        to multiply them out and obtain the original number.
+        This is referred to as a "1-way trapdoor function" since
+        it is easy to go one way (from factors to product), but
+        apparently hard to go the other way (from product to factors).
+
+    </li>
+    <li><em>Fact. Primality testing is easy computationally.</em>
+        Miller-Rabin primality testing algorithm. PRIMES in P proved
+        in 2002.
+
+    </li>
+</ul>
+
+<p>
+    If the three axioms above are valid, then digital cryptography exists.
+    That is, it is possible to do all of the previous tasks digitally.
+
+
+</p>
+
+<p><b>Public key cryptography.</b>
+    Public key cryptography is an amazing scheme that enables two parties
+    to communicate securely, even if they've never met. It is the digital
+    analog of a box with a combination lock.
+    Suppose Alice wants to send Bob a message.
+    First, Bob send the box to Alice with the padlock in the open position,
+    without revealing the combination to anyone.
+    Alice puts her message in the box, closes the combination lock,
+    and sends it back to Bob. Eve may intercept the box in transit,
+    but since she doesn't know the combination, she is unable to open it.
+    She can try to guess the combination, but there are just too many
+    possibilities.
+    When the box arrives, Bob can open it, knowing that nobody else
+    looked inside (unless they knew the combination).
+
+</p>
+
+<p>
+    To do this digitally, Bob has two keys (or combinations):
+    his private key d is
+    not revealed to anybody, his public key e is published in
+    an Internet phonebook.
+    We think of the keys as integers, but they are really just
+    sequences of bits, say 1024.
+    If Alice wants to send a message to Bob, she looks up Bob's
+    public key e on the Internet. She uses e to encrypt her message
+    and sends it to Bob.
+    Bob uses his private key d to decrypt the message.
+
+</p>
+
+<p>
+    The idea of public key cryptography was first published in 1976 by
+    Whitfield Diffie and Martin Hellman in their groundbreaking
+    paper <em>New Directions in Cryptography</em>.
+    This paper described a public key cryptosystem for the
+    key distribution problem.
+    The idea was apparently
+    discovered independently by Ellis, Cocks, and Williamson in the UK at
+    the Government Communications Headquarters (GCHQ) in the early 1970s,
+    but their work remained a secret for two decades.
+
+</p>
+
+<p></p>
+
+<h2>RSA cryptosystem.</h2>
+We will describe the basic mechanics of the
+<a href="http://www.acm.org/turingawardlecture/RSA/">RSA cryptosystem</a>,
+a scheme developed by Adleman, Rivest, and Shamir in 1978.
+Here's the <a href="http://www.cs.princeton.edu/introcs/papers/rsa.pdf">RSA paper</a>.
+RSA is very widely used today for
+secure Internet communication (browsers, S/MIME, SSL, S/WAN, PGP,
+Microsoft Outlook), operating systems (Sun, Microsoft, Apple, Novell)
+and hardware (cell phones, ATM machines, wireless Ethernet cards,
+Mondex smart cards, Palm Pilots).
+Then, we will give intuition
+for why it works and describe to implement it efficiently.
+The RSA cryptosystem involves modular arithmetic. Recall .....
+
+
+<p><em>Key generation.</em>
+    To participate in the RSA cryptosystem, Bob must first generate a
+    public and private key. He only needs to do this once, even if he plans to
+    use the system many times.
+</p>
+<ul>
+    <li> Select two large prime numbers p and q at random.
+    </li>
+    <li> Compute n = p × q.
+    </li>
+    <li> Select two integers e and d such that (m<sup>e</sup>)<sup>d</sup> &#8801; m (mod n)
+        for all integers m.
+    </li>
+</ul>
+
+<p>
+    As an example, we might choose the following parameters, although
+    in practice we would need to use much larger integers to guarantee security.
+</p>
+<blockquote>
+    <table>
+        <tbody>
+        <tr>
+            <td><pre>p = 11, q = 29
+n = 11 * 29 = 319
+e = 3
+d = 187
+</pre>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</blockquote>
+<p>
+
+</p>
+
+<p><em>Encryption.</em>
+    Alice wants to send an N-bit secret message m to Bob. She obtains Bob's
+    public key (e, n) from the Internet. Then she encrypts the message m
+    using the encryption function E(m) = m<sup>e</sup> (mod n), and sends
+    E(m) to Bob.
+</p>
+<blockquote>
+    <table>
+        <tbody>
+        <tr>
+            <td><pre>m    = 100
+E(m) = 100<sup>3</sup> (mod 319) 
+     = 254
+</pre>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</blockquote>
+<p>
+
+</p>
+
+<p><em>Decryption.</em>
+    Bob receives the encrypted message c from Alice.
+    Bob recalls his private key (d, n). Then he decrypts the ciphertext
+    by applying the decryption function D(c) = c<sup>d</sup> (mod n).
+    Since Bob knows d, he can compute this function.
+</p>
+<blockquote>
+    <table>
+        <tbody>
+        <tr>
+            <td><pre>c    = 254
+D(c) = 254<sup>187</sup> (mod 319) = 100
+</pre>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</blockquote>
+<p>
+
+</p>
+
+<p><em>RSA simulator.</em>
+    <a href="http://www-cs-students.stanford.edu/%7Etjw/jsbn/rsa2.html">RSA simulator</a>.
+
+</p>
+
+<p><em>Correctness.</em>
+    To make sure that Bob receives the original message, we must check that
+    D(E(m)) = m. It worked in the example above where m = 100, E(100) = 254,
+    D(254) = 100, but we need to be sure it works for all possible messages,
+    and for all valid choices of e, d, and n.
+    This follows in a straightforward way from the defintions and the
+    way we chose e and d.
+
+</p>
+
+<p>
+</p>
+<center>
+    <img src="Cryptography_files/rsa.png">
+</center>
+<p>
+
+    We have supressed one important detail - how to choose e and d so that
+    the magic property holds.
+
+
+</p>
+
+<p><b>Implementing the RSA cryptosystem.</b>
+    Implementing the RSA cryptosystem is a formidable engineering challenge.
+    A successful implementation requires many ingenious algorithms and knowledge
+    of several theorems in number theory. We will describe a bare-bones
+    implemenation, but commercial implementations are more sophisticated.
+
+</p>
+<ul>
+    <li><p><em>Big integers.</em>
+        Can't use built in <tt>int</tt> or <tt>long</tt> types since numbers are too
+        big. Need to re-implement the laws of arithmetic, e.g., addition, subtraction,
+        multiplication, and division. Grade school algorithms are reasonably efficient
+        for all of these operations, although there is always opportunity for
+        improvement using clever algorithms.
+
+    </p></li>
+    <li><p><em>Modular exponentation.</em>
+        How to perform modular exponentation: a<sup>b</sup> (mod c).
+        The naive method would be to repeatedly multiply a by itself, b times,
+        and then divide by c and return the remainder.
+        When a, b, and c are N-bit integers, this fails spectacularly for two reasons.
+        First, the intermediate number a<sup>b</sup> can be monstrously large.
+        The number of digits can be exponential in N. When N = 50, this consumes
+        128TB memory. The second problem is that the number of multiplications
+        also takes exponential time. So it will take forever.
+
+    </p>
+
+        <p>
+            A better alternative is to use <em>repeated squaring</em>.
+            This idea dates back to at least 200 BCE according to Knuth.
+            Program <a href="http://www.cs.princeton.edu/introcs/78crypto/ModExp.java.html">ModExp.java</a> uses
+            the following recurrence to compute a<sup>b</sup> mod n:
+        </p>
+        <ol>
+            <li>if b is zero: 1
+            </li>
+            <li>if b is even: (a<sup>b/2</sup> * a<sup>b/2</sup>) mod n
+            </li>
+            <li>if b is odd: (a * a<sup>b/2</sup> * a<sup>b/2</sup>) mod n
+            </li>
+        </ol>
+        This is analogous to the following recurrence for
+        multiplication.
+        <ol>
+            <li>if b is zero: 1
+            </li>
+            <li>if b is even: (a * b/2) + (a * b/2)
+            </li>
+            <li>if b is odd: (a * b/2) + (a * b/2) + a
+            </li>
+        </ol>
+
+
+    </li>
+    <li><p><em>Computing a random prime.</em>
+        To generate the key, we must have a method for generating a random N-bit
+        prime, say N = 1024.
+        One idea is to choose an N-bit integer at random and check if
+        it is prime. If it is, then stop; otherwise repeat until you stumble
+        upon one that is prime.
+    </p>
+        <blockquote>
+            <table>
+                <tbody>
+                <tr>
+                    <td><pre>REPEAT
+    x = random N-bit integer
+UNTIL (x is prime)
+</pre>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </blockquote>
+
+        This simple idea works, but to implement it requires two crucial ideas.
+        First, the loop may take a very long time if there are not enough prime numbers.
+        Fortunately, the Prime Number Theorem (Hadamard, Vallee Poussin, 1896) asserts
+        that the number of primes
+        between 2 and x is approximately x / ln x. There are over 10<sup>151</sup>
+        primes with 512 bits or fewer. In other words, roughly 1 out of every ln x
+        x-bit numbers are prime, so we expect to wait only ln x steps before
+        stumbling upon a prime number. But how do we check to see if a number is prime?
+        Attempting to factor it would be prohibitively expensive. Instead,
+        we can use an ingenious algorithm due to Miller-Rabin (or a more
+        recent one due to Agarwal-Kayal-Saxena) that checks if an integer
+        is prime in a polynomial number of steps.
+
+
+        <p></p></li>
+    <li><em>Generating random numbers.</em> (move to one-time pad?)
+        Physical sources of randomness.
+        The Java library <tt>SecureRandom</tt> is a pseudo-random
+        number generator that generates <em>cryptographically
+            secure</em> random numbers. This means that it is
+        computationally intractable to predict future bits.
+        Unlike a LFSR, you can't reverse-engineer it.
+
+
+        <p></p></li>
+    <li><em>Computing the private exponent.</em>
+        One final challenge is choosing the public and private keys.
+        In practice it is common use e = 65,537 as the public key.
+        But this means we need to find a private key that makes the magic
+        property hold. This turns out to be a well understood problem in
+        number theory and a unqiue d always exists provided gcd(e, (p-1)(q-1)) = 1.
+        We can use an extension of Euclid's algorithm
+        (see exercise xyz) for this purpose.
+
+        <p>
+            Easy to do using Java's <tt>BigInteger</tt> library for manipulating
+            huge integers.
+
+        </p>
+        <blockquote>
+            <table>
+                <tbody>
+                <tr>
+                    <td><pre>private final static SecureRandom random = new SecureRandom();
+BigInteger ONE = new BigInteger("1");
+BigInteger p   = BigInteger.probablePrime(N/2, random);
+BigInteger q   = BigInteger.probablePrime(N/2, random);
+BigInteger n   = p.multiply(q);
+BigInteger phi = (p.subtract(ONE)).multiply(q.subtract(ONE));
+BigInteger e   = new BigInteger("65537");
+BigInteger d   = e.modInverse(phi);
+
+BigInteger rsa(BigInteger a, BigInteger b, BigInteger c) {
+    return a.modPow(b, n);
+}
+</pre>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </blockquote>
+    </li>
+</ul>
+
+
+<p><b>RSA Attacks.</b>
+    Cryptanalysis is the science of breaking secret codes. We describe
+    a few common attacks to the RSA crpytosystem to give you the flavor
+    of modern cryptanalysis.
+
+</p>
+<ul>
+
+    <p></p>
+    <li><em>Factoring.</em>
+        The most obvious way to break the RSA cryptosystem is by factoring the
+        modulus n. If Eve can factor n = pq, then she has exactly the same information
+        as Bob, so she can efficiently compute his private exponent given the
+        public one (using exactly the same algorithm that Bob used to compute his
+        private exponent in the first place).
+        Using a very sophisticated factoring algorithm known as the
+        <a href="http://mathworld.wolfram.com/NumberFieldSieve.html">general
+            number field sieve</a>, researchers were recently able to
+        <a href="http://www.rsasecurity.com/company/news/releases/pr.asp?doc_id=3520">factor RSA-576</a>,
+        a 576-bit (174 decimal digits)
+        composite integer offered as a challenge problem by RSA Security.
+        This effort required 100 workstations and 3 months of number crunching.
+        The running time of this algorithm is super-polynomial but sub-exponential -
+        O(exp(c (log n)<sup>1/3</sup> (log log n)<sup>2/3</sup>)).
+
+        <p></p></li>
+    <li><em>Improper usage.</em>
+        The RSA system can also be broken if it is used improperly.
+        For example, if Bob decides to use a small <em>private</em> exponent
+        to lessen his computational burden for decryption, then he is
+        sacrificing security.
+        If d &lt; 1/3 n<sup>1/4</sup>, then can recover d in polynomial time (Wiener attack).
+        Note that it is okay to use a small public exponent e, and
+        65,537 is common in practice.
+        Another mistake is to allow two participants to share the same modulus n
+        (even if neither party knows how to factor n). For example,
+        suppose Bob and Ben have (d1, e1) and (d2, e2) for their
+        private and public exponents, respectively, but they are both using
+        n as their modulus.
+        Then it is possible for either party to discover the other's
+        private exponent (Simmon's attack).
+
+        <p></p></li>
+    <li><em>Side channel attack.</em>
+        Exploit physical information leaked from
+        machine, including electromagnetic emanations, power consumption,
+        diffuse visible light from CRT displays, and acoustic emanations.
+        For example, in a <em>timing attack</em> Eve gleans information about
+        Bob's private key by measuring the amount of time it takes for Bob
+        to exponentiate.
+        If Bob is using a highly optimized exponentiation routine, then
+        Eve can discover enough information to reveal Bob's private key.
+        Recently, Dan Boneh showed how to use this technique
+        to break SSL on a LAN.
+    </li>
+</ul>
+
+<p>
+    It is a long-standing open research question whether or not
+    there is a way to break the RSA system without factoring or
+    physical access. There is no guarantee that RSA is secure even
+    if factoring is hard. Also, there are currently know guarantees
+    that factoring is hard other
+    Also, currently no mathematical guarantee that factoring is hard!
+    FACTOR and its complementary problem NON-FACTOR are both in NP.
+    This makes it unlikely that FACTOR is NP-complete since this would
+    imply NP = coNP...
+
+
+</p>
+
+<p><b>Semantic security.</b>
+    Other stronger notions of security.
+    A public key cryptosystem is <em>semantically secure</em> if anything
+    Eve can compute in polynomial time with the ciphertext can be computed
+    without the ciphertext. Thus, observing the ciphertext provides no
+    useful information. For example, we shouldn't be able to
+    determine if the last bit of the plaintext is 0 or 1 or if the plaintext
+    has more 1 bits than 0 bits.
+    The RSA system is not semantically secure, and in fact no deterministic
+    scheme can be.
+    This is not just a theoretical shortcoming.
+    To see why, suppose that Eve knows Alice is going to send Bob either
+    the message <tt>ATTACK</tt> or <tt>RETREAT</tt>.
+    Eve can encrypt both message using Bob's public key and then compare
+    against the encrypted message that Alice sends to Bob.
+    Thus, Alice can learn exactly which message was sent.
+    Naive ideas like appending a random sequence of 0's and 1's to the
+    plaintext before encrypting do not typically guarantee additional security.
+
+</p>
+
+<p><b>Provably secure cryptosystems.</b>
+    It is a bit unsatisfying to be using a cryptosystem that is not provably as difficult
+    as some hard problem, e.g., factoring.
+    Theoretical highground = Blum-Goldwasser (1985). Provably as hard as factoring,
+    semantically secure.
+    Based on the probabilistic encryption scheme of Goldwasser and Micali.
+    Comparable in speed to RSA.
+
+</p>
+
+<p>
+    <!--
+    Rabin's system is essentially the same as RSA, except that it uses 2e as the public
+    exponent instead of e. Although this change seems trivial, it requires a bit of care
+    when it comes time to decrypting the original message since each message will now
+    decrypt to four possible things. (Presumably one of them will be an English sentence
+    that is easy to recognize and the others will be gibberish.)
+    This trivial change makes the system more complicated, but Rabin proved
+    that factoring reduces to his scheme. Thus, if you can write a program to break Rabin's system
+    in a polynomial number of steps, you could also factor in a polynomial number of steps.
+    -->
+
+
+</p>
+
+<p><b>Electronic voting.</b>
+    Need a crypto scheme that makes it possible to confirm that your
+    vote was correctly counted, without revealing whom the vote was for.
+    Need the second condition to prevent someone from "buying" your vote
+    since if they have no way to verify for whom you voted, they have
+    no incentive to bribe you.
+
+</p>
+
+<p><b>Zero knowledge.</b>
+    Alice wants to prove to Bob that a graph G is 3 colorable, but
+    doesn't want to reveal any additional information.
+    Example generalizes to many other problems since 3Color is NP complete.
+
+</p>
+
+<p><b>Digital rights management.</b>
+    In the traditonal setting, the Alice, Bob, and Eve who are trying to
+    communicate are human beings, and they use a computer to assist with
+    the comptuation. An intriguing variant is when Alice and Bob
+    are computers, and Eve is a human being. This is exactly the setting
+    that the music industry envisions with digital rights management.
+    In this case Alice is your computer, Bob is your speakers, and you
+    are Eve. The music industry wants only your computer to be able to
+    play the legally purchased music on your computer, but does not want
+    you to be able to intercept the raw audio data.
+    We can quickly imagine a world where there are restrictions for
+    copying DVDs, runnig software, printing documents, and forwarding email.
+    All of these restrictions will be enforced via cryptographic algorithms
+    and protocols.
+
+</p>
+
+<p>
+    Goal: transform a program into an obfuscated version that computes
+    the same function, but reveals no extra information (e.g., the source
+    code) to a polynomial-bounded adversary. Obfuscation not possible
+    in general.
+
+
+</p>
+
+<p><b>Security.</b>
+    Cryptography is only one part of overall computer security.
+    This <a href="http://news.bbc.co.uk/1/hi/technology/3639679.stm">survey</a>
+    revealed that 70% of people would reveal their computer password in
+    exchange for a chocolate bar.
+    One security expert comments
+    "using encryption on the Internet is the equilvant of arranging an
+    armored car to deliver credit card information from someone living in
+    a cardboard box to someone living on a park bench."
+
+
+</p>
+
+<p><b>CAPTCHAs.</b>
+    Completely automated public Turing test to tell computers and humans apart.
+    Reverse Turing test where computer is the judge, trying to distinguish
+    between a human and a computer.
+    <a href="http://www.nytimes.com/2002/12/10/science/physical/10COMP.html">New
+        York Times article</a>.
+
+</p>
+
+<p>
+</p><h4>Q+A</h4>
+
+
+<p>
+</p><h4>Exercises</h4>
+
+<ol>
+
+    <li>
+        Write a program to empirically determine the running time of the methods
+        methods <tt>BigInteger.add</tt>,
+        <tt>BigInteger.multiply</tt>,
+        <tt>BigInteger.mod</tt>,
+        and
+        <tt>BigInteger.modExp</tt>.
+        Try to model the running time of each operation
+        as c N<sup>k</sup> seconds for some constants c and k.
+        Use <tt>BigInteger.rand</tt> to generate random input parameters.
+        For add, multiply, and modular exponentiation use N-bit integers for
+        all of the arguments; for division, use a N-bit numerator and an
+        N/2-bit denominator.
+
+    </li>
+    <li>
+        Write a program <a href="http://www.cs.princeton.edu/introcs/78crypto/RandomPrime.java.html">RandomPrime.java</a> that
+        takes a command-line argument N and prints out an N-bit integer that is
+        (probably) prime. Use <tt>BigInteger.probablePrime</tt> for primality
+        testing and <tt>SecureRandom</tt> to generate cryptographically secure
+        pseudorandom numbers.
+
+    </li>
+    <li>
+        Estimate the running time of <a href="http://www.cs.princeton.edu/introcs/78crypto/RandomPrime.java.html">RandomPrime.java</a>
+        as a function of the number of bits N.
+
+    </li>
+    <li>
+        Suppose that instead of using <tt>RandomPrime.java</tt> to choose a prime
+        with N bits, you used the following strategy: generate all primes
+        with at most N bits, and choose a random one. What will happen if N
+        is large, say 512?
+
+    </li>
+    <li>
+        Suppose that instead of using reapeated squaring to compute
+        a^b mod c, you repeatedly multiply a to itself, b times, modding
+        out by c. Estimate how long will it take if a, b, and c are
+        N bit integers.
+
+    </li>
+    <li>
+        What is the complexity of the following problem:
+        given an even integer x, determine if x has any odd factors
+        greater than one.
+        Answer: polynomial - check whether x is a power of 2.
+
+    </li>
+    <li>
+        What is the complexity of the following problem:
+        Given an even integer x and another integer y, determine whether
+        x has any odd factors between 3 and y.
+        Answer: equivalent to factoring problem.
+
+    </li>
+</ol>
+
+
+<p>
+</p><h4>Creative Exercises</h4>
+
+<ol>
+
+
+<li><b>Extended Euclid's algorithm.</b>
+    Extend Euclid's algorithm for computing the greatest common divisor of p and q
+    to also compute coefficients a and b (possibly zero or negative) such
+    that ap + bq = gcd(p, q). Write a program <a href="http://www.cs.princeton.edu/introcs/78crypto/ExtendedEuclid.java.html">
+        ExtendedEuclid.java</a> that takes two command line parameters p and q and
+    outputs gcd(p, q) and a pair of integers a and b as described above.
+
+
+    <blockquote>
+        <table>
+            <tbody>
+            <tr>
+                <td><pre>EXTENDED-EUCLID(p, q)
+   <b>if</b> q = 0
+      <b>then return</b> (p, 1, 0)
+   (d', a', b') &lt;- EXTENDED-EUCLID(q, p % q)
+   (d,  a,  b)  &lt;- (d', b', a' - (p/q) b')
+   <b>return</b> (d, x, y)
+</pre>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </blockquote>
+
+    <!--
+   If q = 0 then the algorithm returns p as the gcd (as in Euclid's classic
+   algorithm) and (a, b) = (1, 0) as the
+   coefficients. Observe that  in this case a*p + b*q = gcd(p, q) = p.
+   Otherwise, the algorithm computes numbers (d', a', b') such that
+   d' = gcd(q, p % q) and d' = a'q + b'(p % q). Observe that
+   Observe that d = d' = a'q + b'(p % q) = a'q + b'(p - (p/q)q)  = b'p + (a'q - (p/q)b')q = ap + bq
+   as desired.-->
+
+    <p>
+        Hint: since your method needs to return three integers, consider using an array of
+        three elements.
+
+    </p></li>
+<li><b>Best rectangle.</b>
+    Given area A of a rectangle, find a rectangle with integer width and height
+    whose area is A and such that the difference between the height and width
+    are as close to each other as possible. For example, if A = 48, then the
+    best rectangle is 6-by-8 and not 3-by-16 or 4-by-12.
+    Show that if you could solve this problem, you could break the RSA cryptosystem.
+
+
+</li>
+<li><b>Buckets of water.</b>
+    Given two buckets of capacity p and q, a receptacle of infinite capacity,
+    a water hose, and a drain, devise a method to get exactly k liters of water
+    into the receptacle using the following rules:
+    <ul>
+        <li>You can fill either of the two buckets with the huse.
+        </li>
+        <li>You can empty either bucket to the drain.
+        </li>
+        <li>You can transfer water between the two buckets or either bucket and
+            the receptacle until one is full or ther other is empty.
+        </li>
+    </ul>
+    Prove that you can solve the problem if and only if
+    k is a multiple of gcd(p, q).
+    Hint: use the fact from previous exercise that there exist integers a and b
+    such that ap + bq = gcd(p, q).
+
+</li>
+<li><b>Multiplicative inverse.</b>
+    Given a positive integer n, a <em>multiplicative inverse mod b</em> of an integer k
+    is an integer x such that (k * x) % n = 1. Such an inverse exists if and only if
+    gcd(k, n) = 1. Write a program
+    <a href="http://www.cs.princeton.edu/introcs/78crypto/Inverse.java.html">Inverse.java</a> that reads in two command line
+    arguments k and n and computes the modular inverse if it exists.
+    <em>Hint:</em> use the answer to the previous exercise.
+    See also <tt>BigInteger.modInverse</tt>.
+
+</li>
+<li><b>Breaking the RSA cryptosystem.</b>
+    One potential way to break the RSA cryptosystem is to compute
+    &#966;(n) given n. Recall that if n = pq, then &#966;(n) = (p-1)(q-1).
+    Show that computing &#966;(n) is equivalent to factoring.
+    <p><em>Solution</em>: obviously if you can factor n = pq, then computing
+        &#966;(n) = (p-1)(q-1) is easy. To see the other direction, observer
+        that n + 1 - &#966;(n) = pq + 1 - (p-1)(q-1) = p + q = n/q + q.
+        Thus q<sup>2</sup> - (n + 1 - &#966;(n))q + n = 0.
+        Assuming we know &#966;(n), we can solve the quadratic
+        equation for q and recover one of the factor of n. We can recover
+        the other factor p by computing n/q.
+
+
+    </p></li>
+<li>
+    <b>Generating public and private RSA keys.</b>
+    Write a program <a href="http://www.cs.princeton.edu/introcs/78crypto/RSA.java.html">RSA.java</a> to
+    generate a key pair for use with the RSA cryptosystem, determine two N/2 bit
+    primes p and q. Set e = 65537, compute n = (p-1)(q-1), and find a number d such that
+    (e * d) % n == 0. Assuming gcd(e, n) = 1, the inverse d will exist.
+
+    <em>Hint:</em> use the <a href="http://www.cs.princeton.edu/introcs/78crypto/RandomPrime.java.html">RandomPrime.java</a>
+    to compute p and q, and use <a href="http://www.cs.princeton.edu/introcs/78crypto/Inverse.java.html">Inverse.java</a>
+    to compute d.
+
+</li>
+<li>
+    <b>Sophie Germaine primes.</b>
+    The security of the RSA cryptosystem appears to be improved if you use special types
+    of primes for p and q. Specifically, a
+    <a href="http://www.wikipedia.org/wiki/Sophie_Germain_prime">Sophie Germaine prime</a>
+    is a prime number
+    p where (p-1)/2 is also prime. Generate a public and private RSA key where p and
+    q are Sophie Germaine primes. Investigate how long it takes to find such a prime as a function
+    of the number of bits N.
+
+</li>
+<li><b>Fermat primality testing.</b>
+    The Fermat primality test is an algorithm that takes an odd integer n and reports
+    that it is definitely composite or "likely" prime. By "likely", the algorithm
+    is sometimes wrong, but not too often.
+    Fermat's theorem says that if p is prime and gcd(a, p) = 1,
+    then a<sup>p-1</sup> = 1 (mod p).
+    A version of the converse is used as a crude primality test in the PGP
+    cryptosystem: if 2<sup>p-1</sup> = 3<sup>p-1</sup> = 5<sup>p-1</sup> =
+    7<sup>p-1</sup> = 1 (mod p), then use p as a prime.
+    Unfortunately, there are some numbers that satisfy this Fermat test,
+    but are not prime (e.g., 29341, 46657, 75361).
+
+
+</li>
+<li><b>Miller-Rabin primality testing.</b>
+    The Miller-Rabin algorithm is a randomized algorithm for determining
+    whether an odd integer n is prime. It takes a security parameter t
+    and outputs either <tt>prime</tt> or <tt>composite</tt>. If it outputs
+    <tt>composite</tt>, then n is definitely composite; if it outputs
+    <tt>prime</tt>, then n is probably prime, but the algorithm could
+    be wrong with probability 2<sup>-t</sup>.
+    <blockquote>
+        <table>
+            <tbody>
+            <tr>
+                <td><pre>boolean isProbablyPrime(BigInteger n, int t) {
+   Compute r and s such that n-1 = 2<sup>s</sup>r and r is odd
+   Repeat from 1 to t {
+      Choose a random integer a such that 1 &lt; a &lt; n - 1 
+      Compute y = a<sup>r</sup> mod n by repeated squaring
+      If y &#8800; 1 and y &#8800; n-1 {
+         j = 1 
+         while (j &lt; s and y &#8800; n-1)
+            y = y<sup>2</sup> mod n 
+            if (y == 1) return false
+            j = j + 1
+         if y &#8800; n-1 return false
+   }
+   return true
+}
+
+</pre>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </blockquote>
+
+</li>
+<li><b>Factoring.</b>
+    Win $200,000 from
+    <a href="http://www.rsasecurity.com/rsalabs/challenges/factoring">RSA Security</a>
+    for factoring a 2048 bit number (616 digits).
+    Factor a 64 bit number (32 bit RSA) using Program xyz in under a minute.
+    How long to factor a 128 bit number?
+
+</li>
+<li><b>Pollard's rho method.</b>
+    Pollard's rho method is a randomized factoring algorithm that can factor
+    128 bit numbers in a reasonable amount of time, especially if the numbers
+    have some small factors. It is based on the following fact: if d is the smallest
+    nontrivial factor of N and x - y is a nontrivial multiple of d then
+    gcd(x-y, N) = d. A naive method would be to generate a bunch of random values
+    x[1], x[2], ..., x[m] and compute gcd(x[i]-x[j], N) for all pairs i and j.
+    <a href="http://planetmath.org/encyclopedia/PollardsRhoFactorization.html">
+        Pollard's rho method</a> is an ingenious method way to find x and y without
+    doing all of the pairwise computations.
+    It works as follows: choose a and b at random
+    between 1 and N-1, and initialize x = y = a.
+    Repeatedly update x = f(x), y = f(f(y)), where f(x) = x<sup>2</sup> + b as long
+    as gcd(x-y, N) = 1.
+    The gcd is a factor of N, but if you get unlucky, it could be equal to N.
+    By randomly choosing a and b each time, we ensure that we never get
+    too unlucky.
+    Write a program
+    <a href="http://www.cs.princeton.edu/introcs/78crypto/PollardRho.java.html">PollardRho.java</a> that takes a
+    command-line argument N and uses the Pollard rho method to compute a prime
+    factorization of N. Estimate the running time as a function of N.
+
+</li>
+<li><b>Karatsuba multiplication.</b>
+    Write a program <a href="http://www.cs.princeton.edu/introcs/78crypto/Karatsuba.java.html">Karatsuba.java</a>
+    that multiplies two integers using the
+    <a href="http://mathworld.wolfram.com/KaratsubaMultiplication.html">Karatsuba
+        algorithm</a>.
+    This ingenious algorithm computes the product of two 2N-bit integers
+    using only three N-bit multiplications (and a linear amount of extra work).
+    To multiply x and y, break up x and y into N-bit chunks and use
+    the following identity:
+
+
+    <blockquote>
+        <table>
+            <tbody>
+            <tr>
+                <td><pre>xy = (a + 2<sup>N</sup>b) (c + 2<sup>N</sup> d)
+   = ac + [(a+b)(c+d) - ac - bd] 2<sup>N</sup> + bd 2<sup>2N</sup>
+</pre>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </blockquote>
+
+    <p>
+        Your recursive algorithm should compute the number of bits N and
+        cutoff to the default <tt>BigInteger.multiply</tt> method when N is small
+        (say 10,000) and apply the Karatsuba divide-and-conquer strategy otherwise.
+        Investigate the optimal cutoff point and compare its effectiveness against
+        <tt>BigInteger.multiply</tt> when N = 10 million.
+
+    </p></li>
+<li><b>Factoring reduces to finding a factor.</b>
+    Given a function <tt>factor(N)</tt> that returns 1 if N is prime,
+    and any nontrivial factor of N otherwise, write a function
+    <tt>factorize(N)</tt> that returns the prime factorization of N.
+
+</li>
+<li><b>Perfect power.</b>
+    An integer N is a perfect power if N = p<sup>q</sup> for two integers p &#8805; 2
+    and q &#8805; 2.
+    Design an efficient algorithm (polynomial in the number of bits in N)
+    to determine if N is a perfect power, and if so, find its prime
+    factorization.
+    <em>Hint</em>: for all q &#8804; lg N binary search for p
+    satisfying N = p<sup>q</sup>.
+
+</li>
+<li>
+    <b>Euler's conjecture.</b>
+    In 1769 Euler conjectured that there are no
+    positive integer solutions to a<sup>4</sup> + b<sup>4</sup> + c<sup>4</sup> = d<sup>4</sup>.
+    Noam Elkies discovered the first counterexample
+    2682440<sup>4</sup> + 15365639<sup>4</sup> + 18796760<sup>4</sup> =
+    20615673<sup>4</sup>
+    over 218 years later.
+    Write a program <a href="http://www.cs.princeton.edu/introcs/78crypto/Euler.java.html">Euler.java</a> to disprove
+    Euler's conjecture.
+    The brute force solution outlined in Exercise XYZ won't work for two reasons:
+    (i) it will take too much time to find the solution using a quadruply nested loop,
+    and (ii) computing a<sup>4</sup> will overflow a <tt>long</tt> since
+    the smallest such counterexample is
+    95800<sup>4</sup> + 217519<sup>4</sup> + 414560<sup>4</sup> = 422481<sup>4</sup>.
+    <ol>
+        <li>Use the following idea. Iterate over all integers a and b between 1 and N and
+            insert a<sup>4</sup> + b<sup>4</sup> into a hash table. Then, iterate over all
+            integers c and d between 1 and N and search to see if d<sup>4</sup> - c<sup>4</sup>
+            is in the hash table. Use extended precision integers to avoid overflow.
+
+        </li>
+        <li>
+            Using extended precision integers can be a significant overhead over using
+            primitive types. Instead of inserting a<sup>4</sup> + b<sup>4</sup> into the
+            hash table, insert a<sup>4</sup> + b<sup>4</sup> modulo p, where p is some
+            big prime, say XYZ. Then, iterate over all c and d and search for
+            d<sup>4</sup> - c<sup>4</sup> modulo p. If there's a match, use extended
+            precision arithmetic to check that it isn't just an coincidental collision.
+            Hint: to avoid overflow when computing a<sup>4</sup> + b<sup>4</sup> modulo p,
+            modulo out multiples of p after each multiplication.
+        </li>
+    </ol>
+
+</li>
+<li><b>Fingerprinting.</b>
+    Alice and Bob maintain two copies of a large genomics database in
+    different locations.
+    For consistency, they want to be ble to compare whether
+    the two databases are identical.
+    We interpret the databases as N-bit integers, say A and B.
+    Because N is very large, they can't afford to transmit the whole database.
+    Instead, consider the following scheme for sending a
+    <em>fingerprint</em> of the data that enables Alice and Bob to
+    check if the data is inconsistent.
+    Alice generates a random prime number p between 2 and, say, N<sup>2</sup>
+    and sends p and (A % p). This takes only O(log N) bits.
+    Bob declares that A and B are the same if ((A % p) == (B % p)).
+    The probability of having a false negative
+    (a no that should have been a yes) from the scheme is zero.
+    Show that the probability of having a false positive (a yes that should
+    have been a no) goes to 0 as n goes to infinity.
+    <em>Hint</em>: Use the fact that the number of primes less than n<sup>2</sup>
+    is at least c n<sup>2</sup> / log n, for some constant c &gt; 0.
+    How many bits are sent?
+
+
+</li>
+<li>
+    <b>Flipping a coin over the phone.</b>
+    Alice and Bob are in the midst of a bitter divorce.
+    They have decided to flip a coin to see who will get custody of their
+    only son Carl. However, they refuse to see each other in person and
+    they don't want anyone else to know how the resolved the custody dispute.
+    In other, words, we want to devise a method to flip a fair coin over
+    a phone line or the Internet so that neither party can cheat. Here is
+    an elegant protocol:
+    <ol>
+        <li>Alice multiplies together two or three large primes to sends
+            the product N to Bob.
+        </li>
+        <li>Bob receives the integer N and responds with the number 2 or 3.
+        </li>
+        <li>Alice waits for a valid response from Bob and then
+            sends Bob the prime factorization of N.
+        </li>
+        <li>If Bob guesses the correct number of factors,
+            then he gets custody. Otherwise, assuming Alice follows the protocol,
+            she wins custody.
+        </li>
+    </ol>
+
+    <p>
+        Explain why the system works by answering each of the following
+        questions. You may assume that there is no efficient way to determine
+        whether a given integer N has at least 3 nontrivial factors (although this
+        is an unresolved conjecture).
+    </p>
+    <ol>
+        <li>How can Alice compute N efficiently?
+        </li>
+        <li>Why can't Bob efficiently determine the true answer on his own?
+        </li>
+        <li>How can Bob efficiently check that Alice sent him the correct
+            factorization of N? In other words, what's to prevent Alice from
+            revealing two factors (one of which is not prime) if Bob says 3,
+            even if she multiplied three (or more) primes together?
+        </li>
+    </ol>
+
+</li>
+<li>
+    <b>Poker over the phone.</b>
+    Use the <em>bit-commitment</em> scheme described above to develop
+    a protocol to play poker over the phone, say between two parties.
+
+</li>
+<li><b>Discrete log.</b>
+    Let <em>p</em> be a prime number. The <em>discrete log</em> of <em>a</em>
+    to the base <em>b</em> is the unique integer <em>x</em>
+    between 0 and <em>p</em>-1
+    such that <em>a = b<sup>x</sup> (mod p)</em>. For example,
+    if <em>p</em> = 97,
+    <em>b</em> = 5, and <em>a</em> = 35,
+    then log<sub>5</sub> 35 = 32 since 5<sup>32</sup> = 35 (mod 97).
+    Write a program <tt>DiscreteLog.java</tt> that takes
+    three command line inputs a, b, and p, and computes
+    <em>log<sub>b</sub> a</em> modulo <em>p</em> via brute force
+    search.
+
+</li>
+<li><b>Diffie Hellman.</b>
+    Let <em>p</em> be a prime number, and let <em>a</em> and <em>b</em>
+    be two integers. Given <em>p</em>, an <em>x</em>,
+    <em>x<sup>a</sup> (mod p)</em> and
+    <em>x<sup>b</sup> (mod p)</em>,
+    the <em>Diffie-Hellman</em> problem is to compute
+    <em>x<sup>ab</sup> (mod p)</em>.
+
+
+</li>
+<li><b>Rabin's cryptosystem.</b>
+    Select p, q to be prime such that p = 3 mod 4 and q = 3 mod 4.
+    The public key is n = pq and the private key is (p, q). To encrypt, compute
+    E(m) = m<sup>2</sup> mod n. To decrypt compute D(c) = sqrt(c) mod n.
+    How to compute square root: c = x<sup>2</sup> mod n?
+    Use extended Euclid's algorithm to find a, b such that
+    ap + bq = 1. Compute r = c<sup>(p+1)/4</sup> mod p
+    and s = c<sup>(q+1)/4</sup> mod q. Compute m = (aps + bqr) mod n and
+    t = (aps - bqr) mod n. The four square roots of c are
+    m, -m mod n, t, and -t mod n.
+
+
+</li>
+<li><b>Analog private-key exchange.</b>
+    You are stranded on an island with a box, a padlock with key, and a
+    copy of Introduction to Computer Science.
+    You have a friend on another island who also has a box, a padlock
+    with key, but wants to borrow your copy of the textbook.
+    You can ship stuff via an unscrupulous courier service who will
+    pillage anything inside the box if it is left unlocked. How
+    can you get your book to your friend?
+
+</li>
+<li><b>Cryptographically secure hash functions.</b>
+    SHA-1 and MD5. Can compute it by converting string to bytes,
+    or when reading in bytes 1 at a time.
+    <blockquote>
+        <table>
+            <tbody>
+            <tr>
+                <td><pre>import java.security.MessageDigest;
+...
+MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+sha1.update(s.getBytes());
+Byte[] hash = sha1.digest();
+</pre>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </blockquote>
+
+</li>
+<li><b>RSA in Java.</b>
+    Built-in functionality for RSA or DSA. Untested code below.
+    <blockquote>
+        <table>
+            <tbody>
+            <tr>
+                <td><pre>// key generation
+KeyPairGenerator keygen = KeyPairGenerator.getInstance("DSA");
+SecureRandom random     = new SecureRandom();
+keygen.initialize(512, random);
+KeyPair keys     = keygen.generateKeyPair();
+PublicKey pubkey = keys.getPublic();
+PrivateKey prikey = keys.getPrivate();
+
+// digital signing
+Signature signer = Signature.getInstance("DSA");
+signer.initSign(prikey); 
+signer.update(s.getBytes());
+Byte[] signature = signer.sign();
+
+// verifying
+Signature verifier = Signature.getInstance("DSA");
+verifier.initVerify(pubkey); 
+verifier.update(t.getBytes());
+Boolean check = verifier.verify(signature);
+</pre>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </blockquote>
+
+</li>
+<li><b>Blum-Blum-Shub pseudorandom bit generator.</b>
+    Choose two distinct
+    N-bit primes p and q such that p mod 4 = q mod 4 = 3.
+    Set n = pq and choose a starting value x<sub>0</sub>
+    by selecting a random seed 1 &lt; s &lt; n such that
+    gcd(s, n) = 1.
+    Form the sequence of integers
+    x<sub>0</sub> = s<sup>2</sup> mod n and
+    x<sub>i+1</sub> = x<sub>i</sub> x<sub>i</sub> mod n.
+    Use x<sub>i</sub> % 2 as the sequence of pseudorandom bits.
+    No need to keep n secret.
+    Discovering any pattern (in poly time)
+    is provably as hard as factoring n.
+    Note: we still need to generate p, q, and s at random,
+    but these have only O(N) bits, and we will be able to
+    generate 2^N pseudorandom bits.
+    Can use as a one-time pad.
+
+    <p>
+        Can also be used for directly for
+        <a href="http://math.boisestate.edu/%7Emarion/teaching/crypto1f03/bbs_the_system.htm">
+            public-key crypto</a>
+
+    </p></li>
+<li><b>VCR Plus decoding.</b>
+    Remote control scheme for recording programs on a VCR using
+    special code printed in newspapers. Bad cryptography so easy
+    to break.
+    <a href="http://citeseer.nj.nec.com/260048.html">paper</a>
+
+</li>
+<li><b>Pascal's triangle.</b>
+    One way to compute the kth row of Pascal's triangle (for k &gt; 2) is to compute
+    (2<sup>k</sup> + 1)<sup>k+1</sup> and take its binary representation k bits at a time.
+    <blockquote>
+        <table>
+            <tbody>
+            <tr>
+                <td><pre>1<sup>0</sup> = 1    (1<sup>0</sup> = 1 = 1)
+11<sup>1</sup> = 1 1    (3<sup>1</sup> = 3 = 1 1)
+101<sup>10</sup> = 01 10 01    (5<sup>2</sup> = 25 = 1 2 1)
+101<sup>11</sup> = 01 11 11 01    (5<sup>3</sup> = 125 = 1 3 3 1)
+1001<sup>100</sup> = 001 100 110 100 001  1 4 6 4 1  (9<sup>4</sup> = 6561 = 1 4 6 4 1)
+10001<sup>101</sup> = 0001 0101 1010 1010 0101 0001   (17<sup>5</sup> = 1419857)
+</pre>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </blockquote>
+
+
+</li>
+<li><b>Bailey-Borwein-Plouffe algorithm.</b>
+    Compute the ith binary digit of &#960; without computing the earlier
+    digits using the
+    <a href="http://crd.lbl.gov/%7Edhbailey/expmath/expbook-C.pdf">BBP algorithm</a>
+    which requires modular exponentiation.
+
+</li>
+<li><b>Secret sharing.</b>
+    Want to distribute a message to N people so that any 3 of them can
+    recover the original message, but any 1 or 2 cannot.
+    <a href="http://www.chiark.greenend.org.uk/pipermail/ukcrypto/1999-November/007055.html">reference</a>.
+    <a href="http://sciam.com/article.cfm?chanID=sa006&amp;colID=14&amp;articleID=0009F978-0583-1FFB-809C83414B7F0000">
+        Scientific American puzzle</a>
+
+
+</li>
+<li><b>Mersenne prime.</b>
+    A <em>Mersenne prime</em> is a prime of the form M_p = 2^p - 1, where p is
+    an odd prime. To test whether M_p is prime, form the following sequence:
+    s_0 = 4, s_i+1 = (s_i)^2 - 2 mod M_p. M_p is prime iff
+    s_(p-2) = 0 mod M_p. This is method known as the
+    <a href="http://en.wikipedia.org/wiki/Lucas-Lehmer_test_for_Mersenne_primes">Lucas-Lehmer
+        primality test</a>.
+
+</li>
+</ol>
+
+<br><br>
+
+<p class="footer">
+    Copyright © 2007
+    <a href="http://www.cs.princeton.edu/%7Ers" class="footer">Robert Sedgewick</a>
+    and
+    <a href="http://www.cs.princeton.edu/%7Ewayne" class="footer">Kevin Wayne</a>.
+    All rights reserved.
+</p></div>
+
+
+</body>
+</html>
