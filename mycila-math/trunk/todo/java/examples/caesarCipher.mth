@@ -1,0 +1,13 @@
+"Caesar Cipher - English alphabet"
+
+key:=21
+
+plaintext:=[8,11,14,21,4,24,14,20]
+
+length:=DIMENSION(plaintext)
+
+ciphertext:=VECTOR(MOD(plaintext SUB i+key,26),i,length)
+
+;Simp(#5)
+[3,6,9,16,25,19,9,15]
+

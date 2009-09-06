@@ -1,0 +1,25 @@
+p:=307
+
+g:=43
+
+b:=140
+
+m:=-FLOOR(-SQRT(p))
+
+gminv:=MOD((g^m)^(p-2),p)
+
+gv:=VECTOR(MOD(g^i,p),i,0,m-1)
+
+y:=b
+
+yv:=ITERATES(MOD(y*gminv,p),y,y,m-1)
+
+j:=SUM(VECTOR(ITERATE(IF(yv SUB i=gv SUB k,k,k-1),k,m,m),i,m))
+
+i:=SUM(VECTOR(ITERATE(IF(yv SUB k=gv SUB r,k,k-1),k,m,m),r,m))
+
+logb:=(i-1)*m+(j-1)
+
+;Simp(#11)
+87
+

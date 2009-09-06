@@ -1,0 +1,22 @@
+"Shift Vigenere Cipher with CBC - ASCII alphabet"
+
+OutputBase:=Binary
+
+iv:=178
+
+k:=[67,82,79,65,75]
+
+klen:=DIMENSION(k)
+
+p:=[73,76,79,86,69,89,79,85]
+
+len:=DIMENSION(p)
+
+E(x):=[x SUB 1+1,MOD((p SUB (x SUB 1) XOR x SUB 2)+k SUB (MOD(x SUB 1+klen-1,~
+klen)+1),256)]
+
+c:=ITERATES(E(z),z,[1,iv],len)
+
+;Simp(#9)
+[[1,178],[2,62],[3,196],[4,218],[5,205],[6,211],[7,205],[8,212],[9,208]]
+

@@ -1,0 +1,26 @@
+"Change first three values-simplify last four to get roots"
+
+p:=6911
+
+q:=6947
+
+m:=40412478
+
+n:=p*q
+
+pinv:=MOD(p^(q-2),q)
+
+qinv:=MOD(q^(p-2),p)
+
+d1:=MOD(m^((p+1)/4),n)
+
+d2:=MOD(m^((q+1)/4),n)
+
+x1:=MOD(d1*q*qinv+d2*p*pinv,n)
+
+x2:=MOD(d1*q*qinv-d2*p*pinv,n)
+
+x3:=MOD(-d1*q*qinv-d2*p*pinv,n)
+
+x4:=MOD(-d1*q*qinv+d2*p*pinv,n)
+
