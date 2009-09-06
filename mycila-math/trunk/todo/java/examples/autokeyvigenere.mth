@@ -1,0 +1,17 @@
+"Auto Key Vigenere Cipher - English alphabet"
+
+k:=[2,17,14,0,10]
+
+klen:=DIMENSION(k)
+
+m:=[8,11,14,21,4,24,14,20]
+
+len:=DIMENSION(m)
+
+s:=VECTOR(IF(j<=klen,k SUB j,m SUB (j-klen)),j,len)
+
+c:=VECTOR(MOD(m SUB i+s SUB i,26),i,len)
+
+;Simp(#7)
+[10,2,2,21,14,6,25,8]
+
