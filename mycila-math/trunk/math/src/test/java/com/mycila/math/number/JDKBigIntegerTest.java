@@ -17,6 +17,7 @@ package com.mycila.math.number;
 
 import static com.mycila.math.number.BigInt.*;
 import com.mycila.math.number.jdk7.BigInteger;
+import com.mycila.math.prime.Sieve;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -28,6 +29,48 @@ import java.util.Random;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class JDKBigIntegerTest {
+
+    @Test
+    public void test_isEulerJacobiPseudoprime() {
+        assertTrue(big(561).isPseudoprimeEulerJacobi(big(2)));
+        assertTrue(big(2465).isPseudoprimeEulerJacobi(big(61)));
+        assertTrue(big(1309).isPseudoprimeEulerJacobi(big(67)));
+        assertFalse(big(1309).isPseudoprimeEulerJacobi(big(61)));
+    }
+
+    @Test
+    public void test_isPrimeSolovayStrassen() {
+        assertFalse(ZERO.isPrimeSolovayStrassen());
+        assertFalse(ONE.isPrimeSolovayStrassen());
+        assertTrue(TWO.isPrimeSolovayStrassen());
+        assertTrue(big(7).isPrimeSolovayStrassen());
+        assertTrue(big(179).isPrimeSolovayStrassen());
+        assertTrue(big(Integer.MAX_VALUE).isPrimeSolovayStrassen());
+        assertTrue(big(Integer.MAX_VALUE).nextPrime().nextPrime().isPrimeSolovayStrassen());
+        // Test some Carmichael numbers
+        assertFalse(big(561).isPrimeSolovayStrassen());
+        assertFalse(big(1105).isPrimeSolovayStrassen());
+        assertFalse(big(1729).isPrimeSolovayStrassen());
+        assertFalse(big(2100901).isPrimeSolovayStrassen());
+        for (int p : Sieve.to(10000).asArray())
+            assertTrue(big(p).isPrimeSolovayStrassen());
+    }
+
+    @Test
+    public void test_isPrimeFermatLittle() {
+        assertFalse(ZERO.isPrimeFermatLittle());
+        assertFalse(ONE.isPrimeFermatLittle());
+        assertTrue(TWO.isPrimeFermatLittle());
+        assertTrue(big(7).isPrimeFermatLittle());
+        assertTrue(big(179).isPrimeFermatLittle());
+        assertTrue(big(Integer.MAX_VALUE).isPrimeFermatLittle());
+        assertTrue(big(Integer.MAX_VALUE).nextPrime().nextPrime().isPrimeFermatLittle());
+        // Test some Carmichael numbers 
+        assertFalse(big(561).isPrimeFermatLittle());
+        assertFalse(big(1105).isPrimeFermatLittle());
+        assertFalse(big(1729).isPrimeFermatLittle());
+        assertFalse(big(2100901).isPrimeFermatLittle());
+    }
 
     @Test
     public void test_isPandigital() {
@@ -65,16 +108,25 @@ public final class JDKBigIntegerTest {
         Random r = new SecureRandom();
 
         assertEquals(BigInteger.jacobiSymbol(79, BigInteger.valueOf(3)), 1);
-        assertEquals(big(3).jacobiSymbol(79), 1);
+        assertEquals(big(3).jacobiSymbol(big(79)), ONE);
+
+        assertEquals(BigInteger.jacobiSymbol(5, BigInteger.valueOf(7)), -1);
+        assertEquals(big(7).jacobiSymbol(big(5)), ONE.opposite());
 
         assertEquals(BigInteger.jacobiSymbol(81, BigInteger.valueOf(7)), 1);
-        assertEquals(big(7).jacobiSymbol(81), 1);
+        assertEquals(big(7).jacobiSymbol(big(81)), ONE);
+
+        assertEquals(BigInteger.jacobiSymbol(691385, BigInteger.valueOf(9)), 1);
+        assertEquals(big(9).jacobiSymbol(big(691385)), ONE);
+
+        assertEquals(0, BigInteger.jacobiSymbol(26970, BigInteger.valueOf(9)));
+        assertEquals(ZERO, big(9).jacobiSymbol(big(26970)));
 
         for (int i = 3; i < 100000; i += 2) {
             int a = r.nextInt(1000001);
             assertEquals("(" + a + "/" + i + ")",
-                    BigInteger.jacobiSymbol(a, BigInteger.valueOf(i)),
-                    big(i).jacobiSymbol(a));
+                    big(BigInteger.jacobiSymbol(a, BigInteger.valueOf(i))),
+                    big(i).jacobiSymbol(big(a)));
         }
     }
 
@@ -335,6 +387,8 @@ public final class JDKBigIntegerTest {
         assertTrue(big(Integer.MAX_VALUE).isPrimeLucasLehmer()); // matches 2^31-1 = Integer.MAX_VALUE
         assertTrue(big(Integer.MAX_VALUE).nextPrime().nextPrime().isPrimeLucasLehmer());
         assertTrue(big(Integer.MAX_VALUE).square().nextPrime().nextPrime().isPrimeLucasLehmer());
+        for (int p : Sieve.to(10000).asArray())
+            assertTrue(big(p).isPrimeLucasLehmer());
     }
 
     @Test
