@@ -19,7 +19,9 @@ import com.mycila.math.distribution.Distribution;
 import com.mycila.math.list.ByteProcedure;
 import com.mycila.math.prime.PrimaltyTest;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -31,10 +33,18 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     public static final BigInt ZERO;
     public static final BigInt ONE;
     public static final BigInt TWO;
+    public static final BigInt THREE;
+    public static final BigInt FOUR;
+    public static final BigInt FIVE;
+    public static final BigInt SIX;
+    public static final BigInt SEVEN;
+    public static final BigInt EIGHT;
+    public static final BigInt NINE;
     public static final BigInt TEN;
     public static final BigInt INT_MAX;
     public static final BigInt LONG_MAX;
 
+    private static final Random RANDOM = new SecureRandom();
     private static final BigIntFactory FACTORY;
 
     static {
@@ -52,6 +62,13 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         ZERO = big(0);
         ONE = big(1);
         TWO = big(2);
+        THREE = big(3);
+        FOUR = big(4);
+        FIVE = big(5);
+        SIX = big(6);
+        SEVEN = big(7);
+        EIGHT = big(8);
+        NINE = big(9);
         TEN = big(10);
         INT_MAX = big(Integer.MAX_VALUE);
         LONG_MAX = big(Long.MAX_VALUE);
@@ -899,7 +916,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      */
     public int digitalRoot() {
         if (signum() == 0) return 0;
-        return ONE.add(this.subtract(ONE).mod(9)).toInt();
+        return ONE.add(this.subtract(ONE).mod(NINE)).toInt();
     }
 
 
@@ -1227,56 +1244,60 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     //public abstract BigInt binomial(int k);
 
     /**
-     * Computes the <a href="http://en.wikipedia.org/wiki/Jacobi_symbol">Jacobi symbol</a> (a/n) where this = n
-     * <p/>
-     * Sample implementation <a href="http://primes.utm.edu/glossary/page.php?sort=JacobiSymbol">here</a>
-     * <p/>
-     * Precondition: this = n = 1 mod 4<br>
-     * Postcondition: Result is jacobi symbol (a / n) or -1 if gcd(a, n) > 1
+     * Computes the <a href="http://en.wikipedia.org/wiki/Jacobi_symbol">Jacobi symbol</a> (a/this)
      *
      * @param a Positive odd number
-     * @return The Jacobi symbol (this/n)
+     * @return The Jacobi symbol (a/this)
      */
-    public int jacobiSymbol(long a) {
-        if (a == 0) return 0;
-        int j = 1;
-        long u = toLong();
+    public BigInt jacobiSymbol(BigInt a) {
+        // Using BigInteger implementation
+        if (a.signum() == 0) return ZERO; // (0/n) = 0
+        BigInt j = ONE;
+        BigInt u = this;
         // Make p positive
-        if (a < 0) {
-            a = -a;
-            long n8 = u & 7;
-            if (n8 == 3 || n8 == 7) j = -j; // 3 (011) or 7 (111) mod 8
+        if (a.signum() < 0) {
+            a = a.opposite(); // (a/n) = (-a/n)*(-1/n)
+            BigInt n8 = u.and(SEVEN);
+            if (n8.equals(THREE) || n8.equals(SEVEN))
+                j = j.opposite(); // 3 (011) or 7 (111) mod 8
         }
         // Get rid of factors of 2 in p
-        while ((a & 3) == 0) a >>= 2;
-        if ((a & 1) == 0) {
-            a >>= 1;
-            if (((u ^ (u >> 1)) & 2) != 0) j = -j; // 3 (011) or 5 (101) mod 8
+        while (a.and(THREE).signum() == 0)
+            a = a.shiftRight(2);
+        if (a.and(ONE).signum() == 0) {
+            a = a.shiftRight(1);
+            if (u.xor(u.shiftRight(1)).and(TWO).signum() != 0)
+                j = j.opposite(); // 3 (011) or 5 (101) mod 8
         }
-        if (a == 1) return j;
+        if (a.equals(ONE)) return j;
         // Then, apply quadratic reciprocity
-        if ((a & u & 2) != 0) j = -j; // p = u = 3 (mod 4)
+        if (TWO.and(a).and(u).signum() != 0)
+            j = j.opposite(); // p = u = 3 (mod 4)
         // And reduce u mod p
-        u = mod(big(a)).toLong();
+        u = mod(a);
         // Get rid of factors of 2 in p
-        while ((a & 3) == 0) a >>= 2;
+        while (a.and(THREE).signum() == 0)
+            a = a.shiftRight(2);
         // Now compute Jacobi(u,p), u < p
-        while (u != 0) {
-            while ((u & 3) == 0) u >>= 2;
-            if ((u & 1) == 0) {
-                u >>= 1;
-                if (((a ^ (a >> 1)) & 2) != 0) j = -j; // 3 (011) or 5 (101) mod 8
+        while (u.signum() != 0) {
+            while (u.and(THREE).signum() == 0)
+                u = u.shiftRight(2);
+            if (u.and(ONE).signum() == 0) {
+                u = u.shiftRight(1);
+                if (a.xor(a.shiftRight(1)).and(TWO).signum() != 0)
+                    j = j.opposite(); // 3 (011) or 5 (101) mod 8
             }
-            if (u == 1) return j;
+            if (u.equals(ONE)) return j;
             // Now both u and p are odd, so use quadratic reciprocity
-            long t = u;
+            BigInt t = u;
             u = a;
             a = t;
-            if ((u & a & 2) != 0) j = -j; // u = p = 3 (mod 4)
+            if (TWO.and(a).and(u).signum() != 0)
+                j = j.opposite(); // p = u = 3 (mod 4)
             // Now u >= p, so it can be reduced
-            u %= a;
+            u = u.mod(a);
         }
-        return 0;
+        return ZERO;
     }
 
     /**
@@ -1295,10 +1316,10 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * <p/>
      * If the BigInteger passes all tests, returns the probabilty it is prime as a double.
      *
-     * @param numPasses Number of different bases to try is passed in as an int
+     * @param certainty Number of different bases to try is passed in as an int
      * @return true if the BigInteger is determined to be prime for given number of iterations
      */
-    public boolean isPrimeMillerRabin(int numPasses) {
+    public boolean isPrimeMillerRabin(int certainty) {
         if (equals(TWO)) return true;
         if (!testBit(0) || equals(ONE)) return false;
         if (compareTo(big(Integer.MAX_VALUE)) <= 0)
@@ -1307,10 +1328,11 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         BigInt thisMinusOne = subtract(ONE);
         int a = thisMinusOne.lowestSetBit();
         BigInt m = thisMinusOne.shiftRight(a);
-        for (int i = 0; i < numPasses; i++) {
+        int len = bitLength();
+        while (certainty-- > 0) {
             // Generate a uniform random on (1, this)
             BigInt b;
-            do b = randomBig(bitLength());
+            do b = randomBig(len);
             while (b.compareTo(ONE) <= 0 || b.compareTo(this) >= 0);
             int j = 0;
             BigInt z = b.modPow(m, this);
@@ -1345,21 +1367,21 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return True is the number is prime
      */
     public boolean isPrimeLucasLehmer() {
+        // Using JDK's implementation
         if (equals(TWO)) return true;
         if (!testBit(0) || equals(ONE)) return false;
         BigInt thisPlusOne = this.add(ONE);
-        int d = 5;
-        while (jacobiSymbol(d) != -1)
-            d = (d < 0) ? Math.abs(d) + 2 : -(d + 2); // 5, -7, 9, -11, ...
+        BigInt d = FIVE;
+        while (jacobiSymbol(d).signum() >= 0)
+            d = (d.signum() < 0) ? d.abs().add(TWO) : d.add(TWO).opposite(); // 5, -7, 9, -11, ...
         // Lucas-Lehmer sequence
-        BigInt z = big(d);
         BigInt u = ONE;
         BigInt u2;
         BigInt v = ONE;
         BigInt v2;
         for (int i = thisPlusOne.bitLength() - 2; i >= 0; i--) {
             u2 = u.multiply(v).mod(this);
-            v2 = v.square().add(z.multiply(u.square())).mod(this);
+            v2 = v.square().add(d.multiply(u.square())).mod(this);
             if (v2.testBit(0)) v2 = v2.subtract(this);
             v2 = v2.shiftRight(1);
             u = u2;
@@ -1368,7 +1390,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
                 u2 = u.add(v).mod(this);
                 if (u2.testBit(0)) u2 = u2.subtract(this);
                 u2 = u2.shiftRight(1);
-                v2 = v.add(z.multiply(u)).mod(this);
+                v2 = v.add(d.multiply(u)).mod(this);
                 if (v2.testBit(0)) v2 = v2.subtract(this);
                 v2 = v2.shiftRight(1);
                 u = u2;
@@ -1377,10 +1399,104 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         }
         return u.mod(this).equals(ZERO);
     }
+
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Legendre_symbol">Legendre Symbol</a> for base a
+     *
+     * @param a The base
+     * @return The Legendre Symbol (a/this) = a^[(this-1)/2] mod this
+     */
+    public BigInt legendreSymbol(BigInt a) {
+        return a.modPow(subtract(ONE).shiftRight(1), this);
+    }
+
+    /**
+     * check if this number is a <a href="http://en.wikipedia.org/wiki/Euler-Jacobi_pseudoprime">Euler-Jacobi pseudoprime</a> for base a
+     *
+     * @param a The base
+     * @return True if a^[(n−1)/2] = (a/this) mod n, (a/this) beeing the Jacobi Symbol.
+     */
+    public boolean isPseudoprimeEulerJacobi(BigInt a) {
+        return legendreSymbol(a).equals(jacobiSymbol(a));
+    }
+
+    /**
+     * <p>Checks <a href="http://en.wikipedia.org/wiki/Fermat_primality_test">Fermat's Little Theorem</a> for base <i>b</i>; i.e.
+     * <code><i>b</i>^(this-1) == 1 (mod this)</code>.</p>
+     * The number of passes is set to 50 by default.
+     *
+     * @return <code>true</code> iff <code><i>b</i>^(this-1) == 1 (mod this)</code>,
+     *         for some <i>b</i>.
+     */
+    public boolean isPrimeFermatLittle() {
+        return isPrimeFermatLittle(50);
+    }
+
+    /**
+     * <p>Checks Fermat's Little Theorem for base <i>b</i>; i.e.
+     * <code><i>b</i>**(w-1) == 1 (mod w)</code>.</p>
+     *
+     * @param certainty the number of random bases to test.
+     * @return <code>true</code> iff <code><i>b</i>**(w-1) == 1 (mod w)</code>,
+     *         for some <i>b</i>.
+     */
+    public boolean isPrimeFermatLittle(int certainty) {
+        if (equals(TWO)) return true;
+        if (!testBit(0) || equals(ONE)) return false;
+        BigInt minusOne = subtract(ONE);
+        // Test for base 2
+        if (!TWO.modPow(minusOne, this).equals(ONE))
+            return false;
+        int length = minusOne.bitLength();
+        while (certainty-- > 0) {
+            // Generate a uniform random on (3, minusOne)
+            BigInt b;
+            do b = randomBig(length);
+            while (b.compareTo(TWO) <= 0 || b.compareTo(minusOne) > 0);
+            // test for base b
+            if (!b.modPow(minusOne, this).equals(ONE))
+                return false;
+        }
+        return true;
+    }
+
+    /**
+     * <p>Checks <a href="http://en.wikipedia.org/wiki/Solovay-Strassen_primality_test">Solovay–Strassen primality test</a></p>
+     * The number of passes is set to 50 by default.
+     *
+     * @return <code>true</code> if the number is a probable prime
+     */
+    public boolean isPrimeSolovayStrassen() {
+        return isPrimeSolovayStrassen(50);
+    }
+
+    /**
+     * <p>Checks <a href="http://en.wikipedia.org/wiki/Solovay-Strassen_primality_test">Solovay–Strassen primality test</a></p>
+     * The number of passes is set to 50 by default.
+     *
+     * @param certainty the number of random bases to test.
+     * @return <code>true</code> if the number is a probable prime
+     */
+    public boolean isPrimeSolovayStrassen(int certainty) {
+        if (equals(TWO)) return true;
+        if (!testBit(0) || equals(ONE)) return false;
+        BigInt minusOne = subtract(ONE);
+        int length = minusOne.bitLength();
+        BigInt exp = minusOne.shiftRight(1);
+        while (certainty-- > 0) {
+            BigInt a;
+            BigInt x;
+            do a = randomBig(length);
+            while (a.signum() == 0 || a.compareTo(minusOne) > 0 || (x = jacobiSymbol(a)).signum() < 0);
+            if (x.signum() == 0 || !x.equals(a.modPow(exp, this)))
+                return false;
+        }
+        return true;
+    }
 }
 
 //TODO: add methods: binomial(), factorial(), factorize(), fibonacci(), isFibonacci(), quadratic residue (http://primes.utm.edu/glossary/xpage/QuadraticResidue.html), Quadratic reciprocity, chineese remainder, (math.mtu.edu)
-//TODO: Prime.java, FourSquare - euler criterion (http://en.wikipedia.org/wiki/Euler_criterion), fermat little theorem (http://en.wikipedia.org/wiki/Fermat%27s_little_theorem + http://my.opera.com/duddev/blog/show.dml/298370)
+//TODO: Prime.java, FourSquare - euler criterion (http://en.wikipedia.org/wiki/Euler_criterion)
 //TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
 //TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
 //TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet
