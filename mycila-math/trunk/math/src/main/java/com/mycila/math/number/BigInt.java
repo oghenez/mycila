@@ -1650,8 +1650,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
 
 }
 
-//TODO: add methods: binomial(), factorial(), factorize(), fibonacci(), isFibonacci(), quadratic residue (http://primes.utm.edu/glossary/xpage/QuadraticResidue.html), chineese remainder
-//TODO: Prime.java euler criterion (http://en.wikipedia.org/wiki/Euler_criterion)
+//TODO: add methods: binomial(), factorial(), factorize(), fibonacci(), isFibonacci(), quadratic residue (http://primes.utm.edu/glossary/xpage/QuadraticResidue.html)
 //TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
 //TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
 //TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet
