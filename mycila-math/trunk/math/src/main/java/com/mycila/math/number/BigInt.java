@@ -1401,23 +1401,13 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     }
 
     /**
-     * Computes the <a href="http://en.wikipedia.org/wiki/Legendre_symbol">Legendre Symbol</a> for base a
-     *
-     * @param a The base
-     * @return The Legendre Symbol (a/this) = a^[(this-1)/2] mod this
-     */
-    public BigInt legendreSymbol(BigInt a) {
-        return a.modPow(subtract(ONE).shiftRight(1), this);
-    }
-
-    /**
      * check if this number is a <a href="http://en.wikipedia.org/wiki/Euler-Jacobi_pseudoprime">Euler-Jacobi pseudoprime</a> for base a
      *
      * @param a The base
      * @return True if a^[(n−1)/2] = (a/this) mod n, (a/this) beeing the Jacobi Symbol.
      */
     public boolean isPseudoprimeEulerJacobi(BigInt a) {
-        return legendreSymbol(a).equals(jacobiSymbol(a));
+        return a.modPow(subtract(ONE).shiftRight(1), this).equals(jacobiSymbol(a));
     }
 
     /**
@@ -1493,10 +1483,175 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         }
         return true;
     }
+
+    /**
+     * <p>Java port of Colin Plumb primality test (Euler Criterion)
+     * implementation for a base of 2 --from bnlib-1.1 release, function
+     * primeTest() in prime.c. this is his comments; (bn is our w).</p>
+     * <p/>
+     * <p>"Now, check that bn is prime. If it passes to the base 2, it's prime
+     * beyond all reasonable doubt, and everything else is just gravy, but it
+     * gives people warm fuzzies to do it.</p>
+     * <p/>
+     * <p>This starts with verifying Euler's criterion for a base of 2. This is
+     * the fastest pseudoprimality test that I know of, saving a modular squaring
+     * over a Fermat test, as well as being stronger. 7/8 of the time, it's as
+     * strong as a strong pseudoprimality test, too. (The exception being when
+     * <code>bn == 1 mod 8</code> and <code>2</code> is a quartic residue, i.e.
+     * <code>bn</code> is of the form <code>a^2 + (8*b)^2</code>.) The precise
+     * series of tricks used here is not documented anywhere, so here's an
+     * explanation. Euler's criterion states that if <code>p</code> is prime
+     * then <code>a^((p-1)/2)</code> is congruent to <code>Jacobi(a,p)</code>,
+     * modulo <code>p</code>. <code>Jacobi(a, p)</code> is a function which is
+     * <code>+1</code> if a is a square modulo <code>p</code>, and <code>-1</code>
+     * if it is not. For <code>a = 2</code>, this is particularly simple. It's
+     * <code>+1</code> if <code>p == +/-1 (mod 8)</code>, and <code>-1</code> if
+     * <code>m == +/-3 (mod 8)</code>. If <code>p == 3 (mod 4)</code>, then all
+     * a strong test does is compute <code>2^((p-1)/2)</code>. and see if it's
+     * <code>+1</code> or <code>-1</code>. (Euler's criterion says <i>which</i>
+     * it should be.) If <code>p == 5 (mod 8)</code>, then <code>2^((p-1)/2)</code>
+     * is <code>-1</code>, so the initial step in a strong test, looking at
+     * <code>2^((p-1)/4)</code>, is wasted --you're not going to find a
+     * <code>+/-1</code> before then if it <b>is</b> prime, and it shouldn't
+     * have either of those values if it isn't. So don't bother.</p>
+     * <p/>
+     * <p>The remaining case is <code>p == 1 (mod 8)</code>. In this case, we
+     * expect <code>2^((p-1)/2) == 1 (mod p)</code>, so we expect that the
+     * square root of this, <code>2^((p-1)/4)</code>, will be <code>+/-1 (mod p)
+     * </code>. Evaluating this saves us a modular squaring 1/4 of the time. If
+     * it's <code>-1</code>, a strong pseudoprimality test would call <code>p</code>
+     * prime as well. Only if the result is <code>+1</code>, indicating that
+     * <code>2</code> is not only a quadratic residue, but a quartic one as well,
+     * does a strong pseudoprimality test verify more things than this test does.
+     * Good enough.</p>
+     * <p/>
+     * <p>We could back that down another step, looking at <code>2^((p-1)/8)</code>
+     * if there was a cheap way to determine if <code>2</code> were expected to
+     * be a quartic residue or not. Dirichlet proved that <code>2</code> is a
+     * quadratic residue iff <code>p</code> is of the form <code>a^2 + (8*b^2)</code>.
+     * All primes <code>== 1 (mod 4)</code> can be expressed as <code>a^2 +
+     * (2*b)^2</code>, but I see no cheap way to evaluate this condition."</p>
+     *
+     * @param w the number to test.
+     * @return <code>true</code> iff the designated number passes Euler criterion
+     *         as implemented by Colin Plumb in his <i>bnlib</i> version 1.1.
+     */
+    public static boolean passEulerCriterion() {
+        // From
+        // first check if it's already a known prime
+        WeakReference obj = (WeakReference) knownPrimes.get(w);
+        if (obj != null && w.equals(obj.get())) {
+            if (DEBUG && debuglevel > 4) {
+                debug("found in known primes");
+            }
+            return true;
+        }
+
+        BigInteger w_minus_one = w.subtract(ONE);
+        BigInteger e = w_minus_one;
+        // l is the 3 least-significant bits of e
+        int l = e.and(BigInteger.valueOf(7L)).intValue();
+        int j = 1; // Where to start in prime array for strong prime tests
+        BigInteger A;
+        int k;
+
+        if ((l & 7) != 0) {
+            e = e.shiftRight(1);
+            A = TWO.modPow(e, w);
+            if ((l & 7) == 6) { // bn == 7 mod 8, expect +1
+                if (A.bitCount() != 1) {
+                    if (DEBUG && debuglevel > 4) {
+                        debug(w.toString(16) + " fails Euler criterion #1...");
+                    }
+                    return false; // Not prime
+                }
+                k = 1;
+            } else { // bn == 3 or 5 mod 8, expect -1 == bn-1
+                A = A.add(ONE);
+                if (!A.equals(w)) {
+                    if (DEBUG && debuglevel > 4) {
+                        debug(w.toString(16) + " fails Euler criterion #2...");
+                    }
+                    return false; // Not prime
+                }
+                k = 1;
+                if ((l & 4) != 0) { // bn == 5 mod 8, make odd for strong tests
+                    e = e.shiftRight(1);
+                    k = 2;
+                }
+            }
+        } else { // bn == 1 mod 8, expect 2^((bn-1)/4) == +/-1 mod bn
+            e = e.shiftRight(2);
+            A = TWO.modPow(e, w);
+            if (A.bitCount() == 1) {
+                j = 0; // Re-do strong prime test to base 2
+            } else {
+                A = A.add(ONE);
+                if (!A.equals(w)) {
+                    if (DEBUG && debuglevel > 4) {
+                        debug(w.toString(16) + " fails Euler criterion #3...");
+                    }
+                    return false; // Not prime
+                }
+            }
+            // bnMakeOdd(n) = d * 2^s. Replaces n with d and returns s.
+            k = e.getLowestSetBit();
+            e = e.shiftRight(k);
+            k += 2;
+        }
+        // It's prime!  Now go on to confirmation tests
+
+        // Now, e = (bn-1)/2^k is odd.  k >= 1, and has a given value with
+        // probability 2^-k, so its expected value is 2.  j = 1 in the usual case
+        // when the previous test was as good as a strong prime test, but 1/8 of
+        // the time, j = 0 because the strong prime test to the base 2 needs to
+        // be re-done.
+        //for (int i = j; i < SMALL_PRIME_COUNT; i++) {
+        for (int i = j; i < 13; i++) { // try only the first 13 primes
+            A = SMALL_PRIME[i];
+            A = A.modPow(e, w);
+            if (A.bitCount() == 1) {
+                continue; // Passed this test
+            }
+            l = k;
+            while (true) {
+//            A = A.add(ONE);
+//            if (A.equals(w)) { // Was result bn-1?
+                if (A.equals(w_minus_one)) { // Was result bn-1?
+                    break; // Prime
+                }
+                if (--l == 0) { // Reached end, not -1? luck?
+                    if (DEBUG && debuglevel > 4) {
+                        debug(w.toString(16) + " fails Euler criterion #4...");
+                    }
+                    return false; // Failed, not prime
+                }
+                // This portion is executed, on average, once
+//            A = A.subtract(ONE); // Put a back where it was
+                A = A.modPow(TWO, w);
+                if (A.bitCount() == 1) {
+                    if (DEBUG && debuglevel > 4) {
+                        debug(w.toString(16) + " fails Euler criterion #5...");
+                    }
+                    return false; // Failed, not prime
+                }
+            }
+            // It worked (to the base primes[i])
+        }
+        if (DEBUG && debuglevel > 4) {
+            debug(w.toString(16) + " passes Euler criterion...");
+        }
+
+        // store it in the known primes weak hash-map
+        knownPrimes.put(w, new WeakReference(w));
+
+        return true;
+    }
+
 }
 
-//TODO: add methods: binomial(), factorial(), factorize(), fibonacci(), isFibonacci(), quadratic residue (http://primes.utm.edu/glossary/xpage/QuadraticResidue.html), Quadratic reciprocity, chineese remainder, (math.mtu.edu)
-//TODO: Prime.java, FourSquare - euler criterion (http://en.wikipedia.org/wiki/Euler_criterion)
+//TODO: add methods: binomial(), factorial(), factorize(), fibonacci(), isFibonacci(), quadratic residue (http://primes.utm.edu/glossary/xpage/QuadraticResidue.html), chineese remainder
+//TODO: Prime.java euler criterion (http://en.wikipedia.org/wiki/Euler_criterion)
 //TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
 //TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
 //TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet
