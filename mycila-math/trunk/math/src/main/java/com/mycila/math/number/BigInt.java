@@ -1532,12 +1532,13 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * All primes <code>== 1 (mod 4)</code> can be expressed as <code>a^2 +
      * (2*b)^2</code>, but I see no cheap way to evaluate this condition."</p>
      *
-     * @param w the number to test.
      * @return <code>true</code> iff the designated number passes Euler criterion
      *         as implemented by Colin Plumb in his <i>bnlib</i> version 1.1.
      */
     public static boolean passEulerCriterion() {
-        // From
+        // From http://www.gnu.org/software/gnu-crypto/
+        //FIXME: add unit tests for http://www.gnu.org/software/gnu-crypto/primes-note.html
+
         // first check if it's already a known prime
         WeakReference obj = (WeakReference) knownPrimes.get(w);
         if (obj != null && w.equals(obj.get())) {
