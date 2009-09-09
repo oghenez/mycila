@@ -44,6 +44,8 @@ For Maven, use:
   * Asynchronous logging
   * Thresolds
 
+ * *Log when needed*: Logging is often used to output useful information only readable by developers. It is often the case where you need to log when developing, troubleshooting, but when you are in production, you do not want to decrease your performance by logging. This library enables just that: *the default logger is a NOP logger*, which does not log. You only enable logging as needed by calling `Loggers.useJDK()` or `Loggers.useLog4j()`, or you can use your own logging system.
+
 == How to use ==
 
 The usage is exactly like any other logging API. You also have checks like isDebug, isInfo, ... Like SLF4J, you have the ability to use message formatting options. They will be applied only if you can log with the wanted level, to not decrease performance.
