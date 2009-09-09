@@ -24,11 +24,50 @@ import org.junit.Test;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class JDKBigIntegerTest {
+
+    @Test
+    public void test_isPrimeEulerCriterion() {
+        //FIXME: RUN
+        assertFalse(ZERO.isPrimeEulerCriterion());
+        assertFalse(ONE.isPrimeEulerCriterion());
+        assertTrue(TWO.isPrimeEulerCriterion());
+        assertTrue(big(7).isPrimeEulerCriterion());
+        assertTrue(big(179).isPrimeEulerCriterion());
+        assertTrue(big(Integer.MAX_VALUE).isPrimeEulerCriterion());
+        assertTrue(big(Integer.MAX_VALUE).nextPrime().nextPrime().isPrimeEulerCriterion());
+        // Test some Carmichael numbers
+        assertFalse(big(561).isPrimeEulerCriterion());
+        assertFalse(big(1105).isPrimeEulerCriterion());
+        assertFalse(big(1729).isPrimeEulerCriterion());
+        assertFalse(big(2100901).isPrimeEulerCriterion());
+        for (int p : Sieve.to(10000).asArray())
+            assertTrue(big(p).isPrimeEulerCriterion());
+    }
+
+    @Test
+    public void test_false_positives() {
+        //FIXME: RUN
+        // false-positive reported by JDK
+        Scanner primes = new Scanner(getClass().getResourceAsStream("/primes.txt"));
+        while (primes.hasNext()) {
+            String prime = primes.next();
+            System.out.println("PRIME: " + prime);
+            System.out.println(" - JDK7: " + new BigInteger(prime, 16).isProbablePrime(50));
+            System.out.println(" - JDK6: " + new java.math.BigInteger(prime, 16).isProbablePrime(50));
+            System.out.println(" - LucasLehmer: " + big(prime, 16).isPrimeLucasLehmer());
+            System.out.println(" - FermatLittle: " + big(prime, 16).isPrimeFermatLittle());
+            System.out.println(" - Mersenne: " + big(prime, 16).isPrimeMersenne());
+            System.out.println(" - MillerRabin: " + big(prime, 16).isPrimeMillerRabin());
+            System.out.println(" - SolovayStrassen: " + big(prime, 16).isPrimeSolovayStrassen());
+
+        }
+    }
 
     @Test
     public void test_isEulerJacobiPseudoprime() {
