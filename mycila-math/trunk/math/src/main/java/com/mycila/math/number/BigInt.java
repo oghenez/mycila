@@ -18,6 +18,7 @@ package com.mycila.math.number;
 import com.mycila.math.distribution.Distribution;
 import com.mycila.math.list.ByteProcedure;
 import com.mycila.math.prime.PrimaltyTest;
+import com.mycila.math.prime.Sieve;
 
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -44,7 +45,6 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     public static final BigInt INT_MAX;
     public static final BigInt LONG_MAX;
 
-    private static final Random RANDOM = new SecureRandom();
     private static final BigIntFactory FACTORY;
 
     static {
@@ -1484,6 +1484,10 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         return true;
     }
 
+    public boolean isPrimeEulerCriterion() {
+        return isPrimeEulerCriterion(20);
+    }
+
     /**
      * <p>Java port of Colin Plumb primality test (Euler Criterion)
      * implementation for a base of 2 --from bnlib-1.1 release, function
@@ -1532,49 +1536,31 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * All primes <code>== 1 (mod 4)</code> can be expressed as <code>a^2 +
      * (2*b)^2</code>, but I see no cheap way to evaluate this condition."</p>
      *
+     * @param numTests Number of primes to verify against
      * @return <code>true</code> iff the designated number passes Euler criterion
      *         as implemented by Colin Plumb in his <i>bnlib</i> version 1.1.
      */
-    public static boolean passEulerCriterion() {
+    public boolean isPrimeEulerCriterion(int numTests) {
         // From http://www.gnu.org/software/gnu-crypto/
-        //FIXME: add unit tests for http://www.gnu.org/software/gnu-crypto/primes-note.html
-
         // first check if it's already a known prime
-        WeakReference obj = (WeakReference) knownPrimes.get(w);
-        if (obj != null && w.equals(obj.get())) {
-            if (DEBUG && debuglevel > 4) {
-                debug("found in known primes");
-            }
-            return true;
-        }
-
-        BigInteger w_minus_one = w.subtract(ONE);
-        BigInteger e = w_minus_one;
+        BigInt minusOne = subtract(ONE);
+        BigInt e = minusOne;
         // l is the 3 least-significant bits of e
-        int l = e.and(BigInteger.valueOf(7L)).intValue();
+        int l = e.and(SEVEN).toInt();
         int j = 1; // Where to start in prime array for strong prime tests
-        BigInteger A;
+        BigInt A;
         int k;
-
         if ((l & 7) != 0) {
             e = e.shiftRight(1);
-            A = TWO.modPow(e, w);
+            A = TWO.modPow(e, this);
             if ((l & 7) == 6) { // bn == 7 mod 8, expect +1
-                if (A.bitCount() != 1) {
-                    if (DEBUG && debuglevel > 4) {
-                        debug(w.toString(16) + " fails Euler criterion #1...");
-                    }
+                if (A.bitCount() != 1)
                     return false; // Not prime
-                }
                 k = 1;
             } else { // bn == 3 or 5 mod 8, expect -1 == bn-1
                 A = A.add(ONE);
-                if (!A.equals(w)) {
-                    if (DEBUG && debuglevel > 4) {
-                        debug(w.toString(16) + " fails Euler criterion #2...");
-                    }
+                if (!A.equals(this))
                     return false; // Not prime
-                }
                 k = 1;
                 if ((l & 4) != 0) { // bn == 5 mod 8, make odd for strong tests
                     e = e.shiftRight(1);
@@ -1583,69 +1569,47 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
             }
         } else { // bn == 1 mod 8, expect 2^((bn-1)/4) == +/-1 mod bn
             e = e.shiftRight(2);
-            A = TWO.modPow(e, w);
+            A = TWO.modPow(e, this);
             if (A.bitCount() == 1) {
                 j = 0; // Re-do strong prime test to base 2
             } else {
                 A = A.add(ONE);
-                if (!A.equals(w)) {
-                    if (DEBUG && debuglevel > 4) {
-                        debug(w.toString(16) + " fails Euler criterion #3...");
-                    }
+                if (!A.equals(this))
                     return false; // Not prime
-                }
             }
             // bnMakeOdd(n) = d * 2^s. Replaces n with d and returns s.
-            k = e.getLowestSetBit();
+            k = e.lowestSetBit();
             e = e.shiftRight(k);
             k += 2;
         }
         // It's prime!  Now go on to confirmation tests
-
         // Now, e = (bn-1)/2^k is odd.  k >= 1, and has a given value with
         // probability 2^-k, so its expected value is 2.  j = 1 in the usual case
         // when the previous test was as good as a strong prime test, but 1/8 of
         // the time, j = 0 because the strong prime test to the base 2 needs to
         // be re-done.
-        //for (int i = j; i < SMALL_PRIME_COUNT; i++) {
-        for (int i = j; i < 13; i++) { // try only the first 13 primes
-            A = SMALL_PRIME[i];
-            A = A.modPow(e, w);
-            if (A.bitCount() == 1) {
+        Sieve sieve = Sieve.to(numTests);
+        for (int i = j, max = sieve.size(); i < max; i++) { // try only the first 13 primes
+            A = big(sieve.get(i));
+            A = A.modPow(e, this);
+            if (A.bitCount() == 1)
                 continue; // Passed this test
-            }
             l = k;
             while (true) {
-//            A = A.add(ONE);
-//            if (A.equals(w)) { // Was result bn-1?
-                if (A.equals(w_minus_one)) { // Was result bn-1?
+                // A = A.add(ONE);
+                // if (A.equals(w)) { // Was result bn-1?
+                if (A.equals(minusOne)) // Was result bn-1?
                     break; // Prime
-                }
-                if (--l == 0) { // Reached end, not -1? luck?
-                    if (DEBUG && debuglevel > 4) {
-                        debug(w.toString(16) + " fails Euler criterion #4...");
-                    }
+                if (--l == 0) // Reached end, not -1? luck?
                     return false; // Failed, not prime
-                }
                 // This portion is executed, on average, once
-//            A = A.subtract(ONE); // Put a back where it was
-                A = A.modPow(TWO, w);
-                if (A.bitCount() == 1) {
-                    if (DEBUG && debuglevel > 4) {
-                        debug(w.toString(16) + " fails Euler criterion #5...");
-                    }
+                // A = A.subtract(ONE); // Put a back where it was
+                A = A.modPow(TWO, this);
+                if (A.bitCount() == 1)
                     return false; // Failed, not prime
-                }
             }
             // It worked (to the base primes[i])
         }
-        if (DEBUG && debuglevel > 4) {
-            debug(w.toString(16) + " passes Euler criterion...");
-        }
-
-        // store it in the known primes weak hash-map
-        knownPrimes.put(w, new WeakReference(w));
-
         return true;
     }
 
