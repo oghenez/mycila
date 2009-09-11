@@ -20,9 +20,7 @@ import com.mycila.math.list.ByteProcedure;
 import com.mycila.math.prime.PrimaltyTest;
 import com.mycila.math.prime.Sieve;
 
-import java.security.SecureRandom;
 import java.util.Arrays;
-import java.util.Random;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -1541,6 +1539,8 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *         as implemented by Colin Plumb in his <i>bnlib</i> version 1.1.
      */
     public boolean isPrimeEulerCriterion(int numTests) {
+        if (equals(TWO)) return true;
+        if (!testBit(0) || equals(ONE)) return false;
         // From http://www.gnu.org/software/gnu-crypto/
         // first check if it's already a known prime
         BigInt minusOne = subtract(ONE);
@@ -1589,7 +1589,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         // the time, j = 0 because the strong prime test to the base 2 needs to
         // be re-done.
         Sieve sieve = Sieve.to(numTests);
-        for (int i = j, max = sieve.size(); i < max; i++) { // try only the first 13 primes
+        for (int i = j, max = sieve.size(); i < max; i++) {
             A = big(sieve.get(i));
             A = A.modPow(e, this);
             if (A.bitCount() == 1)

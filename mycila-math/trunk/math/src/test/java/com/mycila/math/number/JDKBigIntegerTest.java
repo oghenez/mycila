@@ -32,28 +32,8 @@ import java.util.Scanner;
 public final class JDKBigIntegerTest {
 
     @Test
-    public void test_isPrimeEulerCriterion() {
-        //FIXME: RUN
-        assertFalse(ZERO.isPrimeEulerCriterion());
-        assertFalse(ONE.isPrimeEulerCriterion());
-        assertTrue(TWO.isPrimeEulerCriterion());
-        assertTrue(big(7).isPrimeEulerCriterion());
-        assertTrue(big(179).isPrimeEulerCriterion());
-        assertTrue(big(Integer.MAX_VALUE).isPrimeEulerCriterion());
-        assertTrue(big(Integer.MAX_VALUE).nextPrime().nextPrime().isPrimeEulerCriterion());
-        // Test some Carmichael numbers
-        assertFalse(big(561).isPrimeEulerCriterion());
-        assertFalse(big(1105).isPrimeEulerCriterion());
-        assertFalse(big(1729).isPrimeEulerCriterion());
-        assertFalse(big(2100901).isPrimeEulerCriterion());
-        for (int p : Sieve.to(10000).asArray())
-            assertTrue(big(p).isPrimeEulerCriterion());
-    }
-
-    @Test
     public void test_false_positives() {
-        //FIXME: RUN
-        // false-positive reported by JDK
+        // false-positive reported at http://www.gnu.org/software/gnu-crypto/primes-note.html
         Scanner primes = new Scanner(getClass().getResourceAsStream("/primes.txt"));
         while (primes.hasNext()) {
             String prime = primes.next();
@@ -62,10 +42,21 @@ public final class JDKBigIntegerTest {
             System.out.println(" - JDK6: " + new java.math.BigInteger(prime, 16).isProbablePrime(50));
             System.out.println(" - LucasLehmer: " + big(prime, 16).isPrimeLucasLehmer());
             System.out.println(" - FermatLittle: " + big(prime, 16).isPrimeFermatLittle());
-            System.out.println(" - Mersenne: " + big(prime, 16).isPrimeMersenne());
             System.out.println(" - MillerRabin: " + big(prime, 16).isPrimeMillerRabin());
             System.out.println(" - SolovayStrassen: " + big(prime, 16).isPrimeSolovayStrassen());
+            System.out.println(" - EulerCriterion: " + big(prime, 16).isPrimeEulerCriterion());
 
+        }
+        primes = new Scanner(getClass().getResourceAsStream("/primes.txt"));
+        while (primes.hasNext()) {
+            String prime = primes.next();
+            assertTrue(new BigInteger(prime, 16).isProbablePrime(50));
+            assertTrue(new java.math.BigInteger(prime, 16).isProbablePrime(50));
+            assertTrue(big(prime, 16).isPrimeLucasLehmer());
+            assertTrue(big(prime, 16).isPrimeFermatLittle());
+            assertTrue(big(prime, 16).isPrimeMillerRabin());
+            assertTrue(big(prime, 16).isPrimeSolovayStrassen());
+            assertTrue(big(prime, 16).isPrimeEulerCriterion());
         }
     }
 
