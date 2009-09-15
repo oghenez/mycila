@@ -30,8 +30,16 @@ public final class Polygon {
     }
 
     public static long isSquare(long number) {
-        double test = Math.sqrt(number);
-        return test == (long) test ? (long) test : -1;
+        switch ((int) (number & 0xF)) {
+            case 0:
+            case 1:
+            case 4:
+            case 9:
+                long tst = (long) Math.sqrt(number);
+                return tst * tst == number ? tst : -1;
+            default:
+                return -1;
+        }
     }
 
     public static long pentagonal(long index) {

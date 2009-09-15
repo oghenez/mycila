@@ -17,6 +17,7 @@ package com.mycila.math;
 
 import com.mycila.math.number.BigInt;
 import static com.mycila.math.number.BigInt.*;
+import com.mycila.math.prime.Primes;
 import com.mycila.math.prime.Sieve;
 
 /**
@@ -87,7 +88,7 @@ public final class Factorial {
             if (((number / prime) & 1) == 1)
                 primeList[count++] = prime;
         BigInt primorial = sieve.primorial((number >>> 1) + 1, number);
-        return primorial.multiply(Product.product(primeList, 0, count));
+        return primorial.multiply(Primes.product(primeList, 0, count));
     }
 
     /**
