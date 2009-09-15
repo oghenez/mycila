@@ -25,8 +25,6 @@ import java.util.Arrays;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-//TODO: make wrapper for optimized BigInteger + BigIntegerMath.java, apflot, jscience, ... + Javolution contexts and factories + impl. paralell computing (factorial, products, ...)
-//TODO: make wrapper for GMP java avec https://jna.dev.java.net/ + http://code.google.com/p/jnaerator/
 public abstract class BigInt<T> implements Comparable<BigInt> {
 
     public static final BigInt ZERO;
@@ -1645,3 +1643,5 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
 //TODO: Toom-Cook multiplication (BigInteger JDK 7)
 //TODO: multiplyKaratsuba parallel (LargeInteger.java)
 //TODO: productTo: find an algorithm to multiply n..m consecutive numbers
+//TODO: make wrapper for optimized BigInteger + BigIntegerMath.java, apflot, jscience, ... + Javolution contexts and factories + impl. paralell computing (factorial, products, ...)
+//TODO: make wrapper for GMP java avec https://jna.dev.java.net/ + http://code.google.com/p/jnaerator/
