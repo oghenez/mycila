@@ -29,7 +29,7 @@ import java.util.Scanner;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class JDKBigIntegerTest {
+public final class BigIntTest {
 
     @Test
     public void test_false_positives() {
