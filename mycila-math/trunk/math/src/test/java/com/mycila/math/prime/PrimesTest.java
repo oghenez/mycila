@@ -15,6 +15,7 @@
  */
 package com.mycila.math.prime;
 
+import static com.mycila.math.number.BigInt.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -22,6 +23,16 @@ import org.junit.Test;
  * @author Mathieu Carbou
  */
 public final class PrimesTest {
+
+    @Test
+    public void test_product() {
+        assertEquals(Primes.product(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 0, 0), big(1));
+        assertEquals(Primes.product(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 0, 1), big(1));
+        assertEquals(Primes.product(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 4, 1), big(5));
+        assertEquals(Primes.product(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 4, 2), big(30));
+        assertEquals(Primes.product(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 0, 10), big(3628800));
+        assertEquals(Primes.product(new int[]{1, 2, Integer.MAX_VALUE, 4, 5, 6, Integer.MAX_VALUE, 8, 9, 10}, 1, 7), big("8854437147134247569280"));
+    }
 
     @Test
     public void test_sieveOfEratosthenes() {

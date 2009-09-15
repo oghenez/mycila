@@ -28,27 +28,28 @@ public final class Primes {
     private Primes() {
     }
 
-    //TODO: improve perf of multiplication (Karatsuba algorithm, Toom-Cook multiplication, Sch-nhage-Strassen algorithm): see improved BigInteger + see paralewll computing in jscience
-    // - http://en.wikipedia.org/wiki/Karatsuba_algorithm
-    // - http://en.wikipedia.org/wiki/Sch%C3%B6nhage-Strassen_algorithm
-    // - http://en.wikipedia.org/wiki/Toom%E2%80%93Cook_multiplication
-    // - LargeInteger.java, parallel
-
     public static BigInt product(int[] numbers, int offset, int length) {
-        if (offset < 0 || offset + length > numbers.length)
-            throw new IllegalArgumentException("Bad offset or length: " + offset + " / " + length);
-        if (length < 3) {
-            if (length <= 0) return ONE;
-            if (length == 1) return big(numbers[offset]);
-            return big((long) numbers[offset] * (long) numbers[offset + 1]);
+        switch (length) {
+            case 0:
+                return ONE;
+            case 1:
+                return big(numbers[offset]);
+            case 2:
+                return big((long) numbers[offset] * (long) numbers[offset + 1]);
         }
+        long[] res = new long[(length >>> 1) + (length & 1)];
+        int pos = 0;
+        for (int i = offset, max = offset + length; i < max;) {
+            res[pos] = numbers[i++];
+            // 4294967298 = Long.MAX_VALUE / Integer.MAX_VALUE = 223372036854775807 / 2147483647;
+            while (i < max && res[pos] <= 4294967298L)
+                res[pos] *= numbers[i++];
+            pos++;
+        }
+        if (pos == 1) return big(res[0]);
         BigInt product = ONE;
-        int i = offset + length - 2;
-        // Integer.MAX_VALUE * Integer.MAX_VALUE fits in a long, so we can multiply both at once
-        for (; i >= offset; i -= 2)
-            product = product.multiply(big((long) numbers[i] * (long) numbers[i + 1]));
-        if (i + 1 == offset)
-            product = product.multiply(big(numbers[offset]));
+        while (pos-- > 0)
+            product = product.multiply(big(res[pos]));
         return product;
     }
 

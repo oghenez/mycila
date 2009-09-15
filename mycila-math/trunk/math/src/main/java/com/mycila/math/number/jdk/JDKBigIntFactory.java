@@ -27,7 +27,8 @@ import java.util.Random;
  */
 public final class JDKBigIntFactory implements BigIntFactory<BigInteger> {
 
-    private static final int MAX = 4096;
+    private static final int MAX = 262144;
+    private static final int SHIFT = 32 - Integer.numberOfLeadingZeros(MAX - 1);
     private static final JDKBigInt[] CACHE = new JDKBigInt[MAX];
     private static final Random RANDOM = new SecureRandom();
 
@@ -38,14 +39,14 @@ public final class JDKBigIntFactory implements BigIntFactory<BigInteger> {
 
     @Override
     public BigInt create(int number) {
-        return (number >>> 12) == 0 ?
+        return (number >>> SHIFT) == 0 ?
                 CACHE[number] :
                 wrap(BigInteger.valueOf(number), 10);
     }
 
     @Override
     public BigInt create(long number) {
-        return (number >>> 12) == 0 ?
+        return (number >>> SHIFT) == 0 ?
                 CACHE[((int) number)] :
                 wrap(BigInteger.valueOf(number), 10);
     }

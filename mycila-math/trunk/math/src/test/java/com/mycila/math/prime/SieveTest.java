@@ -45,6 +45,10 @@ public final class SieveTest {
         assertEquals(sieve.primorial(0, 0), big(1));
         assertEquals(sieve.primorial(0, 1), big(1));
         assertEquals(sieve.primorial(0, 2), big(2));
+
+        long time = System.currentTimeMillis();
+        for (int i = 5; i < 10000; i++) Sieve.to(i).primorial();
+        System.out.println(System.currentTimeMillis() - time);
     }
 
     @Test

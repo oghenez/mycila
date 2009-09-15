@@ -124,13 +124,13 @@ public final class BigIntTest {
 
     @Test
     public void test_range() {
-        assertArrayEquals(big(0).pandigitalRange(), new int[]{0, 0});
-        assertArrayEquals(big(1).pandigitalRange(), new int[]{1, 1});
-        assertArrayEquals(big(57603421).pandigitalRange(), new int[]{0, 7});
-        assertArrayEquals(big(5763421).pandigitalRange(), new int[]{1, 7});
-        assertArrayEquals(big(10).pandigitalRange(), new int[]{0, 1});
+        assertArrayEquals(big(0).pandigitalRange(), new byte[]{0, 0});
+        assertArrayEquals(big(1).pandigitalRange(), new byte[]{1, 1});
+        assertArrayEquals(big(57603421).pandigitalRange(), new byte[]{0, 7});
+        assertArrayEquals(big(5763421).pandigitalRange(), new byte[]{1, 7});
+        assertArrayEquals(big(10).pandigitalRange(), new byte[]{0, 1});
         assertArrayEquals(big(23459).pandigitalRange(), null);
-        assertArrayEquals(big(9876543210L).pandigitalRange(), new int[]{0, 9});
+        assertArrayEquals(big(9876543210L).pandigitalRange(), new byte[]{0, 9});
     }
 
     @Test
