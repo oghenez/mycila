@@ -1037,17 +1037,17 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *
      * @return An array of tewo values a (position 0) and b (position b) if the number is a to b pandigital. Otherwise, returns null.
      */
-    public int[] pandigitalRange() {
-        if (signum() == 0) return new int[]{0, 0};
+    public byte[] pandigitalRange() {
+        if (signum() == 0) return new byte[]{0, 0};
         int bitset = 0;
         byte[] digits = digits();
         for (byte digit : digits) bitset |= 1 << digit;
-        int from = 0;
+        byte from = 0;
         int mask = 1;
         for (; mask <= 512 && (bitset & mask) == 0; mask <<= 1) from++;
-        int to = from;
+        byte to = from;
         for (; mask <= 512 && (bitset & mask) == mask; mask <<= 1) to++;
-        return (bitset >>> to) == 0 ? new int[]{from, to - 1} : null;
+        return (bitset >>> to) == 0 ? new byte[]{from, (byte) (to - 1)} : null;
     }
 
     /**
@@ -1173,6 +1173,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *          the direction of the product, from this to n or n to this
      * @return the consecutive product
      */
+    //FIXME: Find an algorithm to multiply n..m consecutive numbers
     public BigInt productTo(BigInt n) {
         BigInt start = this;
         if (compareTo(n) > 0) {
