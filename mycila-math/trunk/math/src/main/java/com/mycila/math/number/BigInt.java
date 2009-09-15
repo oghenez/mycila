@@ -1173,7 +1173,6 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      *          the direction of the product, from this to n or n to this
      * @return the consecutive product
      */
-    //FIXME: Find an algorithm to multiply n..m consecutive numbers
     public BigInt productTo(BigInt n) {
         BigInt start = this;
         if (compareTo(n) > 0) {
@@ -1614,9 +1613,35 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         return true;
     }
 
+    /**
+     * Returns the product of this BigInt by another BigInt using the
+     * <a href="http://en.wikipedia.org/wiki/Karatsuba_algorithm">Karatsuba algorithm</a>
+     *
+     * @param val Multiplicator
+     * @return the product
+     */
+    public BigInt multiplyKaratsuba(BigInt val) {
+        int n = Math.max(bitLength(), val.bitLength());
+        n = (n >>> 1) + (n & 1);
+        // x = a + 2^N b,   y = c + 2^N d
+        BigInt b = shiftRight(n);
+        BigInt a = subtract(b.shiftLeft(n));
+        BigInt d = val.shiftRight(n);
+        BigInt c = val.subtract(d.shiftLeft(n));
+        // compute sub-expressions
+        BigInt ac = a.multiply(c);
+        BigInt bd = b.multiply(d);
+        BigInt abcd = a.add(b).multiply(c.add(d));
+        // a*c + 2^n * ((a+b)*(c+d)-(a*c+b*d)) + b*d*2^2n 
+        return ac.add(abcd.subtract(ac).subtract(bd).shiftLeft(n)).add(bd.shiftLeft(n << 1));
+    }
+
 }
 
 //TODO: add methods: binomial(), factorial(), factorize() + polar rho, fibonacci(), parallel fibonacci, isFibonacci(), quadratic residue (http://primes.utm.edu/glossary/xpage/QuadraticResidue.html)
 //TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
 //TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
 //TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet
+//TODO: Toom-Cook multiplication (BigInteger JDK 7)
+//TODO: multiplyKaratsuba parallel (LargeInteger.java)
+//TODO: productTo: find an algorithm to multiply n..m consecutive numbers

@@ -24,6 +24,8 @@ import java.math.BigInteger;
  */
 final class JDKBigInt extends BigInt<BigInteger> {
 
+    private static final int KARATSUBA_THRESHOLD = 1500;
+
     private final int radix;
 
     JDKBigInt(BigInteger bigInteger, int radix) {
@@ -103,7 +105,9 @@ final class JDKBigInt extends BigInt<BigInteger> {
 
     @Override
     public BigInt multiply(BigInt val) {
-        return new JDKBigInt(internal.multiply((BigInteger) val.internal), radix);
+        if (bitLength() < KARATSUBA_THRESHOLD || val.bitLength() < KARATSUBA_THRESHOLD)
+            return new JDKBigInt(internal.multiply((BigInteger) val.internal), radix);
+        return multiplyKaratsuba(val);
     }
 
     @Override
