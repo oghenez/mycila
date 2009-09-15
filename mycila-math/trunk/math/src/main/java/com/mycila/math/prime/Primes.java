@@ -15,6 +15,8 @@
  */
 package com.mycila.math.prime;
 
+import com.mycila.math.concurrent.ConcurrentOperations;
+import com.mycila.math.concurrent.MultiplyOperation;
 import com.mycila.math.number.BigInt;
 import static com.mycila.math.number.BigInt.*;
 
@@ -29,14 +31,9 @@ public final class Primes {
     }
 
     public static BigInt product(int[] numbers, int offset, int length) {
-        switch (length) {
-            case 0:
-                return ONE;
-            case 1:
-                return big(numbers[offset]);
-            case 2:
-                return big((long) numbers[offset] * (long) numbers[offset + 1]);
-        }
+        if (length == 0) return ONE;
+        if (length == 1) return big(numbers[offset]);
+        if (length == 2) return big((long) numbers[offset] * (long) numbers[offset + 1]);
         long[] res = new long[(length >>> 1) + (length & 1)];
         int pos = 0;
         for (int i = offset, max = offset + length; i < max;) {
@@ -46,11 +43,15 @@ public final class Primes {
                 res[pos] *= numbers[i++];
             pos++;
         }
+        //FIXME: debug
         if (pos == 1) return big(res[0]);
-        BigInt product = ONE;
-        while (pos-- > 0)
-            product = product.multiply(big(res[pos]));
-        return product;
+        if (pos == 2) return big(res[0]).multiply(big(res[1]));
+        MultiplyOperation multiply = ConcurrentOperations.multiply();
+        for (pos--; pos > 0; pos -= 2)
+            multiply.multiply(big(res[pos]), big(res[pos - 1]));
+        while (multiply.size() > 1)
+            multiply.multiply(multiply.take(), multiply.take());
+        return pos == 0 ? big(res[0]).multiply(multiply.take()) : multiply.take();
     }
 
     /**

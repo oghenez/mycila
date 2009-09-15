@@ -32,6 +32,7 @@ public final class PrimesTest {
         assertEquals(Primes.product(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 4, 2), big(30));
         assertEquals(Primes.product(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 0, 10), big(3628800));
         assertEquals(Primes.product(new int[]{1, 2, Integer.MAX_VALUE, 4, 5, 6, Integer.MAX_VALUE, 8, 9, 10}, 1, 7), big("8854437147134247569280"));
+        assertEquals(Primes.product(new int[]{1, 2, Integer.MAX_VALUE, 4, 5, 6, Integer.MAX_VALUE, 8, 9, 10}, 1, 8), big("79689934324208228123520"));
     }
 
     @Test

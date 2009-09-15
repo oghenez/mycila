@@ -105,9 +105,10 @@ final class JDKBigInt extends BigInt<BigInteger> {
 
     @Override
     public BigInt multiply(BigInt val) {
-        if (bitLength() < KARATSUBA_THRESHOLD || val.bitLength() < KARATSUBA_THRESHOLD)
+        //FIXME: activate karatsuba
+        //if (bitLength() < KARATSUBA_THRESHOLD || val.bitLength() < KARATSUBA_THRESHOLD)
             return new JDKBigInt(internal.multiply((BigInteger) val.internal), radix);
-        return multiplyKaratsuba(val);
+        //return multiplyKaratsuba(val);
     }
 
     @Override
