@@ -11,6 +11,7 @@ import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -31,5 +32,12 @@ final class WrapperTest {
         categoriesAndRanks.get("blogs").put(new URL("http://thecodersbreakfast.net/"), 5);
 
         System.out.println(categoriesAndRanks);
+
+        Map<Integer, StringBuilder> names = wrap(new TreeMap<Integer, StringBuilder>(), StringBuilder.class);
+        names.get(3).append("This is number '").append(3).append("'.");
+        names.get(10).append("This is number '").append(10).append("'.");
+        names.get(0).append("This is number '").append(0).append("'.");
+
+        System.out.println(names);
     }
 }
