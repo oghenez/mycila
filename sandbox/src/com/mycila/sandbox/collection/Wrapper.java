@@ -8,9 +8,9 @@ import java.util.Map;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Collections {
+public final class Wrapper {
 
-    private Collections() {
+    private Wrapper() {
     }
 
     @SuppressWarnings({"unchecked"})

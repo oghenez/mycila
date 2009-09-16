@@ -1,6 +1,6 @@
 package com.mycila.sandbox.collection;
 
-import static com.mycila.sandbox.collection.Collections.*;
+import static com.mycila.sandbox.collection.Wrapper.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class MultiCollectionTest {
+final class WrapperTest {
     public static void main(String... args) throws MalformedURLException {
         Map<String, List<Integer>> numbers = new HashMap<String, List<Integer>>();
 
