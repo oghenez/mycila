@@ -42,6 +42,7 @@ public final class FactorialTest {
         System.out.println(Factorial.primeSwingLuschny(1000000));
     }
 
+    // -server -Xmx1g -Xms1g -XX:PermSize=256m -XX:MaxPermSize=256m
     @Test
     public void test_primeSwingLuschny() {
         for (int i = 0; i <= 20; i++)

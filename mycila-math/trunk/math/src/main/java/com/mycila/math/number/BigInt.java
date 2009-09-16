@@ -1645,3 +1645,4 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
 //TODO: productTo: find an algorithm to multiply n..m consecutive numbers
 //TODO: make wrapper for optimized BigInteger + BigIntegerMath.java, apflot, jscience, ... + Javolution contexts and factories + impl. paralell computing (factorial, products, ...)
 //TODO: make wrapper for GMP java avec https://jna.dev.java.net/ + http://code.google.com/p/jnaerator/
+//TODO: BigIntegerMath.java: CRT, Quadrati, pMinusOneFactor (Pollard p-1)
