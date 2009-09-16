@@ -15,9 +15,12 @@
  */
 package com.mycila.math.prime;
 
+import com.mycila.math.number.BigInt;
 import static com.mycila.math.number.BigInt.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
+
+import java.security.SecureRandom;
 
 /**
  * @author Mathieu Carbou
@@ -33,6 +36,28 @@ public final class PrimesTest {
         assertEquals(Primes.product(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 0, 10), big(3628800));
         assertEquals(Primes.product(new int[]{1, 2, Integer.MAX_VALUE, 4, 5, 6, Integer.MAX_VALUE, 8, 9, 10}, 1, 7), big("8854437147134247569280"));
         assertEquals(Primes.product(new int[]{1, 2, Integer.MAX_VALUE, 4, 5, 6, Integer.MAX_VALUE, 8, 9, 10}, 1, 8), big("79689934324208228123520"));
+        assertEquals(Primes.product(new int[]{Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE}, 0, 4), big("21267647892944572736998860269687930881"));
+        assertEquals(Primes.product(new int[]{Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE}, 0, 9), INT_MAX.pow(9));
+    }
+
+    @Test
+    public void test_product_perf() {
+        SecureRandom random = new SecureRandom();
+        int length = 30000;
+        int[] numbers = new int[length];
+        for (int i = 0; i < numbers.length; i++)
+            numbers[i] = random.nextInt() & 0x7FFFFFFF;
+        long time = System.currentTimeMillis();
+        BigInt product = ONE;
+        for (int number : numbers)
+            product = product.multiply(big(number));
+        time = System.currentTimeMillis() - time;
+        System.out.println("in " + time);
+        time = System.currentTimeMillis();
+        BigInt p = Primes.product(numbers, 0, length);
+        time = System.currentTimeMillis() - time;
+        System.out.println("in " + time);
+        assertEquals(product, p);
     }
 
     @Test

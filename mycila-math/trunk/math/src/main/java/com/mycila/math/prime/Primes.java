@@ -43,9 +43,10 @@ public final class Primes {
                 res[pos] *= numbers[i++];
             pos++;
         }
-        //FIXME: debug
-        if (pos == 1) return big(res[0]);
-        if (pos == 2) return big(res[0]).multiply(big(res[1]));
+        if (pos == 1)
+            return big(res[0]);
+        if (pos == 2)
+            return big(res[0]).multiply(big(res[1]));
         MultiplyOperation multiply = ConcurrentOperations.multiply();
         for (pos--; pos > 0; pos -= 2)
             multiply.multiply(big(res[pos]), big(res[pos - 1]));
