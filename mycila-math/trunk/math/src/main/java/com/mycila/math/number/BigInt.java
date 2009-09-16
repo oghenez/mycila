@@ -1634,15 +1634,198 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         return ac.add(abcd.subtract(ac).subtract(bd).shiftLeft(n)).add(bd.shiftLeft(n << 1));
     }
 
+    /**
+     * Multiplies two BigIntegers using a 3-way Toom-Cook multiplication
+     * algorithm.  This is a recursive divide-and-conquer algorithm which is
+     * more efficient for large numbers than what is commonly called the
+     * "grade-school" algorithm used in multiplyToLen.  If the numbers to be
+     * multiplied have length n, the "grade-school" algorithm has an
+     * asymptotic complexity of O(n^2).  In contrast, 3-way Toom-Cook has a
+     * complexity of about O(n^1.465).  It achieves this increased asymptotic
+     * performance by breaking each number into three parts and by doing 5
+     * multiplies instead of 9 when evaluating the product.  Due to overhead
+     * (additions, shifts, and one division) in the Toom-Cook algorithm, it
+     * should only be used when both numbers are larger than a certain
+     * threshold (found experimentally).  This threshold is generally larger
+     * than that for Karatsuba multiplication, so this algorithm is generally
+     * only used when numbers become significantly larger.
+     * <p/>
+     * The algorithm used is the "optimal" 3-way Toom-Cook algorithm outlined
+     * by Marco Bodrato.
+     * <p/>
+     * See: http://bodrato.it/toom-cook/
+     * http://bodrato.it/papers/#WAIFI2007
+     * <p/>
+     * "Towards Optimal Toom-Cook Multiplication for Univariate and
+     * Multivariate Polynomials in Characteristic 2 and 0." by Marco BODRATO;
+     * In C.Carlet and B.Sunar, Eds., "WAIFI'07 proceedings", p. 116-133,
+     * LNCS #4547. Springer, Madrid, Spain, June 21-22, 2007.
+     *
+     * @param val Multiplicator
+     * @return the product
+     */
+    public BigInt multiplyToomCook3(BigInt val) {
+        
+
+        /*int alen = bitLength() / 32;
+        int blen = val.bitLength() / 32;
+        int largest = Math.max(alen, blen);
+
+        // k is the size (in ints) of the lower-order slices.
+        int k = (largest + 2) / 3;   // Equal to ceil(largest/3)
+
+        // r is the size (in ints) of the highest-order slice.
+        int r = largest - 2 * k;
+
+        // Obtain slices of the numbers. a2 and b2 are the most significant
+        // bits of the numbers a and b, and a0 and b0 the least significant.
+        BigInt a0, a1, a2, b0, b1, b2;
+        a2 = a.getToomSlice(k, r, 0, largest);
+        a1 = a.getToomSlice(k, r, 1, largest);
+        a0 = a.getToomSlice(k, r, 2, largest);
+        b2 = b.getToomSlice(k, r, 0, largest);
+        b1 = b.getToomSlice(k, r, 1, largest);
+        b0 = b.getToomSlice(k, r, 2, largest);
+
+        BigInt v0, v1, v2, vm1, vinf, t1, t2, tm1, da1, db1;
+
+        v0 = a0.multiply(b0);
+        da1 = a2.add(a0);
+        db1 = b2.add(b0);
+        vm1 = da1.subtract(a1).multiply(db1.subtract(b1));
+        da1 = da1.add(a1);
+        db1 = db1.add(b1);
+        v1 = da1.multiply(db1);
+        v2 = da1.add(a2).shiftLeft(1).subtract(a0).multiply(db1.add(b2).shiftLeft(1).subtract(b0));
+        vinf = a2.multiply(b2);
+
+        *//* The algorithm requires two divisions by 2 and one by 3.
+           All divisions are known to be exact, that is, they do not produce
+           remainders, and all results are positive.  The divisions by 2 are
+           implemented as right shifts which are relatively efficient, leaving
+           only an exact division by 3, which is done by a specialized
+           linear-time algorithm. *//*
+        t2 = v2.subtract(vm1).exactDivideBy3();
+        tm1 = v1.subtract(vm1).shiftRight(1);
+        t1 = v1.subtract(v0);
+        t2 = t2.subtract(t1).shiftRight(1);
+        t1 = t1.subtract(tm1).subtract(vinf);
+        t2 = t2.subtract(vinf.shiftLeft(1));
+        tm1 = tm1.subtract(t2);
+
+        // Number of bits to shift left.
+        int ss = k * 32;
+
+        BigInt result = vinf.shiftLeft(ss).add(t2).shiftLeft(ss).add(t1).shiftLeft(ss).add(tm1).shiftLeft(ss).add(v0);
+
+        if (signum() != val.signum())
+            return result.opposite();
+        else
+            return result;*/
+        return null;
+    }
+
+    /** Returns a slice of a BigInteger for use in Toom-Cook multiplication.
+        @param lowerSize The size of the lower-order bit slices.
+        @param upperSize The size of the higher-order bit slices.
+        @param slice The index of which slice is requested, which must be a
+            number from 0 to size-1.  Slice 0 is the highest-order bits,
+            and slice size-1 are the lowest-order bits.
+            Slice 0 may be of different size than the other slices.
+        @param fullsize The size of the larger integer array, used to align
+            slices to the appropriate position when multiplying different-sized
+            numbers.
+    */
+    /*private BigInteger getToomSlice(int lowerSize, int upperSize, int slice,
+                                    int fullsize)
+    {
+        int start, end, sliceSize, len, offset;
+
+        len = mag.length;
+        offset = fullsize - len;
+
+        if (slice == 0)
+        {
+            start = 0 - offset;
+            end = upperSize - 1 - offset;
+        }
+        else
+        {
+            start = upperSize + (slice-1)*lowerSize - offset;
+            end = start + lowerSize - 1;
+        }
+
+        if (start < 0)
+            start = 0;
+        if (end < 0)
+           return ZERO;
+
+        sliceSize = (end-start) + 1;
+
+        if (sliceSize <= 0)
+            return ZERO;
+
+        // While performing Toom-Cook, all slices are positive and
+        // the sign is adjusted when the final number is composed.
+        if (start==0 && sliceSize >= len)
+            return this.abs();
+
+        int intSlice[] = new int[sliceSize];
+        System.arraycopy(mag, start, intSlice, 0, sliceSize);
+
+        return new BigInteger(trustedStripLeadingZeroInts(intSlice), 1);
+    }*/
+
+    /** Does an exact division (that is, the remainder is known to be zero)
+        of the specified number by 3.  This is used in Toom-Cook
+        multiplication.  This is an efficient algorithm that runs in linear
+        time.  If the argument is not exactly divisible by 3, results are
+        undefined.  Note that this is expected to be called with positive
+        arguments only. */
+    /*private BigInteger exactDivideBy3()
+    {
+        int len = mag.length;
+        int[] result = new int[len];
+        long x, w, q, borrow;
+        borrow = 0L;
+        for (int i=len-1; i>=0; i--)
+        {
+           x = (mag[i] & LONG_MASK);
+           w = x - borrow;
+           if (borrow > x)       // Did we make the number go negative?
+              borrow = 1L;
+           else
+              borrow = 0L;
+
+           // 0xAAAAAAAB is the modular inverse of 3 (mod 2^32).  Thus,
+           // the effect of this is to divide by 3 (mod 2^32).
+           // This is much faster than division on most architectures.
+           q = (w * 0xAAAAAAABL) & LONG_MASK;
+           result[i] = (int) q;
+
+           // Now check the borrow. The second check can of course be
+           // eliminated if the first fails.
+           if (q >= 0x55555556L)
+           {
+              borrow++;
+              if (q >= 0xAAAAAAABL)
+                 borrow++;
+           }
+        }
+        result = trustedStripLeadingZeroInts(result);
+        return new BigInteger(result, signum);
+    }*/
+
 }
 
 //TODO: add methods: binomial(), factorial(), factorize() + polar rho, fibonacci(), parallel fibonacci, isFibonacci(), quadratic residue (http://primes.utm.edu/glossary/xpage/QuadraticResidue.html)
 //TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
 //TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
 //TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet
-//TODO: Toom-Cook multiplication (BigInteger JDK 7)
-//TODO: multiplyKaratsuba parallel (LargeInteger.java)
 //TODO: productTo: find an algorithm to multiply n..m consecutive numbers
 //TODO: make wrapper for optimized BigInteger + BigIntegerMath.java, apflot, jscience, ... + Javolution contexts and factories + impl. paralell computing (factorial, products, ...)
 //TODO: make wrapper for GMP java avec https://jna.dev.java.net/ + http://code.google.com/p/jnaerator/
 //TODO: BigIntegerMath.java: CRT, Quadrati, pMinusOneFactor (Pollard p-1)
+
+//TODO: Toom-Cook multiplication (BigInteger JDK 7) + PARALLEL
+//TODO: multiplyKaratsuba parallel (LargeInteger.java)

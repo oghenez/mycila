@@ -24,7 +24,21 @@ import java.math.BigInteger;
  */
 final class JDKBigInt extends BigInt<BigInteger> {
 
-    private static final int KARATSUBA_THRESHOLD = 1500;
+    /**
+     * The threshold value for using Karatsuba multiplication.  If the number
+     * of ints in both mag arrays are greater than this number, then
+     * Karatsuba multiplication will be used.   This value is found
+     * experimentally to work well.
+     */
+    private static final int KARATSUBA_THRESHOLD = 1600;
+
+    /**
+     * The threshold value for using 3-way Toom-Cook multiplication.
+     * If the number of ints in both mag arrays are greater than this number,
+     * then Toom-Cook multiplication will be used.   This value is found
+     * experimentally to work well.
+     */
+    private static final int TOOM_COOK_THRESHOLD = 2400;
 
     private final int radix;
 
@@ -105,10 +119,13 @@ final class JDKBigInt extends BigInt<BigInteger> {
 
     @Override
     public BigInt multiply(BigInt val) {
-        //FIXME: activate karatsuba + test with parallel
-        //if (bitLength() < KARATSUBA_THRESHOLD || val.bitLength() < KARATSUBA_THRESHOLD)
+        int thislen = bitLength();
+        int vallen = val.bitLength();
+        if (thislen < KARATSUBA_THRESHOLD || vallen < KARATSUBA_THRESHOLD)
             return new JDKBigInt(internal.multiply((BigInteger) val.internal), radix);
-        //return multiplyKaratsuba(val);
+        if (thislen < TOOM_COOK_THRESHOLD && vallen < TOOM_COOK_THRESHOLD)
+            return multiplyKaratsuba(val);
+        return multiplyToomCook3(val);
     }
 
     @Override
