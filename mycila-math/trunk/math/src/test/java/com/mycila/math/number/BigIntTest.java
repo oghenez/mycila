@@ -32,6 +32,14 @@ import java.util.Scanner;
 public final class BigIntTest {
 
     @Test
+    public void test_toomcook() {
+        SecureRandom random = new SecureRandom();
+        BigInteger a = new BigInteger(3000, random).abs();
+        BigInteger b = new BigInteger(3000, random).abs();
+        BigInteger c = a.multiply(b);
+    }
+
+    @Test
     public void test_false_positives() {
         // false-positive reported at http://www.gnu.org/software/gnu-crypto/primes-note.html
         Scanner primes = new Scanner(getClass().getResourceAsStream("/primes.txt"));
@@ -155,8 +163,8 @@ public final class BigIntTest {
         for (int i = 3; i < 100000; i += 2) {
             int a = r.nextInt(1000001);
             assertEquals("(" + a + "/" + i + ")",
-                    big(BigInteger.jacobiSymbol(a, BigInteger.valueOf(i))),
-                    big(i).jacobiSymbol(big(a)));
+                         big(BigInteger.jacobiSymbol(a, BigInteger.valueOf(i))),
+                         big(i).jacobiSymbol(big(a)));
         }
     }
 
