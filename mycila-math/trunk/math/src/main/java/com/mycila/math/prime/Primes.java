@@ -15,8 +15,7 @@
  */
 package com.mycila.math.prime;
 
-import com.mycila.math.concurrent.ConcurrentOperations;
-import com.mycila.math.concurrent.MultiplyOperation;
+import com.mycila.math.concurrent.ConcurrentOperation;
 import com.mycila.math.number.BigInt;
 import static com.mycila.math.number.BigInt.*;
 
@@ -47,11 +46,11 @@ public final class Primes {
             return big(res[0]);
         if (pos == 2)
             return big(res[0]).multiply(big(res[1]));
-        MultiplyOperation multiply = ConcurrentOperations.multiply();
+        ConcurrentOperation.Multiply multiply = ConcurrentOperation.multiply();
         for (pos--; pos > 0; pos -= 2)
-            multiply.multiply(big(res[pos]), big(res[pos - 1]));
+            multiply.push(big(res[pos]), big(res[pos - 1]));
         while (multiply.size() > 1)
-            multiply.multiply(multiply.take(), multiply.take());
+            multiply.push(multiply.take(), multiply.take());
         return pos == 0 ? big(res[0]).multiply(multiply.take()) : multiply.take();
     }
 

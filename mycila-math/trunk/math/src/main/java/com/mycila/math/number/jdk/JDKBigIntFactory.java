@@ -27,7 +27,7 @@ import java.util.Random;
  */
 public final class JDKBigIntFactory implements BigIntFactory<BigInteger> {
 
-    private static final int MAX = 262144;
+    private static final int MAX = 131072;
     private static final int SHIFT = 32 - Integer.numberOfLeadingZeros(MAX - 1);
     private static final JDKBigInt[] CACHE = new JDKBigInt[MAX];
     private static final Random RANDOM = new SecureRandom();

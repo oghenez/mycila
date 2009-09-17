@@ -19,6 +19,8 @@ import com.mycila.math.distribution.Distribution;
 import com.mycila.math.list.ByteProcedure;
 import com.mycila.math.prime.PrimaltyTest;
 import com.mycila.math.prime.Sieve;
+import com.mycila.math.concurrent.ConcurrentOperation;
+import com.mycila.math.concurrent.Result;
 
 import java.util.Arrays;
 
@@ -1621,7 +1623,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     public BigInt multiplyKaratsuba(BigInt val) {
         int n = Math.max(bitLength(), val.bitLength());
         n = (n >>> 1) + (n & 1);
-        // x = a + 2^N b,   y = c + 2^N d
+        // x = a + 2^N b, y = c + 2^N d
         BigInt b = shiftRight(n);
         BigInt a = subtract(b.shiftLeft(n));
         BigInt d = val.shiftRight(n);
@@ -1630,7 +1632,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         BigInt ac = a.multiply(c);
         BigInt bd = b.multiply(d);
         BigInt abcd = a.add(b).multiply(c.add(d));
-        // a*c + 2^n * ((a+b)*(c+d)-(a*c+b*d)) + b*d*2^2n 
+        // a*c + 2^n * ((a+b)*(c+d)-(a*c+b*d)) + b*d*2^2n
         return ac.add(abcd.subtract(ac).subtract(bd).shiftLeft(n)).add(bd.shiftLeft(n << 1));
     }
 
@@ -1665,40 +1667,42 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return the product
      */
     public BigInt multiplyToomCook3(BigInt val) {
-        //FIXME: optimize
-        int len = Math.max(bitLength(), val.bitLength()) / 3 + 1;
+        final int len = Math.max(bitLength(), val.bitLength()) / 3 + 1;
         BigInt[] a = slice(len);
         BigInt[] b = val.slice(len);
-        BigInt v0 = a[0].multiply(b[0]);
-        BigInt da1 = a[2].add(a[0]);
-        BigInt db1 = b[2].add(b[0]);
-        BigInt vm1 = da1.subtract(a[1]).multiply(db1.subtract(b[1]));
-        da1 = da1.add(a[1]);
-        db1 = db1.add(b[1]);
-        BigInt v1 = da1.multiply(db1);
-        BigInt v2 = da1.add(a[2]).shiftLeft(1).subtract(a[0]).multiply(db1.add(b[2]).shiftLeft(1).subtract(b[0]));
-        da1 = null;
-        db1 = null;
-        BigInt vinf = a[2].multiply(b[2]);
+
+        ConcurrentOperation.Multiply multiply = ConcurrentOperation.multiply();
+        Result<BigInt> v0 = multiply.result(a[0], b[0]);
+        Result<BigInt> vinf = multiply.result(a[2], b[2]);
+        BigInt da = a[2].add(a[0]);
+        BigInt db = b[2].add(b[0]);
+        Result<BigInt> vm1 = multiply.result(da.subtract(a[1]), db.subtract(b[1]));
+        
+        da = da.add(a[1]);
+        db = db.add(b[1]);
+        BigInt v1 = da.multiply(db);
+        BigInt t1 = v1.subtract(v0.get());
+        BigInt t5 = da.add(a[2]).shiftLeft(1).subtract(a[0])
+                .multiply(db.add(b[2]).shiftLeft(1).subtract(b[0]))
+                .subtract(vm1.get()).divide(THREE).subtract(t1).shiftRight(1).subtract(vinf.get().shiftLeft(1));
+        multiply = null;
         a = null;
         b = null;
-        BigInt t2 = v2.subtract(vm1).divide(THREE);
-        v2 = null;
-        BigInt tm1 = v1.subtract(vm1).shiftRight(1);
+        
+        da = v1.subtract(vm1.get()).shiftRight(1);
         vm1 = null;
-        BigInt t1 = v1.subtract(v0);
         v1 = null;
-        t2 = t2.subtract(t1).shiftRight(1);
-        t1 = t1.subtract(tm1).subtract(vinf);
-        t2 = t2.subtract(vinf.shiftLeft(1));
-        tm1 = tm1.subtract(t2);
-        BigInt result = vinf.shiftLeft(len).add(t2).shiftLeft(len).add(t1).shiftLeft(len).add(tm1).shiftLeft(len).add(v0);
+        db = vinf.get().shiftLeft(len)
+                .add(t5).shiftLeft(len)
+                .add(t1.subtract(da).subtract(vinf.get())).shiftLeft(len)
+                .add(da.subtract(t5)).shiftLeft(len)
+                .add(v0.get());
         v0 = null;
         vinf = null;
-        t2 = null;
-        tm1 = null;
         t1 = null;
-        return signum() != val.signum() ? result.opposite() : result;
+        t5 = null;
+        da = null;
+        return signum() != val.signum() ? db.opposite() : db;
     }
 
     /**
@@ -1710,8 +1714,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     public BigInt[] slice(int len) {
         BigInt mask = ONE.shiftLeft(len).subtract(ONE);
         BigInt num = this;
-        int bl = bitLength();
-        BigInt[] slices = new BigInt[bl / len + (bl % len == 0 ? 0 : 1)];
+        BigInt[] slices = new BigInt[(bitLength() + len - 1) / len];
         for (int i = 0; num.signum() != 0; i++) {
             slices[i] = num.and(mask);
             num = num.shiftRight(len);
@@ -1719,9 +1722,17 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         return slices;
     }
 
+    /**
+     * Split the number in slices of given lenth.
+     *
+     * @param len   Length in bit
+     * @param index The index of the slice to get: from 0 to Ceil(bitLength / n)
+     * @return A bigInt representing the wanted slice of the number, so that the concatenation of all slices a[i]...a[1]a[0] = this number
+     */
+    public BigInt slice(int len, int index) {
+        return shiftRight(len * index).and(ONE.shiftLeft(len).subtract(ONE));
+    }
 }
-
-//FIXME: PARALLEL for Toom-Cook + Karatsuba parallel (LargeInteger.java)
 
 //TODO: add methods: binomial(), factorial(), factorize() + polar rho, fibonacci(), parallel fibonacci, isFibonacci(), quadratic residue (http://primes.utm.edu/glossary/xpage/QuadraticResidue.html)
 //TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
