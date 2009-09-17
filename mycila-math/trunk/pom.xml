@@ -159,6 +159,7 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
+                    <optimize>true</optimize>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
                     <showDeprecation>true</showDeprecation>
