@@ -1401,8 +1401,8 @@ public final class BigInteger extends Number implements Comparable<BigInteger> {
      *                  slices to the appropriate position when multiplying different-sized
      *                  numbers.
      */
-    private BigInteger getToomSlice(int lowerSize, int upperSize, int slice,
-                                    int fullsize) {
+    public BigInteger getToomSlice(int lowerSize, int upperSize, int slice,
+                                   int fullsize) {
         int start, end, sliceSize, len, offset;
 
         len = mag.length;

@@ -32,11 +32,30 @@ import java.util.Scanner;
 public final class BigIntTest {
 
     @Test
+    public void test_slices() {
+        BigInt[] slices = big("ee48e04b60b1b6398431f92bbbca5854c362350", 16).slice(40);
+        assertEquals(slices.length, 4);
+        assertEquals(slices[0], big("854c362350", 16));
+        assertEquals(slices[3], big("ee48e04b6", 16));
+        slices = big("1f92bbbca5854c362350", 16).slice(20);
+        assertEquals(slices.length, 4);
+        assertEquals(slices[0], big("62350", 16));
+        assertEquals(slices[3], big("1f92b", 16));
+    }
+
+    @Test
     public void test_toomcook() {
+        new BigInteger("ee48e04b60b1b6398431f92bbbca5854c362350178ab0ae223d7e540e1d579a9bed874f0109bbec81b7cd73ce1d6265d824d503c32fefac9970951a0a309413a5673ba26c6d4dc77307cb27da288a3bd3965a9622157f42fdd898df7d555c6de43bca498edb9029c6346427a7f1de5643859ca8410c5c6a8c9f42f7bcf7237129d29741810cc15400a04781fafeb7eca036c59e38a47d12c361530a54fc584ee48e53cbd6ec1f50dbdd2dafd581608b7028662c6f9f0a070a08be2d7f817a1b14181afb12513768a9d4aaa37e8f2c258e7ff06ef2802fa58817bcf340a0121f81f9d3c59ad979eb10697dbe8121767695bbc8e270fd67cca90397a0e109d343319ed808069d3a81e8dcc56397f82985e378a5c1407b7b184fa5def2e6a0479944fe3bd42b107ca38ce01f55272d7dcc83783a5ab9d6e0012997dd14c44a22264892919f6bc808f9bfa12602b7a04f353b7fca2f6b3a6d83ad8598496c7163c095023658beabf8a27d63275ca5e7ca47844fb7cf8debd149d8d094ffcdbcd3cf44ae8b65e50902d308f198aef6643a8ed21ee74d9fbd2dfa014", 16)
+                .multiply(new BigInteger("520a8d60262973429eb1eff794126b24ad2224aabbfb984c934db25261bffabd391c5e88d7e2f5ee486f984ebad1440cdd4cf9d9778b2e34a296fb76404d1dfc88fc0f50548c6a20b123d708d67d1bf188118858ac04e63f344b92ef687e5fc7533c1c2a502b4e98c18af399bd52bcc95b29d70086d30e1734dd8bd870d891e9913fcd312b63779fa76fe2a791bead0880dfeaad64c6aa3902b8e0384d266f13d8c3cf9a815195651e717041bd83f4cd24a04e679718195e920887f14ddf2d1a731b629d164ad2acb1dbcd83712051129432e92d85d92491563cb88610b77d4ff0ca654abcdb5888082927c594446d1e0f1220e3fb47c6028d036680a318c0bf52a2903f8d5fd0a0778cf1dad0db62da9ddeb60cb99b1c4b4cef1bc4fdd1407f6bcdc7b763bb927f4a3421ce10ac9e89589a2f8d8de44ae99f2db6b8866382685d548456b620aeb615f8eb8c2096b35b50025cdbeffc4f3833eee823c88a1aee2f27a20e6a913c51a71feb763eae2d0935818a83986878811b54205f6f7181617a245cff153684122b033108031fe061c443537e219a2a214d38b202be637bdf5efa4a6cd6a1b3b646a1ba1894fa8c9fb", 16));
+        big("ee48e04b60b1b6398431f92bbbca5854c362350178ab0ae223d7e540e1d579a9bed874f0109bbec81b7cd73ce1d6265d824d503c32fefac9970951a0a309413a5673ba26c6d4dc77307cb27da288a3bd3965a9622157f42fdd898df7d555c6de43bca498edb9029c6346427a7f1de5643859ca8410c5c6a8c9f42f7bcf7237129d29741810cc15400a04781fafeb7eca036c59e38a47d12c361530a54fc584ee48e53cbd6ec1f50dbdd2dafd581608b7028662c6f9f0a070a08be2d7f817a1b14181afb12513768a9d4aaa37e8f2c258e7ff06ef2802fa58817bcf340a0121f81f9d3c59ad979eb10697dbe8121767695bbc8e270fd67cca90397a0e109d343319ed808069d3a81e8dcc56397f82985e378a5c1407b7b184fa5def2e6a0479944fe3bd42b107ca38ce01f55272d7dcc83783a5ab9d6e0012997dd14c44a22264892919f6bc808f9bfa12602b7a04f353b7fca2f6b3a6d83ad8598496c7163c095023658beabf8a27d63275ca5e7ca47844fb7cf8debd149d8d094ffcdbcd3cf44ae8b65e50902d308f198aef6643a8ed21ee74d9fbd2dfa014", 16)
+                .multiply(big("520a8d60262973429eb1eff794126b24ad2224aabbfb984c934db25261bffabd391c5e88d7e2f5ee486f984ebad1440cdd4cf9d9778b2e34a296fb76404d1dfc88fc0f50548c6a20b123d708d67d1bf188118858ac04e63f344b92ef687e5fc7533c1c2a502b4e98c18af399bd52bcc95b29d70086d30e1734dd8bd870d891e9913fcd312b63779fa76fe2a791bead0880dfeaad64c6aa3902b8e0384d266f13d8c3cf9a815195651e717041bd83f4cd24a04e679718195e920887f14ddf2d1a731b629d164ad2acb1dbcd83712051129432e92d85d92491563cb88610b77d4ff0ca654abcdb5888082927c594446d1e0f1220e3fb47c6028d036680a318c0bf52a2903f8d5fd0a0778cf1dad0db62da9ddeb60cb99b1c4b4cef1bc4fdd1407f6bcdc7b763bb927f4a3421ce10ac9e89589a2f8d8de44ae99f2db6b8866382685d548456b620aeb615f8eb8c2096b35b50025cdbeffc4f3833eee823c88a1aee2f27a20e6a913c51a71feb763eae2d0935818a83986878811b54205f6f7181617a245cff153684122b033108031fe061c443537e219a2a214d38b202be637bdf5efa4a6cd6a1b3b646a1ba1894fa8c9fb", 16));
         SecureRandom random = new SecureRandom();
-        BigInteger a = new BigInteger(3000, random).abs();
-        BigInteger b = new BigInteger(3000, random).abs();
-        BigInteger c = a.multiply(b);
+        for (int i = 0; i < 500; i++) {
+            BigInteger a = new BigInteger(3000 + random.nextInt(1000), random).abs();
+            BigInteger b = new BigInteger(3000 + random.nextInt(1000), random).abs();
+            BigInteger c = a.multiply(b);
+            assertEquals(a.toString(16) + " x " + b.toString(16), c.toString(16), big(a.toString()).multiplyToomCook3(big(b.toString())).toString(16));
+        }
     }
 
     @Test
@@ -163,8 +182,8 @@ public final class BigIntTest {
         for (int i = 3; i < 100000; i += 2) {
             int a = r.nextInt(1000001);
             assertEquals("(" + a + "/" + i + ")",
-                         big(BigInteger.jacobiSymbol(a, BigInteger.valueOf(i))),
-                         big(i).jacobiSymbol(big(a)));
+                    big(BigInteger.jacobiSymbol(a, BigInteger.valueOf(i))),
+                    big(i).jacobiSymbol(big(a)));
         }
     }
 
