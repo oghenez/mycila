@@ -38,7 +38,7 @@ final class JDKBigInt extends BigInt<BigInteger> {
      * then Toom-Cook multiplication will be used.   This value is found
      * experimentally to work well.
      */
-    private static final int TOOM_COOK_THRESHOLD = 2400;
+    private static final int TOOM_COOK_THRESHOLD = 2500;
 
     private final int radix;
 
