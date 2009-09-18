@@ -23,10 +23,10 @@ final class DefaultThreadFactory implements ThreadFactory {
     private final String namePrefix;
     private final ClassLoader ccl;
 
-    DefaultThreadFactory() {
+    DefaultThreadFactory(String name) {
         SecurityManager s = System.getSecurityManager();
         group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
-        namePrefix = "pool-" + threadNumber.getAndIncrement() + "-thread-";
+        namePrefix = name + "-" + threadNumber.getAndIncrement();
         this.ccl = Thread.currentThread().getContextClassLoader();
     }
 
