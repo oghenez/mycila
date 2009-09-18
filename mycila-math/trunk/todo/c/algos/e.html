@@ -1,0 +1,4043 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+        "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+
+<head>
+    <meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+    <style type="text/css"><!--
+    td div.comp {
+        margin-top: -0.6ex;
+        margin-bottom: -1ex;
+    }
+
+    td div.comb {
+        margin-top: -0.6ex;
+        margin-bottom: -.6ex;
+    }
+
+    td div.hrcomp {
+        line-height: 0.9;
+        margin-top: -0.8ex;
+        margin-bottom: -1ex;
+    }
+
+    td div.norm {
+        line-height: normal;
+    }
+
+    span.roman {
+        font-family: serif;
+        font-style: normal;
+        font-weight: normal;
+    }
+
+    span.overacc2 {
+        position: relative;
+        left: .8em;
+        top: -1.2ex;
+    }
+
+    span.overacc1 {
+        position: relative;
+        left: .6em;
+        top: -1.2ex;
+    }
+
+    --></style>
+
+
+    <title> The constant $e$ and its computation</title>
+
+</head>
+
+<body bgcolor="#CFCFDE">
+
+<h1 align="center"><i>The constant e and its computation</i></h1>
+
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        <font color="#008000">
+                            e</font> = <font color="#FF0000"> 2.71828182845904523536028747135266249775724709369995...</font></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+
+    (Click <a href="http://numbers.computation.free.fr/Constants/E/e.ps">here</a>
+    for a Postscript version of this page.)
+
+
+<p>
+
+    &nbsp;
+
+<blockquote>e<sup>i<font face="symbol">p</font
+        ></sup>+1=0 <em>, all analysis lies here</em>
+
+    <p>
+        - Felix Klein (1849-1925).<br/>
+
+    <p>
+        <em>Gentlemen, we have not the slightest idea what this equation means, but
+            we may be sure that it means something very important </em>(to his students about
+        the formula i<sup><font face="symbol">-</font
+            >i </sup>= <font face="symbol">�</font>e<sup><font face="symbol">p</font
+            ></sup>.
+
+    <p>
+        - Benjamin Peirce (1809-1880).
+</blockquote>
+
+<p>
+
+<h2><a name="tth_sEc1">
+    1</a>&nbsp;&nbsp;Introduction</h2>
+
+<p>
+
+<h3><a name="tth_sEc1.1">
+    1.1</a>&nbsp;&nbsp;A function equal to it's own derivative</h3>
+
+<p>
+    Let a be a real positive number, the <i>exponential function</i> a<sup>x</sup>
+    (in base a) is a differentiable function, that is the following limit exists
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        (a<sup>x</sup>)<sup><font face="symbol">�</font
+                            ></sup>=
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"></font><!--sup
+--><br/>lim<br/>
+                        <font size="-1">h<font face="symbol">�</font
+                                >0</font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;a<sup>x+h</sup><font face="symbol">-</font
+                            >a<sup>x</sup>
+
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        h<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        =
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"></font><!--sup
+--><br/>lim<br/>
+                        <font size="-1">h<font face="symbol">�</font
+                                >0</font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;a<sup>h</sup><font face="symbol">-</font
+                            >1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        h<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        a<sup>x</sup>=Ca<sup>x</sup>.
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+    A very important case is given when the derivative of the exponential function
+    is equal to itself, which implies
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        C=1=
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"></font><!--sup
+--><br/>lim<br/>
+                        <font size="-1">h<font face="symbol">�</font
+                                >0</font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;a<sup>h</sup><font face="symbol">-</font
+                            >1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        h<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+and this may also be written as
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        a=
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"></font><!--sup
+--><br/>lim<br/>
+                        <font size="-1">h<font face="symbol">�</font
+                                >0</font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ( 1+h) <sup>1/h</sup>.
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+    This limit is well defined and it was denoted by the letter e by the Swiss
+    mathematician Leonhard Euler (1707-1783), first around the end of year 1727 in
+    a manuscript entitled <i>Meditatio in Experimenta explosione tormentorum
+    nuper instituta</i> (Meditation upon experiments made recently on the firing of
+    Canon, [<a href="#Smith" name="CITESmith">21</a>]), then in a letter to a friend Goldbach (1690-1764) in
+    1731 and later in 1748 in his work [<a href="#Euler" name="CITEEuler">5</a>]. The origin of this choice is
+    maybe due to the first letter of the word <i>exponential</i> or just because
+    it was the first free vowel (a was already used by Euler !). It should be
+    pointed out that Leibniz (1646-1716) was the first, in 1690, to recognize e
+    as a constant and he used the notation b (more about the early origins of
+    e may be found in [<a href="#Coolidege" name="CITECoolidege">4</a>]).
+
+<p>
+    Hence the constant e is defined by the monotone increasing sequence :
+
+<p>
+
+    <b>Definition 1</b> <em><a name="defE">
+</a>
+    <br clear="all"/>
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                <table align="center">
+                    <tr>
+                        <td nowrap="nowrap" align="center">
+                            e=
+                        </td>
+                        <td nowrap="nowrap" align="center">
+                            <font size="-1"></font><!--sup
+--><br/>lim<br/>
+                            <font size="-1">n<font face="symbol">�</font
+                                    ><font face="symbol">�</font
+                                    ></font>&nbsp;<br/></td>
+                        <td nowrap="nowrap" align="center">
+                            e<sub>n</sub>=
+                        </td>
+                        <td nowrap="nowrap" align="center">
+                            <font size="-1"></font><!--sup
+--><br/>lim<br/>
+                            <font size="-1">n<font face="symbol">�</font
+                                    ><font face="symbol">�</font
+                                    ></font>&nbsp;<br/></td>
+                        <td nowrap="nowrap" align="center">
+                        </td>
+                        <td align="left" class="cl"><font face="symbol">
+                            �<br/>�
+                        </font></td>
+                        <td nowrap="nowrap" align="center">
+                            1+
+                        </td>
+                        <td nowrap="nowrap" align="center">
+                            &nbsp;1
+                            <div class="hrcomp">
+                                <hr noshade="noshade" size="1"/>
+                            </div>
+                            n<br/></td>
+                        <td align="left" class="cl"><font face="symbol">
+                            �<br/>�
+                        </font></td>
+                        <td nowrap="nowrap" align="center">
+                            <font size="-1">n</font><!--sup
+--><br/><br/>
+                            <font size="-1"></font>&nbsp;<br/></td>
+                        <td nowrap="nowrap" align="center">
+                            .
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td width="1%">(1)</td>
+        </tr>
+    </table>
+
+
+    <p>
+</em>But the convergence is extremely slow and not convenient to make an accurate
+    determination of the constant :
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�<br/>�<br/>�<br/>�<br/>�<br/>
+                        �<br/>�<br/>�<br/>�<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <table>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                e<sub>1</sub>=2.(000...),
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                e<sub>10</sub>=2.(593...),
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                e<sub>100</sub>=2.7(048...),
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                e<sub>1000</sub>=2.71(692...),
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                e<sub>10000</sub>=2.718(145...),
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                ...
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+    A quicker convergence is easily obtained by a modified version of this
+    definition (see [<a href="#Richardson" name="CITERichardson">15</a>], [<a href="#HarlanI" name="CITEHarlanI">3</a>], [<a href="#HarlanII" name="CITEHarlanII">11</a>]) :<a name="Richard">
+</a>
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        e=
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"></font><!--sup
+--><br/>lim<br/>
+                        <font size="-1">n<font face="symbol">�</font
+                                ><font face="symbol">�</font
+                                ></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;2n+1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        2n<font face="symbol">-</font
+                            >1<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1">n</font><!--sup
+--><br/><br/>
+                        <font size="-1"></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        .
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td width="1%">(2)</td>
+    </tr>
+</table>
+
+
+<p>
+    It's interesting to note that the constant e holds a key position in the
+    <i>simplest</i> first order differential equation
+
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        y<sup><font face="symbol">�</font
+                            ></sup>=y,
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+while <font face="symbol">p</font
+        > occurs in the similar second order differential equation.
+
+<p>
+    Links between the definition (<a href="#defE">1</a>) and the law of compound interest in
+    financial calculations are given in [<a href="#Maor" name="CITEMaor">13</a>] which is a nice book
+    completely dedicated to the constant e and its mathematical background. An
+    on-line essay is also available at [<a href="#Finch" name="CITEFinch">6</a>].
+
+<p>
+
+<h3><a name="tth_sEc1.2">
+    1.2</a>&nbsp;&nbsp;A famous sequence</h3>
+
+<p>
+    Using the Newton's binomial theorem
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        (1+x)<sup>n</sup>=1+nx+
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;n(n<font face="symbol">-</font
+                            >1)
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        2<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        x<sup>2</sup>+...+x<sup>n</sup>,
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+for x=1/n and after some careful manipulations gives the famous series
+expansion<a name="eSeries">
+</a>
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        e=1+
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1.2<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1.2.3<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1.2.3.4<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +...=
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"></font><!--sup
+--><br/>lim<br/>
+                        <font size="-1">n<font face="symbol">�</font
+                                ><font face="symbol">�</font
+                                ></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        s<sub>n</sub>=
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"></font><!--sup
+--><br/>lim<br/>
+                        <font size="-1">n<font face="symbol">�</font
+                                ><font face="symbol">�</font
+                                ></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"></font><!--sup
+--><br/><font size="+3"><font face="symbol">�<br/>
+                    </font></font><font size="-1">k=0</font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        <sup>n</sup></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        k!<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td width="1%">(3)</td>
+    </tr>
+</table>
+
+
+given by Euler in 1748 [<a href="#Euler" name="CITEEuler">5</a>] and with x=<font face="symbol">-</font
+        >1/n it also produces the
+fast converging and alternating series<a name="inveSeries">
+</a>
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        e<sup><font face="symbol">-</font
+                            >1</sup>=1<font face="symbol">-</font
+                            ></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1.2<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        <font face="symbol">-</font
+                                ></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1.2.3<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1.2.3.4<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        <font face="symbol">-</font
+                                >...
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td width="1%">(4)</td>
+    </tr>
+</table>
+
+
+<p>
+    Relation (<a href="#eSeries">3</a>) is very efficient to compute e because the
+    factorial of a number grows very quickly and it's immediate to show that
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        s<sub>n</sub> &lt; e &lt; s<sub>n</sub>+
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        n.n!<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        .
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+Euler used this relation to find 23 digits of e [<a href="#Euler" name="CITEEuler">5</a>].
+
+<p>
+    The constant e is also known as the <i>natural base of logarithm</i>, that
+    is the number whose <i>natural logarithm</i> is 1 :
+
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        log(e)=
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1">e</font><!--sup
+--><br/><br/>
+                        <font size="-1">1</font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;dx
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        x<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        =1,
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+and it is equal to the value of the exponential function exp(z) at 1,
+where :<a name="expz">
+</a>
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        exp(z)=1+
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;z
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1!<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;z<sup>2</sup>
+
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        2!<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;z<sup>3</sup>
+
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        3!<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +...+
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;z<sup>n</sup>
+
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        n!<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +...
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td width="1%">(5)</td>
+    </tr>
+</table>
+
+
+so
+
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        e=exp(1).
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+
+<h3><a name="tth_sEc1.3">
+    1.3</a>&nbsp;&nbsp;Nature of the constant e</h3>
+
+<p>
+
+    <b>Theorem 2</b> <em>
+    (Euler 1737). e and e<sup>2</sup> are irrational numbers.
+
+    <p>
+        <b>Proof.</b> A very easy proof of the irrationality of e can be found in <a href="../Miscellaneous/irrationality.html">Irrationality
+        proofs</a>.
+        &nbsp;
+
+    <p>
+</em>And some years later, Johann Heinrich Lambert (1728-1777) established the
+    stronger result :
+
+<p>
+
+    <b>Theorem 3</b> <em>
+    (Lambert 1768). Let p/q being a nonzero rational number then e<sup>p/q</sup> is an
+    irrational number.
+
+    <p>
+        <b>Proof.</b> A proof is also detailed in <a href="../Miscellaneous/irrationality.html">Irrationality
+        proofs</a>.
+        &nbsp;
+
+    <p>
+</em>But it took more than a century to prove the transcendence of e. Before this
+    major milestone, the stronger result was due to Joseph Liouville (1809-1882)
+    who proved in 1844 that e could not be the root of any quadratic equation
+    with integral coefficients.
+
+<p>
+
+    <b>Theorem 4</b> <em>
+    (Hermite 1873, [<a href="#Hermite" name="CITEHermite">9</a>]). e is a <i>transcendental</i> number.
+
+    <p>
+        <b>Proof.</b> An elegant proof due to Hilbert may be find in [<a href="#AGM" name="CITEAGM">1</a>].
+        &nbsp;
+
+    <p>
+</em>Here is what Charles Hermite (1822-1901) claimed after this successful proof
+    of transcendence : ''<i>I shall risk nothing on an attempt to prove the
+    transcendence of </i><font face="symbol">p</font
+        >.<i>&nbsp;If others undertake this enterprise, no one
+    will be happier than I in their success. But believe me, it will not fail to
+    cost them some effort''. &nbsp;</i>Ferdinand von Lindemann (1852-1939) succeeded in
+    this hard task only a few years later in 1882.
+
+<p>
+
+<h2><a name="tth_sEc2">
+    2</a>&nbsp;&nbsp;e and continued fraction</h2>
+
+<p>
+
+<h3><a name="tth_sEc2.1">
+    2.1</a>&nbsp;&nbsp;Euler's results</h3>
+
+<p>
+    In 1737 and 1748 [<a href="#Euler" name="CITEEuler">5</a>], Euler published three important developments
+    related to the constant e. It is more convenient to use for the
+    <i>continued fractions</i>
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        x=a<sub>0</sub>+
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        <table border="0">
+                            <tr>
+                                <td nowrap="nowrap" align="center">
+                                    a<sub>1</sub>+
+                                </td>
+                                <td nowrap="nowrap" align="center">
+                                    &nbsp;1
+                                    <div class="hrcomp">
+                                        <hr noshade="noshade" size="1"/>
+                                    </div>
+                                    a<sub>2</sub>+...<br/></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+the following more compact notation :
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        x=[a<sub>0</sub>;a<sub>1</sub>,a<sub>2</sub>,a<sub>3</sub>,...],
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+where the ( a<sub>k</sub>) are the <i>partial quotients
+</i>[<a href="#Hardy" name="CITEHardy">8</a>].
+
+<p>
+    The first of those developments is
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        e=[2;1,2,1,1,4,1,1,6,1,1,8,1,1,10,1,1,12,1,1,14,...]
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+leading to the fractions
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        e=
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        2,3,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;8
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        3<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;11
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        4<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;19
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        7<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;87
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        32<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;106
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        39<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;193
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        71<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1264
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        465<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1457
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        536<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;2721
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1001<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;23225
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        8544<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;25946
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        9545<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,<font face="symbol">�</font
+                            ></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        .
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+    The second one is
+
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        <font face="symbol">�</font
+                                >e=[1;1,1,1,5,1,1,9,1,1,13,1,1,17,1,1,21,1,1,25,...],
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+the last one has, as Euler noticed, a very regular and elementary pattern
+<a name="econtinued1">
+</a>
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;e<font face="symbol">-</font
+                            >1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        2<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        =[0;1,6,10,14,18,22,26,30,34,38,42,46,50,...]
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td width="1%">(6)</td>
+    </tr>
+</table>
+
+
+and it also produces the following set of rational approximations for e
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        e=
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        0,3,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;19
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        7<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;193
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        71<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;2721
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1001<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;49171
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        18089<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1084483
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        398959<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;28245729
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        10391023<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;848456353
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        312129649<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,<font face="symbol">�</font
+                            ></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+where the last of those fractions is already a very good approximation
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;848456353
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        312129649<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        =2.71828182845904523(475...).
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+    Notice that, unlike <font face="symbol">p</font
+        >, the developments involving e and its powers are
+    dramatically regular.
+
+<p>
+
+<h3><a name="tth_sEc2.2">
+    2.2</a>&nbsp;&nbsp;Generalization</h3>
+
+<p>
+    There is an interesting result about the continued fractions of expressions of
+    the form :
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;e<sup><font face="symbol">�</font
+                            >1/p</sup><font face="symbol">-</font
+                            >1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        2<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        .
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+
+    <b>Theorem 5</b> <em>
+    Let p be a positive integer and p <font face="symbol">�</font
+        > 1:
+    <br clear="all"/>
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                <table align="center">
+                    <tr>
+                        <td nowrap="nowrap" align="center">
+                        </td>
+                        <td align="left" class="cl"><font face="symbol">
+                            �<br/>�<br/>�<br/>�<br/>
+                            �<br/>�<br/>�
+                        </font></td>
+                        <td nowrap="nowrap" align="center">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <table border="0">
+                                            <tr>
+                                                <td nowrap="nowrap" align="center">
+                                                </td>
+                                                <td nowrap="nowrap" align="center">
+                                                    &nbsp;1
+                                                    <div class="hrcomp">
+                                                        <hr noshade="noshade" size="1"/>
+                                                    </div>
+                                                    2<br/></td>
+                                                <td nowrap="nowrap" align="center">
+                                                    ( e<sup>1/p</sup><font face="symbol">-</font
+                                                        >1) = [0;2p<font face="symbol">-</font
+                                                        >1,6p,10p,14p,18p,22p,...]
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table border="0">
+                                            <tr>
+                                                <td nowrap="nowrap" align="center">
+                                                </td>
+                                                <td nowrap="nowrap" align="center">
+                                                    &nbsp;1
+                                                    <div class="hrcomp">
+                                                        <hr noshade="noshade" size="1"/>
+                                                    </div>
+                                                    2<br/></td>
+                                                <td nowrap="nowrap" align="center">
+                                                    ( 1<font face="symbol">-</font
+                                                        >e<sup><font face="symbol">-</font
+                                                        >1/p</sup>) = [0;2p+1,6p,10p,14p,18p,22p,...]
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td nowrap="nowrap" align="center">
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+
+    <p>
+        <b>Proof.</b> Left as exercise. Hint : Use the continued and generalized fraction
+        development of the tanh(x) function at x=1/p and conclude with the
+        relation (e<sup>x</sup><font face="symbol">-</font
+            >1)/2=( 1/tanh(x/2)<font face="symbol">-</font
+            >1) <sup><font face="symbol">-</font
+            >1</sup>.
+        &nbsp;
+
+    <p>
+</em>Relation (<a href="#econtinued1">6</a>) is the special case p=1 of this theorem. Such
+    an easy pattern may be convenient to use for values of the form p=2<sup>m</sup>, and
+    for example with m=5,p=32 it will produce the fast converging development :
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;e<sup>1/32</sup><font face="symbol">-</font
+                            >1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        2<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        =[0;63,192,320,448,576,704,832,960,1088,...]
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+    and e will then be obtained by computing m=5 consecutive squares.
+
+<p>
+
+<h3><a name="tth_sEc2.3">
+    2.3</a>&nbsp;&nbsp;An algorithm using continued fraction</h3>
+
+<p>
+    Let p<sub>k</sub>/q<sub>k</sub> be the convergent of order k of a simple continued
+    fraction of a number x and let x=[a<sub>0</sub>;a<sub>1</sub>,a<sub>2</sub>,...,a<sub>k</sub>,...], we
+    know that the convergents may be computed at any order thanks to the following
+    recurrence relations
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�<br/>
+                        �
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <table>
+                            <tr>
+                                <td align="center">
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                p<sub>k</sub>=a<sub>k</sub>p<sub>k<font face="symbol">-</font
+                                                    >1</sub>+p<sub>k<font face="symbol">-</font
+                                                    >2</sub></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center">
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                q<sub>k</sub>=a<sub>k</sub>q<sub>k<font face="symbol">-</font
+                                                    >1</sub>+q<sub>k<font face="symbol">-</font
+                                                    >2</sub></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+with the initial conditions
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�<br/>
+                        �
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <table>
+                            <tr>
+                                <td align="center">
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                p<sub><font face="symbol">-</font
+                                                    >1</sub>=1,p<sub>0</sub>=a<sub>0</sub></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center">
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                q<sub><font face="symbol">-</font
+                                                    >1</sub>=0,q<sub>0</sub>=1
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+    It's a well known properties on continued fraction that
+
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"></font><!--sup
+--><br/>lim<br/>
+                        <font size="-1">k<font face="symbol">�</font
+                                ><font face="symbol">�</font
+                                ></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;p<sub>k</sub>
+
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        q<sub>k</sub><br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        =x
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+with the bound
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;p<sub>k</sub>
+
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        q<sub>k</sub><br/></td>
+                    <td nowrap="nowrap" align="center">
+                        <font face="symbol">-</font
+                                >x
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &lt; </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        q<sub>k</sub><sup>2</sup><br/></td>
+                    <td nowrap="nowrap" align="center">
+                        .
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+    If we use the continued fraction (<a href="#econtinued1">6</a>) for (e<font face="symbol">-</font
+        >1)/2, then
+
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        a<sub>0</sub>=0,a<sub>1</sub>=1,
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+and a<sub>k</sub>=4(k<font face="symbol">-</font
+        >1)+2 for k &gt; 1. It's therefore very easy to build an efficient
+algorithm to compute a fast converging sequence to the constant e. With
+k=1500, e may be computed to 10<sup>4</sup> decimal places, with k=12000,
+10<sup>5</sup> digits of e will be reached.
+
+<p>
+
+<h2><a name="tth_sEc3">
+    3</a>&nbsp;&nbsp;Using Pad&#233; approximant</h2>
+
+<p>
+    If we consider the series expansion
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        s(t)=
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"><font face="symbol">�</font
+                                ></font><!--sup
+--><br/><font size="+3"><font face="symbol">�<br/>
+                    </font></font><font size="-1">k=0</font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        s<sub>k</sub>t<sup>k</sup>,s<sub>k</sub> <font face="symbol">�</font
+                            > <b>R</b><b>,</b></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+we are looking for a rational approximation of this sequence with numerator of
+degree m&nbsp;and denominator of degree n such as :
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        s(t)<font face="symbol">-</font
+                            ></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�<br/>
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <table border="0">
+                            <tr>
+                                <td nowrap="nowrap" align="center">
+                                    <font size="-1">m</font><!--sup
+--><br/><font size="+3"><font face="symbol">�<br/>
+                                </font></font><font size="-1">k=0</font>&nbsp;<br/></td>
+                                <td nowrap="nowrap" align="center">
+                                    m<sub>k</sub>t<sup>k</sup></td>
+                            </tr>
+                        </table>
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        <table border="0">
+                            <tr>
+                                <td nowrap="nowrap" align="center">
+                                    <font size="-1">n</font><!--sup
+--><br/><font size="+3"><font face="symbol">�<br/>
+                                </font></font><font size="-1">k=0</font>&nbsp;<br/></td>
+                                <td nowrap="nowrap" align="center">
+                                    n<sub>k</sub>t<sup>k</sup></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�<br/>
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        =O(t<sup>m+n+1</sup>),&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t<font face="symbol">�</font
+                            >0.
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+    When such an approximation exists, it's called the <i>Pad&#233;
+    approximant</i> of degree (m,n) of the series s. There are many properties
+    associated with those approximants and they are often used to compute series
+    with bad convergence properties. Here we will just make use of the Pad&#233;
+    approximants of the e<sup>t</sup> function which have an explicit representation :<a name="PadeExp">
+</a>
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <table border="0">
+                            <tr>
+                                <td nowrap="nowrap" align="center">
+                                    <font size="-1">m</font><!--sup
+--><br/><font size="+3"><font face="symbol">�<br/>
+                                </font></font><font size="-1">k=0</font>&nbsp;<br/></td>
+                                <td nowrap="nowrap" align="center">
+                                </td>
+                                <td nowrap="nowrap" align="center">
+                                    &nbsp;(m+n<font face="symbol">-</font
+                                        >k)!m!
+                                    <div class="hrcomp">
+                                        <hr noshade="noshade" size="1"/>
+                                    </div>
+                                    (m+n)!k!(m<font face="symbol">-</font
+                                        >k)!<br/></td>
+                                <td nowrap="nowrap" align="center">
+                                    t<sup>k</sup></td>
+                            </tr>
+                        </table>
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        <table border="0">
+                            <tr>
+                                <td nowrap="nowrap" align="center">
+                                    <font size="-1">n</font><!--sup
+--><br/><font size="+3"><font face="symbol">�<br/>
+                                </font></font><font size="-1">k=0</font>&nbsp;<br/></td>
+                                <td nowrap="nowrap" align="center">
+                                </td>
+                                <td nowrap="nowrap" align="center">
+                                    &nbsp;(m+n<font face="symbol">-</font
+                                        >k)!n!
+                                    <div class="hrcomp">
+                                        <hr noshade="noshade" size="1"/>
+                                    </div>
+                                    (m+n)!k!(n<font face="symbol">-</font
+                                        >k)!<br/></td>
+                                <td nowrap="nowrap" align="center">
+                                    (<font face="symbol">-</font
+                                        >t)<sup>k</sup></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        .
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td width="1%">(7)</td>
+    </tr>
+</table>
+
+
+<p>
+    To illustrate relation (<a href="#PadeExp">7</a>), here are the first approximants with
+    n=m and of increasing degree for the function e<sup>t</sup> :
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;2+t
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        2<font face="symbol">-</font
+                            >t<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;12+6t+t<sup>2</sup>
+
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        12<font face="symbol">-</font
+                            >6t+t<sup>2</sup><br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;120+60t+12t<sup>2</sup>+t<sup>3</sup>
+
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        120<font face="symbol">-</font
+                            >60t+12t<sup>2</sup><font face="symbol">-</font
+                            >t<sup>3</sup><br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1680+840t+180t<sup>2</sup>+20t<sup>3</sup>+t<sup>4</sup>
+
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1680<font face="symbol">-</font
+                            >840t+180t<sup>2</sup><font face="symbol">-</font
+                            >20t<sup>3</sup>+t<sup>4</sup><br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,...
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        .
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+    From this we may deduce that for small values of t, e=(e<sup>t</sup>)<sup>1/t</sup>will be
+    well approximated by this set of functions<a name="ePade">
+</a>
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;2+t
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        2<font face="symbol">-</font
+                            >t<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1">1/t</font><!--sup
+--><br/><br/>
+                        <font size="-1"></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;12+6t+t<sup>2</sup>
+
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        12<font face="symbol">-</font
+                            >6t+t<sup>2</sup><br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1">1/t</font><!--sup
+--><br/><br/>
+                        <font size="-1"></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;120+60t+12t<sup>2</sup>+t<sup>3</sup>
+
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        120<font face="symbol">-</font
+                            >60t+12t<sup>2</sup><font face="symbol">-</font
+                            >t<sup>3</sup><br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1">1/t</font><!--sup
+--><br/><br/>
+                        <font size="-1"></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,...
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td width="1%">(8)</td>
+    </tr>
+</table>
+
+
+the error being respectively O(t<sup>2</sup>),O(t<sup>4</sup>),O(t<sup>6</sup>),... while the famous
+formula (1+t)<sup>1/t</sup> converges with an error O(t). Notice that relation
+(<a href="#Richard">2</a>) is equivalent to the first approximation of the list
+(<a href="#ePade">8</a>) with t=1/n.
+
+<p>
+    To illustrate the efficiency of those new expressions, the last formula of the
+    list (<a href="#ePade">8</a>) for different values of t=1/n produces
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�<br/>�<br/>�<br/>�<br/>
+                        �<br/>�<br/>�<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <table>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                n=2<sup>0</sup>,e <font face="symbol">�</font
+                                                    > 2.718(309...),
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                n=2<sup>1</sup>,e <font face="symbol">�</font
+                                                    > 2.71828(225...),
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                n=2<sup>2</sup>,e <font face="symbol">�</font
+                                                    > 2.7182818(350...),
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                n=2<sup>5</sup>,e <font face="symbol">�</font
+                                                    > 2.7182818284590(703...),
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                n=2<sup>8</sup>,e <font face="symbol">�</font
+                                                    > 2.718281828459045235(456...).
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+
+<h2><a name="tth_sEc4">
+    4</a>&nbsp;&nbsp;Infinite products</h2>
+
+<p>
+    There are several formulae to compute e as infinite products, one of them
+    was given in 1873 by Catalan :
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        e=
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;2
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;4
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        3<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1">1/2</font><!--sup
+--><br/><br/>
+                        <font size="-1"></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;6.8
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        5.7<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1">1/4</font><!--sup
+--><br/><br/>
+                        <font size="-1"></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;10.12.14.16
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        9.11.13.15<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1">1/8</font><!--sup
+--><br/><br/>
+                        <font size="-1"></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        <font face="symbol">�</font
+                                >,
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+and another similar relation is [<a href="#AGM" name="CITEAGM">1</a>] :
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        e=2
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;2
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1">1/2</font><!--sup
+--><br/><br/>
+                        <font size="-1"></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;2.4
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        3.3<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1">1/4</font><!--sup
+--><br/><br/>
+                        <font size="-1"></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;4.6.6.8
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        5.5.7.7<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1">1/8</font><!--sup
+--><br/><br/>
+                        <font size="-1"></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        <font face="symbol">�</font
+                                ></td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+    Like Wallis formula for <font face="symbol">p</font
+        >, the convergence is extremely slow.
+
+<p>
+    Another product may be easily deduced from formula (<a href="#eSeries">3</a>); let
+    s<sub>n</sub> be the partial sum of this sequence
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        s<sub>n</sub>=1+
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1!<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +...+
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        n!<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+then
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        s<sub>n+1</sub>=s<sub>n</sub>+
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        (n+1)!<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        =s<sub>n</sub></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        1+
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        (n+1)!s<sub>n</sub><br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        =s<sub>n</sub></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        1+
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        u<sub>n+1</sub><br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+clearly u<sub>n+1</sub> is an integer and
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <table>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                u<sub>n</sub>=n!s<sub>n<font face="symbol">-</font
+                                                    >1</sub></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                u<sub>n+1</sub>=(n+1)!s<sub>n</sub>=(n+1)n!
+                                            </td>
+                                            <td align="left" class="cl"><font face="symbol">
+                                                �<br/>�
+                                            </font></td>
+                                            <td nowrap="nowrap" align="center">
+                                                s<sub>n<font face="symbol">-</font
+                                                    >1</sub>+
+                                            </td>
+                                            <td nowrap="nowrap" align="center">
+                                                &nbsp;1
+                                                <div class="hrcomp">
+                                                    <hr noshade="noshade" size="1"/>
+                                                </div>
+                                                n!<br/></td>
+                                            <td align="left" class="cl"><font face="symbol">
+                                                �<br/>�
+                                            </font></td>
+                                            <td nowrap="nowrap" align="center">
+                                                =(n+1)(n!s<sub>n<font face="symbol">-</font
+                                                    >1</sub>+1)
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+therefore, if we define the sequence u<sub>n</sub> as following
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <table>
+                            <tr>
+                                <td align="center">
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                u<sub>1</sub>=1
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center">
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                u<sub>n+1</sub>=(n+1)(u<sub>n</sub>+1)
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+we find
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        e=
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"><font face="symbol">�</font
+                                ></font><!--sup
+--><br/><font size="+3"><font face="symbol">�<br/>
+                    </font></font><font size="-1">n=1</font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;u<sub>n</sub>+1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        u<sub>n</sub><br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        =
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;2
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;5
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        4<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;16
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        15<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;65
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        64<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;326
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        325<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        ...,
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+with obviously u<sub>n</sub> <font face="symbol">�</font
+        > n!.
+
+<p>
+    The rate of convergence of this product is exactly the same as (<a href="#eSeries">3</a>).
+
+<p>
+
+<h2><a name="tth_sEc5">
+    5</a>&nbsp;&nbsp;e and permutations</h2>
+
+<p>
+    The number e occurs in the <i>derangements</i> of n objects. For example
+    consider the set of 3 different objects S<sub>3</sub>=(1,2,3), all the
+    permutations of this set are
+
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        (1,2,3),(1,3,2),(2,1,3),(2,3,1),(3,1,2),(3,2,1)
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+and it is well known that the number of permutations of S<sub>n</sub> is n! (6 in
+our example). But among some permutations how many don't have a fix point ? In
+the example the answer is 2, that is
+
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        (2,3,1),(3,1,2)
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+but the general answer for a set of n objects is given by the following theorem.
+
+<p>
+
+    <b>Theorem 6</b> <em>
+    (Euler) Let d<sub>n </sub>be the number of derangements of n different
+    objects (d<sub>n </sub>is sometime called <i>subfactorial</i>), we have
+
+    <br clear="all"/>
+    <table border="0" width="100%">
+        <tr>
+            <td>
+                <table align="center">
+                    <tr>
+                        <td nowrap="nowrap" align="center">
+                            d<sub>n </sub>=n!
+                        </td>
+                        <td align="left" class="cl"><font face="symbol">
+                            �<br/>�
+                        </font></td>
+                        <td nowrap="nowrap" align="center">
+                            1<font face="symbol">-</font
+                                ></td>
+                        <td nowrap="nowrap" align="center">
+                            &nbsp;1
+                            <div class="hrcomp">
+                                <hr noshade="noshade" size="1"/>
+                            </div>
+                            1!<br/></td>
+                        <td nowrap="nowrap" align="center">
+                            +
+                        </td>
+                        <td nowrap="nowrap" align="center">
+                            &nbsp;1
+                            <div class="hrcomp">
+                                <hr noshade="noshade" size="1"/>
+                            </div>
+                            2!<br/></td>
+                        <td nowrap="nowrap" align="center">
+                            <font face="symbol">-</font
+                                    ></td>
+                        <td nowrap="nowrap" align="center">
+                            &nbsp;1
+                            <div class="hrcomp">
+                                <hr noshade="noshade" size="1"/>
+                            </div>
+                            3!<br/></td>
+                        <td nowrap="nowrap" align="center">
+                            +...+
+                        </td>
+                        <td nowrap="nowrap" align="center">
+                            &nbsp;(<font face="symbol">-</font
+                                >1)<sup>n</sup>
+
+                            <div class="hrcomp">
+                                <hr noshade="noshade" size="1"/>
+                            </div>
+                            n!<br/></td>
+                        <td align="left" class="cl"><font face="symbol">
+                            �<br/>�
+                        </font></td>
+                        <td nowrap="nowrap" align="center">
+                            .
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+
+    <p>
+        <b>Proof.</b> Left as exercise. <i>Hint</i>: Show the recursion d<sub>n </sub>=(n<font face="symbol">-</font
+            >1)(d<sub>n<font face="symbol">-</font
+            >1</sub>+d<sub>n<font face="symbol">-</font
+            >2</sub>).
+        &nbsp;
+
+    <p>
+</em>Hence the ratio of the number of derangements to the number of permutations
+    is
+
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;d<sub>n</sub>
+
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        n!<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        =
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        1<font face="symbol">-</font
+                            ></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        1!<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        2!<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        <font face="symbol">-</font
+                                ></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        3!<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +...+
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;(<font face="symbol">-</font
+                            >1)<sup>n</sup>
+
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        n!<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+this ratio is such as
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"></font><!--sup
+--><br/>lim<br/>
+                        <font size="-1">n<font face="symbol">�</font
+                                ><font face="symbol">�</font
+                                ></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;d<sub>n</sub>
+
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        n!<br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        =
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        e<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        =0.3678794411714423215955237...
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+and for example
+
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�<br/>�<br/>�<br/>�<br/>�<br/>�<br/>�<br/>�<br/>�<br/>
+                        �<br/>�<br/>�<br/>�<br/>�<br/>�<br/>�<br/>�<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <table>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                            </td>
+                                            <td nowrap="nowrap" align="center">
+                                                &nbsp;d<sub>3</sub>
+
+                                                <div class="hrcomp">
+                                                    <hr noshade="noshade" size="1"/>
+                                                </div>
+                                                3!<br/></td>
+                                            <td nowrap="nowrap" align="center">
+                                                =
+                                            </td>
+                                            <td nowrap="nowrap" align="center">
+                                                &nbsp;2
+                                                <div class="hrcomp">
+                                                    <hr noshade="noshade" size="1"/>
+                                                </div>
+                                                3!<br/></td>
+                                            <td nowrap="nowrap" align="center">
+                                                =0.3333333333...
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                            </td>
+                                            <td nowrap="nowrap" align="center">
+                                                &nbsp;d<sub>4</sub>
+
+                                                <div class="hrcomp">
+                                                    <hr noshade="noshade" size="1"/>
+                                                </div>
+                                                4!<br/></td>
+                                            <td nowrap="nowrap" align="center">
+                                                =
+                                            </td>
+                                            <td nowrap="nowrap" align="center">
+                                                &nbsp;9
+                                                <div class="hrcomp">
+                                                    <hr noshade="noshade" size="1"/>
+                                                </div>
+                                                4!<br/></td>
+                                            <td nowrap="nowrap" align="center">
+                                                =0.375
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                            </td>
+                                            <td nowrap="nowrap" align="center">
+                                                &nbsp;d<sub>5</sub>
+
+                                                <div class="hrcomp">
+                                                    <hr noshade="noshade" size="1"/>
+                                                </div>
+                                                5!<br/></td>
+                                            <td nowrap="nowrap" align="center">
+                                                =
+                                            </td>
+                                            <td nowrap="nowrap" align="center">
+                                                &nbsp;44
+                                                <div class="hrcomp">
+                                                    <hr noshade="noshade" size="1"/>
+                                                </div>
+                                                5!<br/></td>
+                                            <td nowrap="nowrap" align="center">
+                                                =0.3666666666...
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                            </td>
+                                            <td nowrap="nowrap" align="center">
+                                                &nbsp;d<sub>6</sub>
+
+                                                <div class="hrcomp">
+                                                    <hr noshade="noshade" size="1"/>
+                                                </div>
+                                                6!<br/></td>
+                                            <td nowrap="nowrap" align="center">
+                                                =
+                                            </td>
+                                            <td nowrap="nowrap" align="center">
+                                                &nbsp;265
+                                                <div class="hrcomp">
+                                                    <hr noshade="noshade" size="1"/>
+                                                </div>
+                                                6!<br/></td>
+                                            <td nowrap="nowrap" align="center">
+                                                =0.3680555555...
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                            </td>
+                                            <td nowrap="nowrap" align="center">
+                                                &nbsp;d<sub>7</sub>
+
+                                                <div class="hrcomp">
+                                                    <hr noshade="noshade" size="1"/>
+                                                </div>
+                                                7!<br/></td>
+                                            <td nowrap="nowrap" align="center">
+                                                =
+                                            </td>
+                                            <td nowrap="nowrap" align="center">
+                                                &nbsp;1854
+                                                <div class="hrcomp">
+                                                    <hr noshade="noshade" size="1"/>
+                                                </div>
+                                                7!<br/></td>
+                                            <td nowrap="nowrap" align="center">
+                                                =0.3678571428...
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+
+<h2><a name="tth_sEc6">
+    6</a>&nbsp;&nbsp;Other results</h2>
+
+<p>
+
+<h3><a name="tth_sEc6.1">
+    6.1</a>&nbsp;&nbsp;e and Means</h3>
+
+<p>
+    Before the description of efficient ways to compute e, let's consider
+    A<sub>n</sub>, the <i>arithmetic mean</i> of the quantities (1,2,3,...,n) and
+    G<sub>n</sub>, the <i>geometric mean</i> of the same quantities, that is
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        A<sub>n</sub>=
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1+2+3+...+n
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        n<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        =
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;n(n+1)
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        2n<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+and
+<p>
+
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        log(G<sub>n</sub>)=
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;log(1)+log(2)+...+log(n)
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        n<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+or
+
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        G<sub>n</sub>=( 1.2.3...n) <sup>1/n</sup>=(n!)<sup>1/n</sup>.
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+    Thanks to <i>Stirling's formula</i>, when n becomes large :
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;A<sub>n</sub>
+
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        G<sub>n</sub><br/></td>
+                    <td nowrap="nowrap" align="center">
+                        =
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;n+1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        2(n!)<sup>1/n</sup><br/></td>
+                    <td nowrap="nowrap" align="center">
+                        <font face="symbol"> ~ </font
+                                ></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;n+1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        2( n<sup>n</sup>e<sup><font face="symbol">-</font
+                            >n</sup>(2<font face="symbol">p</font
+                            >n)<sup>1/2</sup>) <sup>1/n</sup><br/></td>
+                    <td nowrap="nowrap" align="center">
+                        =
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;e
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        2<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;n+1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        n(2<font face="symbol">p</font
+                            >n)<sup>1/(2n)</sup><br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+therefore
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"></font><!--sup
+--><br/>lim<br/>
+                        <font size="-1">n<font face="symbol">�</font
+                                ><font face="symbol">�</font
+                                ></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;A<sub>n</sub>
+
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        G<sub>n</sub><br/></td>
+                    <td nowrap="nowrap" align="center">
+                        =
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;e
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        2<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        .
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+    A more general result was stated in [<a href="#Knopp" name="CITEKnopp">10</a>] and another similar result
+    involving the geometric mean of the prime numbers was given in
+    [<a href="#LeLionnais" name="CITELeLionnais">12</a>] :
+
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"></font><!--sup
+--><br/>lim<br/>
+                        <font size="-1">n<font face="symbol">�</font
+                                ><font face="symbol">�</font
+                                ></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"></font><!--sup
+--><br/><font size="+3"><font face="symbol">�<br/>
+                    </font></font><font size="-1">p<sub>i</sub> <font face="symbol">�</font
+                            > n</font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        p<sub>i</sub></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1">1/n</font><!--sup
+--><br/><font size="-1"></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        =e
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+where the p<sub>i</sub> is the sequence of primes (2,3,5,7,11,13,...). The rate of
+converge is extremely slow and for example by computing all primes up to
+n=10<sup>6</sup>, it only gives 2.7141645...
+
+<p>
+
+<h3><a name="tth_sEc6.2">
+    6.2</a>&nbsp;&nbsp;e and <font face="symbol">p</font
+        > in a mirror</h3>
+
+<p>
+    As observed by B. Cloitre (from who we borrow the title of this section), the
+    two following symmetrical algorithms converge respectively to the constants
+    e and <font face="symbol">p</font
+        >. Let u<sub>1</sub>=v<sub>1</sub>=0,u<sub>2</sub>=v<sub>2</sub>=1 and define the iteration :
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�<br/>�<br/>�<br/>
+                        �<br/>�<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <table>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                u<sub>n+2</sub>=u<sub>n+1</sub>+
+                                            </td>
+                                            <td nowrap="nowrap" align="center">
+                                                &nbsp;1
+                                                <div class="hrcomp">
+                                                    <hr noshade="noshade" size="1"/>
+                                                </div>
+                                                n<br/></td>
+                                            <td nowrap="nowrap" align="center">
+                                                u<sub>n</sub></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                v<sub>n+2</sub>=
+                                            </td>
+                                            <td nowrap="nowrap" align="center">
+                                                &nbsp;1
+                                                <div class="hrcomp">
+                                                    <hr noshade="noshade" size="1"/>
+                                                </div>
+                                                n<br/></td>
+                                            <td nowrap="nowrap" align="center">
+                                                v<sub>n+1</sub>+v<sub>n</sub></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        ,
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+then it's easy to show that :
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"></font><!--sup
+--><br/>lim<br/>
+                        <font size="-1">n<font face="symbol">�</font
+                                ><font face="symbol">�</font
+                                ></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;n
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        u<sub>n</sub><br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        =e
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+and
+
+<br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        <font size="-1"></font><!--sup
+--><br/>lim<br/>
+                        <font size="-1">n<font face="symbol">�</font
+                                ><font face="symbol">�</font
+                                ></font>&nbsp;<br/></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;2n
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        v<sub>n</sub><sup>2</sup><br/></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        =<font face="symbol">p</font
+                            >.
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+    The first algorithm is just a reformulation of (<a href="#inveSeries">4</a>) and
+    therefore converges quickly while the second one is derived from Wallis'
+    formula for <font face="symbol">p</font
+        > and is very slow to converge (it can be a little accelerated
+    by replacing 2n by 2n<font face="symbol">-</font
+        >1).
+
+<p>
+
+<h2><a name="tth_sEc7">
+    7</a>&nbsp;&nbsp;Direct use of the exponential series</h2>
+
+<p>
+    Formula (<a href="#eSeries">3</a>) is a good one to compute e while formula
+    (<a href="#inveSeries">4</a>) may be used to check the result. To have d decimal digits
+    of e, roughly the first K <font face="symbol">@</font
+        > dlog(10)/log(d) terms of the series are sufficient.
+
+<p>
+
+<ul>
+<p>
+    <li> Classical approach. Using the series (<a href="#eSeries">3</a>), the classical
+        approach has a complexity of O(n<sup>2</sup>/log(n)). &nbsp;The algorithm is simply of
+        the form :<a name="eAlgo1">
+        </a>
+        <br clear="all"/>
+        <table border="0" width="95%">
+            <tr>
+                <td>
+                    <table align="center">
+                        <tr>
+                            <td nowrap="nowrap" align="center">
+                            </td>
+                            <td align="left" class="cl"><font face="symbol">
+                                �<br/>�<br/>�<br/>
+                                �<br/>�
+                            </font></td>
+                            <td nowrap="nowrap" align="center">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <table border="0">
+                                                <tr>
+                                                    <td nowrap="nowrap" align="center">
+                                                        v=v/n
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table border="0">
+                                                <tr>
+                                                    <td nowrap="nowrap" align="center">
+                                                        u=u+v
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table border="0">
+                                                <tr>
+                                                    <td nowrap="nowrap" align="center">
+                                                        n=n+1
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td nowrap="nowrap" align="center">
+                                ,
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+                <td width="1%">(9)</td>
+            </tr>
+        </table>
+
+
+<p>
+    starting with u=v=n=1 and (<a href="#eAlgo1">9</a>) is repeated until v is smaller
+    than the required precision. A clear and easy <tt>C</tt> source code which
+    computes e with the classical approach can be found here&nbsp;: <a href="../Programs/programs.html">Easy programs for constants computation</a>. Note
+    that it may be interesting to reverse and rearrange series (<a href="#eSeries">3</a>) in
+    a <i>Horner's way</i>
+    <br clear="all"/>
+<table border="0" width="95%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        e=
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        ( ...+1)
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        6<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +1
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        5<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +1
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        4<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +1
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        3<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +1
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                        &nbsp;1
+                        <div class="hrcomp">
+                            <hr noshade="noshade" size="1"/>
+                        </div>
+                        2<br/></td>
+                    <td nowrap="nowrap" align="center">
+                        +2
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+    so that, if we evaluate it by starting with the last terms of series
+    (<a href="#eSeries">3</a>), only divisions by small integers will be required (the
+    addition of 1 being of a quasi-null cost when working with a large accuracy)
+    and fewer storage memory is needed. The algorithm, which converges to e<font face="symbol">-</font
+        >1,
+    now looks like :<a name="eAlgo2">
+</a>
+    <br clear="all"/>
+<table border="0" width="95%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                    <td align="left" class="cl"><font face="symbol">
+                        �<br/>�<br/>
+                        �
+                    </font></td>
+                    <td nowrap="nowrap" align="center">
+                        <table>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                u=(1+u)/n
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table border="0">
+                                        <tr>
+                                            <td nowrap="nowrap" align="center">
+                                                n=n<font face="symbol">-</font
+                                                    >1
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td nowrap="nowrap" align="center">
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td width="1%">(10)</td>
+    </tr>
+</table>
+
+
+<p>
+    with initial values u=1, n=K and (<a href="#eAlgo2">10</a>) should be repeated until n=1.</li>
+
+<p>
+<li> Binary splitting approach. The series&nbsp;(<a href="#eSeries">3</a>) is particularly
+    well suited for the binary splitting
+    method ( <a href="../Algorithms/splitting.html">the binary splitting page</a> contains a well detailed section dedicated
+    to the computation of the exponential series). It leads to the best results in
+    the practice. Moreover, it is quite easy to implement if one has already a
+    fast multiplication code. A quite clear and short <tt>C</tt> source code which
+    computes e with the binary splitting approach can be found in <a href="../Programs/programs.html">Easy programs for constants computation</a>.
+</li>
+<p>
+    <li> Powering. For all number x the <em>exponential series</em> (<a href="#expz">5</a>)
+        is converging. Formula (<a href="#eSeries">3</a>) corresponds to the particular case
+        x=1.
+
+<p>
+    Instead of computing e=exp(1) from its series, one can compute exp(1/2)
+    and square the result. The advantage is that the series of exp(1/2) has a
+    quicker convergence than the one of exp(1). The process can also be used
+    with exp(1)=exp(1/4)<sup>4</sup>, and more generally
+
+    <br clear="all"/>
+<table border="0" width="95%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        e=exp(1)=exp( 1/2<sup>N</sup>) <sup>2<sup>N</sup></sup>,
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+which needs N consecutive squares after the computation of exp(1/2<sup>N</sup>).
+This technique can be interesting if one has a fast squaring procedure
+compared to the series computation. The choice of N can be optimized with
+respect to the relative timings of series computation and squaring. However,
+it seems that if one use the binary splitting approach on&nbsp;(<a href="#eSeries">3</a>), the
+powering optimization does not permits to obtain better global timings.</li>
+</ul>
+
+<p>
+
+<h2><a name="tth_sEc8">
+    8</a>&nbsp;&nbsp;AGM based approach</h2>
+
+<p>
+    The <a href="..\Log2\log2.html">log(2)</a> page presents an AGM based iteration
+    which converges quadratically to log(x) for any real number x. Thus the
+    computation of y=exp(<font face="symbol">a</font
+        >) can be achieved by using a simple
+    <i>Newton iteration</i> on the function f(y)=log(y)<font face="symbol">-</font
+        ><font face="symbol">a</font
+        >, which leads
+    to the iteration
+
+    <br clear="all"/>
+<table border="0" width="100%">
+    <tr>
+        <td>
+            <table align="center">
+                <tr>
+                    <td nowrap="nowrap" align="center">
+                        y<sub>n+1</sub>=y<sub>n</sub>( 1+<font face="symbol">a</font
+                            ><font face="symbol">-</font
+                            >log(y<sub>n</sub>)) .
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+
+<p>
+    The convergence of the process is quadratic, that is the number of correct
+    digits is doubled at each iteration. Notice that each iteration requires the
+    computation of log(y<sub>n</sub>) to the current precision required, which can be
+    done using the AGM based algorithm to compute logarithmic values.
+
+<p>
+    This process permits to compute exp(<font face="symbol">a</font
+        >) for any real number <font face="symbol">a</font
+        >,
+    which for the (very) particular case <font face="symbol">a</font
+        > = 1 gives the value of e.
+
+<p>
+    It must be pointed out that using the AGM based process to compute e is
+    quite complicated and less efficient than the binary splitting approach from
+    the exponential series.
+
+<p>
+
+<h2><a name="tth_sEc9">
+    9</a>&nbsp;&nbsp;A tiny program to compute e</h2>
+
+<p>
+    This is a tiny C program from Xavier Gourdon to compute 9000 decimal digits of
+    e on your computer. A program of the same kind exists for <font face="symbol">p</font
+        > and for some
+    other constants defined by mean of hypergeometric series.
+
+<pre>
+<font color="#000080">main(){int N=9009,n=N,a[9009],x;while(--n)a[n]=1+1/n;
+    for(;N&gt;9;printf(&quot;%d&quot;,x))
+    for(n=N--;--n;a[n]=x%n,x=10*a[n-1]+x/n);}
+</font>
+</pre>
+
+<p>
+    This program has 117 characters (try to do better !). It can be changed to
+    compute more digits (change the value 9009 to more) and to be faster (change
+    the constant <tt>10</tt> to another power of 10 and the <tt>printf</tt>
+    command). A not so obvious question is to find the algorithm used.
+
+<p>
+
+<h2><a name="tth_sEc10">
+    10</a>&nbsp;&nbsp;Records of computation</h2>
+
+<p>
+    The following table illustrates the evolution of the number D of computed
+    digits for the constant e&nbsp;:
+
+<p>
+
+<table border="1" width="946">
+    <tr>
+        <td width="101">D</td>
+        <td width="82">When</td>
+        <td width="184">Who</td>
+        <td width="551">Notes</td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">23</td>
+        <td width="82">1748</td>
+        <td width="184">L. Euler</td>
+        <td width="551">(<a href="#eSeries">3</a>) was
+            used&nbsp;[<a href="#Euler" name="CITEEuler">5</a>]
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">137</td>
+        <td width="82">1853</td>
+        <td width="184">W. Shanks</td>
+        <td width="551">[<a href="#Shanks" name="CITEShanks">19</a>]</td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">205</td>
+        <td width="82">1871</td>
+        <td width="184">W. Shanks</td>
+        <td width="551">[<a href="#ShanksE" name="CITEShanksE">20</a>]</td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">346</td>
+        <td width="82">1884</td>
+        <td width="184">Boorman</td>
+        <td width="551">[<a href="#Boorman" name="CITEBoorman">2</a>]</td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">808</td>
+        <td width="82">1946</td>
+        <td width="184">?</td>
+        <td width="551"></td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">2 010</td>
+        <td width="82">1949</td>
+        <td width="184">John von Neumann</td>
+        <td width="551">He and his team&nbsp;used
+            the ENIAC [<a href="#ENIAC" name="CITEENIAC">14</a>]
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">100 265</td>
+        <td width="82">1961</td>
+        <td width="184">D. Shanks &amp; J.W. Wrench</td>
+        <td width="551">2.5 hours on
+            a IBM 7090. (<a href="#eSeries">3</a>) was used [<a href="#Wrench" name="CITEWrench">17</a>]
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">10 000 000</td>
+        <td width="82">1994</td>
+        <td width="184">R. Nemiroff &amp; J. Bonnell</td>
+        <td width="551"></td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">18 199 978</td>
+        <td width="82">1997 May</td>
+        <td width="184">Patrick Demichel</td>
+        <td width="551"></td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">20 000 000</td>
+        <td width="82">1997 Aug</td>
+        <td width="184">Birger Seifert</td>
+        <td width="551">182.5 hours on
+            a Pentium (133Mhz)
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">50 000 817</td>
+        <td width="82">1997 Sep</td>
+        <td width="184">P. Demichel</td>
+        <td width="551">714 hours on a HP
+            9000/778 (160Mhz)
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">200 000 579</td>
+        <td width="82">1999</td>
+        <td width="184">S. Wedeniwski</td>
+        <td width="551">Binary splitting</td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">869 894 101</td>
+        <td width="82">1999 Oct</td>
+        <td width="184">S. Wedeniwski</td>
+        <td width="551">Continued
+            fraction expansion of e
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">1 250 000 000</td>
+        <td width="82">1999 Nov</td>
+        <td width="184">X. Gourdon</td>
+        <td width="551">(<a href="#eSeries">3</a>) was used, the verification was made with (<a href="#inveSeries">4</a>). A binary
+            splitting technique was used. The computation took &nbsp;40 hours on a PentiumII
+            350 with 320 Mo. 4 Go of disk space was used during the process. (Note : a
+            previous 1.7 billion digits computation by Patrick Demichel was made before,
+            but no verification was performed. It appears that its first 1.25 billion
+            digits are OK).
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">2 147 483 648</td>
+        <td width="82">2000 Jul</td>
+        <td width="184">X. Gourdon &amp; S. Kondo</td>
+        <td width="551">The
+            computation was launched by Shigeru Kondo with the program PiFast33 written by
+            X. Gourdon. The same technique as in the previous record was used. The
+            computation took 21 hours on a PentiumIII 933 with 512 Mo. 8 Go of disk space
+            were used during the process.
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">3 221 225 472</td>
+        <td width="82">2000 Jul</td>
+        <td width="184">X. Gourdon &amp; C. Martin</td>
+        <td width="551">PiFast33 on an Athlon 650 with just 128 Mo of physical memory and 17.2 GB of
+            disk space. The initial calculation took just over 77 hours and completed on
+            July 13th and the verification took 80 hours.
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">6 442 450 944</td>
+        <td width="82">2000 Aug</td>
+        <td width="184">X. Gourdon &amp; S. Kondo</td>
+        <td width="551">PiFast33, the computation took 70 hours on a PentiumIII 800 with 1024 Mo. 24
+            Go of disk space were necessary. The verification took 71 hours on the same
+            machine
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1" align="right" width="101">12 884 901 000</td>
+        <td width="82">2000 Aug</td>
+        <td width="184">X. Gourdon &amp; S. Kondo</td>
+        <td width="551">PiFast33, the computation, ended on Aug 04 2000, was done in 167 hours on a
+            Pentium III 800 with 1024 Mo of physical memory. 48 GB of disk space was
+            needed.
+        </td>
+    </tr>
+</table>
+
+
+<p>
+
+<h2>References</h2>
+
+<dl compact="compact">
+    <dt><a href="#CITEAGM" name="AGM">[1]</a></dt>
+    <dd>J.M. Borwein and P.B. Borwein, <em>Pi and the AGM - A study in
+        Analytic Number Theory and Computational Complexity</em>, A Wiley-Interscience
+        Publication, New York, (1987)
+
+        <p>
+    </dd>
+    <dt><a href="#CITEBoorman" name="Boorman">[2]</a></dt>
+    <dd>Boorman, <em>Computation of the Naperian Base</em>, The
+        Mathematical Magazine, (1884), vol. 1, p. 204
+
+        <p>
+    </dd>
+    <dt><a href="#CITEHarlanI" name="HarlanI">[3]</a></dt>
+    <dd>Brothers, Harlan J. and J.A. Knox, <em>New closed-form
+        approximations to the logarithmic constant e</em>, Math. Intelligencer, (1998)
+
+        <p>
+    </dd>
+    <dt><a href="#CITECoolidege" name="Coolidege">[4]</a></dt>
+    <dd>J.L. Coolidge, <em>The number e</em>, Amer. Math. Monthly,
+        (1950), vol. 57, p. 591-602
+
+        <p>
+    </dd>
+    <dt><a href="#CITEEuler" name="Euler">[5]</a></dt>
+    <dd>L. Euler, <em>Introduction &#224; l'analyse infinit&#233;simale
+    </em>(french traduction by Labey), Barrois, ain&#233;, Librairie, (original 1748,
+        traduction 1796), vol. 1, p. 89-90
+
+        <p>
+    </dd>
+    <dt><a href="#CITEFinch" name="Finch">[6]</a></dt>
+    <dd>S. Finch, <em>Favorite mathematical constants</em>. World Wide
+        Web site
+        at<tt>&nbsp;http://pauillac.inria.fr/algo/bsolve/constant/constant.html</tt>, (1995)
+
+        <p>
+    </dd>
+    <dt><a href="#CITEGourdon" name="Gourdon">[7]</a></dt>
+    <dd>X. Gourdon and P. Sebah,<em>&nbsp;Numbers, Constants and
+        Computation</em>, World Wide Web site at the adress :
+        <tt>http://numbers.computation.free.fr/Constants/constants.html</tt>, (1999)
+
+        <p>
+    </dd>
+    <dt><a href="#CITEHardy" name="Hardy">[8]</a></dt>
+    <dd>G.H. Hardy and E.M. Wright, <em>An Introduction to the Theory
+        of Numbers</em>, Oxford Science Publications, (1979)
+
+        <p>
+    </dd>
+    <dt><a href="#CITEHermite" name="Hermite">[9]</a></dt>
+    <dd>C.&nbsp;Hermite, <em>Sur la fonction exponentielle</em>, C. R.
+        Acad&#233;mie des Sciences, (1873), vol. 77, p. 18-24, 74-79, 226-233, 285-293
+
+        <p>
+    </dd>
+    <dt><a href="#CITEKnopp" name="Knopp">[10]</a></dt>
+    <dd>K. Knopp, <em>Theory and application of infinite series</em>,
+        Blackie &amp; Son, London, (1951)
+
+        <p>
+    </dd>
+    <dt><a href="#CITEHarlanII" name="HarlanII">[11]</a></dt>
+    <dd>J.A. Knox and Harlan J. Brothers, <em>Novel series-based
+        approximations to e</em>, College Math. J., (1998)
+
+        <p>
+    </dd>
+    <dt><a href="#CITELeLionnais" name="LeLionnais">[12]</a></dt>
+    <dd>F. Le Lionnais, <em>Les nombres remarquables</em>, Paris,
+        Hermann, (1983), p. 47
+
+        <p>
+    </dd>
+    <dt><a href="#CITEMaor" name="Maor">[13]</a></dt>
+    <dd>E. Maor, <em>e: The Story of a Number</em>, Princeton University
+        Press, (1994)
+
+        <p>
+    </dd>
+    <dt><a href="#CITEENIAC" name="ENIAC">[14]</a></dt>
+    <dd>G.W. Reitwiesner , <em>An ENIAC Determination of </em><font face="symbol">p</font
+            ><em>&nbsp;and </em>e<em>&nbsp;to more than 2000 Decimal Places, </em>Mathematical
+        Tables and other Aids to Computation, (1950), vol. 4, p. 11-15
+
+        <p>
+    </dd>
+    <dt><a href="#CITERichardson" name="Richardson">[15]</a></dt>
+    <dd>L.W. Richardson, <em>The deferred Approach to the
+        Limit</em>, Philosophical Transactions of the Royal Society of London, (1927),
+        serie A, vol. 226
+
+        <p>
+    </dd>
+    <dt><a href="#CITESale" name="Sale">[16]</a></dt>
+    <dd>A. Sale, <em>The Calculation of e to many Significant Digits</em>,
+        Computing Journal, (1968), vol. 11, p. 229-230
+
+        <p>
+    </dd>
+    <dt><a href="#CITEWrench" name="Wrench">[17]</a></dt>
+    <dd>D. Shanks and J.W. Wrench, Jr., <em>Calculation of </em><font face="symbol">p</font
+            ><em>&nbsp;to 100,000 Decimals</em>, Math. Comput., (1962), vol. 16, p. 76-79
+
+        <p>
+    </dd>
+    <dt><a href="#CITEWrench2" name="Wrench2">[18]</a></dt>
+    <dd>D. Shanks and J.W. Wrench, Jr., <em>Calculation of </em>e<em>&nbsp;to 100,000 Decimals</em>, Math. Comput., (1969), vol. 23, p. 679-680
+
+        <p>
+    </dd>
+    <dt><a href="#CITEShanks" name="Shanks">[19]</a></dt>
+    <dd>W. Shanks, <em>Contributions to Mathematics Comprising
+        Chiefly the Rectification of the Circle to 607 Places of Decimals</em>, G. Bell,
+        London, (1853), p. vii.
+
+        <p>
+    </dd>
+    <dt><a href="#CITEShanksE" name="ShanksE">[20]</a></dt>
+    <dd>W. Shanks, <em>Second paper on the numerical values of
+    </em>e,loge<sup>2</sup>,loge<sup>3</sup><em>&nbsp;and </em>loge<sup>10</sup>,<em>&nbsp;also on the
+        numerical value of </em>M<em>&nbsp;the modulus of the common system of logarithms,
+        all to 205 decimals</em>, Proc. of London, (1871), vol. 19, p. 27-29
+
+        <p>
+    </dd>
+    <dt><a href="#CITESmith" name="Smith">[21]</a></dt>
+    <dd>D.E. Smith, <em>A Source Book in Mathematics</em>, Dover
+        Publications, New York, (1959, first edition 1929)
+
+        <p>
+    </dd>
+    <dt><a href="#CITEWeisstein" name="Weisstein">[22]</a></dt>
+    <dd>E.W. Weisstein, <em>CRC Concise Encyclopedia of
+        Mathematics</em>, CRC Press, (1999), p. 503-504
+    </dd>
+</dl>
+
+<p>&nbsp;
+<hr/>
+&nbsp;
+<p><b><font color="#009900">Back to</font></b> <a href="../constants.html"><em>Numbers,
+    Constants and Computation</em></a><br/>
+</p>
+<hr/>
+<small>File translated from
+    T<sub><font size="-1">E</font></sub>X
+    by <a href="http://hutchinson.belmont.ma.us/tth/">
+        T<sub><font size="-1">T</font></sub>H</a>,
+    version 3.01.<br/>On 14 Dec 2001, 15:46.
+</small>
+</html>

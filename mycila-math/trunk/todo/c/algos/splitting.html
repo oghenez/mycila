@@ -1,0 +1,854 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+        "http://www.w3.org/TR/REC-html40/loose.dtd">
+<HTML>
+<META NAME="GENERATOR" CONTENT="TtH 2.32">
+
+<center><b><em><font size="+3">
+    <title>Binary splitting method</title>
+    Binary splitting method
+</font></em></b></center>
+<p>
+    (Click <a href="splitting.ps">here</a> for a Postscript version of this page.)
+
+<p>
+    Most classical series formulaes to compute constants (like the
+    exponential series for e, arctan formulaes for <font face=symbol>p</font
+        >, Chudnovsky
+    or Ramanujan formulaes for <font face=symbol>p</font
+        >, ...) have a time cost of O(n<sup>2</sup>) to
+    compute n digits of the series using a classical approach.
+    Using FFT based multiplication, the binary splitting approach
+    (foreshadowed in&nbsp;[<a href="#Brent76" name="CITEBrent76">2</a>], [<a href="#Brent76b" name="CITEBrent76b">3</a>]&nbsp;; see
+    also&nbsp;[<a href="#Borwein" name="CITEBorwein">1</a>][p. 329]) usually permits to evaluate such series in
+    time O(n&nbsp;log(n)<sup>3</sup>) (or O(n&nbsp;log(n)<sup>2</sup>) for e), which is much
+    better.
+
+<p>
+
+<H2><A NAME="tth_sEc1">
+    1</A>&nbsp;&nbsp;Introduction</H2>
+
+<p>
+
+<H3><A NAME="tth_sEc1.1">
+    1.1</A>&nbsp;&nbsp;The example of the factorial</H3>
+
+<p>
+    Suppose you would like to compute the digits of the factorial n!.
+    A basic approach would consist in computing successively the following
+    values
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            x<sub>1</sub> = 1,&nbsp;&nbsp;&nbsp; x<sub>2</sub> = 2x<sub>1</sub>,&nbsp;&nbsp;&nbsp; x<sub>3</sub> = 3x<sub>2</sub>,&nbsp;&nbsp;&nbsp;<font face=symbol>�</font
+                                >,&nbsp;&nbsp;&nbsp;x<sub>n</sub> = nx<sub>n-1</sub>.
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+At iteration number k, the value x<sub>k</sub> contains O(klog(k)) digits, thus
+the computation of x<sub>k+1</sub> = kx<sub>k</sub> has cost O(klog(k)).
+Finally, the total cost with this basic approach is
+O(2log(2)+<font face=symbol>�</font
+        >+n&nbsp;log(n)) = O(n<sup>2</sup>log(n)).
+
+<p>
+    A better approach is the <em>binary splitting</em>&nbsp;: it just consists in
+    recursively cutting the product of m consecutive integers in half.
+    It leads to better results when
+    products on large integers are performed with a fast method.
+
+<p>
+    More precisely, the computation of p(a,b), where
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            p(a,b) <font face=symbol>�</font
+                                > (a+1)(a+2) <font face=symbol>�</font
+                                >(b-1) b =
+                        </td>
+                        <td nowrap align=center>
+                            b!
+                            <hr NOSHADE>
+                            a!<Br></td>
+                        <td nowrap align=center>
+                            ,
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+is done by performing the product
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            p(a,b) = p
+                        </td>
+                        <td align=left class="cl"><font face=symbol>
+                            �<br>�<br>
+                            �
+                        </font></td>
+                        <td nowrap align=center>
+                            a,
+                        </td>
+                        <td nowrap align=center>
+                            a+b
+                            <hr NOSHADE>
+                            2<Br></td>
+                        <td align=left class="cl"><font face=symbol>
+                            �<br>�<br>
+                            �
+                        </font></td>
+                        <td nowrap align=center>
+                            p
+                        </td>
+                        <td align=left class="cl"><font face=symbol>
+                            �<br>�<br>
+                            �
+                        </font></td>
+                        <td nowrap align=center>
+                            a+b
+                            <hr NOSHADE>
+                            2<Br></td>
+                        <td nowrap align=center>
+                            ,b
+                        </td>
+                        <td align=left class="cl"><font face=symbol>
+                            �<br>�<br>
+                            �
+                        </font></td>
+                        <td nowrap align=center>
+                            ,
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+where the two terms in the product are computed recursively in the same
+way. This permits to compute n! = p(0,n).
+
+<p>
+    We now concentrate on the estimation of the timing cost C(a,b) of
+    this process.
+    We denote by M(d) the cost of multiplying two integers of size
+    d.
+    The terms p(a,(a+b)/2) and p((a+b)/2,b) have size
+    O((b-a)log(b)), thus
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            C(a,b) = O(M((b-a)log(b))) +C(a,(a+b)/2) + C((a+b)/2,b) <font face=symbol>�</font
+                                > O(M((b-a)log(b))) + 2 C((a+b)/2,b).
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+An easy induction entails
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            C(a,b) = O ( log(b-a)M((b-a)log(b)))
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+(the superlinearity of M(d) should be used&nbsp;: 2M(d/2) <font face=symbol>�</font
+        > M(d)).
+
+<p>
+    Finally, we have proved that computing n! can be done in time
+    C(0,n) = O(log(n)M(n&nbsp;log(n)).
+    This is always better than the classical approach when products on large
+    integers are done with a fast method. When FFT is used for large
+    multiplication (see <a href="fft.html">FFT based multiplication of large
+    numbers</a>), it leads to the bound
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            C(0,n) = O(n&nbsp;log(n)<sup>3</sup>).
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+<p>
+
+<H3><A NAME="tth_sEc1.2">
+    1.2</A>&nbsp;&nbsp;Generalization</H3>
+
+<p>
+    The example of the factorial can be generalized for many series.
+    Instead of presenting a very general and complicated approach,
+    the next sections are dedicated to illustrate the techniques on
+    classical series.
+
+<p>
+
+<H2><A NAME="tth_sEc2">
+    2</A>&nbsp;&nbsp;Binary splitting on the exponential series</H2>
+
+<p>
+    We want to compute the first n decimal digits of the series
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            e =
+                        </td>
+                        <td nowrap align=center>
+                            <font size="-1"></font> <Br><font face=symbol size="+3">�<br></font>
+                            <font size="-1">k <font face=symbol>�</font
+                                    > 0</font>&nbsp;<br></td>
+                        <td nowrap align=center>
+                        </td>
+                        <td nowrap align=center>
+                            1
+                            <hr NOSHADE>
+                            k!<Br></td>
+                        <td nowrap align=center>
+                            .&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(*)
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+<p>
+    We should first stop the summation as soon as k! &gt; 10<sup>n</sup>, which occurs
+    for k = K <font face=symbol>@</font
+        > d/log(d). We make use of the notations
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            Q(a,b) = (a+1)(a+2)<font face=symbol>�</font
+                                >b,
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            P(a,b) = b(b-1)<font face=symbol>�</font
+                                >(a+2) + b(b-1)<font face=symbol>�</font
+                                >(a+3) +<font face=symbol>�</font
+                                >+ (b-1)b + b + 1.
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+P(a,b) and Q(a,b) are integers which satisfy
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                        </td>
+                        <td nowrap align=center>
+                            P(a,b)
+                            <hr NOSHADE>
+                            Q(a,b)<Br></td>
+                        <td nowrap align=center>
+                            =
+                        </td>
+                        <td nowrap align=center>
+                            1
+                            <hr NOSHADE>
+                            a+1<Br></td>
+                        <td nowrap align=center>
+                            +
+                        </td>
+                        <td nowrap align=center>
+                            1
+                            <hr NOSHADE>
+                            (a+1)(a+2)<Br></td>
+                        <td nowrap align=center>
+                            + <font face=symbol>�</font
+                                >+
+                        </td>
+                        <td nowrap align=center>
+                            1
+                            <hr NOSHADE>
+                            (a+1)(a+2)<font face=symbol>�</font
+                                >b<Br></td>
+                        <td nowrap align=center>
+                            .
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+In particular, 1+P(0,K)/Q(0,K) are the first K terms of the series&nbsp;(*).
+
+<p>
+    To compute P(a,b) and Q(a,b) by the binary splitting method, we
+    proceed as follows. We set m to the half of a+b,
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            m =
+                        </td>
+                        <td align=left class="cl"><font face=symbol>
+                            �<br>�<br>
+                            �
+                        </font></td>
+                        <td nowrap align=center>
+                        </td>
+                        <td nowrap align=center>
+                            a+b
+                            <hr NOSHADE>
+                            2<Br></td>
+                        <td align=left class="cl"><font face=symbol>
+                            �<br>�<br>
+                            �
+                        </font></td>
+                        <td nowrap align=center>
+                            &nbsp;&nbsp;&nbsp; (integer part).
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+Then we have
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            P(a,b) = P(a,m)Q(m,b)+P(m,b),&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Q(a,b) = Q(a,m)Q(m,b).
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+These operations are performed recursively.
+
+<p>
+    The cost of the process to compute P(0,K) and Q(0,K)
+    is easily proved to be O(log(K)M(Klog(K))). A final division of
+    P(0,K) by Q(0,K) is then required to compute the first K terms of
+    the series (its cost is O(M(n)), see <a href="inverse.html">Inverse and
+    n-th roots of large numbers</a>).
+    Since K <font face=symbol>@</font
+        > n/log(n), we have finally obtained a process to
+    compute e in time O(log(n) M(n)). An FFT based multiplication
+    satisfies M(n) = O(n&nbsp;log(n)) and leads to a total cost of
+    O(n&nbsp;log(n)<sup>2</sup>) to compute n digits of e.
+
+<p>
+    An easy code illustrating the binary splitting method to compute e
+    can be found in <a href="../Programs/programs.html">Easy programs for
+    constants computation</a>.
+
+<p>
+
+<H4>Practical implementation</H4>
+
+<p>
+    The computation of the exponential series thanks to the binary
+    splitting approach is quite easy. In the practice, one should stop the
+    splitting recursion when b-a becomes small (the threshold should be
+    an optimized value) to use a classical approach. An slight improvement
+    can also be obtained by using a classical multiplication when P(a,b)
+    and Q(a,b) have a small number of digits.
+
+<p>
+    Thanks to the binary splitting and using the FFT code of
+    <a href="../PiProgram/pifast.html">PiFast</a>, the first million digits of e was
+    computed in less than 10 seconds (pentium II 350). The binary splitting
+    method to compute e is better than any other approaches (much better
+    than the AGM based approach, see <a href="../E/e.html">The constant e</a>).
+
+<p>
+    It must be pointed out that binary splitting needs more memory than the
+    classical method (this is nearly always the case : fast methods are
+    memory consuming). Netherveless, memory is quite easy to manage with
+    this process.
+
+<p>
+
+<H2><A NAME="tth_sEc3">
+    3</A>&nbsp;&nbsp;Binary splitting on the arctan series</H2>
+
+<p>
+    We now present the binary splitting method to compute digits of the
+    arctan series
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            arctan
+                        </td>
+                        <td align=left class="cl"><font face=symbol>
+                            �<br>�<br>
+                            �
+                        </font></td>
+                        <td nowrap align=center>
+                        </td>
+                        <td nowrap align=center>
+                            1
+                            <hr NOSHADE>
+                            q<Br></td>
+                        <td align=left class="cl"><font face=symbol>
+                            �<br>�<br>
+                            �
+                        </font></td>
+                        <td nowrap align=center>
+                            =
+                        </td>
+                        <td nowrap align=center>
+                            1
+                            <hr NOSHADE>
+                            q<Br></td>
+                        <td nowrap align=center>
+                            -
+                        </td>
+                        <td nowrap align=center>
+                            1
+                            <hr NOSHADE>
+                            3q<sup>3</sup><Br></td>
+                        <td nowrap align=center>
+                            +
+                        </td>
+                        <td nowrap align=center>
+                            1
+                            <hr NOSHADE>
+                            5q<sup>5</sup><Br></td>
+                        <td nowrap align=center>
+                            +<font face=symbol>�</font
+                                > =
+                        </td>
+                        <td nowrap align=center>
+                            <font size="-1"></font> <Br><font face=symbol size="+3">�<br></font>
+                            <font size="-1">k <font face=symbol>�</font
+                                    > 0</font>&nbsp;<br></td>
+                        <td nowrap align=center>
+                        </td>
+                        <td nowrap align=center>
+                            (-1)<sup>k</sup>
+                            <hr NOSHADE>
+                            (2k+1)q<sup>2k+1</sup><Br></td>
+                        <td nowrap align=center>
+                            .
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+The technique is slightly more complicated than with the exponential
+series. We need to introduce three integers
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            R(a,b) = (2a+3)(2a+5)<font face=symbol>�</font
+                                >(2b+1),
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            Q(a,b) = (2a+3)(2a+5)<font face=symbol>�</font
+                                >(2b+1) q<sup>2(b-a)</sup>,
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            P(a,b) = (-1)<sup>a+1</sup></td>
+                        <td nowrap align=center>
+                            R(a,b)
+                            <hr NOSHADE>
+                            2a+3<Br></td>
+                        <td nowrap align=center>
+                            q<sup>2(b-a-1)</sup> + (-1)<sup>a+2</sup></td>
+                        <td nowrap align=center>
+                            R(a,b)
+                            <hr NOSHADE>
+                            2a+5<Br></td>
+                        <td nowrap align=center>
+                            q<sup>2(b-a-2)</sup> + <font face=symbol>�</font
+                                >+ (-1)<sup>b-1</sup></td>
+                        <td nowrap align=center>
+                            R(a,b)
+                            <hr NOSHADE>
+                            2b-1<Br></td>
+                        <td nowrap align=center>
+                            q<sup>2</sup> + (-1)<sup>b</sup></td>
+                        <td nowrap align=center>
+                            R(a,b)
+                            <hr NOSHADE>
+                            2b+1<Br></td>
+                        <td nowrap align=center>
+                            .
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+<p>
+    Notice that
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                        </td>
+                        <td nowrap align=center>
+                            P(a,b)
+                            <hr NOSHADE>
+                            Q(a,b)<Br></td>
+                        <td nowrap align=center>
+                            =
+                        </td>
+                        <td nowrap align=center>
+                            <font size="-1">b</font> <Br><font face=symbol size="+3">�<br></font>
+                            <font size="-1">k = a+1</font>&nbsp;<br></td>
+                        <td nowrap align=center>
+                            (-1)<sup>k</sup></td>
+                        <td nowrap align=center>
+                            1
+                            <hr NOSHADE>
+                            (2k+1)q<sup>2(k-a)</sup><Br></td>
+                        <td nowrap align=center>
+                            .
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+With the particular case a = 0, b = K, the expression
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                        </td>
+                        <td nowrap align=center>
+                            1
+                            <hr NOSHADE>
+                            q<Br></td>
+                        <td nowrap align=center>
+                        </td>
+                        <td align=left class="cl"><font face=symbol>
+                            �<br>�<br>
+                            �
+                        </font></td>
+                        <td nowrap align=center>
+                            1 +
+                        </td>
+                        <td nowrap align=center>
+                            P(0,K)
+                            <hr NOSHADE>
+                            Q(0,K)<Br></td>
+                        <td align=left class="cl"><font face=symbol>
+                            �<br>�<br>
+                            �
+                        </font></td>
+                        <td nowrap align=center>
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+is equal to the first K terms of the arctan series.
+
+<p>
+    The splitting process consists in recursively performing the operations
+    (m denotes the half of a+b)
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            P(a,b) = Q(m,b)P(a,m)+R(a,m)P(m,b),&nbsp;&nbsp;&nbsp; Q(a,b) = Q(a,m)Q(m,b),&nbsp;&nbsp;&nbsp;R(a,b) = R(a,m)R(m,b).
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+<p>
+    Now, to compute n decimal digits of arctan(1/q), one must stop the
+    summation at k = K as soon as 10<sup>n</sup> &lt; q<sup>2K+1</sup>, which gives
+    K <font face=symbol>@</font
+        > n&nbsp;log(10)/2. The total cost of the process to compute the
+    first n digits of the series is
+
+<centEr>
+    <table border=0 align=center>
+        <tr>
+            <td>
+                <Table align=left>
+                    <tr>
+                        <td nowrap align=center>
+                            O(log(K)M(Klog(K))) = O(log(n)M(n&nbsp;log(n))).
+                        </td>
+                </Table>
+            </td>
+    </table>
+</centEr>
+
+
+With FFT based multiplication, this leads to the bound O(n&nbsp;log(n)<sup>3</sup>).
+
+<p>
+    Notice that the process is more complicated and expensive than for the
+    exponential series for several reasons&nbsp;:
+
+<UL>
+    <p>
+
+    <li> An auxilliary large integer R(a,b) is needed.
+
+    <li> More products should be performed at each step.
+
+    <li> The large integers P(0,K) and Q(0,K) used to
+        compute the first K terms of the series have size O(n&nbsp;log(n)) which
+        is much bigger than n.
+</UL>
+<p>
+    The last point is important. Nethertheless, the problem can be
+    overpassed by working with a maximal precision of n decimal digits
+    during the process (this requires a treatment for large integers with
+    limited precision). This solution reduces the memory to
+    O(n) instead of O(n&nbsp;log(n)) but only reduces the cost of
+    O(n&nbsp;log(n)<sup>3</sup>) by a constant factor (but appreciable).
+    It must be pointed out that this crucial remark for practical
+    implementations does not often appear on the litterature concerning
+    binary splitting.
+
+<p>
+    The technique to compute arctanh series is very similar and can be
+    efficiently used to compute digits of log(2)
+    (see&nbsp;<a href="../Log2/log2.html">The logarithmic constant&nbsp;:log(2)</a>).
+
+<p>
+
+<H2><A NAME="tth_sEc4">
+    4</A>&nbsp;&nbsp;Other series and constants</H2>
+
+<p>
+    Binary splitting generalizes to all hypergeometric series which
+    involves only integer coefficients (see&nbsp;[<a href="#Borwein" name="CITEBorwein">1</a>][p. 335]).
+    A succint and recursive general
+    approach is also presented in&nbsp;[<a href="#Haible" name="CITEHaible">4</a>] (note: the authors were
+    unfortunately unaware of the original work of E. A. Karatsuba on FEE,
+    just presented below).
+    The general algorithm also includes the evaluation of such series for non
+    rational parameters.
+
+<p>
+    A method of called FEE (Fast E-function Evaluation) has been pioneered
+    by Ekatherine A. Karatsuba, and while reminiscent of splitting, FEE has
+    a unique and general power of its own. (for details and
+    examples of FEE see Borwein, Bradley, Crandall
+
+    <a href="http://www.perfsci.com/free/techpapers">"Computational Strategies for the Riemann Zeta Function"</a>).
+    The FEE method of E. A. Karatsuba can also be used to compute other
+    constants which do not write in a geometrically convergent
+    hypergeometric series : examples include <font face=symbol>z</font
+        >(n) for integer values of
+    n&nbsp;[<a href="#Karatsuba95" name="CITEKaratsuba95">6</a>], Hurwitz Zeta function and Dirichlet
+    L-Series&nbsp;[<a href="#Karatsuba98" name="CITEKaratsuba98">7</a>].
+
+<p>
+
+<H2>References</H2>
+<DL compact>
+    <dt>[<a href="#CITEBorwein" name="Borwein">1</a>]</dt>
+    <dd> J. M. and P. B. Borwein <em>Pi and the AGM</em>
+        John Wiley and sons, (1987)
+
+        <p>
+            <dt>[<a href="#CITEBrent76" name="Brent76">2</a>]</dt>
+            <dd> R. P. Brent, The Complexity of Multiple-Precision
+                Arithmetic, <em>Complexity of Computational Problem Solving</em>,
+                R. S. Andressen and R. P. Brent, Eds (Univ. of Queensland Press,
+                Brisbane, 1976)
+
+                <p>
+                    <dt>[<a href="#CITEBrent76b" name="Brent76b">3</a>]</dt>
+                    <dd> R. P. Brent,
+                        Fast multiple-precision evaluation of elementary functions,
+                        <em>Journal of the ACM</em>, 23 (1976) 242-251.
+
+                        <p>
+                            <dt>[<a href="#CITEHaible" name="Haible">4</a>]</dt>
+                            <dd> B. Haible and T. Papanikolaou,
+                                <em>Fast multiprecision evaluation of series of rational numbers</em>,
+                                report TI-97-7.binsplit, TH Darmstadt. Available
+                                <a href="http://www.informatik.th-darmstadt.de/TI/Mitarbeiter/papanik/Welcome.html">here</a>.
+
+                                <p>
+                                    <dt>[<a href="#CITEKaratsuba91" name="Karatsuba91">5</a>]</dt>
+                                    <dd> E. A. Karatsuba,
+                                        Fast evaluation of transcendental functions,
+                                        <em>Problems of Information Transmission</em> 27 (1991) 339-360.
+
+                                        <p>
+                                            <dt>[<a href="#CITEKaratsuba95" name="Karatsuba95">6</a>]</dt>
+                                            <dd> E. A. Karatsuba,
+                                                Fast Calculation of the Riemann Zeta function <font face=symbol>z</font
+                                                        >(s) for Integer
+                                                Values of the Argument s,
+                                                <em>Problems of Information Transmission</em> 31 (1995) 353-362.
+
+                                                <p>
+                                                    <dt>[<a href="#CITEKaratsuba98" name="Karatsuba98">7</a>]</dt>
+                                                    <dd> E. A. Karatsuba,
+                                                        Fast evaluation of the Hurwitz Zeta function and Dirichlet L-series,
+                                                        <em>Problems of Information Transmission</em> 34 (1998) 342-353.
+
+                                                        <p>
+                                                            <dt>[<a href="#CITEKaratsuba99" name="Karatsuba99">8</a>]</dt>
+                                                            <dd> E. A. Karatsuba,
+                                                                Fast evaluation of hypergeometric function by FEE,
+                                                                Computational Method and Function Theory 1997, Proceeding of the third
+                                                                CMFT Conference (N. Papamichael, St. Ruscheweyh, E.B. Saff, eds)
+                                                                <em>in Approximation and Decomposition. World Scientific</em> (1999), 303-314.
+
+        <p>
+</DL>
+<HR>
+
+<font color="#009900">
+    <b>Back to
+</font>
+</b>
+<p>
+    <a href="../constants.html" target="_top"><em>mathematical
+        constants and computation</em></a>
+
+<p>
+
+<p>
+<hr>
+<small>File translated from T<sub><font size="-1">E</font></sub>X by <a href="http://hutchinson.belmont.ma.us/tth/">T<sub><font size="-1">T</font></sub>H</a>, version 2.32.<br>On 11 Jan 2001, 22:33.</small>
+</HTML>
