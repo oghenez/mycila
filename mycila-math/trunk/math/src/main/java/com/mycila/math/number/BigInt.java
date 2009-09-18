@@ -1667,7 +1667,10 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return the product
      */
     public BigInt multiplyToomCook3(BigInt val) {
-        final int len = Math.max(bitLength(), val.bitLength()) / 3 + 1;
+        int len = (Math.max(bitLength(), val.bitLength()) + 31) >>> 5;
+        // k is the size (in ints) of the lower-order slices.
+        len = (len + 2) / 3 << 5;   // Equal to ceil(largest/3)*32
+        ConcurrentOperation.Multiply multiply = ConcurrentOperation.multiply();
         ConcurrentOperation.Slice slice = ConcurrentOperation.slice(len);
         Result<BigInt> a0 = slice.result(this, 0);
         Result<BigInt> b0 = slice.result(val, 0);
@@ -1677,7 +1680,6 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         Result<BigInt> b1 = slice.result(val, 1);
         slice = null;
 
-        ConcurrentOperation.Multiply multiply = ConcurrentOperation.multiply();
         Result<BigInt> v0 = multiply.result(a0.get(), b0.get());
         Result<BigInt> vinf = multiply.result(a2.get(), b2.get());
         BigInt da = a2.get().add(a0.get());
@@ -1713,6 +1715,27 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         t5 = null;
         da = null;
         return signum() != val.signum() ? db.opposite() : db;
+
+        // NON-PARALLEL VERSION, 4-5 times slower
+        /*BigInt v0, v1, v2, vm1, vinf, t1, t2, tm1, da1, db1;
+        v0 = a0.get().multiply(b0.get());
+        da1 = a2.get().add(a0.get());
+        db1 = b2.get().add(b0.get());
+        vm1 = da1.subtract(a1.get()).multiply(db1.subtract(b1.get()));
+        da1 = da1.add(a1.get());
+        db1 = db1.add(b1.get());
+        v1 = da1.multiply(db1);
+        v2 = da1.add(a2.get()).shiftLeft(1).subtract(a0.get()).multiply(db1.add(b2.get()).shiftLeft(1).subtract(b0.get()));
+        vinf = a2.get().multiply(b2.get());
+        t2 = v2.subtract(vm1).divide(THREE);
+        tm1 = v1.subtract(vm1).shiftRight(1);
+        t1 = v1.subtract(v0);
+        t2 = t2.subtract(t1).shiftRight(1);
+        t1 = t1.subtract(tm1).subtract(vinf);
+        t2 = t2.subtract(vinf.shiftLeft(1));
+        tm1 = tm1.subtract(t2);
+        BigInt result = vinf.shiftLeft(len).add(t2).shiftLeft(len).add(t1).shiftLeft(len).add(tm1).shiftLeft(len).add(v0);
+        return signum() != val.signum() ? result.opposite() : result;*/
     }
 
     /**
@@ -1731,7 +1754,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         }
         return slices;
     }
-    
+
     /**
      * Split the number in slices of given lenth.
      *
