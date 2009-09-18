@@ -6,7 +6,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -21,7 +24,12 @@ public final class ConcurrentOperation {
             cpus = Integer.parseInt(System.getProperty("mycila.math.cpus"));
         } catch (Exception ignored) {
         }
-        EXECUTOR_SERVICE = Executors.newFixedThreadPool(cpus, new DefaultThreadFactory());
+        EXECUTOR_SERVICE = new ThreadPoolExecutor(
+                cpus, Integer.MAX_VALUE,
+                30, TimeUnit.SECONDS,
+                new SynchronousQueue<Runnable>(),
+                new DefaultThreadFactory("concurrent-operation"),
+                new ThreadPoolExecutor.AbortPolicy());
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
@@ -39,6 +47,10 @@ public final class ConcurrentOperation {
 
     public static Multiply multiply() {
         return new Multiply();
+    }
+
+    public static Slices slices(int len) {
+        return new Slices(len);
     }
 
     public static Slice slice(int len) {
@@ -68,10 +80,10 @@ public final class ConcurrentOperation {
         }
     }
 
-    public static final class Slice extends Generic<BigInt[]> {
+    public static final class Slices extends Generic<BigInt[]> {
         private final int len;
 
-        private Slice(int len) {
+        private Slices(int len) {
             this.len = len;
         }
 
@@ -89,26 +101,47 @@ public final class ConcurrentOperation {
         }
     }
 
+    public static final class Slice extends Generic<BigInt> {
+        private final int len;
+
+        private Slice(int len) {
+            this.len = len;
+        }
+
+        public int length() {
+            return len;
+        }
+
+        public Result<BigInt> result(final BigInt val, final int index) {
+            return result(new Callable<BigInt>() {
+                @Override
+                public BigInt call() throws Exception {
+                    return val.slice(len, index);
+                }
+            });
+        }
+    }
+
     public static class Generic<T> {
 
         private final ExecutorCompletionService<T> service = new ExecutorCompletionService<T>(ConcurrentOperation.EXECUTOR_SERVICE);
-        private int count;
+        private AtomicInteger count = new AtomicInteger(0);
 
         private Generic() {
         }
 
         public boolean isEmpty() {
-            return count == 0;
+            return size() == 0;
         }
 
         public int size() {
-            return count;
+            return count.get();
         }
 
         public T take() {
             try {
                 T t = service.take().get();
-                count--;
+                count.decrementAndGet();
                 return t;
             } catch (InterruptedException e) {
                 throw new RuntimeException(e.getMessage(), e);
@@ -118,12 +151,12 @@ public final class ConcurrentOperation {
         }
 
         public void push(Callable<T> callable) {
-            count++;
+            count.incrementAndGet();
             service.submit(callable);
         }
 
         public Result<T> result(Callable<T> callable) {
-            count++;
+            count.incrementAndGet();
             return new Result<T>(service.submit(callable));
         }
     }

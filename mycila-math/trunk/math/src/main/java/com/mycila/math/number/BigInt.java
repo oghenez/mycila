@@ -15,12 +15,12 @@
  */
 package com.mycila.math.number;
 
+import com.mycila.math.concurrent.ConcurrentOperation;
+import com.mycila.math.concurrent.Result;
 import com.mycila.math.distribution.Distribution;
 import com.mycila.math.list.ByteProcedure;
 import com.mycila.math.prime.PrimaltyTest;
 import com.mycila.math.prime.Sieve;
-import com.mycila.math.concurrent.ConcurrentOperation;
-import com.mycila.math.concurrent.Result;
 
 import java.util.Arrays;
 
@@ -1668,26 +1668,36 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      */
     public BigInt multiplyToomCook3(BigInt val) {
         final int len = Math.max(bitLength(), val.bitLength()) / 3 + 1;
-        BigInt[] a = slice(len);
-        BigInt[] b = val.slice(len);
+        ConcurrentOperation.Slice slice = ConcurrentOperation.slice(len);
+        Result<BigInt> a0 = slice.result(this, 0);
+        Result<BigInt> b0 = slice.result(val, 0);
+        Result<BigInt> a2 = slice.result(this, 2);
+        Result<BigInt> b2 = slice.result(val, 2);
+        Result<BigInt> a1 = slice.result(this, 1);
+        Result<BigInt> b1 = slice.result(val, 1);
+        slice = null;
 
         ConcurrentOperation.Multiply multiply = ConcurrentOperation.multiply();
-        Result<BigInt> v0 = multiply.result(a[0], b[0]);
-        Result<BigInt> vinf = multiply.result(a[2], b[2]);
-        BigInt da = a[2].add(a[0]);
-        BigInt db = b[2].add(b[0]);
-        Result<BigInt> vm1 = multiply.result(da.subtract(a[1]), db.subtract(b[1]));
+        Result<BigInt> v0 = multiply.result(a0.get(), b0.get());
+        Result<BigInt> vinf = multiply.result(a2.get(), b2.get());
+        BigInt da = a2.get().add(a0.get());
+        BigInt db = b2.get().add(b0.get());
+        Result<BigInt> vm1 = multiply.result(da.subtract(a1.get()), db.subtract(b1.get()));
         
-        da = da.add(a[1]);
-        db = db.add(b[1]);
+        da = da.add(a1.get());
+        a1 = null;
+        db = db.add(b1.get());
+        b1 = null;
         BigInt v1 = da.multiply(db);
         BigInt t1 = v1.subtract(v0.get());
-        BigInt t5 = da.add(a[2]).shiftLeft(1).subtract(a[0])
-                .multiply(db.add(b[2]).shiftLeft(1).subtract(b[0]))
+        BigInt t5 = da.add(a2.get()).shiftLeft(1).subtract(a0.get())
+                .multiply(db.add(b2.get()).shiftLeft(1).subtract(b0.get()))
                 .subtract(vm1.get()).divide(THREE).subtract(t1).shiftRight(1).subtract(vinf.get().shiftLeft(1));
         multiply = null;
-        a = null;
-        b = null;
+        a0 = null;
+        a2 = null;
+        b0 = null;
+        b2 = null;
         
         da = v1.subtract(vm1.get()).shiftRight(1);
         vm1 = null;
@@ -1721,7 +1731,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         }
         return slices;
     }
-
+    
     /**
      * Split the number in slices of given lenth.
      *
