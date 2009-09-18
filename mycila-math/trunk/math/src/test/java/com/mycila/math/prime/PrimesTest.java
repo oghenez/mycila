@@ -53,10 +53,12 @@ public final class PrimesTest {
             product = product.multiply(big(number));
         time = System.currentTimeMillis() - time;
         System.out.println("in " + time);
+
         time = System.currentTimeMillis();
         BigInt p = Primes.product(numbers, 0, length);
         time = System.currentTimeMillis() - time;
         System.out.println("in " + time);
+
         assertEquals(product, p);
     }
 

@@ -1632,6 +1632,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         BigInt ac = a.multiply(c);
         BigInt bd = b.multiply(d);
         BigInt abcd = a.add(b).multiply(c.add(d));
+        a = b = c = d = null;
         // a*c + 2^n * ((a+b)*(c+d)-(a*c+b*d)) + b*d*2^2n
         return ac.add(abcd.subtract(ac).subtract(bd).shiftLeft(n)).add(bd.shiftLeft(n << 1));
     }
@@ -1680,7 +1681,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         Result<BigInt> b1 = slice.result(val, 1);
         slice = null;
 
-        Result<BigInt> v0 = multiply.result(a0.get(), b0.get());
+        /*Result<BigInt> v0 = multiply.result(a0.get(), b0.get());
         Result<BigInt> vinf = multiply.result(a2.get(), b2.get());
         BigInt da = a2.get().add(a0.get());
         BigInt db = b2.get().add(b0.get());
@@ -1696,10 +1697,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
                 .multiply(db.add(b2.get()).shiftLeft(1).subtract(b0.get()))
                 .subtract(vm1.get()).divide(THREE).subtract(t1).shiftRight(1).subtract(vinf.get().shiftLeft(1));
         multiply = null;
-        a0 = null;
-        a2 = null;
-        b0 = null;
-        b2 = null;
+        a0 = a2 = b0 = b2 = null;
         
         da = v1.subtract(vm1.get()).shiftRight(1);
         vm1 = null;
@@ -1709,15 +1707,12 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
                 .add(t1.subtract(da).subtract(vinf.get())).shiftLeft(len)
                 .add(da.subtract(t5)).shiftLeft(len)
                 .add(v0.get());
-        v0 = null;
-        vinf = null;
-        t1 = null;
-        t5 = null;
-        da = null;
-        return signum() != val.signum() ? db.opposite() : db;
+        v0 = vinf = t1 = t5 = da = null;
+
+        return signum() != val.signum() ? db.opposite() : db;*/
 
         // NON-PARALLEL VERSION, 4-5 times slower
-        /*BigInt v0, v1, v2, vm1, vinf, t1, t2, tm1, da1, db1;
+        BigInt v0, v1, v2, vm1, vinf, t1, t2, tm1, da1, db1;
         v0 = a0.get().multiply(b0.get());
         da1 = a2.get().add(a0.get());
         db1 = b2.get().add(b0.get());
@@ -1727,7 +1722,8 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         v1 = da1.multiply(db1);
         v2 = da1.add(a2.get()).shiftLeft(1).subtract(a0.get()).multiply(db1.add(b2.get()).shiftLeft(1).subtract(b0.get()));
         vinf = a2.get().multiply(b2.get());
-        t2 = v2.subtract(vm1).divide(THREE);
+        t2 = v2.subtract(vm1);
+        t2 = t2.divide(THREE);
         tm1 = v1.subtract(vm1).shiftRight(1);
         t1 = v1.subtract(v0);
         t2 = t2.subtract(t1).shiftRight(1);
@@ -1735,7 +1731,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         t2 = t2.subtract(vinf.shiftLeft(1));
         tm1 = tm1.subtract(t2);
         BigInt result = vinf.shiftLeft(len).add(t2).shiftLeft(len).add(t1).shiftLeft(len).add(tm1).shiftLeft(len).add(v0);
-        return signum() != val.signum() ? result.opposite() : result;*/
+        return signum() != val.signum() ? result.opposite() : result;
     }
 
     /**
@@ -1749,7 +1745,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         BigInt num = this;
         BigInt[] slices = new BigInt[(bitLength() + len - 1) / len];
         for (int i = 0; num.signum() != 0; i++) {
-            slices[i] = num.and(mask);
+            slices[i] = num.and(mask).abs();
             num = num.shiftRight(len);
         }
         return slices;
@@ -1775,3 +1771,5 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
 //TODO: make wrapper for optimized BigInteger + BigIntegerMath.java, apflot, jscience, ... + Javolution contexts and factories + impl. paralell computing (factorial, products, ...)
 //TODO: make wrapper for GMP java avec https://jna.dev.java.net/ + http://code.google.com/p/jnaerator/
 //TODO: BigIntegerMath.java: CRT, Quadrati, pMinusOneFactor (Pollard p-1)
+
+//TODO: improve pow and square with toomcook and karatsuba (see BigInteger.java)
