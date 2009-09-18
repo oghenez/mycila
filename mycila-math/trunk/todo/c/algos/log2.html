@@ -1,0 +1,4195 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0059)http://numbers.computation.free.fr/Constants/Log2/log2.html -->
+<!-- saved from url=(0059)http://numbers.computation.free.fr/Constants/Log2/log2.html --><!-- saved from url=(0059)http://numbers.computation.free.fr/Constants/Log2/log2.html -->
+<HTML>
+<HEAD><TITLE>The logarithm constant : $\log(2)$</TITLE>
+    <META http-equiv=Content-Type content="text/html; charset=windows-1252">
+    <META http-equiv=Content-Typ! content="text/html; charset=windows-1252">
+    <META http-equiv=Content-Typ! content="text/html; charset=windows-1252">
+    <META content="Microsoft FrontPage 5.0" name=GENERATOR>
+    <STYLE type=text/css>TD DIV.comp {
+        MARGIN-TOP: -0.6ex;
+        MARGIN-BOTTOM: -1ex
+    }
+
+    TD DIV.comb {
+        MARGIN-TOP: -0.6ex;
+        MARGIN-BOTTOM: -0.6ex
+    }
+
+    TD DIV.hrcomp {
+        MARGIN-TOP: -0.8ex;
+        MARGIN-BOTTOM: -1ex;
+        LINE-HEIGHT: 0.9
+    }
+
+    TD DIV.norm {
+        LINE-HEIGHT: normal
+    }
+
+    SPAN.roman {
+        FONT-WEIGHT: normal;
+        FONT-STYLE: normal;
+        FONT-FAMILY: serif
+    }
+
+    SPAN.overacc2 {
+        LEFT: 0.8em;
+        POSITION: relative;
+        TOP: -1.2ex
+    }
+
+    SPAN.overacc1 {
+        LEFT: 0.6em;
+        POSITION: relative;
+        TOP: -1.2ex
+    }
+    </STYLE>
+</HEAD>
+<BODY bgColor=#cfcfde>
+<H1 align=center><I>The logarithm constant: </I>log<I> </I>2 </H1>
+
+<P>
+<CENTER><SPAN lang=en-us><FONT color=#ff0000>log 2 </FONT>= <FONT
+        color=#008000>0.69314718055994530941723212145817656807550013436025...</FONT>
+
+</SPAN>
+
+    <P>&nbsp;</P></CENTER>
+<P>
+
+<DIV align=right><I>...by shortening the labors,<BR>doubled the life of the
+    astronomer.</I><BR>- Pierre Simon de Laplace (1749-1827) about logarithms.
+</DIV>
+<P><SPAN lang=en-us><BR></SPAN><BR>
+
+<DIV align=right><I><SPAN lang=en-gb>You have no idea, how much poetry there is
+<BR></SPAN><SPAN lang=en-us>in the calculation of a table of 
+logarithms!</SPAN></I><SPAN lang=en-us> <BR></SPAN>- Karl Friedrich Gauss
+    (1777-1855), to his students.
+</DIV>
+<P>(Click <A
+        href="http://numbers.computation.free.fr/Constants/Log2/log2.ps">here</A> for a
+    Postscript version of this page).
+
+<P>
+
+<H2><A name=tth_sEc1>1</A>&nbsp;&nbsp;Introduction</H2>
+
+<P>The story of logarithms really began with<SPAN lang=en-us> </SPAN>the Scot
+    John Napier (1550-1617) in a work published in 1614. This treatise was in Latin
+    and entitled <I>Mirifici logarithmorum canonis descriptio </I>[<A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#Napier"
+            name=CITENapier>7</A>]. However it should be pointed out that the Swiss
+    clockmaker Jost Bürgi (1552-1632) independently invented logarithms but his work
+    remained unpublished until 1620.
+
+<P>Thanks to the possibility to replace painful multiplications and divisions by
+    additions and subtractions respectively, this invention received an
+    extraordinary welcome and spread rapidly on the Continent (in particular thanks
+    to the enthusiasm of astronomers like Kepler). George Gibson wrote during Napier
+    Tercentenary Exhibition: ''the invention of logarithms marks an epoch in the
+    history of science''.
+
+<P>Very soon tables of logarithms were published. One of the first was due to
+    the English mathematician Henry Briggs (1561-1631) who, in 1624, published his
+    work in <I>Arithmetica logarithmica</I> [<A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#Briggs"
+            name=CITEBriggs>4</A>]; the tables were to an accuracy of fourteen digits and
+    containing the common logarithm of integers up to 20,000 and from 90,000 up to
+    101,000. The remaining gap was completed [<A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#Vlacq"
+            name=CITEVlacq>12</A>] by the Dutchman Adrian Vlacq (1600-1667) in 1628.
+
+<P>Mathematicians prefer to use the so-called<I> natural </I>or<I> hyperbolic
+    logarithm</I> of a number (denoted log or ln, that is logarithms having
+    <I>base</I> <I>e</I>=2.7182818284...) and the following definition allows to
+    derive easily the main properties of logarithms.
+
+<P><B>Definition 1</B> <EM>Let x &gt;
+</EM>0<EM> <BR clear=all></EM>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE width=305 align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle width=77>log <I>x</I> =&nbsp;&nbsp; </TD>
+                    <TD class=cl align=left width=18><FONT face=symbol>ó<BR>õ </FONT></TD>
+                    <TD noWrap align=middle width=14><I><FONT size=-1>x</FONT></I><!--sup
+--><BR><BR><FONT
+                            size=-1>1</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle width=6></TD>
+                    <TD noWrap align=middle width=16>d<I>t</I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>t</I><BR></TD>
+                    <TD noWrap align=middle width=21>&nbsp;=&nbsp;&nbsp; </TD>
+                    <TD class=cl align=left width=14><FONT face=symbol>ó<BR>õ </FONT></TD>
+                    <TD noWrap align=middle width=35><FONT size=-1><I>x</I><FONT
+                            face=symbol>-</FONT>1</FONT><!--sup
+--><BR><BR><FONT
+                            size=-1>0</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle width=4></TD>
+                    <TD noWrap align=middle width=49>d<I>t</I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        1 +<I> t</I><BR></TD>
+                    <TD noWrap align=middle
+                        width=6>.
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>It may be interpreted as the area under the hyperbola <I>y</I>=1/<I>t</I>
+    with <I>t</I> going from 1 to <I>x</I>. (this geometric interpretation was
+    showed by the Jesuit Grégoire de Saint-Vincent (1584-1667) in 1647).
+
+<P>Therefore, log 2 will be defined by
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE width=405 align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle width=67>log 2 =</TD>
+                    <TD class=cl align=left width=16><FONT face=symbol>ó<BR>õ </FONT></TD>
+                    <TD noWrap align=middle width=14><FONT
+                            size=-1>2</FONT><!--sup
+--><BR><BR><FONT
+                            size=-1>1</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle width=6></TD>
+                    <TD noWrap align=middle width=16>d<I>t</I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>t</I><BR></TD>
+                    <TD noWrap align=middle width=11>=</TD>
+                    <TD class=cl align=left width=14><FONT face=symbol>ó<BR>õ </FONT></TD>
+                    <TD noWrap align=middle width=14><FONT
+                            size=-1>1</FONT><!--sup
+--><BR><BR><FONT
+                            size=-1>0</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle width=6></TD>
+                    <TD noWrap align=middle width=43>d<I>t</I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        1 +<I> t</I><BR></TD>
+                    <TD noWrap align=middle width=19>&nbsp;=&nbsp; </TD>
+                    <TD class=cl align=left width=14><FONT face=symbol>ó<BR>õ </FONT></TD>
+                    <TD noWrap align=middle width=23><FONT
+                            size=-1>1/2</FONT><!--sup
+--><BR><BR><FONT
+                            size=-1>0</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle width=6></TD>
+                    <TD noWrap align=middle width=49>d<I>t</I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        1<FONT face=symbol> - </FONT><I>t</I><BR></TD>
+                    <TD noWrap align=middle
+                        width=21>.
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P align=center><IMG height=337 src="log2.gif" width=401 border=0>
+
+<P><B>Theorem 2</B> log 2<EM> is an<I>&nbsp;irrational</I> and
+    <I>transcendental</I> number.
+</EM>
+
+<P>
+
+<H2><A name=tth_sEc2>2</A>&nbsp;&nbsp;Algorithms based on integral
+    representation</H2>
+
+<P>From the integral representation of log 2 we may deduce some formulae. The
+    first one is deduced form the <I>rectangular approximation</I> of the integral
+    (here <I>h</I>=(<I>b</I><FONT face=symbol>-</FONT><I>a</I>)/<I>n</I>)
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle></TD>
+                    <TD class=cl align=left><FONT face=symbol>ó<BR>õ </FONT></TD>
+                    <TD noWrap align=middle><I><FONT size=-1>b</FONT></I><!--sup
+--><BR><BR><I><FONT size=-1>a</FONT></I>&nbsp;<BR></TD>
+                    <TD noWrap align=middle>f(<I>t</I>)&nbsp;d<I>t </I>= <I>h</I></TD>
+                    <TD noWrap align=middle><I><FONT size=-1>n</FONT></I><!--sup
+--><BR><FONT size=+3><FONT
+                            face=symbol>å<BR></FONT></FONT><FONT size=-1><I>k </I>=
+                        1</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle>f(<I>a </I>+<I> kh</I>) +
+                        O(<I>h</I>),
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+which, applied
+to f(<I>t</I>)=1/(1+<I>t</I>) on [0,1] gives
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>log 2 =</TD>
+                    <TD noWrap align=middle><!--sup
+--><BR>lim<BR><FONT size=-1><I>n</I><FONT
+                            face=symbol>®</FONT> <FONT
+                            face=symbol>¥</FONT></FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>n</I> + 1<BR></TD>
+                    <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>n </I>+ 2<BR></TD>
+                    <TD noWrap align=middle>&nbsp;+ ... +&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<I>n</I><BR></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle>.</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>This sequence is increasing. Here are the numerical values of some partial
+    sum for different value of <I>n</I>.
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE width=1179 align=right border=0>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=right width=492>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>10</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left width=93>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left width=580>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>0.6(687...),</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right width=492>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>100</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left width=93>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left width=580>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>0.69(065...),</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right width=492>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>1,000</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left width=93>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left width=580>
+                        <TABLE>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap
+                                    align=right>0.69(289...).
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>It is a very slow convergence, but it can be improved if we use the
+    <I>trapezoidal rule</I>
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle></TD>
+                    <TD class=cl align=left><FONT face=symbol>ó<BR>õ </FONT></TD>
+                    <TD noWrap align=middle><I><FONT size=-1>b</FONT><!--sup
+--></I><BR><BR><I><FONT size=-1>a</FONT></I>&nbsp;<BR></TD>
+                    <TD noWrap align=middle>f(<I>t</I>)d<I>t </I>=&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle><I>h</I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>f(<I>a</I>) + f(<I>b</I>) + 2</TD>
+                    <TD noWrap align=middle><FONT size=-1><I>n</I><FONT
+                            face=symbol>-</FONT>1</FONT><!--sup
+--><BR><FONT size=+3><FONT
+                            face=symbol>å<BR></FONT></FONT><FONT size=-1><I>k </I>=
+                        1</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle>f(<I>a </I>+<I> kh</I>)</TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle>&nbsp;+
+                        O<I>(h</I><SUP>2</SUP>),
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+yielding
+<BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>log 2 =</TD>
+                    <TD noWrap align=middle><!--sup
+--><BR>lim<BR><FONT size=-1><I>n</I><FONT
+                            face=symbol>®</FONT> <FONT
+                            face=symbol>¥</FONT></FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>3
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        4<I>n</I><BR></TD>
+                    <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>n </I>+ 1<BR></TD>
+                    <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>n </I>+ 2<BR></TD>
+                    <TD noWrap align=middle>&nbsp;+<FONT face=symbol> ¼
+                    </FONT>+&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<I>n</I><FONT face=symbol> - </FONT>1<BR></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle></TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>and some iterates are
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE width="80%" align=right border=0>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>10</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>0.693(771...),
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>100</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>0.6931(534...),
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>1,000</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap
+                                    align=right>0.693147(243...).
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>The rate of convergence has been improved but it remains logarithmic. We now
+    give a last improvement on the computation of the integral, known as the
+    <I>Simpson's rule</I>
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle></TD>
+                    <TD class=cl align=left><FONT face=symbol>ó<BR>õ </FONT></TD>
+                    <TD noWrap align=middle><I><FONT size=-1>b</FONT></I><!--sup
+--><BR><BR><I><FONT size=-1>a</FONT></I>&nbsp;<BR></TD>
+                    <TD noWrap align=middle>f(<I>t</I>)d<I>t </I>=&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle><I>h</I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        6<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle><I><FONT size=-1>n</FONT><!--sup
+--><BR></I><FONT face=symbol
+                 size=+3>å<BR></FONT><FONT size=-1><I>k </I>= 0</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>f(<I>a </I>+<I> kh</I>) + f(<I>a </I>+
+                        (<I>k</I><FONT face=symbol>-</FONT>1)<I>h</I>) + 4f
+                    </TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle><I>a </I>+ (<I>k</I><FONT face=symbol>-</FONT></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<BR></TD>
+                    <TD noWrap align=middle>)<I>h</I></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle>&nbsp;+
+                        O(<I>h</I><SUP>4</SUP>),
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+giving
+<BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>log 2 =&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle><!--sup
+--><BR>lim<BR><FONT size=-1><I>n</I><FONT
+                            face=symbol>®</FONT> <FONT
+                            face=symbol>¥</FONT></FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle><I><FONT size=-1>n</FONT></I><!--sup
+--><BR><FONT size=+3><FONT
+                            face=symbol>å<BR></FONT></FONT><FONT size=-1><I>k </I>=
+                        0</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>n </I>+<I> k</I><BR></TD>
+                    <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>n </I>+<I>k </I><FONT face=symbol>- </FONT>1<BR></TD>
+                    <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>4
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>n </I>+<I> k </I><FONT face=symbol>- </FONT>1/2<BR></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle></TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>and the new iterates
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE width="80%" align=right border=0>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>10</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>0.693147(374...),
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>100</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>0.6931471805(794...),
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>1,000</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap
+                                    align=right>0.69314718055994(726...).
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>From those examples we can notice that such formulae may only be used to
+    compute a few digits of log 2, the rate of convergence is too slow to find
+    constants with high precision.
+
+<P>
+
+<H2><A name=tth_sEc3>3</A>&nbsp;&nbsp;A simple limit</H2>
+
+<P>It is of interest to observe that logarithms may be computed by some very
+    simple formulas that are not directly related to geometrical area and involving
+    only square roots extractions.
+
+<P>We know that the constant e may be defined by the famous limit
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle><I>e </I>=&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle><!--sup
+--><BR>lim<BR><FONT size=-1><I>n</I><FONT
+                            face=symbol>®</FONT> <FONT
+                            face=symbol>¥</FONT></FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>1 +&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>n</I><BR></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle><I><FONT size=-1>n</FONT></I><!--sup
+--><BR><BR>&nbsp;<BR></TD>
+                    <TD noWrap align=middle>,</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>and it is interesting to note that a similar formula exists for the logarithm
+    constant:
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>log 2 =</TD>
+                    <TD noWrap align=middle><!--sup
+--><BR>lim<BR><FONT size=-1><I>n</I><FONT
+                            face=symbol>®</FONT> <FONT
+                            face=symbol>¥</FONT></FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle><I>n</I> (2<SUP>1/<I>n </I></SUP><FONT face=symbol>- </FONT>1),</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>it is obviously deduced from the expansion
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>2<SUP>1/<I>n</I> </SUP>= <I>e</I><SUP>log
+                        2/<I>n</I> </SUP>= 1 +&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>log 2
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>n</I><BR></TD>
+                    <TD noWrap align=middle>&nbsp;+ O</TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>n</I><SUP>2</SUP><BR></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle>.</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>With <I>n</I>=1,000, we find
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle><I>x</I><SUB>1,000 </SUB>=
+                        0.693(387...).
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>A better formula is given by
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>log 2 =</TD>
+                    <TD noWrap align=middle><!--sup
+--><BR>lim<BR><FONT size=-1><I>n</I><FONT
+                            face=symbol>®</FONT> <FONT
+                            face=symbol>¥</FONT></FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle><I>n</I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<BR></TD>
+                    <TD noWrap align=middle>(2<SUP>1/<I>n</I></SUP><FONT face=symbol> -
+                    </FONT>2<SUP><FONT
+                            face=symbol>-</FONT>1/<I>n</I></SUP>),
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>again, with <I>n</I>=1,000
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle><I>x</I><SUB>1,000 </SUB>=
+                        0.693147(236...),
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>the error is O(1/<I>n</I><SUP>2</SUP>). To conclude this section, we give the
+    unusual infinite product published by Seidel in 1871
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle>log <I>x</I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>x </I><FONT face=symbol>- </FONT>1<BR></TD>
+                    <TD noWrap align=middle>&nbsp;=&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle><FONT size=-1><I>k </I>=<FONT
+                            face=symbol>
+                        ¥</FONT></FONT><!--sup
+--><BR><FONT size=+3><FONT
+                            face=symbol>Õ<BR></FONT></FONT><FONT size=-1><I>&nbsp;k </I>= 1</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle>2
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>x</I><SUP>1/2<I><SUP>k </SUP></I></SUP>+ 1<BR></TD>
+                    <TD noWrap align=middle>,</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>we apply it for <I>x</I>=2
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>log 2 =&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>2
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<SUP>1/2 </SUP>+ 1<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle>2
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<SUP>1/4 </SUP>+ 1<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle>2
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<SUP>1/8 </SUP>+ 1<BR></TD>
+                    <TD noWrap align=middle>...</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>
+
+<H2><A name=tth_sEc4>4</A>&nbsp;&nbsp;Taylor's expansion</H2>
+
+<P>In 1668, Nicolas Mercator (1620-1687) published in his
+    <EM>Logarithmotechnia</EM> [<A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#Mercator"
+            name=CITEMercator>6</A>] the well known series expansion for the logarithmic
+    function:
+
+<P><B>Theorem 3</B> <EM>(Mercator) <BR clear=all></EM>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>log(1 +<I> x</I>) = <I>x</I><FONT face=symbol> -&nbsp;&nbsp; </FONT></TD>
+                    <TD noWrap align=middle>&nbsp;<I>x</I><SUP>2</SUP>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<BR></TD>
+                    <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>&nbsp;<I>x</I><SUP>3</SUP>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        3<BR></TD>
+                    <TD noWrap align=middle><FONT face=symbol>- </FONT>... =&nbsp;&nbsp;
+                    </TD>
+                    <TD noWrap align=middle><!--sup
+--><BR><FONT size=+3><FONT
+                            face=symbol>å<BR></FONT></FONT><FONT size=-1><I>k</I> <FONT
+                            face=symbol>³</FONT> 1</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle>&nbsp;(<FONT face=symbol>-</FONT>1)<SUP><I>k</I><FONT
+                            face=symbol>-</FONT>1</SUP><I>x<SUP>k</SUP></I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>k</I><BR></TD>
+                    <TD noWrap align=middle>.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT face=symbol>-</FONT>1 &lt;<I> x</I> <FONT face=symbol>£</FONT>
+                        1
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>The Mercator series is very similar to another series studied by James
+    Gregory (1638-1675) at the same time:
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>arctan <I>x</I> = <I>x</I><FONT face=symbol>
+                        -&nbsp;&nbsp; </FONT></TD>
+                    <TD noWrap align=middle>&nbsp;<I>x</I><SUP>3</SUP>&nbsp;
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        3<BR></TD>
+                    <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>&nbsp;<I>x</I><SUP>5</SUP>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        5<BR></TD>
+                    <TD noWrap align=middle><FONT face=symbol>-¼</FONT></TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>One of the first mathematician to use Mercator's series is Isaac Newton
+    (1643-1727) who made various computation of logarithms in the celebrated <I>''De
+        Methodis Serierum et Fluxionum''</I> written in 1671 but only published and
+    translated from Latin to English in 1736, by John Colson. He made several
+    accurate computations for small values of <I>x</I>, like <FONT face=symbol>±</FONT>0.1,<FONT face=symbol>±</FONT>0.2 and was then able to
+    compute logarithms of larger numbers using relations like log 2=2log(1.2)<FONT face=symbol>-</FONT>log(0.9)<FONT face=symbol>-</FONT>log(0.8).
+
+<P>Applying the Mercator series for <I>x</I>=1 leads to the famous and very
+    slowly convergent sequence <BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>log 2 = 1<FONT face=symbol> -&nbsp;&nbsp;
+                    </FONT></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<BR></TD>
+                    <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        3<BR></TD>
+                    <TD noWrap align=middle><FONT face=symbol>&nbsp;-&nbsp;&nbsp;
+                    </FONT></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        4<BR></TD>
+                    <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        5<BR></TD>
+                    <TD noWrap align=middle><FONT face=symbol>&nbsp;-
+                    </FONT>...
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>which first values, taking respectively 10, 100, 1000 and 10000 terms are:
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE width="80%" align=right border=0>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>10</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>0.6(456...)</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>100</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>0.6(881...)</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>1,000</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>0.69(264...)</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>10,000</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap
+                                    align=right>0.693(097...).
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>A much better idea is to apply the series with <I>x</I>=<FONT face=symbol>-</FONT>1/2, this produces a formula that was often used for
+    numerical computation:
+
+<P><A name=sweeney></A><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>log 2 =&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle><!--sup
+--><BR><FONT size=+3><FONT
+                            face=symbol>å<BR></FONT></FONT><FONT size=-1><I>k</I> <FONT
+                            face=symbol>³</FONT> 1</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>k</I>2<I><SUP>k</SUP></I><BR></TD>
+                    <TD noWrap align=middle></TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+        <TD width="1%">(1)</TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>The rate of convergence is now geometric (<I>p </I>iterations are needed to
+    obtain one more digits).
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE width=1023 align=right border=0>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=right width=108>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>1</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left width=38>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left width=863>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>0.(5)</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right width=108>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>10</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left width=38>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left width=863>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>0.693(064...)</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right width=108>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>100</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left width=38>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left width=863>
+                        <TABLE>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap
+                                    align=right>0.6931471805599453094172321214581(688...)
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>Applying the formula up to <I>k</I>=1000 gives more than 300 digits for log
+    2. The number of iterations <I>k</I> needed to obtain <I>d</I> decimal digits is
+    given by (with N=2 in the previous formula)
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle>&nbsp;1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        10<I><SUP>d</SUP></I><BR></TD>
+                    <TD noWrap align=middle>=</TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>k</I>N<I><SUP>k</SUP></I><BR></TD>
+                    <TD noWrap align=middle></TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>which gives for large values of <I>k</I>
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle><I>k</I> <FONT face=symbol>»</FONT></TD>
+                    <TD noWrap align=middle><I>d</I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        log<SUB>10</SUB>(N)<BR></TD>
+                    <TD noWrap align=middle></TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>If we use the trivial decomposition 2=(4/3)(3/2) and take the logarithm of
+    both side of the equality we find a new formula
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>log 2 =&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle><!--sup
+--><BR><FONT size=+3><FONT
+                            face=symbol>å<BR></FONT></FONT><FONT size=-1><I>k</I> <FONT
+                            face=symbol>³</FONT> 1</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>k</I><BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        3<I><SUP>k</SUP></I><BR></TD>
+                    <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        4<I><SUP>k</SUP></I><BR></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle></TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>The partial sum of this series up to <I>k</I>=1000 will give more than 470
+    digits.
+
+<P>From the relation log 2 =<FONT face=symbol> -</FONT>1/2log(1<FONT face=symbol>-</FONT>1/4)+arctanh(1/2), (see next paragraph for the definition of
+    &nbsp;arctanh) we deduce the relations
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE width=1040 align=right border=0>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=right width=127>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>log 2</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left width=34>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left width=865>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left></TD>
+                                <TD noWrap align=middle><!--sup
+--><BR><FONT size=+3><FONT
+                                        face=symbol>å<BR></FONT></FONT><FONT size=-1><I>k</I> <FONT
+                                        face=symbol>³</FONT> 0</FONT>&nbsp;<BR></TD>
+                                <TD noWrap align=middle></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    8<I>k </I>+ 8<BR></TD>
+                                <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    4<I>k </I>+ 2<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    4<I><SUP>k</SUP></I><BR></TD>
+                                <TD noWrap align=middle>,</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right width=127>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>log 2</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left width=34>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left width=865>
+                        <TABLE>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=right></TD>
+                                <TD noWrap align=middle>2
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    3<BR></TD>
+                                <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                                <TD noWrap align=middle><!--sup
+--><BR><FONT size=+3><FONT
+                                        face=symbol>å<BR></FONT></FONT><FONT size=-1><I>k</I> <FONT
+                                        face=symbol>³</FONT> 1</FONT>&nbsp;<BR></TD>
+                                <TD noWrap align=middle></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    2<I>k</I><BR></TD>
+                                <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    4<I>k </I>+ 1<BR></TD>
+                                <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    8<I>k </I>+ 4<BR></TD>
+                                <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    16<I>k </I>+ 12<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    16<I><SUP>k</SUP></I><BR></TD>
+                                <TD noWrap
+                                    align=middle>.
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>Those formulae can also be used to compute directly the n-th <EM>binary</EM>
+    digit of log 2 without computing the previous ones.
+
+<P>
+
+<H2><A name=tth_sEc5>5</A>&nbsp;&nbsp;Machin like formulae</H2>
+
+<P>Using Mercator series has improved a lot our ability to compute many digits
+    for log 2, but like for the number <FONT face=symbol>p</FONT> it is possible to
+    go further. We recall the definition of the inverse hyperbolic tangent.
+
+<P><B>Definition 4</B> <EM>Let |x| &lt;
+</EM>1<EM>: <BR clear=all></EM>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>&nbsp;<SPAN class=roman>arctanh</SPAN>
+                        <I>x</I> =&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<BR></TD>
+                    <TD noWrap align=middle>log</TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>1 +<I> x</I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        1<FONT face=symbol> - </FONT><I>x</I><BR></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle>=</TD>
+                    <TD noWrap align=middle><!--sup
+--><BR><FONT size=+3><FONT
+                            face=symbol>å<BR></FONT></FONT><FONT size=-1><I>k</I> <FONT
+                            face=symbol>³</FONT> 0</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle><I>x</I><SUP>2<I>k </I>+ 1</SUP>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<I>k </I>+ 1<BR></TD>
+                    <TD noWrap align=middle>.</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>For <I>x</I>=1/3, this leads easily to the basic formula log
+    2=2&nbsp;arctanh(1/3) which is similar to the formula <FONT face=symbol>p</FONT>
+    = arctan 1. We rewrite it as:
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE width=279 align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle width=71>log 2 =&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle width=15>2
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        3<BR></TD>
+                    <TD noWrap align=middle width=2></TD>
+                    <TD noWrap align=middle width=41><!--sup
+--><BR><FONT size=+3><FONT
+                            face=symbol>å<BR></FONT></FONT><FONT size=-1><I>k</I> <FONT
+                            face=symbol>³</FONT> 0</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle width=4></TD>
+                    <TD noWrap align=middle width=107>&nbsp;1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        (2<I>k </I>+ 1)9<I><SUP>k</SUP></I><BR></TD>
+                    <TD noWrap align=middle
+                        width=9>.
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>Two iterates are then:
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE width="80%" align=right border=0>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>1</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>0.6(666...),</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>10</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap
+                                    align=right>0.6931471805(498...).
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>Applying the formula up to <I>k</I>=1000 gives more than 950 digits for log
+    2. Is it possible to do better? There is a famous formula for <FONT face=symbol>p</FONT>, this formula is known as <I>Machin's formula</I> and is
+    given by the celebrated relation:
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle><FONT face=symbol>p</FONT>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        4<BR></TD>
+                    <TD noWrap align=middle>&nbsp;= 4arctan</TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        5<BR></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle><FONT face=symbol>&nbsp;- </FONT>arctan</TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        239<BR></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle>.</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>The idea is to look for relations like this one for log 2. If we note
+    (<I>a</I><SUB>1</SUB>,<I> a</I><SUB>2</SUB>, ...,<I> a<SUB>n</SUB></I>) a set of
+    rational numbers and (<I>p</I><SUB>1</SUB>, <I>p</I><SUB>2</SUB>, ...,
+    <I>p<SUB>n</SUB></I>) a set of increasing integers we are looking for relations
+    like
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>log 2 =&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle><I><FONT size=-1>n</FONT><!--sup
+--><BR></I><FONT face=symbol
+                 size=+3>å<BR></FONT><FONT size=-1><I>i </I>= 1</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle><I>a<SUB>i</SUB></I>&nbsp;arctanh</TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>p<SUB>i</SUB></I><BR></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle>.</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>We also want the formula to be <I>efficient</I>. A good relation is a
+    compromise between a small number of terms (<I>n</I> must be small) and large
+    values for the <I>p<SUB>i</SUB></I>. According to Lehmer, we define the
+    efficiency E by
+
+<P><B>Definition 5</B> <EM>(Lehmer's measure). Let p<SUB>i</SUB> &gt;
+</EM>0<EM> a set of
+    n numbers, then: <BR clear=all></EM>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>E =&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle><I><FONT size=-1>n</FONT></I><!--sup
+--><BR><FONT size=+3><FONT
+                            face=symbol>å<BR></FONT></FONT><FONT size=-1><I>i</I>=1</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        log<SUB>10</SUB>(<I>p<SUB>i</SUB></I><SUP>2</SUP>)<BR></TD>
+                    <TD noWrap align=middle>.</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>For example the efficiency of log 2=2&nbsp;arctanh(1/3) (<I>n</I>=1,
+    <I>p<SUB>1</SUB></I>=3) is 1.05. With the same definition the efficiency of
+    Machin's formula is 0.926 (<I>n</I>=2, <I>p<SUB>1</SUB></I>=5,
+    <I>p<SUB>2</SUB></I>=239), so it is a little bit more efficient than the formula
+    for log 2.
+
+<P>It is possible to show the following decomposition theorem:
+
+<P><B>Theorem 6</B> <EM>Let p &gt;
+</EM>1<EM>: <BR clear=all></EM>
+<TABLE width="100%" border=0>
+<TBODY>
+<TR>
+<TD>
+<TABLE width="80%" align=right border=0>
+<TBODY>
+<TR>
+    <TD noWrap align=right>
+        <TABLE border=0>
+            <TBODY>
+            <TR>
+                <TD noWrap align=left><SPAN class=roman>arctanh</SPAN></TD>
+                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                <TD noWrap align=middle>1
+                    <DIV class=hrcomp>
+                        <HR noShade SIZE=1>
+                    </DIV>
+                    <I>p</I><BR></TD>
+                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                <TD noWrap align=middle></TD>
+            </TR>
+            </TBODY>
+        </TABLE>
+    </TD>
+    <TD noWrap align=left>
+        <TABLE border=0>
+            <TBODY>
+            <TR>
+                <TD noWrap align=left>=</TD>
+            </TR>
+            </TBODY>
+        </TABLE>
+    </TD>
+    <TD noWrap align=left>
+        <TABLE border=0>
+            <TBODY>
+            <TR>
+                <TD noWrap align=left><SPAN class=roman>arctanh</SPAN></TD>
+                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                <TD noWrap align=middle>1
+                    <DIV class=hrcomp>
+                        <HR noShade SIZE=1>
+                    </DIV>
+                    2<I>p</I><FONT face=symbol> - </FONT>1<BR></TD>
+                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                <TD noWrap align=middle>+&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                <TD noWrap align=middle>1
+                    <DIV class=hrcomp>
+                        <HR noShade SIZE=1>
+                    </DIV>
+                    <I>2p </I>+ 1<BR></TD>
+                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                <TD noWrap align=middle></TD>
+            </TR>
+            </TBODY>
+        </TABLE>
+    </TD>
+</TR>
+<TR>
+    <TD noWrap align=right>
+        <TABLE border=0>
+            <TBODY>
+            <TR>
+                <TD noWrap align=left><SPAN class=roman>arctanh</SPAN></TD>
+                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                <TD noWrap align=middle>1
+                    <DIV class=hrcomp>
+                        <HR noShade SIZE=1>
+                    </DIV>
+                    <I>p</I><BR></TD>
+                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                <TD noWrap align=middle></TD>
+            </TR>
+            </TBODY>
+        </TABLE>
+    </TD>
+    <TD noWrap align=left>
+        <TABLE border=0>
+            <TBODY>
+            <TR>
+                <TD noWrap align=left>=</TD>
+            </TR>
+            </TBODY>
+        </TABLE>
+    </TD>
+    <TD noWrap align=left>
+        <TABLE border=0>
+            <TBODY>
+            <TR>
+                <TD noWrap align=left>2&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                <TD noWrap align=middle>1
+                    <DIV class=hrcomp>
+                        <HR noShade SIZE=1>
+                    </DIV>
+                    2<I>p</I><FONT face=symbol> - </FONT>1<BR></TD>
+                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                <TD noWrap align=middle><FONT face=symbol>-</FONT>&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                <TD noWrap align=middle>1
+                    <DIV class=hrcomp>
+                        <HR noShade SIZE=1>
+                    </DIV>
+                    2<I>p</I><SUP>2</SUP><FONT face=symbol> -
+                    </FONT>1<BR></TD>
+                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                <TD noWrap align=middle></TD>
+            </TR>
+            </TBODY>
+        </TABLE>
+    </TD>
+</TR>
+<TR>
+    <TD noWrap align=right>
+        <TABLE border=0>
+            <TBODY>
+            <TR>
+                <TD noWrap align=left><SPAN class=roman>arctanh</SPAN></TD>
+                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                <TD noWrap align=middle>1
+                    <DIV class=hrcomp>
+                        <HR noShade SIZE=1>
+                    </DIV>
+                    <I>p</I><BR></TD>
+                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                <TD noWrap align=middle></TD>
+            </TR>
+            </TBODY>
+        </TABLE>
+    </TD>
+    <TD noWrap align=left>
+        <TABLE border=0>
+            <TBODY>
+            <TR>
+                <TD noWrap align=left>=</TD>
+            </TR>
+            </TBODY>
+        </TABLE>
+    </TD>
+    <TD noWrap align=left>
+        <TABLE border=0>
+            <TBODY>
+            <TR>
+                <TD noWrap align=left>2&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                <TD noWrap align=middle>1
+                    <DIV class=hrcomp>
+                        <HR noShade SIZE=1>
+                    </DIV>
+                    2<I>p </I>+ 1<BR></TD>
+                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                <TD noWrap align=middle>+&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                <TD noWrap align=middle>1
+                    <DIV class=hrcomp>
+                        <HR noShade SIZE=1>
+                    </DIV>
+                    2<I>p</I><SUP>2</SUP><FONT face=symbol> -
+                    </FONT>1<BR></TD>
+                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                <TD noWrap align=middle></TD>
+            </TR>
+            </TBODY>
+        </TABLE>
+    </TD>
+</TR>
+<TR>
+    <TD noWrap align=right>
+        <TABLE border=0>
+            <TBODY>
+            <TR>
+                <TD noWrap align=left><SPAN class=roman>arctanh</SPAN></TD>
+                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                <TD noWrap align=middle>1
+                    <DIV class=hrcomp>
+                        <HR noShade SIZE=1>
+                    </DIV>
+                    <I>p</I><BR></TD>
+                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                <TD noWrap align=middle></TD>
+            </TR>
+            </TBODY>
+        </TABLE>
+    </TD>
+    <TD noWrap align=left>
+        <TABLE border=0>
+            <TBODY>
+            <TR>
+                <TD noWrap align=left>=</TD>
+            </TR>
+            </TBODY>
+        </TABLE>
+    </TD>
+    <TD noWrap align=left>
+        <TABLE>
+            <TBODY>
+            <TR>
+                <TD noWrap align=right>2&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                <TD noWrap align=middle>1
+                    <DIV class=hrcomp>
+                        <HR noShade SIZE=1>
+                    </DIV>
+                    2<I>p</I><BR></TD>
+                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                <TD noWrap align=middle>+&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                <TD noWrap align=middle>1
+                    <DIV class=hrcomp>
+                        <HR noShade SIZE=1>
+                    </DIV>
+                    4<I>p</I><SUP>3</SUP><FONT face=symbol> -
+                    </FONT>3<I>p</I><BR></TD>
+                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                <TD noWrap
+                    align=middle></TD>
+            </TR>
+            </TBODY>
+        </TABLE>
+    </TD>
+</TR>
+</TBODY>
+</TABLE>
+</TD>
+</TR>
+</TBODY>
+</TABLE>
+<P>Applying this theorem for <I>p</I>=3 gives relations with <I>n</I>=2:
+
+<P><B>Corollary 7</B> <EM><A name=eqEuler1></A><A name=basic1></A><A
+        name=basic2></A><A name=basic3></A><BR clear=all></EM>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE width="80%" align=right border=0>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>log 2</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>2&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    5<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle>+2&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    7<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <SPAN class=roman>Euler</SPAN> <SPAN class=roman>1748</SPAN>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD align=right width=1>(2)</TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>log 2</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>4&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    5<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle><FONT face=symbol>-</FONT>2 <SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    17<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle></TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD align=right width=1>(3)</TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>log 2</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>4&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    7<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle>+2&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    17<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle></TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD align=right width=1>(4)</TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>log 2</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=right>4&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    6<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle>+2&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    99<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle></TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD align=right width=1>(5)</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>The efficiencies are respectively E=1.307, E=1.121, E=0.998 and E=0.893.
+    Using other decomposition formulas and computer calculation it is possible to
+    find many other relations of this nature (given in [<A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#Sebah"
+            name=CITESebah>8</A>]). To illustrate this, we select another formula with 3
+    terms and two others with 4 terms.
+
+<P><B>Theorem 8</B> <EM>(1997). The constant log 2 may be obtained by one of the
+    following fast converging series: <A name=SebahLog2></A><A
+            name=MachinLog2></A><A name=MachinLog2bis></A><BR clear=all></EM>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE width="80%" align=right border=0>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left></TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left></TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>18&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    26<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle><FONT face=symbol>-</FONT>2&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    4801<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle>+8&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    8749<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle>,</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD align=right width=1>(6)</TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left></TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left></TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>144&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    251<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle>+54&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    449<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle><FONT face=symbol>-</FONT>38 <SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    4801<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle>+62&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    8749<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle>,</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD align=right width=1>(7)</TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left></TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left></TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=right>72&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    127<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle>+54&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    449<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle>+34&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    4801<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle><FONT face=symbol>-</FONT>10&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    8749<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle>.</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD align=right
+                        width=1>(8)
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<EM><BR></EM>
+
+<P>The efficiency are respectively (E=0.616, E=0.659, E=0.689). The two last
+    formulae were used to compute more than 10<SUP>8</SUP> digits for log 2. One was
+    used for the computation and the other for the verification and, as you can see,
+    only the computation of 5 arctanh were necessary because of the similitude of
+    the 2 formulae. Thanks to relation (<A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#SebahLog2">6</A>),
+    the record was increased up to more than 5.10<SUP>8</SUP> a few years later.
+
+<P>Note that it is also possible to perform separately the computation of each
+    term, making those relations parallelisable.
+
+<P>We give, for example, the first iterates of the second formula (the one with
+    251):
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE width="80%" align=right border=0>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>1</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>0.69314(394...)
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>2</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>0.6931471805(304...)
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>3</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>0.69314718055994(497...)
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I><SUB>4</SUB>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap
+                                    align=right>0.69314718055994530941(317...)
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>and each iteration will add about 4.8 digits.
+
+<P>
+
+<H3><A name=tth_sEc5.1>5.1</A>&nbsp;&nbsp;Formula with rational numbers</H3>
+
+<P>It may be convenient to look for relations with rational numbers as arguments
+    of the arctanh function, that is identities of the form: <BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>log 2 =&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle><I><FONT size=-1>n</FONT></I><!--sup
+--><BR><FONT size=+3><FONT
+                            face=symbol>å<BR></FONT></FONT><FONT size=-1><I>i </I>=
+                        1</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle><I>a<SUB>i</SUB></I>&nbsp;arctanh</TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle><I>m<SUB>i</SUB> </I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>p<SUB>i</SUB></I><BR></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle></TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>with <I>m</I><SUB>i</SUB> being integers eventually different of 1. Lehmer's measure
+    must be adapted to take this in account <BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>E =&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle><I><FONT size=-1>n</FONT></I><!--sup
+--><BR><FONT size=+3><FONT
+                            face=symbol>å<BR></FONT></FONT><FONT size=-1><I>i </I>=
+                        1</FONT>&nbsp;<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2log<SUB>10</SUB>(<I>p<SUB>i</SUB></I>/<I>m<SUB>i</SUB></I>)<BR></TD>
+                    <TD noWrap align=middle>,</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>but it only gives a rough estimation.
+
+<P><B>Theorem 9</B> <EM>(1997). <A name=log2Rational1></A><A
+        name=log2Rational2></A><BR clear=all></EM>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE width="80%" align=right border=0>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>log 2</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>6 <SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    9<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle>+2&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>3
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    253<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle>,</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD align=right width=1>(9)</TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>log 2</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=right>10 <SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    17<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle>+4&nbsp;<SPAN class=roman>arctanh</SPAN></TD>
+                                <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                                <TD noWrap align=middle>13
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    499<BR></TD>
+                                <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                                <TD noWrap align=middle>,</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD align=right width=1>(10)</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P><EM>with respective efficiency
+</EM>E<EM>=0.784 and
+</EM>E<EM>=0.722.
+</EM>
+
+<P>Note that relation (<A
+        href="http://numbers.computation.free.fr/Constants/Log2/log2.html#log2Rational2">10</A>)
+    was used for several high precision computation of the constant.
+
+<P>
+
+<H2><A name=tth_sEc6>6</A>&nbsp;&nbsp;Variation with hypergeometric
+    sequences</H2>
+
+<P>Gauss studied the following family of series
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>F(<I>a</I>,<I> b</I>;<I> c</I>; <I>z</I>) =
+                        1 +&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>&nbsp;<I>a</I>.<I>b</I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>c</I><BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle><I>z</I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        1!<BR></TD>
+                    <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                    <TD noWrap
+                        align=middle>&nbsp;<I>a</I>(<I>a</I>+1).<I>b</I>(<I>b</I>+1)
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>c</I>(<I>c</I>+1)<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle>&nbsp;<I>z</I><SUP>2</SUP>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2!<BR></TD>
+                    <TD noWrap align=middle>&nbsp;+
+                        ...
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>where <I>a</I>, <I>b</I>, <I>c</I> are real numbers. The series converges in
+    <FONT face=symbol>|</FONT><I>z</I><FONT face=symbol>|</FONT> &lt; 1. On the
+    circle <FONT face=symbol>|</FONT><I>z</I><FONT face=symbol>|</FONT>=1, the
+    series converges when <I>c</I> &gt; <I>a</I>+<I>b</I>. Those functions are
+    called <EM>hypergeometric functions </EM>[<A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#Abramowitz"
+            name=CITEAbramowitz>1</A>]. Many usual functions can be represented as
+    hypergeometric functions with suitable values for <I>a</I>, <I>b</I>, <I>c</I>.
+
+<P><B>Example 10</B> <EM><BR clear=all></EM>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE width="80%" align=right border=0>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>ln(1+<I>x</I>)</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I>F(1, 1; 2;<FONT face=symbol>
+                                    -</FONT><I>x</I>),
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>&nbsp;arctanh <I>x</I>
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I>F(</TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    2<BR></TD>
+                                <TD noWrap align=middle>, 1;&nbsp;&nbsp; </TD>
+                                <TD noWrap align=middle>3
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    2<BR></TD>
+                                <TD noWrap align=middle>;<I> x</I><SUP>2</SUP>),
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>arctan <I>x</I></TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left><I>x</I>F(</TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    2<BR></TD>
+                                <TD noWrap align=middle>, 1;&nbsp;&nbsp; </TD>
+                                <TD noWrap align=middle>3
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    2<BR></TD>
+                                <TD noWrap align=middle>;<FONT face=symbol>
+                                    -</FONT><I>x</I><SUP>2</SUP>),
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                <TR>
+                    <TD noWrap align=right>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left></TD>
+                                <TD noWrap align=middle>&nbsp;1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    1<FONT face=symbol>-</FONT><I>x</I><BR></TD>
+                                <TD noWrap align=middle></TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=left>=</TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD noWrap align=left>
+                        <TABLE>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=right>F(1, 1; 1;<I>
+                                    x</I>).
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>In 1797, Johann Friederich Pfaff (1765-1825), a friend of Gauss, gave the
+    interesting relation
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>F(<I>a</I>,<I> b</I>;<I> c</I>;<I> z</I>) =
+                        (1<FONT face=symbol> - </FONT><I>z</I>)<SUP><FONT
+                                face=symbol>-</FONT><I>b</I></SUP>F(<I>c</I><FONT face=symbol>-</FONT><I>a</I>,<I> b</I>;<I> c</I>;&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle><I>z</I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>z</I><FONT face=symbol> - </FONT>1<BR></TD>
+                    <TD noWrap align=middle>).</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>If we apply this identity to the arctanh function
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>arctanh <I>x</I> = <I>x</I>F(</TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<BR></TD>
+                    <TD noWrap align=middle>, 1;&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>3
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<BR></TD>
+                    <TD noWrap align=middle>;
+                        <I>x</I><SUP>2</SUP>),
+                    </TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>we find
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>arctanh <I>x</I> =&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle><I>x</I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        (1<FONT face=symbol> -</FONT><I> x</I><SUP>2</SUP>)<BR></TD>
+                    <TD noWrap align=middle>F(1, 1;&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>3
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<BR></TD>
+                    <TD noWrap align=middle>;&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle><I>x</I><SUP>2</SUP>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>x</I><SUP>2</SUP><FONT face=symbol> - </FONT>1<BR></TD>
+                    <TD noWrap align=middle>),</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>giving a new sequence for this function
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>arctanh <I>x</I> =&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle><I>x </I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        (1<FONT face=symbol> -</FONT><I> x</I><SUP>2</SUP>)<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>1<FONT face=symbol> -&nbsp;&nbsp; </FONT></TD>
+                    <TD noWrap align=middle>2
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        3<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle><I>x</I><SUP>2</SUP>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        1<FONT face=symbol> -</FONT><I> x</I><SUP>2</SUP><BR></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>2.4
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        3.5<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle><I>x</I><SUP>2</SUP>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        1<FONT face=symbol> - </FONT><I>x</I><SUP>2</SUP><BR></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle><FONT
+                            size=-1>2</FONT><!--sup
+--><BR><BR>&nbsp;<BR></TD>
+                    <TD noWrap align=middle><FONT face=symbol>&nbsp;-&nbsp;&nbsp;
+                    </FONT></TD>
+                    <TD noWrap align=middle>2.4.6
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        3.5.7<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle><I>x</I><SUP>2</SUP>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        1<FONT face=symbol> -</FONT><I> x</I><SUP>2</SUP><BR></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle><FONT
+                            size=-1>3</FONT><!--sup
+--><BR><BR>&nbsp;<BR></TD>
+                    <TD noWrap align=middle>+...</TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle></TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>and with log 2=2&nbsp;arctanh(1/3); after some easy manipulations comes the
+    series:
+
+<P><B>Corollary 11</B> <EM><BR clear=all></EM>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>log 2 =&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>3
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        4<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>1<FONT face=symbol> -&nbsp;&nbsp; </FONT></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        12<BR></TD>
+                    <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>1.2
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        12.20<BR></TD>
+                    <TD noWrap align=middle><FONT face=symbol>&nbsp;-&nbsp;&nbsp;
+                    </FONT></TD>
+                    <TD noWrap align=middle>1.2.3
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        12.20.28<BR></TD>
+                    <TD noWrap align=middle>&nbsp;+ ...</TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle>.</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>Each new term of this series is multiplied by <FONT face=symbol>-</FONT><I>k</I>/(8<I>k</I>+4) where <I>k</I>=1,2,... The same kind
+    of formula was given by Euler to compute <FONT face=symbol>p</FONT>. One nice
+    application of this corollary is to make it feasible to write a tiny code to
+    compute log 2 just like it was done for <FONT face=symbol>p</FONT>.
+
+<P>
+
+<H2><A name=tth_sEc7>7</A>&nbsp;&nbsp;log 2 and the AGM</H2>
+
+<P>The rate of convergence of all the previous series were logarithmic or
+    geometric. It is possible to find for log 2 just as for <FONT face=symbol>p</FONT>, a sequence that will have quadratic convergence, based on
+    the AGM (Arithmetic-Geometric Mean) (see [<A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#AGM"
+            name=CITEAGM>2</A>]).
+
+<P>The most classical among the AGM based quadratic convergence algorithms for
+    log 2 is the following. Starting from <I>a</I><SUB>0</SUB> and
+    <I>b</I><SUB>0</SUB> &gt; 0, we consider the AGM iteration <BR clear=all>
+<TABLE height=104 width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD height=100>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle><I>a</I><SUB><I>n</I>+1</SUB>=</TD>
+                    <TD noWrap align=middle><I>a<SUB>n </SUB></I>+<I> b<SUB>n</SUB></I>
+
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<BR></TD>
+                    <TD noWrap align=middle>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <I>b</I><SUB><I>n</I>+1</SUB>=
+                    </TD>
+                    <TD class=cl align=left><BR><FONT face=symbol><FONT
+                            size=+2>Ö</FONT><BR></FONT>
+
+                        <DIV class=comb>&nbsp;</DIV>
+                    </TD>
+                    <TD noWrap align=middle>
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <DIV class=norm
+                             style="WIDTH: 37px; HEIGHT: 19px"><I>a<SUB>n</SUB>b<SUB>n</SUB></I><BR></DIV>
+                        <DIV class=comb>&nbsp;</DIV>
+                    </TD>
+                    <TD noWrap align=middle>,</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+and
+we use the notation <BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>R(<I>a</I><SUB>0</SUB>,<I>
+                        b</I><SUB>0</SUB>)=
+                    </TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>ç<BR>è </FONT></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=middle>1<FONT face=symbol>-</FONT></TD>
+                                <TD noWrap align=middle><!--sup
+--><BR><FONT size=+3><FONT
+                                        face=symbol>å<BR></FONT></FONT><FONT size=-1><I>n </I><FONT
+                                        face=symbol>³</FONT> 0</FONT>&nbsp;<BR></TD>
+                                <TD noWrap align=middle>2<SUP><I>n</I><FONT
+                                        face=symbol>-</FONT>1</SUP>(<I>a<SUB>n</SUB></I><SUP>2</SUP><FONT face=symbol> -
+                                </FONT><I>b<SUB>n</SUB></I><SUP>2</SUP>)
+                                </TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>÷<BR>ø </FONT></TD>
+                    <TD noWrap align=middle>.</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P><B>Theorem 12</B> <EM>Let
+</EM>N<EM> <FONT face=symbol>³</FONT>
+</EM>3<EM> and
+</EM>1/2<EM>
+</EM><FONT face=symbol>£</FONT><EM> x
+</EM><FONT face=symbol>£ </FONT>1<EM>, <A name=AGMlog2></A><BR
+        clear=all></EM>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>| log <I>x</I> <FONT face=symbol>-
+                    </FONT>R(1, 10<SUP><FONT
+                            face=symbol>-</FONT>N</SUP>) + R(1,
+                        10<SUP><FONT
+                                face=symbol>-</FONT>N</SUP><I>x</I>)| <FONT face=symbol>£</FONT></TD>
+                    <TD noWrap align=middle>N
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        10<SUP>2(N<FONT
+                                face=symbol>-</FONT>2)</SUP><BR></TD>
+                    <TD noWrap align=middle>.</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+        <TD width="1%">(11)</TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>By choosing <I>x</I>=1/2, this algorithm gives about 2N decimal digits of log
+    2. The convergence is quadratic and should be stopped when 2<SUP><I>n</I><FONT
+            face=symbol>-</FONT>1</SUP>(<I>a<SUB>n</SUB></I><SUP>2</SUP><FONT face=symbol>-</FONT><I>b<SUB>n</SUB></I><SUP>2</SUP>) is less than 10<SUP><FONT
+            face=symbol>-</FONT>2N</SUP>, which occurs for <I>n</I> <FONT face=symbol>»</FONT> log<SUB>2</SUB>(N).
+
+<P>Notice that this algorithm is not specific to the computation of log 2 and
+    can be used to evaluate log <I>x</I> for any real number <I>x</I>. Using FFT
+    multiplication, its complexity is O(<I>n</I>log<SUP>2</SUP><I>n</I>) to obtain
+    <I>n</I> digits of <I>x</I>.
+
+<P>
+
+<H2><A name=tth_sEc8>8</A>&nbsp;&nbsp;Computation of log <I>p</I></H2>
+
+<P>Starting with a good approximation of log 2, it is easy to find the logarithm
+    of all the integers thanks to the relation
+
+<P><BR clear=all>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>2 arctanh</TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<I>p </I>+ 1<BR></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle>&nbsp;= log</TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>ç<BR>ç<BR>ç<BR>ç<BR>è
+                    </FONT></TD>
+                    <TD noWrap align=middle>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=middle>1+</TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    2<I>p </I>+ 1<BR></TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <TABLE border=0>
+                            <TBODY>
+                            <TR>
+                                <TD noWrap align=middle>1<FONT face=symbol>-</FONT></TD>
+                                <TD noWrap align=middle>1
+                                    <DIV class=hrcomp>
+                                        <HR noShade SIZE=1>
+                                    </DIV>
+                                    2<I>p </I>+ 1<BR></TD>
+                            </TR>
+                            </TBODY>
+                        </TABLE>
+                    </TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>÷<BR>÷<BR>÷<BR>÷<BR>ø
+                    </FONT></TD>
+                    <TD noWrap align=middle>&nbsp;= log</TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle><I>p </I>+ 1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        <I>p</I><BR></TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle>,</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>thus we deduce that:
+
+<P><B>Theorem 13</B> <EM>Let p &gt;
+</EM>0<EM> <BR clear=all></EM>
+<TABLE width="100%" border=0>
+    <TBODY>
+    <TR>
+        <TD>
+            <TABLE align=center>
+                <TBODY>
+                <TR>
+                    <TD noWrap align=middle>log(<I>p + 1</I>) = log <I>p</I> + 2</TD>
+                    <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        2<I>p </I>+ 1<BR></TD>
+                    <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        3<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        (2<I>p </I>+ 1)<SUP>3</SUP><BR></TD>
+                    <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        5<BR></TD>
+                    <TD noWrap align=middle></TD>
+                    <TD noWrap align=middle>1
+                        <DIV class=hrcomp>
+                            <HR noShade SIZE=1>
+                        </DIV>
+                        (2<I>p </I>+ 1)<SUP>5</SUP><BR></TD>
+                    <TD noWrap align=middle>&nbsp;+...</TD>
+                    <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                    <TD noWrap align=middle>.</TD>
+                </TR>
+                </TBODY>
+            </TABLE>
+        </TD>
+    </TR>
+    </TBODY>
+</TABLE>
+<P>This may be useful when you need to compute the logarithms of many successive
+    integers.
+
+<P><B>Example 14</B> <EM>With p=</EM>2<EM>, p=</EM>4<EM> and p=</EM>7<EM><BR clear=all></EM>
+<TABLE width="100%" border=0>
+<TBODY>
+<TR>
+    <TD>
+        <TABLE width="80%" align=right border=0>
+            <TBODY>
+            <TR>
+                <TD noWrap align=right>
+                    <TABLE border=0>
+                        <TBODY>
+                        <TR>
+                            <TD noWrap align=left>log 3</TD>
+                        </TR>
+                        </TBODY>
+                    </TABLE>
+                </TD>
+                <TD noWrap align=left>
+                    <TABLE border=0>
+                        <TBODY>
+                        <TR>
+                            <TD noWrap align=left>=</TD>
+                        </TR>
+                        </TBODY>
+                    </TABLE>
+                </TD>
+                <TD noWrap align=left>
+                    <TABLE border=0>
+                        <TBODY>
+                        <TR>
+                            <TD noWrap align=left>log 2 +&nbsp;&nbsp; </TD>
+                            <TD noWrap align=middle>&nbsp;2
+                                <DIV class=hrcomp>
+                                    <HR noShade SIZE=1>
+                                </DIV>
+                                5<BR></TD>
+                            <TD noWrap align=middle></TD>
+                            <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                            <TD noWrap align=middle>1 +&nbsp;&nbsp; </TD>
+                            <TD noWrap align=middle>1
+                                <DIV class=hrcomp>
+                                    <HR noShade SIZE=1>
+                                </DIV>
+                                3<BR></TD>
+                            <TD noWrap align=middle></TD>
+                            <TD noWrap align=middle>1
+                                <DIV class=hrcomp>
+                                    <HR noShade SIZE=1>
+                                </DIV>
+                                25<BR></TD>
+                            <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                            <TD noWrap align=middle>1
+                                <DIV class=hrcomp>
+                                    <HR noShade SIZE=1>
+                                </DIV>
+                                5<BR></TD>
+                            <TD noWrap align=middle></TD>
+                            <TD noWrap align=middle>1
+                                <DIV class=hrcomp>
+                                    <HR noShade SIZE=1>
+                                </DIV>
+                                25<SUP>2</SUP><BR></TD>
+                            <TD noWrap align=middle>&nbsp;+ ...</TD>
+                            <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                            <TD noWrap align=middle>,</TD>
+                        </TR>
+                        </TBODY>
+                    </TABLE>
+                </TD>
+            </TR>
+            <TR>
+                <TD noWrap align=right>
+                    <TABLE border=0>
+                        <TBODY>
+                        <TR>
+                            <TD noWrap align=left>log 5</TD>
+                        </TR>
+                        </TBODY>
+                    </TABLE>
+                </TD>
+                <TD noWrap align=left>
+                    <TABLE border=0>
+                        <TBODY>
+                        <TR>
+                            <TD noWrap align=left>=</TD>
+                        </TR>
+                        </TBODY>
+                    </TABLE>
+                </TD>
+                <TD noWrap align=left>
+                    <TABLE border=0>
+                        <TBODY>
+                        <TR>
+                            <TD noWrap align=left>2log 2 +&nbsp;&nbsp; </TD>
+                            <TD noWrap align=middle>&nbsp;2
+                                <DIV class=hrcomp>
+                                    <HR noShade SIZE=1>
+                                </DIV>
+                                9<BR></TD>
+                            <TD noWrap align=middle></TD>
+                            <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                            <TD noWrap align=middle>1 +&nbsp;&nbsp; </TD>
+                            <TD noWrap align=middle>1
+                                <DIV class=hrcomp>
+                                    <HR noShade SIZE=1>
+                                </DIV>
+                                3<BR></TD>
+                            <TD noWrap align=middle></TD>
+                            <TD noWrap align=middle>1
+                                <DIV class=hrcomp>
+                                    <HR noShade SIZE=1>
+                                </DIV>
+                                81<BR></TD>
+                            <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                            <TD noWrap align=middle>1
+                                <DIV class=hrcomp>
+                                    <HR noShade SIZE=1>
+                                </DIV>
+                                5<BR></TD>
+                            <TD noWrap align=middle></TD>
+                            <TD noWrap align=middle>1
+                                <DIV class=hrcomp>
+                                    <HR noShade SIZE=1>
+                                </DIV>
+                                81<SUP>2</SUP><BR></TD>
+                            <TD noWrap align=middle>&nbsp;+ ...</TD>
+                            <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                            <TD noWrap align=middle>,</TD>
+                        </TR>
+                        </TBODY>
+                    </TABLE>
+                </TD>
+            </TR>
+            <TR>
+                <TD noWrap align=right>
+                    <TABLE border=0>
+                        <TBODY>
+                        <TR>
+                            <TD noWrap align=left>log 7</TD>
+                        </TR>
+                        </TBODY>
+                    </TABLE>
+                </TD>
+                <TD noWrap align=left>
+                    <TABLE border=0>
+                        <TBODY>
+                        <TR>
+                            <TD noWrap align=left>=</TD>
+                        </TR>
+                        </TBODY>
+                    </TABLE>
+                </TD>
+                <TD noWrap align=left>
+                    <TABLE>
+                        <TBODY>
+                        <TR>
+                            <TD noWrap align=right>3log 2 <FONT face=symbol>-&nbsp;
+                            </FONT></TD>
+                            <TD noWrap align=middle>&nbsp;2
+                                <DIV class=hrcomp>
+                                    <HR noShade SIZE=1>
+                                </DIV>
+                                15<BR></TD>
+                            <TD noWrap align=middle></TD>
+                            <TD class=cl align=left><FONT face=symbol>æ<BR>è </FONT></TD>
+                            <TD noWrap align=middle>1 +&nbsp;&nbsp; </TD>
+                            <TD noWrap align=middle>1
+                                <DIV class=hrcomp>
+                                    <HR noShade SIZE=1>
+                                </DIV>
+                                3<BR></TD>
+                            <TD noWrap align=middle></TD>
+                            <TD noWrap align=middle>1
+                                <DIV class=hrcomp>
+                                    <HR noShade SIZE=1>
+                                </DIV>
+                                225<BR></TD>
+                            <TD noWrap align=middle>&nbsp;+&nbsp;&nbsp; </TD>
+                            <TD noWrap align=middle>1
+                                <DIV class=hrcomp>
+                                    <HR noShade SIZE=1>
+                                </DIV>
+                                5<BR></TD>
+                            <TD noWrap align=middle></TD>
+                            <TD noWrap align=middle>1
+                                <DIV class=hrcomp>
+                                    <HR noShade SIZE=1>
+                                </DIV>
+                                225<SUP>2</SUP><BR></TD>
+                            <TD noWrap align=middle>&nbsp;+ ...</TD>
+                            <TD class=cl align=left><FONT face=symbol>ö<BR>ø </FONT></TD>
+                            <TD noWrap
+                                align=middle>.
+                            </TD>
+                        </TR>
+                        </TBODY>
+                    </TABLE>
+                </TD>
+            </TR>
+            </TBODY>
+        </TABLE>
+    </TD>
+</TR>
+</TBODY>
+</TABLE>
+<P>
+
+<P>
+
+<H2><A name=tth_sEc10>9</A>&nbsp;Collection of formulae for log 2</H2>
+
+<P>Integral and series formulae for log 2 can be found in <A
+        href="http://numbers.computation.free.fr/Constants/Log2/log2Formulas.html">Collection
+    of formulae for log 2</A>. </P>
+
+<H2><A name=tth_sEc10>10</A>&nbsp;&nbsp;Records of computation for log 2</H2>
+
+<P>
+<CENTER>
+    <TABLE border=1>
+        <TBODY>
+        <TR>
+            <TD align=middle>Number of digits</TD>
+            <TD align=middle>When</TD>
+            <TD align=middle>Who</TD>
+            <TD>Notes</TD>
+        </TR>
+        <TR>
+            <TD></TD>
+            <TD></TD>
+            <TD></TD>
+            <TD></TD>
+        </TR>
+        <TR>
+            <TD align=middle>16</TD>
+            <TD align=middle><FONT face=symbol>~ </FONT>1671</TD>
+            <TD align=middle>I. Newton</TD>
+            <TD>He used log 2=2log(1.2)<FONT face=symbol>-</FONT>log(0.9)<FONT face=symbol>-</FONT>log(0.8) and Mercator's series for log.</TD>
+        </TR>
+        <TR>
+            <TD align=middle>25</TD>
+            <TD align=middle>1748</TD>
+            <TD align=middle>L. Euler</TD>
+            <TD>Relation&nbsp;(<A
+                    href="http://numbers.computation.free.fr/Constants/Log2/log2.html#eqEuler1">2</A>)
+                was used. Euler also computed the natural logarithm of integers from to 3
+                to 10 with 25 digits [<A
+                        href="http://numbers.computation.free.fr/Constants/Log2/log2.html#Euler"
+                        name=CITEEuler>5</A>].
+            </TD>
+        </TR>
+        <TR>
+            <TD align=middle>137</TD>
+            <TD align=middle>1853</TD>
+            <TD align=middle>W. Shanks</TD>
+            <TD>Shanks also computed log 3, log 5 and log 10 with 137 digits. His work
+                was published with a <FONT face=symbol>p</FONT> calculation&nbsp; [<A
+                        href="http://numbers.computation.free.fr/Constants/Log2/log2.html#Shanks"
+                        name=CITEShanks>9</A>].
+            </TD>
+        </TR>
+        <TR>
+            <TD align=middle>273</TD>
+            <TD align=middle>1878</TD>
+            <TD align=middle>Adams</TD>
+            <TD>Adams also computed log 3, log 5 and log 7 with the same precision.
+            </TD>
+        </TR>
+        <TR>
+            <TD align=middle>330</TD>
+            <TD align=middle>1940</TD>
+            <TD align=middle>H. S. Uhler</TD>
+            <TD>Uhler also computed log 3, log 5, log 7 and log 17 with the same
+                precision&nbsp;[<A
+                        href="http://numbers.computation.free.fr/Constants/Log2/log2.html#Uhler"
+                        name=CITEUhler>11</A>].
+            </TD>
+        </TR>
+        <TR>
+            <TD align=middle>3 683</TD>
+            <TD align=middle>1962</TD>
+            <TD align=middle>D.W. Sweeney</TD>
+            <TD>The computation of log 2 was necessary for a computation of Euler's
+                constant up to 3566 digits in the same article). The formula used for log
+                2 was the expansion&nbsp;(<A
+                        href="http://numbers.computation.free.fr/Constants/Log2/log2.html#sweeney">1</A>)
+                (see [<A
+                        href="http://numbers.computation.free.fr/Constants/Log2/log2.html#Sweeney"
+                        name=CITESweeney>10</A>]).
+            </TD>
+        </TR>
+        <TR>
+            <TD align=middle>2 015 926</TD>
+            <TD align=middle>1997</TD>
+            <TD align=middle>P. Demichel</TD>
+            <TD>The computation used a classical approach on formula&nbsp;(<A
+                    href="http://numbers.computation.free.fr/Constants/Log2/log2.html#eqEuler1">2</A>).
+                It took 16 hours on a HP9000/871 at 160MHz.
+            </TD>
+        </TR>
+        <TR>
+            <TD align=middle>5 039 926</TD>
+            <TD align=middle>1997</TD>
+            <TD align=middle>P. Demichel</TD>
+            <TD>The same technique was used and the computation took 130 hours on the
+                same computer.
+            </TD>
+        </TR>
+        <TR>
+            <TD align=middle>10 079 926</TD>
+            <TD align=middle>1997</TD>
+            <TD align=middle>P. Demichel</TD>
+            <TD>Same technique, 400 hours on the same computer.</TD>
+        </TR>
+        <TR>
+            <TD align=middle>29 243 200</TD>
+            <TD align=middle>1997 Dec</TD>
+            <TD align=middle>X. Gourdon</TD>
+            <TD>The AGM formulae&nbsp;(<A
+                    href="http://numbers.computation.free.fr/Constants/Log2/log2.html#AGMlog2">11</A>)
+                was used (with FFT techniques). The computation was done on a SGI R10000
+                workstation and took 20 hours 58 minutes.
+            </TD>
+        </TR>
+        <TR>
+            <TD align=middle>58 484 499</TD>
+            <TD align=middle>1997 Dec</TD>
+            <TD align=middle>X. Gourdon</TD>
+            <TD>Same AGM technique, 83 hours on the same computer.</TD>
+        </TR>
+        <TR>
+            <TD align=middle>108 000 000</TD>
+            <TD align=middle>1998 Sep</TD>
+            <TD align=middle>X. Gourdon</TD>
+            <TD>The four term formula&nbsp;(<A
+                    href="http://numbers.computation.free.fr/Constants/Log2/log2.html#MachinLog2">7</A>)
+                was used together with a <A
+                        href="http://numbers.computation.free.fr/Constants/Algorithms/splitting.html">binary
+                    splitting</A> process. Formula&nbsp;(<A
+                        href="http://numbers.computation.free.fr/Constants/Log2/log2.html#MachinLog2bis">8</A>)
+                was used for the verification. The computation took 47 hours on a PII 450
+                with 256 Mo.
+            </TD>
+        </TR>
+        <TR>
+            <TD align=middle>200 001 000</TD>
+            <TD align=middle>2001 Sep</TD>
+            <TD align=middle>X. Gourdon &amp; S. Kondo</TD>
+            <TD>Formulae (<A
+                    href="http://numbers.computation.free.fr/Constants/Log2/log2.html#SebahLog2">6</A>)
+                and (<A
+                        href="http://numbers.computation.free.fr/Constants/Log2/log2.html#basic3">5</A>)
+                were used. The computation took 8 hours on an Athlon 1300 with 2 Go.
+            </TD>
+        </TR>
+        <TR>
+            <TD align=middle>240 000 000</TD>
+            <TD align=middle>2001 Sep</TD>
+            <TD align=middle>X. Gourdon &amp; P. Sebah</TD>
+            <TD>Formulae (<A
+                    href="http://numbers.computation.free.fr/Constants/Log2/log2.html#SebahLog2">6</A>)
+                and (<A
+                        href="http://numbers.computation.free.fr/Constants/Log2/log2.html#log2Rational2">10</A>)
+                were used. The computation took 14 hours on a PIV 1400 with 1024 Mo.
+            </TD>
+        </TR>
+        <TR>
+            <TD align=middle>500 000 999</TD>
+            <TD align=middle>2001 Sep</TD>
+            <TD align=middle>X. Gourdon &amp; S. Kondo</TD>
+            <TD>Formulae (<A
+                    href="http://numbers.computation.free.fr/Constants/Log2/log2.html#SebahLog2">6</A>)
+                and (<A
+                        href="http://numbers.computation.free.fr/Constants/Log2/log2.html#log2Rational2">10</A>)
+                were used. The computation took 28 hours on a PIV 1400 with 1024 Mo.
+            </TD>
+        </TR>
+        </TBODY>
+    </TABLE>
+</CENTER>
+<P>
+
+<H2>References</H2>
+<DL compact>
+    <DT><A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#CITEAbramowitz"
+            name=Abramowitz>[1]</A>
+    <DD>M. Abramowitz and I. Stegun,<EM>&nbsp;Handbook of Mathematical
+        Functions</EM>, Dover, New York, (1964)
+        <P></P>
+    <DT><A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#CITEAGM"
+            name=AGM>[2]</A>
+    <DD>J.M. Borwein and P.B. Borwein, <EM>''Pi and the AGM - A study in Analytic
+        Number Theory and Computational Complexity''</EM>, A Wiley-Interscience
+        Publication, New York, (1987)
+        <P></P>
+    <DT><A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#CITEBrent"
+            name=Brent>[3]</A>
+    <DD>R.P. Brent, <EM>Fast multiple-Precision evaluation of elementary
+        functions</EM>, J. Assoc. Comput. Mach., (1976), vol.&nbsp;23, p.242-251
+        <P></P>
+    <DT><A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#CITEBriggs"
+            name=Briggs>[4]</A>
+    <DD>H.Briggs, <EM>Arithmetica logarithmica sive logarithmorum Chiliades
+        Triginta</EM>, London, (1624)
+        <P></P>
+    <DT><A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#CITEEuler"
+            name=Euler>[5]</A>
+    <DD>L. Euler, <EM>Introduction à l'analyse infinitésimale </EM>(french
+        traduction by Labey), Barrois, aîné, Librairie, (original 1748, traduction
+        1796), vol. 1, p. 89-90
+        <P></P>
+    <DT><A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#CITEMercator"
+            name=Mercator>[6]</A>
+    <DD>N. Mercator, <EM>Logarithmotechnia</EM>, London, (1668)
+        <P></P>
+    <DT><A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#CITENapier"
+            name=Napier>[7]</A>
+    <DD>J. Napier, <EM>Mirifici logarithmorum canonis descriptio</EM>, Edimboug,
+        (1614)
+        <P></P>
+    <DT><A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#CITESebah"
+            name=Sebah>[8]</A>
+    <DD>P. Sebah,<EM>&nbsp;Machin like formulae for logarithm,</EM> Unpublished,
+        (1997).
+        <P></P>
+    <DT><A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#CITEShanks"
+            name=Shanks>[9]</A>
+    <DD>W. Shanks, <EM>Contributions to Mathematics Comprising Chiefly the
+        Rectification of the Circle to 607 Places of Decimals</EM>, G. Bell, London,
+        (1853)
+        <P></P>
+    <DT><A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#CITESweeney"
+            name=Sweeney>[10]</A>
+    <DD>D.W. Sweeney, <EM>On the Computation of Euler's Constant</EM>, Mathematics
+        of Computation, (1963), p. 170-178
+        <P></P>
+    <DT><A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#CITEUhler"
+            name=Uhler>[11]</A>
+    <DD>H.S. Uhler, <EM>Recalculation and extension of the modulus and of the
+        logarithms of 2, 3, 5, 7 and 17</EM>, Proc. Nat. Acad. Sci., (1940), vol. 26,
+        p. 205-212
+        <P></P>
+    <DT><A
+            href="http://numbers.computation.free.fr/Constants/Log2/log2.html#CITEVlacq"
+            name=Vlacq>[12]</A>
+    <DD>A. Vlacq, <EM>Arithmetica logarithmica</EM>, Gouda, (1628)</DD>
+</DL>
+<P>
+<HR>
+&nbsp;
+<P><B><FONT color=#009900>Back to</FONT></B> <A
+        href="http://numbers.computation.free.fr/Constants/constants.html"><EM>Numbers,
+    Constants and Computation</EM></A><BR></P>
+
+<P>&nbsp;</P>
+<HR>
+File translated from TEX by TTH, version 3.01.
+<SMALL>File translated from
+    T<SUB><FONT size=-1>E</FONT></SUB>X by <A
+            href="http://hutchinson.belmont.ma.us/tth/">T<SUB><FONT
+            size=-1>T</FONT></SUB>H</A>, version 3.01.<BR>On 14 Sep 2001, 13:26.
+</SMALL>
+</BODY>
+</HTML>
