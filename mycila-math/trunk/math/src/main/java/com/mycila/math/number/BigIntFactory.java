@@ -30,4 +30,6 @@ public interface BigIntFactory<T> {
     BigInt wrap(T internal, int radix);
 
     BigInt random(int length);
+
+    BigInt randomPrime(int length);
 }
