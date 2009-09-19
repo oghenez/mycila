@@ -17,6 +17,7 @@ package com.mycila.math.prime;
 
 import com.mycila.math.number.BigInt;
 import static com.mycila.math.number.BigInt.*;
+import com.mycila.math.number.jdk7.BigInteger;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -47,19 +48,24 @@ public final class PrimesTest {
         int[] numbers = new int[length];
         for (int i = 0; i < numbers.length; i++)
             numbers[i] = random.nextInt() & 0x7FFFFFFF;
+
         long time = System.currentTimeMillis();
-        BigInt product = ONE;
+        BigInteger product = BigInteger.ONE;
         for (int number : numbers)
-            product = product.multiply(big(number));
+            product = product.multiply(BigInteger.valueOf(number));
         time = System.currentTimeMillis() - time;
-        System.out.println("in " + time);
+        System.out.println(" in " + time);
 
         time = System.currentTimeMillis();
         BigInt p = Primes.product(numbers, 0, length);
         time = System.currentTimeMillis() - time;
-        System.out.println("in " + time);
+        System.out.println(" in " + time);
 
-        assertEquals(product, p);
+        if (product.bitLength() != p.bitLength()) {
+            System.out.println("expected: " + product.toString(16));
+            System.out.println("current: " + p.toString(16));
+            assertEquals(product.bitLength(), p.bitLength());
+        }
     }
 
     @Test
