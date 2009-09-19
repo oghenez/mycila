@@ -30,7 +30,7 @@ final class JDKBigInt extends BigInt<BigInteger> {
      * Karatsuba multiplication will be used.   This value is found
      * experimentally to work well.
      */
-    private static final int KARATSUBA_THRESHOLD = 1600;
+    private static final int KARATSUBA_THRESHOLD = 50 << 5;
 
     /**
      * The threshold value for using 3-way Toom-Cook multiplication.
@@ -38,7 +38,22 @@ final class JDKBigInt extends BigInt<BigInteger> {
      * then Toom-Cook multiplication will be used.   This value is found
      * experimentally to work well.
      */
-    private static final int TOOM_COOK_THRESHOLD = 2500;
+    private static final int TOOM_COOK_THRESHOLD = 75 << 5;
+    /**
+     * The threshold value for using Karatsuba squaring.  If the number
+     * of ints in the number are larger than this value,
+     * Karatsuba squaring will be used.   This value is found
+     * experimentally to work well.
+     */
+    private static final int KARATSUBA_SQUARE_THRESHOLD = 90 << 5;
+
+    /**
+     * The threshold value for using Toom-Cook squaring.  If the number
+     * of ints in the number are larger than this value,
+     * Karatsuba squaring will be used.   This value is found
+     * experimentally to work well.
+     */
+    private static final int TOOM_COOK_SQUARE_THRESHOLD = 140 << 5;
 
     private final int radix;
 
@@ -126,6 +141,16 @@ final class JDKBigInt extends BigInt<BigInteger> {
         if (thislen < TOOM_COOK_THRESHOLD && vallen < TOOM_COOK_THRESHOLD)
             return multiplyKaratsuba(val);
         return multiplyToomCook3(val);
+    }
+
+    @Override
+    public BigInt square() {
+        int thislen = bitLength();
+        if (thislen < KARATSUBA_SQUARE_THRESHOLD)
+            return new JDKBigInt(internal.pow(2), radix);
+        if (thislen < TOOM_COOK_SQUARE_THRESHOLD)
+            return squareKaratsuba();
+        return squareToomCook3();
     }
 
     @Override

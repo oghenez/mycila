@@ -18,8 +18,8 @@ package com.mycila.math.number;
 import static com.mycila.math.number.BigInt.*;
 import com.mycila.math.number.jdk7.BigInteger;
 import com.mycila.math.prime.Sieve;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -30,6 +30,30 @@ import java.util.Scanner;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class BigIntTest {
+
+    @Test
+    public void test_squareKaratsuba() {
+        SecureRandom random = new SecureRandom();
+        long time = System.currentTimeMillis();
+        for (int i = 0; i < 3000; i++) {
+            BigInteger a = new BigInteger((90 << 5) + 100, random).abs();
+            BigInteger c = a.multiply(a);
+            assertEquals(a.toString(16), c.toString(16), big(a.toString()).squareKaratsuba().toString(16));
+        }
+        System.out.println(System.currentTimeMillis() - time);
+    }
+
+    @Test
+    public void test_squareToomCook3() {
+        SecureRandom random = new SecureRandom();
+        long time = System.currentTimeMillis();
+        for (int i = 0; i < 2000; i++) {
+            BigInteger a = new BigInteger((140 << 5) + 100, random).abs();
+            BigInteger c = a.multiply(a);
+            assertEquals(a.toString(16), c.toString(16), big(a.toString()).squareToomCook3().toString(16));
+        }
+        System.out.println(System.currentTimeMillis() - time);
+    }
 
     @Test
     public void test_slices() {
@@ -52,7 +76,8 @@ public final class BigIntTest {
         System.out.println(System.currentTimeMillis() - time);
     }
 
-    @Test //-server -Xmx1g -Xms1g -XX:PermSize=256m -XX:MaxPermSize=256m
+    @Test
+    //-server -Xmx1g -Xms1g -XX:PermSize=256m -XX:MaxPermSize=256m
     public void test_toomcook() {
         BigInteger b1 = new BigInteger("8634518bfb33b0049513076e5911b2973c3c639db1576ad607f2198e86716c007f618fd61a47d482cbcc49d9429d3d7aef9cd0eb3b50d7f35fb924534812dc02d13d58ab5bc3f40a07fb29b6dd5c6f1f5536ce17366a5cd7e395c5f2561a83c9d9eb12eb9a65e6b72143a0b5dd57ef5653973251fb8a48433d0c91f3ce7ab7096d565bbe27ec229afe69a759cbcef7205345ae1bc415c27c975ffdcc35b179996f401e5805533c98021cc5d3e6b051622e8f7782b266353838a7786169bbe22f2be412c733474d62ce390bf0762e2fc284dbf633c6c45767327608ec9ef8290ff116710d9a4807caba6065b2bc656a83ffc72f4f9eaf8f13bfeac86f16182cd22034327f7cd9cb48995ebf5a08c3b9ae759ee2e900f5ae47e847be7f9f1efa6358edfe518b92988c0cf845e017a5ebbff47f9634695de6358c15a31da27a1aced1b1ffd6cd89a2f418c4c44873bce828a439d74d4c90653f55248db767ddbc8ad98d4c02df94897a4b82efb151f55f81723d9c2fe8acf93b792976ad3dc44863cfc5e060cbf49ae8e6aeee11cf39f3bd03762a04950c56afc3b1c5a8219c6549749b9ee14b166518f97f0d7a68fb061bbf0c864927c4b0c193942124bd42aa759ac65ef8777fa8f1d2d45d0a5ab1631cbf10e481e1fa5460aef7fc3ff40ab3832d3926dd4f3e2da5540ec6abb3ed457e26fe8f08944437b1e5a2e7893f85412a3f75cb4314d48513ee840dba5993162e9d7a984543949585d9327e76578d0c6f551c47260c4702ff5b30d1658a2b97e4f928c8c6ce9a5371029dbd18456ba79f6d788c84ecab695c0583559ecfd56ad71bf7993b27c821e3d81b75dee7bb9ce8c4fdcd7bb03b4b0e7a63a670f89d1604990372839b807159ac7f2a9a22c63e243acbb87eeba89dc81c5583a5f9885c7e215df37636168b9", 16)
                 .multiply(new BigInteger("6fe451309b29f1751e9cea1ff56ed241f4a256abfffdc6ac55644a3d8e7c87d2310ca4717de5d2cfe6b910b50b16a0530db246efbc67ed4113d7d593e4c8a529009e64124faa067345c4238b67e61a8e97663d6dd1628545a9497432eec1de4dba05df67095b12255d5b9a182393c0f5131a8b1c8244ec683324f5f5743101cb2d5170dd0414bb99b48fff2e45145542238ad4142f5327b51d7df572296093245d6c86fec8be5e7488031ca2c7a7624b988e6ecbd2a1bf0c50bd0ae1234275b07c77ad663f3e70c8edce1124c7eda172d97a913e15260bc0e6b810e493bdb8e112439006a165f8c7344349e6311ba42a5297081d5edcbaa021fc166532f55393548e21926fa092269c2cf326cdb3dbcc7c84a2dd4b62faa76be7ccb0e2c4784fae806f65963765a5668ca1ce704ed259648b554ae03b7065a855d33f3f0a99c464778f772c5355ad2d4d2ef735819ca15fb966486469a1f6a48e5d14a22491f7a41d8db07b8033b9eced21a1f9325c92b282a410db2394d0f5f73ad00eda4c6c23b0a105dc476593a2dc8af7d74f947377cbd0e4f82c9f2f95e12339842c26308ab81911079bfe1d2581f812e119b7a1c64408c9fcfc6962efb186f0dcde86acf0a502d08eda3e8f7cf76ab3d65fa6b4db70093aee269dde1f175d0b49d69761ec933bb03e1ab5ead37d46c666197bafcb5bc1991f9f475682f00c2e4bd9afcdfc0ecda23de644e38fb983c27de91dcd5290e62296c16f66a2218329284f0d1acb2e7bd4c30094eba95089a049ae6da27d5ce9bc2f134b2ca55c41027a3d1bc31a1813eadf90ead1568", 16));

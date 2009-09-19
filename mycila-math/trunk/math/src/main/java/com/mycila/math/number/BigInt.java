@@ -1225,23 +1225,6 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     }
 
     /**
-     * Computes the <a href="http://en.wikipedia.org/wiki/Factorial">Factorial of this number</a>
-     * <code>this!</code>
-     *
-     * @return this!
-     */
-    //public abstract BigInt factorial();
-
-    /**
-     * Computes the <a href="http://en.wikipedia.org/wiki/Binomial_coefficient">Binomial Coefficient</a>
-     * <code>C(this, k)</code>
-     *
-     * @param k Coefficient
-     * @return The binomial coefficient
-     */
-    //public abstract BigInt binomial(int k);
-
-    /**
      * Computes the <a href="http://en.wikipedia.org/wiki/Jacobi_symbol">Jacobi symbol</a> (a/this)
      *
      * @param a Positive odd number
@@ -1624,10 +1607,10 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         int n = Math.max(bitLength(), val.bitLength());
         n = (n >>> 1) + (n & 1);
         // x = a + 2^N b, y = c + 2^N d
-        BigInt b = shiftRight(n);
-        BigInt a = subtract(b.shiftLeft(n));
-        BigInt d = val.shiftRight(n);
-        BigInt c = val.subtract(d.shiftLeft(n));
+        BigInt b = slice(n, 1);
+        BigInt a = slice(n, 0);
+        BigInt d = val.slice(n, 1);
+        BigInt c = val.slice(n, 0);
         // compute sub-expressions
         BigInt ac = a.multiply(c);
         BigInt bd = b.multiply(d);
@@ -1681,12 +1664,12 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         Result<BigInt> b1 = slice.result(val, 1);
         slice = null;
 
-        /*Result<BigInt> v0 = multiply.result(a0.get(), b0.get());
+        Result<BigInt> v0 = multiply.result(a0.get(), b0.get());
         Result<BigInt> vinf = multiply.result(a2.get(), b2.get());
         BigInt da = a2.get().add(a0.get());
         BigInt db = b2.get().add(b0.get());
         Result<BigInt> vm1 = multiply.result(da.subtract(a1.get()), db.subtract(b1.get()));
-        
+
         da = da.add(a1.get());
         a1 = null;
         db = db.add(b1.get());
@@ -1698,7 +1681,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
                 .subtract(vm1.get()).divide(THREE).subtract(t1).shiftRight(1).subtract(vinf.get().shiftLeft(1));
         multiply = null;
         a0 = a2 = b0 = b2 = null;
-        
+
         da = v1.subtract(vm1.get()).shiftRight(1);
         vm1 = null;
         v1 = null;
@@ -1707,12 +1690,13 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
                 .add(t1.subtract(da).subtract(vinf.get())).shiftLeft(len)
                 .add(da.subtract(t5)).shiftLeft(len)
                 .add(v0.get());
-        v0 = vinf = t1 = t5 = da = null;
+        v0 = vinf = null;
+        t1 = t5 = da = null;
 
-        return signum() != val.signum() ? db.opposite() : db;*/
+        return signum() != val.signum() ? db.opposite() : db;
 
         // NON-PARALLEL VERSION, 4-5 times slower
-        BigInt v0, v1, v2, vm1, vinf, t1, t2, tm1, da1, db1;
+        /*BigInt v0, v1, v2, vm1, vinf, t1, t2, tm1, da1, db1;
         v0 = a0.get().multiply(b0.get());
         da1 = a2.get().add(a0.get());
         db1 = b2.get().add(b0.get());
@@ -1722,8 +1706,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         v1 = da1.multiply(db1);
         v2 = da1.add(a2.get()).shiftLeft(1).subtract(a0.get()).multiply(db1.add(b2.get()).shiftLeft(1).subtract(b0.get()));
         vinf = a2.get().multiply(b2.get());
-        t2 = v2.subtract(vm1);
-        t2 = t2.divide(THREE);
+        t2 = v2.subtract(vm1).divide(THREE);
         tm1 = v1.subtract(vm1).shiftRight(1);
         t1 = v1.subtract(v0);
         t2 = t2.subtract(t1).shiftRight(1);
@@ -1731,7 +1714,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         t2 = t2.subtract(vinf.shiftLeft(1));
         tm1 = tm1.subtract(t2);
         BigInt result = vinf.shiftLeft(len).add(t2).shiftLeft(len).add(t1).shiftLeft(len).add(tm1).shiftLeft(len).add(v0);
-        return signum() != val.signum() ? result.opposite() : result;
+        return signum() != val.signum() ? result.opposite() : result;*/
     }
 
     /**
@@ -1759,8 +1742,85 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return A bigInt representing the wanted slice of the number, so that the concatenation of all slices a[i]...a[1]a[0] = this number
      */
     public BigInt slice(int len, int index) {
-        return shiftRight(len * index).and(ONE.shiftLeft(len).subtract(ONE));
+        return abs().shiftRight(len * index).and(ONE.shiftLeft(len).subtract(ONE));
     }
+
+    /**
+     * Squares a BigInteger using the Karatsuba squaring algorithm.  It should
+     * be used when both numbers are larger than a certain threshold (found
+     * experimentally).  It is a recursive divide-and-conquer algorithm that
+     * has better asymptotic performance than the algorithm used in
+     * squareToLen.
+     */
+    public BigInt squareKaratsuba() {
+        int len = (bitLength() + 31) >>> 5;
+        len = (len + 1) / 2 << 5;
+        BigInt xl = slice(len, 0);
+        BigInt xh = slice(len, 1);
+        BigInt xhs = xh.square();
+        BigInt xls = xl.square();
+        // xh^2 << 64  +  (((xl+xh)^2 - (xh^2 + xl^2)) << 32) + xl^2
+        return xhs.shiftLeft(len).add(xl.add(xh).square().subtract(xhs.add(xls))).shiftLeft(len).add(xls);
+    }
+
+    /**
+     * Squares a BigInteger using the 3-way Toom-Cook squaring algorithm.  It
+     * should be used when both numbers are larger than a certain threshold
+     * (found experimentally).  It is a recursive divide-and-conquer algorithm
+     * that has better asymptotic performance than the algorithm used in
+     * squareToLen or squareKaratsuba.
+     */
+    public BigInt squareToomCook3() {
+        int len = bitLength() + 31 >>> 5;
+        len = (len + 2) / 3 << 5;   // Equal to ceil(largest/3)*32
+        ConcurrentOperation.Square square = ConcurrentOperation.square();
+        ConcurrentOperation.Slice slice = ConcurrentOperation.slice(len);
+        Result<BigInt> a2 = slice.result(this, 2);
+        Result<BigInt> a0 = slice.result(this, 0);
+        Result<BigInt> a1 = slice.result(this, 1);
+        slice = null;
+
+        BigInt da1 = a2.get().add(a0.get());
+        BigInt da2 = da1.add(a1.get());
+
+        Result<BigInt> v0 = square.result(a0.get());
+        Result<BigInt> v1 = square.result(da2);
+        Result<BigInt> vm1 = square.result(da1.subtract(a1.get()));
+        Result<BigInt> vinf = square.result(a2.get());
+        a1 = null;
+
+        BigInt t1 = v1.get().subtract(v0.get());
+        da2 = da2.add(a2.get()).shiftLeft(1).subtract(a0.get()).square().subtract(vm1.get()).divide(THREE).subtract(t1).shiftRight(1).subtract(vinf.get().shiftLeft(1));
+        a2 = null;
+        a0 = null;
+        da1 = v1.get().subtract(vm1.get()).shiftRight(1);
+        v1 = null;
+        vm1 = null;
+
+        return vinf.get().shiftLeft(len)
+                .add(da2).shiftLeft(len)
+                .add(t1.subtract(da1).subtract(vinf.get())).shiftLeft(len)
+                .add(da1.subtract(da2)).shiftLeft(len)
+                .add(v0.get());
+    }
+
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Factorial">Factorial of this number</a>
+     * <code>this!</code>
+     *
+     * @return this!
+     */
+    //public abstract BigInt factorial();
+
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Binomial_coefficient">Binomial Coefficient</a>
+     * <code>C(this, k)</code>
+     *
+     * @param k Coefficient
+     * @return The binomial coefficient
+     */
+    //public abstract BigInt binomial(int k);
+
 }
 
 //TODO: add methods: binomial(), factorial(), factorize() + polar rho, fibonacci(), parallel fibonacci, isFibonacci(), quadratic residue (http://primes.utm.edu/glossary/xpage/QuadraticResidue.html)
@@ -1768,8 +1828,10 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
 //TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
 //TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet
 //TODO: productTo: find an algorithm to multiply n..m consecutive numbers
-//TODO: make wrapper for optimized BigInteger + BigIntegerMath.java, apflot, jscience, ... + Javolution contexts and factories + impl. paralell computing (factorial, products, ...)
-//TODO: make wrapper for GMP java avec https://jna.dev.java.net/ + http://code.google.com/p/jnaerator/
 //TODO: BigIntegerMath.java: CRT, Quadrati, pMinusOneFactor (Pollard p-1)
 
-//TODO: improve pow and square with toomcook and karatsuba (see BigInteger.java)
+//TODO: make wrapper for optimized BigInteger + BigIntegerMath.java, apflot, jscience, ... + Javolution contexts and factories + impl. paralell computing (factorial, products, ...)
+//TODO: make wrapper for GMP java avec https://jna.dev.java.net/ + http://code.google.com/p/jnaerator/
+
+
+//FIXME: improve pow and square with toomcook and karatsuba (see BigInteger.java)

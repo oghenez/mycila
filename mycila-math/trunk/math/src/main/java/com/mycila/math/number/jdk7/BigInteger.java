@@ -112,7 +112,7 @@ public final class BigInteger extends Number implements Comparable<BigInteger> {
      * value.  Note that this implies that the BigInteger zero has a
      * zero-length mag array.
      */
-    final int[] mag;
+    public final int[] mag;
 
     // These "redundant fields" are initialized with recognizable nonsense
     // values, and cached the first time they are needed (or never, if they
@@ -176,7 +176,7 @@ public final class BigInteger extends Number implements Comparable<BigInteger> {
      * Karatsuba multiplication will be used.   This value is found
      * experimentally to work well.
      */
-    private static final int KARATSUBA_THRESHOLD = 50;
+    public static final int KARATSUBA_THRESHOLD = 50;
 
     /**
      * The threshold value for using 3-way Toom-Cook multiplication.
@@ -184,7 +184,7 @@ public final class BigInteger extends Number implements Comparable<BigInteger> {
      * then Toom-Cook multiplication will be used.   This value is found
      * experimentally to work well.
      */
-    private static final int TOOM_COOK_THRESHOLD = 75;
+    public static final int TOOM_COOK_THRESHOLD = 75;
 
     /**
      * The threshold value for using Karatsuba squaring.  If the number
@@ -192,7 +192,7 @@ public final class BigInteger extends Number implements Comparable<BigInteger> {
      * Karatsuba squaring will be used.   This value is found
      * experimentally to work well.
      */
-    private static final int KARATSUBA_SQUARE_THRESHOLD = 90;
+    public static final int KARATSUBA_SQUARE_THRESHOLD = 90;
 
     /**
      * The threshold value for using Toom-Cook squaring.  If the number
@@ -200,7 +200,7 @@ public final class BigInteger extends Number implements Comparable<BigInteger> {
      * Karatsuba squaring will be used.   This value is found
      * experimentally to work well.
      */
-    private static final int TOOM_COOK_SQUARE_THRESHOLD = 140;
+    public static final int TOOM_COOK_SQUARE_THRESHOLD = 140;
 
     //Constructors
 
@@ -1349,6 +1349,7 @@ public final class BigInteger extends Number implements Comparable<BigInteger> {
         b1 = b.getToomSlice(k, r, 1, largest);
         b0 = b.getToomSlice(k, r, 2, largest);
 
+
         BigInteger v0, v1, v2, vm1, vinf, t1, t2, tm1, da1, db1;
 
         v0 = a0.multiply(b0);
@@ -1445,7 +1446,7 @@ public final class BigInteger extends Number implements Comparable<BigInteger> {
      * undefined.  Note that this is expected to be called with positive
      * arguments only.
      */
-    private BigInteger exactDivideBy3() {
+    public BigInteger exactDivideBy3() {
         int len = mag.length;
         int[] result = new int[len];
         long x, w, q, borrow;
@@ -3016,6 +3017,7 @@ public final class BigInteger extends Number implements Comparable<BigInteger> {
      * @see Character#forDigit
      * @see #BigInteger(java.lang.String, int)
      */
+    //TODO: Improve when radix is 2 or 16
     public String toString(int radix) {
         if (signum == 0)
             return "0";
