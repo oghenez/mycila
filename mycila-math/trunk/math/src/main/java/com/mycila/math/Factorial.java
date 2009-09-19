@@ -67,7 +67,7 @@ public final class Factorial {
             toStwing[i] = n;
         BigInt recFactorial = ONE;
         for (int i = 0, max = toStwing.length; i < max; i++)
-            recFactorial = recFactorial.pow(2).multiply(swing(toStwing[i], sieve, primeList));
+            recFactorial = recFactorial.square().multiply(swing(toStwing[i], sieve, primeList));
         return recFactorial.shiftLeft(number - Integer.bitCount(number));
     }
 

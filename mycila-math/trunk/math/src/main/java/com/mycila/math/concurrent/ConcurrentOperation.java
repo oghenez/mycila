@@ -57,6 +57,33 @@ public final class ConcurrentOperation {
         return new Slice(len);
     }
 
+    public static ConcurrentOperation.Square square() {
+        return new Square();
+    }
+
+    public static final class Square extends Generic<BigInt> {
+        private Square() {
+        }
+
+        public void push(final BigInt a) {
+            push(new Callable<BigInt>() {
+                @Override
+                public BigInt call() throws Exception {
+                    return a.square();
+                }
+            });
+        }
+
+        public Result<BigInt> result(final BigInt a) {
+            return result(new Callable<BigInt>() {
+                @Override
+                public BigInt call() throws Exception {
+                    return a.square();
+                }
+            });
+        }
+    }
+
     public static final class Multiply extends Generic<BigInt> {
         private Multiply() {
         }
