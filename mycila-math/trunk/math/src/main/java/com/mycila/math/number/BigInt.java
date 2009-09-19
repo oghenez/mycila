@@ -1607,10 +1607,10 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         int n = Math.max(bitLength(), val.bitLength());
         n = (n >>> 1) + (n & 1);
         // x = a + 2^N b, y = c + 2^N d
-        BigInt b = slice(n, 1);
-        BigInt a = slice(n, 0);
-        BigInt d = val.slice(n, 1);
-        BigInt c = val.slice(n, 0);
+        BigInt b = shiftRight(n);
+        BigInt a = subtract(b.shiftLeft(n));
+        BigInt d = val.shiftRight(n);
+        BigInt c = val.subtract(d.shiftLeft(n));
         // compute sub-expressions
         BigInt ac = a.multiply(c);
         BigInt bd = b.multiply(d);
@@ -1802,6 +1802,25 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
                 .add(t1.subtract(da1).subtract(vinf.get())).shiftLeft(len)
                 .add(da1.subtract(da2)).shiftLeft(len)
                 .add(v0.get());
+
+
+        // NON PARALLEL VERSION
+        /*BigInt v0, v1, v2, vm1, vinf, t1, t2, tm1, da1;
+        v0 = a0.get().square();
+        da1 = a2.get().add(a0.get());
+        vm1 = da1.subtract(a1.get()).square();
+        da1 = da1.add(a1.get());
+        v1 = da1.square();
+        vinf = a2.get().square();
+        v2 = da1.add(a2.get()).shiftLeft(1).subtract(a0.get()).square();
+        t2 = v2.subtract(vm1).divide(THREE);
+        tm1 = v1.subtract(vm1).shiftRight(1);
+        t1 = v1.subtract(v0);
+        t2 = t2.subtract(t1).shiftRight(1);
+        t1 = t1.subtract(tm1).subtract(vinf);
+        t2 = t2.subtract(vinf.shiftLeft(1));
+        tm1 = tm1.subtract(t2);
+        return vinf.shiftLeft(len).add(t2).shiftLeft(len).add(t1).shiftLeft(len).add(tm1).shiftLeft(len).add(v0);*/
     }
 
     /**
@@ -1832,6 +1851,3 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
 
 //TODO: make wrapper for optimized BigInteger + BigIntegerMath.java, apflot, jscience, ... + Javolution contexts and factories + impl. paralell computing (factorial, products, ...)
 //TODO: make wrapper for GMP java avec https://jna.dev.java.net/ + http://code.google.com/p/jnaerator/
-
-
-//FIXME: improve pow and square with toomcook and karatsuba (see BigInteger.java)
