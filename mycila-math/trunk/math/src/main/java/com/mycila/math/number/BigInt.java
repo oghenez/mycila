@@ -93,6 +93,10 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         return FACTORY.random(length);
     }
 
+    public static BigInt randomPrime(int length) {
+        return FACTORY.randomPrime(length);
+    }
+
     public final T internal;
     protected byte[] digits;
 

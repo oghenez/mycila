@@ -50,14 +50,6 @@
             <systemPath>${basedir}/lib/apfloat-1.5.2.jar</systemPath>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>factorial</groupId>
-            <artifactId>factorial</artifactId>
-            <version>2008</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/Factorial2008.jar</systemPath>
-            <optional>true</optional>
-        </dependency>
     </dependencies>
 
 </project>

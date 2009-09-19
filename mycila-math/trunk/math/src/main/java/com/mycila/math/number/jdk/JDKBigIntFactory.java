@@ -67,6 +67,11 @@ public final class JDKBigIntFactory implements BigIntFactory<BigInteger> {
     }
 
     @Override
+    public BigInt randomPrime(int length) {
+        return wrap(new BigInteger(length, 100, RANDOM), 10);
+    }
+
+    @Override
     public BigInt wrap(BigInteger internal, int radix) {
         return new JDKBigInt(internal, radix);
     }

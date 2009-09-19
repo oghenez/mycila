@@ -17,10 +17,13 @@ package com.mycila.math;
 
 import com.mycila.math.number.BigInt;
 import static com.mycila.math.number.BigInt.*;
-import de.luschny.math.factorial.FactorialPrimeParallelSwingLuschny;
-import de.luschny.math.factorial.FactorialPrimeSwingLuschny;
 import static org.junit.Assert.*;
 import org.junit.Test;
+
+import java.io.File;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 /**
  * @author Mathieu Carbou
@@ -40,7 +43,27 @@ public final class FactorialTest {
     //TODO: improve perf to match those from FactorialPrimeParallelSwingLuschny
     // -server -Xmx1g -Xms1g -XX:PermSize=256m -XX:MaxPermSize=256m -Xshare:off
     @Test
-    public void test_vs_apfloat() {
+    public void test_vs_apfloat() throws Exception {
+
+        URLClassLoader classLoader = new URLClassLoader(new URL[]{new File("lib/Factorial2008-full.jar").toURI().toURL()}, Thread.currentThread().getContextClassLoader()) {
+            @Override
+            public Class<?> loadClass(String name) throws ClassNotFoundException {
+                Class c = findLoadedClass(name);
+                if (c == null) {
+                    try {
+                        c = findClass(name);
+                    } catch (ClassNotFoundException e) {
+                        c = getParent().loadClass(name);
+                    }
+                }
+                return c;
+            }
+        };
+        Class<?> clazz = classLoader.loadClass("de.luschny.math.factorial.FactorialPrimeSwingLuschny");
+        Class<?> clazz2 = classLoader.loadClass("de.luschny.math.factorial.FactorialPrimeParallelSwingLuschny");
+        Method m1 = clazz.getMethod("factorial", int.class);
+        Method m2 = clazz2.getMethod("factorial", int.class);
+
         long time = System.currentTimeMillis();
         Factorial.primeSwingLuschny(100);
         Factorial.primeSwingLuschny(1000);
@@ -50,19 +73,17 @@ public final class FactorialTest {
         System.out.println(System.currentTimeMillis() - time);
 
         time = System.currentTimeMillis();
-        new FactorialPrimeSwingLuschny().factorial(100);
-        new FactorialPrimeSwingLuschny().factorial(1000);
-        new FactorialPrimeSwingLuschny().factorial(10000);
-        new FactorialPrimeSwingLuschny().factorial(100000);
-        new FactorialPrimeParallelSwingLuschny().factorial(1000000);
+        m1.invoke(clazz.newInstance(), 1000);
+        m1.invoke(clazz.newInstance(), 10000);
+        m1.invoke(clazz.newInstance(), 100000);
+        m1.invoke(clazz.newInstance(), 1000000);
         System.out.println(System.currentTimeMillis() - time);
 
         time = System.currentTimeMillis();
-        new FactorialPrimeParallelSwingLuschny().factorial(100);
-        new FactorialPrimeParallelSwingLuschny().factorial(1000);
-        new FactorialPrimeParallelSwingLuschny().factorial(10000);
-        new FactorialPrimeParallelSwingLuschny().factorial(100000);
-        new FactorialPrimeParallelSwingLuschny().factorial(1000000);
+        m2.invoke(clazz2.newInstance(), 1000);
+        m2.invoke(clazz2.newInstance(), 10000);
+        m2.invoke(clazz2.newInstance(), 100000);
+        m2.invoke(clazz2.newInstance(), 1000000);
         System.out.println(System.currentTimeMillis() - time);
     }
 
