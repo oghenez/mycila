@@ -16,7 +16,7 @@ do
 	for i in $array
 	do
 		f=`echo "$picture" | sed 's/\.\w*$//'`
-		/usr/bin/convert "$picture" $i:"$f".$i
+		/usr/bin/convert "$picture" $i:_"$f".$i
 	done
 	shift
 done
