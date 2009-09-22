@@ -47,7 +47,7 @@ public final class Combinations {
         if (n > Integer.MAX_VALUE >>> 1)
             throw new IllegalArgumentException("Too big value for n (" + n + "). Maximum allowed is " + 4294967294L);
         if (r > n >>> 1) r = (int) (n - r);
-        return big(n).fallingFactorial(r).divide(Factorial.primeSwingLuschny(r));
+        return big(n).factorialFalling(r).divide(Factorial.primeSwingLuschny(r));
     }
 
     public static CombinationSet combinations(int n, int r) {
