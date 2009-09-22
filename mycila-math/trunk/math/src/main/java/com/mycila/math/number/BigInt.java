@@ -15,14 +15,25 @@
  */
 package com.mycila.math.number;
 
+import com.mycila.math.Factorial;
 import com.mycila.math.concurrent.ConcurrentOperation;
 import com.mycila.math.concurrent.Result;
 import com.mycila.math.distribution.Distribution;
 import com.mycila.math.list.ByteProcedure;
 import com.mycila.math.prime.PrimaltyTest;
+import com.mycila.math.prime.Primes;
 import com.mycila.math.prime.Sieve;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -803,7 +814,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
         StringBuilder sb = new StringBuilder().append(numbers[0]);
         for (int i = 1, max = numbers.length; i < max; i++)
             sb.append(numbers[i]);
-        return concat(big(sb.toString(), radix()));
+        return concat(big(sb.toString(), 10));
     }
 
     /**
@@ -1206,29 +1217,6 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     }
 
     /**
-     * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">Falling Factorial</a>
-     * <code>this! / (this-n)!</code>
-     *
-     * @param n The falling factor to substract from this number
-     * @return this! / (this-n)!
-     */
-    public BigInt fallingFactorial(BigInt n) {
-        if (n.signum() == 0) return ONE;
-        return subtract(n).add(ONE).productTo(this);
-    }
-
-    /**
-     * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">Falling Factorial</a>
-     * <code>this! / (this-n)!</code>
-     *
-     * @param n The falling factor to substract from this number
-     * @return this! / (this-n)!
-     */
-    public BigInt fallingFactorial(long n) {
-        return fallingFactorial(big(n));
-    }
-
-    /**
      * Computes the <a href="http://en.wikipedia.org/wiki/Jacobi_symbol">Jacobi symbol</a> (a/this)
      *
      * @param a Positive odd number
@@ -1307,7 +1295,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     public boolean isPrimeMillerRabin(int certainty) {
         if (equals(TWO)) return true;
         if (!testBit(0) || equals(ONE)) return false;
-        if (compareTo(big(Integer.MAX_VALUE)) <= 0)
+        if (bitLength() <= 31)
             return PrimaltyTest.millerRabin(toInt());
         // Find a and m such that m is odd and this == 1 + 2**a * m
         BigInt thisMinusOne = subtract(ONE);
@@ -1828,12 +1816,169 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     }
 
     /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">Falling Factorial</a>
+     * <code>this! / (this-n)!</code>
+     *
+     * @param n The falling factor to substract from this number
+     * @return this! / (this-n)!
+     */
+    public BigInt factorialFalling(BigInt n) {
+        if (n.signum() == 0) return ONE;
+        return subtract(n).add(ONE).productTo(this);
+    }
+
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Pochhammer_symbol">Falling Factorial</a>
+     * <code>this! / (this-n)!</code>
+     *
+     * @param n The falling factor to substract from this number
+     * @return this! / (this-n)!
+     */
+    public BigInt factorialFalling(long n) {
+        return factorialFalling(big(n));
+    }
+
+    /**
      * Computes the <a href="http://en.wikipedia.org/wiki/Factorial">Factorial of this number</a>
      * <code>this!</code>
      *
      * @return this!
      */
-    //public abstract BigInt factorial();
+    public BigInt factorial() {
+        return factorialPrimeSwing();
+    }
+
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Factorial">Factorial of this number</a>
+     * <code>this!</code> by using <a href="http://www.luschny.de/math/factorial/index.html">Luschny's PrimeSwing</a>
+     *
+     * @return this!
+     */
+    public BigInt factorialPrimeSwing() {
+        if (bitLength() > 31)
+            throw new ArithmeticException("Number too big");
+        int number = toInt();
+        if (number <= 20) return big(Factorial.lookup(number));
+        Sieve sieve = Sieve.to(number);
+        double pow2Count = Math.log(number) * 1.4426950408889634D;
+        int[] primeList = new int[(int) (2.0 * ((int) Math.sqrt(number) + number / (pow2Count - 1)))];
+        int[] toStwing = new int[(int) pow2Count];
+        for (int i = toStwing.length - 1, n = number; i >= 0; i--, n >>>= 1)
+            toStwing[i] = n;
+        BigInt recFactorial = ONE;
+        for (int i = 0, max = toStwing.length; i < max; i++)
+            recFactorial = recFactorial.square().multiply(swing(toStwing[i], sieve, primeList));
+        return recFactorial.shiftLeft(number - Integer.bitCount(number));
+    }
+
+    private static final int[] smallOddSwing = {1, 1, 1, 3, 3, 15, 5, 35, 35, 315, 63, 693, 231, 3003, 429, 6435, 6435, 109395, 12155, 230945, 46189, 969969, 88179, 2028117, 676039, 16900975, 1300075, 35102025, 5014575, 145422675, 9694845, 300540195, 300540195};
+
+    private static BigInt swing(final int number, Sieve sieve, int[] primeList) {
+        if (number < 33) return big(smallOddSwing[number]);
+        final int sqrtN = (int) Math.sqrt(number);
+        final int[] pIter0 = sieve.asArray(3, sqrtN);
+        final int[] pIter1 = sieve.asArray(sqrtN + 1, number / 3);
+        int count = 0;
+        for (int prime : pIter0) {
+            int q = number, p = 1;
+            while ((q /= prime) > 0) if ((q & 1) == 1) p *= prime;
+            if (p > 1) primeList[count++] = p;
+        }
+        for (int prime : pIter1)
+            if (((number / prime) & 1) == 1)
+                primeList[count++] = prime;
+        BigInt primorial = sieve.primorial((number >>> 1) + 1, number);
+        return primorial.multiply(Primes.product(primeList, 0, count));
+    }
+
+    /**
+     * Computes the <a href="http://en.wikipedia.org/wiki/Factorial">Factorial of this number</a>
+     * <code>this!</code> by using <a href="http://www.luschny.de/math/factorial/index.html">Luschny's PrimeSwingParallel</a>
+     *
+     * @return this!
+     */
+    public BigInt factorialPrimeSwingParallel() {
+        if (bitLength() > 31)
+            throw new ArithmeticException("Number too big");
+        int number = toInt();
+        if (number <= 20) return big(Factorial.lookup(number));
+        int proc = Runtime.getRuntime().availableProcessors();
+        ExecutorService poolExe = Executors.newFixedThreadPool(proc);
+        Sieve sieve = Sieve.to(number);
+        int log2n = 31 - Integer.numberOfLeadingZeros(number);
+        ArrayList<Callable<BigInt>> swingTasks = new ArrayList<Callable<BigInt>>(log2n);
+        AtomicInteger taskCounter = new AtomicInteger(0);
+        // -- It is more efficient to add the big swings
+        // -- first and the small ones later!
+        for (int n = number; n > 32; n >>= 1) {
+            swingTasks.add(new Swing(sieve, n));
+            taskCounter.incrementAndGet();
+        }
+        BigInt fact = null;
+        List<Future<BigInt>> swings;
+        try {
+            swings = poolExe.invokeAll(swingTasks);
+            fact = recFactorial(number, swings, taskCounter).shiftLeft(number - Integer.bitCount(number));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        poolExe.shutdownNow();
+        return fact;
+    }
+
+    private static BigInt recFactorial(int n, List<Future<BigInt>> swings, AtomicInteger taskCounter)
+            throws ExecutionException, InterruptedException {
+        if (n < 2) return ONE;
+        BigInt recFact = recFactorial(n / 2, swings, taskCounter).square();
+        BigInt swing;
+        if (n <= 32)
+            swing = big(smallOddSwing[n]);
+        else
+            swing = swings.get(taskCounter.decrementAndGet()).get();
+        return recFact.multiply(swing);
+    }
+
+    private static final class Swing implements Callable<BigInt> {
+        private final Sieve sieve;
+        private final int n;
+
+        public Swing(Sieve sieve, int n) {
+            this.sieve = sieve;
+            this.n = n;
+        }
+
+        public BigInt call() throws Exception {
+            FutureTask<BigInt> primorial = new FutureTask<BigInt>(new Callable<BigInt>() {
+                public BigInt call() {
+                    return sieve.primorial(n / 2 + 1, n);
+                }
+            });
+            new Thread(primorial).start();
+            BigInt primeProduct = lowSwing();
+            return primeProduct.multiply(primorial.get());
+        }
+
+        private BigInt lowSwing() {
+            int sqrtN = (int) Math.floor(Math.sqrt(n));
+            final int[] pIter0 = sieve.asArray(3, sqrtN);
+            final int[] pIter1 = sieve.asArray(sqrtN + 1, n / 3);
+            int piN = pIter0.length + pIter1.length;
+            final int[] primeList = new int[piN];
+            int count = 0;
+            for (int prime : pIter0) {
+                int q = n, p = 1;
+                while ((q /= prime) > 0)
+                    if ((q & 1) == 1)
+                        p *= prime;
+                if (p > 1)
+                    primeList[count++] = p;
+            }
+            for (int prime : pIter1)
+                if (((n / prime) & 1) == 1)
+                    primeList[count++] = prime;
+            return Primes.product(primeList, 0, count);
+        }
+    }
 
     /**
      * Computes the <a href="http://en.wikipedia.org/wiki/Binomial_coefficient">Binomial Coefficient</a>
