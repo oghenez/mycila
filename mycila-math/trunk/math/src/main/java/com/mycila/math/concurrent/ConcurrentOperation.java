@@ -35,14 +35,14 @@ public final class ConcurrentOperation {
     static final ExecutorService EXECUTOR_SERVICE;
 
     static {
-        int cpus = Runtime.getRuntime().availableProcessors();
+        int threads = Runtime.getRuntime().availableProcessors();
         try {
-            cpus = Integer.parseInt(System.getProperty("mycila.math.cpus"));
+            threads = Integer.parseInt(System.getProperty("mycila.math.thread.number"));
         } catch (Exception ignored) {
         }
         EXECUTOR_SERVICE = new ThreadPoolExecutor(
-                //cpus, Integer.MAX_VALUE,
-                cpus, cpus,
+                //threads, Integer.MAX_VALUE,
+                threads, threads,
                 //30, TimeUnit.SECONDS,
                 0, TimeUnit.SECONDS,
                 new SynchronousQueue<Runnable>(),
