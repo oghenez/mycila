@@ -16,23 +16,13 @@
 package com.mycila.math.concurrent;
 
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 final class DefaultThreadFactory implements ThreadFactory {
-    private static final int THREAD_PRIORITY;
-    private static final AtomicInteger threadNumber = new AtomicInteger(1);
-
-    static {
-        int p = Thread.NORM_PRIORITY;
-        try {
-            p = Integer.parseInt(System.getProperty("mycila.math.thread.priority"));
-        } catch (Exception ignored) {
-        }
-        THREAD_PRIORITY = p;
-    }
+    private static AtomicLong threadNumber = new AtomicLong(0);
 
     private final ThreadGroup group;
     private final String namePrefix;
@@ -41,7 +31,7 @@ final class DefaultThreadFactory implements ThreadFactory {
     DefaultThreadFactory(String name) {
         SecurityManager s = System.getSecurityManager();
         group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
-        namePrefix = name + "-" + threadNumber.getAndIncrement();
+        namePrefix = name + "-";
         this.ccl = Thread.currentThread().getContextClassLoader();
     }
 
@@ -53,9 +43,9 @@ final class DefaultThreadFactory implements ThreadFactory {
                 Thread.currentThread().setContextClassLoader(ccl);
                 r.run();
             }
-        }, namePrefix + threadNumber.getAndIncrement(), 0);
+        }, namePrefix + (threadNumber.getAndIncrement() & 0x7FFFFFFFFFFFFFFFL), 0);
         if (t.isDaemon()) t.setDaemon(false);
-        t.setPriority(THREAD_PRIORITY);
+        t.setPriority(Thread.currentThread().getPriority());
         return t;
     }
 }
