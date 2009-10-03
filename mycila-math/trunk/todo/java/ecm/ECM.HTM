@@ -1,0 +1,286 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en"><head>
+
+
+<title>Factorization using the Elliptic Curve Method</title>
+<meta name="description" content="Applet that can be used to find 20- or 30-digit factors of numbers up to 10000 digits long">
+<meta name="keywords" content="factor, prime, primes, factorization, ECM">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta name="Author" content="Dario Alejandro Alpern">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<script type="text/javascript" language="JavaScript">
+<!--
+var digits=6
+function PageStart() {
+  var cookie=document.cookie
+  var index=cookie.indexOf("ecm=")
+  var cookieinfo=""
+  if (index!=-1) {
+    var endLoc=cookie.indexOf(";",index)
+    if (endLoc==-1) {endLoc=cookie.length}
+    cookieinfo=cookie.substring(index+4,endLoc)
+    }
+  digits=document.ecm.setState(cookieinfo)
+  document.forms[0].elements[1].value=digits & 0x3FF
+  document.forms[0].elements[5].checked=(digits & 0x400?false:true)
+  document.forms[0].elements[6].checked=(digits & 0x800?true:false)
+  document.forms[0].elements[7].checked=(digits & 0x1000?false:true)
+  }
+
+function PageExit() {
+  document.cookie = "ecm="+document.ecm.getState()+"; expires=Thursday, 21-Mar-2019 23:59:59 GMT"
+  }
+
+function FactorExpr() {
+  text = document.ecm.StartFactorExprBatch(document.forms[1].elements[0].value, 0)
+  if (text=="") {
+    setTimeout(timeOutCode, 200)
+    return
+    }
+  document.forms[1].elements[4].value = text
+  }
+
+function TestPrime() {
+  document.forms[1].elements[4].value = ""
+  text = document.ecm.StartFactorExprBatch(document.forms[1].elements[0].value, 1)
+  if (text=="") {
+    setTimeout(timeOutCode, 200)
+    return
+    }
+  document.forms[1].elements[4].value = text
+  }
+
+function timeOutCode() {
+  text = document.ecm.resultBatch()
+  if (text=="") {
+    setTimeout(timeOutCode, 200)
+    return
+    }
+  document.forms[1].elements[4].value = text
+  }
+
+function setDigits() {
+  var digits2=parseInt(document.forms[0].elements[1].value)
+  if (digits2+"" != document.forms[0].elements[1].value) {
+    document.forms[0].elements[1].value = digits
+    }
+  if (digits2 > 0 && digits2 < 1000) {
+    digits=digits2
+    document.ecm.setDigits(digits)
+    }
+  else {
+    document.forms[0].elements[1].value = digits
+    }
+  }
+
+function setThreads() {
+  var threads2=parseInt(document.forms[0].elements[3].value)
+  if (threads2+"" != document.forms[0].elements[3].value) {
+    document.forms[0].elements[3].value = threads
+    }
+  if (threads2 > 0 && threads2 <= 32) {
+    threads=threads2
+    document.ecm.setThreads(threads)
+    }
+  else {
+    document.forms[0].elements[1].value = threads
+    }
+  }
+
+function switchSIQS() {
+  document.ecm.switchSIQS(document.forms[0].elements[5].checked? 1: 0);
+  }
+
+function Verbose() {
+  document.ecm.Verbose(document.forms[0].elements[6].checked? 1: 0);
+  }
+
+function useCunn() {
+  document.ecm.useCunnTable(document.forms[0].elements[7].checked? 1: 0);
+  }
+
+function ShowFact() {
+  fact = window.open("javascript:''","fact");
+  fact.document.open();
+  fact.document.write(document.ecm.getStringsFromBothPanes());
+  fact.document.close();
+  fact.focus();
+  }
+
+-->
+</script>
+</head><body onload="PageStart();" onunload="PageExit();">
+<table cellpadding="0" cellspacing="0" border="1">
+<tbody><tr><td rowspan="2" valign="middle" width="90"><p><img src="ECM_files/Logoalp.gif" alt="alpertron logo" height="73" width="103" align="bottom"></p></td><td valign="top" width="50%" bgcolor="#c0c0c0">
+<div align="center"><font color="#ffffff" size="4"><a href="http://www.alpertron.com.ar/ENGLISH.HTM" target="_top">Dario Alpern's site Home Page</a></font></div></td><td valign="top" width="50%" bgcolor="#c0c0c0">
+<div align="center"><font color="#ffffff" size="4"><a href="http://www.alpertron.com.ar/index.htm" target="_top">Ver sitio en castellano</a></font></div></td></tr>
+<tr><td colspan="2" valign="top" bgcolor="#ffffcc">
+<p>&nbsp;<b>ELECTRONICS</b> &gt;&gt; <a href="http://www.alpertron.com.ar/INTEL.HTM" target="_top">Intel Microprocessors</a> (Spanish only)
+<br>&nbsp;<b>MATHEMATICS</b> &gt;&gt; <a href="http://www.alpertron.com.ar/CALTORS.HTM" target="_top">Calculators</a> | <a href="http://www.alpertron.com.ar/NUMBERT.HTM" target="_top">Number Theory</a> | <a href="http://www.alpertron.com.ar/CUADRO.HTM" target="_top">Problems</a>
+<br>&nbsp;<b>PROGRAMS</b> &gt;&gt; <a href="http://www.alpertron.com.ar/ASSEM386.HTM" target="_top">Assembler 80386 (downloads)</a> | <a href="http://www.alpertron.com.ar/JAVAPROG.HTM" target="_top">Java</a> | <a href="http://www.alpertron.com.ar/GAMES.HTM" target="_top">Games</a>
+<br>&nbsp;<b><font color="Red">CONTACT</font></b> &gt;&gt; <a href="http://www.alpertron.com.ar/EPERS.HTM" target="_top">Personal</a> | <a href="http://www.alpertron.com.ar/FORM.HTM" target="_top">Comments</a> | <a href="http://www.alpertron.com.ar/EGBOOK.HTM" target="_top">Guestbook</a> | <a href="http://www.alpertron.com.ar/ENGLINKS.HTM" target="_top">Links</a> | <a href="http://www.alpertron.com.ar/DONATION.HTM" target="_top">Donations</a></p></td></tr>
+</tbody></table>
+<p></p><center><h2>Factorization using the Elliptic Curve Method</h2><p>
+</p><table bgcolor="#c0c0c0" border="6"><tbody><tr><td>
+<table bgcolor="#c0c0c0" border="2"><tbody><tr><td>
+<applet code="ecm.class" archive="ECM_files/ecm.asc" name="ecm" height="390" width="600">
+<param name="java_arguments" value="-Xmx256m">
+<param name="progressbar" value="true">
+<param name="boxmessage" value="Loading ECM factoring applet...">
+<p>In order to perform factorizations you need Java enabled.
+</p></applet>
+</td></tr></tbody></table>
+</td></tr></tbody></table></center>
+<br><div style="float: left;"><div align="center"><p><a href="http://www.alpertron.com.ar/ecm.zip" target="_blank"><b>Get the source code!</b></a><br>
+</p><form action="/"><p><input value="Show factorization in a new window" onclick="ShowFact();" type="BUTTON">
+</p><p></p><table><tbody><tr><td align="Left">Number of digits in a group <input size="5" value="6" type="TEXT"><input value="Change" onclick="setDigits()" type="BUTTON">
+<p>Number of threads for multicore processor users: <input size="5" value="1" type="TEXT"><input value="Change" onclick="setThreads()" type="BUTTON">
+</p></td><td align="Right"><table>
+<tbody><tr><td align="Left"><input checked="checked" onclick="switchSIQS()" type="CHECKBOX"> Automatic switch to SIQS
+</td></tr><tr><td align="Left"><input onclick="Verbose()" type="CHECKBOX"> Verbose mode
+</td></tr><tr><td align="Left"><input checked="checked" onclick="useCunn()" type="CHECKBOX"> Use Cunningham tables on server
+</td></tr></tbody></table></td></tr></tbody></table></form>
+<p><big><a href="http://www.alpertron.com.ar/ECMREC.HTM" target="records">See factorization records</a></big></p></div></div>
+<div style="float: right; width: 170px;"><script type="text/javascript"><!--
+google_ad_client = "pub-7822822379319413";
+/* 120x90, creado 10/06/08 */
+google_ad_slot = "8971114302";
+google_ad_width = 120;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript" src="ECM_files/show_ads.js">
+</script><script src="ECM_files/expansion_embed.js"></script><script src="ECM_files/test_domain.js"></script><script>google_protectAndRun("ads_core.google_render_ad", google_handleError, google_render_ad);</script><ins style="border: medium none ; margin: 0pt; padding: 0pt; display: inline-table; height: 90px; position: relative; visibility: visible; width: 120px;"><ins style="border: medium none ; margin: 0pt; padding: 0pt; display: block; height: 90px; position: relative; visibility: visible; width: 120px;"><iframe allowtransparency="true" hspace="0" id="google_ads_frame1" marginheight="0" marginwidth="0" name="google_ads_frame" src="ECM_files/ads.html" style="left: 0pt; position: absolute; top: 0pt;" vspace="0" frameborder="0" height="90" width="120" scrolling="no"></iframe></ins></ins></div>
+<br clear="both">
+<p>If your Web visualization program accepts cookies, you can complete the
+factorization of a large number in several sessions. Your computer will
+remember the state of the factorization. You only have to reload this page.
+</p><p>The execution time depends on the magnitude of the second largest prime
+factor and on your computer speed.
+</p><p>Since all calculations are performed in your computer, you can disconnect
+it from the Internet while the factorization is in progress.
+</p><p>You can also enter expressions that use the following operators and parentheses:
+</p><p>
+</p><ul>
+<li> + for addition
+</li><li> - for subtraction
+</li><li> * for multiplication
+</li><li> / for integer division
+</li><li> ^ for exponentiation
+</li><li> <b>n!</b>: factorial
+</li><li> <b>p#</b>: primorial (product of all primes less or equal than <b>p</b>).
+</li><li> <b>B(n)</b>: Previous pseudoprime to <i>n</i>
+</li><li> <b>F(n)</b>: Fibonacci number F<sub>n</sub>
+</li><li> <b>L(n)</b>: Lucas number L<sub>n</sub> = F<sub>n-1</sub> + F<sub>n+1</sub>
+</li><li> <b>N(n)</b>: Next pseudoprime to <i>n</i>
+</li><li> <b>P(n)</b>: Unrestricted Partition Number (number of decompositions of <b>n</b> into integer summands without regard to order).
+</li></ul>
+<p>The pseudoprime tests used in functions <b>B</b> and <b>N</b>
+includes trial division by the 100 first primes and then up to 20
+Rabin-Miller strong pseudoprime tests. So it has a very high
+probability to find a prime number.
+</p><p>The final value must have 10000 or fewer digits, intermediate
+results must have 20000 or fewer digits and in the case of divisions,
+the dividend must be multiple of the divisor.
+</p><p>The next table shows the optimal values of B1 given the number
+of digits of the factor and the expected number of curves using that
+limit. These values are averages.
+</p><center><p></p><table border="1">
+<tbody><tr><th>Digits</th><th>Value of B1</th><th>Expected curves
+</th></tr><tr align="Center"><td>15</td><td>2000</td><td>25
+</td></tr><tr align="Center"><td>20</td><td>11000</td><td>90
+</td></tr><tr align="Center"><td>25</td><td>50000</td><td>300
+</td></tr><tr align="Center"><td>30</td><td>250000</td><td>700
+</td></tr><tr align="Center"><td>35</td><td>1 000000</td><td>1800
+</td></tr><tr align="Center"><td>40</td><td>3 000000</td><td>5100
+</td></tr><tr align="Center"><td>45</td><td>11 000000</td><td>10600
+</td></tr><tr align="Center"><td>50</td><td>43 000000</td><td>19300
+</td></tr><tr align="Center"><td>55</td><td>110 000000</td><td>49000
+</td></tr><tr align="Center"><td>60</td><td>260 000000</td><td>124000
+</td></tr><tr align="Center"><td>65</td><td>850 000000</td><td>210000
+</td></tr><tr align="Center"><td>70</td><td>2900 000000</td><td>340000
+</td></tr></tbody></table></center>
+<p>The program runs 25 curves with limit B1 = 2000, 300 curves with
+limit B1 = 50000, 1675 curves with limit B1 = 1000000 and finally it
+uses curves with limit B1 = 11000000 until all factors are found.
+</p><p></p><h3 align="CENTER">Factoring Cunningham numbers</h3>
+<p>If the number to be factorized has the form <b>a<sup>b</sup> ± 1</b>
+(Cunningham form) or if it is a Fibonacci or a Lucas number, the
+program finds all algebraic and Aurifeuillian factors before using ECM.
+</p><p>When the checkbox named <i>Use Cunningham tables on server</i> is enabled, the applet requests to the server known factors greater than 10<sup>9</sup>, then it attempts to complete the factorization.
+</p><p>The sources of the data stored on the server are:
+</p><p></p><ul>
+<li>For base 2: <a href="http://www.garlic.com/%7Ewedgingt/mersenne.html">Will Edgington's Mersenne Page</a>, 21 May 2008 Version (28988 factors).
+</li><li>For bases greater than 2: <a href="http://wwwmaths.anu.edu.au/%7Ebrent/factors.html">Richard Brent - Factor Tables</a>, 6 May 2008 Version (255150 factors).
+</li></ul>
+<p></p><h3 align="CENTER">Factoring a number in several machines</h3>
+<p>The ECM factoring algorithm can be easily parallelized in several
+machines. In order to do it, run the factorization in the first
+computer from curve 1, run it in the second computer from curve 10000,
+in the third computer from curve 20000, and so on. In order to change
+the curve number, just type this number on the bottom-left input box
+and press Enter or click on the <b>New Curve</b> button.
+</p><p>When one of the machines discovers a new factor, you should
+enter this factor in the other computers by typing it in the
+bottom-right input box and pressing Enter (or clicking the <b>Factor</b> button).
+</p><p></p><h3 align="CENTER">Batch factorization</h3>
+<p>Put an expression per line, then press the appropiate button. The output will be placed in the lower pane.
+</p><p>Blank lines or comment lines (which start with a numeral '#' character) will be replicated on the lower pane.
+</p><p>Expression loop <font color="Red">NEW!</font>: with the following syntax you can factor or determine primality of several numbers typing only one line.
+You have to type four expression separated by semicolons:
+</p><ul>
+<li>First expression: It must start with the string 'x=' and it sets the first value of x.
+</li><li>Second expression: It must start with the string 'x=' and it sets the next value of x.
+It can include the variables 'x' (the variable) and 'i' (the counter).
+</li><li>Third expression: It holds the end expression condition. If it
+is greater than zero the loop finishes, otherwise the loop continues.
+It can include the variables mentioned above.
+</li><li>Fourth expression: It holds the expression to be factored. It can include the variables mentioned above.
+</li></ul>
+Example: Find the factors of the first 100 numbers of the form prime minus one.
+The line to type is: <code>x=3;x=n(x);i-100;x-1</code>.
+<form action="/">
+<center>
+<table bgcolor="#c0c0c0" border="6"><tbody><tr><td>
+<table bgcolor="#c0c0c0" border="2"><tbody><tr><td>
+<p><textarea rows="8" cols="70"></textarea>
+</p><p><input value="Factor expressions" onclick="FactorExpr();" type="BUTTON">
+<input value="Only test primality" onclick="TestPrime();" type="BUTTON">
+<input value="Clear boxes" type="RESET">
+</p><p><textarea rows="8" cols="70"></textarea>
+</p></td></tr></tbody></table></td></tr></tbody></table>
+</center>
+</form>
+<p></p><h3 align="CENTER">Factoring using the Self Initializing Quadratic Sieve (SIQS)</h3>
+<p>When the number to be factorized is in the range 31-90 digits, after
+computing some curves in order to find small factors, the program
+switches to SIQS (if the checkbox located below the applet enables it),
+which is an algorithm that is much faster than ECM when the number has
+two large prime factors. Since this method needs a large amount of your
+computer's memory, if you restart the applet the factorization begins
+from scratch. In order to start factoring immediately using SIQS, you
+can enter 0 in the New Curve box.
+</p><p>The threshold for switching to SIQS are:
+</p><table border="1">
+<tbody><tr align="CENTER"><td>Digits</td><td>31-35</td><td>36-40</td><td>41-45</td><td>46-50</td><td>51-55</td><td>56-60</td><td>61-65</td><td>66-70</td><td>71-75</td><td>76-80</td><td>81-85</td><td>86-90
+</td></tr><tr align="CENTER"><td>Curve</td><td>5</td><td>8</td><td>15</td><td>25</td><td>27</td><td>32</td><td>43</td><td>70</td><td>150</td><td>300</td><td>350</td><td>600
+</td></tr></tbody></table>
+<p>If you want to know the mathematics behind the computation of the sum of squares, click <a href="http://www.alpertron.com.ar/4SQUARES.HTM" target="_blank">here</a>.
+</p><p>If you find any error or you have a comment, please fill in the <a href="http://www.alpertron.com.ar/FORM.HTM?Elliptic%20Method%20Calculator%20feedback" target="_blank">form</a>.
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script src="ECM_files/ga.js" type="text/javascript"></script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-4438475-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script><script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script src="ECM_files/ga.js" type="text/javascript"></script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-4438475-1");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script></p></body></html>
