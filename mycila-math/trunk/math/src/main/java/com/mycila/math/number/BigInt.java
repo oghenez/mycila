@@ -1993,10 +1993,12 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
 
 //TODO: add methods: binomial(), factorial(), factorize() + polar rho, fibonacci(), parallel fibonacci, isFibonacci(), quadratic residue (http://primes.utm.edu/glossary/xpage/QuadraticResidue.html)
 //TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
-//TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL
+//TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL (ECM is a highly efficient method of finding prime factors in the 35-55 digit range.)
 //TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet
 //TODO: productTo: find an algorithm to multiply n..m consecutive numbers
 //TODO: BigIntegerMath.java: CRT, Quadrati, pMinusOneFactor (Pollard p-1)
 
 //TODO: make wrapper for optimized BigInteger + BigIntegerMath.java, apflot, jscience, ... + Javolution contexts and factories + impl. paralell computing (factorial, products, ...)
 //TODO: make wrapper for GMP java avec https://jna.dev.java.net/ + http://code.google.com/p/jnaerator/
+//TODO: optimize GCD for mersenne numbers: http://www.garlic.com/~wedgingt/mersenne.html (Lemma 2: Knuth's GCD Lemma)
+
