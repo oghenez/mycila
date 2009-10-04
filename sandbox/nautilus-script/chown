@@ -1,0 +1,13 @@
+#!/bin/bash
+
+U=`whoami`
+G=`id -g -n`
+O=`zenity --entry --title "chown" --entry-text "$U:$G"`
+
+if [ -z "$O" ]; then exit; fi;
+
+#zenity --entry --title "chown" --entry-text "`pwd`"
+#zenity --entry --title "chown" --entry-text "$*"
+
+gksudo "chown -R $O $*"
+
