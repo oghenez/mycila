@@ -1,0 +1,9 @@
+#!/bin/bash
+
+#xterm -hold -e java -jar $*
+
+xterm -e "echo java -jar $* && echo \"Press a key to exit...\" && read k || bash"
+
+#CMD="java -jar $* && echo \\\"Press a key to exit...\\\" && read k || bash"
+#echo gnome-terminal --tab -e 'bash -c \"$CMD\"'
+
