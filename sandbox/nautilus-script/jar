@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then exit; fi;
+
+JARNAME=`gdialog --title "JAR" --inputbox "Archive name" 200 450 2>&1`
+if [ -z "$JARNAME" ]; then exit; fi;
+
+jar cvf $JARNAME.jar $*
+
