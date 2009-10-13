@@ -29,7 +29,7 @@ public final class JDKLoggerProvider implements LoggerProvider {
 
     private static final LoggerProvider INSTANCE = new JDKLoggerProvider();
 
-    private JDKLoggerProvider() {
+    public JDKLoggerProvider() {
         URL config = Thread.currentThread().getContextClassLoader().getResource("logging.properties");
         if (config != null) {
             try {

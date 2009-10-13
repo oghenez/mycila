@@ -25,7 +25,7 @@ public final class NopLoggerProvider implements LoggerProvider {
 
     private static final LoggerProvider INSTANCE = new NopLoggerProvider();
 
-    private NopLoggerProvider() {
+    public NopLoggerProvider() {
     }
 
     public Logger get(String name) {

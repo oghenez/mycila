@@ -25,7 +25,7 @@ public final class Log4jLoggerProvider implements LoggerProvider {
 
     private static final LoggerProvider INSTANCE = new Log4jLoggerProvider();
 
-    private Log4jLoggerProvider() {
+    public Log4jLoggerProvider() {
     }
 
     public Logger get(String name) {
