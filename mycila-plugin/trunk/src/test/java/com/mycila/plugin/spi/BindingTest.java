@@ -16,6 +16,7 @@
 
 package com.mycila.plugin.spi;
 
+import com.mycila.log.Loggers;
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
 
@@ -24,6 +25,8 @@ import org.testng.annotations.Test;
  */
 public final class BindingTest {
 
+    static {Loggers.useJDK();}
+    
     @Test
     public void test_toString() {
         assertEquals(new Binding("aa").toString(), "aa");

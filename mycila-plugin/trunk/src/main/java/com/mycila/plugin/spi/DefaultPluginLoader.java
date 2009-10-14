@@ -66,7 +66,7 @@ final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
     }
 
     public Set<PluginBinding<T>> loadPlugins() {
-        LOGGER.debug("Loading plugins from descriptors {0}...", descriptor);
+        LOGGER.debug("Loading plugins from descriptors %s...", descriptor);
         Set<PluginBinding<T>> plugins = new HashSet<PluginBinding<T>>();
         Enumeration<URL> configs = loadDescriptors();
         while (configs.hasMoreElements()) {
@@ -82,7 +82,7 @@ final class DefaultPluginLoader<T extends Plugin> implements PluginLoader<T> {
                 }
             }
         }
-        LOGGER.debug("Loaded {0} plugins !", plugins.size());
+        LOGGER.debug("Loaded %s plugins !", plugins.size());
         return Collections.unmodifiableSet(plugins);
     }
 

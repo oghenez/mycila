@@ -53,7 +53,7 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
     public void registerPlugin(String name, T plugin) {
         notEmpty("Plugin name", name);
         notNull("Plugin instance", plugin);
-        LOGGER.debug("Adding plugin: {0}", name);
+        LOGGER.debug("Adding plugin: %s", name);
         plugins.put(name, new Binding<T>(name).withPlugin(plugin));
     }
 
@@ -66,7 +66,7 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
 
     public void removePlugins(String... pluginNames) {
         notNull("Plugin names", pluginNames);
-        LOGGER.debug("Removing plugins: {0}", Arrays.toString(pluginNames));
+        LOGGER.debug("Removing plugins: %s", Arrays.toString(pluginNames));
         for (String name : pluginNames) {
             this.plugins.remove(name);
         }
