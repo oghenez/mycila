@@ -40,7 +40,7 @@ public final class PluginManager<T extends Plugin> {
 
     public PluginManager(Class<T> pluginType) {
         notNull("Plugin type", pluginType);
-        LOGGER.debug("Creating new empty PluginManager for plugin type {0}", pluginType);
+        LOGGER.debug("Creating new empty PluginManager for plugin type %s", pluginType);
         loader = new DefaultPluginLoader<T>(pluginType);
         cache = new DefaultPluginCache<T>(loader);
         resolver = new DefaultPluginResolver<T>(cache);
@@ -49,7 +49,7 @@ public final class PluginManager<T extends Plugin> {
     public PluginManager(Class<T> pluginType, String pluginDescriptor) {
         notNull("Plugin type", pluginType);
         notEmpty("Plugin descriptor", pluginDescriptor);
-        LOGGER.debug("Creating new PluginManager for plugin type {0} from descriptors {1}", pluginType, pluginDescriptor);
+        LOGGER.debug("Creating new PluginManager for plugin type %s from descriptors %s", pluginType, pluginDescriptor);
         loader = new DefaultPluginLoader<T>(pluginType, pluginDescriptor);
         cache = new DefaultPluginCache<T>(loader);
         resolver = new DefaultPluginResolver<T>(cache);

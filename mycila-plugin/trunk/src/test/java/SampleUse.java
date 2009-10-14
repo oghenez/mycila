@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import com.mycila.log.Loggers;
 import com.mycila.plugin.api.PluginBinding;
 import com.mycila.plugin.spi.MyPlugin;
 import com.mycila.plugin.spi.PluginManager;
@@ -25,6 +26,7 @@ import java.util.List;
  */
 final class SampleUse {
     public static void main(String[] args) {
+        Loggers.useJDK();
         PluginManager<MyPlugin> manager = new PluginManager<MyPlugin>(MyPlugin.class, "META-INF/myapp/plugins.properties");
         for (PluginBinding<MyPlugin> binding : manager.getResolver().getResolvedPlugins()) {
             binding.getPlugin().execute();

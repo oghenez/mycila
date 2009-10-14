@@ -162,7 +162,7 @@ final class DefaultPluginResolver<T extends Plugin> implements PluginResolver<T>
         while (it.hasNext()) {
             order.add(it.next());
         }
-        LOGGER.debug("Resolved plugins: {0}", order);
+        LOGGER.debug("Resolved plugins: %s", order);
         return Collections.unmodifiableList(order);
     }
 }

@@ -16,6 +16,7 @@
 
 package com.mycila.plugin.spi;
 
+import com.mycila.log.Loggers;
 import com.mycila.plugin.api.PluginCache;
 import static org.testng.Assert.*;
 import org.testng.annotations.BeforeMethod;
@@ -28,6 +29,8 @@ import java.util.concurrent.CountDownLatch;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class DefaultPluginCacheTest {
+
+     static {Loggers.useJDK();}
 
     PluginCache<MyPlugin> cache;
 
