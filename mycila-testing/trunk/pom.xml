@@ -305,7 +305,6 @@
             <plugin>
                 <artifactId>maven-pmd-plugin</artifactId>
                 <configuration>
-                    <linkXref>true</linkXref>
                     <targetJdk>${jdk.version}</targetJdk>
                     <minimumTokens>100</minimumTokens>
                     <rulesets>
