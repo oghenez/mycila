@@ -44,13 +44,13 @@ public final class Mycila {
 
     static void registerCurrentExecution(Execution execution) {
         notNull("Execution context", execution);
-        LOGGER.debug("Registering Execution Context {0}#{1} for test {2}#{3,number,#}", execution.step(), execution.method().getName(), execution.context().introspector().testClass().getName(), execution.context().introspector().instance().hashCode());
+        LOGGER.debug("Registering Execution Context %s#%s for test %s#%s", execution.step(), execution.method().getName(), execution.context().introspector().testClass().getName(), execution.context().introspector().instance().hashCode());
         CURRENT_EXECUTION.set(execution);
     }
 
     static void registerContext(TestContext context) {
         notNull("Test context", context);
-        LOGGER.debug("Registering Global Test Context for test {0}#{1,number,#}", context.introspector().testClass().getName(), context.introspector().instance().hashCode());
+        LOGGER.debug("Registering Global Test Context for test %s#%s", context.introspector().testClass().getName(), context.introspector().instance().hashCode());
         CONTEXTS.put(context.introspector().instance(), context);
     }
 
@@ -58,7 +58,7 @@ public final class Mycila {
         if (LOGGER.canDebug()) {
             Execution execution = CURRENT_EXECUTION.get();
             if (execution != null) {
-                LOGGER.debug("Removing Execution Context {0}#{1} for test {2}#{3,number,#}", execution.step(), execution.method().getName(), execution.context().introspector().testClass().getName(), execution.context().introspector().instance().hashCode());
+                LOGGER.debug("Removing Execution Context %s#%s for test %s#%s", execution.step(), execution.method().getName(), execution.context().introspector().testClass().getName(), execution.context().introspector().instance().hashCode());
             }
         }
         CURRENT_EXECUTION.remove();
@@ -67,7 +67,7 @@ public final class Mycila {
     static void unsetContext(TestContext context) {
         notNull("Test context", context);
         if (CONTEXTS.remove(context.introspector().instance()) != null) {
-            LOGGER.debug("Removing Global Test Context for test {0}#{1,number,#}", context.introspector().testClass().getName(), context.introspector().instance().hashCode());
+            LOGGER.debug("Removing Global Test Context for test %s#%s", context.introspector().testClass().getName(), context.introspector().instance().hashCode());
         }
     }
 
@@ -75,7 +75,7 @@ public final class Mycila {
         notNull("Test instance", testInstance);
         TestContext context = CONTEXTS.get(testInstance);
         if (context == null) {
-            throw new IllegalStateException("No Global Test Context available for test " + MessageFormat.format("{0}#{1,number,#}", testInstance.getClass().getName(), testInstance.hashCode()));
+            throw new IllegalStateException("No Global Test Context available for test " + MessageFormat.format("%s#%s", testInstance.getClass().getName(), testInstance.hashCode()));
         }
         return context;
     }

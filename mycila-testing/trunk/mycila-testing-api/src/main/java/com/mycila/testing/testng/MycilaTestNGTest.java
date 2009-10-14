@@ -54,7 +54,7 @@ public abstract class MycilaTestNGTest extends Assert implements IHookable {
         if (testExecution.mustSkip()) {
             testResult.setStatus(ITestResult.SKIP);
         } else {
-            LOGGER.debug("Calling test method {0}.{1}", testExecution.method().getDeclaringClass().getName(), testExecution.method().getName());
+            LOGGER.debug("Calling test method %s.%s", testExecution.method().getDeclaringClass().getName(), testExecution.method().getName());
             try {
                 Field field = callBack.getClass().getDeclaredField("val$instance");
                 field.setAccessible(true);
