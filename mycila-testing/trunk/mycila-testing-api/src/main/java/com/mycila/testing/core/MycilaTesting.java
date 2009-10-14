@@ -62,7 +62,7 @@ public final class MycilaTesting {
 
 
     private MycilaTesting(String descriptor) {
-        LOGGER.debug("Creating new plugin manager from descriptor {0}", descriptor);
+        LOGGER.debug("Creating new plugin manager from descriptor %s", descriptor);
         pluginManager = new PluginManager<TestPlugin>(TestPlugin.class, descriptor);
     }
 
@@ -97,7 +97,7 @@ public final class MycilaTesting {
         })));
         final PluginManager<TestPlugin> pluginManager = pluginManager();
         for (Method method : methods) {
-            LOGGER.debug("Configuring plugin manager through method {0}.{1}...", method.getDeclaringClass().getName(), method.getName());
+            LOGGER.debug("Configuring plugin manager through method %s.%s...", method.getDeclaringClass().getName(), method.getName());
             try {
                 method.invoke(testInstance, pluginManager);
             } catch (IllegalAccessException e) {
@@ -142,10 +142,10 @@ public final class MycilaTesting {
         MycilaTesting testSetup = instances.get(pluginDescriptor);
         if (testSetup == null) {
             testSetup = newSetup(pluginDescriptor);
-            LOGGER.debug("Registering new shared plugins for descriptor {0}", pluginDescriptor);
+            LOGGER.debug("Registering new shared plugins for descriptor %s", pluginDescriptor);
             instances.put(pluginDescriptor, testSetup);
         } else {
-            LOGGER.debug("Reusing shared plugins for descriptor {0}", pluginDescriptor);
+            LOGGER.debug("Reusing shared plugins for descriptor %s", pluginDescriptor);
         }
         return testSetup;
     }

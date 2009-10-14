@@ -70,7 +70,7 @@ final class TestContextImpl implements TestContext, TestNotifier {
         notNull("Test instance", testInstance);
         this.introspector = new Introspector(testInstance);
         this.pluginManager = pluginManager;
-        LOGGER.debug("Creating new Test Context for test {0}#{1,number,#}", this.introspector.testClass().getName(), this.introspector.instance().hashCode());
+        LOGGER.debug("Creating new Test Context for test %s#%s", this.introspector.testClass().getName(), this.introspector.instance().hashCode());
         Mycila.registerContext(this);
     }
 
@@ -90,7 +90,7 @@ final class TestContextImpl implements TestContext, TestNotifier {
         try {
             ExecutionImpl execution = new ExecutionImpl(this, prepareMethod);
             Mycila.registerCurrentExecution(execution.changeStep(Step.PREPARE));
-            LOGGER.debug("Calling 'prepareTestInstance' on plugins for test {0}#{1,number,#}...", introspector.testClass().getName(), introspector.instance().hashCode());
+            LOGGER.debug("Calling 'prepareTestInstance' on plugins for test %s#%s...", introspector.testClass().getName(), introspector.instance().hashCode());
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().prepareTestInstance(this);
@@ -108,7 +108,7 @@ final class TestContextImpl implements TestContext, TestNotifier {
         TestExecutionImpl testExecution = new TestExecutionImpl(this, method);
         try {
             Mycila.registerCurrentExecution(testExecution.changeStep(Step.BEFORE));
-            LOGGER.debug("Calling 'beforeTest' on plugins for test {0}#{1,number,#}...", introspector.testClass().getName(), introspector.instance().hashCode());
+            LOGGER.debug("Calling 'beforeTest' on plugins for test %s#%s...", introspector.testClass().getName(), introspector.instance().hashCode());
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().beforeTest(testExecution);
@@ -127,7 +127,7 @@ final class TestContextImpl implements TestContext, TestNotifier {
             TestExecutionImpl testExecution = (TestExecutionImpl) Mycila.currentExecution();
             Mycila.unsetCurrentExecution();
             Mycila.registerCurrentExecution(testExecution.changeStep(Step.AFTER));
-            LOGGER.debug("Calling 'afterTest' on plugins for test {0}#{1,number,#}...", introspector.testClass().getName(), introspector.instance().hashCode());
+            LOGGER.debug("Calling 'afterTest' on plugins for test %s#%s...", introspector.testClass().getName(), introspector.instance().hashCode());
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().afterTest(testExecution);
@@ -144,7 +144,7 @@ final class TestContextImpl implements TestContext, TestNotifier {
         try {
             ExecutionImpl execution = new ExecutionImpl(this, fireAfterClassMethod);
             Mycila.registerCurrentExecution(execution.changeStep(Step.COMPLETED));
-            LOGGER.debug("Calling 'afterClass' on plugins for test {0}#{1,number,#}...", introspector.testClass().getName(), introspector.instance().hashCode());
+            LOGGER.debug("Calling 'afterClass' on plugins for test %s#%s...", introspector.testClass().getName(), introspector.instance().hashCode());
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().afterClass(this);
@@ -161,12 +161,12 @@ final class TestContextImpl implements TestContext, TestNotifier {
         try {
             ExecutionImpl execution = new ExecutionImpl(this, shutdownMethod);
             Mycila.registerCurrentExecution(execution.changeStep(Step.SHUTDOWN));
-            LOGGER.debug("Calling 'shutdown' on plugins for test {0}#{1,number,#}...", introspector.testClass().getName(), introspector.instance().hashCode());
+            LOGGER.debug("Calling 'shutdown' on plugins for test %s#%s...", introspector.testClass().getName(), introspector.instance().hashCode());
             for (PluginBinding<TestPlugin> binding : pluginManager.getResolver().getResolvedPlugins()) {
                 try {
                     binding.getPlugin().shutdown(this);
                 } catch (Exception e) {
-                    LOGGER.error(e, "An error occured while executing 'shutdown' on plugin {0}: {1}: {2}", binding.getName(), e.getClass().getSimpleName(), e.getMessage());
+                    LOGGER.error(e, "An error occured while executing 'shutdown' on plugin %s: %s: %s", binding.getName(), e.getClass().getSimpleName(), e.getMessage());
                 }
             }
         } finally {

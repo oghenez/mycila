@@ -58,7 +58,7 @@ public abstract class MycilaJunit3Test extends TestCase {
             TestExecution testExecution = (TestExecution) Mycila.currentExecution();
             if (!testExecution.mustSkip()) {
                 try {
-                    LOGGER.debug("Calling test method {0}.{1}", testExecution.method().getDeclaringClass().getName(), testExecution.method().getName());
+                    LOGGER.debug("Calling test method %s.%s", testExecution.method().getDeclaringClass().getName(), testExecution.method().getName());
                     super.runTest();
                 } catch (Throwable t) {
                     testExecution.setThrowable(t);

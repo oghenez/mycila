@@ -32,7 +32,7 @@ public final class AnnotationTestPlugin extends DefaultTestPlugin {
     @Override
     public void beforeTest(TestExecution testExecution) throws Exception {
         if (testExecution.method().isAnnotationPresent(Skip.class) || testExecution.context().introspector().hasAnnotation(Skip.class)) {
-            LOGGER.debug("Skipping test method {0}.{1}", testExecution.method().getDeclaringClass().getName(), testExecution.method().getName());
+            LOGGER.debug("Skipping test method %s.%s", testExecution.method().getDeclaringClass().getName(), testExecution.method().getName());
             testExecution.setSkip(true);
         }
     }
