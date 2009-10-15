@@ -19,7 +19,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
 /**
@@ -41,12 +40,6 @@ public final class AsyncInvocationHandler<T extends Handler> extends MycilaInvoc
 
     @Override
     public void close(T handler) throws SecurityException {
-        LogRecord logRecord = new LogRecord(Level.FINE, "Publishing all remaing asynchronous log entries...");
-        logRecord.setLoggerName(getClass().getName());
-        logRecord.setSourceClassName(getClass().getName());
-        logRecord.setSourceMethodName(Thread.currentThread().getName());
-        handler.publish(logRecord);
-        handler.flush();
         executor.shutdown();
         try {
             while(!executor.isTerminated()) {
