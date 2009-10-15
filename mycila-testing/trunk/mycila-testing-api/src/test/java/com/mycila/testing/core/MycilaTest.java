@@ -16,6 +16,7 @@
 package com.mycila.testing.core;
 
 import com.mycila.testing.JDKLogging;
+import com.mycila.testing.MycilaTestingException;
 import com.mycila.testing.core.annot.MycilaPlugins;
 import static com.mycila.testing.core.api.Cache.*;
 import com.mycila.testing.core.api.Execution;
@@ -47,7 +48,7 @@ public final class MycilaTest {
         TestContext context = mock(TestContext.class);
         when(context.introspector()).thenReturn(introspector);
 
-        assertThrow(IllegalStateException.class).containingMessage("No Global Test Context available for test com.mycila.testing.core.MycilaTest#").whenRunning(new Code() {
+        assertThrow(MycilaTestingException.class).containingMessage("No Global Test Context available for test com.mycila.testing.core.MycilaTest#").whenRunning(new Code() {
             public void run() throws Throwable {
                 Mycila.context(MycilaTest.this);
             }
@@ -57,7 +58,7 @@ public final class MycilaTest {
         assertEquals(Mycila.context(this), context);
         Mycila.unsetContext(context);
 
-        assertThrow(IllegalStateException.class).containingMessage("No Global Test Context available for test com.mycila.testing.core.MycilaTest#").whenRunning(new Code() {
+        assertThrow(MycilaTestingException.class).containingMessage("No Global Test Context available for test com.mycila.testing.core.MycilaTest#").whenRunning(new Code() {
             public void run() throws Throwable {
                 Mycila.context(MycilaTest.this);
             }

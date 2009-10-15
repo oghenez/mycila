@@ -17,11 +17,11 @@ package com.mycila.testing.core;
 
 import com.mycila.log.Logger;
 import com.mycila.log.Loggers;
+import com.mycila.testing.MycilaTestingException;
 import static com.mycila.testing.core.api.Ensure.*;
 import com.mycila.testing.core.api.Execution;
 import com.mycila.testing.core.api.TestContext;
 
-import java.text.MessageFormat;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -75,7 +75,7 @@ public final class Mycila {
         notNull("Test instance", testInstance);
         TestContext context = CONTEXTS.get(testInstance);
         if (context == null) {
-            throw new IllegalStateException("No Global Test Context available for test " + MessageFormat.format("%s#%s", testInstance.getClass().getName(), testInstance.hashCode()));
+            throw new MycilaTestingException("No Global Test Context available for test %s#%s", testInstance.getClass().getName(), testInstance.hashCode());
         }
         return context;
     }
