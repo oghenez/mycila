@@ -22,37 +22,37 @@ public interface Logger {
 
     boolean canTrace();
 
-    void trace(String message, Object... args);
+    void trace(Object message, Object... args);
 
-    void trace(Throwable throwable, String message, Object... args);
+    void trace(Throwable throwable, Object message, Object... args);
 
     boolean canDebug();
 
-    void debug(String message, Object... args);
+    void debug(Object message, Object... args);
 
-    void debug(Throwable throwable, String message, Object... args);
+    void debug(Throwable throwable, Object message, Object... args);
 
     boolean canInfo();
 
-    void info(String message, Object... args);
+    void info(Object message, Object... args);
 
-    void info(Throwable throwable, String message, Object... args);
+    void info(Throwable throwable, Object message, Object... args);
 
     boolean canWarn();
 
-    void warn(String message, Object... args);
+    void warn(Object message, Object... args);
 
-    void warn(Throwable throwable, String message, Object... args);
+    void warn(Throwable throwable, Object message, Object... args);
 
     boolean canError();
 
-    void error(String message, Object... args);
+    void error(Object message, Object... args);
 
-    void error(Throwable throwable, String message, Object... args);
+    void error(Throwable throwable, Object message, Object... args);
 
     boolean canLog(Level level);
 
-    void log(Level level, String message, Object... args);
+    void log(Level level, Object message, Object... args);
 
-    void log(Level level, Throwable throwable, String message, Object... args);
+    void log(Level level, Throwable throwable, Object message, Object... args);
 }

@@ -30,6 +30,7 @@ public final class Log4jLogger extends AbstractLogger {
         this.logger = Logger.getLogger(name);
     }
 
+    @Override
     public boolean canLog(com.mycila.log.Level level) {
         switch (level) {
             case TRACE:
@@ -48,22 +49,22 @@ public final class Log4jLogger extends AbstractLogger {
     }
 
     @Override
-    protected void doLog(com.mycila.log.Level level, Throwable throwable, String message, Object... args) {
+    protected void doLog(com.mycila.log.Level level, Throwable throwable, Object message, Object... args) {
         switch (level) {
             case TRACE:
-                logger.log(Level.TRACE, String.format(message, args), throwable);
+                logger.log(Level.TRACE, String.format(String.valueOf(message), args), throwable);
                 break;
             case DEBUG:
-                logger.log(Level.DEBUG, String.format(message, args), throwable);
+                logger.log(Level.DEBUG, String.format(String.valueOf(message), args), throwable);
                 break;
             case INFO:
-                logger.log(Level.INFO, String.format(message, args), throwable);
+                logger.log(Level.INFO, String.format(String.valueOf(message), args), throwable);
                 break;
             case WARN:
-                logger.log(Level.WARN, String.format(message, args), throwable);
+                logger.log(Level.WARN, String.format(String.valueOf(message), args), throwable);
                 break;
             case ERROR:
-                logger.log(Level.ERROR, String.format(message, args), throwable);
+                logger.log(Level.ERROR, String.format(String.valueOf(message), args), throwable);
                 break;
             default:
 
