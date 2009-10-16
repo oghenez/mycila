@@ -31,6 +31,7 @@ public final class JDKLogger extends AbstractLogger {
         this.logger = java.util.logging.Logger.getLogger(name);
     }
 
+    @Override
     public boolean canLog(com.mycila.log.Level level) {
         switch (level) {
             case TRACE:
@@ -48,7 +49,8 @@ public final class JDKLogger extends AbstractLogger {
         }
     }
 
-    protected void doLog(com.mycila.log.Level level, Throwable throwable, String message, Object... args) {
+    @Override
+    protected void doLog(com.mycila.log.Level level, Throwable throwable, Object message, Object... args) {
         switch (level) {
             case TRACE:
                 logger.log(buildLogRecord(Level.FINEST, throwable, message, args));
@@ -70,8 +72,8 @@ public final class JDKLogger extends AbstractLogger {
         }
     }
 
-    private LogRecord buildLogRecord(Level level, Throwable throwable, String message, Object... args) {
-        LogRecord logRecord = new LogRecord(level, String.format(message, args));
+    private LogRecord buildLogRecord(Level level, Throwable throwable, Object message, Object... args) {
+        LogRecord logRecord = new LogRecord(level, String.format(String.valueOf(message), args));
         logRecord.setLoggerName(logger.getName());
         logRecord.setSourceClassName(logger.getName());
         logRecord.setSourceMethodName(Thread.currentThread().getName());

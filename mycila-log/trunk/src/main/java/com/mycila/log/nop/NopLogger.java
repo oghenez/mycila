@@ -29,9 +29,11 @@ public final class NopLogger extends AbstractLogger {
     private NopLogger() {
     }
 
-    protected void doLog(Level level, Throwable throwable, String message, Object... args) {
+    @Override
+    protected void doLog(Level level, Throwable throwable, Object message, Object... args) {
     }
 
+    @Override
     public boolean canLog(Level level) {
         return false;
     }
