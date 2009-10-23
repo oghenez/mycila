@@ -34,12 +34,14 @@ public final class ClassFormatter extends Formatter {
 
     @SuppressWarnings({"ThrowableResultOfMethodCallIgnored"})
     public String format(LogRecord record) {
+        String src = record.getSourceClassName();
+        if(src == null) src = notNull(record.getLoggerName());
         StringBuffer sb = new StringBuffer()
                 .append(dateFormat.format(new Date(record.getMillis())))
                 .append(" ")
                 .append(record.getLevel())
-                .append(" [").append(record.getSourceMethodName()).append("]")
-                .append(" [").append(stripped(record.getSourceClassName())).append("]")
+                .append(" [").append(notNull(record.getSourceMethodName())).append("]")
+                .append(" [").append(stripped(notNull(src))).append("]")
                 .append(" - ").append(record.getMessage())
                 .append(Utils.EOL);
         if (record.getThrown() != null) {
@@ -56,7 +58,6 @@ public final class ClassFormatter extends Formatter {
     }
 
     String stripped(String name) {
-        if(name == null) return "null";
         int pos = name.length();
         int count = 2;
         //noinspection StatementWithEmptyBody
@@ -64,6 +65,10 @@ public final class ClassFormatter extends Formatter {
         pos++;
         if (pos < name.length() && name.charAt(pos) == '.') pos++;
         return name.substring(pos);
+    }
+
+    private String notNull(String s) {
+        return s == null ? "?" : s;
     }
 
     public void setDatePattern(String pattern) {
