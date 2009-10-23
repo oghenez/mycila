@@ -56,6 +56,7 @@ public final class ClassFormatter extends Formatter {
     }
 
     String stripped(String name) {
+        if(name == null) return "null";
         int pos = name.length();
         int count = 2;
         //noinspection StatementWithEmptyBody
