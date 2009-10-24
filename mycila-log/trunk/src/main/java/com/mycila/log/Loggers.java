@@ -87,6 +87,16 @@ public final class Loggers {
     }
 
     /**
+     * Specify a custom {@link com.mycila.log.LoggerProvider} that will returns {@link Logger instances}.
+     * {@link com.mycila.log.LoggerProvider} can be composed using {@link com.mycila.log.LoggerProviders}
+     *
+     * @param loggerProvider The logger provider
+     */
+    public static synchronized void useAndCache(LoggerProvider loggerProvider) {
+        use(LoggerProviders.cache(loggerProvider));
+    }
+
+    /**
      * Get the logger for specified class
      *
      * @param c The class
