@@ -15,9 +15,9 @@
  */
 package com.mycila.log.jdk.hook;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
@@ -27,6 +27,22 @@ import java.util.logging.LogRecord;
 public final class AsyncInvocationHandler<T extends Handler> extends MycilaInvocationHandler<T> {
 
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
+
+    {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                if (!executor.isShutdown()) {
+                    List<Runnable> remaing = executor.shutdownNow();
+                    for (Runnable runnable : remaing)
+                        try {
+                            runnable.run();
+                        } catch (Exception ignored) {
+                        }
+                }
+            }
+        });
+    }
 
     @Override
     public void publish(final T handler, final LogRecord record) {
@@ -40,14 +56,9 @@ public final class AsyncInvocationHandler<T extends Handler> extends MycilaInvoc
 
     @Override
     public void close(T handler) throws SecurityException {
-        executor.shutdown();
-        try {
-            while(!executor.isTerminated()) {
-                executor.awaitTermination(500, TimeUnit.MILLISECONDS);
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        List<Runnable> remaing = executor.shutdownNow();
+        for (Runnable runnable : remaing)
+            runnable.run();
         handler.flush();
         handler.close();
     }
