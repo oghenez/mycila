@@ -35,16 +35,17 @@ public final class ConcurrentOperation {
     static final ExecutorService EXECUTOR_SERVICE;
 
     static {
-        int threads = Runtime.getRuntime().availableProcessors();
+        int cpus = Runtime.getRuntime().availableProcessors();
+        int threads = cpus * 2;
         try {
             threads = Integer.parseInt(System.getProperty("mycila.math.thread.number"));
         } catch (Exception ignored) {
         }
         EXECUTOR_SERVICE = new ThreadPoolExecutor(
                 //threads, Integer.MAX_VALUE,
-                threads, threads,
-                //30, TimeUnit.SECONDS,
-                0, TimeUnit.SECONDS,
+                0, threads,
+                5, TimeUnit.SECONDS,
+                //0, TimeUnit.SECONDS,
                 new SynchronousQueue<Runnable>(),
                 //new LinkedBlockingQueue<Runnable>(),
                 new DefaultThreadFactory("concurrent-operation"),
@@ -54,16 +55,19 @@ public final class ConcurrentOperation {
                     public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
                         r.run();
                     }
-                });
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                EXECUTOR_SERVICE.shutdownNow();
+                }) {
+            {
+                allowCoreThreadTimeOut(true);
             }
-        });
+        };
     }
 
     private ConcurrentOperation() {
+    }
+
+    public static void close() {
+        for (Runnable runnable : EXECUTOR_SERVICE.shutdownNow())
+            runnable.run();
     }
 
     public static <T> Generic<T> generic() {
