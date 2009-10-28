@@ -1845,6 +1845,7 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
      * @return this!
      */
     public BigInt factorial() {
+        //TODO: FACT - switch to prime swing parallel
         return factorialPrimeSwing();
     }
 
@@ -1981,24 +1982,88 @@ public abstract class BigInt<T> implements Comparable<BigInt> {
     }
 
     /**
+     * @return Returns a prime sieve from 2 up to this number
+     */
+    public Sieve primeSieve() {
+        if (bitLength() > 31) throw new ArithmeticException("Number too big");
+        return Sieve.to(toInt());
+    }
+
+    /**
      * Computes the <a href="http://en.wikipedia.org/wiki/Binomial_coefficient">Binomial Coefficient</a>
      * <code>C(this, k)</code>
+     * Algorithm from http://www.luschny.de/math/factorial/FastBinomialFunction.html
      *
      * @param k Coefficient
      * @return The binomial coefficient
      */
-    //public abstract BigInt binomial(int k);
+    public BigInt binomial(int k) {
+        if (bitLength() > 31)
+            throw new ArithmeticException("Number too big");
+        final int n = toInt();
+        if (0 > k || k > n)
+            throw new ArithmeticException("Binomial: 0 <= k and k <= n required, but n was " + n + " and k was " + k);
+        final int n2 = n >>> 1;
+        if (k > n2) k = n - k;
+        if(k == 0) return ONE;
+        if(k == 1) return big(n);
+        final int rootN = (int) Math.floor(Math.sqrt(n));
+        final int[] primes = primeSieve().asArray();
+        final int[] factors = new int[primes.length];
+        BigInt binom = ONE;
+        int pos = 0;
+        // equivalent to a nextPrime() function.
+        // prime runs through the prime numbers 1 < prime <= n
+        for (int prime : primes) {
+            if (prime > n - k) {
+                factors[pos++] = prime;
+                continue;
+            }
+            if (prime > n2)
+                continue;
+            if (prime > rootN) {
+                if (n % prime < k % prime)
+                    factors[pos++] = prime;
+                continue;
+            }
+            int exp = 0, r = 0, N = n, K = k;
+            while (N > 0) {
+                r = (N % prime) < (K % prime + r) ? 1 : 0;
+                exp += r;
+                N /= prime;
+                K /= prime;
+            }
+            if (exp > 0)
+                binom = binom.multiply(big(prime).pow(exp));
+        }
+        return binom.multiply(Primes.product(factors, 0, pos));
+    }
+
+    public BigInt binomial(BigInt k) {
+        if (k.signum() == -1 || k.compareTo(this) > 0)
+            throw new ArithmeticException("Binomial: 0 <= k and k <= n required");
+        if (bitLength() <= 31 && k.bitLength() <= 31)
+            return binomial(k.toInt());
+        final BigInt n2 = this.shiftLeft(1);
+        if (k.compareTo(n2) > 0) k = this.subtract(k);
+        if(k.signum() == 0) return ONE;
+        if(k.equals(ONE)) return this;
+        return this.factorialFalling(k).divide(k.factorial());
+    }
 
 }
 
-//TODO: add methods: binomial(), factorial(), factorize() + polar rho, fibonacci(), parallel fibonacci, isFibonacci(), quadratic residue (http://primes.utm.edu/glossary/xpage/QuadraticResidue.html)
-//TODO: http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
-//TODO: http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL (ECM is a highly efficient method of finding prime factors in the 35-55 digit range.)
-//TODO: http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet
-//TODO: productTo: find an algorithm to multiply n..m consecutive numbers
-//TODO: BigIntegerMath.java: CRT, Quadrati, pMinusOneFactor (Pollard p-1)
+//TODO: ADD - add methods: factorize() + polar rho, fibonacci(), parallel fibonacci, isFibonacci(), quadratic residue (http://primes.utm.edu/glossary/xpage/QuadraticResidue.html)
+//TODO: ADD - BigIntegerMath.java: CRT, Quadrati, pMinusOneFactor (Pollard p-1)
 
-//TODO: make wrapper for optimized BigInteger + BigIntegerMath.java, apflot, jscience, ... + Javolution contexts and factories + impl. paralell computing (factorial, products, ...)
-//TODO: make wrapper for GMP java avec https://jna.dev.java.net/ + http://code.google.com/p/jnaerator/
-//TODO: optimize GCD for mersenne numbers: http://www.garlic.com/~wedgingt/mersenne.html (Lemma 2: Knuth's GCD Lemma)
+//TODO: PRIME - http://en.wikipedia.org/wiki/AKS_primality_test + ZIP AKS
+//TODO: PRIME - http://en.wikipedia.org/wiki/Adleman%E2%80%93Pomerance%E2%80%93Rumely_primality_test + ECM pour APR-CL (ECM is a highly efficient method of finding prime factors in the 35-55 digit range.)
+//TODO: PRIME - http://en.wikipedia.org/wiki/Elliptic_curve_primality_proving + ECM applet
 
+//TODO: PERF - productTo: find an algorithm to multiply n..m consecutive numbers
+//TODO: PERF - make wrapper for optimized BigInteger + BigIntegerMath.java, apflot, jscience, ... + Javolution contexts and factories + impl. paralell computing (factorial, products, ...)
+//TODO: PERF - make wrapper for GMP java avec https://jna.dev.java.net/ + http://code.google.com/p/jnaerator/
+//TODO: PERF - optimize GCD for mersenne numbers: http://www.garlic.com/~wedgingt/mersenne.html (Lemma 2: Knuth's GCD Lemma)
+
+//TODO: FACT - refactor FactorialPrimeParallelSwingLuschny
+//TODO: FACT - improve perf to match those from FactorialPrimeParallelSwingLuschny

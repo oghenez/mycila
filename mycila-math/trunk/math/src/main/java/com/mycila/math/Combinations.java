@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.combination;
+package com.mycila.math;
 
 import com.mycila.math.Factorial;
-import com.mycila.math.number.BigInt;
-import static com.mycila.math.number.BigInt.*;
 
 /**
  * @author Mathieu Carbou
@@ -34,24 +32,11 @@ public final class Combinations {
      * @return Catalan(i)
      */
     public static long catalan(int index) {
-        return binomialLong(index << 1, index) / (index + 1);
+        return binomial(index << 1, index) / (index + 1);
     }
 
-    //TODO: improve - see commons-math + http://www.luschny.de/math/factorial/FastBinomialFunction.html
-    public static long binomialLong(int n, int r) {
+    public static long binomial(int n, int r) {
         return Factorial.falling(n, r) / Factorial.lookup(r);
-    }
-
-    // n <= 4294967294
-    public static BigInt binomial(long n, int r) {
-        if (n > Integer.MAX_VALUE >>> 1)
-            throw new IllegalArgumentException("Too big value for n (" + n + "). Maximum allowed is " + 4294967294L);
-        if (r > n >>> 1) r = (int) (n - r);
-        return big(n).factorialFalling(r).divide(big(r).factorialPrimeSwing());
-    }
-
-    public static CombinationSet combinations(int n, int r) {
-        return new CombinationSet(n, r);
     }
 
 }

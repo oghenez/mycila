@@ -3017,7 +3017,7 @@ public final class BigInteger extends Number implements Comparable<BigInteger> {
      * @see Character#forDigit
      * @see #BigInteger(java.lang.String, int)
      */
-    //TODO: Improve when radix is 2 or 16
+    //TODO: PERF - Improve when radix is 2 or 16
     public String toString(int radix) {
         if (signum == 0)
             return "0";

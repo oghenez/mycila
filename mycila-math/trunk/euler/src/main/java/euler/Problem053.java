@@ -15,12 +15,11 @@
  */
 package euler;
 
-import com.mycila.combination.Combinations;
 import com.mycila.math.number.BigInt;
+import com.mycila.math.concurrent.ConcurrentOperation;
+import static org.junit.Assert.*;
 
 import static java.lang.System.*;
-
-import static org.junit.Assert.*;
 
 /**
  * http://projecteuler.net/index.php?section=problems&id=53
@@ -34,7 +33,7 @@ class Problem053 {
         final BigInt LIMIT = BigInt.big(1000000);
         for (int n = 23; n <= 100; n++) {
             for (int p = 2, max = n >>> 1; p <= max; p++) {
-                final BigInt c = Combinations.binomial(n, p);
+                final BigInt c = BigInt.big(n).binomial(p);
                 if (c.compareTo(LIMIT) > 0)
                     count += p << 1 == n ? 1 : 2;
             }

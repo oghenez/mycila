@@ -20,8 +20,8 @@ import com.mycila.math.Divisors;
 /**
  * @author Mathieu Carbou
  */
-//TODO: BigFranction
-//TODO: continued BigFrac http://www.luschny.de/math/factorial/approx/continuedfraction.html + (math.mtu.edu)
+//TODO: FRAC - BigFranction
+//TODO: FRAC - continued BigFrac , see math.mtu.edu
 public final class IntFraction {
 
     private final int numerator;
