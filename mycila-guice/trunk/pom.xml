@@ -6,7 +6,7 @@
          POM settings
      -->
 
-    <groupId>com.mycila.guice</groupId>
+    <groupId>com.mycila</groupId>
     <artifactId>mycila-guice</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
