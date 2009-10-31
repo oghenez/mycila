@@ -365,7 +365,6 @@
     -->
 
     <dependencies>
-        <!-- supports -->
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
