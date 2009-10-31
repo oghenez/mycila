@@ -15,7 +15,7 @@
  */
 package com.mycila.guice;
 
-import org.guiceyfruit.jsr250.ResourceMemberProvider;
+import com.google.inject.Provides;
 import org.guiceyfruit.support.GuiceyFruitModule;
 import org.guiceyfruit.support.MethodHandler;
 
@@ -30,6 +30,7 @@ import java.lang.reflect.Method;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public class JSR250Module extends GuiceyFruitModule {
+    @Override
     protected void configure() {
         super.configure();
         bindAnnotationInjector(Resource.class, ResourceMemberProvider.class);
@@ -41,5 +42,10 @@ public class JSR250Module extends GuiceyFruitModule {
             }
         });
         bind(PreDestroyCloser.class);
+    }
+
+    @Provides
+    Injector injector(com.google.inject.Injector injector) {
+        return Injector.wrap(injector);
     }
 }

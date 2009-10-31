@@ -126,6 +126,16 @@ public class Injector implements com.google.inject.Injector {
         }
     }
 
+    @SuppressWarnings({"unchecked"})
+    public <T> Binding<T> getBinding(TypeLiteral<T> requiredType, String name) {
+        return (Binding<T>) getAllBindings().get(Key.get(requiredType, Names.named(name)));
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public <T> Binding<T> getBinding(TypeLiteral<T> requiredType) {
+        return (Binding<T>) getAllBindings().get(Key.get(requiredType));
+    }
+
     public Set<Binding<?>> getBindingsAnnotatedwith(Annotation annotation) {
         Set<Binding<?>> answer = Sets.newHashSet();
         Set<Map.Entry<Key<?>, Binding<?>>> entries = getAllBindings().entrySet();
@@ -278,7 +288,7 @@ public class Injector implements com.google.inject.Injector {
     }
 
     public boolean hasBinding(Key<?> key) {
-        return getBinding(key) != null;
+        return getAllBindings().get(key) != null;
     }
 
     public boolean hasBinding(Matcher<Class> matcher) {
@@ -357,7 +367,12 @@ public class Injector implements com.google.inject.Injector {
         return wrap(Guice.createInjector(stage, modules));
     }
 
+    public static Injector create(Stage stage, Iterable<Module> modules) {
+        return wrap(Guice.createInjector(stage, modules));
+    }
+
     public static Injector wrap(com.google.inject.Injector injector) {
         return new Injector(injector);
     }
+
 }
