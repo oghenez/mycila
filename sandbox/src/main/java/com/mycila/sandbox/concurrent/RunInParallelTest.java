@@ -1,6 +1,6 @@
 package com.mycila.sandbox.concurrent;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.Random;
 

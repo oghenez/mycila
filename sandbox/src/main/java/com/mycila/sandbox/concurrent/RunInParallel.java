@@ -1,4 +1,4 @@
-package com.axacanada.abn.common.service.task;
+package com.mycila.sandbox.concurrent;
 
 import java.util.concurrent.CountDownLatch;
 
