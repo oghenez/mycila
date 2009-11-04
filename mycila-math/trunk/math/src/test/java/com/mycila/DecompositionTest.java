@@ -46,9 +46,11 @@ public final class DecompositionTest {
     @Test
     public void test_sum() {
         int sum = 0;
-        for (int i = 2; i <= 100; i++)
+        for (int i = 2; i <= 100; i++) {
+            System.out.println(Decomposition.of(i));
             for (int prime : Decomposition.of(i).factors())
                 if (prime < 20) sum += prime;
+        }
         assertEquals(1037, sum);
     }
 
