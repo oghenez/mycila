@@ -17,8 +17,9 @@ import java.util.List;
  */
 public class SpringAnnotatedClassesFactory extends AbstractFactoryBean {
 
-    private PathMatcher matcher = new AntPathMatcher();
+    private PathMatcher pathMatcher = new AntPathMatcher();
     private String[] packages = new String[0];
+    @SuppressWarnings({"unchecked"})
     private Class<? extends Annotation>[] annotations = new Class[0];
     private String[] excludes = new String[0];
     private boolean onlyConcreteClasses = true;
@@ -31,8 +32,8 @@ public class SpringAnnotatedClassesFactory extends AbstractFactoryBean {
         this.excludes = excludes;
     }
 
-    public void setMatcher(PathMatcher matcher) {
-        this.matcher = matcher;
+    public void setPathMatcher(PathMatcher pathMatcher) {
+        this.pathMatcher = pathMatcher;
     }
 
     public void setPackages(String[] packages) {
@@ -43,13 +44,15 @@ public class SpringAnnotatedClassesFactory extends AbstractFactoryBean {
         this.annotations = annotations;
     }
 
+    @Override
     public Class getObjectType() {
         return Class[].class;
     }
 
+    @Override
     protected Object createInstance() throws Exception {
         List<Class<?>> classes = new LinkedList<Class<?>>();
-        ClassPathScanningCandidateComponentProvider scanner = onlyConcreteClasses ?
+        ClassPathScanningCandidateComponentProvider scanner = onlyConcreteClasses() ?
                 new ClassPathScanningCandidateComponentProvider(false) {
                     @Override
                     protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
@@ -62,9 +65,10 @@ public class SpringAnnotatedClassesFactory extends AbstractFactoryBean {
                         return true;
                     }
                 };
+        Class<? extends Annotation>[] annotations = getAnnotations();
         for (Class<? extends Annotation> annotation : annotations)
             scanner.addIncludeFilter(new AnnotationTypeFilter(annotation));
-        for (String scannedPackage : packages) {
+        for (String scannedPackage : getPackages()) {
             scannedPackage = scannedPackage.trim();
             if (logger.isTraceEnabled())
                 logger.trace("Scanning package '" + scannedPackage + "' for classes annotated by: " + Arrays.toString(annotations) + "...");
@@ -94,10 +98,30 @@ public class SpringAnnotatedClassesFactory extends AbstractFactoryBean {
 
     protected boolean isExcluded(String className) {
         className = className.replaceAll("\\.", "/");
-        for (String pattern : excludes) {
-            if (matcher.match(pattern, className))
+        for (String pattern : getExcludes()) {
+            if (getPathMatcher().match(pattern, className))
                 return true;
         }
         return false;
+    }
+
+    public Class<? extends Annotation>[] getAnnotations() {
+        return annotations;
+    }
+
+    public String[] getExcludes() {
+        return excludes;
+    }
+
+    public PathMatcher getPathMatcher() {
+        return pathMatcher;
+    }
+
+    public boolean onlyConcreteClasses() {
+        return onlyConcreteClasses;
+    }
+
+    public String[] getPackages() {
+        return packages;
     }
 }
