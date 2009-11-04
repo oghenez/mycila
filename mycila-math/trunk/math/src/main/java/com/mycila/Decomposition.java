@@ -15,6 +15,8 @@
  */
 package com.mycila;
 
+import com.mycila.math.prime.Sieve;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +41,10 @@ public final class Decomposition {
         return decomp.size();
     }
 
+    public List<Factor> decomp() {
+        return decomp;
+    }
+
     public int divisorCount() {
         if (divisorCount != -1) return divisorCount;
         if (number == 0) return divisorCount = 0;
@@ -51,7 +57,7 @@ public final class Decomposition {
     public List<Integer> factors() {
         List<Integer> factors = new ArrayList<Integer>();
         for (Factor factor : decomp)
-            for(int i = 0; i<factor.exponent(); i++)
+            for (int i = 0; i < factor.exponent(); i++)
                 factors.add(factor.prime());
         return factors;
     }
@@ -78,27 +84,17 @@ public final class Decomposition {
         return toString = sb.deleteCharAt(sb.length() - 1).toString();
     }
 
-    public static Decomposition of(int number) {
+    public static Decomposition of(final int number) {
         final List<Factor> decomp = new ArrayList<Factor>();
-        if (number >= 2) {
-            int np = number;
-            if ((number & 1) == 0) {
-                Factor factor = Factor.valueOf(2);
+        Sieve sieve = Sieve.to(number);
+        int n = number;
+        for (int prime : sieve.asArray()) {
+            if (n % prime == 0) {
+                Factor factor = Factor.valueOf(prime);
                 decomp.add(factor);
-                while (((np >>>= 1) & 1) == 0)
+                while ((n /= prime) % prime == 0)
                     factor.incrementExponent();
             }
-            int p = 3;
-            while (p * p <= np) {
-                if (np % p != 0) p += 2;
-                else {
-                    Factor factor = Factor.valueOf(p);
-                    decomp.add(factor);
-                    while ((np /= p) % p == 0)
-                        factor.incrementExponent();
-                }
-            }
-            if (np > 1) decomp.add(Factor.valueOf(np == number ? p : np));
         }
         return new Decomposition(number, decomp);
     }
