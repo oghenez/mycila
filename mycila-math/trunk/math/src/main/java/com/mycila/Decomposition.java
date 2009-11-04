@@ -48,6 +48,14 @@ public final class Decomposition {
         return divisorCount;
     }
 
+    public List<Integer> factors() {
+        List<Integer> factors = new ArrayList<Integer>();
+        for (Factor factor : decomp)
+            for(int i = 0; i<factor.exponent(); i++)
+                factors.add(factor.prime());
+        return factors;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
