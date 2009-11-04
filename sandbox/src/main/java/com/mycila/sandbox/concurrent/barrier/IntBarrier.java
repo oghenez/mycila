@@ -1,5 +1,6 @@
 package com.mycila.sandbox.concurrent.barrier;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -65,6 +66,16 @@ public final class IntBarrier {
         try {
             while (count() < barrier)
                 barrierReached.await();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void waitFor(int barrier, long time, TimeUnit unit) throws InterruptedException {
+        lock.lock();
+        try {
+            while (count() < barrier)
+                barrierReached.await(time, unit);
         } finally {
             lock.unlock();
         }

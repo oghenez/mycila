@@ -64,7 +64,7 @@ public final class IntBarrierTest {
 
     @Test
     public void test_producer_consumer() throws Exception {
-        final int nThreads = 5;
+        final int nThreads = 10;
 
         // numbers to process will be put here. we don't know how many numbers there will be
         final BlockingQueue<Integer> itemsToProcess = new LinkedBlockingQueue<Integer>();
@@ -79,16 +79,17 @@ public final class IntBarrierTest {
         for (int i = 0; i < nThreads; i++) {
             Thread t = new Thread(new Runnable() {
                 public void run() {
-                    while (true) {
-                        log("Waiting for number (%s threads waiting)", barrier.incrementAndGet());
-                        try {
+                    try {
+                        while (true) {
+                            //log("Waiting for number");
+                            barrier.incrementAndGet();
                             int n = itemsToProcess.take();
                             barrier.decrementAndGet();
-                            log("Processing: %s", n);
+                            //log("Processing: %s", n);
                             if (BigInteger.valueOf(n).isProbablePrime(100)) {
-                                log("%s is prime", n);
+                                //log("%s is prime", n);
                                 if (n < 20)
-                                    log("Sum is now: %s", sumOfPrimeFactorsBelow20.addAndGet(n));
+                                    sumOfPrimeFactorsBelow20.addAndGet(n);
                             } else {
                                 // decompose n
                                 int factor;
@@ -98,16 +99,17 @@ public final class IntBarrierTest {
                                     q = n / 2;
                                 } else {
                                     factor = 3;
-                                    while (n % factor != 0) factor += 2;
+                                    while (n % factor != 0)
+                                        factor += 2;
                                     q = n / factor;
                                 }
-                                log("%s decomposed to %s x %s", factor, q);
-                                itemsToProcess.add(factor);
-                                itemsToProcess.add(q);
+                                //log("%s decomposed to %s x %s", n, factor, q);
+                                itemsToProcess.offer(factor);
+                                itemsToProcess.offer(q);
                             }
-                        } catch (InterruptedException e) {
-                            Thread.currentThread().interrupt();
                         }
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
                     }
                 }
             }, "T-" + (i + 1)) {
@@ -119,13 +121,13 @@ public final class IntBarrierTest {
             t.start();
         }
 
-        for (int i = 2; i <= 100; i++)
+        for (int i = 2; i <= 1000; i++)
             itemsToProcess.add(i);
 
         // wait for all threads to finish
         while (!itemsToProcess.isEmpty()) {
             barrier.waitFor(nThreads);
-            log("All threads waiting");
+            //log("All threads are waiting");
         }
 
         log("Finished ! Sum of prime factors < 20 of all numbers from 2 to 100 = " + sumOfPrimeFactorsBelow20.get());
