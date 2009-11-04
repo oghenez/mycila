@@ -15,8 +15,9 @@
  */
 package com.mycila;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Mathieu Carbou
@@ -35,6 +36,20 @@ public final class DecompositionTest {
         assertEquals("Decomposition.of(3580)", Decomposition.of(3580).toString(), "3580=2^2*5^1*179^1");
         assertEquals("Decomposition.of(10000)", Decomposition.of(10000).toString(), "10000=2^4*5^4");
         assertEquals("Decomposition.of(289)", Decomposition.of(289).toString(), "289=17^2");
+    }
+
+    @Test
+    public void test_factors() {
+        assertEquals(Decomposition.of(10000).factors().toString(), "[2, 2, 2, 2, 5, 5, 5, 5]");
+    }
+
+    @Test
+    public void test_sum() {
+        int sum = 0;
+        for (int i = 2; i <= 100; i++)
+            for (int prime : Decomposition.of(i).factors())
+                if (prime < 20) sum += prime;
+        assertEquals(1037, sum);
     }
 
     @Test
