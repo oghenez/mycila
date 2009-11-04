@@ -1,16 +1,17 @@
 package com.mycila.sandbox.concurrent.barrier;
 
-import static com.mycila.sandbox.Log.*;
 import org.junit.Test;
 
+import java.math.BigInteger;
 import java.util.Queue;
 import java.util.Random;
-import java.util.SortedSet;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.mycila.sandbox.Log.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -62,12 +63,12 @@ public final class IntBarrierTest {
     }
 
     @Test
-    public void test_decompose() throws Exception {
+    public void test_producer_consumer() throws Exception {
         final int nThreads = 5;
 
         // numbers to process will be put here. we don't know how many numbers there will be
-        final BlockingQueue<Integer> toDecompose = new LinkedBlockingQueue<Integer>();
-        final SortedSet<Integer> primes = new ConcurrentSkipListSet<Integer>();
+        final BlockingQueue<Integer> itemsToProcess = new LinkedBlockingQueue<Integer>();
+        final AtomicInteger sumOfPrimeFactorsBelow20 = new AtomicInteger(0);
         final Queue<Thread> processors = new ConcurrentLinkedQueue<Thread>();
 
         // create a barrier to wait for thread completion
@@ -79,20 +80,30 @@ public final class IntBarrierTest {
             Thread t = new Thread(new Runnable() {
                 public void run() {
                     while (true) {
-                        log("Waiting for number (%s threads)", barrier.incrementAndGet());
+                        log("Waiting for number (%s threads waiting)", barrier.incrementAndGet());
                         try {
-                            int n = toDecompose.take();
+                            int n = itemsToProcess.take();
                             barrier.decrementAndGet();
                             log("Processing: %s", n);
-                            // divide b already found primes
-                            for (int p : primes)
-                                while (n % p == 0) n /= p;
-                            if (n > 1) {
-                                // simple decompose
-                                int d = primes.last();
-                                d += d == 2 ? 1 : 2;
-                                while (n % d != 0) d += 2;
-                                toDecompose.add(d);
+                            if (BigInteger.valueOf(n).isProbablePrime(100)) {
+                                log("%s is prime", n);
+                                if (n < 20)
+                                    log("Sum is now: %s", sumOfPrimeFactorsBelow20.addAndGet(n));
+                            } else {
+                                // decompose n
+                                int factor;
+                                int q;
+                                if (n % 2 == 0) {
+                                    factor = 2;
+                                    q = n / 2;
+                                } else {
+                                    factor = 3;
+                                    while (n % factor != 0) factor += 2;
+                                    q = n / factor;
+                                }
+                                log("%s decomposed to %s x %s", factor, q);
+                                itemsToProcess.add(factor);
+                                itemsToProcess.add(q);
                             }
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
@@ -108,16 +119,16 @@ public final class IntBarrierTest {
             t.start();
         }
 
-        primes.add(2);
-        toDecompose.add(60);
+        for (int i = 2; i <= 100; i++)
+            itemsToProcess.add(i);
 
         // wait for all threads to finish
-        while (!toDecompose.isEmpty()) {
+        while (!itemsToProcess.isEmpty()) {
             barrier.waitFor(nThreads);
             log("All threads waiting");
         }
 
-        log("Finished: " + primes);
+        log("Finished ! Sum of prime factors < 20 of all numbers from 2 to 100 = " + sumOfPrimeFactorsBelow20.get());
 
         // kill processors
         for (Thread processor : processors)
