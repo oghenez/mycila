@@ -26,6 +26,7 @@ public final class DecompositionTest {
 
     @Test
     public void test_decomposition() {
+        assertEquals("Decomposition.of(11)", Decomposition.of(11).toString(), "11=11^1");
         assertEquals("Decomposition.of(0)", Decomposition.of(0).toString(), "0");
         assertEquals("Decomposition.of(1)", Decomposition.of(1).toString(), "1");
         assertEquals("Decomposition.of(2)", Decomposition.of(2).toString(), "2=2^1");
@@ -51,7 +52,7 @@ public final class DecompositionTest {
             for (int prime : Decomposition.of(i).factors())
                 if (prime < 20) sum += prime;
         }
-        assertEquals(1037, sum);
+        assertEquals(940, sum);
     }
 
     @Test
