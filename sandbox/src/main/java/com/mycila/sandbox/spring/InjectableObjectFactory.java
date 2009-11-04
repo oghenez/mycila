@@ -1,3 +1,5 @@
+package com.mycila.sandbox.spring;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -10,7 +12,7 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class SpringAnnotatedObjectFactory<T> extends AbstractFactoryBean implements ApplicationContextAware {
+public class InjectableObjectFactory<T> extends AbstractFactoryBean implements ApplicationContextAware {
 
     private ApplicationContext context;
     @SuppressWarnings({"unchecked"})

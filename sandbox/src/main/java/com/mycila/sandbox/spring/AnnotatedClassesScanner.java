@@ -1,3 +1,5 @@
+package com.mycila.sandbox.spring;
+
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -15,7 +17,7 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class SpringAnnotatedClassesFactory extends AbstractFactoryBean {
+public class AnnotatedClassesScanner extends AbstractFactoryBean {
 
     private PathMatcher pathMatcher = new AntPathMatcher();
     private String[] packages = new String[0];
