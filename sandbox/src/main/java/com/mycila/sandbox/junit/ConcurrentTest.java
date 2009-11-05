@@ -22,4 +22,14 @@ public final class ConcurrentTest {
         Thread.sleep(n);
         System.out.println("Thread " + Thread.currentThread().getName() + " finished");
     }
+
+    @Test
+    public void non_concurrent() throws InterruptedException {
+        System.out.println("Thread " + Thread.currentThread().getName() + " started !");
+        int n = new Random().nextInt(1000);
+        System.out.println("Thread " + Thread.currentThread().getName() + " wait " + n + "ms");
+        Thread.sleep(n);
+        System.out.println("Thread " + Thread.currentThread().getName() + " finished");
+    }
+    
 }
