@@ -4,11 +4,11 @@ package com.mycila.event.api;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface EventService {
-    <T> void subscribe(String topic, Class<T> eventType, Subscriber<T> subscriber);
+    <E> void subscribe(DestinationMatcher destination, Class<E> eventType, Subscriber<E> subscriber);
 
-    <T> void unsubscribe(String topic, Class<T> eventType, Subscriber<T> subscriber);
+    <E> void register(DestinationMatcher destination, Class<E> eventType, Vetoer<E> vetoer);
 
-    <T> void publish(String topic, T event);
+    <E> void unsubscribe(Subscriber<E> subscriber);
 
-    <T> void register(String topic, Class<T> eventType, Vetoer<T> vetoer);
+    <E> void publish(Destination destination, E event);
 }
