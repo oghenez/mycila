@@ -1,10 +1,10 @@
 package com.mycila.sandbox.concurrent.barrier;
 
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -14,21 +14,21 @@ import java.util.concurrent.locks.ReentrantLock;
 public final class IntBarrier {
 
     private final Lock modification = new ReentrantLock();
-    private volatile int counter;
-    private final List<PerThreadBarrier> barriers = new LinkedList<PerThreadBarrier>();
+    private volatile AtomicInteger counter;
+    private final ConcurrentLinkedQueue<PerThreadBarrier> barriers = new ConcurrentLinkedQueue<PerThreadBarrier>();
 
     private IntBarrier(int initialValue) {
-        this.counter = initialValue;
+        this.counter = new AtomicInteger(initialValue);
     }
 
-    public int count() {
-        return counter;
+    public int counter() {
+        return counter.get();
     }
 
     public int increment() {
         modification.lock();
         try {
-            return fire(++counter);
+            return fire(counter.incrementAndGet());
         } finally {
             modification.unlock();
         }
@@ -37,7 +37,7 @@ public final class IntBarrier {
     public int decrement() {
         modification.lock();
         try {
-            return fire(--counter);
+            return fire(counter.decrementAndGet());
         } finally {
             modification.unlock();
         }
@@ -55,15 +55,19 @@ public final class IntBarrier {
     }
 
     public void waitFor(int barrier) throws InterruptedException {
-        PerThreadBarrier threadBarrier = PerThreadBarrier.releasedAt(barrier);
-        barriers.add(threadBarrier);
-        threadBarrier.await();
+        if (barrier != counter()) {
+            PerThreadBarrier threadBarrier = PerThreadBarrier.releasedAt(barrier);
+            barriers.add(threadBarrier);
+            threadBarrier.await();
+        }
     }
 
     public void waitFor(int barrier, long time, TimeUnit unit) throws InterruptedException {
-        PerThreadBarrier threadBarrier = PerThreadBarrier.releasedAt(barrier);
-        barriers.add(threadBarrier);
-        threadBarrier.await(time, unit);
+        if (barrier != counter()) {
+            PerThreadBarrier threadBarrier = PerThreadBarrier.releasedAt(barrier);
+            barriers.add(threadBarrier);
+            threadBarrier.await(time, unit);
+        }
     }
 
     public static IntBarrier zero() {

@@ -19,6 +19,69 @@ import static com.mycila.sandbox.Log.*;
 public final class IntBarrierTest {
 
     @Test
+    public void producer_consumer() throws Exception {
+
+        final BlockingQueue<Integer> itemsToProcess = new LinkedBlockingQueue<Integer>();
+        final IntBarrier barrier = IntBarrier.init(-1);
+        final int nThreads = 5;
+        final CountDownLatch latch = new CountDownLatch(nThreads);
+
+        // create producers
+        for (int i = 0; i < nThreads; i++) {
+            Thread t = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        int maxRuns = 3;
+                        while (maxRuns-- > 0) {
+                            log("waiting for empty");
+                            barrier.waitFor(0);
+                            log("producing 500 items");
+                            for (int i = 1; i <= 500; i++)
+                                itemsToProcess.offer(i);
+                        }
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                    latch.countDown();
+                }
+            }, "P-" + (i + 1)) {
+                public String toString() {
+                    return getName();
+                }
+            };
+            t.start();
+        }
+
+        // create consumers
+        for (int i = 0; i < nThreads; i++) {
+            Thread t = new Thread(new Runnable() {
+                public void run() {
+                    try {
+                        while (true) {
+                            log("waiting for items");
+                            barrier.waitFor(1000);
+                            int i = itemsToProcess.take();
+                            log("processing: " + i);
+                        }
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+            }, "P-" + (i + 1)) {
+                public String toString() {
+                    return getName();
+                }
+            };
+            t.start();
+        }
+        
+        // start all
+        barrier.increment();
+
+        latch.await();
+    }
+
+    @Test
     public void test_threads_wait_for_barrier() throws Exception {
         final int nThreads = 15;
         final Queue<Thread> threads = new ConcurrentLinkedQueue<Thread>();
