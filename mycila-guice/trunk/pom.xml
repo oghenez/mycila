@@ -243,9 +243,9 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>com.google.code.maven-license-plugin</groupId>
+                <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
-                <version>1.4.0</version>
+                <version>1.5.0</version>
                 <configuration>
                     <header>${basedir}/src/main/etc/header.txt</header>
                     <failIfMissing>true</failIfMissing>
