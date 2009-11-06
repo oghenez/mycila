@@ -5,21 +5,21 @@ import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public final class AntTopicMatcher implements TopicMatcher {
+public final class AntDestinationMatcher implements DestinationMatcher {
 
     private static final String DEFAULT_PATH_SEPARATOR = "/";
     private final String pattern;
 
-    private AntTopicMatcher(String pattern) {
+    private AntDestinationMatcher(String pattern) {
         this.pattern = pattern;
     }
 
-    public boolean matches(String topic) {
-        return doMatch(pattern, topic, true);
+    public boolean matches(Destination target) {
+        return doMatch(pattern, target.name(), true);
     }
 
-    public static TopicMatcher forPattern(String pattern) {
-        return new AntTopicMatcher(pattern);
+    public static DestinationMatcher forPattern(String pattern) {
+        return new AntDestinationMatcher(pattern);
     }
 
     private static boolean doMatch(String pattern, String path, boolean fullMatch) {
