@@ -31,7 +31,7 @@ public final class IntBarrierTest {
         for (int i = 0; i < nThreads; i++) {
             Thread t = new Thread(new Runnable() {
                 public void run() {
-                    final int n = new Random().nextInt(20);
+                    final int n = new Random().nextInt(20) + 1;
                     try {
                         go.await();
                         log("Waiting for value %s", n);
@@ -41,7 +41,8 @@ public final class IntBarrierTest {
                         Thread.currentThread().interrupt();
                     }
                     log("Released !");
-                    log("Incrementing counter to " + barrier.incrementAndGet());
+                    int c = barrier.increment();
+                    log("Incremented counter to " + c);
                     threads.remove(Thread.currentThread());
                 }
             }, "T-" + (i + 1)) {
@@ -56,9 +57,9 @@ public final class IntBarrierTest {
         // while there are some threads remaining, increment the value
         go.countDown();
         while (!threads.isEmpty()) {
-            Thread.sleep(1000);
             log("Remaining threads: " + threads);
-            log("Incrementing counter to " + barrier.incrementAndGet());
+            int c = barrier.increment();
+            log("Incremented counter to " + c);
         }
     }
 
@@ -82,9 +83,9 @@ public final class IntBarrierTest {
                     try {
                         while (true) {
                             //log("Waiting for number");
-                            barrier.incrementAndGet();
+                            barrier.increment();
                             int n = itemsToProcess.take();
-                            barrier.decrementAndGet();
+                            barrier.decrement();
                             //log("Processing: %s", n);
                             if (BigInteger.valueOf(n).isProbablePrime(100)) {
                                 //log("%s is prime", n);
