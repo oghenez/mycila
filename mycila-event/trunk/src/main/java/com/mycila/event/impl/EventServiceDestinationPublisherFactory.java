@@ -1,9 +1,11 @@
-package com.mycila.event.api;
+package com.mycila.event.impl;
+
+import com.mycila.event.EventService;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class EventServiceDestinationPublisherFactory<E, D extends Destination> implements DestinationPublisherFactory<E, D> {
+public final class EventServiceDestinationPublisherFactory<E, D extends com.mycila.event.topic.Topic> implements DestinationPublisherFactory<E, D> {
 
     private final EventService eventService;
 

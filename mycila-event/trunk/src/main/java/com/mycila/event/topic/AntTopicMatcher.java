@@ -1,25 +1,46 @@
-package com.mycila.event.api;
+package com.mycila.event.topic;
 
+import static com.mycila.event.util.Ensure.*;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public final class AntDestinationMatcher implements DestinationMatcher {
+final class AntTopicMatcher extends AbstractTopicMatcher implements Serializable {
 
+    private static final long serialVersionUID = 0;
     private static final String DEFAULT_PATH_SEPARATOR = "/";
     private final String pattern;
 
-    private AntDestinationMatcher(String pattern) {
-        this.pattern = pattern;
+    private AntTopicMatcher(String pattern) {
+        this.pattern = notNull(pattern, "Pattern");
     }
 
-    public boolean matches(Destination target) {
-        return doMatch(pattern, target.name(), true);
+    @Override
+    public boolean matches(Topic target) {
+        return doMatch(pattern, notNull(target, "Topic").name(), true);
     }
 
-    public static DestinationMatcher forPattern(String pattern) {
-        return new AntDestinationMatcher(pattern);
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof AntTopicMatcher
+                && ((AntTopicMatcher) o).pattern.equals(pattern);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * pattern.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return pattern;
+    }
+
+    public static TopicMatcher forPattern(String pattern) {
+        return new AntTopicMatcher(pattern);
     }
 
     private static boolean doMatch(String pattern, String path, boolean fullMatch) {
