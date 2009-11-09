@@ -22,16 +22,16 @@ final class DefaultEventService implements EventService, Serializable {
 
     private static final long serialVersionUID = 0;
 
-    private final ExceptionHandlerProvider ExceptionHandlerProvider;
+    private final ExceptionHandlerProvider exceptionHandlerProvider;
 
     //private final ConcurrentLinkedQueue<Subscriber<?>> subscribers = new ConcurrentLinkedQueue<Subscriber<?>>();
 
     DefaultEventService() {
-        this(ExceptionHandlers.cumulativeProvider());
+        this(ExceptionHandlers.rethrowExceptionsWhenFinishedProvider());
     }
 
     DefaultEventService(ExceptionHandlerProvider ExceptionHandlerProvider) {
-        this.ExceptionHandlerProvider = ExceptionHandlerProvider;
+        this.exceptionHandlerProvider = ExceptionHandlerProvider;
     }
 
     @Override
@@ -39,16 +39,19 @@ final class DefaultEventService implements EventService, Serializable {
         Event<E> event = Events.event(topic, source);
         if (!isVetoed(event)) {
             List<Subscriber<E>> subscribers = findSubscribers(event);
-            ExceptionHandler handler = ExceptionHandlerProvider.get();
-            handler.onStart();
-            for (Subscriber<E> subscriber : subscribers) {
-                try {
-                    subscriber.onEvent(event);
-                } catch (Exception e) {
-                    handler.onException(event, e);
+            ExceptionHandler handler = exceptionHandlerProvider.get();
+            handler.onPublishingStarting();
+            try {
+                for (Subscriber<E> subscriber : subscribers) {
+                    try {
+                        subscriber.onEvent(event);
+                    } catch (Exception e) {
+                        handler.onException(event, e);
+                    }
                 }
+            } finally {
+                handler.onPublishingFinished();
             }
-            handler.onEnd();
         }
     }
 
@@ -57,7 +60,9 @@ final class DefaultEventService implements EventService, Serializable {
         if (!vetoers.isEmpty()) {
             VetoableEvent<E> vetoableEvent = Events.vetoable(event);
             for (Vetoer<E> vetoer : vetoers) {
-
+                vetoer.check(vetoableEvent);
+                if(!vetoableEvent.isAllowed())
+                    return true;
             }
         }
         return false;
