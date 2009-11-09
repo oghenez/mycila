@@ -8,9 +8,13 @@ import java.util.List;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface ExceptionHandler {
-    void onStart();
+    void onPublishingStarting();
+
+    void onPublishingFinished();
+
     void onException(Event<?> event, Exception exception);
-    void onEnd();
+
     boolean hasFailed();
+
     List<Exception> exceptions();
 }

@@ -22,6 +22,11 @@ public final class Publishers {
             public void publish(E source) {
                 eventService.publish(topic, source);
             }
+
+            @Override
+            public String toString() {
+                return "Publisher{topic=" + topic + "}";
+            }
         };
     }
 

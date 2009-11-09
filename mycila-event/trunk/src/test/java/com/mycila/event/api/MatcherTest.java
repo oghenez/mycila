@@ -1,4 +1,4 @@
-package com.mycila.event.impl;
+package com.mycila.event.api;
 
 import static com.mycila.event.api.topic.Topics.*;
 import static org.junit.Assert.*;

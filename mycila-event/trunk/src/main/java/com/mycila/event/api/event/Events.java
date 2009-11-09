@@ -30,6 +30,11 @@ public final class Events {
             public long timestamp() {
                 return timestamp;
             }
+
+            @Override
+            public String toString() {
+                return "Event{timestamp=" + timestamp + ",topic=" + topic + ",type=" + source.getClass().getName() + "}";
+            }
         };
     }
 
@@ -54,6 +59,11 @@ public final class Events {
             @Override
             public boolean isAllowed() {
                 return allowed.get();
+            }
+
+            @Override
+            public String toString() {
+                return "VetoableEvent{timestamp=" + event.timestamp() + ",topic=" + event.topic() + ",type=" + event.source().getClass().getName() + ",allowed=" + allowed + "}";
             }
         };
     }
