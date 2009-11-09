@@ -1,10 +1,11 @@
 package com.mycila.event.impl;
 
-import com.mycila.event.EventService;
+import com.mycila.event.api.EventService;
+import com.mycila.event.api.event.Event;
+import com.mycila.event.api.event.VetoableEvent;
 import com.mycila.event.api.subscriber.StrongSubscriber;
 import static com.mycila.event.api.topic.Topics.*;
 import com.mycila.event.api.veto.StrongVetoer;
-import com.mycila.event.api.veto.VetoableEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +34,7 @@ public final class DefaultEventServiceTest {
     public void test_subscribe_strong() {
         eventService.subscribe(only("prog/events/a").or(topics("prog/events/b/**")), String.class, new StrongSubscriber<String>() {
             @Override
-            public void onEvent(String event) throws Exception {
+            public void onEvent(Event<String> event) throws Exception {
                 System.out.println("Got: " + event);
             }
         });
@@ -45,7 +46,7 @@ public final class DefaultEventServiceTest {
     public void test_subscribe_weak() {
         eventService.subscribe(only("prog/events/a").or(topics("prog/events/b/**")), String.class, new StrongSubscriber<String>() {
             @Override
-            public void onEvent(String event) throws Exception {
+            public void onEvent(Event<String> event) throws Exception {
                 System.out.println("Got: " + event);
             }
         });
@@ -62,14 +63,14 @@ public final class DefaultEventServiceTest {
     public void test_veto() {
         eventService.subscribe(only("prog/events/a").or(topics("prog/events/b/**")), String.class, new StrongSubscriber<String>() {
             @Override
-            public void onEvent(String event) throws Exception {
+            public void onEvent(Event<String> event) throws Exception {
                 System.out.println("Got: " + event);
             }
         });
         eventService.register(topics("prog/events/b/**"), String.class, new StrongVetoer<String>() {
             @Override
             public void check(VetoableEvent<String> vetoable) {
-                if(vetoable.event().contains("b1"))
+                if(vetoable.event().source().contains("b1"))
                     vetoable.veto();
             }
         });

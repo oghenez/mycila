@@ -1,4 +1,4 @@
-package com.mycila.event.api.subscriber;
+package com.mycila.event.api.event;
 
 import com.mycila.event.api.topic.Topic;
 
@@ -7,5 +7,6 @@ import com.mycila.event.api.topic.Topic;
  */
 public interface Event<E> {
     Topic topic();
+    long timestamp();
     E source();
 }

@@ -7,5 +7,6 @@ import com.mycila.event.api.topic.Topic;
  */
 public interface Publisher<E> {
     Topic topic();
-    void publish(E event);
+
+    void publish(E source);
 }

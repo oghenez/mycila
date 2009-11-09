@@ -1,5 +1,6 @@
 package com.mycila.event.api.veto;
 
+import com.mycila.event.api.event.VetoableEvent;
 import com.mycila.event.api.util.Listener;
 import com.mycila.event.api.util.WeakReferencable;
 
