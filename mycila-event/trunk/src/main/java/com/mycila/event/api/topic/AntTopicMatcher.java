@@ -1,12 +1,12 @@
 package com.mycila.event.api.topic;
 
-import static com.mycila.event.api.util.Ensure.*;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import static com.mycila.event.api.util.Ensure.*;
 
 final class AntTopicMatcher extends AbstractTopicMatcher implements Serializable {
 

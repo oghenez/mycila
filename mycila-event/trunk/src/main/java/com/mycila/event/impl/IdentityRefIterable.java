@@ -3,26 +3,33 @@ package com.mycila.event.impl;
 import com.mycila.event.api.util.ref.Ref;
 import com.mycila.event.api.util.ref.Referencable;
 
+import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class IdentityRefIterable<T extends Referencable> implements Iterable<T> {
+final class IdentityRefIterable<T extends Referencable> extends AbstractCollection<T> {
 
     private final ConcurrentLinkedQueue<Ref<T>> refs = new ConcurrentLinkedQueue<Ref<T>>();
 
-    void add(T t) {
-        refs.add(t.reachability().toRef(t));
+    @Override
+    public boolean add(T t) {
+        return refs.add(t.reachability().toRef(t));
     }
 
-    void remove(T t) {
-        for (Iterator<T> it = iterator(); it.hasNext();) {
-            T next = it.next();
-            if (next == t)
-                it.remove();
-        }
+    @Override
+    public boolean isEmpty() {
+        return !iterator().hasNext();
+    }
+
+    @Override
+    public int size() {
+        int count = 0;
+        for (Iterator<T> it = iterator(); it.hasNext(); it.next())
+            count++;
+        return count;
     }
 
     @Override
