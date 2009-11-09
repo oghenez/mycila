@@ -1,27 +1,35 @@
 package com.mycila.event.impl;
 
 import com.mycila.event.EventService;
-import com.mycila.event.subscriber.Subscriber;
-import com.mycila.event.topic.TopicMatcher;
-import com.mycila.event.veto.Vetoer;
+import com.mycila.event.api.subscriber.Subscriber;
+import com.mycila.event.api.topic.Topic;
+import com.mycila.event.api.topic.TopicMatcher;
+import com.mycila.event.api.veto.Vetoer;
+
+import java.io.Serializable;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class DefaultEventService implements EventService {
+final class DefaultEventService implements EventService, Serializable {
+    private static final long serialVersionUID = 0;
+    private final ConcurrentLinkedQueue<Subscriber<?>> subscribers = new ConcurrentLinkedQueue<Subscriber<?>>();
+    
     @Override
-    public <E> void subscribe(TopicMatcher destination, Class<E> eventType, Subscriber<E> subscriber) {
+    public <E> void publish(Topic topic, E event) {
+        
     }
 
     @Override
-    public <E> void register(TopicMatcher destination, Class<E> eventType, Vetoer<E> vetoer) {
+    public <E> void register(TopicMatcher matcher, Class<E> eventType, Vetoer<E> vetoer) {
+    }
+
+    @Override
+    public <E> void subscribe(TopicMatcher matcher, Class<E> eventType, Subscriber<E> subscriber) {
     }
 
     @Override
     public <E> void unsubscribe(Subscriber<E> subscriber) {
-    }
-
-    @Override
-    public <E> void publish(com.mycila.event.topic.Topic destination, E event) {
     }
 }
