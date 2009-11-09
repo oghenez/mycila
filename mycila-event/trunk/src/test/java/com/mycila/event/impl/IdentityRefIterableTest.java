@@ -31,13 +31,14 @@ public final class IdentityRefIterableTest {
             count++;
         }
         assertEquals(count, 20);
+        assertEquals(list.size(), 20);
     }
 
     private static class WeakObject implements Referencable {
         static int count = 0;
-
+        final int c;
         private WeakObject() {
-            count++;
+            c = count++;
         }
 
         @Override
@@ -47,15 +48,15 @@ public final class IdentityRefIterableTest {
 
         @Override
         public String toString() {
-            return "WeakObject-" + count;
+            return "WeakObject-" + c;
         }
     }
 
     private static class HardObject implements Referencable {
         static int count = 0;
-
+        final int c;
         private HardObject() {
-            count++;
+            c = count++;
         }
 
         @Override
@@ -65,7 +66,7 @@ public final class IdentityRefIterableTest {
 
         @Override
         public String toString() {
-            return "HardObject-" + count;
+            return "HardObject-" + c;
         }
     }
 }
