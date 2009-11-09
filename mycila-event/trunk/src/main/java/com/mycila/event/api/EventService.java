@@ -1,4 +1,4 @@
-package com.mycila.event;
+package com.mycila.event.api;
 
 import com.mycila.event.api.subscriber.Subscriber;
 import com.mycila.event.api.topic.Topic;
@@ -9,7 +9,7 @@ import com.mycila.event.api.veto.Vetoer;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface EventService {
-    <E> void publish(Topic topic, E event);
+    <E> void publish(Topic topic, E source);
 
     <E> void unsubscribe(Subscriber<E> subscriber);
 

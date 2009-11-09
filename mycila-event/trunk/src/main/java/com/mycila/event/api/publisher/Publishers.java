@@ -1,6 +1,6 @@
 package com.mycila.event.api.publisher;
 
-import com.mycila.event.EventService;
+import com.mycila.event.api.EventService;
 import com.mycila.event.api.topic.Topic;
 
 /**
@@ -8,9 +8,10 @@ import com.mycila.event.api.topic.Topic;
  */
 public final class Publishers {
 
-    private Publishers() {}
+    private Publishers() {
+    }
 
-    public <E> Publisher<E> on(final EventService eventService, final Topic topic) {
+    public <E> Publisher<E> publisher(final EventService eventService, final Topic topic) {
         return new Publisher<E>() {
             @Override
             public Topic topic() {
@@ -18,8 +19,8 @@ public final class Publishers {
             }
 
             @Override
-            public void publish(E event) {
-                eventService.publish(topic, event);
+            public void publish(E source) {
+                eventService.publish(topic, source);
             }
         };
     }

@@ -14,5 +14,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Veto {
     public abstract String topic() default "";
+
     boolean weak() default true;
 }

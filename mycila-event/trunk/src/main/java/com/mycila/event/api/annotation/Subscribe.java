@@ -14,5 +14,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Subscribe {
     String topic() default "";
+
     boolean weak() default true;
 }

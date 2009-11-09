@@ -8,6 +8,8 @@ import com.mycila.event.api.util.Listener;
  */
 interface Subscription<E, S extends Listener<E>> {
     TopicMatcher matcher();
+
     Class<E> eventType();
+
     S subscriber();
 }
