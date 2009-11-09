@@ -1,5 +1,7 @@
 package com.mycila.event.api.annotation;
 
+import com.mycila.event.api.util.ref.Reachability;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,5 +17,5 @@ import java.lang.annotation.Target;
 public @interface Subscribe {
     String topic() default "";
 
-    boolean weak() default true;
+    Reachability reach() default Reachability.WEAK;
 }

@@ -10,10 +10,10 @@ import com.mycila.event.api.exception.ExceptionHandlers;
 import com.mycila.event.api.subscriber.Subscriber;
 import com.mycila.event.api.topic.Topic;
 import com.mycila.event.api.topic.TopicMatcher;
+import com.mycila.event.impl.IdentityRefIterable;
 import com.mycila.event.api.veto.Vetoer;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -23,8 +23,7 @@ final class DefaultEventService implements EventService, Serializable {
     private static final long serialVersionUID = 0;
 
     private final ExceptionHandlerProvider exceptionHandlerProvider;
-
-    //private final ConcurrentLinkedQueue<Subscriber<?>> subscribers = new ConcurrentLinkedQueue<Subscriber<?>>();
+    private final IdentityRefIterable<Subscriber<?>> subscribers = new IdentityRefIterable<Subscriber<?>>();
 
     DefaultEventService() {
         this(ExceptionHandlers.rethrowExceptionsWhenFinishedProvider());
@@ -38,11 +37,10 @@ final class DefaultEventService implements EventService, Serializable {
     public <E> void publish(Topic topic, E source) {
         Event<E> event = Events.event(topic, source);
         if (!isVetoed(event)) {
-            List<Subscriber<E>> subscribers = findSubscribers(event);
             ExceptionHandler handler = exceptionHandlerProvider.get();
             handler.onPublishingStarting();
             try {
-                for (Subscriber<E> subscriber : subscribers) {
+                for (Subscriber<E> subscriber : findSubscribers(event)) {
                     try {
                         subscriber.onEvent(event);
                     } catch (Exception e) {
@@ -56,14 +54,11 @@ final class DefaultEventService implements EventService, Serializable {
     }
 
     private <E> boolean isVetoed(Event<E> event) {
-        List<Vetoer<E>> vetoers = findVetoers(event);
-        if (!vetoers.isEmpty()) {
-            VetoableEvent<E> vetoableEvent = Events.vetoable(event);
-            for (Vetoer<E> vetoer : vetoers) {
-                vetoer.check(vetoableEvent);
-                if(!vetoableEvent.isAllowed())
-                    return true;
-            }
+        VetoableEvent<E> vetoableEvent = Events.vetoable(event);
+        for (Vetoer<E> vetoer : findVetoers(event)) {
+            vetoer.check(vetoableEvent);
+            if (!vetoableEvent.isAllowed())
+                return true;
         }
         return false;
     }
@@ -80,11 +75,11 @@ final class DefaultEventService implements EventService, Serializable {
     public <E> void unsubscribe(Subscriber<E> subscriber) {
     }
 
-    private <E> List<Vetoer<E>> findVetoers(Event<E> event) {
+    private <E> Iterable<Vetoer<E>> findVetoers(Event<E> event) {
         return null;
     }
 
-    private <E> List<Subscriber<E>> findSubscribers(Event<E> event) {
+    private <E> Iterable<Subscriber<E>> findSubscribers(Event<E> event) {
         return null;
     }
 
