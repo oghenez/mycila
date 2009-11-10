@@ -4,6 +4,21 @@
 
 Mycila Event is a new powerful event framework for in-memory event management. It has a lot of features similar to [https://eventbus.dev.java.net/ EventBus] but is better written and uses Java Concurrency features to provide you with:
 
+= Download =
+
+Mycila event is deployed in maven 2 Central Repository:
+
+http://repo2.maven.org/maven2/com/mycila/mycila-event/
+
+{{{
+<dependency>
+    <groupId>com.mycila</groupId>
+    <artifactId>mycila-event</artifactId>
+    <version>X.Y</version>
+</dependency>
+}}}
+
+
 = Features =
 
 == In-Memory event system ==
