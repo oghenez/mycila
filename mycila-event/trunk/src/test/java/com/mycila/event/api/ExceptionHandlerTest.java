@@ -22,7 +22,7 @@ public final class ExceptionHandlerTest {
     @Test(expected = EventServiceException.class)
     public void test_toString() {
         Event<String> event = Events.event(Topics.topic("a"), "Hello !");
-        ErrorHandler handler = ErrorHandlers.rethrowErrorsWhenFinished();
+        ErrorHandler handler = ErrorHandlers.rethrowErrorsWhenFinished().get();
         handler.onPublishingStarting();
         handler.onError(event, new IllegalArgumentException("An IllegalArgumentException occured"));
         handler.onError(event, new InvocationTargetException(new NullPointerException("null")));
@@ -34,7 +34,7 @@ public final class ExceptionHandlerTest {
     @Test(expected = IllegalArgumentException.class)
     public void test_rethrow_now() {
         Event<String> event = Events.event(Topics.topic("a"), "Hello !");
-        ErrorHandler handler = ErrorHandlers.rethrowErrorsImmediately();
+        ErrorHandler handler = ErrorHandlers.rethrowErrorsImmediately().get();
         handler.onPublishingStarting();
         handler.onError(event, new IllegalArgumentException("An IllegalArgumentException occured"));
         handler.onError(event, new InvocationTargetException(new NullPointerException("null")));
@@ -45,7 +45,7 @@ public final class ExceptionHandlerTest {
     @Test(expected = EventServiceException.class)
     public void test_rethrow_now_caught_exc() {
         Event<String> event = Events.event(Topics.topic("a"), "Hello !");
-        ErrorHandler handler = ErrorHandlers.rethrowErrorsImmediately();
+        ErrorHandler handler = ErrorHandlers.rethrowErrorsImmediately().get();
         handler.onPublishingStarting();
         handler.onError(event, new InvocationTargetException(new NullPointerException("null"), "ah ah"));
         handler.onError(event, new IllegalArgumentException("An IllegalArgumentException occured"));
