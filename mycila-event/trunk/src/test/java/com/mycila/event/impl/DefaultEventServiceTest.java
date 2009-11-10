@@ -28,7 +28,7 @@ public final class DefaultEventServiceTest {
 
     @Before
     public void setup() {
-        eventService = new DefaultEventService();
+        eventService = EventServices.newEventService();
         sequence.clear();
     }
 
