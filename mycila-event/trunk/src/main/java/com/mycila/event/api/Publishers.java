@@ -1,8 +1,8 @@
-package com.mycila.event.api.publisher;
+package com.mycila.event.api;
 
 import com.mycila.event.api.EventService;
-import static com.mycila.event.api.util.Ensure.*;
-import com.mycila.event.api.topic.Topic;
+import static com.mycila.event.api.Ensure.*;
+import com.mycila.event.api.Topic;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

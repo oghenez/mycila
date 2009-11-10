@@ -1,6 +1,6 @@
-package com.mycila.event.api.util;
+package com.mycila.event.api;
 
-import com.mycila.event.api.topic.Topic;
+import com.mycila.event.api.Topic;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

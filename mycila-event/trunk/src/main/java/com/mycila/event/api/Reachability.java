@@ -1,4 +1,7 @@
-package com.mycila.event.api.util.ref;
+package com.mycila.event.api;
+
+import com.mycila.event.api.util.ref.Referencable;
+import com.mycila.event.api.util.ref.Ref;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;

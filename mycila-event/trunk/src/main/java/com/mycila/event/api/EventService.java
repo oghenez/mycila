@@ -1,9 +1,9 @@
 package com.mycila.event.api;
 
-import com.mycila.event.api.subscriber.Subscriber;
-import com.mycila.event.api.topic.Topic;
-import com.mycila.event.api.topic.TopicMatcher;
-import com.mycila.event.api.veto.Vetoer;
+import com.mycila.event.api.Subscriber;
+import com.mycila.event.api.Topic;
+import com.mycila.event.api.TopicMatcher;
+import com.mycila.event.api.Vetoer;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

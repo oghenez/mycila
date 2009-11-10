@@ -1,12 +1,12 @@
 package com.mycila.event.impl;
 
 import com.mycila.event.api.EventService;
-import com.mycila.event.api.event.Event;
-import com.mycila.event.api.event.VetoableEvent;
-import com.mycila.event.api.subscriber.HardSubscriber;
-import com.mycila.event.api.subscriber.WeakSubscriber;
-import static com.mycila.event.api.topic.Topics.*;
-import com.mycila.event.api.veto.HardVetoer;
+import com.mycila.event.api.Event;
+import com.mycila.event.api.VetoableEvent;
+import com.mycila.event.impl.HardSubscriber;
+import com.mycila.event.impl.WeakSubscriber;
+import static com.mycila.event.api.Topics.*;
+import com.mycila.event.impl.HardVetoer;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,6 +1,7 @@
-package com.mycila.event.api.subscriber;
+package com.mycila.event.impl;
 
-import com.mycila.event.api.util.ref.Reachability;
+import com.mycila.event.api.Reachability;
+import com.mycila.event.api.Subscriber;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

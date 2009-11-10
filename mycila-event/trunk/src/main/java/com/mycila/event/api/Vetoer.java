@@ -1,6 +1,6 @@
-package com.mycila.event.api.veto;
+package com.mycila.event.api;
 
-import com.mycila.event.api.event.VetoableEvent;
+import com.mycila.event.api.VetoableEvent;
 import com.mycila.event.api.util.Listener;
 
 /**
