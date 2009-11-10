@@ -1,11 +1,10 @@
-package com.mycila.event.api.ref;
-
-import com.mycila.event.api.Ensure;
-import static com.mycila.event.api.Ensure.*;
+package com.mycila.event.api;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
+
+import static com.mycila.event.api.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

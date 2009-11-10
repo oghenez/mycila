@@ -1,4 +1,4 @@
-package com.mycila.event.api.ref;
+package com.mycila.event.api;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
