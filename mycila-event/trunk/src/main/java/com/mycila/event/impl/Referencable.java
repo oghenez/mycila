@@ -1,10 +1,10 @@
-package com.mycila.event.api.util.ref;
+package com.mycila.event.impl;
 
 import com.mycila.event.api.Reachability;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Referencable {
+interface Referencable {
     Reachability reachability();
 }

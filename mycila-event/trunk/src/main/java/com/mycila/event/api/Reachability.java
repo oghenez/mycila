@@ -1,7 +1,6 @@
 package com.mycila.event.api;
 
-import com.mycila.event.api.util.ref.Referencable;
-import com.mycila.event.api.util.ref.Ref;
+import com.mycila.event.api.Ref;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
@@ -13,7 +12,7 @@ import java.lang.ref.WeakReference;
 public enum Reachability {
     HARD {
         @Override
-        public <T extends Referencable> Ref<T> toRef(final T referencable) {
+        public <T> Ref<T> toRef(final T referencable) {
             return new Ref<T>() {
                 @Override
                 public T get() {
@@ -24,17 +23,17 @@ public enum Reachability {
 
     WEAK {
         @Override
-        public <T extends Referencable> Ref<T> toRef(T referencable) {
+        public <T> Ref<T> toRef(T referencable) {
             return new JDKRef<T>(new WeakReference<T>(referencable));
         }},
 
     SOFT {
         @Override
-        public <T extends Referencable> Ref<T> toRef(T referencable) {
+        public <T> Ref<T> toRef(T referencable) {
             return new JDKRef<T>(new SoftReference<T>(referencable));
         }};
 
-    public abstract <T extends Referencable> Ref<T> toRef(T referencable);
+    public abstract <T> Ref<T> toRef(T referencable);
 
     private static final class JDKRef<T> implements Ref<T> {
         final Reference<T> reference;
