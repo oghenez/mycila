@@ -128,6 +128,8 @@ When you register a subscriber or a vetoer, you need to pass the type of event y
  * `Topics.topics(pattern)`: matches several topic by using an Ant expression. *Example:* `Topics.topics("app/events/buttons/**")`
  * `Topics.any()`: matches any topic
  * `Topics.not(matcher)`: invert the given matcher
+ * `matcher.and(matcher)`: any matcher can be composed with another matcher with an *and*. In this case, all matchers must match given topic event for the subscriber to receive it. This is quite an uncommon case.
+ * `matcher.or(matcher)`: any matcher can be composed with another matcher with an *or*. In this case, the subscriber will receive events matching the two matchers. This is a common case where you would like to receive in one subscriber the same events from different topics.
 
 In example, to set a catch-all subscriber, you could do:
 
