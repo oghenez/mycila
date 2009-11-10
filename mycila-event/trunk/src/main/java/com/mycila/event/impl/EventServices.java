@@ -1,9 +1,9 @@
 package com.mycila.event.impl;
 
 import com.mycila.event.api.EventService;
-import com.mycila.event.api.error.ErrorHandlerProvider;
-import com.mycila.event.api.error.ErrorHandlers;
-import static com.mycila.event.api.util.Ensure.*;
+import com.mycila.event.api.ErrorHandlerProvider;
+import com.mycila.event.api.ErrorHandlers;
+import static com.mycila.event.api.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

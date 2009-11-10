@@ -1,8 +1,7 @@
 package com.mycila.event.impl;
 
-import com.mycila.event.api.util.ref.Reachability;
+import com.mycila.event.api.Reachability;
 import com.mycila.event.api.util.ref.Referencable;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

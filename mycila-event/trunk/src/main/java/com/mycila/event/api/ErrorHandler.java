@@ -1,6 +1,6 @@
-package com.mycila.event.api.error;
+package com.mycila.event.api;
 
-import com.mycila.event.api.event.Event;
+import com.mycila.event.api.Event;
 
 import java.util.List;
 

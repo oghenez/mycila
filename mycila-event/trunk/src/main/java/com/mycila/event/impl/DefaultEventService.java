@@ -1,16 +1,16 @@
 package com.mycila.event.impl;
 
 import com.mycila.event.api.EventService;
-import com.mycila.event.api.error.ErrorHandler;
-import com.mycila.event.api.error.ErrorHandlerProvider;
-import com.mycila.event.api.event.Event;
-import com.mycila.event.api.event.Events;
-import com.mycila.event.api.event.VetoableEvent;
-import com.mycila.event.api.subscriber.Subscriber;
-import com.mycila.event.api.topic.Topic;
-import com.mycila.event.api.topic.TopicMatcher;
+import com.mycila.event.api.ErrorHandlerProvider;
+import com.mycila.event.api.ErrorHandler;
+import com.mycila.event.api.Event;
+import com.mycila.event.api.Events;
+import com.mycila.event.api.VetoableEvent;
+import com.mycila.event.api.Subscriber;
+import com.mycila.event.api.Topic;
+import com.mycila.event.api.TopicMatcher;
+import com.mycila.event.api.Vetoer;
 import com.mycila.event.api.util.Listener;
-import com.mycila.event.api.veto.Vetoer;
 
 import java.io.Serializable;
 import java.util.Iterator;

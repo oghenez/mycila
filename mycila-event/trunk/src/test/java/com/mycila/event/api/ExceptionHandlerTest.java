@@ -1,11 +1,11 @@
 package com.mycila.event.api;
 
 import com.mycila.event.api.EventServiceException;
-import com.mycila.event.api.event.Event;
-import com.mycila.event.api.event.Events;
-import com.mycila.event.api.error.ErrorHandler;
-import com.mycila.event.api.error.ErrorHandlers;
-import com.mycila.event.api.topic.Topics;
+import com.mycila.event.api.Event;
+import com.mycila.event.api.Events;
+import com.mycila.event.api.ErrorHandler;
+import com.mycila.event.api.ErrorHandlers;
+import com.mycila.event.api.Topics;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

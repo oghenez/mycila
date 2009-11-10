@@ -1,8 +1,8 @@
-package com.mycila.event.api.topic;
+package com.mycila.event.api;
 
 import java.io.Serializable;
 
-import static com.mycila.event.api.util.Ensure.*;
+import static com.mycila.event.api.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

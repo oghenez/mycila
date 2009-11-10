@@ -1,7 +1,5 @@
 package com.mycila.event.api.annotation;
 
-import com.mycila.event.api.util.ref.Reachability;
-
 import java.lang.annotation.*;
 
 /**
@@ -11,7 +9,5 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Documented
 public @interface Veto {
-    public abstract String topic() default "";
-
-    Reachability reach() default Reachability.WEAK;
+    String value() default "";
 }

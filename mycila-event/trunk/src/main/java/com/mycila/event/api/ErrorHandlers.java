@@ -1,8 +1,9 @@
-package com.mycila.event.api.error;
+package com.mycila.event.api;
 
 import com.mycila.event.api.EventServiceException;
-import com.mycila.event.api.event.Event;
-import static com.mycila.event.api.util.Ensure.*;
+import com.mycila.event.api.ErrorHandlerProvider;
+import com.mycila.event.api.Event;
+import static com.mycila.event.api.Ensure.*;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
