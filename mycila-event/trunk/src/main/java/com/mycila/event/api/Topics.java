@@ -16,6 +16,41 @@ public final class Topics {
         return new TopicImpl(name);
     }
 
+    private static final class TopicImpl extends AbstractTopicMatcher implements Topic, Serializable {
+
+        private static final long serialVersionUID = 0;
+
+        private final String name;
+
+        private TopicImpl(String name) {
+            this.name = notNull(name, "Topic name");
+        }
+
+        public String name() {
+            return name;
+        }
+
+        @Override
+        public boolean matches(Topic topic) {
+            return equals(topic);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof TopicImpl && ((TopicImpl) other).name.equals(name);
+        }
+
+        @Override
+        public int hashCode() {
+            return 31 * name.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
     public static AbstractTopicMatcher topics(String pattern) {
         return matcher(AntTopicMatcher.forPattern(pattern));
     }
@@ -133,42 +168,6 @@ public final class Topics {
         public String toString() {
             return topic.name();
         }
-    }
-
-    public static final class TopicImpl extends AbstractTopicMatcher implements Topic, Serializable {
-
-        private static final long serialVersionUID = 0;
-
-        private final String name;
-
-        private TopicImpl(String name) {
-            this.name = notNull(name, "Topic name");
-        }
-
-        public String name() {
-            return name;
-        }
-
-        @Override
-        public boolean matches(Topic topic) {
-            return equals(topic);
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            return other instanceof TopicImpl && ((TopicImpl) other).name.equals(name);
-        }
-
-        @Override
-        public int hashCode() {
-            return 31 * name.hashCode();
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-
     }
 
 }
