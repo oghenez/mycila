@@ -1,8 +1,39 @@
 #summary Mycila Event
+#labels Featured
 
 = Introduction =
 
-Mycila Event is a new powerful event framework for in-memory event management. It has a lot of features similar to [https://eventbus.dev.java.net/ EventBus] but is better written and uses Java Concurrency features to provide you with:
+Mycila Event is a new powerful event framework for in-memory event management. It has a lot of features similar to [https://eventbus.dev.java.net/ EventBus] but is better designed, uses Java Concurrency features and has a lot of more event features than EventBus, which are really useful when you work with a complex system driven by event messaging.
+
+= Sample =
+
+{{{
+import static com.mycila.event.api.topic.Topics.*;
+
+// first create an event service
+EventService eventService = EventServices.newEventService();
+
+// then subscribe
+TopicMatcher matcher = only("app/events/swing/button").or(topics("app/events/swing/fields/**"));
+eventService.subscribe(matcher, String.class, new HardSubscriber<String>() {
+    @Override
+    public void onEvent(Event<String> event) throws Exception {
+        System.out.println("Received: " + event.source());
+    }
+});
+
+// you can add a listener to oppose a veto to the events
+eventService.register(only("app/events/swing/button"), String.class, new HardVetoer<String>() {
+    @Override
+    public void check(VetoableEvent<String> vetoableEvent) {
+        if(vetoableEvent.event().source().equals("password"))
+            vetoableEvent.veto();
+    }
+});
+
+// and publish
+eventService.publish(topic("app/events/swing/button"), "Hello !");
+}}}
 
 = Download =
 
@@ -23,13 +54,28 @@ http://repo2.maven.org/maven2/com/mycila/mycila-event/
 
 == In-Memory event system ==
 
-== Asynchronous event dispatching ==
+Mycila Event is not a JMS solution ! Like EventBus, Mycila Event resolves intra-process communication. In example, it can be used in a Swing GUI or in a complex modular framework to handle communication between plugins.
 
-== Multicasting events ==
+Thus, *Mycila Event must be fast, thread-safe and scalable.*
+
+== Memory management == 
+
+Like EventBus, Mycila Event supports *hard and weak subscriptions*. A hard subscription will always remain and must be unregistered if not needed anymore. A weak subscription will be automatically removed when the subscriber is no longer in use.
 
 == Veto system ==
 
-to control event publishing
+To control event publishing, you can register listeners to *intercept events before they are published*. If a veto is opposed, the event won't be published. You can oppose a veto simply by calling `vetoableEvent.veto()`.
+
+{{{
+eventService.register(only("app/events/swing/button"), MyEventType.class, new HardVetoer<String>() {
+    @Override
+    public void check(VetoableEvent<String> vetoableEvent) {
+        [...]
+        vetoableEvent.veto();
+        [...]
+    }
+});
+}}}
 
 == Topic Matchers ==
 
@@ -37,9 +83,10 @@ enable a subscriber (and a vetoers) to subscribe to many topics
 
 == Exception handling ==
 
-== Memory management == 
 
-through hard and weak references
+== Asynchronous event dispatching ==
+
+== Multicasting events ==
 
 == Annotation support ==
 
