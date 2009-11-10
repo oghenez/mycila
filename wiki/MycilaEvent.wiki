@@ -1,0 +1,27 @@
+#summary Mycila Event
+
+= Introduction =
+
+Mycila Event is a new powerful event framework for in-memory event management. It has a lot of features similar to [https://eventbus.dev.java.net/ EventBus] but is better written and uses Java Concurrency features to provide you with:
+
+= Features =
+
+== In-Memory event system ==
+
+== Asynchronous event dispatching
+
+== Multicasting events ==
+
+== Veto system to control event publishing ==
+
+== Topic Matchers ==
+
+enable a subscriber (and a vetoers) to subscribe to many topics
+
+== Annotation support ==
+
+you can annotate your methods to decouple your code from Mycila Event and subscribe, publish and veto
+
+== Memory management == 
+
+through hard and weak references
