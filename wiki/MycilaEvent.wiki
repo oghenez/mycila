@@ -121,6 +121,12 @@ You can change this default behavior by using your proper `ErrorHandler`. The cl
 
 `ErrorHandlers` also has other methods to help you build your own `ErrorHandler` class and its associated provider `ErrorHandlerProvider`. At each publishing, `ErrorHandlerProvider.get()` is called to obtain a new `ErrorHandler`. Note that `ErrorHandlerProvider.get()` can act as a singleton: you only need to wrap your `ErrorHandlerProvider` or `ErrorHandler` by using `ErrorHandlers.singleton(...)` and the same instance will be reused each time.
 
+To create an EventService with the appropriate event handler, you just have to set the `ErrorHandlerProvider` instance when creating it:
+
+{{{
+EventService eventService = EventServices.newEventService(ErrorHandlers.ignoreErrors());
+}}}
+
 == Topic Matchers ==
 
 When you register a subscriber or a vetoer, you need to pass the type of event you want to receive and a matcher to math topics you want to listen to. TopicMatcher can be created with the `Topics` class. You can compose matchers.
@@ -141,10 +147,24 @@ eventService.subscribe(Topics.any(), Object.class, new Subscriber<Object>() {
 });
 }}}
 
-== Asynchronous event dispatching ==
+== Event dispatching strategies ==
 
-== Multicasting events ==
+There are several strategies regarding about how you want the order of events and the order of listeners be respected and where or not you have multiple threads publishing events.
+
+=== Full-ordered dispatching ===
+
+Listeners are called in the order they subscribed + Events are published in order. So at a time t, there will only be at most one event published to one listener. The second event
+
+{{{
+EventService service = EventServices.
+}}}
+
+=== Ordered Per-thread ===
+
+=== Asynchronous ===
+
+=== Multicasting ===
 
 == Annotation support ==
 
-you can annotate your methods to decouple your code from Mycila Event and subscribe, publish and veto
+You can annotate your methods to decouple your code from Mycila Event and subscribe, publish and veto
