@@ -2,6 +2,7 @@
 #labels Featured
 
 = Introduction =
+
 Mycila Event
 Mycila Event is a new powerful event framework for in-memory event management. It has a lot of features similar to [https://eventbus.dev.java.net/ EventBus] but is better designed, uses Java Concurrency features and has a lot of more event features than EventBus, which are really useful when you work with a complex system driven by event messaging.
 
@@ -33,6 +34,8 @@ eventService.register(only("app/events/swing/button"), String.class, new Vetoer<
 eventService.publish(topic("app/events/swing/button"), "Hello !");
 }}}
 
+When you subscribe, you need to give to which topic to subscribe and for which event type.
+
 = Download =
 
 Mycila event is deployed in maven 2 Central Repository:
@@ -49,13 +52,17 @@ http://repo2.maven.org/maven2/com/mycila/mycila-event/
 
 = Features =
 
+== Topics and Event types ==
+
+When you subscribe, you subscribe in a Topic for a given event type. Event type subclasses are allowed to be received by a subscriber accepting its super-class. In example, if you subscribe to `Topic.topic("buttons/ok")` with event type `ActionListener.class`, you can publish any implementation of `ActionListener` and it will be received by subscribers accepting the type (and sub-types) `ActionListener`.
+
 == In-Memory event system ==
 
 Mycila Event is not a JMS solution ! Like EventBus, Mycila Event resolves intra-process communication. In example, it can be used in a Swing GUI or in a complex modular framework to handle communication between plugins.
 
 Thus, *Mycila Event must be fast, thread-safe and scalable.*
 
-== Memory management == 
+== Memory management ==
 
 Like EventBus, Mycila Event supports *hard and weak subscriptions*. A hard subscription will always remain and must be unregistered if not needed anymore. A weak subscription will be automatically removed when the subscriber is no longer in use.
 
@@ -116,7 +123,21 @@ You can change this default behavior by using your proper `ErrorHandler`. The cl
 
 == Topic Matchers ==
 
-enable a subscriber (and a vetoers) to subscribe to many topics
+When you register a subscriber or a vetoer, you need to pass the type of event you want to receive and a matcher to math topics you want to listen to. TopicMatcher can be created with the `Topics` class. You can compose matchers.
+ * `Topics.only(exactName)`: matches a single topic name. *Example:* `Topics.only("app/events/buttons/ok")`
+ * `Topics.topics(pattern)`: matches several topic by using an Ant expression. *Example:* `Topics.topics("app/events/buttons/**")`
+ * `Topics.any()`: matches any topic
+ * `Topics.not(matcher)`: invert the given matcher
+
+In example, to set a catch-all subscriber, you could do:
+
+{{{
+eventService.subscribe(Topics.any(), Object.class, new Subscriber<Object>() {
+    public void onEvent(Event<Object> event) throws Exception {
+        System.out.println("Received: " + event.source());
+    }
+});
+}}}
 
 == Asynchronous event dispatching ==
 
