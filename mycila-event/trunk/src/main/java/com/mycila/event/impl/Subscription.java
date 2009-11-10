@@ -8,12 +8,12 @@ import com.mycila.event.api.util.ref.Referencable;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class Subscription<E, S extends Listener<E>> implements Referencable {
+final class Subscription implements Referencable {
     final TopicMatcher matcher;
-    final Class<E> eventType;
-    final S subscriber;
+    final Class<?> eventType;
+    final Listener<?> subscriber;
 
-    Subscription(Class<E> eventType, TopicMatcher matcher, S subscriber) {
+    Subscription(Class<?> eventType, TopicMatcher matcher, Listener<?> subscriber) {
         this.eventType = eventType;
         this.matcher = matcher;
         this.subscriber = subscriber;

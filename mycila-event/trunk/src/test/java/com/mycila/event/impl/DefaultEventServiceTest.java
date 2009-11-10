@@ -4,10 +4,10 @@ import com.mycila.event.api.EventService;
 import com.mycila.event.api.event.Event;
 import com.mycila.event.api.event.VetoableEvent;
 import com.mycila.event.api.subscriber.HardSubscriber;
-
+import com.mycila.event.api.subscriber.WeakSubscriber;
 import static com.mycila.event.api.topic.Topics.*;
-
 import com.mycila.event.api.veto.HardVetoer;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,19 +37,19 @@ public final class DefaultEventServiceTest {
         eventService.subscribe(only("prog/events/a").or(topics("prog/events/b/**")), String.class, new HardSubscriber<String>() {
             @Override
             public void onEvent(Event<String> event) throws Exception {
-                System.out.println("Got: " + event);
+                sequence.add(event.source());
             }
         });
         publish();
-        System.out.println(sequence);
+        assertEquals(sequence.toString(), "[Hello for a, hello for b1, hello for b2]");
     }
 
     @Test
     public void test_subscribe_weak() {
-        eventService.subscribe(only("prog/events/a").or(topics("prog/events/b/**")), String.class, new HardSubscriber<String>() {
+        eventService.subscribe(only("prog/events/a").or(topics("prog/events/b/**")), String.class, new WeakSubscriber<String>() {
             @Override
             public void onEvent(Event<String> event) throws Exception {
-                System.out.println("Got: " + event);
+                sequence.add(event.source());
             }
         });
 
@@ -58,7 +58,7 @@ public final class DefaultEventServiceTest {
         System.gc();
 
         publish();
-        System.out.println(sequence);
+        assertEquals(sequence.toString(), "[]");
     }
 
     @Test
@@ -66,7 +66,7 @@ public final class DefaultEventServiceTest {
         eventService.subscribe(only("prog/events/a").or(topics("prog/events/b/**")), String.class, new HardSubscriber<String>() {
             @Override
             public void onEvent(Event<String> event) throws Exception {
-                System.out.println("Got: " + event);
+                sequence.add(event.source());
             }
         });
         eventService.register(topics("prog/events/b/**"), String.class, new HardVetoer<String>() {
@@ -78,7 +78,7 @@ public final class DefaultEventServiceTest {
         });
 
         publish();
-        System.out.println(sequence);
+        assertEquals(sequence.toString(), "[Hello for a, hello for b2]");
 
     }
 

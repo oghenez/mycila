@@ -1,6 +1,7 @@
 package com.mycila.event.api.event;
 
 import com.mycila.event.api.topic.Topic;
+import static com.mycila.event.api.util.Ensure.*;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -13,6 +14,8 @@ public final class Events {
     }
 
     public static <E> Event<E> event(final Topic topic, final E source) {
+        notNull(topic, "Topic");
+        notNull(source, "Source");
         return new Event<E>() {
             private final long timestamp = System.nanoTime();
 
@@ -43,6 +46,7 @@ public final class Events {
     }
 
     public static <E> VetoableEvent<E> vetoable(final Event<E> event) {
+        notNull(event, "Event");
         return new VetoableEvent<E>() {
             private final AtomicBoolean allowed = new AtomicBoolean(true);
 

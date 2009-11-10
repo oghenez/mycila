@@ -1,12 +1,11 @@
 package com.mycila.event.impl;
 
 import com.mycila.event.api.EventService;
+import com.mycila.event.api.error.ErrorHandler;
+import com.mycila.event.api.error.ErrorHandlerProvider;
 import com.mycila.event.api.event.Event;
 import com.mycila.event.api.event.Events;
 import com.mycila.event.api.event.VetoableEvent;
-import com.mycila.event.api.exception.ExceptionHandler;
-import com.mycila.event.api.exception.ExceptionHandlerProvider;
-import com.mycila.event.api.exception.ExceptionHandlers;
 import com.mycila.event.api.subscriber.Subscriber;
 import com.mycila.event.api.topic.Topic;
 import com.mycila.event.api.topic.TopicMatcher;
@@ -14,6 +13,7 @@ import com.mycila.event.api.util.Listener;
 import com.mycila.event.api.veto.Vetoer;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -23,15 +23,11 @@ final class DefaultEventService implements EventService, Serializable {
 
     private static final long serialVersionUID = 0;
 
-    private final ExceptionHandlerProvider exceptionHandlerProvider;
-    private final IdentityRefIterable<Subscription<?, Subscriber<?>>> subscribers = new IdentityRefIterable<Subscription<?, Subscriber<?>>>();
-    private final IdentityRefIterable<Subscription<?, Vetoer<?>>> vetoers = new IdentityRefIterable<Subscription<?, Vetoer<?>>>();
+    private final ErrorHandlerProvider exceptionHandlerProvider;
+    private final IdentityRefIterable<Subscription> subscribers = new IdentityRefIterable<Subscription>();
+    private final IdentityRefIterable<Subscription> vetoers = new IdentityRefIterable<Subscription>();
 
-    DefaultEventService() {
-        this(ExceptionHandlers.rethrowExceptionsWhenFinishedProvider());
-    }
-
-    DefaultEventService(ExceptionHandlerProvider ExceptionHandlerProvider) {
+    DefaultEventService(ErrorHandlerProvider ExceptionHandlerProvider) {
         this.exceptionHandlerProvider = ExceptionHandlerProvider;
     }
 
@@ -39,14 +35,15 @@ final class DefaultEventService implements EventService, Serializable {
     public <E> void publish(Topic topic, E source) {
         Event<E> event = Events.event(topic, source);
         if (!isVetoed(event)) {
-            ExceptionHandler handler = exceptionHandlerProvider.get();
-            handler.onPublishingStarting();
+            ErrorHandler handler = exceptionHandlerProvider.get();
+            Iterable<Subscriber<E>> listeners = filterListeners(subscribers, event);
             try {
-                for (Subscriber<E> subscriber : this.<E, Subscriber<E>, Subscriber<?>>filterListeners(subscribers, event)) {
+                handler.onPublishingStarting();
+                for (Subscriber<E> subscriber : listeners) {
                     try {
                         subscriber.onEvent(event);
                     } catch (Exception e) {
-                        handler.onException(event, e);
+                        handler.onError(event, e);
                     }
                 }
             } finally {
@@ -57,7 +54,8 @@ final class DefaultEventService implements EventService, Serializable {
 
     private <E> boolean isVetoed(Event<E> event) {
         VetoableEvent<E> vetoableEvent = Events.vetoable(event);
-        for (Vetoer<E> vetoer : this.<E, Vetoer<E>, Vetoer<?>>filterListeners(vetoers, event)) {
+        Iterable<Vetoer<E>> listeners = filterListeners(vetoers, event);
+        for (Vetoer<E> vetoer : listeners) {
             vetoer.check(vetoableEvent);
             if (!vetoableEvent.isAllowed())
                 return true;
@@ -67,21 +65,36 @@ final class DefaultEventService implements EventService, Serializable {
 
     @Override
     public <E> void register(TopicMatcher matcher, Class<E> eventType, Vetoer<E> vetoer) {
+        vetoers.add(new Subscription(eventType, matcher, vetoer));
+    }
+
+    @Override
+    public <E> void unregister(Vetoer<E> vetoer) {
+        removeSubscription(vetoers, vetoer);
     }
 
     @Override
     public <E> void subscribe(TopicMatcher matcher, Class<E> eventType, Subscriber<E> subscriber) {
-
+        subscribers.add(new Subscription(eventType, matcher, subscriber));
     }
 
     @Override
     public <E> void unsubscribe(Subscriber<E> subscriber) {
+        removeSubscription(subscribers, subscriber);
+    }
+
+    private <E> void removeSubscription(Iterable<Subscription> iterable, Listener<E> listener) {
+        for (Iterator<Subscription> it = iterable.iterator(); it.hasNext();) {
+            Subscription s = it.next();
+            if (s.subscriber.equals(listener))
+                it.remove();
+        }
     }
 
     @SuppressWarnings({"unchecked"})
-    private <E, L extends Listener<E>, R extends Listener<?>> Iterable<L> filterListeners(Iterable<Subscription<?, R>> iterable, Event<E> event) {
+    private <E, L extends Listener<E>> Iterable<L> filterListeners(Iterable<Subscription> iterable, Event<E> event) {
         LinkedList<L> subscribers = new LinkedList<L>();
-        for (Subscription<?, R> subscription : iterable) {
+        for (Subscription subscription : iterable) {
             if (subscription.eventType.isAssignableFrom(event.source().getClass())
                     && subscription.matcher.matches(event.topic())) {
                 subscribers.add((L) subscription.subscriber);
