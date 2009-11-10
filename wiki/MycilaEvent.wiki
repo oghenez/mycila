@@ -15,16 +15,14 @@ EventService eventService = EventServices.newEventService();
 
 // then subscribe
 TopicMatcher matcher = only("app/events/swing/button").or(topics("app/events/swing/fields/**"));
-eventService.subscribe(matcher, String.class, new HardSubscriber<String>() {
-    @Override
+eventService.subscribe(matcher, String.class, new Subscriber<String>() {
     public void onEvent(Event<String> event) throws Exception {
         System.out.println("Received: " + event.source());
     }
 });
 
 // you can add a listener to oppose a veto to the events
-eventService.register(only("app/events/swing/button"), String.class, new HardVetoer<String>() {
-    @Override
+eventService.register(only("app/events/swing/button"), String.class, new Vetoer<String>() {
     public void check(VetoableEvent<String> vetoableEvent) {
         if(vetoableEvent.event().source().equals("password"))
             vetoableEvent.veto();
@@ -61,13 +59,41 @@ Thus, *Mycila Event must be fast, thread-safe and scalable.*
 
 Like EventBus, Mycila Event supports *hard and weak subscriptions*. A hard subscription will always remain and must be unregistered if not needed anymore. A weak subscription will be automatically removed when the subscriber is no longer in use.
 
+By default, if nothing is specified, Mycila Event uses a hard reference. this is very useful when you simply bind a listener like this:
+
+{{{
+eventService.subscribe(matcher, String.class, new Subscriber<String>() {
+    public void onEvent(Event<String> event) throws Exception {
+        System.out.println("Received: " + event.source());
+    }
+});
+}}}
+
+Reachability control can be done by annotating the class with `@Reference`. In example, suppose you have a plugin class subscribing for events. You can annotate the class like this:
+
+{{{
+@Reference(Reachability.WEAK)
+public class MyPlugin implements Subscriber<String> {
+    public void onEvent(Event<String> event) throws Exception {
+        System.out.println("Received: " + event.source());
+    }
+    public void start() {
+        // start the plugin
+    }
+}
+
+MyPlugin pluginLoadedByAnotherSystem = ...;
+eventService.subscribe(matcher, String.class, pluginLoadedByAnotherSystem);
+}}}
+
+When registering the plugin, a weak registration will be done so that if the plugin is unloaded or not used anymore, the subscription could be removed automatically.
+
 == Veto system ==
 
 To control event publishing, you can register listeners to *intercept events before they are published*. If a veto is opposed, the event won't be published. You can oppose a veto simply by calling `vetoableEvent.veto()`.
 
 {{{
-eventService.register(only("app/events/swing/button"), MyEventType.class, new HardVetoer<String>() {
-    @Override
+eventService.register(only("app/events/swing/button"), MyEventType.class, new Vetoer<String>() {
     public void check(VetoableEvent<String> vetoableEvent) {
         [...]
         vetoableEvent.veto();
