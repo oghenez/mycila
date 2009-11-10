@@ -1,12 +1,13 @@
 package com.mycila.event.impl;
 
-import com.mycila.event.api.EventService;
 import com.mycila.event.api.Event;
-import com.mycila.event.api.VetoableEvent;
-import com.mycila.event.impl.HardSubscriber;
-import com.mycila.event.impl.WeakSubscriber;
+import com.mycila.event.api.EventService;
+import com.mycila.event.api.Subscriber;
 import static com.mycila.event.api.Topics.*;
-import com.mycila.event.impl.HardVetoer;
+import com.mycila.event.api.VetoableEvent;
+import com.mycila.event.api.Vetoer;
+import com.mycila.event.api.annotation.Reference;
+import com.mycila.event.api.ref.Reachability;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +35,7 @@ public final class DefaultEventServiceTest {
 
     @Test
     public void test_subscribe_strong() {
-        eventService.subscribe(only("prog/events/a").or(topics("prog/events/b/**")), String.class, new HardSubscriber<String>() {
+        eventService.subscribe(only("prog/events/a").or(topics("prog/events/b/**")), String.class, new Subscriber<String>() {
             @Override
             public void onEvent(Event<String> event) throws Exception {
                 sequence.add(event.source());
@@ -46,12 +47,14 @@ public final class DefaultEventServiceTest {
 
     @Test
     public void test_subscribe_weak() {
-        eventService.subscribe(only("prog/events/a").or(topics("prog/events/b/**")), String.class, new WeakSubscriber<String>() {
+        @Reference(Reachability.WEAK)
+        class C implements Subscriber<String> {
             @Override
             public void onEvent(Event<String> event) throws Exception {
                 sequence.add(event.source());
             }
-        });
+        }
+        eventService.subscribe(only("prog/events/a").or(topics("prog/events/b/**")), String.class, new C());
 
         System.gc();
         System.gc();
@@ -63,16 +66,16 @@ public final class DefaultEventServiceTest {
 
     @Test
     public void test_veto() {
-        eventService.subscribe(only("prog/events/a").or(topics("prog/events/b/**")), String.class, new HardSubscriber<String>() {
+        eventService.subscribe(only("prog/events/a").or(topics("prog/events/b/**")), String.class, new Subscriber<String>() {
             @Override
             public void onEvent(Event<String> event) throws Exception {
                 sequence.add(event.source());
             }
         });
-        eventService.register(topics("prog/events/b/**"), String.class, new HardVetoer<String>() {
+        eventService.register(topics("prog/events/b/**"), String.class, new Vetoer<String>() {
             @Override
             public void check(VetoableEvent<String> vetoable) {
-                if(vetoable.event().source().contains("b1"))
+                if (vetoable.event().source().contains("b1"))
                     vetoable.veto();
             }
         });

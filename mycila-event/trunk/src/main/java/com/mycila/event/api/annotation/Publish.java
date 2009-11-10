@@ -9,5 +9,5 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Documented
 public @interface Publish {
-    String value() default "";
+    String value();
 }

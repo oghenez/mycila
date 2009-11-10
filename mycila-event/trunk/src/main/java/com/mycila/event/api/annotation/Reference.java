@@ -1,6 +1,6 @@
 package com.mycila.event.api.annotation;
 
-import com.mycila.event.api.Reachability;
+import com.mycila.event.api.ref.Reachability;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -17,5 +17,5 @@ import java.lang.annotation.Inherited;
 @Documented
 @Inherited
 public @interface Reference {
-    Reachability value() default Reachability.WEAK;
+    Reachability value();
 }

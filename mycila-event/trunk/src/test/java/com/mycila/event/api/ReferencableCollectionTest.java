@@ -1,7 +1,8 @@
-package com.mycila.event.impl;
+package com.mycila.event.api;
 
-import com.mycila.event.api.Reachability;
-import com.mycila.event.impl.Referencable;
+import com.mycila.event.api.ref.Reachability;
+import com.mycila.event.api.ref.Referencable;
+import com.mycila.event.api.ref.ReferencableCollection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -12,11 +13,11 @@ import static org.junit.Assert.*;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @RunWith(JUnit4.class)
-public final class IdentityRefIterableTest {
+public final class ReferencableCollectionTest {
 
     @Test
     public void test() {
-        IdentityRefIterable<Referencable> list = new IdentityRefIterable<Referencable>();
+        ReferencableCollection<Referencable> list = new ReferencableCollection<Referencable>();
         for (int i = 0; i < 20; i++) {
             list.add(new WeakObject());
             list.add(new HardObject());
