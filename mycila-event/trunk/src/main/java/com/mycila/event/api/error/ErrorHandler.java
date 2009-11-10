@@ -1,4 +1,4 @@
-package com.mycila.event.api.exception;
+package com.mycila.event.api.error;
 
 import com.mycila.event.api.event.Event;
 
@@ -7,14 +7,14 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface ExceptionHandler {
+public interface ErrorHandler {
     void onPublishingStarting();
 
     void onPublishingFinished();
 
-    void onException(Event<?> event, Exception exception);
+    void onError(Event<?> event, Exception e);
 
     boolean hasFailed();
 
-    List<Exception> exceptions();
+    List<Exception> errors();
 }
