@@ -1,11 +1,12 @@
 package com.mycila.event.api;
 
-import com.mycila.event.api.VetoableEvent;
-import com.mycila.event.api.util.Listener;
+import static com.mycila.event.api.ref.Reachability.*;
+import com.mycila.event.api.annotation.Reference;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Vetoer<E> extends Listener<E> {
+@Reference(HARD)
+public interface Vetoer<E> {
     void check(VetoableEvent<E> event);
 }

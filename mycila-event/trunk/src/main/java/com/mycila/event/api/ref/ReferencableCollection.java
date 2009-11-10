@@ -1,7 +1,6 @@
-package com.mycila.event.impl;
+package com.mycila.event.api.ref;
 
-import com.mycila.event.api.Ref;
-import com.mycila.event.impl.Referencable;
+import static com.mycila.event.api.Ensure.*;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;
@@ -10,13 +9,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class IdentityRefIterable<T extends Referencable> extends AbstractCollection<T> {
+public final class ReferencableCollection<T extends Referencable> extends AbstractCollection<T> {
 
     private final ConcurrentLinkedQueue<Ref<T>> refs = new ConcurrentLinkedQueue<Ref<T>>();
 
     @Override
     public boolean add(T t) {
-        return refs.add(t.reachability().toRef(t));
+        notNull(t, "Referencable");
+        return refs.add(t.reachability().wrap(t));
     }
 
     @Override
