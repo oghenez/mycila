@@ -1,16 +1,13 @@
 package com.mycila.event.api;
 
-import com.mycila.event.api.EventServiceException;
-import com.mycila.event.api.ErrorHandlerProvider;
-import com.mycila.event.api.Event;
-import static com.mycila.event.api.Ensure.*;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import static com.mycila.event.api.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

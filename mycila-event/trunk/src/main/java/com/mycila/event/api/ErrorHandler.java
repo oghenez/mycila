@@ -1,7 +1,5 @@
 package com.mycila.event.api;
 
-import com.mycila.event.api.Event;
-
 import java.util.List;
 
 /**

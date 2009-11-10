@@ -1,6 +1,4 @@
-package com.mycila.event.api.ref;
-
-import com.mycila.event.api.ref.Reachability;
+package com.mycila.event.api;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

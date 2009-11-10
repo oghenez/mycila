@@ -1,10 +1,14 @@
-package com.mycila.event.api.ref;
+package com.mycila.event.impl;
 
-import static com.mycila.event.api.Ensure.*;
+import com.mycila.event.api.Ref;
+import com.mycila.event.api.Referencable;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import static com.mycila.event.api.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -36,20 +40,25 @@ public final class ReferencableCollection<T extends Referencable> extends Abstra
     public Iterator<T> iterator() {
         final Iterator<Ref<T>> it = refs.iterator();
         return new Iterator<T>() {
-            T next;
+            private T next;
+            boolean hasNext = true;
 
             @Override
             public boolean hasNext() {
                 while (it.hasNext()) {
                     next = it.next().get();
-                    if (next == null) it.remove();
-                    else return true;
+                    if (next == null)
+                        it.remove();
+                    else
+                        return hasNext = true;
                 }
-                return false;
+                return hasNext = false;
             }
 
             @Override
             public T next() {
+                if (!hasNext)
+                    throw new NoSuchElementException();
                 return next;
             }
 

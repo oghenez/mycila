@@ -1,9 +1,8 @@
 package com.mycila.event.api;
 
-import com.mycila.event.api.Topic;
-import static com.mycila.event.api.Ensure.*;
-
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.mycila.event.api.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

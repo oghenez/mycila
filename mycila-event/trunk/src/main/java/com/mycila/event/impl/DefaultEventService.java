@@ -1,23 +1,14 @@
 package com.mycila.event.impl;
 
-import static com.mycila.event.api.Ensure.*;
-import com.mycila.event.api.ErrorHandler;
-import com.mycila.event.api.ErrorHandlerProvider;
-import com.mycila.event.api.Event;
-import com.mycila.event.api.EventService;
-import com.mycila.event.api.Events;
-import com.mycila.event.api.Subscriber;
-import com.mycila.event.api.Subscription;
-import com.mycila.event.api.Subscriptions;
-import com.mycila.event.api.Topic;
-import com.mycila.event.api.TopicMatcher;
-import com.mycila.event.api.VetoableEvent;
-import com.mycila.event.api.Vetoer;
-import com.mycila.event.api.ref.ReferencableCollection;
+import com.mycila.event.api.*;
+import com.mycila.event.impl.cache.Provider;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+
+import static com.mycila.event.api.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -28,8 +19,8 @@ final class DefaultEventService implements EventService, Serializable {
     private static final long serialVersionUID = 0;
 
     private final ErrorHandlerProvider exceptionHandlerProvider;
-    private final ReferencableCollection<Subscription> subscribers = new ReferencableCollection<Subscription>();
-    private final ReferencableCollection<Subscription> vetoers = new ReferencableCollection<Subscription>();
+    private final Collection<Subscription> subscribers = new ReferencableCollection<Subscription>();
+    private final Collection<Subscription> vetoers = new ReferencableCollection<Subscription>();
 
     DefaultEventService(ErrorHandlerProvider ExceptionHandlerProvider) {
         this.exceptionHandlerProvider = ExceptionHandlerProvider;
@@ -42,12 +33,12 @@ final class DefaultEventService implements EventService, Serializable {
         Event<E> event = Events.event(topic, source);
         if (!isVetoed(event)) {
             ErrorHandler handler = exceptionHandlerProvider.get();
-            Iterable<Subscriber<E>> listeners = filterListeners(subscribers, event);
+            Iterator<Subscriber<E>> subscriberIterator = getFilteredIterator(subscribers, event);
             try {
                 handler.onPublishingStarting();
-                for (Subscriber<E> subscriber : listeners) {
+                while (subscriberIterator.hasNext()) {
                     try {
-                        subscriber.onEvent(event);
+                        subscriberIterator.next().onEvent(event);
                     } catch (Exception e) {
                         handler.onError(event, e);
                     }
@@ -88,9 +79,9 @@ final class DefaultEventService implements EventService, Serializable {
 
     private <E> boolean isVetoed(Event<E> event) {
         VetoableEvent<E> vetoableEvent = Events.vetoable(event);
-        Iterable<Vetoer<E>> listeners = filterListeners(vetoers, event);
-        for (Vetoer<E> vetoer : listeners) {
-            vetoer.check(vetoableEvent);
+        Iterator<Vetoer<E>> vetoerIterator = getFilteredIterator(vetoers, event);
+        while (vetoerIterator.hasNext()) {
+            vetoerIterator.next().check(vetoableEvent);
             if (!vetoableEvent.isAllowed())
                 return true;
         }
@@ -105,16 +96,72 @@ final class DefaultEventService implements EventService, Serializable {
         }
     }
 
-    @SuppressWarnings({"unchecked"})
-    private <E, S> Iterable<S> filterListeners(Iterable<Subscription> iterable, Event<E> event) {
-        LinkedList<S> subscribers = new LinkedList<S>();
+    //@SuppressWarnings({"unchecked"})
+    private <E, S> Iterator<S> getFilteredIterator(Iterable<Subscription> iterable, Event<E> event) {
+        Iterator<Subscription> subscriptionIterator = iterable.iterator();
+        return new Iterator<S>() {
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
+
+            @Override
+            public S next() {
+                return null;
+            }
+
+            @Override
+            public void remove() {
+            }
+        };
+
+    }
+
+    LinkedList<S> subscribers = new LinkedList<S>();
         for (Subscription subscription : iterable) {
             if (subscription.eventType().isAssignableFrom(event.source().getClass())
                     && subscription.topicMatcher().matches(event.topic())) {
                 subscribers.add((S) subscription.subscriber());
+                return subscribers;
+            }
+
+            private static final class CacheProvider implements Provider<Topic, Iterable<Subscription>> {
+                private final Iterable<Subscription> subscriptions;
+
+                private CacheProvider(Iterable<Subscription> subscriptions) {
+                    this.subscriptions = subscriptions;
+                }
+
+                @Override
+                public Iterable<Subscription> fetch(Topic topic) {
+                    return new Iterable<Subscription>() {
+                        @Override
+                        public Iterator<Subscription> iterator() {
+                            Iterator<Subscription> it = subscriptions.iterator();
+                            return new Iterator<Subscription>() {
+
+
+                                @Override
+                                public boolean hasNext() {
+                                    return false;
+                                }
+
+                                @Override
+                                public Subscription next() {
+                                    return null;
+                                }
+
+                                @Override
+                                public void remove() {
+                                }
+                            };
+                        }
+                    };
+
+                    for (Subscription subscription : subscriptions)
+                        if (subscription.topicMatcher().matches(topic))
+                            subscribersForTopic.add(subscription);
+                    return subscribersForTopic;
+                }
             }
         }
-        return subscribers;
-    }
-
-}

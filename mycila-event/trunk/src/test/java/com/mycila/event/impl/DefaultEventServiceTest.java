@@ -5,7 +5,7 @@ import com.mycila.event.api.*;
 import static com.mycila.event.api.Topics.*;
 
 import com.mycila.event.api.annotation.Reference;
-import com.mycila.event.api.ref.Reachability;
+import com.mycila.event.api.Reachability;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
