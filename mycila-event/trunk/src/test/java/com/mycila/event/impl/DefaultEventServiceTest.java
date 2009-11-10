@@ -1,11 +1,9 @@
 package com.mycila.event.impl;
 
-import com.mycila.event.api.Event;
-import com.mycila.event.api.EventService;
-import com.mycila.event.api.Subscriber;
+import com.mycila.event.api.*;
+
 import static com.mycila.event.api.Topics.*;
-import com.mycila.event.api.VetoableEvent;
-import com.mycila.event.api.Vetoer;
+
 import com.mycila.event.api.annotation.Reference;
 import com.mycila.event.api.ref.Reachability;
 import static org.junit.Assert.*;
