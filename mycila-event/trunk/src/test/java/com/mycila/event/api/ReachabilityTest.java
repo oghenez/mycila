@@ -1,11 +1,11 @@
 package com.mycila.event.api;
 
 import com.mycila.event.api.annotation.Reference;
-import com.mycila.event.api.ref.Reachability;
-import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

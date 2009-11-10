@@ -1,12 +1,11 @@
 package com.mycila.event.impl;
 
 import com.mycila.event.api.*;
-import com.mycila.event.impl.cache.Provider;
 
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 import static com.mycila.event.api.Ensure.*;
 
@@ -96,72 +95,37 @@ final class DefaultEventService implements EventService, Serializable {
         }
     }
 
-    //@SuppressWarnings({"unchecked"})
-    private <E, S> Iterator<S> getFilteredIterator(Iterable<Subscription> iterable, Event<E> event) {
-        Iterator<Subscription> subscriptionIterator = iterable.iterator();
+    private <E, S> Iterator<S> getFilteredIterator(final Iterable<Subscription> iterable, final Event<E> event) {
         return new Iterator<S>() {
-            @Override
-            public boolean hasNext() {
-                return false;
-            }
+            final Class<?> eventType = event.source().getClass();
+            final Topic topic = event.topic();
+            final Iterator<Subscription> subscriptionIterator = iterable.iterator();
+            private Subscription next;
+            private boolean hasNext = true;
 
             @Override
+            public boolean hasNext() {
+                while (subscriptionIterator.hasNext()) {
+                    next = subscriptionIterator.next();
+                    if (next.eventType().isAssignableFrom(eventType)
+                            && next.topicMatcher().matches(topic))
+                        return hasNext = true;
+                }
+                return hasNext = false;
+            }
+
+            @SuppressWarnings({"unchecked"})
+            @Override
             public S next() {
-                return null;
+                if (!hasNext)
+                    throw new NoSuchElementException();
+                return (S) next.subscriber();
             }
 
             @Override
             public void remove() {
+                subscriptionIterator.remove();
             }
         };
-
     }
-
-    LinkedList<S> subscribers = new LinkedList<S>();
-        for (Subscription subscription : iterable) {
-            if (subscription.eventType().isAssignableFrom(event.source().getClass())
-                    && subscription.topicMatcher().matches(event.topic())) {
-                subscribers.add((S) subscription.subscriber());
-                return subscribers;
-            }
-
-            private static final class CacheProvider implements Provider<Topic, Iterable<Subscription>> {
-                private final Iterable<Subscription> subscriptions;
-
-                private CacheProvider(Iterable<Subscription> subscriptions) {
-                    this.subscriptions = subscriptions;
-                }
-
-                @Override
-                public Iterable<Subscription> fetch(Topic topic) {
-                    return new Iterable<Subscription>() {
-                        @Override
-                        public Iterator<Subscription> iterator() {
-                            Iterator<Subscription> it = subscriptions.iterator();
-                            return new Iterator<Subscription>() {
-
-
-                                @Override
-                                public boolean hasNext() {
-                                    return false;
-                                }
-
-                                @Override
-                                public Subscription next() {
-                                    return null;
-                                }
-
-                                @Override
-                                public void remove() {
-                                }
-                            };
-                        }
-                    };
-
-                    for (Subscription subscription : subscriptions)
-                        if (subscription.topicMatcher().matches(topic))
-                            subscribersForTopic.add(subscription);
-                    return subscribersForTopic;
-                }
-            }
-        }
+}

@@ -13,7 +13,7 @@ import static com.mycila.event.api.Ensure.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ReferencableCollection<T extends Referencable> extends AbstractCollection<T> {
+final class ReferencableCollection<T extends Referencable> extends AbstractCollection<T> {
 
     private final ConcurrentLinkedQueue<Ref<T>> refs = new ConcurrentLinkedQueue<Ref<T>>();
 
@@ -38,8 +38,8 @@ public final class ReferencableCollection<T extends Referencable> extends Abstra
 
     @Override
     public Iterator<T> iterator() {
-        final Iterator<Ref<T>> it = refs.iterator();
         return new Iterator<T>() {
+            final Iterator<Ref<T>> it = refs.iterator();
             private T next;
             boolean hasNext = true;
 
