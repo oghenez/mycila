@@ -3,7 +3,7 @@ package com.mycila.event.impl;
 import com.mycila.event.api.TopicMatcher;
 import com.mycila.event.api.util.Listener;
 import com.mycila.event.api.Reachability;
-import com.mycila.event.api.util.ref.Referencable;
+import com.mycila.event.impl.Referencable;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

@@ -1,7 +1,7 @@
 package com.mycila.event.impl;
 
-import com.mycila.event.api.util.ref.Ref;
-import com.mycila.event.api.util.ref.Referencable;
+import com.mycila.event.api.Ref;
+import com.mycila.event.impl.Referencable;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;
