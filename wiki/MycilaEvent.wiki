@@ -27,16 +27,20 @@ http://repo2.maven.org/maven2/com/mycila/mycila-event/
 
 == Multicasting events ==
 
-== Veto system to control event publishing ==
+== Veto system ==
+
+to control event publishing
 
 == Topic Matchers ==
 
 enable a subscriber (and a vetoers) to subscribe to many topics
 
-== Annotation support ==
-
-you can annotate your methods to decouple your code from Mycila Event and subscribe, publish and veto
+== Exception handling ==
 
 == Memory management == 
 
 through hard and weak references
+
+== Annotation support ==
+
+you can annotate your methods to decouple your code from Mycila Event and subscribe, publish and veto
