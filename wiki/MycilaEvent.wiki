@@ -8,7 +8,7 @@ Mycila Event is a new powerful event framework for in-memory event management. I
 
 == In-Memory event system ==
 
-== Asynchronous event dispatching
+== Asynchronous event dispatching ==
 
 == Multicasting events ==
 
