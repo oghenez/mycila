@@ -14,18 +14,18 @@ Mycila Event is a new powerful event framework for in-memory event management. I
 import static com.mycila.event.api.topic.Topics.*;
 
 // first create an event service
-DispatcherService eventService = DispatcherServices.blockingUnordered();
+Dispatcher dispatcher = Dispatchers.yourDispatcherStrategy();
 
 // then subscribe
 TopicMatcher matcher = only("app/events/swing/button").or(topics("app/events/swing/fields/**"));
-eventService.subscribe(matcher, String.class, new Subscriber<String>() {
+dispatcher.subscribe(matcher, String.class, new Subscriber<String>() {
     public void onEvent(Event<String> event) throws Exception {
         System.out.println("Received: " + event.source());
     }
 });
 
 // you can add a listener to oppose a veto to the events
-eventService.register(only("app/events/swing/button"), String.class, new Vetoer<String>() {
+dispatcher.register(only("app/events/swing/button"), String.class, new Vetoer<String>() {
     public void check(VetoableEvent<String> vetoableEvent) {
         if(vetoableEvent.event().source().equals("password"))
             vetoableEvent.veto();
@@ -33,7 +33,7 @@ eventService.register(only("app/events/swing/button"), String.class, new Vetoer<
 });
 
 // and publish
-eventService.publish(topic("app/events/swing/button"), "Hello !");
+dispatcher.publish(topic("app/events/swing/button"), "Hello !");
 }}}
 
 When you subscribe, you need to give to which topic to subscribe and for which event type.
@@ -71,7 +71,7 @@ Like EventBus, Mycila Event supports *hard and weak subscriptions*. A hard subsc
 By default, if nothing is specified, Mycila Event uses a hard reference. this is very useful when you simply bind a listener like this:
 
 {{{
-eventService.subscribe(matcher, String.class, new Subscriber<String>() {
+dispatcher.subscribe(matcher, String.class, new Subscriber<String>() {
     public void onEvent(Event<String> event) throws Exception {
         System.out.println("Received: " + event.source());
     }
@@ -92,7 +92,7 @@ public class MyPlugin implements Subscriber<String> {
 }
 
 MyPlugin pluginLoadedByAnotherSystem = ...;
-eventService.subscribe(matcher, String.class, pluginLoadedByAnotherSystem);
+dispatcher.subscribe(matcher, String.class, pluginLoadedByAnotherSystem);
 }}}
 
 When registering the plugin, a weak registration will be done so that if the plugin is unloaded or not used anymore, the subscription could be removed automatically.
@@ -102,7 +102,7 @@ When registering the plugin, a weak registration will be done so that if the plu
 To control event publishing, you can register listeners to *intercept events before they are published*. If a veto is opposed, the event won't be published. You can oppose a veto simply by calling `vetoableEvent.veto()`.
 
 {{{
-eventService.register(only("app/events/swing/button"), MyEventType.class, new Vetoer<String>() {
+dispatcher.register(only("app/events/swing/button"), MyEventType.class, new Vetoer<String>() {
     public void check(VetoableEvent<String> vetoableEvent) {
         [...]
         vetoableEvent.veto();
@@ -126,7 +126,7 @@ You can change this default behavior by using your proper `ErrorHandler`. The cl
 To create an EventService with the appropriate event handler, you just have to set the `ErrorHandlerProvider` instance when creating it:
 
 {{{
-DispatcherService eventService = DispatcherServices.blockingUnordered(ErrorHandlers.ignoreErrors());
+Dispatcher dispatcher = Dispatchers.yourDispatcherStrategy(ErrorHandlers.ignoreErrors());
 }}}
 
 == Topic Matchers ==
@@ -142,7 +142,7 @@ When you register a subscriber or a vetoer, you need to pass the type of event y
 In example, to set a catch-all subscriber, you could do:
 
 {{{
-eventService.subscribe(Topics.any(), Object.class, new Subscriber<Object>() {
+dispatcher.subscribe(Topics.any(), Object.class, new Subscriber<Object>() {
     public void onEvent(Event<Object> event) throws Exception {
         System.out.println("Received: " + event.source());
     }
@@ -153,7 +153,7 @@ eventService.subscribe(Topics.any(), Object.class, new Subscriber<Object>() {
 
 There are several strategies regarding about how you want the order of events and the order of listeners be respected and whether or not you have multiple threads publishing events.
 
-=== Blocking Ordered Dispatching ===
+=== Synchronous Ordered Dispatching ===
 
  * Listeners are called in the order they subscribed
  * Events are published in order
@@ -164,10 +164,10 @@ This strategy guarantees the order of listeners called and the order of publishe
 This strategy is better when your publishers don't need to execute fast, and when your subscribers are fast to execute.
 
 {{{
-DispatcherService eventService = DispatcherServices.blockingOrdered();
+Dispatcher dispatcher = Dispatchers.synchronous(true);
 }}}
 
-=== Blocking Unordered Dispatching ===
+=== Synchronous Unordered Dispatching ===
 
  * Listeners are called in the order they subscribed
  * Events are published unordered
@@ -178,7 +178,7 @@ This strategy guarantees the order of listeners called. The publish method only 
 This strategy is better when you don't care about event order and don't need your publishers to return fast.
 
 {{{
-DispatcherService eventService = DispatcherServices.blockingUnordered();
+Dispatcher dispatcher = Dispatchers.synchronous(false);
 }}}
 
 === Asynchronous Ordered Dispatching ===
@@ -187,24 +187,65 @@ DispatcherService eventService = DispatcherServices.blockingUnordered();
  * Events are published in order
  * Many threads can enqueue an event at one time
  * One background thread is responsible to dequeue and fire events
- * A queue is used to enqueue events before they are processed. You can choose if this queue is bounded or unbounded (in this case oldest events will be discarded)
+ * A queue is used to enqueue events before they are processed.
 
 This strategy guarantees the order of listeners called and the order of published events. The publish method *does not block* and the publisher thread immediately returns. The event is queued and wait for its turn to be processed by the background thread.
 
-This strategy is useful when your publishers must execute as fast as possible, but be careful to set the queue bound correctly.
+This strategy is useful when your publishers must execute as fast as possible, but be careful to also have fast publishers to not fill the queue.
 
 {{{
-DispatcherService service = DispatcherServices.asynchronousOrdered()
+Dispatcher dispatcher = Dispatchers.asynchronous()
 }}}
 
-=== Multicast Ordered Dispatching ===
+=== Asynchronous Unordered Dispatching ===
+
+ * Listeners are called in the order they subscribed
+ * Events are published unordered
+ * Many threads can publish an event at one time
+ * Several background threads are responsible for firing events
+
+This strategy guarantees the order of listeners called, but not the order of event. Basically, each call to publics will return immediately and a thread may be spawn to handle the publishing.
+
+This strategy is useful when your publishers must execute as fast as possible, and event publishing needs to be processed quickly, but by respecting listener order.
+
+When creating an Asynchronous Unordered Dispatching, you can configure the number of threads consuming events and handling publishing. If you create only one thread, this will have the same behavior as an Asynchronous Ordered Dispatching.
+
+{{{
+// create 10 dispatcher threads waiting for events
+Dispatcher dispatcher = Dispatchers.asynchronous(10)
+}}}
+
+=== Broadcast Ordered Dispatching ===
 
  * Listeners are called unordered
  * Events are published in order
  * Many threads can enqueue an event at one time
- * One background thread is responsible to dequeue and fire events concurrently
+ * A thread-pool is used to send each event to each subscriber
 
-This strategy guarantees the order of events listeners called and the order of published events. 
+This strategy guarantees the order of events but calls listeners unordered. The goal of a broadcasting is to reach as fast as possible each listeners in the smallest amount of time. A thread-pool is used to handle subscriber's execution.
+
+This type of dispatching is really useful when you don't care about ordering and want to publish fast and want your subscribers to be called as fast as possible.
+
+Note that when a thread publishes an event, the publish method will be locked until the whole publish process ends, to guarantee event ordering. So when a publishing starts, many threads are used to contact all the subscribers. But if at least one subscriber takes a long time to execute, the publish method won't return until the whole execution has finished.
+
+{{{
+Dispatcher dispatcher = Dispatchers.multicast(true)
+}}}
+
+=== Broadcast Unordered Dispatching ===
+
+ * Listeners are called unordered
+ * Events are published unordered
+ * Many threads can enqueue an event at one time
+ * A thread-pool is used to send each event to each subscriber
+
+This type of dispatching is really useful when you don't care about any ordering. Since the publish method does not block, any thread will be able to publish events really fast and a thread-pool is used to process them all, unordered.
+
+Thus, subscribers taking a long time to execute don't affect publishing of other events to other subscribers.
+
+{{{
+Dispatcher dispatcher = Dispatchers.multicast(false)
+}}}
 
 == Annotation support ==
 
