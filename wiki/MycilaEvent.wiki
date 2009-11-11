@@ -12,7 +12,7 @@ Mycila Event is a new powerful event framework for in-memory event management. I
 import static com.mycila.event.api.topic.Topics.*;
 
 // first create an event service
-EventService eventService = EventServices.newEventService();
+DispatcherService eventService = DispatcherServices.blockingUnordered();
 
 // then subscribe
 TopicMatcher matcher = only("app/events/swing/button").or(topics("app/events/swing/fields/**"));
@@ -124,7 +124,7 @@ You can change this default behavior by using your proper `ErrorHandler`. The cl
 To create an EventService with the appropriate event handler, you just have to set the `ErrorHandlerProvider` instance when creating it:
 
 {{{
-EventService eventService = EventServices.newEventService(ErrorHandlers.ignoreErrors());
+DispatcherService eventService = DispatcherServices.blockingUnordered(ErrorHandlers.ignoreErrors());
 }}}
 
 == Topic Matchers ==
@@ -149,21 +149,60 @@ eventService.subscribe(Topics.any(), Object.class, new Subscriber<Object>() {
 
 == Event dispatching strategies ==
 
-There are several strategies regarding about how you want the order of events and the order of listeners be respected and where or not you have multiple threads publishing events.
+There are several strategies regarding about how you want the order of events and the order of listeners be respected and whether or not you have multiple threads publishing events.
 
-=== Full-ordered dispatching ===
+=== Blocking Ordered Dispatching ===
 
-Listeners are called in the order they subscribed + Events are published in order. So at a time t, there will only be at most one event published to one listener. The second event
+ * Listeners are called in the order they subscribed
+ * Events are published in order
+ * Only one thread can publish at a time
+
+This strategy guarantees the order of listeners called and the order of published events. The publish method thus block until the previous publishing is finished.
+
+This strategy is better when your publishers don't need to execute fast, and when your subscribers are fast to execute.
 
 {{{
-EventService service = EventServices.
+DispatcherService eventService = DispatcherServices.blockingOrdered();
 }}}
 
-=== Ordered Per-thread ===
+=== Blocking Unordered Dispatching ===
 
-=== Asynchronous ===
+ * Listeners are called in the order they subscribed
+ * Events are published unordered
+ * Several threads can publish at a time
 
-=== Multicasting ===
+This strategy guarantees the order of listeners called. The publish method only block for the current thread, meaning that a thread can be publishing while another thread also starting publishing an event.
+
+This strategy is better when you don't care about event order and don't need your publishers to return fast.
+
+{{{
+DispatcherService eventService = DispatcherServices.blockingUnordered();
+}}}
+
+=== Asynchronous Ordered Dispatching ===
+
+ * Listeners are called in the order they subscribed
+ * Events are published in order
+ * Many threads can enqueue an event at one time
+ * One background thread is responsible to dequeue and fire events
+ * A queue is used to enqueue events before they are processed. You can choose if this queue is bounded or unbounded (in this case oldest events will be discarded)
+
+This strategy guarantees the order of listeners called and the order of published events. The publish method *does not block* and the publisher thread immediately returns. The event is queued and wait for its turn to be processed by the background thread.
+
+This strategy is useful when your publishers must execute as fast as possible, but be careful to set the queue bound correctly.
+
+{{{
+DispatcherService service = DispatcherServices.asynchronousOrdered()
+}}}
+
+=== Multicast Ordered Dispatching ===
+
+ * Listeners are called unordered
+ * Events are published in order
+ * Many threads can enqueue an event at one time
+ * One background thread is responsible to dequeue and fire events concurrently
+
+This strategy guarantees the order of events listeners called and the order of published events. 
 
 == Annotation support ==
 
