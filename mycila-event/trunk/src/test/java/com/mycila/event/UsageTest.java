@@ -1,13 +1,13 @@
 package com.mycila.event;
 
 import com.mycila.event.api.Event;
-import com.mycila.event.api.EventService;
+import com.mycila.event.api.Dispatcher;
 import com.mycila.event.api.Subscriber;
 import com.mycila.event.api.TopicMatcher;
 import static com.mycila.event.api.Topics.*;
 import com.mycila.event.api.VetoableEvent;
 import com.mycila.event.api.Vetoer;
-import com.mycila.event.impl.EventServices;
+import com.mycila.event.impl.Dispatchers;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -15,11 +15,11 @@ import com.mycila.event.impl.EventServices;
 final class UsageTest {
     public static void main(String... args) {
         // first create an event service
-        EventService eventService = EventServices.newEventService();
+        Dispatcher dispatcher = Dispatchers.synchronous(true);
 
         // then subscribe
         TopicMatcher matcher = only("app/events/swing/button").or(topics("app/events/swing/fields/**"));
-        eventService.subscribe(matcher, String.class, new Subscriber<String>() {
+        dispatcher.subscribe(matcher, String.class, new Subscriber<String>() {
             @Override
             public void onEvent(Event<String> event) throws Exception {
                 System.out.println("Received: " + event.source());
@@ -27,7 +27,7 @@ final class UsageTest {
         });
 
         // you can add a listener to oppose a veto to the events
-        eventService.register(only("app/events/swing/button"), String.class, new Vetoer<String>() {
+        dispatcher.register(only("app/events/swing/button"), String.class, new Vetoer<String>() {
             @Override
             public void check(VetoableEvent<String> vetoableEvent) {
                 if (vetoableEvent.event().source().equals("password"))
@@ -36,6 +36,6 @@ final class UsageTest {
         });
 
         // and publish
-        eventService.publish(topic("app/events/swing/button"), "Hello !");
+        dispatcher.publish(topic("app/events/swing/button"), "Hello !");
     }
 }

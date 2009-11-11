@@ -14,8 +14,8 @@ public final class Subscriptions {
         notNull(matcher, "TopicMatcher");
         notNull(eventType, "Event type");
         notNull(subscriber, "Subscriber");
-        final Reachability reachability = Reachability.of(subscriber);
         return new Subscription<E, S>() {
+            final Reachability reachability = Reachability.of(subscriber);
             @Override
             public TopicMatcher topicMatcher() {
                 return matcher;
