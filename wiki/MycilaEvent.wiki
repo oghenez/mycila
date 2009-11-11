@@ -191,7 +191,7 @@ Dispatcher dispatcher = Dispatchers.synchronous(false);
 
 This strategy guarantees the order of listeners called and the order of published events. The publish method *does not block* and the publisher thread immediately returns. The event is queued and wait for its turn to be processed by the background thread.
 
-This strategy is useful when your publishers must execute as fast as possible, but be careful to also have fast publishers to not fill the queue.
+This strategy is useful when your publishers must execute as fast as possible, but be careful to also have fast subscribers to not fill the queue.
 
 {{{
 Dispatcher dispatcher = Dispatchers.asynchronous()
