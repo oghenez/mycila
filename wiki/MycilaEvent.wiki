@@ -208,4 +208,8 @@ This strategy guarantees the order of events listeners called and the order of p
 
 == Annotation support ==
 
-You can annotate your methods to decouple your code from Mycila Event and subscribe, publish and veto
+You can annotate your methods to decouple your code from Mycila Event and subscribe, publish and veto.
+
+{{{
+//TODO
+}}}
