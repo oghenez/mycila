@@ -1,6 +1,8 @@
 #summary Mycila Plugin Framework
 #labels Featured
 
+<wiki:toc max_depth="5" /> 
+
 == Introduction ==
 
 Mycila Plugin Framework is a really little (4 classes) plugin framework that enables you to build quickly a plugin architecture in your application, supporting dependencies.
