@@ -204,9 +204,9 @@ Dispatcher dispatcher = Dispatchers.asynchronous()
  * Many threads can publish an event at one time
  * Several background threads are responsible for firing events
 
-This strategy guarantees the order of listeners called, but not the order of event. Basically, each call to publics will return immediately and a thread may be spawn to handle the publishing.
+This strategy guarantees the order of listeners called, but not the order of event. Basically, each call to publics will return immediately. All events in the queue are handled by a thread pool with the maximum size given.
 
-This strategy is useful when your publishers must execute as fast as possible, and event publishing needs to be processed quickly, but by respecting listener order.
+This strategy is useful when your publishers must execute as fast as possible, and event publishing needs to be processed quickly, but by respecting listener order. This dispatcher can be seen as a concurrent event dispatcher, respecting listener order.
 
 When creating an Asynchronous Unordered Dispatching, you can configure the number of threads consuming events and handling publishing. If you create only one thread, this will have the same behavior as an Asynchronous Ordered Dispatching.
 
@@ -226,7 +226,7 @@ This strategy guarantees the order of events but calls listeners unordered. The 
 
 This type of dispatching is really useful when you don't care about ordering and want to publish fast and want your subscribers to be called as fast as possible.
 
-Note that when a thread publishes an event, the publish method will be locked until the whole publish process ends, to guarantee event ordering. So when a publishing starts, many threads are used to contact all the subscribers. But if at least one subscriber takes a long time to execute, the publish method won't return until the whole execution has finished.
+Note that when a thread publishes an event, it is enqueued. A thread is used to equeeu events one per one and fire this event concurrently to all subscribers. The publish method returns immediately, but for another event to be processed, all concurrent firing of the previous event must have finished.
 
 {{{
 Dispatcher dispatcher = Dispatchers.multicast(true)
