@@ -103,7 +103,7 @@ public final class ErrorHandlers {
                                 exception.printStackTrace(pw);
                                 pw.println();
                             }
-                            throw new EventServiceException(sw.toString(), null);
+                            throw new DispatcherException(sw.toString(), null);
                         }
                     }
 
@@ -138,7 +138,7 @@ public final class ErrorHandlers {
                         exceptions.add(exception);
                         if (exception instanceof RuntimeException)
                             throw (RuntimeException) exception;
-                        EventServiceException e = new EventServiceException(exception.getMessage(), exception);
+                        DispatcherException e = new DispatcherException(exception.getMessage(), exception);
                         e.setStackTrace(exception.getStackTrace());
                         throw e;
                     }

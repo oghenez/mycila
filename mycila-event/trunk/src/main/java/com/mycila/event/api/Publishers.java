@@ -10,9 +10,9 @@ public final class Publishers {
     private Publishers() {
     }
 
-    public <E> Publisher<E> publisher(final EventService eventService, final Topic topic) {
+    public <E> Publisher<E> publisher(final Dispatcher dispatcher, final Topic topic) {
         notNull(topic, "Topic");
-        notNull(eventService, "EventService");
+        notNull(dispatcher, "Dispatcher");
         return new Publisher<E>() {
             @Override
             public Topic topic() {
@@ -21,7 +21,7 @@ public final class Publishers {
 
             @Override
             public void publish(E source) {
-                eventService.publish(topic, source);
+                dispatcher.publish(topic, source);
             }
 
             @Override
