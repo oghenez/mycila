@@ -18,7 +18,6 @@ package com.mycila.event.impl;
 
 import com.mycila.event.api.Dispatcher;
 import com.mycila.event.api.ErrorHandlerProvider;
-import com.mycila.event.api.ErrorHandlers;
 import com.mycila.event.api.Topic;
 
 import java.util.concurrent.locks.Lock;
@@ -29,30 +28,60 @@ import static com.mycila.event.api.Ensure.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Dispatchers {
+public enum Dispatchers {
 
-    private Dispatchers() {
-    }
+    SYNCHRONOUS_BLOCKING_DISPATCHER {
+        @Override
+        Dispatcher createInternal(ErrorHandlerProvider errorHandlerProvider) {
+            return new SynchronousUnorderedDispatcher(errorHandlerProvider) {
+                final Lock publishing = new ReentrantLock();
 
-    public static Dispatcher synchronous(boolean blocking) {
-        return synchronous(blocking, ErrorHandlers.rethrowErrorsWhenFinished());
-    }
-
-    public static Dispatcher synchronous(boolean blocking, ErrorHandlerProvider errorHandlerProvider) {
-        final SynchronousNonBlockingDispatcher dispatcher = new SynchronousNonBlockingDispatcher(notNull(errorHandlerProvider, "ErrorHandlerProvider"));
-        return !blocking ? dispatcher : new DispatcherDelegate(dispatcher) {
-            final Lock publishing = new ReentrantLock();
-
-            @Override
-            public <E> void publish(Topic topic, E source) {
-                publishing.lock();
-                try {
-                    delegate.publish(topic, source);
-                } finally {
-                    publishing.unlock();
+                @Override
+                public <E> void publish(Topic topic, E source) {
+                    publishing.lock();
+                    try {
+                        super.publish(topic, source);
+                    } finally {
+                        publishing.unlock();
+                    }
                 }
-            }
-        };
+            };
+        }},
+
+    SYNCHRONOUS_DISPATCHER {
+        @Override
+        Dispatcher createInternal(ErrorHandlerProvider errorHandlerProvider) {
+            return new SynchronousUnorderedDispatcher(errorHandlerProvider);
+        }},
+
+    ASYNCHRONOUS_ORDERED_DISPATCHER {
+        @Override
+        Dispatcher createInternal(ErrorHandlerProvider errorHandlerProvider) {
+            return null;
+        }},
+
+    ASYNCHRONOUS_UNORDERED_DISPATCHER {
+        @Override
+        Dispatcher createInternal(ErrorHandlerProvider errorHandlerProvider) {
+            return null;
+        }},
+
+    BROADCAST_ORDERED_DISPATCHER {
+        @Override
+        Dispatcher createInternal(ErrorHandlerProvider errorHandlerProvider) {
+            return null;
+        }},
+
+    BROADCAST_UNORDERED_DISPATCHER {
+        @Override
+        Dispatcher createInternal(ErrorHandlerProvider errorHandlerProvider) {
+            return null;
+        }};
+
+    public Dispatcher create(ErrorHandlerProvider errorHandlerProvider) {
+        return createInternal(notNull(errorHandlerProvider, "ErrorHandlerProvider"));
     }
+
+    abstract Dispatcher createInternal(ErrorHandlerProvider errorHandlerProvider);
 
 }

@@ -32,7 +32,7 @@ public final class ExceptionHandlerTest {
     @Test(expected = DispatcherException.class)
     public void test_toString() {
         Event<String> event = Events.event(Topics.topic("a"), "Hello !");
-        ErrorHandler handler = ErrorHandlers.rethrowErrorsWhenFinished().get();
+        ErrorHandler handler = ErrorHandlers.rethrowErrorsAfterPublish().get();
         handler.onPublishingStarting();
         handler.onError(event, new IllegalArgumentException("An IllegalArgumentException occured"));
         handler.onError(event, new InvocationTargetException(new NullPointerException("null")));
