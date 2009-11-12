@@ -17,13 +17,14 @@
 package com.mycila.event;
 
 import com.mycila.event.dispatch.DispatcherException;
-import com.mycila.event.util.CachedProvider;
 import com.mycila.event.util.Provider;
+import com.mycila.event.util.Providers;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -35,8 +36,54 @@ public final class ErrorHandlers {
     private ErrorHandlers() {
     }
 
+    public static Provider<ErrorHandler> compose(final Provider<? extends ErrorHandler>... providers) {
+        return new Provider<ErrorHandler>() {
+            @Override
+            public ErrorHandler get() {
+                final ErrorHandler[] errorHandlers = new ErrorHandler[providers.length];
+                for (int i = 0; i < errorHandlers.length; i++)
+                    errorHandlers[i] = providers[i].get();
+                return new ErrorHandler() {
+                    @Override
+                    public void onPublishingStarting() {
+                        for (ErrorHandler errorHandler : errorHandlers)
+                            errorHandler.onPublishingStarting();
+                    }
+
+                    @Override
+                    public void onPublishingFinished() {
+                        for (ErrorHandler errorHandler : errorHandlers)
+                            errorHandler.onPublishingFinished();
+                    }
+
+                    @Override
+                    public void onError(Subscription subscription, Event event, Exception e) {
+                        for (ErrorHandler errorHandler : errorHandlers)
+                            errorHandler.onError(subscription, event, e);
+                    }
+
+                    @Override
+                    public boolean hasFailed() {
+                        for (ErrorHandler errorHandler : errorHandlers)
+                            if (errorHandler.hasFailed())
+                                return true;
+                        return false;
+                    }
+
+                    @Override
+                    public List<Exception> errors() {
+                        List<Exception> exceptions = new LinkedList<Exception>();
+                        for (ErrorHandler errorHandler : errorHandlers)
+                            exceptions.addAll(errorHandler.errors());
+                        return exceptions;
+                    }
+                };
+            }
+        };
+    }
+
     public static Provider<ErrorHandler> ignoreErrors() {
-        return new CachedProvider<ErrorHandler>(SILENT);
+        return Providers.cache(SILENT);
     }
 
     private static final ErrorHandler SILENT = new ErrorHandler() {

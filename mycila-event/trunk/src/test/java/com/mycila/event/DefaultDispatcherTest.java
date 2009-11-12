@@ -39,7 +39,7 @@ import static org.junit.Assert.*;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @RunWith(JUnit4.class)
-public final class OrderedDispatcherTest {
+public final class DefaultDispatcherTest {
 
     private final List<Object> sequence = new ArrayList<Object>();
 
