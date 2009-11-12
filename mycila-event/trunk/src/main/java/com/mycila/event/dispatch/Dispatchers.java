@@ -18,6 +18,8 @@ package com.mycila.event.dispatch;
 
 import com.mycila.event.ErrorHandlerProvider;
 import com.mycila.event.util.DefaultThreadFactory;
+import com.mycila.event.util.ImmediateBlockingExecutor;
+import com.mycila.event.util.ImmediateExecutor;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -25,8 +27,6 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -36,30 +36,13 @@ public enum Dispatchers {
     SYNCHRONOUS_SAFE_DISPATCHER {
         @Override
         public Dispatcher create(ErrorHandlerProvider errorHandlerProvider) {
-            return new OrderedDispatcher(errorHandlerProvider, new Executor() {
-                final Lock publishing = new ReentrantLock();
-
-                @Override
-                public void execute(Runnable command) {
-                    publishing.lock();
-                    try {
-                        command.run();
-                    } finally {
-                        publishing.unlock();
-                    }
-                }
-            });
+            return new DefaultDispatcher(errorHandlerProvider, new ImmediateBlockingExecutor(), new ImmediateExecutor());
         }},
 
     SYNCHRONOUS_UNSAFE_DISPATCHER {
         @Override
         public Dispatcher create(ErrorHandlerProvider errorHandlerProvider) {
-            return new OrderedDispatcher(errorHandlerProvider, new Executor() {
-                @Override
-                public void execute(Runnable command) {
-                    command.run();
-                }
-            });
+            return new DefaultDispatcher(errorHandlerProvider, new ImmediateExecutor(), new ImmediateExecutor());
         }},
 
     ASYNCHRONOUS_SAFE_DISPATCHER {
@@ -71,7 +54,7 @@ public enum Dispatchers {
                     20L, TimeUnit.SECONDS,
                     new LinkedBlockingQueue<Runnable>(),
                     threadFactory);
-            return new OrderedDispatcher(errorHandlerProvider, executor);
+            return new DefaultDispatcher(errorHandlerProvider, executor, new ImmediateExecutor());
         }},
 
     ASYNCHRONOUS_UNSAFE_DISPATCHER {
@@ -83,7 +66,7 @@ public enum Dispatchers {
                     20L, TimeUnit.SECONDS,
                     new SynchronousQueue<Runnable>(),
                     threadFactory);
-            return new OrderedDispatcher(errorHandlerProvider, executor);
+            return new DefaultDispatcher(errorHandlerProvider, executor, new ImmediateExecutor());
         }},
 
     BROADCAST_ORDERED_DISPATCHER {
