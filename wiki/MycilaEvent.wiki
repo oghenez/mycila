@@ -153,7 +153,7 @@ dispatcher.subscribe(Topics.any(), Object.class, new Subscriber<Object>() {
 
 There are several strategies regarding about how you want the order of events and the order of listeners be respected and whether or not you have multiple threads publishing events.
 
-=== Synchronous Blocking Dispatching ===
+=== Synchronous Safe Dispatching ===
 
  * Listeners are called in the order they subscribed
  * Events are published *one after one*
@@ -161,13 +161,13 @@ There are several strategies regarding about how you want the order of events an
 
 This strategy guarantees the order of listeners called and that only one thread will hit the listeners at a time. Thus, your listeners don't need to be thread-safe. The publish method thus block until the previous publishing is finished.
 
-This behavior allows you to have stateful non thread-safe subscribers. When multiple threads are publishing, this strategy is slower than the others.
+This behavior allows you to have stateful non thread-safe subscribers. When multiple threads are publishing, this strategy is slower.
 
 {{{
-Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_BLOCKING_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
+Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_SAFE_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
 }}}
 
-=== Synchronous Non Blocking Dispatching ===
+=== Synchronous Unsafe Dispatching ===
 
  * Listeners are called in the order they subscribed
  * Events are published immediately
@@ -178,10 +178,10 @@ This strategy guarantees the order of listeners called. The publish method only 
 Your subscribers need to be stateless and thread-safe. Multiple threads can publish at the same time.
 
 {{{
-Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
+Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_UNSAFE_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
 }}}
 
-=== Asynchronous Ordered Dispatching ===
+=== Asynchronous Safe Dispatching ===
 
  * Listeners are called in the order they subscribed
  * Events are published one after one
@@ -191,28 +191,31 @@ Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_DISPATCHER.create(ErrorHandlers.
 
 This strategy guarantees the order of listeners called and the order of published events. The publish method *does not block* and the publisher thread immediately returns. The event is queued and wait for its turn to be processed by the background thread.
 
-This strategy is useful when your publishers must execute as fast as possible, but be careful to also have fast subscribers to not fill the queue.
+This strategy is useful when your publishers must execute as fast as possible, but be careful to also have fast subscribers to not fill the queue. This behavior allows you to have stateful non thread-safe subscribers since only one thread will dequeue and fire events.
+
+Since this strategy uses an unbounded queue, be careful to have fast subscribers and to not publish events more than your subscribers can consume.
 
 {{{
-Dispatcher dispatcher = Dispatchers.ASYNCHRONOUS_ORDERED_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
+Dispatcher dispatcher = Dispatchers.ASYNCHRONOUS_SAFE_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
 }}}
 
-=== Asynchronous Unordered Dispatching ===
+=== Asynchronous Unsafe Dispatching ===
 
  * Listeners are called in the order they subscribed
  * Several events (so listeners) are processed at the same time
  * Many threads can publish an event at one time
  * Several background threads are responsible for firing events
 
-This strategy guarantees the order of listeners called, but not the order of event. Basically, each call to publics will return immediately. All events in the queue are handled by a thread pool with the maximum size given.
+This strategy guarantees the order of listeners called, but not the order of event. Basically, each call to publish will return immediately. All events in the queue are handled by a thread pool.
 
 This strategy is useful when your publishers must execute as fast as possible, and event publishing needs to be processed quickly, but by respecting listener order. This dispatcher can be seen as a concurrent event dispatcher, respecting listener order.
 
-When creating an Asynchronous Unordered Dispatching, you can configure the number of threads consuming events and handling publishing. If you create only one thread, this will have the same behavior as an Asynchronous Ordered Dispatching.
+Since this strategy uses an unbounded queue, be careful to have fast subscribers and to not publish events more than your subscribers can consume.
+
+Your subscribers need to be stateless and thread-safe. Multiple threads can send events at the same time.
 
 {{{
-// create 10 dispatcher threads waiting for events
-Dispatcher dispatcher = Dispatchers.ASYNCHRONOUS_UNORDERED_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
+Dispatcher dispatcher = Dispatchers.ASYNCHRONOUS_UNSAFE_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
 }}}
 
 === Broadcast Ordered Dispatching ===
