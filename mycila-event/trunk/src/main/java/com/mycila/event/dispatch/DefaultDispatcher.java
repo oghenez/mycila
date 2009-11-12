@@ -16,6 +16,8 @@
 
 package com.mycila.event.dispatch;
 
+import com.mycila.event.ErrorHandler;
+import com.mycila.event.ErrorHandlerProvider;
 import com.mycila.event.Event;
 import com.mycila.event.Events;
 import com.mycila.event.Subscriber;
@@ -30,16 +32,62 @@ import com.mycila.event.ref.ReferencableCollection;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.concurrent.Executor;
 
 import static com.mycila.event.util.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class DispatcherSkeleton implements Dispatcher {
+public final class DefaultDispatcher implements Dispatcher {
 
     private final Collection<Subscription> subscribers = new ReferencableCollection<Subscription>();
     private final Collection<Subscription> vetoers = new ReferencableCollection<Subscription>();
+
+    private final ErrorHandlerProvider exceptionHandlerProvider;
+    private final Executor publishExecutor;
+    private final Executor subscriberExecutor;
+
+    //TODO: executor providers instead of executors
+    public DefaultDispatcher(ErrorHandlerProvider exceptionHandlerProvider, Executor publishExecutor, Executor subscriberExecutor) {
+        this.exceptionHandlerProvider = notNull(exceptionHandlerProvider, "ErrorHandlerProvider");
+        this.publishExecutor = notNull(publishExecutor, "Publishing executor");
+        this.subscriberExecutor = notNull(subscriberExecutor, "Subscriber executor");
+    }
+
+    @Override
+    public final <E> void publish(final Topic topic, final E source) {
+        notNull(topic, "Topic");
+        notNull(source, "Event source");
+        publishExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final Event<E> event = Events.event(topic, source);
+                if (!isVetoed(event)) {
+                    final ErrorHandler handler = exceptionHandlerProvider.get();
+                    final Iterator<Subscriber<E>> subscriberIterator = getSubscribers(event);
+                    try {
+                        handler.onPublishingStarting();
+                        while (subscriberIterator.hasNext()) {
+                            final Subscriber<E> subscriber = subscriberIterator.next();
+                            subscriberExecutor.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        subscriber.onEvent(event);
+                                    } catch (Exception e) {
+                                        handler.onError(event, e);
+                                    }
+                                }
+                            });
+                        }
+                    } finally {
+                        handler.onPublishingFinished();
+                    }
+                }
+            }
+        });
+    }
 
     @Override
     public final <E> void register(TopicMatcher matcher, Class<E> eventType, Vetoer<E> vetoer) {
