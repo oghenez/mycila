@@ -17,6 +17,8 @@
 package com.mycila.event;
 
 import com.mycila.event.dispatch.DispatcherException;
+import com.mycila.event.util.CachedProvider;
+import com.mycila.event.util.Provider;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -24,8 +26,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import static com.mycila.event.util.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -35,30 +35,8 @@ public final class ErrorHandlers {
     private ErrorHandlers() {
     }
 
-    public static ErrorHandlerProvider singleton(final ErrorHandler handler) {
-        notNull(handler, "ErrorHandler");
-        return new ErrorHandlerProvider() {
-            @Override
-            public ErrorHandler get() {
-                return handler;
-            }
-        };
-    }
-
-    public static ErrorHandlerProvider singleton(final ErrorHandlerProvider errorHandlerProvider) {
-        notNull(errorHandlerProvider, "ErrorHandlerProvider");
-        return new ErrorHandlerProvider() {
-            final ErrorHandler errorHandler = errorHandlerProvider.get();
-
-            @Override
-            public ErrorHandler get() {
-                return errorHandler;
-            }
-        };
-    }
-
-    public static ErrorHandlerProvider ignoreErrors() {
-        return singleton(SILENT);
+    public static Provider<ErrorHandler> ignoreErrors() {
+        return new CachedProvider<ErrorHandler>(SILENT);
     }
 
     private static final ErrorHandler SILENT = new ErrorHandler() {
@@ -85,8 +63,8 @@ public final class ErrorHandlers {
         }
     };
 
-    public static ErrorHandlerProvider rethrowErrorsAfterPublish() {
-        return new ErrorHandlerProvider() {
+    public static Provider<ErrorHandler> rethrowErrorsAfterPublish() {
+        return new Provider<ErrorHandler>() {
             @Override
             public ErrorHandler get() {
                 return new ErrorHandler() {
@@ -134,8 +112,8 @@ public final class ErrorHandlers {
         };
     }
 
-    public static ErrorHandlerProvider rethrowErrorsImmediately() {
-        return new ErrorHandlerProvider() {
+    public static Provider<ErrorHandler> rethrowErrorsImmediately() {
+        return new Provider<ErrorHandler>() {
             @Override
             public ErrorHandler get() {
                 return new ErrorHandler() {
