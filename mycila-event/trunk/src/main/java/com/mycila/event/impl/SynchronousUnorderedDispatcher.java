@@ -30,11 +30,11 @@ import static com.mycila.event.api.Ensure.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class SynchronousNonBlockingDispatcher extends DispatcherSkeleton {
+class SynchronousUnorderedDispatcher extends DispatcherSkeleton {
 
     private final ErrorHandlerProvider exceptionHandlerProvider;
 
-    SynchronousNonBlockingDispatcher(ErrorHandlerProvider ExceptionHandlerProvider) {
+    SynchronousUnorderedDispatcher(ErrorHandlerProvider ExceptionHandlerProvider) {
         this.exceptionHandlerProvider = ExceptionHandlerProvider;
     }
 

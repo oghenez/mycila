@@ -83,7 +83,7 @@ public final class ErrorHandlers {
         }
     };
 
-    public static ErrorHandlerProvider rethrowErrorsWhenFinished() {
+    public static ErrorHandlerProvider rethrowErrorsAfterPublish() {
         return new ErrorHandlerProvider() {
             @Override
             public ErrorHandler get() {
