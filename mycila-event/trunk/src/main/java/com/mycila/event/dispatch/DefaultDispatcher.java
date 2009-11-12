@@ -44,12 +44,13 @@ public final class DefaultDispatcher implements Dispatcher {
     private final Collection<Subscription> subscribers = new ReferencableCollection<Subscription>();
     private final Collection<Subscription> vetoers = new ReferencableCollection<Subscription>();
 
-    private final Provider<ErrorHandler> exceptionHandlerProvider;
-    private final Executor publishExecutor;
-    private final Executor subscriberExecutor;
+    private final Provider<? extends ErrorHandler> exceptionHandlerProvider;
+    private final Provider<? extends Executor> publishExecutor;
+    private final Provider<? extends Executor> subscriberExecutor;
 
-    //TODO: executor providers instead of executors
-    public DefaultDispatcher(Provider<ErrorHandler> exceptionHandlerProvider, Executor publishExecutor, Executor subscriberExecutor) {
+    public DefaultDispatcher(Provider<? extends ErrorHandler> exceptionHandlerProvider,
+                             Provider<? extends Executor> publishExecutor,
+                             Provider<? extends Executor> subscriberExecutor) {
         this.exceptionHandlerProvider = notNull(exceptionHandlerProvider, "ErrorHandlerProvider");
         this.publishExecutor = notNull(publishExecutor, "Publishing executor");
         this.subscriberExecutor = notNull(subscriberExecutor, "Subscriber executor");
@@ -59,7 +60,7 @@ public final class DefaultDispatcher implements Dispatcher {
     public final <E> void publish(final Topic topic, final E source) {
         notNull(topic, "Topic");
         notNull(source, "Event source");
-        publishExecutor.execute(new Runnable() {
+        publishExecutor.get().execute(new Runnable() {
             @SuppressWarnings({"unchecked"})
             @Override
             public void run() {
@@ -69,6 +70,7 @@ public final class DefaultDispatcher implements Dispatcher {
                     final Iterator<Subscription<E, Subscriber<E>>> subscriptionIterator = getSubscribers(event);
                     try {
                         handler.onPublishingStarting();
+                        Executor subscriberExecutor = DefaultDispatcher.this.subscriberExecutor.get();
                         while (subscriptionIterator.hasNext()) {
                             final Subscription<E, Subscriber<E>> subscription = subscriptionIterator.next();
                             subscriberExecutor.execute(new Runnable() {
@@ -148,8 +150,8 @@ public final class DefaultDispatcher implements Dispatcher {
         }
     }
 
-    private <E, S> Iterator<S> filterListeners(final Iterable<Subscription> iterable, final Event<E> event) {
-        return new Iterator<S>() {
+    private <E, S> Iterator<Subscription<E, S>> filterListeners(final Iterable<Subscription> iterable, final Event<E> event) {
+        return new Iterator<Subscription<E, S>>() {
             final Class<?> eventType = event.source().getClass();
             final Topic topic = event.topic();
             final Iterator<Subscription> subscriptionIterator = iterable.iterator();
@@ -169,10 +171,10 @@ public final class DefaultDispatcher implements Dispatcher {
 
             @SuppressWarnings({"unchecked"})
             @Override
-            public S next() {
+            public Subscription<E, S> next() {
                 if (!hasNext)
                     throw new NoSuchElementException();
-                return (S) next.subscriber();
+                return next;
             }
 
             @Override

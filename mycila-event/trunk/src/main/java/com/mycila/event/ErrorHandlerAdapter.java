@@ -14,16 +14,34 @@
  * limitations under the License.
  */
 
-package com.mycila.event.util;
+package com.mycila.event;
 
-import java.util.concurrent.Executor;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ImmediateExecutor implements Executor {
+public class ErrorHandlerAdapter implements ErrorHandler{
     @Override
-    public void execute(Runnable command) {
-        command.run();
+    public List<Exception> errors() {
+        return new LinkedList<Exception>();
+    }
+
+    @Override
+    public void onPublishingStarting() {
+    }
+
+    @Override
+    public void onPublishingFinished() {
+    }
+
+    @Override
+    public void onError(Subscription subscription, Event event, Exception e) {
+    }
+
+    @Override
+    public boolean hasFailed() {
+        return false;
     }
 }

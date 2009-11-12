@@ -17,12 +17,17 @@
 package com.mycila.event.dispatch;
 
 import com.mycila.event.ErrorHandler;
+import com.mycila.event.ErrorHandlerAdapter;
+import com.mycila.event.ErrorHandlers;
 import com.mycila.event.util.DefaultThreadFactory;
-import com.mycila.event.util.ImmediateBlockingExecutor;
-import com.mycila.event.util.ImmediateExecutor;
+import com.mycila.event.util.Executors;
 import com.mycila.event.util.Provider;
+import com.mycila.event.util.Providers;
 
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
@@ -37,13 +42,13 @@ public enum Dispatchers {
     SYNCHRONOUS_SAFE_DISPATCHER {
         @Override
         public Dispatcher create(Provider<ErrorHandler> errorHandlerProvider) {
-            return new DefaultDispatcher(errorHandlerProvider, new ImmediateBlockingExecutor(), new ImmediateExecutor());
+            return new DefaultDispatcher(errorHandlerProvider, Executors.blocking(), Executors.immediate());
         }},
 
     SYNCHRONOUS_UNSAFE_DISPATCHER {
         @Override
         public Dispatcher create(Provider<ErrorHandler> errorHandlerProvider) {
-            return new DefaultDispatcher(errorHandlerProvider, new ImmediateExecutor(), new ImmediateExecutor());
+            return new DefaultDispatcher(errorHandlerProvider, Executors.immediate(), Executors.immediate());
         }},
 
     ASYNCHRONOUS_SAFE_DISPATCHER {
@@ -55,7 +60,7 @@ public enum Dispatchers {
                     20L, TimeUnit.SECONDS,
                     new LinkedBlockingQueue<Runnable>(),
                     threadFactory);
-            return new DefaultDispatcher(errorHandlerProvider, executor, new ImmediateExecutor());
+            return new DefaultDispatcher(errorHandlerProvider, Providers.cache(executor), Executors.immediate());
         }},
 
     ASYNCHRONOUS_UNSAFE_DISPATCHER {
@@ -67,21 +72,61 @@ public enum Dispatchers {
                     20L, TimeUnit.SECONDS,
                     new SynchronousQueue<Runnable>(),
                     threadFactory);
-            return new DefaultDispatcher(errorHandlerProvider, executor, new ImmediateExecutor());
+            return new DefaultDispatcher(errorHandlerProvider, Providers.cache(executor), Executors.immediate());
         }},
 
     BROADCAST_ORDERED_DISPATCHER {
         @Override
         public Dispatcher create(Provider<ErrorHandler> errorHandlerProvider) {
-            return null;
+            ThreadFactory threadFactory = new DefaultThreadFactory(this.name(), "dispatcher");
+            final Executor executor = new ThreadPoolExecutor(
+                    0, Integer.MAX_VALUE,
+                    20L, TimeUnit.SECONDS,
+                    new SynchronousQueue<Runnable>(),
+                    threadFactory);
+
+            return new DefaultDispatcher(ErrorHandlers.compose(Providers.<ErrorHandler>cache(new ErrorHandlerAdapter() {
+                @Override
+                public void onPublishingStarting() {
+
+                }
+
+                @Override
+                public void onPublishingFinished() {
+                    com
+                }
+            }), errorHandlerProvider),
+                    Providers.cache(executor),
+                    Providers.cache(new Executor() {
+                        @Override
+                        public void execute(Runnable command) {
+                            completionService.submit(command, null);
+                        }
+                    }));
         }},
 
     BROADCAST_UNORDERED_DISPATCHER {
         @Override
         public Dispatcher create(Provider<ErrorHandler> errorHandlerProvider) {
-            return null;
+            ThreadFactory threadFactory = new DefaultThreadFactory(this.name(), "dispatcher");
+            Executor executor = new ThreadPoolExecutor(
+                    0, Integer.MAX_VALUE,
+                    20L, TimeUnit.SECONDS,
+                    new SynchronousQueue<Runnable>(),
+                    threadFactory);
+            return new DefaultDispatcher(errorHandlerProvider, Providers.cache(executor), Providers.cache(executor));
         }};
 
     public abstract Dispatcher create(Provider<ErrorHandler> errorHandlerProvider);
+
+    private static final class OrderedBroadcasting extends ErrorHandlerAdapter implements  Executor {
+
+        
+
+        @Override
+        public void execute(Runnable command) {
+        }
+
+    }
 
 }
