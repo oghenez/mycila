@@ -14,7 +14,7 @@ Mycila Event is a new powerful event framework for in-memory event management. I
 import static com.mycila.event.api.topic.Topics.*;
 
 // first create an event service
-Dispatcher dispatcher = Dispatchers.yourDispatcherStrategy();
+Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_UNORDERED_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
 
 // then subscribe
 TopicMatcher matcher = only("app/events/swing/button").or(topics("app/events/swing/fields/**"));
@@ -118,7 +118,7 @@ By default, if a subscriber launches an exception, the exception is put in a lis
 You can change this default behavior by using your proper `ErrorHandler`. The class `ErrorHandlers` already has several methods to help you provide error handlers:
 
  * `ErrorHandlers.ignoreErrors()`: ignore all exceptions thrown by subscribers
- * `ErrorHandlers.rethrowErrorsWhenFinished()`: the default behavior: when an event is published, stack all errors and throw an aggregated exception at the end if some errors occured.
+ * `ErrorHandlers.rethrowErrorsAfterPublish()`: the default behavior: when an event is published, stack all errors and throw an aggregated exception at the end if some errors occured.
  * `ErrorHandlers.rethrowErrorsImmediately()`: the behavior if error handlers weren't be there: if a publisher fail, the publishing is stopped and its exception thrown.
 
 `ErrorHandlers` also has other methods to help you build your own `ErrorHandler` class and its associated provider `ErrorHandlerProvider`. At each publishing, `ErrorHandlerProvider.get()` is called to obtain a new `ErrorHandler`. Note that `ErrorHandlerProvider.get()` can act as a singleton: you only need to wrap your `ErrorHandlerProvider` or `ErrorHandler` by using `ErrorHandlers.singleton(...)` and the same instance will be reused each time.
@@ -126,7 +126,7 @@ You can change this default behavior by using your proper `ErrorHandler`. The cl
 To create an EventService with the appropriate event handler, you just have to set the `ErrorHandlerProvider` instance when creating it:
 
 {{{
-Dispatcher dispatcher = Dispatchers.yourDispatcherStrategy(ErrorHandlers.ignoreErrors());
+Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_UNORDERED_DISPATCHER.create(ErrorHandlers.ignoreErrorsh());
 }}}
 
 == Topic Matchers ==
@@ -164,7 +164,7 @@ This strategy guarantees the order of listeners called and the order of publishe
 This strategy is better when your publishers don't need to execute fast, and when your subscribers are fast to execute.
 
 {{{
-Dispatcher dispatcher = Dispatchers.synchronous(true);
+Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_ORDERED_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
 }}}
 
 === Synchronous Unordered Dispatching ===
@@ -178,7 +178,7 @@ This strategy guarantees the order of listeners called. The publish method only 
 This strategy is better when you don't care about event order and don't need your publishers to return fast.
 
 {{{
-Dispatcher dispatcher = Dispatchers.synchronous(false);
+Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_UNORDERED_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
 }}}
 
 === Asynchronous Ordered Dispatching ===
@@ -194,7 +194,7 @@ This strategy guarantees the order of listeners called and the order of publishe
 This strategy is useful when your publishers must execute as fast as possible, but be careful to also have fast subscribers to not fill the queue.
 
 {{{
-Dispatcher dispatcher = Dispatchers.asynchronous()
+Dispatcher dispatcher = Dispatchers.ASYNCHRONOUS_ORDERED_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
 }}}
 
 === Asynchronous Unordered Dispatching ===
@@ -212,7 +212,7 @@ When creating an Asynchronous Unordered Dispatching, you can configure the numbe
 
 {{{
 // create 10 dispatcher threads waiting for events
-Dispatcher dispatcher = Dispatchers.asynchronous(10)
+Dispatcher dispatcher = Dispatchers.ASYNCHRONOUS_UNORDERED_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
 }}}
 
 === Broadcast Ordered Dispatching ===
@@ -229,7 +229,7 @@ This type of dispatching is really useful when you don't care about ordering and
 Note that when a thread publishes an event, it is enqueued. A thread is used to equeeu events one per one and fire this event concurrently to all subscribers. The publish method returns immediately, but for another event to be processed, all concurrent firing of the previous event must have finished.
 
 {{{
-Dispatcher dispatcher = Dispatchers.multicast(true)
+Dispatcher dispatcher = Dispatchers.BROADCAST_ORDERED_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
 }}}
 
 === Broadcast Unordered Dispatching ===
@@ -244,7 +244,7 @@ This type of dispatching is really useful when you don't care about any ordering
 Thus, subscribers taking a long time to execute don't affect publishing of other events to other subscribers.
 
 {{{
-Dispatcher dispatcher = Dispatchers.multicast(false)
+Dispatcher dispatcher = Dispatchers.BROADCAST_UNORDERED_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
 }}}
 
 == Annotation support ==
