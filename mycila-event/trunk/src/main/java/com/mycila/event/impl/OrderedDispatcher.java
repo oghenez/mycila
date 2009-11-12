@@ -24,41 +24,50 @@ import com.mycila.event.api.Subscriber;
 import com.mycila.event.api.Topic;
 
 import java.util.Iterator;
+import java.util.concurrent.Executor;
 
-import static com.mycila.event.api.Ensure.*;
+import static com.mycila.event.api.util.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-class SynchronousUnorderedDispatcher extends DispatcherSkeleton {
+final class OrderedDispatcher extends DispatcherSkeleton {
 
     private final ErrorHandlerProvider exceptionHandlerProvider;
+    private final Executor executor;
 
-    SynchronousUnorderedDispatcher(ErrorHandlerProvider ExceptionHandlerProvider) {
+    OrderedDispatcher(ErrorHandlerProvider ExceptionHandlerProvider, Executor executor) {
         this.exceptionHandlerProvider = ExceptionHandlerProvider;
+        this.executor = executor;
     }
 
     @Override
-    public <E> void publish(Topic topic, E source) {
+    public <E> void publish(final Topic topic, final E source) {
         notNull(topic, "Topic");
         notNull(source, "Event source");
-        Event<E> event = Events.event(topic, source);
-        if (!isVetoed(event)) {
-            ErrorHandler handler = exceptionHandlerProvider.get();
-            Iterator<Subscriber<E>> subscriberIterator = getSubscribers(event);
-            try {
-                handler.onPublishingStarting();
-                while (subscriberIterator.hasNext()) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                Event<E> event = Events.event(topic, source);
+                if (!isVetoed(event)) {
+                    ErrorHandler handler = exceptionHandlerProvider.get();
+                    Iterator<Subscriber<E>> subscriberIterator = getSubscribers(event);
                     try {
-                        subscriberIterator.next().onEvent(event);
-                    } catch (Exception e) {
-                        handler.onError(event, e);
+                        handler.onPublishingStarting();
+                        while (subscriberIterator.hasNext()) {
+                            try {
+                                subscriberIterator.next().onEvent(event);
+                            } catch (Exception e) {
+                                handler.onError(event, e);
+                            }
+                        }
+                    } finally {
+                        handler.onPublishingFinished();
                     }
                 }
-            } finally {
-                handler.onPublishingFinished();
             }
-        }
+        });
+
     }
 
 }

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.event.api;
+package com.mycila.event.api.ref;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
-import static com.mycila.event.api.Ensure.*;
+import static com.mycila.event.api.util.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
