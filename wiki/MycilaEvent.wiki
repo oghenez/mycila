@@ -229,7 +229,9 @@ This strategy guarantees the order of events but calls listeners unordered. The 
 
 This type of dispatching is really useful when you don't care about ordering and want to publish fast and want your subscribers to be called as fast as possible.
 
-Note that when a thread publishes an event, it is enqueued. A thread is used to equeeu events one per one and fire this event concurrently to all subscribers. The publish method returns immediately, but for another event to be processed, all concurrent firing of the previous event must have finished.
+Note that when a thread publishes an event, it is enqueued. A thread is used to enqueue events one per one and fire this event concurrently to all subscribers. The publish method returns immediately, but for another event to be processed, all concurrent firing of the previous event must have finished.
+
+This guarantees that all subscribers will be called concurrently, but they will all receive the events in the same order.
 
 {{{
 Dispatcher dispatcher = Dispatchers.BROADCAST_ORDERED_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
@@ -249,6 +251,18 @@ Thus, subscribers taking a long time to execute don't affect publishing of other
 {{{
 Dispatcher dispatcher = Dispatchers.BROADCAST_UNORDERED_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
 }}}
+
+=== Custom strategy ===
+
+You can easily implelement and control your own dispatching strategy: simply look at the source code of `Dispatchers` to have more example. Basically, you can use the class `DefaultDispatcher` which implement `Dispatcher`, like this:
+
+{{{
+Dispatcher d = new DefaultDispatcher(errorHandlerProvider, publishingExecutor, subscriberExecutor);
+}}}
+
+Executors are implementations of `java.util.concurrent.Executor`. The first one control the concurrency of the whole publishing process and the second one control the concurrency for calling a subscriber.
+
+When no concurrency is needed, you can use provided implementations `ImmediateExecutor` or `ImmediateBlockingExecutor` if you need to be sure only one thread executes at once.
 
 == Annotation support ==
 
