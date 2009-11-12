@@ -16,15 +16,10 @@
 
 package com.mycila.event;
 
-import com.mycila.event.api.ErrorHandlers;
-import com.mycila.event.api.Event;
-import com.mycila.event.api.Dispatcher;
-import com.mycila.event.api.Subscriber;
-import com.mycila.event.api.TopicMatcher;
-import static com.mycila.event.api.Topics.*;
-import com.mycila.event.api.VetoableEvent;
-import com.mycila.event.api.Vetoer;
-import com.mycila.event.impl.Dispatchers;
+import com.mycila.event.dispatch.Dispatcher;
+import com.mycila.event.dispatch.Dispatchers;
+
+import static com.mycila.event.Topics.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
