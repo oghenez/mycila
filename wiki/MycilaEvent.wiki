@@ -176,7 +176,7 @@ Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_BLOCKING_DISPATCHER.create(Error
 This strategy guarantees the order of listeners called. The publish method only block for the current thread, meaning that a thread can be publishing while another thread also starting publishing an event. Thus, your subscribers can be hit at the same time by two or more threads.
 
 {{{
-Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_UNORDERED_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
+Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
 }}}
 
 === Asynchronous Ordered Dispatching ===
