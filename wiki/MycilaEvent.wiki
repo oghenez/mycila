@@ -153,29 +153,27 @@ dispatcher.subscribe(Topics.any(), Object.class, new Subscriber<Object>() {
 
 There are several strategies regarding about how you want the order of events and the order of listeners be respected and whether or not you have multiple threads publishing events.
 
-=== Synchronous Ordered Dispatching ===
+=== Synchronous Blocking Dispatching ===
 
  * Listeners are called in the order they subscribed
- * Events are published in order
+ * Events are published one after one
  * Only one thread can publish at a time
 
-This strategy guarantees the order of listeners called and the order of published events. The publish method thus block until the previous publishing is finished.
+This strategy guarantees the order of listeners called and that only one thread will hit the listeners at a time. Thus, your listeners don't need to be thread-safe. The publish method thus block until the previous publishing is finished.
 
 This strategy is better when your publishers don't need to execute fast, and when your subscribers are fast to execute.
 
 {{{
-Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_ORDERED_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
+Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_BLOCKING_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
 }}}
 
-=== Synchronous Unordered Dispatching ===
+=== Synchronous Non Blocking Dispatching ===
 
  * Listeners are called in the order they subscribed
- * Events are published unordered
+ * Events are published immediately
  * Several threads can publish at a time
 
-This strategy guarantees the order of listeners called. The publish method only block for the current thread, meaning that a thread can be publishing while another thread also starting publishing an event.
-
-This strategy is better when you don't care about event order and don't need your publishers to return fast.
+This strategy guarantees the order of listeners called. The publish method only block for the current thread, meaning that a thread can be publishing while another thread also starting publishing an event. Thus, your subscribers can be hit at the same time by two or more threads.
 
 {{{
 Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_UNORDERED_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
