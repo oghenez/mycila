@@ -16,15 +16,15 @@
 
 package com.mycila.event.impl;
 
-import com.mycila.event.api.Ref;
-import com.mycila.event.api.Referencable;
+import com.mycila.event.api.ref.Ref;
+import com.mycila.event.api.ref.Referencable;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import static com.mycila.event.api.Ensure.*;
+import static com.mycila.event.api.util.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

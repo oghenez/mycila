@@ -16,7 +16,9 @@
 
 package com.mycila.event.api;
 
-import static com.mycila.event.api.Ensure.*;
+import com.mycila.event.api.ref.Reachability;
+
+import static com.mycila.event.api.util.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

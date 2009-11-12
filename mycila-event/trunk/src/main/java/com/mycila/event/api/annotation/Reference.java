@@ -16,7 +16,7 @@
 
 package com.mycila.event.api.annotation;
 
-import com.mycila.event.api.Reachability;
+import com.mycila.event.api.ref.Reachability;
 
 import java.lang.annotation.*;
 

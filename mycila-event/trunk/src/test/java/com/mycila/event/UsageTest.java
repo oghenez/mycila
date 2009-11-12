@@ -32,7 +32,7 @@ import com.mycila.event.impl.Dispatchers;
 final class UsageTest {
     public static void main(String... args) {
         // first create an event service
-        Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
+        Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_UNSAFE_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
 
         // then subscribe
         TopicMatcher matcher = only("app/events/swing/button").or(topics("app/events/swing/fields/**"));

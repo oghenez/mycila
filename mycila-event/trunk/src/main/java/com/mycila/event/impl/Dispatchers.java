@@ -18,52 +18,74 @@ package com.mycila.event.impl;
 
 import com.mycila.event.api.Dispatcher;
 import com.mycila.event.api.ErrorHandlerProvider;
-import com.mycila.event.api.Topic;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static com.mycila.event.api.Ensure.*;
+import static com.mycila.event.api.util.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public enum Dispatchers {
 
-    SYNCHRONOUS_BLOCKING_DISPATCHER {
+    SYNCHRONOUS_SAFE_DISPATCHER {
         @Override
         Dispatcher createInternal(ErrorHandlerProvider errorHandlerProvider) {
-            return new SynchronousUnorderedDispatcher(errorHandlerProvider) {
+            return new OrderedDispatcher(errorHandlerProvider, new Executor() {
                 final Lock publishing = new ReentrantLock();
 
                 @Override
-                public <E> void publish(Topic topic, E source) {
+                public void execute(Runnable command) {
                     publishing.lock();
                     try {
-                        super.publish(topic, source);
+                        command.run();
                     } finally {
                         publishing.unlock();
                     }
                 }
-            };
+            });
         }},
 
-    SYNCHRONOUS_DISPATCHER {
+    SYNCHRONOUS_UNSAFE_DISPATCHER {
         @Override
         Dispatcher createInternal(ErrorHandlerProvider errorHandlerProvider) {
-            return new SynchronousUnorderedDispatcher(errorHandlerProvider);
+            return new OrderedDispatcher(errorHandlerProvider, new Executor() {
+                @Override
+                public void execute(Runnable command) {
+                    command.run();
+                }
+            });
         }},
 
-    ASYNCHRONOUS_ORDERED_DISPATCHER {
+    ASYNCHRONOUS_SAFE_DISPATCHER {
         @Override
         Dispatcher createInternal(ErrorHandlerProvider errorHandlerProvider) {
-            return null;
+            ThreadFactory threadFactory = new DefaultThreadFactory(this.name(), "dispatcher");
+            Executor executor = new ThreadPoolExecutor(
+                    0, 1,
+                    20L, TimeUnit.SECONDS,
+                    new LinkedBlockingQueue<Runnable>(),
+                    threadFactory);
+            return new OrderedDispatcher(errorHandlerProvider, executor);
         }},
 
-    ASYNCHRONOUS_UNORDERED_DISPATCHER {
+    ASYNCHRONOUS_UNSAFE_DISPATCHER {
         @Override
         Dispatcher createInternal(ErrorHandlerProvider errorHandlerProvider) {
-            return null;
+            ThreadFactory threadFactory = new DefaultThreadFactory(this.name(), "dispatcher");
+            Executor executor = new ThreadPoolExecutor(
+                    0, Integer.MAX_VALUE,
+                    20L, TimeUnit.SECONDS,
+                    new SynchronousQueue<Runnable>(),
+                    threadFactory);
+            return new OrderedDispatcher(errorHandlerProvider, executor);
         }},
 
     BROADCAST_ORDERED_DISPATCHER {
