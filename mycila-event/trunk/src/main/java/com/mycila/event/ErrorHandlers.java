@@ -41,7 +41,7 @@ public final class ErrorHandlers {
 
     private static final ErrorHandler SILENT = new ErrorHandler() {
         @Override
-        public void onError(Event<?> event, Exception exception) {
+        public void onError(Subscription subscription, Event event, Exception e) {
         }
 
         @Override
@@ -81,8 +81,8 @@ public final class ErrorHandlers {
                     }
 
                     @Override
-                    public void onError(Event<?> event, Exception exception) {
-                        exceptions.add(exception);
+                    public void onError(Subscription subscription, Event event, Exception e) {
+                        exceptions.add(e);
                     }
 
                     @Override
@@ -130,13 +130,13 @@ public final class ErrorHandlers {
                     }
 
                     @Override
-                    public void onError(Event<?> event, Exception exception) {
-                        exceptions.add(exception);
-                        if (exception instanceof RuntimeException)
-                            throw (RuntimeException) exception;
-                        DispatcherException e = new DispatcherException(exception.getMessage(), exception);
-                        e.setStackTrace(exception.getStackTrace());
-                        throw e;
+                    public void onError(Subscription subscription, Event event, Exception e) {
+                        exceptions.add(e);
+                        if (e instanceof RuntimeException)
+                            throw (RuntimeException) e;
+                        DispatcherException other = new DispatcherException(e.getMessage(), e);
+                        other.setStackTrace(e.getStackTrace());
+                        throw other;
                     }
 
                     @Override

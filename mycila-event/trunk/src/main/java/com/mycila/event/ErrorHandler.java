@@ -26,7 +26,7 @@ public interface ErrorHandler {
 
     void onPublishingFinished();
 
-    void onError(Event<?> event, Exception e);
+    void onError(Subscription subscription, Event event, Exception e);
 
     boolean hasFailed();
 
