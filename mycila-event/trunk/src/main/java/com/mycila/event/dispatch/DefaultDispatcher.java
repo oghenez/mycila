@@ -60,23 +60,24 @@ public final class DefaultDispatcher implements Dispatcher {
         notNull(topic, "Topic");
         notNull(source, "Event source");
         publishExecutor.execute(new Runnable() {
+            @SuppressWarnings({"unchecked"})
             @Override
             public void run() {
                 final Event<E> event = Events.event(topic, source);
                 if (!isVetoed(event)) {
                     final ErrorHandler handler = exceptionHandlerProvider.get();
-                    final Iterator<Subscriber<E>> subscriberIterator = getSubscribers(event);
+                    final Iterator<Subscription<E, Subscriber<E>>> subscriptionIterator = getSubscribers(event);
                     try {
                         handler.onPublishingStarting();
-                        while (subscriberIterator.hasNext()) {
-                            final Subscriber<E> subscriber = subscriberIterator.next();
+                        while (subscriptionIterator.hasNext()) {
+                            final Subscription<E, Subscriber<E>> subscription = subscriptionIterator.next();
                             subscriberExecutor.execute(new Runnable() {
                                 @Override
                                 public void run() {
                                     try {
-                                        subscriber.onEvent(event);
+                                        subscription.subscriber().onEvent(event);
                                     } catch (Exception e) {
-                                        handler.onError(event, e);
+                                        handler.onError(subscription, event, e);
                                     }
                                 }
                             });
@@ -120,21 +121,21 @@ public final class DefaultDispatcher implements Dispatcher {
     protected final <E> boolean isVetoed(Event<E> event) {
         notNull(event, "Event");
         VetoableEvent<E> vetoableEvent = Events.vetoable(event);
-        Iterator<Vetoer<E>> vetoerIterator = getVetoers(event);
-        while (vetoerIterator.hasNext()) {
-            vetoerIterator.next().check(vetoableEvent);
+        Iterator<Subscription<E, Vetoer<E>>> subscriptionIterator = getVetoers(event);
+        while (subscriptionIterator.hasNext()) {
+            subscriptionIterator.next().subscriber().check(vetoableEvent);
             if (!vetoableEvent.isAllowed())
                 return true;
         }
         return false;
     }
 
-    protected final <E, S> Iterator<S> getSubscribers(Event<E> event) {
+    protected final <E> Iterator<Subscription<E, Subscriber<E>>> getSubscribers(Event<E> event) {
         notNull(event, "Event");
         return filterListeners(subscribers, event);
     }
 
-    protected final <E, S> Iterator<S> getVetoers(Event<E> event) {
+    protected final <E> Iterator<Subscription<E, Vetoer<E>>> getVetoers(Event<E> event) {
         notNull(event, "Event");
         return filterListeners(vetoers, event);
     }

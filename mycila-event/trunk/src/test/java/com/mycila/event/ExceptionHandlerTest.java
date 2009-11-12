@@ -35,9 +35,9 @@ public final class ExceptionHandlerTest {
         Event<String> event = Events.event(Topics.topic("a"), "Hello !");
         ErrorHandler handler = ErrorHandlers.rethrowErrorsAfterPublish().get();
         handler.onPublishingStarting();
-        handler.onError(event, new IllegalArgumentException("An IllegalArgumentException occured"));
-        handler.onError(event, new InvocationTargetException(new NullPointerException("null")));
-        handler.onError(event, new IllegalStateException(new NullPointerException("null")));
+        handler.onError(null, event, new IllegalArgumentException("An IllegalArgumentException occured"));
+        handler.onError(null, event, new InvocationTargetException(new NullPointerException("null")));
+        handler.onError(null, event, new IllegalStateException(new NullPointerException("null")));
         handler.onPublishingFinished();
     }
 
@@ -47,8 +47,8 @@ public final class ExceptionHandlerTest {
         Event<String> event = Events.event(Topics.topic("a"), "Hello !");
         ErrorHandler handler = ErrorHandlers.rethrowErrorsImmediately().get();
         handler.onPublishingStarting();
-        handler.onError(event, new IllegalArgumentException("An IllegalArgumentException occured"));
-        handler.onError(event, new InvocationTargetException(new NullPointerException("null")));
+        handler.onError(null, event, new IllegalArgumentException("An IllegalArgumentException occured"));
+        handler.onError(null, event, new InvocationTargetException(new NullPointerException("null")));
         handler.onPublishingFinished();
     }
 
@@ -58,8 +58,8 @@ public final class ExceptionHandlerTest {
         Event<String> event = Events.event(Topics.topic("a"), "Hello !");
         ErrorHandler handler = ErrorHandlers.rethrowErrorsImmediately().get();
         handler.onPublishingStarting();
-        handler.onError(event, new InvocationTargetException(new NullPointerException("null"), "ah ah"));
-        handler.onError(event, new IllegalArgumentException("An IllegalArgumentException occured"));
+        handler.onError(null, event, new InvocationTargetException(new NullPointerException("null"), "ah ah"));
+        handler.onError(null, event, new IllegalArgumentException("An IllegalArgumentException occured"));
         handler.onPublishingFinished();
     }
 
