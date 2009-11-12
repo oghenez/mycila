@@ -16,14 +16,23 @@
 
 package com.mycila.event.util;
 
-import java.util.concurrent.Executor;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ImmediateExecutor implements Executor {
+public final class CachedProvider<T> implements Provider<T> {
+
+    private final T t;
+
+    public CachedProvider(Provider<T> t) {
+        this(t.get());
+    }
+
+    public CachedProvider(T t) {
+        this.t = t;
+    }
+
     @Override
-    public void execute(Runnable command) {
-        command.run();
+    public T get() {
+        return t;
     }
 }

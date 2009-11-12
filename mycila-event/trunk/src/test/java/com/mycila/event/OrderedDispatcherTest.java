@@ -20,6 +20,7 @@ import com.mycila.event.annotation.Reference;
 import com.mycila.event.dispatch.Dispatcher;
 import com.mycila.event.dispatch.Dispatchers;
 import com.mycila.event.ref.Reachability;
+import com.mycila.event.util.Provider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -104,7 +105,7 @@ public final class OrderedDispatcherTest {
 
     @Test
     public void test_SYNCHRONOUS_SAFE_DISPATCHER() throws InterruptedException {
-        ErrorHandlerProvider provider = ErrorHandlers.rethrowErrorsAfterPublish();
+        Provider<ErrorHandler> provider = ErrorHandlers.rethrowErrorsAfterPublish();
         final Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_SAFE_DISPATCHER.create(provider);
 
         final CountDownLatch go = new CountDownLatch(1);
@@ -156,7 +157,7 @@ public final class OrderedDispatcherTest {
 
     @Test
     public void test_SYNCHRONOUS_UNSAFE_DISPATCHER() throws InterruptedException {
-        ErrorHandlerProvider provider = ErrorHandlers.rethrowErrorsAfterPublish();
+        Provider<ErrorHandler> provider = ErrorHandlers.rethrowErrorsAfterPublish();
         final Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_UNSAFE_DISPATCHER.create(provider);
 
         final CountDownLatch go = new CountDownLatch(1);
@@ -212,7 +213,7 @@ public final class OrderedDispatcherTest {
 
     @Test
     public void test_ASYNCHRONOUS_SAFE_DISPATCHER() throws InterruptedException {
-        ErrorHandlerProvider provider = ErrorHandlers.rethrowErrorsAfterPublish();
+        Provider<ErrorHandler> provider = ErrorHandlers.rethrowErrorsAfterPublish();
         final Dispatcher dispatcher = Dispatchers.ASYNCHRONOUS_SAFE_DISPATCHER.create(provider);
 
         final CountDownLatch go = new CountDownLatch(1);
@@ -276,7 +277,7 @@ public final class OrderedDispatcherTest {
 
     @Test
     public void test_ASYNCHRONOUS_UNSAFE_DISPATCHER() throws InterruptedException {
-        ErrorHandlerProvider provider = ErrorHandlers.rethrowErrorsAfterPublish();
+        Provider<ErrorHandler> provider = ErrorHandlers.rethrowErrorsAfterPublish();
         final Dispatcher dispatcher = Dispatchers.ASYNCHRONOUS_UNSAFE_DISPATCHER.create(provider);
 
         final CountDownLatch go = new CountDownLatch(1);

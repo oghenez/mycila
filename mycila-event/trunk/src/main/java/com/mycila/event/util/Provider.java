@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.mycila.event;
+package com.mycila.event.util;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface ErrorHandlerProvider {
-    ErrorHandler get();
+public interface Provider<T> {
+    T get();
 }

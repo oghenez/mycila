@@ -16,10 +16,11 @@
 
 package com.mycila.event.dispatch;
 
-import com.mycila.event.ErrorHandlerProvider;
+import com.mycila.event.ErrorHandler;
 import com.mycila.event.util.DefaultThreadFactory;
 import com.mycila.event.util.ImmediateBlockingExecutor;
 import com.mycila.event.util.ImmediateExecutor;
+import com.mycila.event.util.Provider;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -35,19 +36,19 @@ public enum Dispatchers {
 
     SYNCHRONOUS_SAFE_DISPATCHER {
         @Override
-        public Dispatcher create(ErrorHandlerProvider errorHandlerProvider) {
+        public Dispatcher create(Provider<ErrorHandler> errorHandlerProvider) {
             return new DefaultDispatcher(errorHandlerProvider, new ImmediateBlockingExecutor(), new ImmediateExecutor());
         }},
 
     SYNCHRONOUS_UNSAFE_DISPATCHER {
         @Override
-        public Dispatcher create(ErrorHandlerProvider errorHandlerProvider) {
+        public Dispatcher create(Provider<ErrorHandler> errorHandlerProvider) {
             return new DefaultDispatcher(errorHandlerProvider, new ImmediateExecutor(), new ImmediateExecutor());
         }},
 
     ASYNCHRONOUS_SAFE_DISPATCHER {
         @Override
-        public Dispatcher create(ErrorHandlerProvider errorHandlerProvider) {
+        public Dispatcher create(Provider<ErrorHandler> errorHandlerProvider) {
             ThreadFactory threadFactory = new DefaultThreadFactory(this.name(), "dispatcher");
             Executor executor = new ThreadPoolExecutor(
                     0, 1,
@@ -59,7 +60,7 @@ public enum Dispatchers {
 
     ASYNCHRONOUS_UNSAFE_DISPATCHER {
         @Override
-        public Dispatcher create(ErrorHandlerProvider errorHandlerProvider) {
+        public Dispatcher create(Provider<ErrorHandler> errorHandlerProvider) {
             ThreadFactory threadFactory = new DefaultThreadFactory(this.name(), "dispatcher");
             Executor executor = new ThreadPoolExecutor(
                     0, Integer.MAX_VALUE,
@@ -71,16 +72,16 @@ public enum Dispatchers {
 
     BROADCAST_ORDERED_DISPATCHER {
         @Override
-        public Dispatcher create(ErrorHandlerProvider errorHandlerProvider) {
+        public Dispatcher create(Provider<ErrorHandler> errorHandlerProvider) {
             return null;
         }},
 
     BROADCAST_UNORDERED_DISPATCHER {
         @Override
-        public Dispatcher create(ErrorHandlerProvider errorHandlerProvider) {
+        public Dispatcher create(Provider<ErrorHandler> errorHandlerProvider) {
             return null;
         }};
 
-    public abstract Dispatcher create(ErrorHandlerProvider errorHandlerProvider);
+    public abstract Dispatcher create(Provider<ErrorHandler> errorHandlerProvider);
 
 }
