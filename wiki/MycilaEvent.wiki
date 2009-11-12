@@ -156,7 +156,7 @@ There are several strategies regarding about how you want the order of events an
 === Synchronous Blocking Dispatching ===
 
  * Listeners are called in the order they subscribed
- * Events are published one after one
+ * Events are published *one after one*
  * Only one thread can publish at a time
 
 This strategy guarantees the order of listeners called and that only one thread will hit the listeners at a time. Thus, your listeners don't need to be thread-safe. The publish method thus block until the previous publishing is finished.
@@ -184,7 +184,7 @@ Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_DISPATCHER.create(ErrorHandlers.
 === Asynchronous Ordered Dispatching ===
 
  * Listeners are called in the order they subscribed
- * Events are published in order
+ * Events are published one after one
  * Many threads can enqueue an event at one time
  * One background thread is responsible to dequeue and fire events
  * A queue is used to enqueue events before they are processed.
@@ -200,7 +200,7 @@ Dispatcher dispatcher = Dispatchers.ASYNCHRONOUS_ORDERED_DISPATCHER.create(Error
 === Asynchronous Unordered Dispatching ===
 
  * Listeners are called in the order they subscribed
- * Events are published unordered
+ * Several events (so listeners) are processed at the same time
  * Many threads can publish an event at one time
  * Several background threads are responsible for firing events
 
@@ -218,7 +218,7 @@ Dispatcher dispatcher = Dispatchers.ASYNCHRONOUS_UNORDERED_DISPATCHER.create(Err
 === Broadcast Ordered Dispatching ===
 
  * Listeners are called unordered
- * Events are published in order
+ * Events are published one after one
  * Many threads can enqueue an event at one time
  * A thread-pool is used to send each event to each subscriber
 
@@ -235,7 +235,7 @@ Dispatcher dispatcher = Dispatchers.BROADCAST_ORDERED_DISPATCHER.create(ErrorHan
 === Broadcast Unordered Dispatching ===
 
  * Listeners are called unordered
- * Events are published unordered
+ * Several events are published at the same time
  * Many threads can enqueue an event at one time
  * A thread-pool is used to send each event to each subscriber
 
