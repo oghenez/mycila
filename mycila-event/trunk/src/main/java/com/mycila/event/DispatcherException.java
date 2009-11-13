@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.event.dispatch;
+package com.mycila.event;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

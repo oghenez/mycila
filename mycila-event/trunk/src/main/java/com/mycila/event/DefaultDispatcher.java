@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.event.dispatch;
+package com.mycila.event;
 
 import com.mycila.event.ErrorHandler;
 import com.mycila.event.Event;
@@ -39,7 +39,7 @@ import static com.mycila.event.util.Ensure.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class DefaultDispatcher implements Dispatcher {
+final class DefaultDispatcher implements Dispatcher {
 
     private final Collection<Subscription> subscribers = new ReferencableCollection<Subscription>();
     private final Collection<Subscription> vetoers = new ReferencableCollection<Subscription>();
@@ -48,7 +48,7 @@ public final class DefaultDispatcher implements Dispatcher {
     private final Executor publishExecutor;
     private final Executor subscriberExecutor;
 
-    public DefaultDispatcher(Provider<? extends ErrorHandler> exceptionHandlerProvider,
+    DefaultDispatcher(Provider<? extends ErrorHandler> exceptionHandlerProvider,
                              Executor publishExecutor,
                              Executor subscriberExecutor) {
         this.exceptionHandlerProvider = notNull(exceptionHandlerProvider, "ErrorHandlerProvider");
