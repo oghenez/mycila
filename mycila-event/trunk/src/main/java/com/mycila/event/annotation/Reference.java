@@ -29,9 +29,8 @@ import java.lang.annotation.Target;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target(ElementType.METHOD)
 @Documented
-@Inherited
 public @interface Reference {
     Reachability value();
 }
