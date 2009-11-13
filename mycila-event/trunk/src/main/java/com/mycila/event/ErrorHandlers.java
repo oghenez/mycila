@@ -16,7 +16,7 @@
 
 package com.mycila.event;
 
-import com.mycila.event.dispatch.DispatcherException;
+import com.mycila.event.DispatcherException;
 import com.mycila.event.util.Provider;
 import com.mycila.event.util.Providers;
 

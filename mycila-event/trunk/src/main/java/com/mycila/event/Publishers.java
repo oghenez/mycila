@@ -16,7 +16,7 @@
 
 package com.mycila.event;
 
-import com.mycila.event.dispatch.Dispatcher;
+import com.mycila.event.Dispatcher;
 
 import static com.mycila.event.util.Ensure.*;
 

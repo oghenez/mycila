@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.event.dispatch;
+package com.mycila.event;
 
 import com.mycila.event.Subscriber;
 import com.mycila.event.Topic;

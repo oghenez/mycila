@@ -16,7 +16,7 @@
 
 package com.mycila.event;
 
-import com.mycila.event.dispatch.DispatcherException;
+import com.mycila.event.DispatcherException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
