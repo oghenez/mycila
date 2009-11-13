@@ -234,7 +234,7 @@ Note that when a thread publishes an event, it is enqueued. A thread is used to 
 This guarantees that all subscribers will be called concurrently, but they will all receive the events in the same order.
 
 {{{
-Dispatcher dispatcher = Dispatchers.BROADCAST_ORDERED_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
+Dispatcher dispatcher = Dispatchers.BROADCAST_ORDERED_DISPATCHER.create(...);
 }}}
 
 === Broadcast Unordered Dispatching ===
@@ -249,7 +249,7 @@ This type of dispatching is really useful when you don't care about any ordering
 Thus, subscribers taking a long time to execute don't affect publishing of other events to other subscribers.
 
 {{{
-Dispatcher dispatcher = Dispatchers.BROADCAST_UNORDERED_DISPATCHER.create(ErrorHandlers.rethrowErrorsAfterPublish());
+Dispatcher dispatcher = Dispatchers.BROADCAST_UNORDERED_DISPATCHER.create(...);
 }}}
 
 === Custom strategy ===
