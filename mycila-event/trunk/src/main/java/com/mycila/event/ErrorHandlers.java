@@ -83,17 +83,19 @@ public final class ErrorHandlers {
     }
 
     public static Provider<ErrorHandler> ignoreErrors() {
-        return Providers.cache(SILENT);
+        return SILENT;
     }
 
-    private static final ErrorHandler SILENT = new ErrorHandler() {
+    private static final Provider<ErrorHandler> SILENT = Providers.<ErrorHandler>cache(new ErrorHandler() {
+        private final List<Exception> empty = Collections.emptyList();
+
         @Override
         public void onError(Subscription subscription, Event event, Exception e) {
         }
 
         @Override
         public List<Exception> errors() {
-            return Collections.emptyList();
+            return empty;
         }
 
         @Override
@@ -108,7 +110,7 @@ public final class ErrorHandlers {
         @Override
         public void onPublishingStarting() {
         }
-    };
+    });
 
     public static Provider<ErrorHandler> rethrowErrorsAfterPublish() {
         return new Provider<ErrorHandler>() {
