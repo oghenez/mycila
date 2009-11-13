@@ -45,12 +45,12 @@ public final class DefaultDispatcher implements Dispatcher {
     private final Collection<Subscription> vetoers = new ReferencableCollection<Subscription>();
 
     private final Provider<? extends ErrorHandler> exceptionHandlerProvider;
-    private final Provider<? extends Executor> publishExecutor;
-    private final Provider<? extends Executor> subscriberExecutor;
+    private final Executor publishExecutor;
+    private final Executor subscriberExecutor;
 
     public DefaultDispatcher(Provider<? extends ErrorHandler> exceptionHandlerProvider,
-                             Provider<? extends Executor> publishExecutor,
-                             Provider<? extends Executor> subscriberExecutor) {
+                             Executor publishExecutor,
+                             Executor subscriberExecutor) {
         this.exceptionHandlerProvider = notNull(exceptionHandlerProvider, "ErrorHandlerProvider");
         this.publishExecutor = notNull(publishExecutor, "Publishing executor");
         this.subscriberExecutor = notNull(subscriberExecutor, "Subscriber executor");
@@ -60,7 +60,7 @@ public final class DefaultDispatcher implements Dispatcher {
     public final <E> void publish(final Topic topic, final E source) {
         notNull(topic, "Topic");
         notNull(source, "Event source");
-        publishExecutor.get().execute(new Runnable() {
+        publishExecutor.execute(new Runnable() {
             @SuppressWarnings({"unchecked"})
             @Override
             public void run() {
@@ -70,7 +70,6 @@ public final class DefaultDispatcher implements Dispatcher {
                     final Iterator<Subscription<E, Subscriber<E>>> subscriptionIterator = getSubscribers(event);
                     try {
                         handler.onPublishingStarting();
-                        Executor subscriberExecutor = DefaultDispatcher.this.subscriberExecutor.get();
                         while (subscriptionIterator.hasNext()) {
                             final Subscription<E, Subscriber<E>> subscription = subscriptionIterator.next();
                             subscriberExecutor.execute(new Runnable() {

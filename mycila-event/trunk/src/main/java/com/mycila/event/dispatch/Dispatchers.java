@@ -20,7 +20,6 @@ import com.mycila.event.ErrorHandler;
 import com.mycila.event.util.DefaultThreadFactory;
 import com.mycila.event.util.Executors;
 import com.mycila.event.util.Provider;
-import com.mycila.event.util.Providers;
 
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
@@ -57,7 +56,7 @@ public enum Dispatchers {
                     20L, TimeUnit.SECONDS,
                     new LinkedBlockingQueue<Runnable>(),
                     threadFactory);
-            return new DefaultDispatcher(errorHandlerProvider, Providers.cache(executor), Executors.immediate());
+            return new DefaultDispatcher(errorHandlerProvider, executor, Executors.immediate());
         }},
 
     ASYNCHRONOUS_UNSAFE_DISPATCHER {
@@ -69,7 +68,7 @@ public enum Dispatchers {
                     20L, TimeUnit.SECONDS,
                     new SynchronousQueue<Runnable>(),
                     threadFactory);
-            return new DefaultDispatcher(errorHandlerProvider, Providers.cache(executor), Executors.immediate());
+            return new DefaultDispatcher(errorHandlerProvider, executor, Executors.immediate());
         }},
 
     BROADCAST_ORDERED_DISPATCHER {
@@ -86,8 +85,9 @@ public enum Dispatchers {
                     20L, TimeUnit.SECONDS,
                     new SynchronousQueue<Runnable>(),
                     threadFactory));
-            return new DefaultDispatcher(errorHandlerProvider,
-                    Providers.cache(new Executor() {
+            return new DefaultDispatcher(
+                    errorHandlerProvider,
+                    new Executor() {
                         @Override
                         public void execute(final Runnable command) {
                             publishingExecutor.execute(new Runnable() {
@@ -102,8 +102,8 @@ public enum Dispatchers {
                                 }
                             });
                         }
-                    }),
-                    Providers.cache(subscribersExecutor));
+                    },
+                    subscribersExecutor);
         }},
 
     BROADCAST_UNORDERED_DISPATCHER {
@@ -115,7 +115,7 @@ public enum Dispatchers {
                     20L, TimeUnit.SECONDS,
                     new SynchronousQueue<Runnable>(),
                     threadFactory);
-            return new DefaultDispatcher(errorHandlerProvider, Providers.cache(executor), Providers.cache(executor));
+            return new DefaultDispatcher(errorHandlerProvider, executor, executor);
         }};
 
     public abstract Dispatcher create(Provider<ErrorHandler> errorHandlerProvider);
