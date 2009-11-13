@@ -28,17 +28,17 @@ public final class Executors {
     private Executors() {
     }
 
-    public static Provider<Executor> immediate() {
-        return Providers.<Executor>cache(new Executor() {
+    public static Executor immediate() {
+        return new Executor() {
             @Override
             public void execute(Runnable command) {
                 command.run();
             }
-        });
+        };
     }
 
-    public static Provider<Executor> blocking() {
-        return Providers.<Executor>cache(new Executor() {
+    public static Executor blocking() {
+        return new Executor() {
             final Lock running = new ReentrantLock();
 
             @Override
@@ -50,7 +50,7 @@ public final class Executors {
                     running.unlock();
                 }
             }
-        });
+        };
     }
 
 }
