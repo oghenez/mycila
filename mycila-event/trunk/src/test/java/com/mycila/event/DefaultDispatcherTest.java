@@ -109,9 +109,9 @@ public final class DefaultDispatcherTest {
         final Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_SAFE_DISPATCHER.create(provider);
 
         final CountDownLatch go = new CountDownLatch(1);
-        final CountDownLatch finished = new CountDownLatch(30);
+        final CountDownLatch finished = new CountDownLatch(20);
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 20; i++) {
             new Thread("T" + i) {
                 @Override
                 public void run() {
@@ -128,28 +128,20 @@ public final class DefaultDispatcherTest {
 
         final AtomicBoolean inProcess = new AtomicBoolean(false);
 
-        dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
-            @Override
-            public void onEvent(Event<String> event) throws Exception {
-                if (inProcess.get())
-                    fail();
-                inProcess.set(true);
-                Thread.sleep(100);
-                System.out.println(Thread.currentThread().getName() + "-S1");
-                inProcess.set(false);
-            }
-        });
-        dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
-            @Override
-            public void onEvent(Event<String> event) throws Exception {
-                if (inProcess.get())
-                    fail();
-                inProcess.set(true);
-                Thread.sleep(100);
-                System.out.println(Thread.currentThread().getName() + "-S2");
-                inProcess.set(false);
-            }
-        });
+        for (int i = 0; i < 20; i++) {
+            final int index = i;
+            dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
+                @Override
+                public void onEvent(Event<String> event) throws Exception {
+                    if (inProcess.get())
+                        fail();
+                    inProcess.set(true);
+                    Thread.sleep(50);
+                    System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.source());
+                    inProcess.set(false);
+                }
+            });
+        }
 
         go.countDown();
         finished.await();
@@ -161,9 +153,9 @@ public final class DefaultDispatcherTest {
         final Dispatcher dispatcher = Dispatchers.SYNCHRONOUS_UNSAFE_DISPATCHER.create(provider);
 
         final CountDownLatch go = new CountDownLatch(1);
-        final CountDownLatch finished = new CountDownLatch(30);
+        final CountDownLatch finished = new CountDownLatch(20);
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 20; i++) {
             new Thread("T" + i) {
                 @Override
                 public void run() {
@@ -181,34 +173,26 @@ public final class DefaultDispatcherTest {
         final AtomicBoolean inProcess = new AtomicBoolean(false);
         final AtomicInteger paralellCalls = new AtomicInteger(0);
 
-        dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
-            @Override
-            public void onEvent(Event<String> event) throws Exception {
-                if (inProcess.get())
-                    paralellCalls.incrementAndGet();
-                inProcess.set(true);
-                Thread.sleep(100);
-                System.out.println(Thread.currentThread().getName() + "-S1");
-                inProcess.set(false);
-            }
-        });
-        dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
-            @Override
-            public void onEvent(Event<String> event) throws Exception {
-                if (inProcess.get())
-                    paralellCalls.incrementAndGet();
-                inProcess.set(true);
-                Thread.sleep(100);
-                System.out.println(Thread.currentThread().getName() + "-S2");
-                inProcess.set(false);
-            }
-        });
+        for (int i = 0; i < 20; i++) {
+            final int index = i;
+            dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
+                @Override
+                public void onEvent(Event<String> event) throws Exception {
+                    if (inProcess.get())
+                        paralellCalls.incrementAndGet();
+                    inProcess.set(true);
+                    Thread.sleep(200);
+                    System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.source());
+                    inProcess.set(false);
+                }
+            });
+        }
 
         go.countDown();
         finished.await();
 
         System.out.println("paralellCalls.get()=" + paralellCalls.get());
-        assertTrue(paralellCalls.get() > 0);
+        assertTrue(paralellCalls.get() > 10);
     }
 
     @Test
@@ -217,10 +201,10 @@ public final class DefaultDispatcherTest {
         final Dispatcher dispatcher = Dispatchers.ASYNCHRONOUS_SAFE_DISPATCHER.create(provider);
 
         final CountDownLatch go = new CountDownLatch(1);
-        final CountDownLatch publish = new CountDownLatch(30);
-        final CountDownLatch consume = new CountDownLatch(30 * 2);
+        final CountDownLatch publish = new CountDownLatch(20);
+        final CountDownLatch consume = new CountDownLatch(20 * 20);
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 20; i++) {
             new Thread("T" + i) {
                 @Override
                 public void run() {
@@ -238,35 +222,26 @@ public final class DefaultDispatcherTest {
         final AtomicBoolean inProcess = new AtomicBoolean(false);
         final AtomicInteger paralellCalls = new AtomicInteger(0);
 
-        dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
-            @Override
-            public void onEvent(Event<String> event) throws Exception {
-                if (inProcess.get())
-                    paralellCalls.incrementAndGet();
-                inProcess.set(true);
-                Thread.sleep(100);
-                System.out.println(Thread.currentThread().getName() + "-S1");
-                inProcess.set(false);
-                consume.countDown();
-            }
-        });
-        dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
-            @Override
-            public void onEvent(Event<String> event) throws Exception {
-                if (inProcess.get())
-                    paralellCalls.incrementAndGet();
-                inProcess.set(true);
-                Thread.sleep(100);
-                System.out.println(Thread.currentThread().getName() + "-S2");
-                inProcess.set(false);
-                consume.countDown();
-            }
-        });
+        for (int i = 0; i < 20; i++) {
+            final int index = i;
+            dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
+                @Override
+                public void onEvent(Event<String> event) throws Exception {
+                    if (inProcess.get())
+                        paralellCalls.incrementAndGet();
+                    inProcess.set(true);
+                    Thread.sleep(10);
+                    System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.source());
+                    inProcess.set(false);
+                    consume.countDown();
+                }
+            });
+        }
 
         go.countDown();
         publish.await();
 
-        System.out.println("waiting for consumers...");
+        System.out.println("publishing finished, waiting for consumers...");
 
         consume.await();
 
@@ -274,17 +249,16 @@ public final class DefaultDispatcherTest {
         assertEquals(paralellCalls.get(), 0);
     }
 
-
     @Test
     public void test_ASYNCHRONOUS_UNSAFE_DISPATCHER() throws InterruptedException {
         Provider<ErrorHandler> provider = ErrorHandlers.rethrowErrorsAfterPublish();
         final Dispatcher dispatcher = Dispatchers.ASYNCHRONOUS_UNSAFE_DISPATCHER.create(provider);
 
         final CountDownLatch go = new CountDownLatch(1);
-        final CountDownLatch publish = new CountDownLatch(30);
-        final CountDownLatch consume = new CountDownLatch(30 * 2);
+        final CountDownLatch publish = new CountDownLatch(20);
+        final CountDownLatch consume = new CountDownLatch(20 * 20);
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 20; i++) {
             new Thread("T" + i) {
                 @Override
                 public void run() {
@@ -302,40 +276,139 @@ public final class DefaultDispatcherTest {
         final AtomicBoolean inProcess = new AtomicBoolean(false);
         final AtomicInteger paralellCalls = new AtomicInteger(0);
 
-        dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
-            @Override
-            public void onEvent(Event<String> event) throws Exception {
-                if (inProcess.get())
-                    paralellCalls.incrementAndGet();
-                inProcess.set(true);
-                Thread.sleep(100);
-                System.out.println(Thread.currentThread().getName() + "-S1");
-                inProcess.set(false);
-                consume.countDown();
-            }
-        });
-        dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
-            @Override
-            public void onEvent(Event<String> event) throws Exception {
-                if (inProcess.get())
-                    paralellCalls.incrementAndGet();
-                inProcess.set(true);
-                Thread.sleep(100);
-                System.out.println(Thread.currentThread().getName() + "-S2");
-                inProcess.set(false);
-                consume.countDown();
-            }
-        });
+        for (int i = 0; i < 20; i++) {
+            final int index = i;
+            dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
+                @Override
+                public void onEvent(Event<String> event) throws Exception {
+                    if (inProcess.get())
+                        paralellCalls.incrementAndGet();
+                    inProcess.set(true);
+                    Thread.sleep(100);
+                    System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.source());
+                    inProcess.set(false);
+                    consume.countDown();
+                }
+            });
+        }
 
         go.countDown();
         publish.await();
 
-        System.out.println("waiting for consumers...");
+        System.out.println("publishing finished, waiting for consumers...");
 
         consume.await();
 
         System.out.println("paralellCalls.get()=" + paralellCalls.get());
-        assertTrue(paralellCalls.get() > 1);
+        assertTrue(paralellCalls.get() > 10);
+    }
+
+    @Test
+    public void test_BROADCAST_ORDERED_DISPATCHER() throws InterruptedException {
+        Provider<ErrorHandler> provider = ErrorHandlers.rethrowErrorsAfterPublish();
+        final Dispatcher dispatcher = Dispatchers.BROADCAST_ORDERED_DISPATCHER.create(provider);
+
+        final CountDownLatch go = new CountDownLatch(1);
+        final CountDownLatch publish = new CountDownLatch(20);
+        final CountDownLatch consume = new CountDownLatch(20 * 20);
+
+        for (int i = 0; i < 20; i++) {
+            new Thread("T" + i) {
+                @Override
+                public void run() {
+                    try {
+                        go.await();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                    dispatcher.publish(Topics.topic("a/b"), Thread.currentThread().getName());
+                    publish.countDown();
+                }
+            }.start();
+        }
+
+        final AtomicBoolean inProcess = new AtomicBoolean(false);
+        final AtomicInteger paralellCalls = new AtomicInteger(0);
+
+        for (int i = 0; i < 20; i++) {
+            final int index = i;
+            dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
+                @Override
+                public void onEvent(Event<String> event) throws Exception {
+                    if (inProcess.get())
+                        paralellCalls.incrementAndGet();
+                    inProcess.set(true);
+                    Thread.sleep(100);
+                    System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.source());
+                    inProcess.set(false);
+                    consume.countDown();
+                }
+            });
+        }
+
+        go.countDown();
+        publish.await();
+
+        System.out.println("publishing finished, waiting for consumers...");
+
+        consume.await();
+
+        System.out.println("paralellCalls.get()=" + paralellCalls.get());
+        assertTrue(paralellCalls.get() > 30);
+    }
+
+    @Test
+    public void test_BROADCAST_UNORDERED_DISPATCHER() throws InterruptedException {
+        Provider<ErrorHandler> provider = ErrorHandlers.rethrowErrorsAfterPublish();
+        final Dispatcher dispatcher = Dispatchers.BROADCAST_UNORDERED_DISPATCHER.create(provider);
+
+        final CountDownLatch go = new CountDownLatch(1);
+        final CountDownLatch publish = new CountDownLatch(20);
+        final CountDownLatch consume = new CountDownLatch(20 * 20);
+
+        for (int i = 0; i < 20; i++) {
+            new Thread("T" + i) {
+                @Override
+                public void run() {
+                    try {
+                        go.await();
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                    dispatcher.publish(Topics.topic("a/b"), Thread.currentThread().getName());
+                    publish.countDown();
+                }
+            }.start();
+        }
+
+        final AtomicBoolean inProcess = new AtomicBoolean(false);
+        final AtomicInteger paralellCalls = new AtomicInteger(0);
+
+        for (int i = 0; i < 20; i++) {
+            final int index = i;
+            dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
+                @Override
+                public void onEvent(Event<String> event) throws Exception {
+                    if (inProcess.get())
+                        paralellCalls.incrementAndGet();
+                    inProcess.set(true);
+                    Thread.sleep(100);
+                    System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.source());
+                    inProcess.set(false);
+                    consume.countDown();
+                }
+            });
+        }
+
+        go.countDown();
+        publish.await();
+
+        System.out.println("publishing finished, waiting for consumers...");
+
+        consume.await();
+
+        System.out.println("paralellCalls.get()=" + paralellCalls.get());
+        assertTrue(paralellCalls.get() > 30);
     }
 
     private void publish() {

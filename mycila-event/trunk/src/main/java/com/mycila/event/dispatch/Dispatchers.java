@@ -17,15 +17,12 @@
 package com.mycila.event.dispatch;
 
 import com.mycila.event.ErrorHandler;
-import com.mycila.event.ErrorHandlerAdapter;
-import com.mycila.event.ErrorHandlers;
 import com.mycila.event.util.DefaultThreadFactory;
 import com.mycila.event.util.Executors;
 import com.mycila.event.util.Provider;
 import com.mycila.event.util.Providers;
 
 import java.util.concurrent.CompletionService;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -79,30 +76,34 @@ public enum Dispatchers {
         @Override
         public Dispatcher create(Provider<ErrorHandler> errorHandlerProvider) {
             ThreadFactory threadFactory = new DefaultThreadFactory(this.name(), "dispatcher");
-            final Executor executor = new ThreadPoolExecutor(
+            final Executor publishingExecutor = new ThreadPoolExecutor(
+                    0, 1,
+                    20L, TimeUnit.SECONDS,
+                    new LinkedBlockingQueue<Runnable>(),
+                    threadFactory);
+            final SubscribersExecutor subscribersExecutor = new SubscribersExecutor(new ThreadPoolExecutor(
                     0, Integer.MAX_VALUE,
                     20L, TimeUnit.SECONDS,
                     new SynchronousQueue<Runnable>(),
-                    threadFactory);
-
-            return new DefaultDispatcher(ErrorHandlers.compose(Providers.<ErrorHandler>cache(new ErrorHandlerAdapter() {
-                @Override
-                public void onPublishingStarting() {
-
-                }
-
-                @Override
-                public void onPublishingFinished() {
-                    com
-                }
-            }), errorHandlerProvider),
-                    Providers.cache(executor),
+                    threadFactory));
+            return new DefaultDispatcher(errorHandlerProvider,
                     Providers.cache(new Executor() {
                         @Override
-                        public void execute(Runnable command) {
-                            completionService.submit(command, null);
+                        public void execute(final Runnable command) {
+                            publishingExecutor.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    subscribersExecutor.onPublishStarting();
+                                    try {
+                                        command.run();
+                                    } finally {
+                                        subscribersExecutor.waitForCompletion();
+                                    }
+                                }
+                            });
                         }
-                    }));
+                    }),
+                    Providers.cache(subscribersExecutor));
         }},
 
     BROADCAST_UNORDERED_DISPATCHER {
@@ -119,14 +120,35 @@ public enum Dispatchers {
 
     public abstract Dispatcher create(Provider<ErrorHandler> errorHandlerProvider);
 
-    private static final class OrderedBroadcasting extends ErrorHandlerAdapter implements  Executor {
+    private static final class SubscribersExecutor implements Executor {
 
-        
+        final Executor executor;
+        CompletionService<Void> completionService;
+        int count = 0;
+
+        SubscribersExecutor(Executor executor) {
+            this.executor = executor;
+        }
 
         @Override
         public void execute(Runnable command) {
+            completionService.submit(command, null);
+            count++;
+        }
+
+        void onPublishStarting() {
+            completionService = new ExecutorCompletionService<Void>(executor);
+            count = 0;
+        }
+
+        void waitForCompletion() {
+            try {
+                while (count-- > 0)
+                    completionService.take();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
 
     }
-
 }
