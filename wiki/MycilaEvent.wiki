@@ -264,6 +264,20 @@ Executors are implementations of `java.util.concurrent.Executor`. The first one 
 
 When no concurrency is needed, you can use provided implementations `ImmediateExecutor` or `ImmediateBlockingExecutor` if you need to be sure only one thread executes at once.
 
+=== Summary and Statistics ===
+
+Using this test: https://mycila.googlecode.com/svn/mycila-event/trunk/src/test/java/com/mycila/event/DefaultDispatcherTest.java
+
+For 20 publishing threads each starting at the same time and publishing one event, 20 registered subscribers, we have the following time for each strategy:
+
+|| *Strategy* || *Whole Completion time* || *Details* ||
+|| Synchronous Safe Dispatching || 20.16s || - `publish` method blocks until finished <br/> - only one thread can publish <br/> - listeners are called in order <br/> - events are published one after the other <br/> - all listeners are called in the same order and receive events in the same order ||
+|| Synchronous Unsafe Dispatching || 4.031s || - `publish` method blocks until finished <br/> - `publish` can be called concurrently <br/> - listeners are called in order <br/> - events order is not guarantee <br/> - listeners can be called by many threads at once ||
+|| Asynchronous Safe Dispatching || 4.21s || - `publish` method returns fast (not block) <br/> - publishing is handled by one background thread <br/> - listeners are called in order <br/> - events are published one after the other <br/> - all listeners are called in the same order and receive events in the same order ||
+|| Asynchronous Unsafe Dispatching || 2.567s || - `publish` method returns fast (not block) <br/> - publishing process is handled by a thread pool <br/> - listeners are called in order <br/> - events order is not guarantee <br/> - listeners can be called by many threads at once ||
+|| Broadcast Ordered Dispatching || 2.168s || - `publish` method returns fast (not block) <br/> - publishing is handled by a thread pool <br/> - listeners are called in parallel <br/> - events are published one after the other <br/> - all listeners are reached the faster as possible but all receive events in the same order ||
+|| Broadcast Unordered Dispatching || 0.292s || - `publish` method returns fast (not block) <br/> - publishing is handled by a thread pool <br/> - listeners are called in parallel <br/> - events are published in parallel <br/> - all listeners are reached the faster as possible and receive events in different order ||
+
 == Annotation support ==
 
 You can annotate your methods to decouple your code from Mycila Event and subscribe, publish and veto.
