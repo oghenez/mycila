@@ -266,7 +266,7 @@ Executors are implementations of `java.util.concurrent.Executor`. The first one 
 
 === Summary and Statistics ===
 
-Using this test: https://mycila.googlecode.com/svn/mycila-event/trunk/src/test/java/com/mycila/event/DefaultDispatcherTest.java
+Using this test: http://mycila.googlecode.com/svn/mycila-event/trunk/src/test/java/com/mycila/event/DefaultDispatcherTest.java
 
 For 20 publishing threads each starting at the same time and publishing one event, 20 registered subscribers, we have the following time for each strategy:
 
