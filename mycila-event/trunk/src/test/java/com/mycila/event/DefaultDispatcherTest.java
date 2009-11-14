@@ -17,8 +17,6 @@
 package com.mycila.event;
 
 import com.mycila.event.annotation.Reference;
-import com.mycila.event.ref.Reachability;
-import com.mycila.event.util.Provider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

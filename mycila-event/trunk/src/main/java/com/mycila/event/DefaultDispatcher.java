@@ -16,25 +16,12 @@
 
 package com.mycila.event;
 
-import com.mycila.event.ErrorHandler;
-import com.mycila.event.Event;
-import com.mycila.event.Events;
-import com.mycila.event.Subscriber;
-import com.mycila.event.Subscription;
-import com.mycila.event.Subscriptions;
-import com.mycila.event.Topic;
-import com.mycila.event.TopicMatcher;
-import com.mycila.event.VetoableEvent;
-import com.mycila.event.Vetoer;
-import com.mycila.event.ref.ReferencableCollection;
-import com.mycila.event.util.Provider;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Executor;
 
-import static com.mycila.event.util.Ensure.*;
+import static com.mycila.event.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -49,8 +36,8 @@ final class DefaultDispatcher implements Dispatcher {
     private final Executor subscriberExecutor;
 
     DefaultDispatcher(Provider<? extends ErrorHandler> exceptionHandlerProvider,
-                             Executor publishExecutor,
-                             Executor subscriberExecutor) {
+                      Executor publishExecutor,
+                      Executor subscriberExecutor) {
         this.exceptionHandlerProvider = notNull(exceptionHandlerProvider, "ErrorHandlerProvider");
         this.publishExecutor = notNull(publishExecutor, "Publishing executor");
         this.subscriberExecutor = notNull(subscriberExecutor, "Subscriber executor");

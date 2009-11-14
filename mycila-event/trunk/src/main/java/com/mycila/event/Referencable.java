@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package com.mycila.event.ref;
+package com.mycila.event;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Referencable {
+interface Referencable {
     Reachability reachability();
 }

@@ -18,7 +18,7 @@ package com.mycila.event;
 
 import com.mycila.event.annotation.Reference;
 
-import static com.mycila.event.ref.Reachability.*;
+import static com.mycila.event.Reachability.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

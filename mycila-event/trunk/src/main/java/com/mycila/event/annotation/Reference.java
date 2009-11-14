@@ -16,7 +16,7 @@
 
 package com.mycila.event.annotation;
 
-import com.mycila.event.ref.Reachability;
+import com.mycila.event.Reachability;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -29,8 +29,9 @@ import java.lang.annotation.Target;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Documented
+@Inherited
 public @interface Reference {
     Reachability value();
 }

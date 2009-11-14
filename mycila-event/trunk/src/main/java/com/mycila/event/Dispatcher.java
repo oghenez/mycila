@@ -16,11 +16,6 @@
 
 package com.mycila.event;
 
-import com.mycila.event.Subscriber;
-import com.mycila.event.Topic;
-import com.mycila.event.TopicMatcher;
-import com.mycila.event.Vetoer;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */

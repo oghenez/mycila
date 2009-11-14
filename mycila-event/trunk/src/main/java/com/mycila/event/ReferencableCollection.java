@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package com.mycila.event.ref;
+package com.mycila.event;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import static com.mycila.event.util.Ensure.*;
+import static com.mycila.event.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ReferencableCollection<T extends Referencable> extends AbstractCollection<T> {
+final class ReferencableCollection<T extends Referencable> extends AbstractCollection<T> {
 
     private final ConcurrentLinkedQueue<Ref<T>> refs = new ConcurrentLinkedQueue<Ref<T>>();
 

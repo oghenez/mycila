@@ -16,10 +16,6 @@
 
 package com.mycila.event;
 
-import com.mycila.event.DispatcherException;
-import com.mycila.event.util.Provider;
-import com.mycila.event.util.Providers;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;

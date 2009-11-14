@@ -16,10 +16,6 @@
 
 package com.mycila.event;
 
-import com.mycila.event.util.DefaultThreadFactory;
-import com.mycila.event.util.Executors;
-import com.mycila.event.util.Provider;
-
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;

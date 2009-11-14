@@ -16,9 +16,7 @@
 
 package com.mycila.event;
 
-import com.mycila.event.Dispatcher;
-
-import static com.mycila.event.util.Ensure.*;
+import static com.mycila.event.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
