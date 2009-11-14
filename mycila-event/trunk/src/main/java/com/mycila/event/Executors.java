@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.event.util;
+package com.mycila.event;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.locks.Lock;

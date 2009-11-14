@@ -14,26 +14,24 @@
  * limitations under the License.
  */
 
-package com.mycila.event.util;
+package com.mycila.event;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.mycila.event.util.Ensure.*;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class DefaultThreadFactory implements ThreadFactory {
+final class DefaultThreadFactory implements ThreadFactory {
     private static final AtomicInteger poolNumber = new AtomicInteger(1);
 
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     private final ThreadGroup group;
     private final String namePrefix;
 
-    public DefaultThreadFactory(String poolPrefix, String namePrefix) {
-        notNull(poolPrefix, "Thread pool prefix");
-        notNull(namePrefix, "Thread name prefix");
+    DefaultThreadFactory(String poolPrefix, String namePrefix) {
+        Ensure.notNull(poolPrefix, "Thread pool prefix");
+        Ensure.notNull(namePrefix, "Thread name prefix");
         SecurityManager s = System.getSecurityManager();
         group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
         this.namePrefix = poolPrefix + "-" + poolNumber.getAndIncrement() + "-" + namePrefix + "-";
@@ -41,7 +39,7 @@ public final class DefaultThreadFactory implements ThreadFactory {
 
     @Override
     public Thread newThread(final Runnable r) {
-        notNull(r, "Runnable");
+        Ensure.notNull(r, "Runnable");
         final ClassLoader ccl = Thread.currentThread().getContextClassLoader();
         final Thread t = new Thread(group, new Runnable() {
             @Override

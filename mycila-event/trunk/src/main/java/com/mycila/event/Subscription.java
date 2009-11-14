@@ -16,12 +16,10 @@
 
 package com.mycila.event;
 
-import com.mycila.event.ref.Referencable;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Subscription<E, S> extends Referencable {
+interface Subscription<E, S> extends Referencable {
     TopicMatcher topicMatcher();
 
     Class<E> eventType();

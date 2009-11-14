@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import static com.mycila.event.util.Ensure.*;
+import static com.mycila.event.Ensure.*;
 
 final class AntTopicMatcher extends AbstractTopicMatcher implements Serializable {
 

@@ -16,19 +16,17 @@
 
 package com.mycila.event;
 
-import com.mycila.event.ref.Reachability;
-
-import static com.mycila.event.util.Ensure.*;
+import static com.mycila.event.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Subscriptions {
+final class Subscriptions {
 
     private Subscriptions() {
     }
 
-    public static <E, S> Subscription create(final TopicMatcher matcher, final Class<E> eventType, final S subscriber) {
+    static <E, S> Subscription create(final TopicMatcher matcher, final Class<E> eventType, final S subscriber) {
         notNull(matcher, "TopicMatcher");
         notNull(eventType, "Event type");
         notNull(subscriber, "Subscriber");

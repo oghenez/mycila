@@ -16,7 +16,6 @@
 
 package com.mycila.event;
 
-import com.mycila.event.DispatcherException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -27,7 +26,7 @@ import java.lang.reflect.InvocationTargetException;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @RunWith(JUnit4.class)
-public final class ExceptionHandlerTest {
+public final class ErrorHandlerTest {
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     @Test(expected = DispatcherException.class)
@@ -64,6 +63,6 @@ public final class ExceptionHandlerTest {
     }
 
     public static void main(String[] args) {
-        new ExceptionHandlerTest().test_toString();
+        new ErrorHandlerTest().test_toString();
     }
 }
