@@ -20,6 +20,7 @@ import com.mycila.event.annotation.Reference;
 import net.sf.cglib.reflect.FastMethod;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import static com.mycila.event.Ensure.*;
 
@@ -73,22 +74,45 @@ final class Subscriptions {
     private static class ReferencableMethod implements Referencable {
         final Reachability reachability;
         final Object target;
-        final FastMethod method;
+        final Invokable invokable;
 
-        ReferencableMethod(Object target, Method method) {
+        ReferencableMethod(Object target, final Method method) {
             notNull(target, "Target object");
             notNull(method, "Method");
-            this.method = ClassUtils.fast(method);
             this.target = target;
             this.reachability = method.isAnnotationPresent(Reference.class) ?
                     method.getAnnotation(Reference.class).value() :
                     Reachability.of(target.getClass());
             notNull(reachability, "Value of @Reference on method " + method);
+            this.invokable = Modifier.isPrivate(method.getModifiers()) ?
+                    new Invokable() {
+                        {
+                            if (!method.isAccessible())
+                                method.setAccessible(true);
+                        }
+
+                        @Override
+                        public void invoke(Object target, Object... args) throws Exception {
+                            method.invoke(target, args);
+                        }
+                    } :
+                    new Invokable() {
+                        final FastMethod m = ClassUtils.fast(method);
+
+                        @Override
+                        public void invoke(Object target, Object... args) throws Exception {
+                            m.invoke(target, args);
+                        }
+                    };
         }
 
         @Override
         public final Reachability reachability() {
             return reachability;
+        }
+
+        protected final void invoke(Object... args) throws Exception {
+            invokable.invoke(target, args);
         }
     }
 
@@ -96,12 +120,11 @@ final class Subscriptions {
         MethodSubscriber(Object target, Method method) {
             super(target, method);
             uniqueArg(Event.class, method);
-            method.setAccessible(true);
         }
 
         @Override
         public void onEvent(Event<E> event) throws Exception {
-            method.invoke(target, new Object[]{event});
+            invoke(event);
         }
     }
 
@@ -109,17 +132,19 @@ final class Subscriptions {
         MethodVetoer(Object target, Method method) {
             super(target, method);
             uniqueArg(VetoableEvent.class, method);
-            method.setAccessible(true);
         }
 
         @Override
         public void check(VetoableEvent<E> vetoableEvent) {
             try {
-                method.invoke(target, new Object[]{vetoableEvent});
+                invoke(vetoableEvent);
             } catch (Exception t) {
                 throw ExceptionUtils.toRuntime(t);
             }
         }
     }
 
+    private static interface Invokable {
+        void invoke(Object target, Object... args) throws Exception;
+    }
 }

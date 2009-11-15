@@ -16,8 +16,8 @@
 
 package com.mycila.event;
 
-import net.sf.cglib.core.DefaultNamingPolicy;
 import net.sf.cglib.core.NamingPolicy;
+import net.sf.cglib.core.Predicate;
 import net.sf.cglib.reflect.FastClass;
 import net.sf.cglib.reflect.FastMethod;
 
@@ -34,10 +34,25 @@ import java.util.List;
  */
 final class ClassUtils {
 
-    private static final NamingPolicy NAMING_POLICY = new DefaultNamingPolicy() {
+    private static final NamingPolicy NAMING_POLICY = new NamingPolicy() {
         @Override
-        protected String getTag() {
-            return "ByMycilaEvent";
+        public String getClassName(String prefix, String source, Object key, Predicate names) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(prefix != null ?
+                    prefix.startsWith("java") ?
+                            "$" + prefix :
+                            prefix :
+                    "net.sf.cglib.empty.Object");
+            sb.append("$$");
+            sb.append(source.substring(source.lastIndexOf('.') + 1));
+            sb.append("ByWarpPersist$$");
+            sb.append(Integer.toHexString(key.hashCode()));
+            String base = sb.toString();
+            String attempt = base;
+            int index = 2;
+            while (names.evaluate(attempt))
+                attempt = base + "_" + index++;
+            return attempt;
         }
     };
 

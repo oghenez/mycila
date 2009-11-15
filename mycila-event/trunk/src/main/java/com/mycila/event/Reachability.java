@@ -52,6 +52,10 @@ public enum Reachability {
 
     abstract <T> Ref<T> wrap(T referencable);
 
+    static Reachability of(Object o) {
+        return of(o.getClass());
+    }
+
     static Reachability of(Class<?> c) {
         notNull(c, "Class");
         com.mycila.event.annotation.Reference ref = c.getAnnotation(com.mycila.event.annotation.Reference.class);
