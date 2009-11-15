@@ -26,17 +26,17 @@ final class Publishers {
     private Publishers() {
     }
 
-    <E> Publisher<E> publisher(final Dispatcher dispatcher, final Topic topic) {
+    static Publisher create(final Dispatcher dispatcher, final Topic topic) {
         notNull(topic, "Topic");
         notNull(dispatcher, "Dispatcher");
-        return new Publisher<E>() {
+        return new Publisher() {
             @Override
             public Topic topic() {
                 return topic;
             }
 
             @Override
-            public void publish(E source) {
+            public void publish(Object source) {
                 dispatcher.publish(topic, source);
             }
 

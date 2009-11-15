@@ -19,6 +19,6 @@ package com.mycila.event;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-interface Publisher<E> extends TopicBased {
+public interface Publisher<E> extends TopicBased {
     void publish(E source);
 }

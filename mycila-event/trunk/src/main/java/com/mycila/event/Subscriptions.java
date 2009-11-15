@@ -16,6 +16,11 @@
 
 package com.mycila.event;
 
+import com.mycila.event.annotation.Reference;
+import net.sf.cglib.reflect.FastMethod;
+
+import java.lang.reflect.Method;
+
 import static com.mycila.event.Ensure.*;
 
 /**
@@ -24,6 +29,14 @@ import static com.mycila.event.Ensure.*;
 final class Subscriptions {
 
     private Subscriptions() {
+    }
+
+    static Subscriber createSubscriber(Object instance, Method method) {
+        return new MethodSubscriber(instance, method);
+    }
+
+    static Vetoer createVetoer(Object instance, Method method) {
+        return new MethodVetoer(instance, method);
     }
 
     static <E, S> Subscription create(final TopicMatcher matcher, final Class<E> eventType, final S subscriber) {
@@ -55,6 +68,58 @@ final class Subscriptions {
                 return reachability;
             }
         };
+    }
+
+    private static class ReferencableMethod implements Referencable {
+        final Reachability reachability;
+        final Object target;
+        final FastMethod method;
+
+        ReferencableMethod(Object target, Method method) {
+            notNull(target, "Target object");
+            notNull(method, "Method");
+            this.method = ClassUtils.fast(method);
+            this.target = target;
+            this.reachability = method.isAnnotationPresent(Reference.class) ?
+                    method.getAnnotation(Reference.class).value() :
+                    Reachability.of(target.getClass());
+            notNull(reachability, "Value of @Reference on method " + method);
+        }
+
+        @Override
+        public final Reachability reachability() {
+            return reachability;
+        }
+    }
+
+    private static final class MethodSubscriber<E> extends ReferencableMethod implements Subscriber<E> {
+        MethodSubscriber(Object target, Method method) {
+            super(target, method);
+            uniqueArg(Event.class, method);
+            method.setAccessible(true);
+        }
+
+        @Override
+        public void onEvent(Event<E> event) throws Exception {
+            method.invoke(target, new Object[]{event});
+        }
+    }
+
+    private static final class MethodVetoer<E> extends ReferencableMethod implements Vetoer<E> {
+        MethodVetoer(Object target, Method method) {
+            super(target, method);
+            uniqueArg(VetoableEvent.class, method);
+            method.setAccessible(true);
+        }
+
+        @Override
+        public void check(VetoableEvent<E> vetoableEvent) {
+            try {
+                method.invoke(target, new Object[]{vetoableEvent});
+            } catch (Exception t) {
+                throw ExceptionUtils.toRuntime(t);
+            }
+        }
     }
 
 }
