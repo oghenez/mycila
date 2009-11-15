@@ -19,7 +19,9 @@ package com.mycila.event;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Event<E> extends TopicBased {
+public interface Event<E> {
+    Topic topic();
+
     long timestamp();
 
     E source();

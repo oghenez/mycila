@@ -62,7 +62,7 @@ public final class InstanceAnnotationProcessor {
         for (Method method : ClassUtils.filterAnnotatedMethods(methods, Publish.class)) {
             Publish annotation = method.getAnnotation(Publish.class);
             uniqueArg(Publisher.class, method);
-            Publisher publisher = Publishers.create(processor.dispatcher, Topics.topic(annotation.topic()));
+            Publisher publisher = Publishers.create(processor.dispatcher, Topics.topics(annotation.topics()));
             method.setAccessible(true);
             try {
                 method.invoke(instance, publisher);

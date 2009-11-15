@@ -16,13 +16,21 @@
 
 package com.mycila.event;
 
+import net.sf.cglib.core.DefaultGeneratorStrategy;
 import net.sf.cglib.core.NamingPolicy;
 import net.sf.cglib.core.Predicate;
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodProxy;
 import net.sf.cglib.reflect.FastClass;
 import net.sf.cglib.reflect.FastMethod;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -45,7 +53,7 @@ final class ClassUtils {
                     "net.sf.cglib.empty.Object");
             sb.append("$$");
             sb.append(source.substring(source.lastIndexOf('.') + 1));
-            sb.append("ByWarpPersist$$");
+            sb.append("ByMycilaEvent$$");
             sb.append(Integer.toHexString(key.hashCode()));
             String base = sb.toString();
             String attempt = base;
@@ -79,7 +87,7 @@ final class ClassUtils {
 
     static Iterable<Method> getAllDeclaredMethods(Class<?> clazz) {
         List<Class<?>> hierarchy = new ArrayList<Class<?>>();
-        while (clazz != Object.class) {
+        while (clazz != null && clazz != Object.class) {
             hierarchy.add(clazz);
             clazz = clazz.getSuperclass();
         }
@@ -105,4 +113,84 @@ final class ClassUtils {
     static FastMethod fast(Method m) {
         return fast(m.getDeclaringClass()).getMethod(m);
     }
+
+    @SuppressWarnings({"unchecked"})
+    static <T> T createJDKProxy(Class<T> c, MethodInterceptor interceptor) {
+        return (T) Proxy.newProxyInstance(c.getClassLoader(), new Class[]{c}, toJDK(interceptor));
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public static <T> T createCglibProxy(Class<T> c, MethodInterceptor interceptor) {
+        Enhancer enhancer = new Enhancer();
+        enhancer.setStrategy(new DefaultGeneratorStrategy());
+        enhancer.setSuperclass(c);
+        enhancer.setNamingPolicy(NAMING_POLICY);
+        enhancer.setCallback(toCGLIB(interceptor));
+        return (T) enhancer.create();
+    }
+
+    static InvocationHandler toJDK(final MethodInterceptor interceptor) {
+        return new InvocationHandler() {
+            @Override
+            public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+                return interceptor.invoke(new MethodInvocation() {
+                    @Override
+                    public Method getMethod() {
+                        return method;
+                    }
+
+                    @Override
+                    public Object[] getArguments() {
+                        return args;
+                    }
+
+                    @Override
+                    public Object proceed() throws Throwable {
+                        return method.invoke(proxy, args);
+                    }
+
+                    @Override
+                    public Object getThis() {
+                        return proxy;
+                    }
+
+                    @Override
+                    public AccessibleObject getStaticPart() {
+                        return method;
+                    }
+                });
+            }
+        };
+    }
+
+    static net.sf.cglib.proxy.MethodInterceptor toCGLIB(final MethodInterceptor interceptor) {
+        return new net.sf.cglib.proxy.MethodInterceptor() {
+            @Override
+            public Object intercept(final Object obj, final Method method, final Object[] args, final MethodProxy proxy) throws Throwable {
+                return interceptor.invoke(new MethodInvocation() {
+
+                    public Method getMethod() {
+                        return method;
+                    }
+
+                    public Object[] getArguments() {
+                        return args;
+                    }
+
+                    public Object proceed() throws Throwable {
+                        return proxy.invoke(obj, args);
+                    }
+
+                    public Object getThis() {
+                        return obj;
+                    }
+
+                    public AccessibleObject getStaticPart() {
+                        return method;
+                    }
+                });
+            }
+        };
+    }
+
 }

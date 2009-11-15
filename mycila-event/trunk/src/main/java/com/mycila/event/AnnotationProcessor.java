@@ -16,6 +16,15 @@
 
 package com.mycila.event;
 
+import com.mycila.event.annotation.Publish;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.mycila.event.Ensure.*;
 
 /**
@@ -34,15 +43,40 @@ public final class AnnotationProcessor {
         return new InstanceAnnotationProcessor(this, instance);
     }
 
-    public <T> T process(Class<T> c) {
-        notNull(c, "Class");//TODO
-        // interface => jdk proxy
-        // abstract ou concrete => cglib
-        return null;
+    public <T> T createPublisher(Class<T> abstractClassOrInterface) {
+        notNull(abstractClassOrInterface, "Abstract class or interface");
+        if (abstractClassOrInterface.isInterface())
+            return ClassUtils.createJDKProxy(abstractClassOrInterface, new PublisherInterceptor(dispatcher, abstractClassOrInterface));
+        if (Modifier.isAbstract(abstractClassOrInterface.getModifiers()))
+            return ClassUtils.createCglibProxy(abstractClassOrInterface, new PublisherInterceptor(dispatcher, abstractClassOrInterface));
+        throw new IllegalArgumentException("You cannot proxy an existing instance. Use instead AnnotationProcessor.process(instance).");
     }
 
     public static AnnotationProcessor create(Dispatcher dispatcher) {
         return new AnnotationProcessor(dispatcher);
     }
 
+    private static final class PublisherInterceptor implements MethodInterceptor {
+        final Map<Method, Publisher<Object>> cache = new HashMap<Method, Publisher<Object>>();
+
+        PublisherInterceptor(Dispatcher dispatcher, Class<?> c) {
+            Iterable<Method> allMethods = ClassUtils.getAllDeclaredMethods(c);
+            for (Method method : ClassUtils.filterAnnotatedMethods(allMethods, Publish.class)) {
+                hasArgs(method);
+                Publish annotation = method.getAnnotation(Publish.class);
+                Publisher<Object> publisher = Publishers.create(dispatcher, Topics.topics(annotation.topics()));
+                cache.put(method, publisher);
+            }
+        }
+
+        @Override
+        public Object invoke(MethodInvocation invocation) throws Throwable {
+            Publisher<Object> p = cache.get(invocation.getMethod());
+            if (p == null)
+                return invocation.proceed();
+            for (Object event : invocation.getArguments())
+                p.publish(event);
+            return null;
+        }
+    }
 }

@@ -36,4 +36,9 @@ final class Ensure {
                 || !method.getParameterTypes()[0].isAssignableFrom(type))
             throw new IllegalArgumentException("Method " + method + " is not valid: must have one parameter only type " + type.getName());
     }
+
+    static void hasArgs(Method method) {
+        if (method.getParameterTypes().length == 0)
+            throw new IllegalArgumentException("Method " + method + " is not valid: must have one or many parameters matching all events types to publish");
+    }
 }
