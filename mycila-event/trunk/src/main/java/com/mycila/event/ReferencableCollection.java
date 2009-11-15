@@ -18,7 +18,6 @@ package com.mycila.event;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static com.mycila.event.Ensure.*;
@@ -51,33 +50,13 @@ final class ReferencableCollection<T extends Referencable> extends AbstractColle
 
     @Override
     public Iterator<T> iterator() {
-        return new Iterator<T>() {
-            final Iterator<Ref<T>> it = refs.iterator();
-            private T next;
-            boolean hasNext = true;
-
+        return new FilterIterator<T, Ref<T>>(refs.iterator()) {
             @Override
-            public boolean hasNext() {
-                while (it.hasNext()) {
-                    next = it.next().get();
-                    if (next == null)
-                        it.remove();
-                    else
-                        return hasNext = true;
-                }
-                return hasNext = false;
-            }
-
-            @Override
-            public T next() {
-                if (!hasNext)
-                    throw new NoSuchElementException();
+            protected T filter(Ref<T> delegate) {
+                T next = delegate.get();
+                if (next == null)
+                    remove();
                 return next;
-            }
-
-            @Override
-            public void remove() {
-                it.remove();
             }
         };
     }

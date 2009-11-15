@@ -24,13 +24,13 @@ public final class SignatureTest {
 
     @Test
     public void test2() throws Exception {
-        for (Method method : AnnotationProcessor.getAllDeclaredMethods(SignatureTest.class))
+        for (Method method : ClassUtils.getAllDeclaredMethods(SignatureTest.class))
             System.out.println(MethodSignature.of(method));
-        for (Method method : AnnotationProcessor.getAllDeclaredMethods(MethodSignature.class))
+        for (Method method : ClassUtils.getAllDeclaredMethods(MethodSignature.class))
             System.out.println(MethodSignature.of(method));
-        for (Method method : AnnotationProcessor.getAllDeclaredMethods(ErrorHandlers.class))
+        for (Method method : ClassUtils.getAllDeclaredMethods(ErrorHandlers.class))
             System.out.println(MethodSignature.of(method));
-        for (Method method : AnnotationProcessor.getAllDeclaredMethods(DefaultDispatcher.class))
+        for (Method method : ClassUtils.getAllDeclaredMethods(DefaultDispatcher.class))
             System.out.println(MethodSignature.of(method));
         /*for (Method method : AnnotationProcessor.getAllDeclaredMethods(JButton.class))
             System.out.println(MethodSignature.of(method));*/
@@ -44,4 +44,8 @@ public final class SignatureTest {
 
     static void test_int(int[][] a) {
     }
+
+    void test_int(int[] a) {
+    }
+
 }

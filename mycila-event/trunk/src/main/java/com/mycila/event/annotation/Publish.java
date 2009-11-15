@@ -29,5 +29,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Documented
 public @interface Publish {
-    String value();
+    String topic();
 }

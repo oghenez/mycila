@@ -18,7 +18,6 @@ package com.mycila.event;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.concurrent.Executor;
 
 import static com.mycila.event.Ensure.*;
@@ -137,35 +136,16 @@ final class DefaultDispatcher implements Dispatcher {
     }
 
     private <E, S> Iterator<Subscription<E, S>> filterListeners(final Iterable<Subscription> iterable, final Event<E> event) {
-        return new Iterator<Subscription<E, S>>() {
+        return new FilterIterator<Subscription<E, S>, Subscription>(iterable.iterator()) {
             final Class<?> eventType = event.source().getClass();
             final Topic topic = event.topic();
-            final Iterator<Subscription> subscriptionIterator = iterable.iterator();
-            private Subscription next;
-            private boolean hasNext = true;
-
-            @Override
-            public boolean hasNext() {
-                while (subscriptionIterator.hasNext()) {
-                    next = subscriptionIterator.next();
-                    if (next.eventType().isAssignableFrom(eventType)
-                            && next.topicMatcher().matches(topic))
-                        return hasNext = true;
-                }
-                return hasNext = false;
-            }
 
             @SuppressWarnings({"unchecked"})
             @Override
-            public Subscription<E, S> next() {
-                if (!hasNext)
-                    throw new NoSuchElementException();
-                return next;
-            }
-
-            @Override
-            public void remove() {
-                subscriptionIterator.remove();
+            protected Subscription<E, S> filter(Subscription delegate) {
+                if (delegate.eventType().isAssignableFrom(eventType) && delegate.topicMatcher().matches(topic))
+                    return delegate;
+                return null;
             }
         };
     }

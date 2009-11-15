@@ -19,6 +19,6 @@ package com.mycila.event;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Ref<T> {
+interface Ref<T> {
     T get();
 }

@@ -23,12 +23,12 @@ import static com.mycila.event.Ensure.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Events {
+final class Events {
 
     private Events() {
     }
 
-    public static <E> Event<E> event(final Topic topic, final E source) {
+    static <E> Event<E> event(final Topic topic, final E source) {
         notNull(topic, "Topic");
         notNull(source, "Source");
         return new Event<E>() {
@@ -56,11 +56,11 @@ public final class Events {
         };
     }
 
-    public static <E> VetoableEvent<E> vetoable(final Topic topic, final E source) {
+    static <E> VetoableEvent<E> vetoable(final Topic topic, final E source) {
         return vetoable(event(topic, source));
     }
 
-    public static <E> VetoableEvent<E> vetoable(final Event<E> event) {
+    static <E> VetoableEvent<E> vetoable(final Event<E> event) {
         notNull(event, "Event");
         return new VetoableEvent<E>() {
             private final AtomicBoolean allowed = new AtomicBoolean(true);
