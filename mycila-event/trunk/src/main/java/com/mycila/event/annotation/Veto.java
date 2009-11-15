@@ -29,5 +29,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Documented
 public @interface Veto {
-    String value();
+    String[] topics();
+
+    Class<?> eventType();
 }

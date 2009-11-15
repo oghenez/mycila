@@ -31,7 +31,9 @@ final class Subscriptions {
         notNull(eventType, "Event type");
         notNull(subscriber, "Subscriber");
         return new Subscription<E, S>() {
-            final Reachability reachability = Reachability.of(subscriber);
+            final Reachability reachability = subscriber instanceof Referencable ?
+                    ((Referencable) subscriber).reachability() :
+                    Reachability.of(subscriber.getClass());
 
             @Override
             public TopicMatcher topicMatcher() {

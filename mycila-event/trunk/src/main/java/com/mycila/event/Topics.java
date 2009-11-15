@@ -17,6 +17,7 @@
 package com.mycila.event;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 import static com.mycila.event.Ensure.*;
 
@@ -183,6 +184,58 @@ public final class Topics {
         @Override
         public String toString() {
             return topic.name();
+        }
+    }
+
+    public static AbstractTopicMatcher anyOf(String... patterns) {
+        notNull(patterns, "Topic patterns");
+        TopicMatcher[] matchers = new TopicMatcher[patterns.length];
+        for (int i = 0, length = matchers.length; i < length; i++)
+            matchers[i] = topics(patterns[i]);
+        return anyOf(matchers);
+    }
+
+    public static AbstractTopicMatcher anyOf(TopicMatcher... matchers) {
+        return new AnyOf(matchers);
+    }
+
+    private static final class AnyOf extends AbstractTopicMatcher implements Serializable {
+        private static final long serialVersionUID = 0;
+        final TopicMatcher[] matchers;
+
+        private AnyOf(TopicMatcher... matchers) {
+            this.matchers = notNull(matchers, "TopicMatcher list");
+        }
+
+        @Override
+        public boolean matches(Topic t) {
+            notNull(t, "Topic");
+            for (TopicMatcher matcher : matchers)
+                if (matcher.matches(t))
+                    return true;
+            return false;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            return other instanceof AnyOf && Arrays.equals(((AnyOf) other).matchers, matchers);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(matchers);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder("anyOf(");
+            int len = matchers.length;
+            if (len > 0) {
+                sb.append(matchers[0]);
+                for (int i = 1; i < len; i++)
+                    sb.append(", ").append(matchers[i]);
+            }
+            return sb.append(")").toString();
         }
     }
 

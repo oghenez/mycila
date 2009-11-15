@@ -21,12 +21,12 @@ import static com.mycila.event.Ensure.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Publishers {
+final class Publishers {
 
     private Publishers() {
     }
 
-    public <E> Publisher<E> publisher(final Dispatcher dispatcher, final Topic topic) {
+    <E> Publisher<E> publisher(final Dispatcher dispatcher, final Topic topic) {
         notNull(topic, "Topic");
         notNull(dispatcher, "Dispatcher");
         return new Publisher<E>() {

@@ -28,7 +28,7 @@ import static com.mycila.event.Ensure.*;
 public enum Reachability {
     HARD {
         @Override
-        public <T> Ref<T> wrap(final T referencable) {
+        <T> Ref<T> wrap(final T referencable) {
             notNull(referencable, "Referenced object");
             return new Ref<T>() {
                 @Override
@@ -40,31 +40,22 @@ public enum Reachability {
 
     WEAK {
         @Override
-        public <T> Ref<T> wrap(T referencable) {
+        <T> Ref<T> wrap(T referencable) {
             return new JDKRef<T>(new WeakReference<T>(notNull(referencable, "Referenced object")));
         }},
 
     SOFT {
         @Override
-        public <T> Ref<T> wrap(T referencable) {
+        <T> Ref<T> wrap(T referencable) {
             return new JDKRef<T>(new SoftReference<T>(notNull(referencable, "Referenced object")));
         }};
 
-    public abstract <T> Ref<T> wrap(T referencable);
+    abstract <T> Ref<T> wrap(T referencable);
 
-    public static Reachability of(Object o) {
-        notNull(o, "Object");
-        return of(o.getClass());
-    }
-
-    public static Reachability of(Class<?> c) {
+    static Reachability of(Class<?> c) {
         notNull(c, "Class");
         com.mycila.event.annotation.Reference ref = c.getAnnotation(com.mycila.event.annotation.Reference.class);
         return ref == null ? HARD : ref.value();
-    }
-
-    public static <T> Ref<T> reference(T o) {
-        return of(o).wrap(o);
     }
 
     private static final class JDKRef<T> implements Ref<T> {

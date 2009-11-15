@@ -1,10 +1,15 @@
 package com.mycila.event;
 
+import com.mycila.event.annotation.Publish;
+import com.mycila.event.annotation.Reference;
+import com.mycila.event.annotation.Subscribe;
+import com.mycila.event.annotation.Veto;
+import net.sf.cglib.reflect.FastMethod;
+
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
+
+import static com.mycila.event.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -13,31 +18,91 @@ public final class AnnotationProcessor {
 
     private final Dispatcher dispatcher;
 
-    public AnnotationProcessor(Dispatcher dispatcher) {
+    private AnnotationProcessor(Dispatcher dispatcher) {
+        notNull(dispatcher, "Dispatcher");
         this.dispatcher = dispatcher;
     }
 
-    public void process(Object o) {
-
+    public <T> T process(Class<T> c) {
+        notNull(c, "Class");//TODO
+        // interface => jdk proxy
+        // abstract ou concrete => cglib
+        return null;
     }
 
-    public static List<Method> getAllDeclaredMethods(Class<?> clazz) {
-        List<Class<?>> hierarchy = new ArrayList<Class<?>>();
-        while (clazz != Object.class) {
-            hierarchy.add(clazz);
-            clazz = clazz.getSuperclass();
+    public <T> void inject(T instance) {
+        notNull(instance, "Instance");
+        Iterable<Method> methods = ClassUtils.getAllDeclaredMethods(instance.getClass());
+        for (Method method : ClassUtils.filterAnnotatedMethods(methods, Subscribe.class)) {
+            Subscribe subscribe = method.getAnnotation(Subscribe.class);
+            dispatcher.subscribe(Topics.anyOf(subscribe.topics()), subscribe.eventType(), new MethodSubscriber(instance, method));
         }
-        LinkedHashMap<MethodSignature, Method> all = new LinkedHashMap<MethodSignature, Method>();
-        for (Class<?> c : hierarchy) {
-            Method[] methods = c.getDeclaredMethods();
-            for (Method method : methods) {
-                MethodSignature signature = MethodSignature.of(method);
-                if (!all.containsKey(signature))
-                    all.put(signature, method);
+        for (Method method : ClassUtils.filterAnnotatedMethods(methods, Veto.class)) {
+            Veto veto = method.getAnnotation(Veto.class);
+            dispatcher.register(Topics.anyOf(veto.topics()), veto.eventType(), new MethodVetoer(instance, method));
+        }
+        for (Method method : ClassUtils.filterAnnotatedMethods(methods, Publish.class)) {
+            //TODO
+        }
+    }
+
+    public static AnnotationProcessor using(Dispatcher dispatcher) {
+        return new AnnotationProcessor(dispatcher);
+    }
+
+    private static class ReferencableMethod implements Referencable {
+        final Reachability reachability;
+        final Object target;
+        final FastMethod method;
+
+        ReferencableMethod(Object target, Method method) {
+            this.method = ClassUtils.fast(method);
+            this.target = target;
+            this.reachability = method.isAnnotationPresent(Reference.class) ?
+                    method.getAnnotation(Reference.class).value() :
+                    Reachability.of(target.getClass());
+            notNull(reachability, "Value of @Reference on method " + method);
+        }
+
+        @Override
+        public final Reachability reachability() {
+            return reachability;
+        }
+    }
+
+    private static final class MethodSubscriber<E> extends ReferencableMethod implements Subscriber<E> {
+        MethodSubscriber(Object target, Method method) {
+            super(target, method);
+            uniqueArg(Event.class, method);
+            method.setAccessible(true);
+        }
+
+        @Override
+        public void onEvent(Event<E> event) throws Exception {
+            method.invoke(target, new Object[]{event});
+        }
+    }
+
+    private static final class MethodVetoer<E> extends ReferencableMethod implements Vetoer<E> {
+        MethodVetoer(Object target, Method method) {
+            super(target, method);
+            uniqueArg(VetoableEvent.class, method);
+            method.setAccessible(true);
+        }
+
+        @Override
+        public void check(VetoableEvent<E> vetoableEvent) {
+            try {
+                method.invoke(target, new Object[]{vetoableEvent});
+            } catch (InvocationTargetException t) {
+                Throwable e = t.getTargetException();
+                if (e instanceof RuntimeException)
+                    throw (RuntimeException) e;
+                DispatcherException other = new DispatcherException(e.getMessage(), e);
+                other.setStackTrace(e.getStackTrace());
+                throw other;
             }
         }
-        return new LinkedList<Method>(all.values());
-
     }
 
     /*private static boolean isValidMethod(InjectableMethod injectableMethod,
@@ -115,8 +180,6 @@ public final class AnnotationProcessor {
                 }
                 return elements;
             }
-
-
     */
 
 }

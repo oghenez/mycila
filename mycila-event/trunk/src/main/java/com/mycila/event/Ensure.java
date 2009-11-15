@@ -16,6 +16,8 @@
 
 package com.mycila.event;
 
+import java.lang.reflect.Method;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
@@ -27,5 +29,11 @@ final class Ensure {
         if (arg == null)
             throw new IllegalArgumentException(name + " cannot be null");
         return arg;
+    }
+
+    static void uniqueArg(Class<?> type, Method method) {
+        if (method.getParameterTypes().length != 1
+                || !method.getParameterTypes()[0].isAssignableFrom(type))
+            throw new IllegalArgumentException("Method " + method + " is not valid: must have one parameter only type " + type.getName());
     }
 }
