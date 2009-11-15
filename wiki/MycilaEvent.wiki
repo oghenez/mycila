@@ -310,7 +310,7 @@ class MyClass1 {
 class MyClass2 {
     @Veto(topics = "prog/events/a/**", eventType = String.class)
     private void handle(VetoableEvent<String> vetoableEvent) {
-        // do something
+        if(...) vetoableEvent.veto();
     }
 }
 }}}
@@ -328,6 +328,82 @@ processor.process(c1)
 }}}
 
 === Publisher ===
+
+Publishers can be created using the annotation `@Publish`. 
+
+*Injected publishers*
+
+If the annotation is used in a concrete classes instantiated by you, you can use it like this:
+
+{{{
+@Reference(WEAK)
+class A {
+    Publisher<String> publisher;
+
+    @Subscribe(topics = "prog/events/a/**", eventType = String.class)
+    private void handle(Event<String> event) {
+        // do something
+    }
+
+    @Publish(topics = "prog/events/b/b1")
+    private void send(Publisher<String> publisher) {
+        this.publisher = publisher;
+    }
+
+    void sendAll() {
+        publisher.publish("hello for b1");
+        publisher.publish("hello for b2");
+    }
+}
+}}}
+
+In the example above, you will instanciate class A and the `@Publish` annotation mark a method *to be injected* with a `Publisher`. The AnnotationProcessor will create the publisher for you and inject it:
+
+{{{
+A a = new A();
+annotationProcessor.process(a)
+    .createSubscribers()
+    .injectPublishers();
+
+a.sendAll();
+}}}
+
+*Generated publishers*
+
+The best feature is that you can completely decouple your code by creating interface (or abstract classes) that will be automatically generated thanks to annotations.
+
+In example:
+
+{{{
+private static interface B {
+    @Publish(topics = "prog/events/a")
+    void send(String a, int b);
+}
+
+static abstract class C {
+    @Publish(topics = {"prog/events/a/a1", "prog/events/a/allA"})
+    abstract void send(String a, int b);
+}
+}}}
+
+These two classes defines publishing methods. B will publish two events (a string and an integer) to one topic, and C will publish two events in two topics.
+
+To automatically generate their implementation, you can use, after having created a Dispacther:
+
+{{{
+B b = annotationProcessor.createPublisher(B.class);
+C c = annotationProcessor.createPublisher(C.class);
+
+b.send("Hello for a", 1);
+c.send("Hello for a1", 4);
+}}}
+
+B and C are classes in your code that you can use directly to publish events.
+
+== Google Guice integration ==
+
+Mycila Event can be used without any IOC. But thanks to the powerful annotation support and injection listeners of [http://code.google.com/p/google-guice/ Google Guice], this dependency injection library integrates very well with Mycila Event.
+
 
 {{{
 //TODO
