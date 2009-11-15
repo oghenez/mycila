@@ -25,7 +25,7 @@ dispatcher.subscribe(matcher, String.class, new Subscriber<String>() {
 });
 
 // you can add a listener to oppose a veto to the events
-dispatcher.register(only("app/events/swing/button"), String.class, new Vetoer<String>() {
+dispatcher.subscribe(only("app/events/swing/button"), String.class, new Vetoer<String>() {
     public void check(VetoableEvent<String> vetoableEvent) {
         if(vetoableEvent.event().source().equals("password"))
             vetoableEvent.veto();
@@ -102,7 +102,7 @@ When registering the plugin, a weak registration will be done so that if the plu
 To control event publishing, you can register listeners to *intercept events before they are published*. If a veto is opposed, the event won't be published. You can oppose a veto simply by calling `vetoableEvent.veto()`.
 
 {{{
-dispatcher.register(only("app/events/swing/button"), MyEventType.class, new Vetoer<String>() {
+dispatcher.subscribe(only("app/events/swing/button"), MyEventType.class, new Vetoer<String>() {
     public void check(VetoableEvent<String> vetoableEvent) {
         [...]
         vetoableEvent.veto();
@@ -123,7 +123,7 @@ You can change this default behavior by using your proper `ErrorHandler`. The cl
 
 `ErrorHandlers` also has other methods to help you build your own `ErrorHandler` class and its associated provider `ErrorHandlerProvider`. At each publishing, `ErrorHandlerProvider.get()` is called to obtain a new `ErrorHandler`. Note that `ErrorHandlerProvider.get()` can act as a singleton: you only need to wrap your `ErrorHandlerProvider` or `ErrorHandler` by using `ErrorHandlers.singleton(...)` and the same instance will be reused each time.
 
-To create an EventService with the appropriate event handler, you just have to set the `ErrorHandlerProvider` instance when creating it:
+To create an Dispatcher with the appropriate event handler, you just have to set the `ErrorHandlerProvider` instance when creating it:
 
 {{{
 Dispatcher dispatcher = Dispatchers.synchronousSafe(ErrorHandlers.ignoreErrorsh());
@@ -280,7 +280,54 @@ For 20 publishing threads each starting at the same time and publishing one even
 
 == Annotation support ==
 
-You can annotate your methods to decouple your code from Mycila Event and subscribe, publish and veto.
+Mycila Event provides annotations to create publishers and subscribers decoupled from the Dispatcher service.
+
+=== Subscribers and Vetoers ===
+
+You can annotate any method in your class to receive events or veto them with the `@Subscribe` and `@Veto` annotations. They take in arguments the list of topics (an Ant expression matching topics) to listen to and the type of event.
+
+These annotations must be placed on methods having one parameter: `Event` for listening to events and `VetoableEvent` to veto them.
+
+You can use the `@Reference` annotation to control if the listeners is weak or not. This annotation can be place on the method, or, if you have in your class several annotated methods to listen for events or veto them, you can place the `@Reference` annotation in the class directly.
+
+*By default, a subscription has a HARD reference. So be VERY CAREFUL when you register listeners implemented by your classes to make them WEAK if they have a shorter lifecycle than the Dispatcher.*
+
+*Subscribe to events*
+
+{{{
+class MyClass1 {
+    @Subscribe(topics = "prog/events/a/**", eventType = String.class)
+    private void handle(Event<String> event) {
+        // do something
+    }
+}
+}}}
+
+*Vetoer*
+
+{{{
+@Reference(Reachability.WEAK)
+class MyClass2 {
+    @Veto(topics = "prog/events/a/**", eventType = String.class)
+    private void handle(VetoableEvent<String> vetoableEvent) {
+        // do something
+    }
+}
+}}}
+
+In your code, after having created a `Dispatcher`, you can use the `AnnotationProcessor` to register annotated methods like this:
+
+{{{
+MyClass1 c1 = new ...
+
+AnnotationProcessor processor = AnnotationProcessor.create(dispatcher);
+
+processor.process(c1)
+    .registerSubscribers()
+    .registerVetoers();
+}}}
+
+=== Publisher ===
 
 {{{
 //TODO
