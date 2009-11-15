@@ -16,9 +16,21 @@
 
 package com.mycila.event;
 
+import com.mycila.event.annotation.Publish;
+import com.mycila.event.annotation.Reference;
+import com.mycila.event.annotation.Subscribe;
+import com.mycila.event.annotation.Veto;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.mycila.event.Reachability.*;
+import static com.mycila.event.Topics.*;
+import static org.junit.Assert.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -26,9 +38,101 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public final class AnnotationProcessorTest {
 
-    @Test
-    public void test() throws Exception {
+    private final List<Object> sequence = new ArrayList<Object>();
 
+    AnnotationProcessor processor;
+    Dispatcher dispatcher;
+
+    @Before
+    public void setup() {
+        dispatcher = Dispatchers.synchronousUnsafe(ErrorHandlers.rethrowErrorsAfterPublish());
+        processor = AnnotationProcessor.create(dispatcher);
+        sequence.clear();
+    }
+
+    @Test
+    public void test_subscribe_strong() {
+        Object o = new Object() {
+            @Subscribe(topics = {"prog/events/a", "prog/events/b/**"}, eventType = String.class)
+            private void handle(Event<String> event) {
+                sequence.add(event.source());
+            }
+        };
+        processor.process(o).registerSubscribers();
+        publish();
+        assertEquals(sequence.toString(), "[Hello for a, hello for b1, hello for b2]");
+    }
+
+    @Test
+    public void test_subscribe_weak() {
+        Object o = new Object() {
+            @Subscribe(topics = {"prog/events/a", "prog/events/b/**"}, eventType = String.class)
+            @Reference(WEAK)
+            private void handle(Event<String> event) {
+                sequence.add(event.source());
+            }
+        };
+        processor.process(o).registerSubscribers();
+
+        System.gc();
+        System.gc();
+        System.gc();
+
+        publish();
+        assertEquals(sequence.toString(), "[]");
+    }
+
+    @Test
+    public void test_veto() {
+        Object o = new Object() {
+            @Subscribe(topics = {"prog/events/a", "prog/events/b/**"}, eventType = String.class)
+            private void handle(Event<String> event) {
+                sequence.add(event.source());
+            }
+
+            @Veto(topics = {"prog/events/b/**"}, eventType = String.class)
+            void check(VetoableEvent<String> vetoable) {
+                if (vetoable.event().source().contains("b1"))
+                    vetoable.veto();
+            }
+        };
+
+        processor.process(o)
+                .registerSubscribers()
+                .registerVetoers();
+
+        publish();
+        assertEquals(sequence.toString(), "[Hello for a, hello for b2]");
+
+    }
+
+    private void publish() {
+        class A {
+            Publisher<Object> publisher;
+
+            @Publish(topic = "prog/events/b/b1")
+            private void send(Publisher<Object> publisher) {
+                this.publisher = publisher;
+            }
+
+            void sendAll() {
+                publisher.publish("hello for b1");
+                publisher.publish(2);
+                publisher.publish("hello for b2");
+                publisher.publish(3);
+            }
+        }
+
+        A a = new A();
+        processor.process(a).injectPublishers();
+
+        dispatcher.publish(topic("prog/events/a"), "Hello for a");
+        dispatcher.publish(topic("prog/events/a"), 1);
+
+        a.sendAll();
+
+        dispatcher.publish(topic("prog/events/a/a1"), "hello for a1");
+        dispatcher.publish(topic("prog/events/a/a1"), 4);
     }
 
 }
