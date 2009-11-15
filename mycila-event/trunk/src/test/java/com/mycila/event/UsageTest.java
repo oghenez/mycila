@@ -36,7 +36,7 @@ final class UsageTest {
         });
 
         // you can add a listener to oppose a veto to the events
-        dispatcher.register(only("app/events/swing/button"), String.class, new Vetoer<String>() {
+        dispatcher.subscribe(only("app/events/swing/button"), String.class, new Vetoer<String>() {
             @Override
             public void check(VetoableEvent<String> vetoableEvent) {
                 if (vetoableEvent.event().source().equals("password"))

@@ -78,7 +78,7 @@ final class DefaultDispatcher implements Dispatcher {
     }
 
     @Override
-    public final <E> void register(TopicMatcher matcher, Class<E> eventType, Vetoer<E> vetoer) {
+    public final <E> void subscribe(TopicMatcher matcher, Class<E> eventType, Vetoer<E> vetoer) {
         notNull(matcher, "TopicMatcher");
         notNull(eventType, "Event type");
         notNull(vetoer, "Vetoer");
@@ -86,7 +86,7 @@ final class DefaultDispatcher implements Dispatcher {
     }
 
     @Override
-    public final <E> void unregister(Vetoer<E> vetoer) {
+    public final <E> void unsubscribe(Vetoer<E> vetoer) {
         notNull(vetoer, "Vetoer");
         removeSubscription(vetoers, vetoer);
     }

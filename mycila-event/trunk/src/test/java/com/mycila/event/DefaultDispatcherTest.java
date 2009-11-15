@@ -86,7 +86,7 @@ public final class DefaultDispatcherTest {
                 sequence.add(event.source());
             }
         });
-        dispatcher.register(topics("prog/events/b/**"), String.class, new Vetoer<String>() {
+        dispatcher.subscribe(topics("prog/events/b/**"), String.class, new Vetoer<String>() {
             @Override
             public void check(VetoableEvent<String> vetoable) {
                 if (vetoable.event().source().contains("b1"))

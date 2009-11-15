@@ -177,11 +177,7 @@ public final class ErrorHandlers {
                     @Override
                     public void onError(Subscription subscription, Event event, Exception e) {
                         exceptions.add(e);
-                        if (e instanceof RuntimeException)
-                            throw (RuntimeException) e;
-                        DispatcherException other = new DispatcherException(e.getMessage(), e);
-                        other.setStackTrace(e.getStackTrace());
-                        throw other;
+                        throw ExceptionUtils.toRuntime(e);
                     }
 
                     @Override
