@@ -29,6 +29,14 @@ public final class Topics {
     private Topics() {
     }
 
+    public static Topic[] topics(String... names) {
+        notNull(names, "Topic names");
+        Topic[] topics = new Topic[names.length];
+        for (int i = 0, length = topics.length; i < length; i++)
+            topics[i] = topic(names[i]);
+        return topics;
+    }
+
     public static Topic topic(String name) {
         return new TopicImpl(name);
     }
@@ -68,7 +76,7 @@ public final class Topics {
         }
     }
 
-    public static AbstractTopicMatcher topics(String pattern) {
+    public static AbstractTopicMatcher matching(String pattern) {
         return matcher(AntTopicMatcher.forPattern(pattern));
     }
 
@@ -79,7 +87,7 @@ public final class Topics {
         return ANY;
     }
 
-    private static final AbstractTopicMatcher ANY = topics("**");
+    private static final AbstractTopicMatcher ANY = matching("**");
 
     public static AbstractTopicMatcher matcher(final TopicMatcher matcher) {
         return new Delegate(matcher);
@@ -191,7 +199,7 @@ public final class Topics {
         notNull(patterns, "Topic patterns");
         TopicMatcher[] matchers = new TopicMatcher[patterns.length];
         for (int i = 0, length = matchers.length; i < length; i++)
-            matchers[i] = topics(patterns[i]);
+            matchers[i] = matching(patterns[i]);
         return anyOf(matchers);
     }
 

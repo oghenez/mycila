@@ -30,7 +30,7 @@ final class UsageTest {
         Dispatcher dispatcher = Dispatchers.synchronousUnsafe(ErrorHandlers.rethrowErrorsAfterPublish());
 
         // then subscribe
-        TopicMatcher matcher = only("app/events/swing/button").or(topics("app/events/swing/fields/**"));
+        TopicMatcher matcher = only("app/events/swing/button").or(matching("app/events/swing/fields/**"));
         dispatcher.subscribe(matcher, String.class, new Subscriber<String>() {
             @Override
             public void onEvent(Event<String> event) throws Exception {

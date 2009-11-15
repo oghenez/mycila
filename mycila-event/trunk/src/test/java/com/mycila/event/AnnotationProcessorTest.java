@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.mycila.event.Reachability.*;
-import static com.mycila.event.Topics.*;
 import static org.junit.Assert.*;
 
 /**
@@ -106,11 +105,24 @@ public final class AnnotationProcessorTest {
 
     }
 
+    @Test
+    public void test_multiple_publish() {
+        Object o = new Object() {
+            @Subscribe(topics = "prog/events/a/**", eventType = String.class)
+            private void handle(Event<String> event) {
+                sequence.add(event.source());
+            }
+        };
+        processor.process(o).registerSubscribers();
+        publish();
+        assertEquals(sequence.toString(), "[Hello for a, Hello for a1, Hello for a1]");
+    }
+
     private void publish() {
         class A {
             Publisher<Object> publisher;
 
-            @Publish(topic = "prog/events/b/b1")
+            @Publish(topics = "prog/events/b/b1")
             private void send(Publisher<Object> publisher) {
                 this.publisher = publisher;
             }
@@ -126,13 +138,23 @@ public final class AnnotationProcessorTest {
         A a = new A();
         processor.process(a).injectPublishers();
 
-        dispatcher.publish(topic("prog/events/a"), "Hello for a");
-        dispatcher.publish(topic("prog/events/a"), 1);
+        B b = processor.createPublisher(B.class);
+        C c = processor.createPublisher(C.class);
+
+        b.send("Hello for a", 1);
 
         a.sendAll();
 
-        dispatcher.publish(topic("prog/events/a/a1"), "hello for a1");
-        dispatcher.publish(topic("prog/events/a/a1"), 4);
+        c.send("Hello for a1", 4);
     }
 
+    private static interface B {
+        @Publish(topics = "prog/events/a")
+        void send(String a, int b);
+    }
+
+    static abstract class C {
+        @Publish(topics = {"prog/events/a/a1", "prog/events/a/allA"})
+        abstract void send(String a, int b);
+    }
 }

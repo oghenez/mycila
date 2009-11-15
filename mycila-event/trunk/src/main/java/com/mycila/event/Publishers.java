@@ -16,6 +16,8 @@
 
 package com.mycila.event;
 
+import java.util.Arrays;
+
 import static com.mycila.event.Ensure.*;
 
 /**
@@ -26,23 +28,24 @@ final class Publishers {
     private Publishers() {
     }
 
-    static Publisher create(final Dispatcher dispatcher, final Topic topic) {
-        notNull(topic, "Topic");
+    static Publisher<Object> create(final Dispatcher dispatcher, final Topic... topics) {
+        notNull(topics, "Topics");
         notNull(dispatcher, "Dispatcher");
-        return new Publisher() {
+        return new Publisher<Object>() {
             @Override
-            public Topic topic() {
-                return topic;
+            public Topic[] topics() {
+                return topics;
             }
 
             @Override
             public void publish(Object source) {
-                dispatcher.publish(topic, source);
+                for (Topic topic : topics)
+                    dispatcher.publish(topic, source);
             }
 
             @Override
             public String toString() {
-                return "Publisher{topic=" + topic + "}";
+                return "Publisher" + Arrays.deepToString(topics);
             }
         };
     }

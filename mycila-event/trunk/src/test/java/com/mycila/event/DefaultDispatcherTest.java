@@ -49,7 +49,7 @@ public final class DefaultDispatcherTest {
 
     @Test
     public void test_subscribe_strong() {
-        dispatcher.subscribe(only("prog/events/a").or(topics("prog/events/b/**")), String.class, new Subscriber<String>() {
+        dispatcher.subscribe(only("prog/events/a").or(matching("prog/events/b/**")), String.class, new Subscriber<String>() {
             @Override
             public void onEvent(Event<String> event) throws Exception {
                 sequence.add(event.source());
@@ -68,7 +68,7 @@ public final class DefaultDispatcherTest {
                 sequence.add(event.source());
             }
         }
-        dispatcher.subscribe(only("prog/events/a").or(topics("prog/events/b/**")), String.class, new C());
+        dispatcher.subscribe(only("prog/events/a").or(matching("prog/events/b/**")), String.class, new C());
 
         System.gc();
         System.gc();
@@ -80,13 +80,13 @@ public final class DefaultDispatcherTest {
 
     @Test
     public void test_veto() {
-        dispatcher.subscribe(only("prog/events/a").or(topics("prog/events/b/**")), String.class, new Subscriber<String>() {
+        dispatcher.subscribe(only("prog/events/a").or(matching("prog/events/b/**")), String.class, new Subscriber<String>() {
             @Override
             public void onEvent(Event<String> event) throws Exception {
                 sequence.add(event.source());
             }
         });
-        dispatcher.subscribe(topics("prog/events/b/**"), String.class, new Vetoer<String>() {
+        dispatcher.subscribe(matching("prog/events/b/**"), String.class, new Vetoer<String>() {
             @Override
             public void check(VetoableEvent<String> vetoable) {
                 if (vetoable.event().source().contains("b1"))
