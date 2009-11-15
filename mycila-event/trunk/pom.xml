@@ -209,6 +209,52 @@
                 </executions>
             </plugin>
             <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <silent>true</silent>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"/>
+                                <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
+                                    <zipfileset src="${project.build.directory}/dependency/cglib-2.2.jar"/>
+                                    <zipfileset src="${project.build.directory}/dependency/asm-3.1.jar"/>
+                                    <rule pattern="net.sf.cglib.**" result="com.mycila.event.internal.cglib.@1"/>
+                                    <rule pattern="org.objectweb.asm.**" result="com.mycila.event.internal.asm.@1"/>
+                                    <keep pattern="com.mycila.event.**"/>
+                                </jarjar>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>jarjar</groupId>
+                        <artifactId>jarjar</artifactId>
+                        <version>1.0</version>
+                        <scope>system</scope>
+                        <systemPath>${basedir}/lib/jarjar-1.0.jar</systemPath>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptors>
@@ -282,11 +328,7 @@
         classpath="${common.basedir}/lib/build/jarjar-1.0rc8.jar"/>
     <jarjar jarfile="${build.dir}/${ant.project.name}-with-deps.jar">
       <fileset dir="${build.dir}/classes"/>
-      <zipfileset src="${common.basedir}/lib/build/cglib-2.2.1-snapshot.jar"/>
-      <zipfileset src="${common.basedir}/lib/build/asm-3.1.jar"/>
-      <rule pattern="net.sf.cglib.**" result="com.google.inject.internal.cglib.@1"/>
-      <rule pattern="org.objectweb.asm.**" result="com.google.inject.internal.asm.@1"/>
-      <keep pattern="com.google.inject.**"/>
+      
     </jarjar>
   </target>
 
@@ -328,23 +370,17 @@
     -->
 
     <dependencies>
-        <dependency>
+        <!--<dependency>
             <groupId>asm</groupId>
             <artifactId>asm-all</artifactId>
             <version>3.2</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <version>2.2</version>
             <scope>provided</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>asm</groupId>
-                    <artifactId>asm</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!--<dependency>
             <groupId>com.google.inject</groupId>
