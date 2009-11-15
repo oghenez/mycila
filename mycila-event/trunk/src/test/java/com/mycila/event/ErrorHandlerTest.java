@@ -52,7 +52,7 @@ public final class ErrorHandlerTest {
     }
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
-    @Test(expected = DispatcherException.class)
+    @Test(expected = NullPointerException.class)
     public void test_rethrow_now_caught_exc() {
         Event<String> event = Events.event(Topics.topic("a"), "Hello !");
         ErrorHandler handler = ErrorHandlers.rethrowErrorsImmediately().get();

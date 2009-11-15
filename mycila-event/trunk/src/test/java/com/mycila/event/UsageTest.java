@@ -16,11 +16,14 @@
 
 package com.mycila.event;
 
+import org.junit.Ignore;
+
 import static com.mycila.event.Topics.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
+@Ignore
 final class UsageTest {
     public static void main(String... args) {
         // first create an event service
