@@ -30,14 +30,14 @@ final class DefaultDispatcher implements Dispatcher {
     private final Collection<Subscription> subscribers = new ReferencableCollection<Subscription>();
     private final Collection<Subscription> vetoers = new ReferencableCollection<Subscription>();
 
-    private final Provider<? extends ErrorHandler> exceptionHandlerProvider;
+    private final ErrorHandler errorHandler;
     private final Executor publishExecutor;
     private final Executor subscriberExecutor;
 
-    DefaultDispatcher(Provider<? extends ErrorHandler> exceptionHandlerProvider,
+    DefaultDispatcher(ErrorHandler errorHandler,
                       Executor publishExecutor,
                       Executor subscriberExecutor) {
-        this.exceptionHandlerProvider = notNull(exceptionHandlerProvider, "ErrorHandlerProvider");
+        this.errorHandler = notNull(errorHandler, "ErrorHandler");
         this.publishExecutor = notNull(publishExecutor, "Publishing executor");
         this.subscriberExecutor = notNull(subscriberExecutor, "Subscriber executor");
     }
@@ -52,10 +52,9 @@ final class DefaultDispatcher implements Dispatcher {
             public void run() {
                 final Event<E> event = Events.event(topic, source);
                 if (!isVetoed(event)) {
-                    final ErrorHandler handler = exceptionHandlerProvider.get();
                     final Iterator<Subscription<E, Subscriber<E>>> subscriptionIterator = getSubscribers(event);
                     try {
-                        handler.onPublishingStarting();
+                        errorHandler.onPublishingStarting(event);
                         while (subscriptionIterator.hasNext()) {
                             final Subscription<E, Subscriber<E>> subscription = subscriptionIterator.next();
                             subscriberExecutor.execute(new Runnable() {
@@ -64,13 +63,13 @@ final class DefaultDispatcher implements Dispatcher {
                                     try {
                                         subscription.subscriber().onEvent(event);
                                     } catch (Exception e) {
-                                        handler.onError(subscription, event, e);
+                                        errorHandler.onError(subscription, event, e);
                                     }
                                 }
                             });
                         }
                     } finally {
-                        handler.onPublishingFinished();
+                        errorHandler.onPublishingFinished(event);
                     }
                 }
             }

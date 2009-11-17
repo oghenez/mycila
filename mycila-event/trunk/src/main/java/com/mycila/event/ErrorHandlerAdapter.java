@@ -16,32 +16,19 @@
 
 package com.mycila.event;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class ErrorHandlerAdapter implements ErrorHandler{
+public class ErrorHandlerAdapter implements ErrorHandler {
     @Override
-    public List<Exception> errors() {
-        return new LinkedList<Exception>();
+    public <E> void onPublishingStarting(Event<E> event) {
     }
 
     @Override
-    public void onPublishingStarting() {
+    public <E> void onPublishingFinished(Event<E> event) {
     }
 
     @Override
-    public void onPublishingFinished() {
-    }
-
-    @Override
-    public void onError(Subscription subscription, Event event, Exception e) {
-    }
-
-    @Override
-    public boolean hasFailed() {
-        return false;
+    public <E> void onError(Subscription<E, Subscriber<E>> subscription, Event<E> event, Exception e) {
     }
 }

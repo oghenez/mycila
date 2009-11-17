@@ -16,19 +16,13 @@
 
 package com.mycila.event;
 
-import java.util.List;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface ErrorHandler {
-    void onPublishingStarting();
+    <E> void onPublishingStarting(Event<E> event);
 
-    void onPublishingFinished();
+    <E> void onPublishingFinished(Event<E> event);
 
-    void onError(Subscription subscription, Event event, Exception e);
-
-    boolean hasFailed();
-
-    List<Exception> errors();
+    <E> void onError(Subscription<E, Subscriber<E>> subscription, Event<E> event, Exception e);
 }
