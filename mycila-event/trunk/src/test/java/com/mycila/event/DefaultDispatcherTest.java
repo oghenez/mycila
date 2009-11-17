@@ -100,7 +100,7 @@ public final class DefaultDispatcherTest {
     }
 
     @Test
-    public void test_SYNCHRONOUS_SAFE_DISPATCHER() throws InterruptedException {
+    public void test_SYNCHRONOUS_SAFE_DISPCHER() throws InterruptedException {
         final Dispatcher dispatcher = Dispatchers.synchronousSafe(ErrorHandlers.rethrowErrorsAfterPublish());
 
         final CountDownLatch go = new CountDownLatch(1);
