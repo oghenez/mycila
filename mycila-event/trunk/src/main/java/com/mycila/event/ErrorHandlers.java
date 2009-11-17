@@ -18,9 +18,6 @@ package com.mycila.event;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -32,163 +29,80 @@ public final class ErrorHandlers {
     private ErrorHandlers() {
     }
 
-    public static Provider<ErrorHandler> compose(final Provider<? extends ErrorHandler>... providers) {
-        return new Provider<ErrorHandler>() {
+    public static ErrorHandler compose(final ErrorHandler... errorHandlers) {
+        return new ErrorHandler() {
             @Override
-            public ErrorHandler get() {
-                final ErrorHandler[] errorHandlers = new ErrorHandler[providers.length];
-                for (int i = 0; i < errorHandlers.length; i++)
-                    errorHandlers[i] = providers[i].get();
-                return new ErrorHandler() {
-                    @Override
-                    public void onPublishingStarting() {
-                        for (ErrorHandler errorHandler : errorHandlers)
-                            errorHandler.onPublishingStarting();
-                    }
+            public <E> void onPublishingStarting(Event<E> event) {
+                for (ErrorHandler errorHandler : errorHandlers)
+                    errorHandler.onPublishingStarting(event);
+            }
 
-                    @Override
-                    public void onPublishingFinished() {
-                        for (ErrorHandler errorHandler : errorHandlers)
-                            errorHandler.onPublishingFinished();
-                    }
+            @Override
+            public <E> void onPublishingFinished(Event<E> event) {
+                for (ErrorHandler errorHandler : errorHandlers)
+                    errorHandler.onPublishingFinished(event);
+            }
 
-                    @Override
-                    public void onError(Subscription subscription, Event event, Exception e) {
-                        for (ErrorHandler errorHandler : errorHandlers)
-                            errorHandler.onError(subscription, event, e);
-                    }
-
-                    @Override
-                    public boolean hasFailed() {
-                        for (ErrorHandler errorHandler : errorHandlers)
-                            if (errorHandler.hasFailed())
-                                return true;
-                        return false;
-                    }
-
-                    @Override
-                    public List<Exception> errors() {
-                        List<Exception> exceptions = new LinkedList<Exception>();
-                        for (ErrorHandler errorHandler : errorHandlers)
-                            exceptions.addAll(errorHandler.errors());
-                        return exceptions;
-                    }
-                };
+            @Override
+            public <E> void onError(Subscription<E, Subscriber<E>> subscription, Event<E> event, Exception e) {
+                for (ErrorHandler errorHandler : errorHandlers)
+                    errorHandler.onError(subscription, event, e);
             }
         };
     }
 
-    public static Provider<ErrorHandler> ignoreErrors() {
+    public static ErrorHandler ignoreErrors() {
         return SILENT;
     }
 
-    private static final Provider<ErrorHandler> SILENT = Providers.<ErrorHandler>cache(new ErrorHandler() {
-        private final List<Exception> empty = Collections.emptyList();
+    private static final ErrorHandler SILENT = new ErrorHandlerAdapter();
 
-        @Override
-        public void onError(Subscription subscription, Event event, Exception e) {
-        }
+    public static ErrorHandler rethrowErrorsAfterPublish() {
+        return new ErrorHandler() {
+            private final ThreadLocal<CopyOnWriteArrayList<Exception>> exceptions
+                    = new InheritableThreadLocal<CopyOnWriteArrayList<Exception>>() {
+                @Override
+                protected CopyOnWriteArrayList<Exception> initialValue() {
+                    return new CopyOnWriteArrayList<Exception>();
+                }
+            };
 
-        @Override
-        public List<Exception> errors() {
-            return empty;
-        }
-
-        @Override
-        public boolean hasFailed() {
-            return false;
-        }
-
-        @Override
-        public void onPublishingFinished() {
-        }
-
-        @Override
-        public void onPublishingStarting() {
-        }
-    });
-
-    public static Provider<ErrorHandler> rethrowErrorsAfterPublish() {
-        return new Provider<ErrorHandler>() {
             @Override
-            public ErrorHandler get() {
-                return new ErrorHandler() {
-                    private final CopyOnWriteArrayList<Exception> exceptions = new CopyOnWriteArrayList<Exception>();
+            public <E> void onError(Subscription<E, Subscriber<E>> subscription, Event<E> event, Exception e) {
+                exceptions.get().add(e);
+            }
 
-                    @Override
-                    public List<Exception> errors() {
-                        return Collections.unmodifiableList(new ArrayList<Exception>(exceptions));
-                    }
+            @Override
+            public <E> void onPublishingStarting(Event<E> event) {
+                exceptions.get().clear();
+            }
 
-                    @Override
-                    public boolean hasFailed() {
-                        return !exceptions.isEmpty();
+            @Override
+            public <E> void onPublishingFinished(Event<E> event) {
+                List<Exception> exceptions = this.exceptions.get();
+                this.exceptions.remove();
+                if (!exceptions.isEmpty()) {
+                    StringWriter sw = new StringWriter();
+                    PrintWriter pw = new PrintWriter(sw);
+                    pw.println("ExceptionHandler caught " + exceptions.size() + " error(s):");
+                    pw.println();
+                    int count = 1;
+                    for (Exception exception : exceptions) {
+                        pw.print(count++ + ") ");
+                        exception.printStackTrace(pw);
+                        pw.println();
                     }
-
-                    @Override
-                    public void onError(Subscription subscription, Event event, Exception e) {
-                        exceptions.add(e);
-                    }
-
-                    @Override
-                    public void onPublishingFinished() {
-                        if (hasFailed()) {
-                            List<Exception> exceptions = errors();
-                            StringWriter sw = new StringWriter();
-                            PrintWriter pw = new PrintWriter(sw);
-                            pw.println("ExceptionHandler caught " + exceptions.size() + " error(s):");
-                            pw.println();
-                            int count = 1;
-                            for (Exception exception : exceptions) {
-                                pw.print(count++ + ") ");
-                                exception.printStackTrace(pw);
-                                pw.println();
-                            }
-                            throw new DispatcherException(sw.toString(), null);
-                        }
-                    }
-
-                    @Override
-                    public void onPublishingStarting() {
-                        exceptions.clear();
-                    }
-                };
+                    throw new DispatcherException(sw.toString(), null);
+                }
             }
         };
     }
 
-    public static Provider<ErrorHandler> rethrowErrorsImmediately() {
-        return new Provider<ErrorHandler>() {
+    public static ErrorHandler rethrowErrorsImmediately() {
+        return new ErrorHandlerAdapter() {
             @Override
-            public ErrorHandler get() {
-                return new ErrorHandler() {
-                    private final CopyOnWriteArrayList<Exception> exceptions = new CopyOnWriteArrayList<Exception>();
-
-                    @Override
-                    public List<Exception> errors() {
-                        return Collections.unmodifiableList(new ArrayList<Exception>(exceptions));
-                    }
-
-                    @Override
-                    public boolean hasFailed() {
-                        return !exceptions.isEmpty();
-                    }
-
-                    @Override
-                    public void onError(Subscription subscription, Event event, Exception e) {
-                        exceptions.add(e);
-                        throw ExceptionUtils.toRuntime(e);
-                    }
-
-                    @Override
-                    public void onPublishingFinished() {
-                    }
-
-                    @Override
-                    public void onPublishingStarting() {
-                        exceptions.clear();
-                    }
-                };
+            public <E> void onError(Subscription<E, Subscriber<E>> subscription, Event<E> event, Exception e) {
+                throw ExceptionUtils.toRuntime(e);
             }
         };
     }

@@ -34,41 +34,41 @@ public final class Dispatchers {
     }
 
     public static Dispatcher custom(
-            Provider<? extends ErrorHandler> exceptionHandlerProvider,
+            ErrorHandler errorHandler,
             Executor publishExecutor,
             Executor subscriberExecutor) {
-        return new DefaultDispatcher(exceptionHandlerProvider, publishExecutor, subscriberExecutor);
+        return new DefaultDispatcher(errorHandler, publishExecutor, subscriberExecutor);
     }
 
-    public static Dispatcher synchronousSafe(Provider<ErrorHandler> errorHandlerProvider) {
-        return new DefaultDispatcher(errorHandlerProvider, Executors.blocking(), Executors.immediate());
+    public static Dispatcher synchronousSafe(ErrorHandler errorHandler) {
+        return new DefaultDispatcher(errorHandler, Executors.blocking(), Executors.immediate());
     }
 
-    public static Dispatcher synchronousUnsafe(Provider<ErrorHandler> errorHandlerProvider) {
-        return new DefaultDispatcher(errorHandlerProvider, Executors.immediate(), Executors.immediate());
+    public static Dispatcher synchronousUnsafe(ErrorHandler errorHandler) {
+        return new DefaultDispatcher(errorHandler, Executors.immediate(), Executors.immediate());
     }
 
-    public static Dispatcher asynchronousSafe(Provider<ErrorHandler> errorHandlerProvider) {
+    public static Dispatcher asynchronousSafe(ErrorHandler errorHandler) {
         ThreadFactory threadFactory = new DefaultThreadFactory("AsynchronousSafe", "dispatcher");
         Executor executor = new ThreadPoolExecutor(
                 0, 1,
                 20L, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(),
                 threadFactory);
-        return new DefaultDispatcher(errorHandlerProvider, executor, Executors.immediate());
+        return new DefaultDispatcher(errorHandler, executor, Executors.immediate());
     }
 
-    public static Dispatcher asynchronousUnsafe(Provider<ErrorHandler> errorHandlerProvider) {
+    public static Dispatcher asynchronousUnsafe(ErrorHandler errorHandler) {
         ThreadFactory threadFactory = new DefaultThreadFactory("AsynchronousUnsafe", "dispatcher");
         Executor executor = new ThreadPoolExecutor(
                 0, Integer.MAX_VALUE,
                 20L, TimeUnit.SECONDS,
                 new SynchronousQueue<Runnable>(),
                 threadFactory);
-        return new DefaultDispatcher(errorHandlerProvider, executor, Executors.immediate());
+        return new DefaultDispatcher(errorHandler, executor, Executors.immediate());
     }
 
-    public static Dispatcher broadcastOrdered(Provider<ErrorHandler> errorHandlerProvider) {
+    public static Dispatcher broadcastOrdered(ErrorHandler errorHandler) {
         ThreadFactory threadFactory = new DefaultThreadFactory("BroadcastOrdered", "dispatcher");
         final Executor publishingExecutor = new ThreadPoolExecutor(
                 0, 1,
@@ -81,7 +81,7 @@ public final class Dispatchers {
                 new SynchronousQueue<Runnable>(),
                 threadFactory));
         return new DefaultDispatcher(
-                errorHandlerProvider,
+                errorHandler,
                 new Executor() {
                     @Override
                     public void execute(final Runnable command) {
@@ -101,14 +101,14 @@ public final class Dispatchers {
                 subscribersExecutor);
     }
 
-    public static Dispatcher broadcastUnordered(Provider<ErrorHandler> errorHandlerProvider) {
+    public static Dispatcher broadcastUnordered(ErrorHandler errorHandler) {
         ThreadFactory threadFactory = new DefaultThreadFactory("BroadcastUnordered", "dispatcher");
         Executor executor = new ThreadPoolExecutor(
                 0, Integer.MAX_VALUE,
                 20L, TimeUnit.SECONDS,
                 new SynchronousQueue<Runnable>(),
                 threadFactory);
-        return new DefaultDispatcher(errorHandlerProvider, executor, executor);
+        return new DefaultDispatcher(errorHandler, executor, executor);
     }
 
     private static final class SubscribersExecutor implements Executor {

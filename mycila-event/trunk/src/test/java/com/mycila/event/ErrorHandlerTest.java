@@ -32,34 +32,34 @@ public final class ErrorHandlerTest {
     @Test(expected = DispatcherException.class)
     public void test_toString() {
         Event<String> event = Events.event(Topics.topic("a"), "Hello !");
-        ErrorHandler handler = ErrorHandlers.rethrowErrorsAfterPublish().get();
-        handler.onPublishingStarting();
+        ErrorHandler handler = ErrorHandlers.rethrowErrorsAfterPublish();
+        handler.onPublishingStarting(null);
         handler.onError(null, event, new IllegalArgumentException("An IllegalArgumentException occured"));
         handler.onError(null, event, new InvocationTargetException(new NullPointerException("null")));
         handler.onError(null, event, new IllegalStateException(new NullPointerException("null")));
-        handler.onPublishingFinished();
+        handler.onPublishingFinished(null);
     }
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     @Test(expected = IllegalArgumentException.class)
     public void test_rethrow_now() {
         Event<String> event = Events.event(Topics.topic("a"), "Hello !");
-        ErrorHandler handler = ErrorHandlers.rethrowErrorsImmediately().get();
-        handler.onPublishingStarting();
+        ErrorHandler handler = ErrorHandlers.rethrowErrorsImmediately();
+        handler.onPublishingStarting(null);
         handler.onError(null, event, new IllegalArgumentException("An IllegalArgumentException occured"));
         handler.onError(null, event, new InvocationTargetException(new NullPointerException("null")));
-        handler.onPublishingFinished();
+        handler.onPublishingFinished(null);
     }
 
     @SuppressWarnings({"ThrowableInstanceNeverThrown"})
     @Test(expected = NullPointerException.class)
     public void test_rethrow_now_caught_exc() {
         Event<String> event = Events.event(Topics.topic("a"), "Hello !");
-        ErrorHandler handler = ErrorHandlers.rethrowErrorsImmediately().get();
-        handler.onPublishingStarting();
+        ErrorHandler handler = ErrorHandlers.rethrowErrorsImmediately();
+        handler.onPublishingStarting(null);
         handler.onError(null, event, new InvocationTargetException(new NullPointerException("null"), "ah ah"));
         handler.onError(null, event, new IllegalArgumentException("An IllegalArgumentException occured"));
-        handler.onPublishingFinished();
+        handler.onPublishingFinished(null);
     }
 
     public static void main(String[] args) {
