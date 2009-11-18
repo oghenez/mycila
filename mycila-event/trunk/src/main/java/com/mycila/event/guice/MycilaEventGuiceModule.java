@@ -16,12 +16,13 @@
 
 package com.mycila.event.guice;
 
-import com.google.inject.Binder;
+import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
-import com.google.inject.Module;
-import com.google.inject.Provider;
+import com.google.inject.Injector;
+import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
+import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 import com.mycila.event.AnnotationProcessor;
@@ -30,65 +31,71 @@ import com.mycila.event.Dispatchers;
 import com.mycila.event.ErrorHandler;
 import com.mycila.event.ErrorHandlers;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicReference;
+
 import static com.google.inject.matcher.Matchers.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class MycilaEventGuiceModule implements Module {
+public class MycilaEventGuiceModule extends AbstractModule {
+
+    private final AtomicReference<ConcurrentLinkedQueue<Object>> references = new AtomicReference<ConcurrentLinkedQueue<Object>>();
+    private final Processor processor = new Processor() {
+        @Inject
+        AnnotationProcessor annotationProcessor;
+
+        @Override
+        public <I> void process(I instance) {
+            ConcurrentLinkedQueue<Object> r = references.get();
+            if (r != null) r.offer(instance);
+            else annotationProcessor.process(instance);
+        }
+
+        @Inject
+        void init(Injector injector) {
+            ConcurrentLinkedQueue<Object> r = references.getAndSet(null);
+            while (!r.isEmpty())
+                annotationProcessor.process(r.poll());
+        }
+    };
 
     @Override
-    public void configure(Binder binder) {
-        binder.bind(ErrorHandler.class)
-                .toProvider(errorHandler())
-                .in(Singleton.class);
-
-        binder.bind(Dispatcher.class)
-                .toProvider(dispatcher())
-                .in(Singleton.class);
-
-        binder.bind(AnnotationProcessor.class)
-                .toProvider(annotationProcessor())
-                .in(Singleton.class);
-
-        binder.bindListener(any(), new TypeListener() {
+    public void configure() {
+        bind(Processor.class).toInstance(processor);
+        bindListener(any(), new TypeListener() {
             @Override
-            public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-
+            public <I> void hear(TypeLiteral<I> type, final TypeEncounter<I> encounter) {
+                encounter.register(new InjectionListener<I>() {
+                    @Override
+                    public void afterInjection(I injectee) {
+                        processor.process(injectee);
+                    }
+                });
             }
         });
     }
 
-    protected Provider<ErrorHandler> errorHandler() {
-        return new Provider<ErrorHandler>() {
-            @Override
-            public ErrorHandler get() {
-                return ErrorHandlers.rethrowErrorsImmediately();
-            }
-        };
+    @Provides
+    @Singleton
+    protected ErrorHandler errorHandler() {
+        return ErrorHandlers.rethrowErrorsImmediately();
     }
 
-    protected Provider<AnnotationProcessor> annotationProcessor() {
-        return new Provider<AnnotationProcessor>() {
-            @Inject
-            Dispatcher dispatcher;
-
-            @Override
-            public AnnotationProcessor get() {
-                return AnnotationProcessor.create(dispatcher);
-            }
-        };
+    @Provides
+    @Singleton
+    protected AnnotationProcessor annotationProcessor(Dispatcher dispatcher) {
+        return AnnotationProcessor.create(dispatcher);
     }
 
-    protected Provider<Dispatcher> dispatcher() {
-        return new Provider<Dispatcher>() {
-            @Inject
-            ErrorHandler errorHandler;
+    @Provides
+    @Singleton
+    protected Dispatcher dispatcher(ErrorHandler errorHandler) {
+        return Dispatchers.broadcastUnordered(errorHandler);
+    }
 
-            @Override
-            public Dispatcher get() {
-                return Dispatchers.broadcastUnordered(errorHandler);
-            }
-        };
+    private static interface Processor {
+        <I> void process(I instance);
     }
 }
