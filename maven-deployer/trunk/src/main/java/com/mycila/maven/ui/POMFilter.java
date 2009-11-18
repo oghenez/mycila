@@ -23,10 +23,10 @@ import java.io.File;
  */
 final class POMFilter extends FileFilter {
     public boolean accept(File f) {
-        return f.isDirectory() || f.isFile() && f.getName().equalsIgnoreCase("pom.xml");
+        return f.isDirectory() || f.isFile() && (f.getName().equalsIgnoreCase("pom.xml") || f.getName().endsWith(".pom"));
     }
 
     public String getDescription() {
-        return "Maven POM files (pom.xml)";
+        return "Maven POM files (pom.xml, *.pom)";
     }
 }
