@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<jnlp spec="1.5+" codebase="http://www.mycila.com/pub/maven-deployer" href="maven-deployer.jnlp">
+<jnlp spec="1.5+" codebase="http://repo.mycila.com/pub/maven-deployer/" href="maven-deployer.jnlp" version="1.4">
     <information>
         <title>Maven Deployer UI</title>
         <vendor>Mycila.com</vendor>
         <homepage href="http://code.mycila.com/"/>
         <description>GUI Tool to help deploying artifacts in Maven repositories</description>
         <offline-allowed/>
-        <shortcut online="false">
+        <shortcut online="true">
             <desktop/>
             <menu submenu="Mycila"/>
         </shortcut>
@@ -14,6 +14,7 @@
     <security>
         <all-permissions/>
     </security>
+    <update check="always" policy="prompt-update"/>
     <resources>
         <j2se version="1.5+"/>
         <jar href="maven-deployer.jar"/>
