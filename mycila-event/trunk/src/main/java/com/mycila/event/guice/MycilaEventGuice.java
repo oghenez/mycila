@@ -25,8 +25,8 @@ import com.mycila.event.AnnotationProcessor;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class MycilaEvent {
-    private MycilaEvent() {
+public final class MycilaEventGuice {
+    private MycilaEventGuice() {
     }
 
     public static <T> Provider<T> publisher(final Class<T> clazz) {
