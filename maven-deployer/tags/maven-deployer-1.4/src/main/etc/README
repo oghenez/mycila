@@ -1,0 +1,35 @@
+kha@box:~/download/maven-deployer$ keytool -genkey -keystore keystore -alias maven-deployer
+Enter keystore password:
+Re-enter new password:
+What is your first and last name?
+  [Unknown]:  Mathieu Carbou
+What is the name of your organizational unit?
+  [Unknown]:  Development
+What is the name of your organization?
+  [Unknown]:  Mycila.com
+What is the name of your City or Locality?
+  [Unknown]:  Montreal
+What is the name of your State or Province?
+  [Unknown]:  Quebec
+What is the two-letter country code for this unit?
+  [Unknown]:  CA
+Is CN=Mathieu Carbou, OU=Development, O=Mycila.com, L=Montreal, ST=Quebec, C=CA correct?
+  [no]:  yes
+
+Enter key password for <maven-deployer>
+	(RETURN if same as keystore password):
+kha@box:~/download/maven-deployer$ keytool -selfcert -alias maven-deployer -keystore keystore
+Enter keystore password:
+kha@box:~/download/maven-deployer$ keytool -list -keystore keystore
+kha@box:~/download/maven-deployer$ keytool -list -keystore keystore
+Enter keystore password:
+
+Keystore type: JKS
+Keystore provider: SUN
+
+Your keystore contains 1 entry
+
+maven-deployer, 14-Jan-2009, PrivateKeyEntry,
+Certificate fingerprint (MD5): D5:10:41:B5:64:DB:5A:14:D2:D0:86:B8:37:4C:4A:FD
+kha@box:~/download/maven-deployer$ jarsigner -keystore keystore maven-deployer-with-deps.jar maven-deployer
+Enter Passphrase for keystore:
