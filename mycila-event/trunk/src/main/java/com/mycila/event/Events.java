@@ -51,7 +51,7 @@ final class Events {
 
             @Override
             public String toString() {
-                return "Event{timestamp=" + timestamp + ",topic=" + topic + ",type=" + source.getClass().getName() + "}";
+                return "Event{timestamp=" + timestamp + ",topic=" + topic + ",source=" + source + "}";
             }
         };
     }

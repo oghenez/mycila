@@ -17,6 +17,8 @@
 package com.mycila.event;
 
 import com.mycila.event.annotation.Publish;
+import com.mycila.event.annotation.Subscribe;
+import com.mycila.event.annotation.Veto;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
@@ -30,30 +32,51 @@ import static com.mycila.event.Ensure.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class AnnotationProcessor {
+public abstract class AnnotationProcessor {
 
-    final Dispatcher dispatcher;
+    public abstract <T> T process(T instance);
 
-    private AnnotationProcessor(Dispatcher dispatcher) {
-        notNull(dispatcher, "Dispatcher");
-        this.dispatcher = dispatcher;
-    }
+    public abstract <T> T createPublisher(Class<T> abstractClassOrInterface);
 
-    public InstanceAnnotationProcessor process(Object instance) {
-        return new InstanceAnnotationProcessor(this, instance);
-    }
+    public static AnnotationProcessor create(final Dispatcher dispatcher) {
+        return new AnnotationProcessor() {
+            @Override
+            public <T> T createPublisher(Class<T> abstractClassOrInterface) {
+                notNull(abstractClassOrInterface, "Abstract class or interface");
+                if (abstractClassOrInterface.isInterface())
+                    return ClassUtils.createJDKProxy(abstractClassOrInterface, new PublisherInterceptor(dispatcher, abstractClassOrInterface));
+                if (Modifier.isAbstract(abstractClassOrInterface.getModifiers()))
+                    return ClassUtils.createCglibProxy(abstractClassOrInterface, new PublisherInterceptor(dispatcher, abstractClassOrInterface));
+                throw new IllegalArgumentException("You cannot proxy an existing instance. Use instead AnnotationProcessor.process(instance).");
+            }
 
-    public <T> T createPublisher(Class<T> abstractClassOrInterface) {
-        notNull(abstractClassOrInterface, "Abstract class or interface");
-        if (abstractClassOrInterface.isInterface())
-            return ClassUtils.createJDKProxy(abstractClassOrInterface, new PublisherInterceptor(dispatcher, abstractClassOrInterface));
-        if (Modifier.isAbstract(abstractClassOrInterface.getModifiers()))
-            return ClassUtils.createCglibProxy(abstractClassOrInterface, new PublisherInterceptor(dispatcher, abstractClassOrInterface));
-        throw new IllegalArgumentException("You cannot proxy an existing instance. Use instead AnnotationProcessor.process(instance).");
-    }
-
-    public static AnnotationProcessor create(Dispatcher dispatcher) {
-        return new AnnotationProcessor(dispatcher);
+            @SuppressWarnings({"unchecked"})
+            @Override
+            public <T> T process(T instance) {
+                notNull(instance, "Instance");
+                final Iterable<Method> methods = ClassUtils.getAllDeclaredMethods(instance.getClass());
+                for (Method method : ClassUtils.filterAnnotatedMethods(methods, Veto.class)) {
+                    Veto veto = method.getAnnotation(Veto.class);
+                    dispatcher.subscribe(Topics.anyOf(veto.topics()), veto.eventType(), Subscriptions.createVetoer(instance, method));
+                }
+                for (Method method : ClassUtils.filterAnnotatedMethods(methods, Subscribe.class)) {
+                    Subscribe subscribe = method.getAnnotation(Subscribe.class);
+                    dispatcher.subscribe(Topics.anyOf(subscribe.topics()), subscribe.eventType(), Subscriptions.createSubscriber(instance, method));
+                }
+                for (Method method : ClassUtils.filterAnnotatedMethods(methods, Publish.class)) {
+                    Publish annotation = method.getAnnotation(Publish.class);
+                    uniqueArg(Publisher.class, method);
+                    Publisher publisher = Publishers.create(dispatcher, Topics.topics(annotation.topics()));
+                    method.setAccessible(true);
+                    try {
+                        method.invoke(instance, publisher);
+                    } catch (Exception e) {
+                        throw ExceptionUtils.toRuntime(e);
+                    }
+                }
+                return instance;
+            }
+        };
     }
 
     private static final class PublisherInterceptor implements MethodInterceptor {

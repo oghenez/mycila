@@ -57,7 +57,7 @@ public final class AnnotationProcessorTest {
                 sequence.add(event.source());
             }
         };
-        processor.process(o).registerSubscribers();
+        processor.process(o);
         publish();
         assertEquals(sequence.toString(), "[Hello for a, hello for b1, hello for b2]");
     }
@@ -71,7 +71,7 @@ public final class AnnotationProcessorTest {
                 sequence.add(event.source());
             }
         };
-        processor.process(o).registerSubscribers();
+        processor.process(o);
 
         System.gc();
         System.gc();
@@ -96,9 +96,7 @@ public final class AnnotationProcessorTest {
             }
         };
 
-        processor.process(o)
-                .registerSubscribers()
-                .registerVetoers();
+        processor.process(o);
 
         publish();
         assertEquals(sequence.toString(), "[Hello for a, hello for b2]");
@@ -113,7 +111,7 @@ public final class AnnotationProcessorTest {
                 sequence.add(event.source());
             }
         };
-        processor.process(o).registerSubscribers();
+        processor.process(o);
         publish();
         assertEquals(sequence.toString(), "[Hello for a, Hello for a1, Hello for a1]");
     }
@@ -136,7 +134,7 @@ public final class AnnotationProcessorTest {
         }
 
         A a = new A();
-        processor.process(a).injectPublishers();
+        processor.process(a);
 
         B b = processor.createPublisher(B.class);
         C c = processor.createPublisher(C.class);
