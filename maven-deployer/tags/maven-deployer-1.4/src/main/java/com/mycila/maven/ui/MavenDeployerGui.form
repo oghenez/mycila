@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.mycila.maven.ui.MavenDeployerGui">
+  <grid id="27dc6" binding="formPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="696" height="396"/>
+    </constraints>
+    <properties>
+      <preferredSize width="800" height="600"/>
+    </properties>
+    <border type="none"/>
+    <children>
+      <grid id="f5720" binding="topPanel" custom-create="true" layout-manager="GridBagLayout">
+        <constraints border-constraint="North"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="5fba8" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="0" left="5" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font style="1"/>
+              <foreground color="-65536"/>
+              <text value="GroupId"/>
+            </properties>
+          </component>
+          <component id="f8344" class="javax.swing.JTextField" binding="groupId">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.5" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value=""/>
+              <toolTipText value="GroupId of the artifact to be deployed." noi18n="true"/>
+            </properties>
+          </component>
+          <component id="9dfac" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="0" left="5" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font style="1"/>
+              <foreground awt-color="red"/>
+              <text value="ArtifactId"/>
+            </properties>
+          </component>
+          <component id="e11da" class="javax.swing.JTextField" binding="artifactId">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.5" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value=""/>
+              <toolTipText value="ArtifactId of the artifact to be deployed." noi18n="true"/>
+            </properties>
+          </component>
+          <component id="d3667" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="0" left="5" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font style="1"/>
+              <foreground awt-color="red"/>
+              <text value="Version"/>
+            </properties>
+          </component>
+          <component id="cbb6b" class="javax.swing.JTextField" binding="version">
+            <constraints>
+              <grid row="3" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.5" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value=""/>
+              <toolTipText value="Version of the artifact to be deployed." noi18n="true"/>
+            </properties>
+          </component>
+          <component id="6720" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="0" left="5" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font style="1"/>
+              <foreground awt-color="red"/>
+              <text value="Repository (folder or URL)"/>
+            </properties>
+          </component>
+          <component id="c38b8" class="javax.swing.JTextField" binding="repositoryURL">
+            <constraints>
+              <grid row="8" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.5" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <editable value="true"/>
+              <font style="0"/>
+              <toolTipText value="URL where the artifact will be deployed.&#10;Example: file://C:\m2-repo, scp://host.com/path/to/repo, dav:https://mycompany.com/repo ) " noi18n="true"/>
+            </properties>
+          </component>
+          <component id="a6208" class="javax.swing.JButton" binding="repositoryBrowser">
+            <constraints>
+              <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font style="1"/>
+              <preferredSize width="80" height="20"/>
+              <text value="Browse"/>
+            </properties>
+          </component>
+          <component id="c5b0e" class="javax.swing.JTextField" binding="artifactFile">
+            <constraints>
+              <grid row="7" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <text value=""/>
+              <toolTipText value="File to be deployed. " noi18n="true"/>
+            </properties>
+          </component>
+          <component id="4c9e0" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="0" left="5" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font style="1"/>
+              <foreground awt-color="red"/>
+              <text value="Artifact file"/>
+            </properties>
+          </component>
+          <component id="e8571" class="javax.swing.JButton" binding="artifactBrowser">
+            <constraints>
+              <grid row="7" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font style="1"/>
+              <preferredSize width="80" height="20"/>
+              <text value="Browse"/>
+            </properties>
+          </component>
+          <component id="bc8a1" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="0" left="5" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font style="1"/>
+              <requestFocusEnabled value="false"/>
+              <text value="Repository ID"/>
+            </properties>
+          </component>
+          <component id="17f0f" class="javax.swing.JTextField" binding="repositoryID">
+            <constraints>
+              <grid row="9" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.5" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <doubleBuffered value="false"/>
+              <text value=""/>
+              <toolTipText value="Server Id to map on the &lt;id&gt; under &lt;server&gt; section of settings.xml In most cases, this parameter will be required for authentication." noi18n="true"/>
+            </properties>
+          </component>
+          <component id="d8d97" class="javax.swing.JComboBox" binding="packaging">
+            <constraints>
+              <grid row="4" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.5" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <editable value="true"/>
+              <font style="0"/>
+              <model>
+                <item value="jar"/>
+                <item value="war"/>
+                <item value="zip"/>
+                <item value="pom"/>
+              </model>
+              <preferredSize width="94" height="20"/>
+              <toolTipText value="Type of the artifact to be deployed." noi18n="true"/>
+              <verifyInputWhenFocusTarget value="false"/>
+            </properties>
+          </component>
+          <component id="3071d" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="0" left="5" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font style="1"/>
+              <foreground awt-color="red"/>
+              <text value="Packaging"/>
+            </properties>
+          </component>
+          <component id="12216" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="0" left="5" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font style="1"/>
+              <requestFocusEnabled value="false"/>
+              <text value="Artifact description"/>
+            </properties>
+          </component>
+          <component id="3be" class="javax.swing.JTextField" binding="description">
+            <constraints>
+              <grid row="5" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.5" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <editable value="true"/>
+              <font style="0"/>
+              <toolTipText value="Description passed to a generated POM file" noi18n="true"/>
+            </properties>
+          </component>
+          <component id="88606" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="0" left="5" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font style="1"/>
+              <requestFocusEnabled value="false"/>
+              <text value="Classifier"/>
+            </properties>
+          </component>
+          <component id="e2e3d" class="javax.swing.JComboBox" binding="classifier">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.5" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <editable value="true"/>
+              <font style="0"/>
+              <model>
+                <item value=""/>
+                <item value="sources"/>
+                <item value="javadoc"/>
+              </model>
+              <preferredSize width="94" height="20"/>
+              <toolTipText value="Add classifier to the artifact " noi18n="true"/>
+            </properties>
+          </component>
+          <vspacer id="364b5">
+            <constraints>
+              <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+          </vspacer>
+          <vspacer id="f1481">
+            <constraints>
+              <grid row="6" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+          </vspacer>
+          <vspacer id="e5f3b">
+            <constraints>
+              <grid row="10" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+          </vspacer>
+          <hspacer id="51d4e">
+            <constraints>
+              <grid row="10" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+              <gridbag weightx="0.0" weighty="0.0"/>
+            </constraints>
+          </hspacer>
+          <component id="5b39f" class="javax.swing.JTextField" binding="mavenBin">
+            <constraints>
+              <grid row="11" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+                <preferred-size width="150" height="-1"/>
+              </grid>
+              <gridbag weightx="0.5" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <doubleBuffered value="false"/>
+              <text value=""/>
+              <toolTipText value="Complete path to Maven executable " noi18n="true"/>
+            </properties>
+          </component>
+          <component id="b2cbb" class="javax.swing.JLabel">
+            <constraints>
+              <grid row="11" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <gridbag top="0" left="5" bottom="0" right="0" weightx="0.0" weighty="0.0"/>
+            </constraints>
+            <properties>
+              <font style="1"/>
+              <foreground awt-color="red"/>
+              <requestFocusEnabled value="false"/>
+              <text value="Maven executable"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <scrollpane id="ef976">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="f3598" class="javax.swing.JTextArea" binding="console">
+            <constraints/>
+            <properties>
+              <font name="Courier New" size="11"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+      <grid id="507d7" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="South"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="c9f75" binding="bottomPanel" layout-manager="FlowLayout" hgap="1" vgap="1" flow-align="2">
+            <constraints border-constraint="East"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="e7abc" class="javax.swing.JButton" binding="clear" custom-create="true">
+                <constraints/>
+                <properties>
+                  <font style="1"/>
+                  <text value="Clear"/>
+                </properties>
+              </component>
+              <component id="6ebe" class="javax.swing.JButton" binding="deploy">
+                <constraints/>
+                <properties>
+                  <font style="1"/>
+                  <text value="Deploy"/>
+                </properties>
+              </component>
+              <component id="409d8" class="javax.swing.JButton" binding="cancel">
+                <constraints/>
+                <properties>
+                  <enabled value="true"/>
+                  <font style="1"/>
+                  <text value="Cancel"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="48273" layout-manager="FlowLayout" hgap="0" vgap="0" flow-align="0">
+            <constraints border-constraint="West"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="3ca" class="javax.swing.JButton" binding="loadPOM" custom-create="true">
+                <constraints/>
+                <properties>
+                  <font style="1"/>
+                  <horizontalAlignment value="0"/>
+                  <text value="Load POM"/>
+                </properties>
+              </component>
+              <component id="180ef" class="javax.swing.JCheckBox" binding="cbDeployPOM">
+                <constraints/>
+                <properties>
+                  <enabled value="true"/>
+                  <text value=""/>
+                  <visible value="true"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>
