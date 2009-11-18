@@ -40,7 +40,7 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class ClassUtils {
+public final class ClassUtils {
 
     private static final NamingPolicy NAMING_POLICY = new NamingPolicy() {
         @Override
@@ -67,7 +67,7 @@ final class ClassUtils {
     private ClassUtils() {
     }
 
-    static Iterable<Method> filterAnnotatedMethods(final Iterable<Method> iterable, final Class<? extends Annotation>... allowedAnnotations) {
+    public static Iterable<Method> filterAnnotatedMethods(final Iterable<Method> iterable, final Class<? extends Annotation>... allowedAnnotations) {
         return new Iterable<Method>() {
             @Override
             public Iterator<Method> iterator() {
@@ -85,7 +85,7 @@ final class ClassUtils {
         };
     }
 
-    static Iterable<Method> getAllDeclaredMethods(Class<?> clazz) {
+    public static Iterable<Method> getAllDeclaredMethods(Class<?> clazz) {
         List<Class<?>> hierarchy = new ArrayList<Class<?>>();
         while (clazz != null && clazz != Object.class) {
             hierarchy.add(clazz);
