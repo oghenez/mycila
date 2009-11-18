@@ -89,13 +89,6 @@ public final class MavenDeployer {
 
         gui.cbDeployPOM.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                boolean enable = !gui.cbDeployPOM.isSelected();
-                gui.groupId.setEnabled(enable);
-                gui.artifactId.setEnabled(enable);
-                gui.classifier.setEnabled(enable);
-                gui.version.setEnabled(enable);
-                gui.packaging.setEnabled(enable);
-                gui.description.setEnabled(enable);
                 readPOM(gui);
             }
         });
@@ -150,41 +143,20 @@ public final class MavenDeployer {
             XMLDocument doc = XMLDoc.from(pom).gotoRoot();
             String ns = doc.getPefix("http://maven.apache.org/POM/4.0.0");
             if (ns.length() > 0) ns += ":";
-            if (doc.hasTag("%1$sgroupId", ns)) {
+            if (doc.hasTag("%1$sgroupId", ns))
                 gui.groupId.setText(doc.getText("%1$sgroupId", ns));
-            } else {
-                gui.groupId.setText("");
-            }
-            if (doc.hasTag("%1$sartifactId", ns)) {
+            if (doc.hasTag("%1$sartifactId", ns))
                 gui.artifactId.setText(doc.getText("%1$sartifactId", ns));
-            } else {
-                gui.artifactId.setText("");
-            }
-            if (doc.hasTag("%1$sversion", ns)) {
+            if (doc.hasTag("%1$sversion", ns))
                 gui.version.setText(doc.getText("%1$sversion", ns));
-            } else {
-                gui.version.setText("");
-            }
-            if (doc.hasTag("%1$spackaging", ns)) {
+            if (doc.hasTag("%1$spackaging", ns))
                 gui.packaging.setSelectedItem(doc.getText("%1$spackaging", ns));
-            } else {
-                gui.packaging.setSelectedItem("jar");
-            }
-            if (doc.hasTag("%1$sdescription", ns)) {
+            if (doc.hasTag("%1$sdescription", ns))
                 gui.description.setText(doc.getText("%1$sdescription", ns));
-            } else {
-                gui.description.setText("");
-            }
-            if (doc.hasTag("%1$sdistributionManagement/%1$srepository/%1$surl", ns)) {
+            if (doc.hasTag("%1$sdistributionManagement/%1$srepository/%1$surl", ns))
                 gui.repositoryURL.setText(doc.getText("%1$sdistributionManagement/%1$srepository/%1$surl", ns));
-            } else {
-                gui.repositoryURL.setText("");
-            }
-            if (doc.hasTag("%1$sdistributionManagement/%1$srepository/%1$sid", ns)) {
+            if (doc.hasTag("%1$sdistributionManagement/%1$srepository/%1$sid", ns))
                 gui.repositoryID.setText(doc.getText("%1$sdistributionManagement/%1$srepository/%1$sid", ns));
-            } else {
-                gui.repositoryID.setText("");
-            }
         } catch (Exception ee) {
             gui.console.setText(ExceptionUtils.asText(ee));
         }
