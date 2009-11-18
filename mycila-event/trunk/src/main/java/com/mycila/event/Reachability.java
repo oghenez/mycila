@@ -44,11 +44,11 @@ public enum Reachability {
             return new JDKRef<T>(new WeakReference<T>(notNull(referencable, "Referenced object")));
         }},
 
-    SOFT {
+    /*SOFT {
         @Override
         <T> Ref<T> wrap(T referencable) {
             return new JDKRef<T>(new SoftReference<T>(notNull(referencable, "Referenced object")));
-        }};
+        }}*/;
 
     abstract <T> Ref<T> wrap(T referencable);
 

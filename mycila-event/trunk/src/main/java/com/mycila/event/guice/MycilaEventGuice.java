@@ -32,11 +32,11 @@ public final class MycilaEventGuice {
     public static <T> Provider<T> publisher(final Class<T> clazz) {
         return new Provider<T>() {
             @Inject
-            AnnotationProcessor annotationProcessor;
+            Provider<AnnotationProcessor> annotationProcessor;
 
             @Override
             public T get() {
-                return annotationProcessor.createPublisher(clazz);
+                return annotationProcessor.get().createPublisher(clazz);
             }
         };
     }
