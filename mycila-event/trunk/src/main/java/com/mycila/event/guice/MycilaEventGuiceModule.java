@@ -35,7 +35,7 @@ import static com.google.inject.matcher.Matchers.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class MycilaEventModule implements Module {
+public class MycilaEventGuiceModule implements Module {
 
     @Override
     public void configure(Binder binder) {
