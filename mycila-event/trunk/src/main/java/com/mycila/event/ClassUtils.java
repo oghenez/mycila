@@ -16,6 +16,7 @@
 
 package com.mycila.event;
 
+import net.sf.cglib.core.ClassEmitter;
 import net.sf.cglib.core.DefaultGeneratorStrategy;
 import net.sf.cglib.core.NamingPolicy;
 import net.sf.cglib.core.Predicate;
@@ -25,6 +26,7 @@ import net.sf.cglib.reflect.FastClass;
 import net.sf.cglib.reflect.FastMethod;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.objectweb.asm.ClassWriter;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -123,9 +125,11 @@ public final class ClassUtils {
     public static <T> T createCglibProxy(Class<T> c, MethodInterceptor interceptor) {
         Enhancer enhancer = new Enhancer();
         enhancer.setStrategy(new DefaultGeneratorStrategy());
-        enhancer.setSuperclass(c);
+        if (c.isInterface()) enhancer.setInterfaces(new Class[]{c});
+        else enhancer.setSuperclass(c);
         enhancer.setNamingPolicy(NAMING_POLICY);
         enhancer.setCallback(toCGLIB(interceptor));
+        enhancer.setUseFactory(false);
         return (T) enhancer.create();
     }
 

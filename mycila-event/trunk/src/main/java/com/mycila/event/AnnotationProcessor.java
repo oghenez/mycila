@@ -17,6 +17,7 @@
 package com.mycila.event;
 
 import com.mycila.event.annotation.Publish;
+import com.mycila.event.annotation.SplitEvents;
 import com.mycila.event.annotation.Subscribe;
 import com.mycila.event.annotation.Veto;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -25,7 +26,9 @@ import org.aopalliance.intercept.MethodInvocation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static com.mycila.event.Ensure.*;
 
@@ -80,7 +83,9 @@ public abstract class AnnotationProcessor {
     }
 
     private static final class PublisherInterceptor implements MethodInterceptor {
-        final Map<Method, Publisher<Object>> cache = new HashMap<Method, Publisher<Object>>();
+        final Map<Method, Publisher<Object>> publisherCache = new HashMap<Method, Publisher<Object>>();
+        final Set<Method> requiresSplit = new HashSet<Method>();
+        final Object delegate;
 
         PublisherInterceptor(Dispatcher dispatcher, Class<?> c) {
             Iterable<Method> allMethods = ClassUtils.getAllDeclaredMethods(c);
@@ -88,18 +93,41 @@ public abstract class AnnotationProcessor {
                 hasArgs(method);
                 Publish annotation = method.getAnnotation(Publish.class);
                 Publisher<Object> publisher = Publishers.create(dispatcher, Topics.topics(annotation.topics()));
-                cache.put(method, publisher);
+                publisherCache.put(method, publisher);
+                if (method.isAnnotationPresent(SplitEvents.class))
+                    requiresSplit.add(method);
             }
+            delegate = new Object() {
+                @Override
+                public String toString() {
+                    return "MycilaEvent Generated Publisher";
+                }
+            };
         }
 
+        @SuppressWarnings({"unchecked"})
         @Override
         public Object invoke(MethodInvocation invocation) throws Throwable {
-            Publisher<Object> p = cache.get(invocation.getMethod());
-            if (p == null)
-                return invocation.proceed();
-            for (Object event : invocation.getArguments())
-                p.publish(event);
+            Object o = publisherCache.get(invocation.getMethod());
+            if (o == null)
+                return invocation.getMethod().invoke(delegate, invocation.getArguments());
+            Publisher<Object> publisher = (Publisher<Object>) o;
+            boolean requiresSplit = this.requiresSplit.contains(invocation.getMethod());
+            for (Object arg : invocation.getArguments()) {
+                if (!requiresSplit)
+                    publisher.publish(arg);
+                else if (arg.getClass().isArray())
+                    for (Object event : (Object[]) arg)
+                        publisher.publish(event);
+                else if (arg instanceof Iterable)
+                    for (Object event : (Iterable) arg)
+                        publisher.publish(event);
+                else
+                    publisher.publish(arg);
+            }
             return null;
         }
+
+
     }
 }
