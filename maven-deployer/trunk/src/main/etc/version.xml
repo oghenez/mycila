@@ -1,0 +1,21 @@
+<jnlp-versions>
+
+    <resource>
+        <pattern>
+            <name>applicationV.jar</name>
+            <version-id>1.1</version-id>
+
+        </pattern>
+        <file>application-01_00-us.jar</file>
+    </resource>
+
+    <resource>
+        <pattern>
+            <name>applicationV.jar</name>
+            <version-id>1.2</version-id>
+
+        </pattern>
+        <file>application-02_00-us.jar</file>
+    </resource>
+
+</jnlp-versions>
