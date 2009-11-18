@@ -22,6 +22,7 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
+import com.google.inject.internal.FixedProviderMethodsModule;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
@@ -42,6 +43,7 @@ import static com.google.inject.matcher.Matchers.*;
 public class MycilaEventGuiceModule extends AbstractModule {
 
     private final AtomicReference<ConcurrentLinkedQueue<Object>> references = new AtomicReference<ConcurrentLinkedQueue<Object>>();
+
     private final Processor processor = new Processor() {
         @Inject
         AnnotationProcessor annotationProcessor;

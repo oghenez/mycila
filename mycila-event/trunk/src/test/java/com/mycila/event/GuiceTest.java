@@ -6,6 +6,8 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
+import com.google.inject.internal.FixedProviderMethodsModule;
+import com.google.inject.util.Modules;
 import com.mycila.event.annotation.Publish;
 import com.mycila.event.annotation.Subscribe;
 import com.mycila.event.annotation.Veto;
@@ -31,14 +33,15 @@ public final class GuiceTest implements Module {
 
     @Test
     public void test() throws Exception {
-        Injector injector = Guice.createInjector(this, new MycilaEventGuiceModule() {
+        Module m = new MycilaEventGuiceModule() {
             @Override
             @Provides
             @Singleton
             protected Dispatcher dispatcher(ErrorHandler errorHandler) {
                 return Dispatchers.synchronousUnsafe(errorHandler);
             }
-        });
+        };
+        Injector injector = Guice.createInjector(this, Modules.override(m).with(FixedProviderMethodsModule.forModule(m)));
         injector.getInstance(MyCustomPublisher.class).send("A", "cut", "message", "containing", "bad words");
         injector.getInstance(GuiceTest.class).publisher.publish("Hello world !");
     }
