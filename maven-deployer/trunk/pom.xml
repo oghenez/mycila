@@ -71,7 +71,6 @@
     </prerequisites>
 
     <build>
-        <finalName>maven-deployer</finalName>
         <extensions>
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
