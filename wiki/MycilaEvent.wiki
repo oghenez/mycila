@@ -407,6 +407,11 @@ B and C are classes in your code that you can use directly to publish events.
 
 Mycila Event can be used without any IOC. But thanks to the powerful annotation support and injection listeners of [http://code.google.com/p/google-guice/ Google Guice], this dependency injection library integrates very well with Mycila Event.
 
+{{{
+//TODO
+}}}
+
+== Spring integration ==
 
 {{{
 //TODO
