@@ -324,10 +324,7 @@ In your code, after having created a `Dispatcher`, you can use the `AnnotationPr
 MyClass1 c1 = new ...
 
 AnnotationProcessor processor = AnnotationProcessor.create(dispatcher);
-
-processor.process(c1)
-    .registerSubscribers()
-    .registerVetoers();
+processor.process(c1);;
 }}}
 
 === Publisher ===
@@ -364,10 +361,7 @@ In the example above, you will instanciate class A and the `@Publish` annotation
 
 {{{
 A a = new A();
-annotationProcessor.process(a)
-    .createSubscribers()
-    .injectPublishers();
-
+annotationProcessor.process(a);
 a.sendAll();
 }}}
 
