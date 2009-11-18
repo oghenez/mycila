@@ -403,6 +403,20 @@ c.send("Hello for a1", 4);
 
 B and C are classes in your code that you can use directly to publish events.
 
+You can annotate a generated Publisher method by `@SplitEvents`. If the publishing method is given an array or collection of objects, each object will be published independently as an event.
+
+In example:
+
+{{{
+abstract class MyCustomPublisher2 {
+    @Publish(topics = "a/topic/path")
+    @SplitEvents
+    abstract void send(int event1, String... otherEvents);
+}
+[...]
+myCustomPublisher2.send(1, "each", "string", "will", "be", "an", "event")
+}}}
+
 == Google Guice integration ==
 
 Mycila Event can be used without any IOC. But thanks to the powerful annotation support and injection listeners of [http://code.google.com/p/google-guice/ Google Guice], this dependency injection library integrates very well with Mycila Event.
