@@ -424,3 +424,17 @@ Mycila Event can be used without any IOC. But thanks to the powerful annotation 
 {{{
 //TODO
 }}}
+
+== Apache Camel integration ==
+
+{{{
+//TODO
+}}}
+
+== REST integration ==
+
+{{{
+//TODO
+}}}
+
+== JMS integration ==
