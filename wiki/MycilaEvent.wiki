@@ -464,7 +464,55 @@ injector.getInstance(MyCustomPublisher3.class).send(1, Arrays.asList("A", "cut",
 
 *Automatically inject publishers and create subscriptions*
 
+Suppose you have a class like this:
 
+{{{
+public final class MyImpl implements MyClass {
+
+    Publisher<String> publisher;
+
+    @Subscribe(topics = "a/topic/path", eventType = String.class)
+    void subscribe(Event<String> event) {
+        System.out.println("(subscribe) Got: " + event);
+    }
+
+    @Subscribe(topics = "a/topic/path", eventType = String[].class)
+    void subscribeToList(Event<String[]> event) {
+        System.out.println("(subscribeToList) Got: " + Arrays.toString(event.source()));
+    }
+
+    @Subscribe(topics = "a/topic/path", eventType = Integer.class)
+    void subscribeToInts(Event<Integer> event) {
+        System.out.println("(subscribeToInts) Got: " + event.source());
+    }
+
+    @Veto(topics = "a/topic/path", eventType = String.class)
+    void vetoer(VetoableEvent<String> vetoableEvent) {
+        if (vetoableEvent.event().source().contains("bad words"))
+            vetoableEvent.veto();
+    }
+
+    @Publish(topics = "a/topic/path")
+    void publisher(Publisher<String> publisher) {
+        System.out.println("Publisher injected");
+        publisher.publish("Hello from publisher !");
+        this.publisher = publisher;
+    }
+}
+}}}
+
+When configuring Guice, simply put MycileEventModule likt this:
+
+{{{
+Injector injector = Guice.createInjector(new MycilaEventGuiceModule(), new AbstractModule() {
+	@Override
+	public void configure(Binder binder) {
+		binder.bind(MyClass.class).to(MyImpl.class);
+	}        
+});
+}}}
+
+All the created instances by Guice will automatically discover MycilaEvent annotations and subscribing methods will be registered and publishers will be injected.
 
 === Spring integration ===
 
