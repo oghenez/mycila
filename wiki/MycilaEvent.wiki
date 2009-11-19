@@ -411,30 +411,75 @@ abstract class MyCustomPublisher2 {
 myCustomPublisher2.send(1, "each", "string", "will", "be", "an", "event")
 }}}
 
-== Google Guice integration ==
+== Filter engine ==
+
+{{{
+//TODO
+}}}
+
+== Integration ==
 
 Mycila Event can be used without any IOC. But thanks to the powerful annotation support and injection listeners of [http://code.google.com/p/google-guice/ Google Guice], this dependency injection library integrates very well with Mycila Event.
 
 {{{
-//TODO
+
 }}}
 
-== Spring integration ==
+=== Spring integration ===
+
+*Binding generated publishers*
+
+{{{
+public final class MyModule implements Module {
+    @Override
+    public void configure(Binder binder) {
+        MycilaEventGuice.bindPublisher(binder, MyCustomPublisher.class).in(Singleton.class);
+        MycilaEventGuice.bindPublisher(binder, MyCustomPublisher2.class).in(Singleton.class);
+        MycilaEventGuice.bindPublisher(binder, MyCustomPublisher3.class).in(Singleton.class);
+    }
+
+    @Reference(Reachability.WEAK)
+    static interface MyCustomPublisher {
+        @Publish(topics = "a/topic/path")
+        void send(String... messages);
+    }
+
+    static abstract class MyCustomPublisher2 {
+        @Publish(topics = "a/topic/path")
+        @SplitEvents
+        abstract void send(int event1, String... otherEvents);
+    }
+
+    static abstract class MyCustomPublisher3 {
+        @Publish(topics = "a/topic/path")
+        @SplitEvents
+        abstract void send(int event1, Iterable<String> events);
+    }
+}
+
+injector.getInstance(MyCustomPublisher.class).send("A", "cut", "message", "containing", "bad words");
+injector.getInstance(MyCustomPublisher2.class).send(1, "A", "cut", "message", "containing", "bad words", "in varg");
+injector.getInstance(MyCustomPublisher3.class).send(1, Arrays.asList("A", "cut", "message", "containing", "bad words", "in list"));
+}}}
+
+*Automatically inject publishers and create subscriptions*
+
+
+
+=== Apache Camel integration ===
 
 {{{
 //TODO
 }}}
 
-== Apache Camel integration ==
+=== REST integration ===
 
 {{{
 //TODO
 }}}
 
-== REST integration ==
+=== JMS integration ===
 
 {{{
 //TODO
 }}}
-
-== JMS integration ==
