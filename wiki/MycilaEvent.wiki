@@ -419,13 +419,13 @@ myCustomPublisher2.send(1, "each", "string", "will", "be", "an", "event")
 
 == Integration ==
 
+=== Google Guice ===
+
 Mycila Event can be used without any IOC. But thanks to the powerful annotation support and injection listeners of [http://code.google.com/p/google-guice/ Google Guice], this dependency injection library integrates very well with Mycila Event.
 
 {{{
 
 }}}
-
-=== Spring integration ===
 
 *Binding generated publishers*
 
@@ -465,6 +465,12 @@ injector.getInstance(MyCustomPublisher3.class).send(1, Arrays.asList("A", "cut",
 *Automatically inject publishers and create subscriptions*
 
 
+
+=== Spring integration ===
+
+{{{
+//TODO
+}}}
 
 === Apache Camel integration ===
 
