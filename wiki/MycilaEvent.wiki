@@ -24,14 +24,6 @@ dispatcher.subscribe(matcher, String.class, new Subscriber<String>() {
     }
 });
 
-// you can add a listener to oppose a veto to the events
-dispatcher.subscribe(only("app/events/swing/button"), String.class, new Vetoer<String>() {
-    public void check(VetoableEvent<String> vetoableEvent) {
-        if(vetoableEvent.event().source().equals("password"))
-            vetoableEvent.veto();
-    }
-});
-
 // and publish
 dispatcher.publish(topic("app/events/swing/button"), "Hello !");
 }}}
@@ -100,20 +92,6 @@ dispatcher.subscribe(matcher, String.class, pluginLoadedByAnotherSystem);
 
 When registering the plugin, a weak registration will be done so that if the plugin is unloaded or not used anymore, the subscription could be removed automatically.
 
-== Veto system ==
-
-To control event publishing, you can register listeners to *intercept events before they are published*. If a veto is opposed, the event won't be published. You can oppose a veto simply by calling `vetoableEvent.veto()`.
-
-{{{
-dispatcher.subscribe(only("app/events/swing/button"), MyEventType.class, new Vetoer<String>() {
-    public void check(VetoableEvent<String> vetoableEvent) {
-        [...]
-        vetoableEvent.veto();
-        [...]
-    }
-});
-}}}
-
 == Exception handling ==
 
 By default, if a subscriber launches an exception, the exception is put in a list and an aggregate exception will be thrown when all subscribers will be processed. This behavior enables subscribers to be completely independent since the publishing won't be interrupted by a failing subscriber.
@@ -134,7 +112,7 @@ Dispatcher dispatcher = Dispatchers.synchronousSafe(ErrorHandlers.ignoreErrorsh(
 
 == Topic Matchers ==
 
-When you register a subscriber or a vetoer, you need to pass the type of event you want to receive and a matcher to math topics you want to listen to. TopicMatcher can be created with the `Topics` class. You can compose matchers.
+When you register a subscriber, you need to pass the type of event you want to receive and a matcher to math topics you want to listen to. TopicMatcher can be created with the `Topics` class. You can compose matchers.
  * `Topics.only(exactName)`: matches a single topic name. *Example:* `Topics.only("app/events/buttons/ok")`
  * `Topics.topics(pattern)`: matches several topic by using an Ant expression. *Example:* `Topics.topics("app/events/buttons/**")`
  * `Topics.any()`: matches any topic
@@ -285,13 +263,13 @@ For 20 publishing threads each starting at the same time and publishing one even
 
 Mycila Event provides annotations to create publishers and subscribers decoupled from the Dispatcher service.
 
-=== Subscribers and Vetoers ===
+=== Subscribers ===
 
-You can annotate any method in your class to receive events or veto them with the `@Subscribe` and `@Veto` annotations. They take in arguments the list of topics (an Ant expression matching topics) to listen to and the type of event.
+You can annotate any method in your class to receive events with the `@Subscribe` annotation. It takes in arguments the list of topics (an Ant expression matching topics) to listen to and the type of event.
 
-These annotations must be placed on methods having one parameter: `Event` for listening to events and `VetoableEvent` to veto them.
+These annotations must be placed on methods having one parameter: `Event` for listening to events.
 
-You can use the `@Reference` annotation to control if the listeners is weak or not. This annotation can be place on the method, or, if you have in your class several annotated methods to listen for events or veto them, you can place the `@Reference` annotation in the class directly.
+You can use the `@Reference` annotation to control if the listeners is weak or not. This annotation can be place on the method, or, if you have in your class several annotated methods to listen for events, you can place the `@Reference` annotation in the class directly.
 
 *By default, a subscription has a HARD reference. So be VERY CAREFUL when you register listeners implemented by your classes to make them WEAK if they have a shorter lifecycle than the Dispatcher.*
 
@@ -302,18 +280,6 @@ class MyClass1 {
     @Subscribe(topics = "prog/events/a/**", eventType = String.class)
     private void handle(Event<String> event) {
         // do something
-    }
-}
-}}}
-
-*Vetoer*
-
-{{{
-@Reference(Reachability.WEAK)
-class MyClass2 {
-    @Veto(topics = "prog/events/a/**", eventType = String.class)
-    private void handle(VetoableEvent<String> vetoableEvent) {
-        if(...) vetoableEvent.veto();
     }
 }
 }}}
@@ -484,12 +450,6 @@ public final class MyImpl implements MyClass {
     @Subscribe(topics = "a/topic/path", eventType = Integer.class)
     void subscribeToInts(Event<Integer> event) {
         System.out.println("(subscribeToInts) Got: " + event.source());
-    }
-
-    @Veto(topics = "a/topic/path", eventType = String.class)
-    void vetoer(VetoableEvent<String> vetoableEvent) {
-        if (vetoableEvent.event().source().contains("bad words"))
-            vetoableEvent.veto();
     }
 
     @Publish(topics = "a/topic/path")
