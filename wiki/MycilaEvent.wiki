@@ -363,14 +363,14 @@ c.send("Hello for a1", 4);
 
 B and C are classes in your code that you can use directly to publish events.
 
-You can annotate a generated Publisher method by `@SplitEvents`. If the publishing method is given an array or collection of objects, each object will be published independently as an event.
+You can annotate a generated Publisher method by `@Multiple`. If the publishing method is given an array or collection of objects, each object will be published independently as an event.
 
 In example:
 
 {{{
 abstract class MyCustomPublisher2 {
     @Publish(topics = "a/topic/path")
-    @SplitEvents
+    @Multiple
     abstract void send(int event1, String... otherEvents);
 }
 [...]
@@ -412,13 +412,13 @@ public final class MyModule implements Module {
 
     static abstract class MyCustomPublisher2 {
         @Publish(topics = "a/topic/path")
-        @SplitEvents
+        @Multiple
         abstract void send(int event1, String... otherEvents);
     }
 
     static abstract class MyCustomPublisher3 {
         @Publish(topics = "a/topic/path")
-        @SplitEvents
+        @Multiple
         abstract void send(int event1, Iterable<String> events);
     }
 }
