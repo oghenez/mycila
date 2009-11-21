@@ -323,6 +323,12 @@
     -->
 
     <dependencies>
+        <!-- API -->
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>1.6</version>
+        </dependency>
         <!-- jarjar packages -->
         <dependency>
             <groupId>cglib</groupId>
@@ -336,6 +342,7 @@
             <version>1.0</version>
             <scope>provided</scope>
         </dependency>
+
         <!-- optional features -->
         <dependency>
             <groupId>com.google.inject</groupId>

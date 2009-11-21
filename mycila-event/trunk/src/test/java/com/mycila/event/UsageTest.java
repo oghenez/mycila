@@ -16,9 +16,15 @@
 
 package com.mycila.event;
 
+import com.mycila.event.api.Dispatcher;
+import com.mycila.event.api.Event;
+import com.mycila.event.api.Subscriber;
+import com.mycila.event.api.TopicMatcher;
+import com.mycila.event.spi.Dispatchers;
+import com.mycila.event.spi.ErrorHandlers;
 import org.junit.Ignore;
 
-import static com.mycila.event.Topics.*;
+import static com.mycila.event.api.Topics.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -34,16 +40,7 @@ final class UsageTest {
         dispatcher.subscribe(matcher, String.class, new Subscriber<String>() {
             @Override
             public void onEvent(Event<String> event) throws Exception {
-                System.out.println("Received: " + event.source());
-            }
-        });
-
-        // you can add a listener to oppose a veto to the events
-        dispatcher.subscribe(only("app/events/swing/button"), String.class, new Vetoer<String>() {
-            @Override
-            public void check(VetoableEvent<String> vetoableEvent) {
-                if (vetoableEvent.event().source().equals("password"))
-                    vetoableEvent.veto();
+                System.out.println("Received: " + event.getSource());
             }
         });
 
