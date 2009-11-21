@@ -379,7 +379,9 @@ myCustomPublisher2.send(1, "each", "string", "will", "be", "an", "event")
 
 == Integration ==
 
-=== [http://code.google.com/p/google-guice/ Google Guice] ===
+=== Google Guice ===
+
+http://code.google.com/p/google-guice/
 
 Mycila Event can be used without any IOC. But thanks to the powerful annotation support and injection listeners of [http://code.google.com/p/google-guice/ Google Guice], this dependency injection library integrates very well with Mycila Event.
 
@@ -468,13 +470,17 @@ Injector injector = Guice.createInjector(new MycilaEventGuiceModule(), new Abstr
 
 All the created instances by Guice will automatically discover MycilaEvent annotations and subscribing methods will be registered and publishers will be injected.
 
-=== [http://www.springsource.org/ Spring] integration ===
+=== Spring integration ===
+
+http://www.springsource.org/
 
 {{{
 //TODO
 }}}
 
-=== [http://camel.apache.org/ Apache Camel] integration ===
+=== Apache Camel integration ===
+
+http://camel.apache.org/
 
 {{{
 //TODO
@@ -493,7 +499,9 @@ All the created instances by Guice will automatically discover MycilaEvent annot
 }}}
 
 
-=== [http://svn.codehaus.org/esper/ Esper] integration ===
+=== Esper integration ===
+
+http://svn.codehaus.org/esper/
 
 {{{
 //TODO
