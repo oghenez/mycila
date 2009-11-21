@@ -324,11 +324,11 @@
 
     <dependencies>
         <!-- API -->
-        <dependency>
+        <!--<dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
             <version>1.6</version>
-        </dependency>
+        </dependency>-->
         <!-- jarjar packages -->
         <dependency>
             <groupId>cglib</groupId>
