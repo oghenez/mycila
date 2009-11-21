@@ -20,7 +20,7 @@ import com.google.inject.Binder;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.binder.ScopedBindingBuilder;
-import com.mycila.event.spi.Annotations;
+import com.mycila.event.api.AnnotationProcessor;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -32,7 +32,7 @@ public final class MycilaEventGuice {
     public static <T> Provider<T> publisher(final Class<T> clazz) {
         return new Provider<T>() {
             @Inject
-            Provider<Annotations> annotationProcessor;
+            Provider<AnnotationProcessor> annotationProcessor;
 
             @Override
             public T get() {

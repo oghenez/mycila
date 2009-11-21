@@ -41,13 +41,13 @@ public final class AnnotationProcessorTest {
 
     private final List<Object> sequence = new ArrayList<Object>();
 
-    Annotations processor;
+    AnnotationProcessors processor;
     Dispatcher dispatcher;
 
     @Before
     public void setup() {
         dispatcher = Dispatchers.synchronousUnsafe(ErrorHandlers.rethrowErrorsAfterPublish());
-        processor = Annotations.create(dispatcher);
+        processor = AnnotationProcessors.create(dispatcher);
         sequence.clear();
     }
 

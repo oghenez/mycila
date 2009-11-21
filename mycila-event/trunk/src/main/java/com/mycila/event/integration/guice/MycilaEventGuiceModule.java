@@ -23,14 +23,13 @@ import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
+import com.google.inject.binder.AnnotatedBindingBuilder;
+import com.google.inject.binder.ScopedBindingBuilder;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
+import com.mycila.event.api.AnnotationProcessor;
 import com.mycila.event.api.Dispatcher;
-import com.mycila.event.spi.Annotations;
-import com.mycila.event.spi.Dispatchers;
-import com.mycila.event.spi.ErrorHandler;
-import com.mycila.event.spi.ErrorHandlers;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
@@ -40,13 +39,13 @@ import static com.google.inject.matcher.Matchers.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class MycilaEventGuiceModule implements Module {
+public abstract class MycilaEventGuiceModule implements Module {
 
     private final AtomicReference<ConcurrentLinkedQueue<Object>> references = new AtomicReference<ConcurrentLinkedQueue<Object>>(new ConcurrentLinkedQueue<Object>());
 
     private final Processor processor = new Processor() {
         @Inject
-        Provider<Annotations> annotationProcessor;
+        Provider<AnnotationProcessor> annotationProcessor;
 
         @Override
         public <I> void process(I instance) {
@@ -65,17 +64,9 @@ public class MycilaEventGuiceModule implements Module {
 
     @Override
     public final void configure(Binder binder) {
-        binder.bind(ErrorHandler.class)
-                .toProvider(errorHandler())
-                .in(Singleton.class);
-        binder.bind(Dispatcher.class)
-                .toProvider(dispatcher())
-                .in(Singleton.class);
-        binder.bind(Annotations.class)
-                .toProvider(annotationProcessor())
-                .in(Singleton.class);
-        binder.bind(Processor.class)
-                .toInstance(processor);
+        bindDispatcher(binder.bind(Dispatcher.class)).in(Singleton.class);
+        bindAnnotationProcessor(binder.bind(AnnotationProcessor.class)).in(Singleton.class);
+        binder.bind(Processor.class).toInstance(processor);
         binder.bindListener(any(), new TypeListener() {
             @Override
             public <I> void hear(TypeLiteral<I> type, final TypeEncounter<I> encounter) {
@@ -89,38 +80,9 @@ public class MycilaEventGuiceModule implements Module {
         });
     }
 
-    protected Provider<ErrorHandler> errorHandler() {
-        return new Provider<ErrorHandler>() {
-            @Override
-            public ErrorHandler get() {
-                return ErrorHandlers.rethrowErrorsImmediately();
-            }
-        };
-    }
+    protected abstract ScopedBindingBuilder bindAnnotationProcessor(AnnotatedBindingBuilder<AnnotationProcessor> bindAnnotationProcessor);
 
-    protected Provider<Annotations> annotationProcessor() {
-        return new Provider<Annotations>() {
-            @Inject
-            Provider<Dispatcher> dispatcher;
-
-            @Override
-            public Annotations get() {
-                return Annotations.create(dispatcher.get());
-            }
-        };
-    }
-
-    protected Provider<Dispatcher> dispatcher() {
-        return new Provider<Dispatcher>() {
-            @Inject
-            Provider<ErrorHandler> errorHandler;
-
-            @Override
-            public Dispatcher get() {
-                return Dispatchers.broadcastUnordered(errorHandler.get());
-            }
-        };
-    }
+    protected abstract ScopedBindingBuilder bindDispatcher(AnnotatedBindingBuilder<Dispatcher> bindDispatcher);
 
     private static interface Processor {
         <I> void process(I instance);
