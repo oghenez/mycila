@@ -23,6 +23,9 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
+import com.google.inject.binder.AnnotatedBindingBuilder;
+import com.google.inject.binder.ScopedBindingBuilder;
+import com.mycila.event.api.AnnotationProcessor;
 import com.mycila.event.api.Dispatcher;
 import com.mycila.event.api.Event;
 import com.mycila.event.api.Publisher;
@@ -32,8 +35,9 @@ import com.mycila.event.api.annotation.Publish;
 import com.mycila.event.api.annotation.Reference;
 import com.mycila.event.api.annotation.Subscribe;
 import com.mycila.event.integration.guice.MycilaEventGuiceModule;
+import com.mycila.event.spi.AnnotationProcessors;
 import com.mycila.event.spi.Dispatchers;
-import com.mycila.event.spi.ErrorHandler;
+import com.mycila.event.spi.ErrorHandlers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -62,16 +66,26 @@ public final class GuiceTest implements Module {
     public void test() throws Exception {
         Module m = new MycilaEventGuiceModule() {
             @Override
-            protected Provider<Dispatcher> dispatcher() {
-                return new Provider<Dispatcher>() {
+            protected ScopedBindingBuilder bindAnnotationProcessor(AnnotatedBindingBuilder<AnnotationProcessor> bindAnnotationProcessor) {
+                return bindAnnotationProcessor.toProvider(new Provider<AnnotationProcessor>() {
                     @Inject
-                    Provider<ErrorHandler> errorHandler;
+                    Provider<Dispatcher> dispatcher;
 
                     @Override
-                    public Dispatcher get() {
-                        return Dispatchers.synchronousUnsafe(errorHandler.get());
+                    public AnnotationProcessor get() {
+                        return AnnotationProcessors.create(dispatcher.get());
                     }
-                };
+                });
+            }
+
+            @Override
+            protected ScopedBindingBuilder bindDispatcher(AnnotatedBindingBuilder<Dispatcher> bindDispatcher) {
+                return bindDispatcher.toProvider(new Provider<Dispatcher>() {
+                    @Override
+                    public Dispatcher get() {
+                        return Dispatchers.synchronousUnsafe(ErrorHandlers.rethrowErrorsImmediately());
+                    }
+                });
             }
         };
         Injector injector = Guice.createInjector(this, m);

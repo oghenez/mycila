@@ -38,14 +38,14 @@ import static com.mycila.event.api.Ensure.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class Annotations extends AbstractAnnotationProcessor {
+public abstract class AnnotationProcessors extends AbstractAnnotationProcessor {
 
-    private Annotations(Dispatcher dispatcher) {
+    private AnnotationProcessors(Dispatcher dispatcher) {
         super(dispatcher);
     }
 
-    public static Annotations create(final Dispatcher dispatcher) {
-        return new Annotations(dispatcher) {
+    public static AnnotationProcessors create(final Dispatcher dispatcher) {
+        return new AnnotationProcessors(dispatcher) {
             @SuppressWarnings({"unchecked"})
             @Override
             protected void processAnnotatedMethod(Dispatcher dispatcher, Object instance, Method method) {

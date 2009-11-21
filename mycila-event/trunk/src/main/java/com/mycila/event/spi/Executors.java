@@ -23,12 +23,12 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Executors {
+final class Executors {
 
     private Executors() {
     }
 
-    public static Executor immediate() {
+    static Executor immediate() {
         return new Executor() {
             @Override
             public void execute(Runnable command) {
@@ -37,7 +37,7 @@ public final class Executors {
         };
     }
 
-    public static Executor blocking() {
+    static Executor blocking() {
         return new Executor() {
             final Lock running = new ReentrantLock();
 
