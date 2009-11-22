@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package com.mycila.event;
+package com.mycila.event.spi;
 
 import com.mycila.event.api.Dispatcher;
 import com.mycila.event.api.Event;
 import com.mycila.event.api.Subscriber;
 import com.mycila.event.api.TopicMatcher;
-import com.mycila.event.spi.Dispatchers;
-import com.mycila.event.spi.ErrorHandlers;
 import org.junit.Ignore;
 
 import static com.mycila.event.api.Topics.*;
