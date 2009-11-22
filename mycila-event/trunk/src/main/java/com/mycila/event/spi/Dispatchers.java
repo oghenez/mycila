@@ -54,7 +54,7 @@ public final class Dispatchers {
         ThreadFactory threadFactory = new DefaultThreadFactory("AsynchronousSafe", "dispatcher");
         Executor executor = new ThreadPoolExecutor(
                 0, 1,
-                20L, TimeUnit.SECONDS,
+                10L, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(),
                 threadFactory);
         return new DefaultDispatcher(errorHandler, executor, Executors.immediate());
@@ -64,7 +64,7 @@ public final class Dispatchers {
         ThreadFactory threadFactory = new DefaultThreadFactory("AsynchronousUnsafe", "dispatcher");
         Executor executor = new ThreadPoolExecutor(
                 0, Integer.MAX_VALUE,
-                20L, TimeUnit.SECONDS,
+                10L, TimeUnit.SECONDS,
                 new SynchronousQueue<Runnable>(),
                 threadFactory);
         return new DefaultDispatcher(errorHandler, executor, Executors.immediate());
@@ -74,12 +74,12 @@ public final class Dispatchers {
         ThreadFactory threadFactory = new DefaultThreadFactory("BroadcastOrdered", "dispatcher");
         final Executor publishingExecutor = new ThreadPoolExecutor(
                 0, 1,
-                20L, TimeUnit.SECONDS,
+                10L, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(),
                 threadFactory);
         final SubscribersExecutor subscribersExecutor = new SubscribersExecutor(new ThreadPoolExecutor(
                 0, Integer.MAX_VALUE,
-                20L, TimeUnit.SECONDS,
+                10L, TimeUnit.SECONDS,
                 new SynchronousQueue<Runnable>(),
                 threadFactory));
         return new DefaultDispatcher(
@@ -107,7 +107,7 @@ public final class Dispatchers {
         ThreadFactory threadFactory = new DefaultThreadFactory("BroadcastUnordered", "dispatcher");
         Executor executor = new ThreadPoolExecutor(
                 0, Integer.MAX_VALUE,
-                20L, TimeUnit.SECONDS,
+                10L, TimeUnit.SECONDS,
                 new SynchronousQueue<Runnable>(),
                 threadFactory);
         return new DefaultDispatcher(errorHandler, executor, executor);
