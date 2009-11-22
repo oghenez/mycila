@@ -16,10 +16,10 @@
 
 package com.mycila.event.spi;
 
-import com.mycila.event.api.Ensure;
-
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.mycila.event.api.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -30,26 +30,32 @@ final class DefaultThreadFactory implements ThreadFactory {
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     private final ThreadGroup group;
     private final String namePrefix;
+    private final String poolPrefix;
 
     DefaultThreadFactory(String poolPrefix, String namePrefix) {
-        Ensure.notNull(poolPrefix, "Thread pool prefix");
-        Ensure.notNull(namePrefix, "Thread name prefix");
+        notNull(poolPrefix, "Thread pool prefix");
+        notNull(namePrefix, "Thread name prefix");
         SecurityManager s = System.getSecurityManager();
         group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
-        this.namePrefix = poolPrefix + "-" + poolNumber.getAndIncrement() + "-" + namePrefix + "-";
+        this.poolPrefix = poolPrefix + "-" + poolNumber.getAndIncrement() + "-";
+        this.namePrefix = namePrefix;
     }
 
     @Override
     public Thread newThread(final Runnable r) {
-        Ensure.notNull(r, "Runnable");
+        return newThread(namePrefix, r);
+    }
+
+    public Thread newThread(String name, final Runnable runnable) {
+        notNull(runnable, "Runnable");
         final ClassLoader ccl = Thread.currentThread().getContextClassLoader();
         final Thread t = new Thread(group, new Runnable() {
             @Override
             public void run() {
                 Thread.currentThread().setContextClassLoader(ccl);
-                r.run();
+                runnable.run();
             }
-        }, namePrefix + threadNumber.getAndIncrement(), 0);
+        }, poolPrefix + name + "-" + threadNumber.getAndIncrement(), 0);
         if (t.isDaemon()) t.setDaemon(false);
         t.setPriority(Thread.currentThread().getPriority());
         return t;
