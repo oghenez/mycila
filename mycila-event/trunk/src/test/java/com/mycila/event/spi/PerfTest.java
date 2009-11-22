@@ -4,6 +4,7 @@ import com.mycila.event.api.Dispatcher;
 import com.mycila.event.api.Event;
 import com.mycila.event.api.Subscriber;
 import com.mycila.event.api.Topics;
+import org.junit.Ignore;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
+@Ignore
 final class PerfTest {
     public static void main(String... args) throws InterruptedException {
         Map<String, Dispatcher> dispatchers = new LinkedHashMap<String, Dispatcher>(6) {
