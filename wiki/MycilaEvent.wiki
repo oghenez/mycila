@@ -284,12 +284,12 @@ class MyClass1 {
 }
 }}}
 
-In your code, after having created a `Dispatcher`, you can use the `AnnotationProcessor` to register annotated methods like this:
+In your code, after having created a `Dispatcher`, you can use the `AnnotationProcessors` to register annotated methods like this:
 
 {{{
 MyClass1 c1 = new ...
 
-AnnotationProcessor processor = AnnotationProcessor.create(dispatcher);
+AnnotationProcessor processor = AnnotationProcessors.create(dispatcher);
 processor.process(c1);;
 }}}
 
