@@ -46,6 +46,9 @@ final class MycilaContextLoader extends GenericXmlContextLoader {
 
     @Override
     protected void customizeContext(GenericApplicationContext context) {
+        SpringContext ctx = mycilaContext.introspector().testClass().getAnnotation(SpringContext.class);
+        if (ctx.classes() != null && ctx.classes().length > 0)
+            setupJavaConfig(context, ctx);
         for (Field field : mycilaContext.introspector().selectFields(fieldsAnnotatedBy(Bean.class))) {
             Bean annotation = field.getAnnotation(Bean.class);
             context.registerBeanDefinition(
@@ -61,6 +64,10 @@ final class MycilaContextLoader extends GenericXmlContextLoader {
         context.registerBeanDefinition(
                 "org.springframework.test.context.TestContext",
                 createBeanDefinition(mycilaContext.attributes().get("org.springframework.test.context.TestContext"), ObjectFactoryBean.class));
+    }
+
+    private void setupJavaConfig(GenericApplicationContext context, SpringContext ctx) {
+        context.setParent(new org.springframework.config.java.context.JavaConfigApplicationContext(ctx.classes()));
     }
 
     protected String getBeanName(Member member, Bean annotation) {

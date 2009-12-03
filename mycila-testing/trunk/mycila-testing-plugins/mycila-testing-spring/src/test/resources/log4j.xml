@@ -27,6 +27,10 @@
     </appender>
 
     <category name="org.springframework">
+		<priority value="INFO" />
+	</category>
+
+    <category name="org.springframework.test">
 		<priority value="TRACE" />
 	</category>
 
