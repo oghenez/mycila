@@ -16,7 +16,6 @@
 package com.mycila.testing.plugin.spring;
 
 import com.mycila.testing.core.api.TestContext;
-import static com.mycila.testing.core.introspect.Filters.*;
 import org.springframework.beans.factory.config.ConstructorArgumentValues;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
@@ -25,7 +24,10 @@ import org.springframework.test.context.support.GenericXmlContextLoader;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+
+import static com.mycila.testing.core.introspect.Filters.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -47,18 +49,23 @@ final class MycilaContextLoader extends GenericXmlContextLoader {
         for (Field field : mycilaContext.introspector().selectFields(fieldsAnnotatedBy(Bean.class))) {
             Bean annotation = field.getAnnotation(Bean.class);
             context.registerBeanDefinition(
-                    annotation.name(),
+                    getBeanName(field, annotation),
                     createBeanDefinition(field, FieldAccessFactoryBean.class, annotation.scope()));
         }
         for (Method method : mycilaContext.introspector().selectMethods(excludeOverridenMethods(methodsAnnotatedBy(Bean.class)))) {
             Bean annotation = method.getAnnotation(Bean.class);
             context.registerBeanDefinition(
-                    annotation.name(),
+                    getBeanName(method, annotation),
                     createBeanDefinition(method, MethodAccessFactoryBean.class, annotation.scope()));
         }
         context.registerBeanDefinition(
                 "org.springframework.test.context.TestContext",
                 createBeanDefinition(mycilaContext.attributes().get("org.springframework.test.context.TestContext"), ObjectFactoryBean.class));
+    }
+
+    protected String getBeanName(Member member, Bean annotation) {
+        String name = annotation.name();
+        return name == null || name.length() == 0 ? member.getName() : name;
     }
 
     private AbstractBeanDefinition createBeanDefinition(Object object, Class beanClass) {
