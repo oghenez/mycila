@@ -17,6 +17,7 @@
 package com.mycila.testing.plugin.spring;
 
 import com.mycila.testing.core.api.TestContext;
+import com.mycila.testing.core.api.TestExecution;
 import com.mycila.testing.core.plugin.DefaultTestPlugin;
 
 import java.lang.reflect.Constructor;
@@ -44,6 +45,23 @@ public final class SpringTestPlugin extends DefaultTestPlugin {
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public void afterTest(TestExecution testExecution) throws Exception {
+        TestContextManager manager = testExecution.context().attributes().get(TESTCONTEXTMANAGER);
+        manager.afterTestMethod(
+                testExecution.context().introspector().instance(),
+                testExecution.method(),
+                testExecution.throwable());
+    }
+
+    @Override
+    public void beforeTest(TestExecution testExecution) throws Exception {
+        TestContextManager manager = testExecution.context().attributes().get(TESTCONTEXTMANAGER);
+        manager.beforeTestMethod(
+                testExecution.context().introspector().instance(),
+                testExecution.method());
     }
 
     private void setupContextLoader(org.springframework.test.context.TestContext ctx, MycilaContextLoader loader) throws Exception {

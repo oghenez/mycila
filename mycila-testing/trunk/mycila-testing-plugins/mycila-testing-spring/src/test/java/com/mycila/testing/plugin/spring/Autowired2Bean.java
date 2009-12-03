@@ -13,28 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mycila.testing.plugin.spring;
 
-import java.lang.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 /**
- * Specify spring context locations to load
- *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-@Inherited
-@Documented
-public @interface SpringContext {
-    /**
-     * The resource locations to use for loading an
-     * {@link org.springframework.context.ApplicationContext ApplicationContext}.
-     *
-     * @return location list
-     */
-    String[] locations() default {};
+public final class Autowired2Bean {
 
-    Class[] classes() default {};
+    @Autowired
+    Dao dao;
+
 }

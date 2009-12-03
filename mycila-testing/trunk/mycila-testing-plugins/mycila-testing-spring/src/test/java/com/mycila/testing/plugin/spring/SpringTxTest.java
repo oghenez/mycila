@@ -13,28 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.mycila.testing.plugin.spring;
 
-import java.lang.annotation.*;
+import com.mycila.testing.junit.MycilaJunitRunner;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Specify spring context locations to load
- *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-@Inherited
-@Documented
-public @interface SpringContext {
-    /**
-     * The resource locations to use for loading an
-     * {@link org.springframework.context.ApplicationContext ApplicationContext}.
-     *
-     * @return location list
-     */
-    String[] locations() default {};
+@RunWith(MycilaJunitRunner.class)
+@SpringContext(locations = "/ctx-tx.xml")
+@TransactionConfiguration(transactionManager = "myTransactionManager")
+public class SpringTxTest {
 
-    Class[] classes() default {};
+    @Autowired
+    Dao dao;
+
+    @Test
+    @Transactional
+    public void test() {
+        dao.save();
+    }
 }
