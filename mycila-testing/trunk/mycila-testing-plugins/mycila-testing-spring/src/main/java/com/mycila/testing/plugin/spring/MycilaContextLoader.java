@@ -47,7 +47,7 @@ final class MycilaContextLoader extends GenericXmlContextLoader {
     @Override
     protected void customizeContext(GenericApplicationContext context) {
         SpringContext ctx = mycilaContext.introspector().testClass().getAnnotation(SpringContext.class);
-        if (ctx.classes() != null && ctx.classes().length > 0)
+        if (ctx != null && ctx.classes() != null && ctx.classes().length > 0)
             setupJavaConfig(context, ctx);
         for (Field field : mycilaContext.introspector().selectFields(fieldsAnnotatedBy(Bean.class))) {
             Bean annotation = field.getAnnotation(Bean.class);
