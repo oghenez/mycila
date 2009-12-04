@@ -17,8 +17,6 @@ package com.mycila.testing.plugin.spring;
 
 import org.h2.Driver;
 import org.springframework.config.java.annotation.Configuration;
-import org.springframework.config.java.plugin.context.AnnotationDrivenConfig;
-import org.springframework.config.java.plugin.tx.AnnotationDrivenTx;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -29,8 +27,6 @@ import javax.sql.DataSource;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Configuration
-@AnnotationDrivenConfig
-@AnnotationDrivenTx(transactionManager = "myTransactionManager")
 public class MyJavaConfig {
 
     @org.springframework.config.java.annotation.Bean
