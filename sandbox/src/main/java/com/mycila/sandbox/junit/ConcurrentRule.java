@@ -29,11 +29,9 @@ public final class ConcurrentRule implements MethodRule {
                             public void run() {
                                 try {
                                     go.await();
+                                    frameworkMethod.invokeExplosively(o);
                                 } catch (InterruptedException e) {
                                     Thread.currentThread().interrupt();
-                                }
-                                try {
-                                    frameworkMethod.invokeExplosively(o);
                                 } catch (Throwable throwable) {
                                     if (throwable instanceof RuntimeException)
                                         throw (RuntimeException) throwable;
