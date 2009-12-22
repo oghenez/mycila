@@ -11,7 +11,7 @@ import java.util.concurrent.CountDownLatch;
  */
 public final class ConcurrentRule implements MethodRule {
     @Override
-    public Statement apply(Statement statement, final FrameworkMethod frameworkMethod, final Object o) {
+    public Statement apply(final Statement statement, final FrameworkMethod frameworkMethod, final Object o) {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
@@ -29,7 +29,7 @@ public final class ConcurrentRule implements MethodRule {
                             public void run() {
                                 try {
                                     go.await();
-                                    frameworkMethod.invokeExplosively(o);
+                                    statement.evaluate();
                                 } catch (InterruptedException e) {
                                     Thread.currentThread().interrupt();
                                 } catch (Throwable throwable) {
