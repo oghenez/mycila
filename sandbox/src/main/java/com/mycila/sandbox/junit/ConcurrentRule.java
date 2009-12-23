@@ -17,7 +17,7 @@ public final class ConcurrentRule implements MethodRule {
             public void evaluate() throws Throwable {
                 Concurrent concurrent = frameworkMethod.getAnnotation(Concurrent.class);
                 if (concurrent == null)
-                    frameworkMethod.invokeExplosively(o);
+                    statement.evaluate();
                 else {
                     final String name = frameworkMethod.getName();
                     final Thread[] threads = new Thread[concurrent.value()];
