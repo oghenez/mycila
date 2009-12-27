@@ -25,6 +25,16 @@ public final class ConcurrentThrowingTest {
 
     @Test(expected = NumberFormatException.class)
     @Concurrent(10)
+    public void myTestMethod_expect() throws InterruptedException {
+        System.out.println("Thread " + Thread.currentThread().getName() + " started !");
+        int n = new Random().nextInt(5000);
+        System.out.println("Thread " + Thread.currentThread().getName() + " wait " + n + "ms");
+        Thread.sleep(n);
+        Integer.parseInt("blabla");
+    }
+
+    @Test
+    @Concurrent(10)
     public void myTestMethod_failing() throws InterruptedException {
         System.out.println("Thread " + Thread.currentThread().getName() + " started !");
         int n = new Random().nextInt(5000);
