@@ -15,37 +15,62 @@
  */
 package com.mycila.log.jdk.hook;
 
+import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class AsyncInvocationHandler<T extends Handler> extends MycilaInvocationHandler<T> {
+public final class AsyncInvocationHandler<T extends Handler> extends MycilaInvocationHandler<T> implements Runnable {
 
-    private final ExecutorService executor = new ThreadPoolExecutor(0, 1, 5, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+    private final BlockingQueue<Runnable> records = new LinkedBlockingQueue<Runnable>();
+    private final Thread logger = new Thread(this, AsyncInvocationHandler.class.getSimpleName() + "-Thread");
+    private final AtomicBoolean running = new AtomicBoolean(true);
+
+    {
+        logger.setDaemon(true);
+        logger.start();
+    }
+
+    @Override
+    public void run() {
+        while (running.get() && !Thread.currentThread().isInterrupted()) {
+            try {
+                Runnable r = records.poll(10, TimeUnit.SECONDS);
+                if (r != null) r.run();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
 
     @Override
     public void publish(final T handler, final LogRecord record) {
-        executor.execute(new Runnable() {
+        Runnable r = new Runnable() {
+            @Override
             public void run() {
                 handler.publish(record);
                 handler.flush();
             }
-        });
+        };
+        if (running.get()) records.offer(r);
+        else r.run();
     }
 
     @Override
     public void close(T handler) throws SecurityException {
-        List<Runnable> remaing = executor.shutdownNow();
-        for (Runnable runnable : remaing)
-            runnable.run();
-        handler.flush();
-        handler.close();
+        if (running.getAndSet(false)) {
+            logger.interrupt();
+            List<Runnable> remaing = new LinkedList<Runnable>();
+            records.drainTo(remaing);
+            for (Runnable runnable : remaing)
+                runnable.run();
+        }
     }
 }
