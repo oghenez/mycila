@@ -22,6 +22,7 @@ import com.mycila.event.api.Reachability;
 import com.mycila.event.api.Subscriber;
 import com.mycila.event.api.Topics;
 import com.mycila.event.api.annotation.Reference;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +51,11 @@ public final class DefaultDispatcherTest {
     public void setup() {
         dispatcher = Dispatchers.synchronousUnsafe(ErrorHandlers.rethrowErrorsAfterPublish());
         sequence.clear();
+    }
+
+    @After
+    public void close() {
+        dispatcher.close();
     }
 
     @Test
@@ -124,6 +130,7 @@ public final class DefaultDispatcherTest {
 
         go.countDown();
         finished.await();
+        dispatcher.close();
     }
 
     @Test
@@ -171,6 +178,7 @@ public final class DefaultDispatcherTest {
 
         System.out.println("paralellCalls.get()=" + paralellCalls.get());
         assertTrue(paralellCalls.get() > 10);
+        dispatcher.close();
     }
 
     @Test
@@ -224,11 +232,12 @@ public final class DefaultDispatcherTest {
 
         System.out.println("paralellCalls.get()=" + paralellCalls.get());
         assertEquals(paralellCalls.get(), 0);
+        dispatcher.close();
     }
 
     @Test
     public void test_ASYNCHRONOUS_UNSAFE_DISPATCHER() throws InterruptedException {
-        final Dispatcher dispatcher = Dispatchers.asynchronousUnsafe(ErrorHandlers.rethrowErrorsAfterPublish());
+        final Dispatcher dispatcher = Dispatchers.asynchronousUnsafe(ErrorHandlers.rethrowErrorsImmediately());
 
         final CountDownLatch go = new CountDownLatch(1);
         final CountDownLatch publish = new CountDownLatch(20);
@@ -276,7 +285,8 @@ public final class DefaultDispatcherTest {
         consume.await();
 
         System.out.println("paralellCalls.get()=" + paralellCalls.get());
-        assertTrue(paralellCalls.get() > 10);
+        assertTrue(paralellCalls.get() > 5);
+        dispatcher.close();
     }
 
     @Test
@@ -330,6 +340,7 @@ public final class DefaultDispatcherTest {
 
         System.out.println("paralellCalls.get()=" + paralellCalls.get());
         assertTrue(paralellCalls.get() > 30);
+        dispatcher.close();
     }
 
     @Test
@@ -382,7 +393,8 @@ public final class DefaultDispatcherTest {
         consume.await();
 
         System.out.println("paralellCalls.get()=" + paralellCalls.get());
-        assertTrue(paralellCalls.get() > 30);
+        assertTrue(paralellCalls.get() > 5);
+        dispatcher.close();
     }
 
     private void publish() {

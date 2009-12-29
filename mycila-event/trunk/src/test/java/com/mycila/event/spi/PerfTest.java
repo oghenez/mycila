@@ -23,19 +23,23 @@ import com.mycila.event.api.Topics;
 import org.junit.Ignore;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Ignore
 final class PerfTest {
+
+    private static final AtomicLong published = new AtomicLong(0);
+    private static final AtomicLong consumed1 = new AtomicLong(0);
+    private static final AtomicLong consumed2 = new AtomicLong(0);
+    private static final ConcurrentLinkedQueue<StatEvent> events = new ConcurrentLinkedQueue<StatEvent>();
+
     public static void main(String... args) throws InterruptedException {
         Map<String, Dispatcher> dispatchers = new LinkedHashMap<String, Dispatcher>(6) {
             {
@@ -48,48 +52,58 @@ final class PerfTest {
             }
         };
         for (Map.Entry<String, Dispatcher> entry : dispatchers.entrySet()) {
-            System.out.println("===== " + entry.getKey() + " Statistics =====");
+            System.out.println("\n===== " + entry.getKey() + " Statistics =====");
             entry.getValue().subscribe(Topics.only("stats"), StatEvent.class, new Subscriber<StatEvent>() {
                 @Override
                 public void onEvent(Event<StatEvent> statEvent) throws Exception {
-                    statEvent.getSource().received();
+                    events.offer(statEvent.getSource().received());
+                    consumed1.incrementAndGet();
                 }
             });
-            test(entry.getValue(), 1000, 500);
+            entry.getValue().subscribe(Topics.only("stats"), StatEvent.class, new Subscriber<StatEvent>() {
+                @Override
+                public void onEvent(Event<StatEvent> statEvent) throws Exception {
+                    consumed2.incrementAndGet();
+                }
+            });
+            test(entry.getValue(), 50, 50);
+            test(entry.getValue(), 100, 100);
             test(entry.getValue(), 1000, 1000);
+            entry.getValue().close();
         }
         System.out.println("\nFinished!");
     }
 
     static void test(final Dispatcher dispatcher, int nPublishers, int nEvents) throws InterruptedException {
-        System.out.println("Ramp up...");
-        for (int i = 0; i < 50; i++)
-            publish(dispatcher, 1000, 100);
-        System.out.println("Testing " + nPublishers + " consumers sending " + nEvents + " events each");
+        System.out.println("\n > Testing " + nPublishers + " publishers sending " + nEvents + " events each\n");
+
         long start = System.nanoTime();
-        List<StatEvent> events = publish(dispatcher, nPublishers, nEvents);
+        publish(dispatcher, nPublishers, nEvents);
         long end = System.nanoTime();
+
+        waitAndReset();
+
         long latency = 0;
         long min = Long.MAX_VALUE;
         long max = Long.MIN_VALUE;
-        for (StatEvent event : events) {
+        int s = events.size();
+        while(!events.isEmpty()) {
+            StatEvent event = events.poll();
             latency += event.latency();
             if (event.latency() > max)
                 max = event.latency();
             else if (event.latency() < min)
                 min = event.latency();
         }
-        latency /= events.size();
-        System.out.println("- exec. time: " + (end - start) + "ns = " + TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS) + "ms");
+        latency /= s;
+
+        System.out.println("- publish time: " + (end - start) + "ns = " + TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS) + "ms");
         System.out.println("- avg. latency: " + latency + "ns = " + TimeUnit.MILLISECONDS.convert(latency, TimeUnit.NANOSECONDS) + "ms");
         System.out.println("- min. latency: " + min + "ns = " + TimeUnit.MILLISECONDS.convert(min, TimeUnit.NANOSECONDS) + "ms");
         System.out.println("- max. latency: " + max + "ns = " + TimeUnit.MILLISECONDS.convert(max, TimeUnit.NANOSECONDS) + "ms");
-        System.out.println("Cleaning up thread pool...");
-        Thread.sleep(15000);
     }
 
-    static List<StatEvent> publish(final Dispatcher dispatcher, int nPublishers, int nEvents) {
-        final ConcurrentLinkedQueue<StatEvent> list = new ConcurrentLinkedQueue<StatEvent>();
+    private static void publish(final Dispatcher dispatcher, final int nPublishers, final int nEvents) {
         final CountDownLatch go = new CountDownLatch(1);
         final CountDownLatch finished = new CountDownLatch(nPublishers);
         for (int i = 0; i < nPublishers; i++) {
@@ -98,7 +112,10 @@ final class PerfTest {
                 public void run() {
                     try {
                         go.await();
-                        dispatcher.publish(Topics.topic("stats"), new StatEvent(list));
+                        for (int i = 0; i < nEvents; i++) {
+                            dispatcher.publish(Topics.topic("stats"), new StatEvent());
+                            published.incrementAndGet();
+                        }
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     } finally {
@@ -107,29 +124,43 @@ final class PerfTest {
                 }
             }.start();
         }
-
         go.countDown();
         try {
             finished.await();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
-        return new LinkedList<StatEvent>(list);
     }
 
-    static final class StatEvent {
-        final Queue<StatEvent> queue;
+    private static void waitAndReset() throws InterruptedException {
+        long p, c1, c2, s;
+        do {
+            Thread.sleep(5000);
+            p = published.get();
+            c1 = consumed1.get();
+            c2 = consumed2.get();
+            s = events.size();
+            System.out.println("Published: " + p);
+            System.out.println("Queue: " + s);
+            System.out.println("Consumed by 1: " + c1);
+            System.out.println("Consumed by 2: " + c2);
+        } while (p != c1 || p != c2 || p != s);
+        published.set(0);
+        consumed1.set(0);
+        consumed2.set(0);
+    }
+
+    private static final class StatEvent {
         final long start;
         long end;
 
-        StatEvent(Queue<StatEvent> queue) {
+        StatEvent() {
             this.start = System.nanoTime();
-            this.queue = queue;
         }
 
-        void received() {
+        StatEvent received() {
             end = System.nanoTime();
-            queue.add(this);
+            return this;
         }
 
         long latency() {
