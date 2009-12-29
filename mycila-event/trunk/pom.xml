@@ -8,7 +8,7 @@
 
     <groupId>com.mycila</groupId>
     <artifactId>mycila-event</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
 
     <name>mycila-event</name>
@@ -29,9 +29,9 @@
     -->
 
     <scm>
-        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-event/trunk</connection>
-        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-event/trunk</developerConnection>
-        <url>http://mycila.googlecode.com/svn/mycila-event/trunk</url>
+        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-event/tags/mycila-event-1.1</connection>
+        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-event/tags/mycila-event-1.1</developerConnection>
+        <url>http://mycila.googlecode.com/svn/mycila-event/tags/mycila-event-1.1</url>
     </scm>
 
     <!--
