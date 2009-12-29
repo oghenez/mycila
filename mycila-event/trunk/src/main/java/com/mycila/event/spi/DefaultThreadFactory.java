@@ -31,10 +31,12 @@ final class DefaultThreadFactory implements ThreadFactory {
     private final ThreadGroup group;
     private final String namePrefix;
     private final String poolPrefix;
+    private final boolean daemon;
 
-    DefaultThreadFactory(String poolPrefix, String namePrefix) {
+    DefaultThreadFactory(String poolPrefix, String namePrefix, boolean daemon) {
         notNull(poolPrefix, "Thread pool prefix");
         notNull(namePrefix, "Thread name prefix");
+        this.daemon = daemon;
         SecurityManager s = System.getSecurityManager();
         group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
         this.poolPrefix = poolPrefix + "-" + poolNumber.getAndIncrement() + "-";
@@ -56,7 +58,7 @@ final class DefaultThreadFactory implements ThreadFactory {
                 runnable.run();
             }
         }, poolPrefix + name + "-" + threadNumber.getAndIncrement(), 0);
-        if (t.isDaemon()) t.setDaemon(false);
+        t.setDaemon(daemon);
         t.setPriority(Thread.currentThread().getPriority());
         return t;
     }

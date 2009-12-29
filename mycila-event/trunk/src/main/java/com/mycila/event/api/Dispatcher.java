@@ -25,4 +25,6 @@ public interface Dispatcher {
     <E> void subscribe(TopicMatcher matcher, Class<E> eventType, Subscriber<E> subscriber);
 
     <E> void unsubscribe(Subscriber<E> subscriber);
+
+    void close();
 }

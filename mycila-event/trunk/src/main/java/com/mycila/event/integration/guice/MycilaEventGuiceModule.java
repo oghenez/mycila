@@ -43,7 +43,7 @@ public abstract class MycilaEventGuiceModule implements Module {
 
     private final AtomicReference<ConcurrentLinkedQueue<Object>> references = new AtomicReference<ConcurrentLinkedQueue<Object>>(new ConcurrentLinkedQueue<Object>());
 
-    private final Processor processor = new Processor() {
+    protected final Processor processor = new Processor() {
         @Inject
         Provider<AnnotationProcessor> annotationProcessor;
 
@@ -63,7 +63,7 @@ public abstract class MycilaEventGuiceModule implements Module {
     };
 
     @Override
-    public final void configure(Binder binder) {
+    public void configure(Binder binder) {
         bindDispatcher(binder.bind(Dispatcher.class)).in(Singleton.class);
         bindAnnotationProcessor(binder.bind(AnnotationProcessor.class)).in(Singleton.class);
         binder.bind(Processor.class).toInstance(processor);

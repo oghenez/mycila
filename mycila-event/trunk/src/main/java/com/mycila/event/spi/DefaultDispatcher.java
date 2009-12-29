@@ -33,7 +33,7 @@ import static com.mycila.event.api.Ensure.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class DefaultDispatcher implements Dispatcher {
+class DefaultDispatcher implements Dispatcher {
 
     private final Collection<Subscription> subscribers = new ReferencableCollection<Subscription>();
 
@@ -93,6 +93,10 @@ final class DefaultDispatcher implements Dispatcher {
     public final <E> void unsubscribe(Subscriber<E> subscriber) {
         notNull(subscriber, "Subscriber");
         removeSubscription(subscribers, subscriber);
+    }
+
+    @Override
+    public void close() {
     }
 
     protected final <E> Iterator<Subscription<E, Subscriber<E>>> getSubscribers(Event<E> event) {
