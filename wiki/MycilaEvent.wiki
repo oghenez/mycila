@@ -47,6 +47,8 @@ http://repo2.maven.org/maven2/com/mycila/mycila-event/
  * [http://code.google.com/p/mycila/source/browse/#svn/mycila-event/trunk Browse source code]
  * [http://mycila.googlecode.com/svn/mycila-event/trunk/ Checkout URL]
 
+Snapshots are available at https://mc-repo.googlecode.com/svn/maven2/snapshots/com/mycila/mycila-guice/
+
 = Features =
 
 == Topics and Event types ==
