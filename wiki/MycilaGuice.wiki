@@ -1,13 +1,32 @@
 #summary Mycila Guice
 #labels Featured
 
+= Introduction =
+
 [http://code.google.com/p/google-guice/ Google Guice] contributions:
  * *ServiceLoader* plugin (enables injection into loaded services)
  * *JSR250* supports improved from [http://code.google.com/p/guiceyfruit/ GuicyFruit]
  * *Custom Injector* with more useful methods which consider the whole Injector hierarchy
  * *CachedScope* to cache your binding for a specific duration
 
-== CachedScope sample ==
+= Download =
+
+Mycila event is deployed in maven 2 Central Repository:
+
+http://repo2.maven.org/maven2/com/mycila/mycila-event/
+
+{{{
+<dependency>
+    <groupId>com.mycila</groupId>
+    <artifactId>mycila-event</artifactId>
+    <version>X.Y</version>
+</dependency>
+}}}
+
+ * [http://code.google.com/p/mycila/source/browse/#svn/mycila-event/trunk Browse source code]
+ * [http://mycila.googlecode.com/svn/mycila-event/trunk/ Checkout URL]
+
+= CachedScope =
 
 You can optionally define your own annotation. In example, for most cases i want to cache my bindings only for 20 seconds. So I've created this annotation in my client program:
 
@@ -44,3 +63,15 @@ final class MyModule extends AbstractModule {
     }
 }
 }}}
+
+= ServiceLoader =
+
+{{{
+binder.bind(AgentPlugin[].class)
+    .toProvider(ServiceLoaderProvider.of(AgentPlugin.class).withClassLoader(ClassLoader.class))
+    .in(Cached20Seconds.class);
+}}}
+
+This binding creates in a cached scope for 20 seconds a list of AgentPlugin instances on the classpath, loaded by the JDK ServiceLoader (META-INF/services/...). When loaded, each service will be injected with its dependencies.
+
+`withClassLoader` is optional and takes as parameter the KEY of the binding where to get the classloader. In my case, i have a binding of type ClassLoader which points to the ClassLaoder instance i want to use to discover the services.
