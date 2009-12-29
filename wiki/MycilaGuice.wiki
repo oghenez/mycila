@@ -1,0 +1,46 @@
+#summary Mycila Guice
+#labels Featured
+
+[http://code.google.com/p/google-guice/ Google Guice] contributions:
+ * *ServiceLoader* plugin (enables injection into loaded services)
+ * *JSR250* supports improved from [http://code.google.com/p/guiceyfruit/ GuicyFruit]
+ * *Custom Injector* with more useful methods which consider the whole Injector hierarchy
+ * *CachedScope* to cache your binding for a specific duration
+
+== CachedScope sample ==
+
+You can optionally define your own annotation. In example, for most cases i want to cache my bindings only for 20 seconds. So I've created this annotation in my client program:
+
+{{{
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RUNTIME)
+@ScopeAnnotation
+public @interface Cached20Seconds {}
+}}}
+
+Then in my Guice module, i use the CachedScope like this:
+
+{{{
+final class MyModule extends AbstractModule {
+
+    @Override
+    protected void configure() {
+        // bind cache annotation
+        bindScope(Cached20Seconds.class, cachedScope(20, SECONDS));
+
+        // configs, cached for 20 seconds and reloaded is rerquested after
+        bind(UserConfig.class).to(UserConfigImpl.class).in(Cached20Seconds.class);
+        bind(InternalConfig.class).to(InternalConfigImpl.class).in(Cached20Seconds.class);
+    }
+
+    @Provides
+    @Cached20Seconds
+    FileClassPath agentClassPath(Provider<FileScanner> selector,
+                                 Provider<UserConfig> userConfig) {
+        List<File> jars = new LinkedList<File>(selector.get().scan(userConfig.get().libDirectory()));
+        jars.add(0, userConfig.get().libDirectory());
+        jars.add(0, userConfig.get().dataDirectory());
+        return FileClassPathClassLoader.create(Thread.currentThread().getContextClassLoader(), false, true).add(jars);
+    }
+}
+}}}
