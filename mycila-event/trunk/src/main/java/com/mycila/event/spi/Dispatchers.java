@@ -126,7 +126,7 @@ public final class Dispatchers {
     public static Dispatcher broadcastUnordered(int corePoolSize, ErrorHandler errorHandler) {
         final ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(
                 corePoolSize,
-                new DefaultThreadFactory("BroadcastOrdered", "subscriber", false));
+                new DefaultThreadFactory("BroadcastUnordered", "subscriber", false));
         return new DefaultDispatcher(errorHandler, executor, executor) {
             @Override
             public void close() {
