@@ -27,16 +27,12 @@ public abstract class AbstractLogger implements Logger {
 
     @Override
     public final void trace(Object message, Object... args) {
-        if(canLog(TRACE)) {
-            doLog(TRACE, null, message, args);
-        }
+        if(canLog(TRACE)) doLog(TRACE, null, message, args);
     }
 
     @Override
     public final void trace(Throwable throwable, Object message, Object... args) {
-        if(canLog(TRACE)) {
-            doLog(TRACE, throwable, message, args);
-        }
+        if(canLog(TRACE)) doLog(TRACE, throwable, message, args);
     }
 
     @Override
@@ -46,16 +42,12 @@ public abstract class AbstractLogger implements Logger {
 
     @Override
     public final void debug(Object message, Object... args) {
-        if(canLog(DEBUG)) {
-            doLog(DEBUG, null, message, args);
-        }
+        if(canLog(DEBUG)) doLog(DEBUG, null, message, args);
     }
 
     @Override
     public final void debug(Throwable throwable, Object message, Object... args) {
-        if(canLog(DEBUG)) {
-            doLog(DEBUG, throwable, message, args);
-        }
+        if(canLog(DEBUG)) doLog(DEBUG, throwable, message, args);
     }
 
     @Override
@@ -65,16 +57,12 @@ public abstract class AbstractLogger implements Logger {
 
     @Override
     public final void info(Object message, Object... args) {
-        if(canLog(INFO)) {
-            doLog(INFO, null, message, args);
-        }
+        if(canLog(INFO)) doLog(INFO, null, message, args);
     }
 
     @Override
     public final void info(Throwable throwable, Object message, Object... args) {
-        if(canLog(INFO)) {
-            doLog(INFO, throwable, message, args);
-        }
+        if(canLog(INFO)) doLog(INFO, throwable, message, args);
     }
 
     @Override
@@ -84,16 +72,12 @@ public abstract class AbstractLogger implements Logger {
 
     @Override
     public final void warn(Object message, Object... args) {
-        if(canLog(WARN)) {
-            doLog(WARN, null, message, args);
-        }
+        if(canLog(WARN)) doLog(WARN, null, message, args);
     }
 
     @Override
     public final void warn(Throwable throwable, Object message, Object... args) {
-        if(canLog(WARN)) {
-            doLog(WARN, throwable, message, args);
-        }
+        if(canLog(WARN)) doLog(WARN, throwable, message, args);
     }
 
     @Override
@@ -103,30 +87,82 @@ public abstract class AbstractLogger implements Logger {
 
     @Override
     public final void error(Object message, Object... args) {
-        if(canLog(ERROR)) {
-            doLog(ERROR, null, message, args);
-        }
+        if(canLog(ERROR)) doLog(ERROR, null, message, args);
     }
 
     @Override
     public final void error(Throwable throwable, Object message, Object... args) {
-        if(canLog(ERROR)) {
-            doLog(ERROR, throwable, message, args);
-        }
+        if(canLog(ERROR)) doLog(ERROR, throwable, message, args);
     }
 
     @Override
     public final void log(Level level, Object message, Object... args) {
-        if(canLog(level)) {
-            doLog(level, null, message, args);
-        }
+        if(canLog(level)) doLog(level, null, message, args);
     }
 
     @Override
     public final void log(Level level, Throwable throwable, Object message, Object... args) {
-        if (canLog(level)) {
-            doLog(level, throwable, message, args);
-        }
+        if (canLog(level)) doLog(level, throwable, message, args);
+    }
+
+    @Override
+    public void debug(Object message) {
+        if(canLog(DEBUG)) doLog(DEBUG, null, message);
+    }
+
+    @Override
+    public void debug(Throwable throwable, Object message) {
+        if(canLog(DEBUG)) doLog(DEBUG, throwable, message);
+    }
+
+    @Override
+    public void error(Object message) {
+        if(canLog(ERROR)) doLog(ERROR, null, message);
+    }
+
+    @Override
+    public void error(Throwable throwable, Object message) {
+        if(canLog(ERROR)) doLog(ERROR, throwable, message);
+    }
+
+    @Override
+    public void info(Object message) {
+        if(canLog(INFO)) doLog(INFO, null, message);
+    }
+
+    @Override
+    public void info(Throwable throwable, Object message) {
+        if(canLog(INFO)) doLog(INFO, throwable, message);
+    }
+
+    @Override
+    public void log(Level level, Object message) {
+        if(canLog(level)) doLog(level, null, message);
+    }
+
+    @Override
+    public void log(Level level, Throwable throwable, Object message) {
+        if(canLog(level)) doLog(level, throwable, message);
+    }
+
+    @Override
+    public void trace(Object message) {
+        if(canLog(TRACE)) doLog(TRACE, null, message);
+    }
+
+    @Override
+    public void trace(Throwable throwable, Object message) {
+        if(canLog(TRACE)) doLog(TRACE, throwable, message);
+    }
+
+    @Override
+    public void warn(Object message) {
+        if(canLog(WARN)) doLog(WARN, null, message);
+    }
+
+    @Override
+    public void warn(Throwable throwable, Object message) {
+        if(canLog(WARN)) doLog(WARN, throwable, message);
     }
 
     protected abstract void doLog(Level level, Throwable throwable, Object message, Object... args);
