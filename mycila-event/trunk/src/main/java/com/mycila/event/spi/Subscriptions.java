@@ -25,6 +25,7 @@ import com.mycila.event.api.TopicMatcher;
 import com.mycila.event.api.annotation.Reference;
 import net.sf.cglib.reflect.FastMethod;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -95,7 +96,16 @@ final class Subscriptions {
 
                         @Override
                         public void invoke(Object target, Object... args) throws Exception {
-                            method.invoke(target, args);
+                            try {
+                                method.invoke(target, args);
+                            } catch (InvocationTargetException e) {
+                                Throwable t = e.getTargetException();
+                                if (t instanceof Error) throw (Error) t;
+                                if (t instanceof Exception) throw (Exception) t;
+                                RuntimeException re = new RuntimeException(t.getMessage(), t.getCause());
+                                re.setStackTrace(t.getStackTrace());
+                                throw re;
+                            }
                         }
                     } :
                     new Invokable() {
@@ -103,7 +113,16 @@ final class Subscriptions {
 
                         @Override
                         public void invoke(Object target, Object... args) throws Exception {
-                            m.invoke(target, args);
+                            try {
+                                m.invoke(target, args);
+                            } catch (InvocationTargetException e) {
+                                Throwable t = e.getTargetException();
+                                if (t instanceof Error) throw (Error) t;
+                                if (t instanceof Exception) throw (Exception) t;
+                                RuntimeException re = new RuntimeException(t.getMessage(), t.getCause());
+                                re.setStackTrace(t.getStackTrace());
+                                throw re;
+                            }
                         }
                     };
         }
