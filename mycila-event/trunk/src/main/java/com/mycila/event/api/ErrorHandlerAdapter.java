@@ -14,24 +14,12 @@
  * limitations under the License.
  */
 
-package com.mycila.event.spi;
-
-import com.mycila.event.api.Event;
-import com.mycila.event.api.Subscriber;
-import com.mycila.event.api.Subscription;
+package com.mycila.event.api;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public class ErrorHandlerAdapter implements ErrorHandler {
-    @Override
-    public <E> void onPublishingStarting(Event<E> event) {
-    }
-
-    @Override
-    public <E> void onPublishingFinished(Event<E> event) {
-    }
-
     @Override
     public <E> void onError(Subscription<E, Subscriber<E>> subscription, Event<E> event, Exception e) {
     }

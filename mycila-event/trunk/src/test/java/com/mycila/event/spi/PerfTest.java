@@ -17,15 +17,18 @@
 package com.mycila.event.spi;
 
 import com.mycila.event.api.Dispatcher;
+import com.mycila.event.api.ErrorHandlers;
 import com.mycila.event.api.Event;
 import com.mycila.event.api.Subscriber;
 import com.mycila.event.api.Topics;
 import org.junit.Ignore;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -35,37 +38,41 @@ import java.util.concurrent.atomic.AtomicLong;
 @Ignore
 final class PerfTest {
 
+    private static final int N_SUBS = 5;
     private static final AtomicLong published = new AtomicLong(0);
-    private static final AtomicLong consumed1 = new AtomicLong(0);
-    private static final AtomicLong consumed2 = new AtomicLong(0);
+    private static final AtomicLong[] consumed = new AtomicLong[N_SUBS];
     private static final ConcurrentLinkedQueue<StatEvent> events = new ConcurrentLinkedQueue<StatEvent>();
+    private static final Random random = new Random(System.nanoTime());
 
-    public static void main(String... args) throws InterruptedException {
+    static {
+        for (int i = 0, length = consumed.length; i < length; i++)
+            consumed[i] = new AtomicLong(0);
+    }
+
+    public static void main(String... args) throws Exception {
         Map<String, Dispatcher> dispatchers = new LinkedHashMap<String, Dispatcher>(6) {
             {
-                put("SynchronousSafe", Dispatchers.synchronousSafe(ErrorHandlers.rethrowErrorsImmediately()));
-                put("SynchronousUnsafe", Dispatchers.synchronousUnsafe(ErrorHandlers.rethrowErrorsImmediately()));
-                put("AsynchronousSafe", Dispatchers.asynchronousSafe(ErrorHandlers.rethrowErrorsImmediately()));
+                /*put("SynchronousSafe", Dispatchers.synchronousSafe(ErrorHandlers.rethrowErrorsImmediately()));*/
+                put("SynchronousUnsafe", Dispatchers.synchronousUnsafe(ErrorHandlers.rethrow()));
+                /*put("AsynchronousSafe", Dispatchers.asynchronousSafe(ErrorHandlers.rethrowErrorsImmediately()));
                 put("AsynchronousUnsafe", Dispatchers.asynchronousUnsafe(ErrorHandlers.rethrowErrorsImmediately()));
                 put("BroadcastOrdered", Dispatchers.broadcastOrdered(ErrorHandlers.rethrowErrorsImmediately()));
-                put("BroadcastUnordered", Dispatchers.broadcastUnordered(ErrorHandlers.rethrowErrorsImmediately()));
+                put("BroadcastUnordered", Dispatchers.broadcastUnordered(ErrorHandlers.rethrowErrorsImmediately()));*/
             }
         };
         for (Map.Entry<String, Dispatcher> entry : dispatchers.entrySet()) {
             System.out.println("\n===== " + entry.getKey() + " Statistics =====");
-            entry.getValue().subscribe(Topics.only("stats"), StatEvent.class, new Subscriber<StatEvent>() {
-                @Override
-                public void onEvent(Event<StatEvent> statEvent) throws Exception {
-                    events.offer(statEvent.getSource().received());
-                    consumed1.incrementAndGet();
-                }
-            });
-            entry.getValue().subscribe(Topics.only("stats"), StatEvent.class, new Subscriber<StatEvent>() {
-                @Override
-                public void onEvent(Event<StatEvent> statEvent) throws Exception {
-                    consumed2.incrementAndGet();
-                }
-            });
+            for (int i = 0, length = N_SUBS * 2; i < length; i++) {
+                final int index = i % N_SUBS;
+                System.out.println("Adding consumer to: stats" + index);
+                entry.getValue().subscribe(Topics.only("stats" + index), StatEvent.class, new Subscriber<StatEvent>() {
+                    @Override
+                    public void onEvent(Event<StatEvent> statEvent) throws Exception {
+                        events.offer(statEvent.getSource().received());
+                        consumed[index].incrementAndGet();
+                    }
+                });
+            }
             test(entry.getValue(), 50, 50);
             test(entry.getValue(), 100, 100);
             test(entry.getValue(), 1000, 1000);
@@ -74,7 +81,7 @@ final class PerfTest {
         System.out.println("\nFinished!");
     }
 
-    static void test(final Dispatcher dispatcher, int nPublishers, int nEvents) throws InterruptedException {
+    static void test(final Dispatcher dispatcher, int nPublishers, int nEvents) throws Exception {
         System.out.println("\n > Testing " + nPublishers + " publishers sending " + nEvents + " events each\n");
 
         long start = System.nanoTime();
@@ -87,7 +94,7 @@ final class PerfTest {
         long min = Long.MAX_VALUE;
         long max = Long.MIN_VALUE;
         int s = events.size();
-        while(!events.isEmpty()) {
+        while (!events.isEmpty()) {
             StatEvent event = events.poll();
             latency += event.latency();
             if (event.latency() > max)
@@ -103,68 +110,63 @@ final class PerfTest {
         System.out.println("- max. latency: " + max + "ns = " + TimeUnit.MILLISECONDS.convert(max, TimeUnit.NANOSECONDS) + "ms");
     }
 
-    private static void publish(final Dispatcher dispatcher, final int nPublishers, final int nEvents) {
-        final CountDownLatch go = new CountDownLatch(1);
-        final CountDownLatch finished = new CountDownLatch(nPublishers);
+    private static void publish(final Dispatcher dispatcher, final int nPublishers, final int nEvents) throws Exception {
+        final CyclicBarrier barrier = new CyclicBarrier(nPublishers + 1);
         for (int i = 0; i < nPublishers; i++) {
             new Thread() {
                 @Override
                 public void run() {
                     try {
-                        go.await();
+                        barrier.await();
                         for (int i = 0; i < nEvents; i++) {
-                            dispatcher.publish(Topics.topic("stats"), new StatEvent());
-                            published.incrementAndGet();
+                            dispatcher.publish(Topics.topic("stats" + random.nextInt(N_SUBS)), new StatEvent());
+                            published.getAndIncrement();
                         }
-                    } catch (InterruptedException e) {
+                        barrier.await();
+                    } catch (Exception e) {
                         Thread.currentThread().interrupt();
-                    } finally {
-                        finished.countDown();
                     }
                 }
             }.start();
         }
-        go.countDown();
-        try {
-            finished.await();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+        barrier.await();
+        barrier.await();
     }
 
-    private static void waitAndReset() throws InterruptedException {
-        long p, c1, c2, s;
+    private static void waitAndReset() throws Exception {
+        long p, s, t = 0;
+        long[] c = new long[5];
         do {
-            Thread.sleep(5000);
-            p = published.get();
-            c1 = consumed1.get();
-            c2 = consumed2.get();
+            Thread.sleep(2000);
+            p = published.getAndSet(0);
+            for (int i = 0, length = consumed.length; i < length; i++) {
+                c[i] = consumed[i].getAndSet(0);
+                t += c[i];
+            }
+            Arrays.sort(c);
             s = events.size();
             System.out.println("Published: " + p);
             System.out.println("Queue: " + s);
-            System.out.println("Consumed by 1: " + c1);
-            System.out.println("Consumed by 2: " + c2);
-        } while (p != c1 || p != c2 || p != s);
-        published.set(0);
-        consumed1.set(0);
-        consumed2.set(0);
+            for (int i = 0, length = c.length; i < length; i++)
+                System.out.println("Consumed by " + i + ": " + c[i]);
+        } while (t != s || p * 2 != s);
     }
 
     private static final class StatEvent {
         final long start;
-        long end;
+        long latency;
 
         StatEvent() {
             this.start = System.nanoTime();
         }
 
         StatEvent received() {
-            end = System.nanoTime();
+            latency = System.nanoTime() - start;
             return this;
         }
 
         long latency() {
-            return end - start;
+            return latency;
         }
     }
 }

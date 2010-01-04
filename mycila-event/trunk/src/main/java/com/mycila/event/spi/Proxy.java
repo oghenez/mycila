@@ -105,7 +105,12 @@ final class Proxy {
 
                     @Override
                     public Object proceed() throws Throwable {
-                        return method.invoke(proxy, args);
+                        try {
+                            return method.invoke(proxy, args);
+                        } catch (Exception e) {
+                            ExceptionUtils.reThrow(e);
+                        }
+                        throw new AssertionError("BUG - SHOULD NOT GO HERE");
                     }
 
                     @Override
@@ -137,7 +142,12 @@ final class Proxy {
                     }
 
                     public Object proceed() throws Throwable {
-                        return proxy.invoke(obj, args);
+                        try {
+                            return proxy.invoke(obj, args);
+                        } catch (Exception e) {
+                            ExceptionUtils.reThrow(e);
+                        }
+                        throw new AssertionError("BUG - SHOULD NOT GO HERE");
                     }
 
                     public Object getThis() {

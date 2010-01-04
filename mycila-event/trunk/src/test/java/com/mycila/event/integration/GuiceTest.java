@@ -27,6 +27,7 @@ import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.binder.ScopedBindingBuilder;
 import com.mycila.event.api.AnnotationProcessor;
 import com.mycila.event.api.Dispatcher;
+import com.mycila.event.api.ErrorHandlers;
 import com.mycila.event.api.Event;
 import com.mycila.event.api.Publisher;
 import com.mycila.event.api.Reachability;
@@ -37,7 +38,6 @@ import com.mycila.event.api.annotation.Subscribe;
 import com.mycila.event.integration.guice.MycilaEventGuiceModule;
 import com.mycila.event.spi.AnnotationProcessors;
 import com.mycila.event.spi.Dispatchers;
-import com.mycila.event.spi.ErrorHandlers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -83,7 +83,7 @@ public final class GuiceTest implements Module {
                 return bindDispatcher.toProvider(new Provider<Dispatcher>() {
                     @Override
                     public Dispatcher get() {
-                        return Dispatchers.synchronousUnsafe(ErrorHandlers.rethrowErrorsImmediately());
+                        return Dispatchers.synchronousUnsafe(ErrorHandlers.rethrow());
                     }
                 });
             }

@@ -17,6 +17,7 @@
 package com.mycila.event.spi;
 
 import com.mycila.event.api.Dispatcher;
+import com.mycila.event.api.ErrorHandlers;
 import com.mycila.event.api.Event;
 import com.mycila.event.api.Publisher;
 import com.mycila.event.api.annotation.Publish;
@@ -46,7 +47,7 @@ public final class AnnotationProcessorTest {
 
     @Before
     public void setup() {
-        dispatcher = Dispatchers.synchronousUnsafe(ErrorHandlers.rethrowErrorsAfterPublish());
+        dispatcher = Dispatchers.synchronousUnsafe(ErrorHandlers.rethrow());
         processor = AnnotationProcessors.create(dispatcher);
         sequence.clear();
     }

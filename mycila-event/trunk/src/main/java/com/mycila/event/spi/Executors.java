@@ -17,8 +17,6 @@
 package com.mycila.event.spi;
 
 import java.util.concurrent.Executor;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -39,16 +37,9 @@ final class Executors {
 
     static Executor blocking() {
         return new Executor() {
-            final Lock running = new ReentrantLock();
-
             @Override
-            public void execute(Runnable command) {
-                running.lock();
-                try {
-                    command.run();
-                } finally {
-                    running.unlock();
-                }
+            public synchronized void execute(Runnable command) {
+                command.run();
             }
         };
     }

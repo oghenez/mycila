@@ -17,6 +17,7 @@
 package com.mycila.event.spi;
 
 import com.mycila.event.api.Dispatcher;
+import com.mycila.event.api.ErrorHandler;
 
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
@@ -69,7 +70,7 @@ public final class Dispatchers {
     }
 
     public static Dispatcher asynchronousUnsafe(ErrorHandler errorHandler) {
-        return asynchronousUnsafe(Runtime.getRuntime().availableProcessors() * 100, errorHandler);
+        return asynchronousUnsafe(Runtime.getRuntime().availableProcessors() * 4, errorHandler);
     }
 
     public static Dispatcher asynchronousUnsafe(int corePoolSize, ErrorHandler errorHandler) {
@@ -85,7 +86,7 @@ public final class Dispatchers {
     }
 
     public static Dispatcher broadcastOrdered(ErrorHandler errorHandler) {
-        return broadcastOrdered(Runtime.getRuntime().availableProcessors() * 100, errorHandler);
+        return broadcastOrdered(Runtime.getRuntime().availableProcessors() * 4, errorHandler);
     }
 
     public static Dispatcher broadcastOrdered(int corePoolSize, ErrorHandler errorHandler) {
@@ -93,7 +94,7 @@ public final class Dispatchers {
                 new DefaultThreadFactory("BroadcastOrdered", "dispatcher", false));
         final ExecutorService subscriberExecutor = java.util.concurrent.Executors.newFixedThreadPool(
                 corePoolSize,
-                new DefaultThreadFactory("BroadcastOrdered", "subscriber", false));
+                new DefaultThreadFactory("BroadcastOrdered", "dispatcher", false));
         final SubscriberCompletionExecutor subscriberCompletionExecutor = new SubscriberCompletionExecutor(subscriberExecutor);
         return new DefaultDispatcher(errorHandler, new Executor() {
             @Override
@@ -120,13 +121,13 @@ public final class Dispatchers {
     }
 
     public static Dispatcher broadcastUnordered(ErrorHandler errorHandler) {
-        return broadcastUnordered(Runtime.getRuntime().availableProcessors() * 100, errorHandler);
+        return broadcastUnordered(Runtime.getRuntime().availableProcessors() * 4, errorHandler);
     }
 
     public static Dispatcher broadcastUnordered(int corePoolSize, ErrorHandler errorHandler) {
         final ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(
                 corePoolSize,
-                new DefaultThreadFactory("BroadcastUnordered", "subscriber", false));
+                new DefaultThreadFactory("BroadcastUnordered", "dispatcher", false));
         return new DefaultDispatcher(errorHandler, executor, executor) {
             @Override
             public void close() {
