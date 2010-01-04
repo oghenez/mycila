@@ -100,7 +100,6 @@ final class Subscriptions {
                             } catch (Exception e) {
                                 ExceptionUtils.reThrow(e);
                             }
-                            throw new AssertionError("BUG - SHOULD NOT GO HERE");
                         }
                     } :
                     new Invokable() {
@@ -113,7 +112,6 @@ final class Subscriptions {
                             } catch (Exception e) {
                                 ExceptionUtils.reThrow(e);
                             }
-                            throw new AssertionError("BUG - SHOULD NOT GO HERE");
                         }
                     };
         }
