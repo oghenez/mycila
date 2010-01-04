@@ -17,6 +17,7 @@
 package com.mycila.event.spi;
 
 import com.mycila.event.api.Dispatcher;
+import com.mycila.event.api.ErrorHandlers;
 import com.mycila.event.api.Event;
 import com.mycila.event.api.Reachability;
 import com.mycila.event.api.Subscriber;
@@ -49,7 +50,7 @@ public final class DefaultDispatcherTest {
 
     @Before
     public void setup() {
-        dispatcher = Dispatchers.synchronousUnsafe(ErrorHandlers.rethrowErrorsAfterPublish());
+        dispatcher = Dispatchers.synchronousUnsafe(ErrorHandlers.rethrow());
         sequence.clear();
     }
 
@@ -91,7 +92,7 @@ public final class DefaultDispatcherTest {
 
     @Test
     public void test_SYNCHRONOUS_SAFE_DISPCHER() throws InterruptedException {
-        final Dispatcher dispatcher = Dispatchers.synchronousSafe(ErrorHandlers.rethrowErrorsAfterPublish());
+        final Dispatcher dispatcher = Dispatchers.synchronousSafe(ErrorHandlers.rethrow());
 
         final CountDownLatch go = new CountDownLatch(1);
         final CountDownLatch finished = new CountDownLatch(20);
@@ -135,7 +136,7 @@ public final class DefaultDispatcherTest {
 
     @Test
     public void test_SYNCHRONOUS_UNSAFE_DISPATCHER() throws InterruptedException {
-        final Dispatcher dispatcher = Dispatchers.synchronousUnsafe(ErrorHandlers.rethrowErrorsAfterPublish());
+        final Dispatcher dispatcher = Dispatchers.synchronousUnsafe(ErrorHandlers.rethrow());
 
         final CountDownLatch go = new CountDownLatch(1);
         final CountDownLatch finished = new CountDownLatch(20);
@@ -183,7 +184,7 @@ public final class DefaultDispatcherTest {
 
     @Test
     public void test_ASYNCHRONOUS_SAFE_DISPATCHER() throws InterruptedException {
-        final Dispatcher dispatcher = Dispatchers.asynchronousSafe(ErrorHandlers.rethrowErrorsAfterPublish());
+        final Dispatcher dispatcher = Dispatchers.asynchronousSafe(ErrorHandlers.rethrow());
 
         final CountDownLatch go = new CountDownLatch(1);
         final CountDownLatch publish = new CountDownLatch(20);
@@ -237,7 +238,7 @@ public final class DefaultDispatcherTest {
 
     @Test
     public void test_ASYNCHRONOUS_UNSAFE_DISPATCHER() throws InterruptedException {
-        final Dispatcher dispatcher = Dispatchers.asynchronousUnsafe(ErrorHandlers.rethrowErrorsImmediately());
+        final Dispatcher dispatcher = Dispatchers.asynchronousUnsafe(ErrorHandlers.rethrow());
 
         final CountDownLatch go = new CountDownLatch(1);
         final CountDownLatch publish = new CountDownLatch(20);
@@ -291,7 +292,7 @@ public final class DefaultDispatcherTest {
 
     @Test
     public void test_BROADCAST_ORDERED_DISPATCHER() throws InterruptedException {
-        final Dispatcher dispatcher = Dispatchers.broadcastOrdered(ErrorHandlers.rethrowErrorsImmediately());
+        final Dispatcher dispatcher = Dispatchers.broadcastOrdered(ErrorHandlers.rethrow());
 
         final CountDownLatch go = new CountDownLatch(1);
         final CountDownLatch publish = new CountDownLatch(20);
@@ -345,7 +346,7 @@ public final class DefaultDispatcherTest {
 
     @Test
     public void test_BROADCAST_UNORDERED_DISPATCHER() throws InterruptedException {
-        final Dispatcher dispatcher = Dispatchers.broadcastUnordered(ErrorHandlers.rethrowErrorsImmediately());
+        final Dispatcher dispatcher = Dispatchers.broadcastUnordered(ErrorHandlers.rethrow());
 
         final CountDownLatch go = new CountDownLatch(1);
         final CountDownLatch publish = new CountDownLatch(20);

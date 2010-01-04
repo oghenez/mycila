@@ -17,6 +17,7 @@
 package com.mycila.event.spi;
 
 import com.mycila.event.api.Dispatcher;
+import com.mycila.event.api.ErrorHandler;
 import com.mycila.event.api.Event;
 import com.mycila.event.api.FilterIterator;
 import com.mycila.event.api.Subscriber;
@@ -59,23 +60,18 @@ class DefaultDispatcher implements Dispatcher {
             public void run() {
                 final Event<E> event = Events.event(topic, source);
                 final Iterator<Subscription<E, Subscriber<E>>> subscriptionIterator = getSubscribers(event);
-                try {
-                    errorHandler.onPublishingStarting(event);
-                    while (subscriptionIterator.hasNext()) {
-                        final Subscription<E, Subscriber<E>> subscription = subscriptionIterator.next();
-                        subscriberExecutor.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    subscription.getSubscriber().onEvent(event);
-                                } catch (Exception e) {
-                                    errorHandler.onError(subscription, event, e);
-                                }
+                while (subscriptionIterator.hasNext()) {
+                    final Subscription<E, Subscriber<E>> subscription = subscriptionIterator.next();
+                    subscriberExecutor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                subscription.getSubscriber().onEvent(event);
+                            } catch (Exception e) {
+                                errorHandler.onError(subscription, event, e);
                             }
-                        });
-                    }
-                } finally {
-                    errorHandler.onPublishingFinished(event);
+                        }
+                    });
                 }
             }
         });

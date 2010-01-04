@@ -25,7 +25,6 @@ import com.mycila.event.api.TopicMatcher;
 import com.mycila.event.api.annotation.Reference;
 import net.sf.cglib.reflect.FastMethod;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -98,14 +97,10 @@ final class Subscriptions {
                         public void invoke(Object target, Object... args) throws Exception {
                             try {
                                 method.invoke(target, args);
-                            } catch (InvocationTargetException e) {
-                                Throwable t = e.getTargetException();
-                                if (t instanceof Error) throw (Error) t;
-                                if (t instanceof Exception) throw (Exception) t;
-                                RuntimeException re = new RuntimeException(t.getMessage(), t.getCause());
-                                re.setStackTrace(t.getStackTrace());
-                                throw re;
+                            } catch (Exception e) {
+                                ExceptionUtils.reThrow(e);
                             }
+                            throw new AssertionError("BUG - SHOULD NOT GO HERE");
                         }
                     } :
                     new Invokable() {
@@ -115,14 +110,10 @@ final class Subscriptions {
                         public void invoke(Object target, Object... args) throws Exception {
                             try {
                                 m.invoke(target, args);
-                            } catch (InvocationTargetException e) {
-                                Throwable t = e.getTargetException();
-                                if (t instanceof Error) throw (Error) t;
-                                if (t instanceof Exception) throw (Exception) t;
-                                RuntimeException re = new RuntimeException(t.getMessage(), t.getCause());
-                                re.setStackTrace(t.getStackTrace());
-                                throw re;
+                            } catch (Exception e) {
+                                ExceptionUtils.reThrow(e);
                             }
+                            throw new AssertionError("BUG - SHOULD NOT GO HERE");
                         }
                     };
         }

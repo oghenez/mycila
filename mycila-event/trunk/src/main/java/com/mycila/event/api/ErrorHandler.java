@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package com.mycila.event.spi;
-
-import com.mycila.event.api.Event;
-import com.mycila.event.api.Subscriber;
-import com.mycila.event.api.Subscription;
+package com.mycila.event.api;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface ErrorHandler {
-    <E> void onPublishingStarting(Event<E> event);
-
-    <E> void onPublishingFinished(Event<E> event);
-
     <E> void onError(Subscription<E, Subscriber<E>> subscription, Event<E> event, Exception e);
 }

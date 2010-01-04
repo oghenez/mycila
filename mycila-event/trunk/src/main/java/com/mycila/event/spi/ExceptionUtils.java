@@ -28,14 +28,14 @@ final class ExceptionUtils {
     private ExceptionUtils() {
     }
 
-    static RuntimeException toRuntime(Throwable e) {
+    static void reThrow(Throwable e) {
         if (e instanceof InvocationTargetException)
             e = ((InvocationTargetException) e).getTargetException();
-        if (e instanceof RuntimeException)
-            return (RuntimeException) e;
+        if (e instanceof Error) throw (Error) e;
+        if (e instanceof RuntimeException) throw (RuntimeException) e;
         DispatcherException wrapped = new DispatcherException(e.getMessage(), e);
         wrapped.setStackTrace(e.getStackTrace());
-        return wrapped;
+        throw wrapped;
     }
 
 }

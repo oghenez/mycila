@@ -60,7 +60,7 @@ public abstract class AnnotationProcessors extends AbstractAnnotationProcessor {
                     try {
                         method.invoke(instance, publisher);
                     } catch (Exception e) {
-                        throw ExceptionUtils.toRuntime(e);
+                        ExceptionUtils.reThrow(e);
                     }
                 }
             }
@@ -104,8 +104,14 @@ public abstract class AnnotationProcessors extends AbstractAnnotationProcessor {
         @Override
         public Object invoke(MethodInvocation invocation) throws Throwable {
             Object o = publisherCache.get(invocation.getMethod());
-            if (o == null)
-                return invocation.getMethod().invoke(delegate, invocation.getArguments());
+            if (o == null) {
+                try {
+                    return invocation.getMethod().invoke(delegate, invocation.getArguments());
+                } catch (Exception e) {
+                    ExceptionUtils.reThrow(e);
+                }
+                throw new AssertionError("BUG - SHOULD NOT GO HERE");
+            }
             Publisher<Object> publisher = (Publisher<Object>) o;
             boolean requiresSplit = this.requiresSplit.contains(invocation.getMethod());
             for (Object arg : invocation.getArguments()) {

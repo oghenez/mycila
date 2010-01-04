@@ -17,6 +17,7 @@
 package com.mycila.event.spi;
 
 import com.mycila.event.api.Dispatcher;
+import com.mycila.event.api.ErrorHandlers;
 import com.mycila.event.api.Event;
 import com.mycila.event.api.Subscriber;
 import com.mycila.event.api.TopicMatcher;
@@ -31,7 +32,7 @@ import static com.mycila.event.api.Topics.*;
 final class UsageTest {
     public static void main(String... args) {
         // first create an event service
-        Dispatcher dispatcher = Dispatchers.synchronousUnsafe(ErrorHandlers.rethrowErrorsAfterPublish());
+        Dispatcher dispatcher = Dispatchers.synchronousUnsafe(ErrorHandlers.rethrow());
 
         // then subscribe
         TopicMatcher matcher = only("app/events/swing/button").or(matching("app/events/swing/fields/**"));
