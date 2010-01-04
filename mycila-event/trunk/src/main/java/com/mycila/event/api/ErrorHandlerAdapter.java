@@ -21,6 +21,6 @@ package com.mycila.event.api;
  */
 public class ErrorHandlerAdapter implements ErrorHandler {
     @Override
-    public <E> void onError(Subscription<E, Subscriber<E>> subscription, Event<E> event, Exception e) {
+    public <E> void onError(Subscription<E> subscription, Event<E> event, Exception e) {
     }
 }

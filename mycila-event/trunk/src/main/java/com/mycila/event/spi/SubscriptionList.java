@@ -18,48 +18,41 @@ package com.mycila.event.spi;
 
 import com.mycila.event.api.FilterIterator;
 import com.mycila.event.api.Ref;
-import com.mycila.event.api.Referencable;
+import com.mycila.event.api.Subscription;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-import static com.mycila.event.api.Ensure.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class ReferencableCollection<T extends Referencable> extends AbstractCollection<T> {
+final class SubscriptionList<E> extends AbstractCollection<Subscription<E>> {
 
-    private final ConcurrentLinkedQueue<Ref<T>> refs = new ConcurrentLinkedQueue<Ref<T>>();
+    private final CopyOnWriteArrayList<Ref<Subscription<E>>> subscriptions = new CopyOnWriteArrayList<Ref<Subscription<E>>>();
 
     @Override
-    public boolean add(T t) {
-        notNull(t, "Referencable");
-        return refs.add(t.getReachability().wrap(t));
+    public boolean add(Subscription<E> subscription) {
+        return subscriptions.add(subscription.getReachability().wrap(subscription));
     }
 
     @Override
     public boolean isEmpty() {
-        return !iterator().hasNext();
+        return subscriptions.isEmpty();
     }
 
     @Override
     public int size() {
-        int count = 0;
-        for (Iterator<T> it = iterator(); it.hasNext(); it.next())
-            count++;
-        return count;
+        return subscriptions.size();
     }
 
     @Override
-    public Iterator<T> iterator() {
-        return new FilterIterator<T, Ref<T>>(refs.iterator()) {
+    public Iterator<Subscription<E>> iterator() {
+        return new FilterIterator<Subscription<E>, Ref<Subscription<E>>>(subscriptions.iterator()) {
             @Override
-            protected T filter(Ref<T> delegate) {
-                T next = delegate.get();
-                if (next == null)
-                    remove();
+            protected Subscription<E> filter(Ref<Subscription<E>> ref) {
+                Subscription<E> next = ref.get();
+                if (next == null) subscriptions.remove(ref);
                 return next;
             }
         };

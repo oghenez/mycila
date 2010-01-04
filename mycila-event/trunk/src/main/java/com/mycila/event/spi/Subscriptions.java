@@ -42,11 +42,11 @@ final class Subscriptions {
         return new MethodSubscriber(instance, method);
     }
 
-    static <E, S> Subscription create(final TopicMatcher matcher, final Class<E> eventType, final S subscriber) {
+    static <E> Subscription create(final TopicMatcher matcher, final Class<E> eventType, final Subscriber<E> subscriber) {
         notNull(matcher, "TopicMatcher");
         notNull(eventType, "Event type");
         notNull(subscriber, "Subscriber");
-        return new Subscription<E, S>() {
+        return new Subscription<E>() {
             final Reachability reachability = subscriber instanceof Referencable ?
                     ((Referencable) subscriber).getReachability() :
                     Reachability.of(subscriber.getClass());
@@ -62,7 +62,7 @@ final class Subscriptions {
             }
 
             @Override
-            public S getSubscriber() {
+            public Subscriber<E> getSubscriber() {
                 return subscriber;
             }
 
