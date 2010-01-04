@@ -23,7 +23,6 @@ import com.mycila.event.api.Subscriber;
 import com.mycila.event.api.Topics;
 import org.junit.Ignore;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
@@ -52,16 +51,16 @@ final class PerfTest {
     public static void main(String... args) throws Exception {
         Map<String, Dispatcher> dispatchers = new LinkedHashMap<String, Dispatcher>(6) {
             {
-                /*put("SynchronousSafe", Dispatchers.synchronousSafe(ErrorHandlers.rethrowErrorsImmediately()));*/
+                put("SynchronousSafe", Dispatchers.synchronousSafe(ErrorHandlers.rethrow()));
                 put("SynchronousUnsafe", Dispatchers.synchronousUnsafe(ErrorHandlers.rethrow()));
-                /*put("AsynchronousSafe", Dispatchers.asynchronousSafe(ErrorHandlers.rethrowErrorsImmediately()));
-                put("AsynchronousUnsafe", Dispatchers.asynchronousUnsafe(ErrorHandlers.rethrowErrorsImmediately()));
-                put("BroadcastOrdered", Dispatchers.broadcastOrdered(ErrorHandlers.rethrowErrorsImmediately()));
-                put("BroadcastUnordered", Dispatchers.broadcastUnordered(ErrorHandlers.rethrowErrorsImmediately()));*/
+                put("AsynchronousSafe", Dispatchers.asynchronousSafe(ErrorHandlers.rethrow()));
+                put("AsynchronousUnsafe", Dispatchers.asynchronousUnsafe(ErrorHandlers.rethrow()));
+                put("BroadcastOrdered", Dispatchers.broadcastOrdered(ErrorHandlers.rethrow()));
+                put("BroadcastUnordered", Dispatchers.broadcastUnordered(ErrorHandlers.rethrow()));
             }
         };
         for (Map.Entry<String, Dispatcher> entry : dispatchers.entrySet()) {
-            System.out.println("\n===== " + entry.getKey() + " Statistics =====");
+            System.out.println("\n===== " + entry.getKey() + " Statistics =====\n");
             for (int i = 0, length = N_SUBS * 2; i < length; i++) {
                 final int index = i % N_SUBS;
                 System.out.println("Adding consumer to: stats" + index);
@@ -76,6 +75,7 @@ final class PerfTest {
             test(entry.getValue(), 50, 50);
             test(entry.getValue(), 100, 100);
             test(entry.getValue(), 1000, 1000);
+            test(entry.getValue(), 2, 225000);
             entry.getValue().close();
         }
         System.out.println("\nFinished!");
@@ -134,22 +134,25 @@ final class PerfTest {
     }
 
     private static void waitAndReset() throws Exception {
-        long p, s, t = 0;
+        long p, s, t;
         long[] c = new long[5];
         do {
-            Thread.sleep(2000);
-            p = published.getAndSet(0);
+            t = 0;
+            Thread.sleep(5000);
+            p = published.get();
             for (int i = 0, length = consumed.length; i < length; i++) {
-                c[i] = consumed[i].getAndSet(0);
+                c[i] = consumed[i].get();
                 t += c[i];
             }
-            Arrays.sort(c);
             s = events.size();
             System.out.println("Published: " + p);
             System.out.println("Queue: " + s);
             for (int i = 0, length = c.length; i < length; i++)
                 System.out.println("Consumed by " + i + ": " + c[i]);
         } while (t != s || p * 2 != s);
+        published.set(0);
+        for (int i = 0, length = consumed.length; i < length; i++)
+            consumed[i].set(0);
     }
 
     private static final class StatEvent {

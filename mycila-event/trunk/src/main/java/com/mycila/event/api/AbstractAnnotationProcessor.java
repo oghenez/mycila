@@ -43,7 +43,6 @@ public abstract class AbstractAnnotationProcessor implements AnnotationProcessor
         if (abstractClassOrInterface.isInterface())
             return proxyInterface(dispatcher, abstractClassOrInterface);
         int mods = abstractClassOrInterface.getModifiers();
-        //TODO: check mods for inner class
         if (Modifier.isFinal(mods) || Modifier.isPrivate(mods))
             throw new IllegalArgumentException("Cannot proxy class " + abstractClassOrInterface.getName());
         return proxyClass(dispatcher, abstractClassOrInterface);

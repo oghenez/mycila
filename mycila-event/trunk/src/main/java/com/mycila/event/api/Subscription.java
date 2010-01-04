@@ -19,10 +19,10 @@ package com.mycila.event.api;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Subscription<E, SUBSCRIBER> extends Referencable {
+public interface Subscription<E> extends Referencable {
     TopicMatcher getTopicMatcher();
 
     Class<E> getEventType();
 
-    SUBSCRIBER getSubscriber();
+    Subscriber<E> getSubscriber();
 }

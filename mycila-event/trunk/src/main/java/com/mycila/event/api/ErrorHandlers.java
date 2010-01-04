@@ -35,7 +35,7 @@ public final class ErrorHandlers {
     public static ErrorHandler rethrow() {
         return new ErrorHandlerAdapter() {
             @Override
-            public <E> void onError(Subscription<E, Subscriber<E>> subscription, Event<E> event, Exception e) {
+            public <E> void onError(Subscription<E> subscription, Event<E> event, Exception e) {
                 Throwable t = e;
                 if (e instanceof InvocationTargetException)
                     t = ((InvocationTargetException) e).getTargetException();
