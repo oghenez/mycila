@@ -245,7 +245,7 @@
             </plugin>
             <plugin>
                 <inherited>false</inherited>
-                <groupId>com.google.code.maven-license-plugin</groupId>
+                <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
                 <version>1.5.0</version>
                 <configuration>
