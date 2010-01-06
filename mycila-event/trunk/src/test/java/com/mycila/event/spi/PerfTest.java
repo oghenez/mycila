@@ -65,7 +65,6 @@ final class PerfTest {
                 final int index = i % N_SUBS;
                 System.out.println("Adding consumer to: stats" + index);
                 entry.getValue().subscribe(Topics.only("stats" + index), StatEvent.class, new Subscriber<StatEvent>() {
-                    @Override
                     public void onEvent(Event<StatEvent> statEvent) throws Exception {
                         events.offer(statEvent.getSource().received());
                         consumed[index].incrementAndGet();

@@ -51,22 +51,18 @@ final class Subscriptions {
                     ((Referencable) subscriber).getReachability() :
                     Reachability.of(subscriber.getClass());
 
-            @Override
             public TopicMatcher getTopicMatcher() {
                 return matcher;
             }
 
-            @Override
             public Class<?> getEventType() {
                 return eventType;
             }
 
-            @Override
             public Subscriber<E> getSubscriber() {
                 return subscriber;
             }
 
-            @Override
             public Reachability getReachability() {
                 return reachability;
             }
@@ -92,8 +88,6 @@ final class Subscriptions {
                             if (!method.isAccessible())
                                 method.setAccessible(true);
                         }
-
-                        @Override
                         public void invoke(Object target, Object... args) throws Exception {
                             try {
                                 method.invoke(target, args);
@@ -104,8 +98,6 @@ final class Subscriptions {
                     } :
                     new Invokable() {
                         final FastMethod m = Proxy.fastMethod(method);
-
-                        @Override
                         public void invoke(Object target, Object... args) throws Exception {
                             try {
                                 m.invoke(target, args);
@@ -116,7 +108,7 @@ final class Subscriptions {
                     };
         }
 
-        @Override
+
         public final Reachability getReachability() {
             return reachability;
         }
@@ -132,7 +124,7 @@ final class Subscriptions {
             hasOneArg(Event.class, method);
         }
 
-        @Override
+
         public void onEvent(Event<E> event) throws Exception {
             invoke(event);
         }

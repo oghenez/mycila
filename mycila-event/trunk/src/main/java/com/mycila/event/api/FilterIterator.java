@@ -35,7 +35,6 @@ public abstract class FilterIterator<T, D> implements Iterator<T> {
         this.delegate = delegate;
     }
 
-    @Override
     public final boolean hasNext() {
         while (delegate.hasNext()) {
             D d = delegate.next();
@@ -46,14 +45,12 @@ public abstract class FilterIterator<T, D> implements Iterator<T> {
         return hasNext = false;
     }
 
-    @Override
     public final T next() {
         if (!hasNext)
             throw new NoSuchElementException();
         return next;
     }
 
-    @Override
     public final void remove() {
         delegate.remove();
     }

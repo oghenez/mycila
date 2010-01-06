@@ -5,6 +5,8 @@ package com.mycila.event.api.message;
  */
 public interface MessageResponse<P, R> {
     P getParameter();
+
     void replyError(Exception error);
+
     void reply(R reply);
 }

@@ -36,24 +36,20 @@ public final class Messages {
             this.parameter = parameter;
         }
 
-        @Override
         public P getParameter() {
             return parameter;
         }
 
-        @Override
         public R getResponse() throws InterruptedException {
             answered.await();
             return result();
         }
 
-        @Override
         public R getResponse(long timeout, TimeUnit unit) throws TimeoutException, InterruptedException {
             answered.await(timeout, unit);
             return result();
         }
 
-        @Override
         public void reply(R reply) {
             if (!replied.getAndSet(true)) {
                 this.reply = reply;
@@ -61,7 +57,6 @@ public final class Messages {
             } else throw new DispatcherException("Request has already been replied");
         }
 
-        @Override
         public void replyError(Exception error) {
             if (!replied.getAndSet(true)) {
                 Throwable t = error;

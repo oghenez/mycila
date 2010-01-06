@@ -97,10 +97,8 @@ public final class Dispatchers {
                 new DefaultThreadFactory("BroadcastOrdered", "dispatcher", false));
         final SubscriberCompletionExecutor subscriberCompletionExecutor = new SubscriberCompletionExecutor(subscriberExecutor);
         return new DefaultDispatcher(errorHandler, new Executor() {
-            @Override
             public void execute(final Runnable command) {
                 publishingExecutor.execute(new Runnable() {
-                    @Override
                     public void run() {
                         subscriberCompletionExecutor.onPublishStarting();
                         try {
@@ -146,7 +144,6 @@ public final class Dispatchers {
             this.executor = executor;
         }
 
-        @Override
         public void execute(Runnable command) {
             completionService.submit(command, null);
             count++;

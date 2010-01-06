@@ -51,7 +51,6 @@ import static com.mycila.event.integration.guice.MycilaEventGuice.*;
 @RunWith(JUnit4.class)
 public final class GuiceTest implements Module {
 
-    @Override
     public void configure(Binder binder) {
         binder.bind(GuiceTest.class).toInstance(this);
         bindPublisher(binder, MyCustomPublisher.class).in(Singleton.class);
@@ -68,7 +67,6 @@ public final class GuiceTest implements Module {
                     @Inject
                     Provider<Dispatcher> dispatcher;
 
-                    @Override
                     public AnnotationProcessor get() {
                         return AnnotationProcessors.create(dispatcher.get());
                     }
@@ -78,7 +76,6 @@ public final class GuiceTest implements Module {
             @Override
             protected ScopedBindingBuilder bindDispatcher(AnnotatedBindingBuilder<Dispatcher> bindDispatcher) {
                 return bindDispatcher.toProvider(new Provider<Dispatcher>() {
-                    @Override
                     public Dispatcher get() {
                         return Dispatchers.synchronousUnsafe(ErrorHandlers.rethrow());
                     }

@@ -43,7 +43,6 @@ final class DefaultThreadFactory implements ThreadFactory {
         this.namePrefix = namePrefix;
     }
 
-    @Override
     public Thread newThread(final Runnable r) {
         return newThread(namePrefix, r);
     }
@@ -52,7 +51,6 @@ final class DefaultThreadFactory implements ThreadFactory {
         notNull(runnable, "Runnable");
         final ClassLoader ccl = Thread.currentThread().getContextClassLoader();
         final Thread t = new Thread(group, new Runnable() {
-            @Override
             public void run() {
                 Thread.currentThread().setContextClassLoader(ccl);
                 runnable.run();

@@ -45,7 +45,6 @@ public final class ComTest {
         Dispatcher dispatcher = Dispatchers.asynchronousUnsafe(ErrorHandlers.rethrow());
 
         dispatcher.subscribe(only("system/df"), MessageResponse.class, new Subscriber<MessageResponse<String, Integer>>() {
-            @Override
             public void onEvent(Event<MessageResponse<String, Integer>> event) throws Exception {
                 String folder = event.getSource().getParameter();
                 System.out.println("df request on folder " + folder);

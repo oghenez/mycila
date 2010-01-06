@@ -38,7 +38,6 @@ import java.util.List;
 final class Proxy {
 
     private static final NamingPolicy NAMING_POLICY = new NamingPolicy() {
-        @Override
         public String getClassName(String prefix, String source, Object key, Predicate names) {
             StringBuilder sb = new StringBuilder();
             sb.append(prefix != null ?
@@ -107,20 +106,16 @@ final class Proxy {
 
     static InvocationHandler toJDK(final MethodInterceptor interceptor) {
         return new InvocationHandler() {
-            @Override
             public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
                 return interceptor.invoke(new MethodInvocation() {
-                    @Override
                     public Method getMethod() {
                         return method;
                     }
 
-                    @Override
                     public Object[] getArguments() {
                         return args;
                     }
 
-                    @Override
                     public Object proceed() throws Throwable {
                         try {
                             return method.invoke(proxy, args);
@@ -130,12 +125,10 @@ final class Proxy {
                         throw new AssertionError("BUG - SHOULD NOT GO HERE");
                     }
 
-                    @Override
                     public Object getThis() {
                         return proxy;
                     }
 
-                    @Override
                     public AccessibleObject getStaticPart() {
                         return method;
                     }
@@ -146,7 +139,6 @@ final class Proxy {
 
     static net.sf.cglib.proxy.MethodInterceptor toCGLIB(final MethodInterceptor interceptor) {
         return new net.sf.cglib.proxy.MethodInterceptor() {
-            @Override
             public Object intercept(final Object obj, final Method method, final Object[] args, final MethodProxy proxy) throws Throwable {
                 return interceptor.invoke(new MethodInvocation() {
 

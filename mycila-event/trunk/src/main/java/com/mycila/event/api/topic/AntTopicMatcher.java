@@ -34,7 +34,6 @@ final class AntTopicMatcher extends TopicMatcherSkeleton implements Serializable
         this.pattern = notNull(pattern, "Pattern");
     }
 
-    @Override
     public boolean matches(Topic target) {
         return doMatch(pattern, notNull(target, "Topic").getName(), true);
     }
