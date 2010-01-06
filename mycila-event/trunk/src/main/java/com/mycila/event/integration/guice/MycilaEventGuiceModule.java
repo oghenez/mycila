@@ -25,11 +25,10 @@ import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.binder.ScopedBindingBuilder;
-import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
-import com.mycila.event.api.AnnotationProcessor;
 import com.mycila.event.api.Dispatcher;
+import com.mycila.event.api.annotation.AnnotationProcessor;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicReference;
@@ -70,12 +69,13 @@ public abstract class MycilaEventGuiceModule implements Module {
         binder.bindListener(any(), new TypeListener() {
             @Override
             public <I> void hear(TypeLiteral<I> type, final TypeEncounter<I> encounter) {
-                encounter.register(new InjectionListener<I>() {
+                throw new AssertionError("TODO");
+                /*encounter.register(new InjectionListener<I>() {
                     @Override
                     public void afterInjection(I injectee) {
                         processor.process(injectee);
                     }
-                });
+                });*/
             }
         });
     }

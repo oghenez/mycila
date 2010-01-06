@@ -19,7 +19,7 @@ package com.mycila.event.spi;
 import com.mycila.event.api.Dispatcher;
 import com.mycila.event.api.ErrorHandlers;
 import com.mycila.event.api.Event;
-import com.mycila.event.api.Publisher;
+import com.mycila.event.api.annotation.AnnotationProcessor;
 import com.mycila.event.api.annotation.Publish;
 import com.mycila.event.api.annotation.Reference;
 import com.mycila.event.api.annotation.Subscribe;
@@ -42,7 +42,7 @@ public final class AnnotationProcessorTest {
 
     private final List<Object> sequence = new ArrayList<Object>();
 
-    AnnotationProcessors processor;
+    AnnotationProcessor processor;
     Dispatcher dispatcher;
 
     @Before
@@ -98,29 +98,9 @@ public final class AnnotationProcessorTest {
     }
 
     private void publish() {
-        class A {
-            Publisher<Object> publisher;
-
-            @Publish(topics = "prog/events/b/b1")
-            private void send(Publisher<Object> publisher) {
-                this.publisher = publisher;
-            }
-
-            void sendAll() {
-                publisher.publish("hello for b1", 2, "hello for b2", 3);
-            }
-        }
-
-        A a = new A();
-        processor.process(a);
-
-        B b = processor.createPublisher(B.class);
-        C c = processor.createPublisher(C.class);
-
+        B b = processor.proxy(B.class);
+        C c = processor.proxy(C.class);
         b.send("Hello for a", 1);
-
-        a.sendAll();
-
         c.send("Hello for a1", 4);
     }
 

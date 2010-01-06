@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 
-package com.mycila.event.api;
+package com.mycila.event.api.annotation;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class ErrorHandlerAdapter implements ErrorHandler {
-    @Override
-    public <E> void onError(Subscription<E> subscription, Event<E> event, Exception e) {
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@Documented
+public @interface Request {
+    String topic();
+    long timeout() default -1;
+    TimeUnit unit() default TimeUnit.MILLISECONDS;
 }

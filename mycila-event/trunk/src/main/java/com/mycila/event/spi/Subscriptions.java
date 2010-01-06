@@ -21,8 +21,8 @@ import com.mycila.event.api.Reachability;
 import com.mycila.event.api.Referencable;
 import com.mycila.event.api.Subscriber;
 import com.mycila.event.api.Subscription;
-import com.mycila.event.api.TopicMatcher;
 import com.mycila.event.api.annotation.Reference;
+import com.mycila.event.api.topic.TopicMatcher;
 import net.sf.cglib.reflect.FastMethod;
 
 import java.lang.reflect.Method;
@@ -38,11 +38,11 @@ final class Subscriptions {
     private Subscriptions() {
     }
 
-    static Subscriber createSubscriber(Object instance, Method method) {
-        return new MethodSubscriber(instance, method);
+    static <E> Subscriber<E> createSubscriber(Object instance, Method method) {
+        return new MethodSubscriber<E>(instance, method);
     }
 
-    static <E> Subscription create(final TopicMatcher matcher, final Class<E> eventType, final Subscriber<E> subscriber) {
+    static <E> Subscription create(final TopicMatcher matcher, final Class<?> eventType, final Subscriber<E> subscriber) {
         notNull(matcher, "TopicMatcher");
         notNull(eventType, "Event type");
         notNull(subscriber, "Subscriber");
@@ -57,7 +57,7 @@ final class Subscriptions {
             }
 
             @Override
-            public Class<E> getEventType() {
+            public Class<?> getEventType() {
                 return eventType;
             }
 

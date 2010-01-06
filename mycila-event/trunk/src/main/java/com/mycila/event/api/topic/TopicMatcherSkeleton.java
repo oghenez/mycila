@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.event.api;
+package com.mycila.event.api.topic;
 
 import java.io.Serializable;
 
@@ -23,13 +23,13 @@ import static com.mycila.event.api.Ensure.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class AbstractTopicMatcher implements TopicMatcher {
+public abstract class TopicMatcherSkeleton implements TopicMatcher {
 
-    public final AbstractTopicMatcher or(TopicMatcher other) {
+    public final TopicMatcherSkeleton or(TopicMatcher other) {
         return new OrMatcher(this, notNull(other, "TopicMatcher"));
     }
 
-    public final AbstractTopicMatcher and(TopicMatcher other) {
+    public final TopicMatcherSkeleton and(TopicMatcher other) {
         return new AndMatcher(this, notNull(other, "TopicMatcher"));
     }
 
@@ -42,7 +42,7 @@ public abstract class AbstractTopicMatcher implements TopicMatcher {
     @Override
     public abstract String toString();
 
-    private static class AndMatcher extends AbstractTopicMatcher implements Serializable {
+    private static class AndMatcher extends TopicMatcherSkeleton implements Serializable {
         private static final long serialVersionUID = 0;
         private final TopicMatcher a, b;
 
@@ -75,7 +75,7 @@ public abstract class AbstractTopicMatcher implements TopicMatcher {
         }
     }
 
-    private static class OrMatcher extends AbstractTopicMatcher implements Serializable {
+    private static class OrMatcher extends TopicMatcherSkeleton implements Serializable {
         private static final long serialVersionUID = 0;
         private final TopicMatcher a, b;
 

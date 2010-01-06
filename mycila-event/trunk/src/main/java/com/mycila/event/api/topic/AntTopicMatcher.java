@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.event.api;
+package com.mycila.event.api.topic;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,7 +24,7 @@ import java.util.StringTokenizer;
 
 import static com.mycila.event.api.Ensure.*;
 
-final class AntTopicMatcher extends AbstractTopicMatcher implements Serializable {
+final class AntTopicMatcher extends TopicMatcherSkeleton implements Serializable {
 
     private static final long serialVersionUID = 0;
     private static final String DEFAULT_PATH_SEPARATOR = "/";

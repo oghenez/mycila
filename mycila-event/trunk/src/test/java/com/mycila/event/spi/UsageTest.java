@@ -20,10 +20,10 @@ import com.mycila.event.api.Dispatcher;
 import com.mycila.event.api.ErrorHandlers;
 import com.mycila.event.api.Event;
 import com.mycila.event.api.Subscriber;
-import com.mycila.event.api.TopicMatcher;
+import com.mycila.event.api.topic.TopicMatcher;
 import org.junit.Ignore;
 
-import static com.mycila.event.api.Topics.*;
+import static com.mycila.event.api.topic.Topics.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -31,7 +31,7 @@ import static com.mycila.event.api.Topics.*;
 @Ignore
 final class UsageTest {
     public static void main(String... args) {
-        // first create an event service
+        // first createPublisher an event service
         Dispatcher dispatcher = Dispatchers.synchronousUnsafe(ErrorHandlers.rethrow());
 
         // then subscribe

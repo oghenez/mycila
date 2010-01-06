@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package com.mycila.event.api;
+package com.mycila.event.spi;
 
-import com.mycila.event.api.topic.TopicMatcher;
+import com.mycila.event.api.topic.Topic;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Subscription<E> extends Referencable {
-    TopicMatcher getTopicMatcher();
+interface Publisher<E> {
+    Topic[] getTopics();
 
-    Class<?> getEventType();
-
-    Subscriber<E> getSubscriber();
+    void publish(E... events);
 }

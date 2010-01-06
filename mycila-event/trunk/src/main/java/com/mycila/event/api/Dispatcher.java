@@ -16,13 +16,16 @@
 
 package com.mycila.event.api;
 
+import com.mycila.event.api.topic.Topic;
+import com.mycila.event.api.topic.TopicMatcher;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface Dispatcher {
     <E> void publish(Topic topic, E source);
 
-    <E> void subscribe(TopicMatcher matcher, Class<E> eventType, Subscriber<E> subscriber);
+    <E> void subscribe(TopicMatcher matcher, Class<?> eventType, Subscriber<E> subscriber);
 
     <E> void unsubscribe(Subscriber<E> subscriber);
 

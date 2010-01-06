@@ -30,10 +30,14 @@ public final class ErrorHandlers {
         return SILENT;
     }
 
-    private static final ErrorHandler SILENT = new ErrorHandlerAdapter();
+    private static final ErrorHandler SILENT = new ErrorHandler() {
+        @Override
+        public <E> void onError(Subscription<E> subscription, Event<E> event, Exception e) {
+        }
+    };
 
     public static ErrorHandler rethrow() {
-        return new ErrorHandlerAdapter() {
+        return new ErrorHandler() {
             @Override
             public <E> void onError(Subscription<E> subscription, Event<E> event, Exception e) {
                 Throwable t = e;
