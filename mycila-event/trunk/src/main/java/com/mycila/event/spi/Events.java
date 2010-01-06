@@ -17,7 +17,7 @@
 package com.mycila.event.spi;
 
 import com.mycila.event.api.Event;
-import com.mycila.event.api.Topic;
+import com.mycila.event.api.topic.Topic;
 
 import static com.mycila.event.api.Ensure.*;
 

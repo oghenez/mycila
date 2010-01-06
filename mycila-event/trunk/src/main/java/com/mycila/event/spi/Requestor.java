@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.event.api;
+package com.mycila.event.spi;
+
+import com.mycila.event.api.topic.Topic;
+
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface AnnotationProcessor {
-    public abstract <T> T process(T instance);
+interface Requestor<P, T> {
+    Topic getTopic();
 
-    public abstract <T> T createPublisher(Class<T> abstractClassOrInterface);
+    T request(P parameter) throws InterruptedException, TimeoutException;
 }

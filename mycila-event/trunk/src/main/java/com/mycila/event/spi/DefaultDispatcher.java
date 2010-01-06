@@ -21,8 +21,8 @@ import com.mycila.event.api.ErrorHandler;
 import com.mycila.event.api.Event;
 import com.mycila.event.api.Subscriber;
 import com.mycila.event.api.Subscription;
-import com.mycila.event.api.Topic;
-import com.mycila.event.api.TopicMatcher;
+import com.mycila.event.api.topic.Topic;
+import com.mycila.event.api.topic.TopicMatcher;
 
 import java.util.Iterator;
 import java.util.concurrent.Executor;
@@ -74,7 +74,7 @@ class DefaultDispatcher implements Dispatcher {
     }
 
     @Override
-    public final <E> void subscribe(TopicMatcher matcher, Class<E> eventType, Subscriber<E> subscriber) {
+    public final <E> void subscribe(TopicMatcher matcher, Class<?> eventType, Subscriber<E> subscriber) {
         notNull(matcher, "TopicMatcher");
         notNull(eventType, "Event type");
         notNull(subscriber, "Subscriber");

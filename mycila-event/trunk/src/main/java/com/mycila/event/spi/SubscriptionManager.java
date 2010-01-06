@@ -20,7 +20,7 @@ import com.mycila.event.api.Event;
 import com.mycila.event.api.FilterIterator;
 import com.mycila.event.api.Subscriber;
 import com.mycila.event.api.Subscription;
-import com.mycila.event.api.Topic;
+import com.mycila.event.api.topic.Topic;
 
 import java.util.Iterator;
 import java.util.Map;

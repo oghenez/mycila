@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package com.mycila.event.api;
+package com.mycila.event.api.topic;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Publisher<E> {
-    Topic[] getTopics();
-
-    void publish(E... events);
+public interface TopicMatcher {
+    boolean matches(Topic topic);
 }

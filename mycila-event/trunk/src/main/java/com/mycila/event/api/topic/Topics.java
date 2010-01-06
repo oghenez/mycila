@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.mycila.event.api;
+package com.mycila.event.api.topic;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.UUID;
 
 import static com.mycila.event.api.Ensure.*;
 
@@ -41,7 +42,11 @@ public final class Topics {
         return new TopicImpl(name);
     }
 
-    private static final class TopicImpl extends AbstractTopicMatcher implements Topic, Serializable {
+    public static Topic temporary() {
+        return new TopicImpl("temp/" + UUID.randomUUID().toString());
+    }
+
+    private static final class TopicImpl extends TopicMatcherSkeleton implements Topic, Serializable {
 
         private static final long serialVersionUID = 0;
 
@@ -76,24 +81,24 @@ public final class Topics {
         }
     }
 
-    public static AbstractTopicMatcher matching(String pattern) {
+    public static TopicMatcherSkeleton matching(String pattern) {
         return matcher(AntTopicMatcher.forPattern(pattern));
     }
 
     /**
      * Returns a matcher which matches any input.
      */
-    public static AbstractTopicMatcher any() {
+    public static TopicMatcherSkeleton any() {
         return ANY;
     }
 
-    private static final AbstractTopicMatcher ANY = matching("**");
+    private static final TopicMatcherSkeleton ANY = matching("**");
 
-    public static AbstractTopicMatcher matcher(final TopicMatcher matcher) {
+    public static TopicMatcherSkeleton matcher(final TopicMatcher matcher) {
         return new Delegate(matcher);
     }
 
-    private static final class Delegate extends AbstractTopicMatcher implements Serializable {
+    private static final class Delegate extends TopicMatcherSkeleton implements Serializable {
         private static final long serialVersionUID = 0;
         final TopicMatcher matcher;
 
@@ -125,11 +130,11 @@ public final class Topics {
     /**
      * Inverts the given matcher.
      */
-    public static AbstractTopicMatcher not(TopicMatcher matcher) {
+    public static TopicMatcherSkeleton not(TopicMatcher matcher) {
         return new Not(matcher);
     }
 
-    private static final class Not extends AbstractTopicMatcher implements Serializable {
+    private static final class Not extends TopicMatcherSkeleton implements Serializable {
         private static final long serialVersionUID = 0;
         final TopicMatcher matcher;
 
@@ -158,15 +163,15 @@ public final class Topics {
         }
     }
 
-    public static AbstractTopicMatcher only(String exactTopicName) {
+    public static TopicMatcherSkeleton only(String exactTopicName) {
         return only(topic(exactTopicName));
     }
 
-    public static AbstractTopicMatcher only(Topic topic) {
+    public static TopicMatcherSkeleton only(Topic topic) {
         return new Only(notNull(topic, "Topic"));
     }
 
-    private static class Only extends AbstractTopicMatcher implements Serializable {
+    private static class Only extends TopicMatcherSkeleton implements Serializable {
         private static final long serialVersionUID = 0;
         private final Topic topic;
 
@@ -195,7 +200,7 @@ public final class Topics {
         }
     }
 
-    public static AbstractTopicMatcher anyOf(String... patterns) {
+    public static TopicMatcherSkeleton anyOf(String... patterns) {
         notNull(patterns, "Topic patterns");
         TopicMatcher[] matchers = new TopicMatcher[patterns.length];
         for (int i = 0, length = matchers.length; i < length; i++)
@@ -203,11 +208,11 @@ public final class Topics {
         return anyOf(matchers);
     }
 
-    public static AbstractTopicMatcher anyOf(TopicMatcher... matchers) {
+    public static TopicMatcherSkeleton anyOf(TopicMatcher... matchers) {
         return new AnyOf(matchers);
     }
 
-    private static final class AnyOf extends AbstractTopicMatcher implements Serializable {
+    private static final class AnyOf extends TopicMatcherSkeleton implements Serializable {
         private static final long serialVersionUID = 0;
         final TopicMatcher[] matchers;
 

@@ -17,12 +17,13 @@
 package com.mycila.event.spi;
 
 import com.mycila.event.api.Dispatcher;
-import com.mycila.event.api.Publisher;
-import com.mycila.event.api.Topic;
+import com.mycila.event.api.message.MessageRequest;
+import com.mycila.event.api.message.Messages;
+import com.mycila.event.api.topic.Topic;
 
 import java.util.Arrays;
-
-import static com.mycila.event.api.Ensure.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -32,9 +33,7 @@ final class Publishers {
     private Publishers() {
     }
 
-    static Publisher<Object> create(final Dispatcher dispatcher, final Topic... topics) {
-        notNull(topics, "Topics");
-        notNull(dispatcher, "Dispatcher");
+    static Publisher<Object> createPublisher(final Dispatcher dispatcher, final Topic... topics) {
         return new Publisher<Object>() {
             @Override
             public Topic[] getTopics() {
@@ -50,7 +49,30 @@ final class Publishers {
 
             @Override
             public String toString() {
-                return "Publisher" + Arrays.deepToString(topics);
+                return "Publisher on " + Arrays.deepToString(topics);
+            }
+        };
+    }
+
+    static Requestor<Object, Object> createRequestor(final Dispatcher dispatcher, final Topic topic, final long timeout, final TimeUnit unit) {
+        return new Requestor<Object, Object>() {
+            @Override
+            public Topic getTopic() {
+                return topic;
+            }
+
+            @Override
+            public Object request(Object parameter) throws InterruptedException, TimeoutException {
+                MessageRequest<Object> req = Messages.createRequest(parameter);
+                dispatcher.publish(topic, req);
+                return timeout < 0 ?
+                        req.getResponse() :
+                        req.getResponse(timeout, unit);
+            }
+
+            @Override
+            public String toString() {
+                return "Requestor on " + topic;
             }
         };
     }

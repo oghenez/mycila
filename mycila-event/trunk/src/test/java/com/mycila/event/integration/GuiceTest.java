@@ -25,12 +25,11 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.binder.ScopedBindingBuilder;
-import com.mycila.event.api.AnnotationProcessor;
 import com.mycila.event.api.Dispatcher;
 import com.mycila.event.api.ErrorHandlers;
 import com.mycila.event.api.Event;
-import com.mycila.event.api.Publisher;
 import com.mycila.event.api.Reachability;
+import com.mycila.event.api.annotation.AnnotationProcessor;
 import com.mycila.event.api.annotation.Multiple;
 import com.mycila.event.api.annotation.Publish;
 import com.mycila.event.api.annotation.Reference;
@@ -51,8 +50,6 @@ import static com.mycila.event.integration.guice.MycilaEventGuice.*;
  */
 @RunWith(JUnit4.class)
 public final class GuiceTest implements Module {
-
-    Publisher<String> publisher;
 
     @Override
     public void configure(Binder binder) {
@@ -89,7 +86,6 @@ public final class GuiceTest implements Module {
             }
         };
         Injector injector = Guice.createInjector(this, m);
-        injector.getInstance(GuiceTest.class).publisher.publish("Hello world !");
         injector.getInstance(MyCustomPublisher.class).send("A", "cut", "message", "containing", "bad words");
         injector.getInstance(MyCustomPublisher2.class).send(1, "A", "cut", "message", "containing", "bad words", "in varg");
         injector.getInstance(MyCustomPublisher3.class).send(1, Arrays.asList("A", "cut", "message", "containing", "bad words", "in list"));
@@ -108,13 +104,6 @@ public final class GuiceTest implements Module {
     @Subscribe(topics = "a/topic/path", eventType = Integer.class)
     void subscribeToInts(Event<Integer> event) {
         System.out.println("(subscribeToInts) Got: " + event.getSource());
-    }
-
-    @Publish(topics = "a/topic/path")
-    void publisher(Publisher<String> publisher) {
-        System.out.println("Publisher injected");
-        publisher.publish("Hello from publisher !");
-        this.publisher = publisher;
     }
 
     @Reference(Reachability.WEAK)

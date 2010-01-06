@@ -21,8 +21,8 @@ import com.mycila.event.api.ErrorHandlers;
 import com.mycila.event.api.Event;
 import com.mycila.event.api.Reachability;
 import com.mycila.event.api.Subscriber;
-import com.mycila.event.api.Topics;
 import com.mycila.event.api.annotation.Reference;
+import com.mycila.event.api.topic.Topics;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +35,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.mycila.event.api.Topics.*;
+import static com.mycila.event.api.topic.Topics.*;
 import static org.junit.Assert.*;
 
 /**

@@ -29,6 +29,8 @@ import org.aopalliance.intercept.MethodInvocation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -71,17 +73,32 @@ final class Proxy {
         return fastCLass(m.getDeclaringClass()).getMethod(m);
     }
 
+    static <T> T proxy(Class<T> c, MethodInterceptor interceptor) {
+        return c.isInterface() ?
+                createJDKProxy(c, interceptor) :
+                createCglibProxy(c, interceptor);
+    }
+
     @SuppressWarnings({"unchecked"})
     static <T> T createJDKProxy(Class<T> c, MethodInterceptor interceptor) {
-        return (T) java.lang.reflect.Proxy.newProxyInstance(c.getClassLoader(), new Class[]{c}, toJDK(interceptor));
+        List<Class<?>> interfaces = new LinkedList<Class<?>>();
+        interfaces.add(ProxyMarker.class);
+        interfaces.add(c);
+        return (T) java.lang.reflect.Proxy.newProxyInstance(
+                c.getClassLoader(),
+                interfaces.toArray(new Class[interfaces.size()]),
+                toJDK(interceptor));
     }
 
     @SuppressWarnings({"unchecked"})
     static <T> T createCglibProxy(Class<T> c, MethodInterceptor interceptor) {
         Enhancer enhancer = new Enhancer();
         enhancer.setStrategy(new DefaultGeneratorStrategy());
-        if (c.isInterface()) enhancer.setInterfaces(new Class[]{c});
+        List<Class<?>> interfaces = new LinkedList<Class<?>>();
+        interfaces.add(ProxyMarker.class);
+        if (c.isInterface()) interfaces.add(c);
         else enhancer.setSuperclass(c);
+        enhancer.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
         enhancer.setNamingPolicy(NAMING_POLICY);
         enhancer.setCallback(toCGLIB(interceptor));
         enhancer.setUseFactory(false);
@@ -162,4 +179,10 @@ final class Proxy {
         };
     }
 
+    static boolean isProxy(Class<?> c) {
+        return ProxyMarker.class.isAssignableFrom(c);
+    }
+
+    private static interface ProxyMarker {
+    }
 }
