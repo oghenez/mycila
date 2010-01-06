@@ -43,7 +43,6 @@ public abstract class AnnotationProcessors {
 
     public static AnnotationProcessor create(final Dispatcher dispatcher) {
         return new AnnotationProcessor() {
-            @Override
             public <T> T process(T instance) {
                 notNull(instance, "Instance");
                 final Iterable<Method> methods = ClassUtils.getAllDeclaredMethods(instance.getClass());
@@ -54,7 +53,6 @@ public abstract class AnnotationProcessors {
                 return instance;
             }
 
-            @Override
             public <T> T proxy(Class<T> abstractClassOrInterface) {
                 notNull(abstractClassOrInterface, "Abstract class or interface");
                 return process(Proxy.proxy(abstractClassOrInterface, new PublisherInterceptor(dispatcher, abstractClassOrInterface)));
@@ -91,7 +89,6 @@ public abstract class AnnotationProcessors {
         }
 
         @SuppressWarnings({"unchecked"})
-        @Override
         public Object invoke(MethodInvocation invocation) throws Throwable {
             Publisher publisher = publisherCache.get(invocation.getMethod());
             if (publisher != null)

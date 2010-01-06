@@ -51,7 +51,6 @@ public abstract class TopicMatcherSkeleton implements TopicMatcher {
             this.b = b;
         }
 
-        @Override
         public boolean matches(Topic t) {
             notNull(t, "Topic");
             return a.matches(t) && b.matches(t);
@@ -84,7 +83,6 @@ public abstract class TopicMatcherSkeleton implements TopicMatcher {
             this.b = b;
         }
 
-        @Override
         public boolean matches(Topic t) {
             notNull(t, "Topic");
             return a.matches(t) || b.matches(t);

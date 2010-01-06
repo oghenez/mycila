@@ -35,12 +35,10 @@ final class Publishers {
 
     static Publisher<Object> createPublisher(final Dispatcher dispatcher, final Topic... topics) {
         return new Publisher<Object>() {
-            @Override
             public Topic[] getTopics() {
                 return topics;
             }
 
-            @Override
             public void publish(Object... events) {
                 for (Object event : events)
                     for (Topic topic : topics)
@@ -56,12 +54,10 @@ final class Publishers {
 
     static Requestor<Object, Object> createRequestor(final Dispatcher dispatcher, final Topic topic, final long timeout, final TimeUnit unit) {
         return new Requestor<Object, Object>() {
-            @Override
             public Topic getTopic() {
                 return topic;
             }
 
-            @Override
             public Object request(Object parameter) throws InterruptedException, TimeoutException {
                 MessageRequest<Object> req = Messages.createRequest(parameter);
                 dispatcher.publish(topic, req);

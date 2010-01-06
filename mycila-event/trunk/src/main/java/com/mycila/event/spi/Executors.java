@@ -28,7 +28,6 @@ final class Executors {
 
     static Executor immediate() {
         return new Executor() {
-            @Override
             public void execute(Runnable command) {
                 command.run();
             }
@@ -37,7 +36,6 @@ final class Executors {
 
     static Executor blocking() {
         return new Executor() {
-            @Override
             public synchronized void execute(Runnable command) {
                 command.run();
             }

@@ -8,5 +8,6 @@ import java.util.concurrent.TimeoutException;
  */
 public interface MessageRequest<R> {
     R getResponse() throws InterruptedException;
+
     R getResponse(long timeout, TimeUnit unit) throws TimeoutException, InterruptedException;
 }

@@ -62,7 +62,6 @@ public final class DefaultDispatcherTest {
     @Test
     public void test_subscribe_strong() {
         dispatcher.subscribe(only("prog/events/a").or(matching("prog/events/b/**")), String.class, new Subscriber<String>() {
-            @Override
             public void onEvent(Event<String> event) throws Exception {
                 sequence.add(event.getSource());
             }
@@ -75,7 +74,6 @@ public final class DefaultDispatcherTest {
     public void test_subscribe_weak() {
         @Reference(Reachability.WEAK)
         class C implements Subscriber<String> {
-            @Override
             public void onEvent(Event<String> event) throws Exception {
                 sequence.add(event.getSource());
             }
@@ -117,7 +115,7 @@ public final class DefaultDispatcherTest {
         for (int i = 0; i < 20; i++) {
             final int index = i;
             dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
-                @Override
+
                 public void onEvent(Event<String> event) throws Exception {
                     if (inProcess.get())
                         fail();
@@ -143,7 +141,7 @@ public final class DefaultDispatcherTest {
 
         for (int i = 0; i < 20; i++) {
             new Thread("T" + i) {
-                @Override
+
                 public void run() {
                     try {
                         go.await();
@@ -162,7 +160,7 @@ public final class DefaultDispatcherTest {
         for (int i = 0; i < 20; i++) {
             final int index = i;
             dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
-                @Override
+
                 public void onEvent(Event<String> event) throws Exception {
                     if (inProcess.get())
                         paralellCalls.incrementAndGet();
@@ -192,7 +190,7 @@ public final class DefaultDispatcherTest {
 
         for (int i = 0; i < 20; i++) {
             new Thread("T" + i) {
-                @Override
+
                 public void run() {
                     try {
                         go.await();
@@ -211,7 +209,7 @@ public final class DefaultDispatcherTest {
         for (int i = 0; i < 20; i++) {
             final int index = i;
             dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
-                @Override
+
                 public void onEvent(Event<String> event) throws Exception {
                     if (inProcess.get())
                         paralellCalls.incrementAndGet();
@@ -246,7 +244,7 @@ public final class DefaultDispatcherTest {
 
         for (int i = 0; i < 20; i++) {
             new Thread("T" + i) {
-                @Override
+
                 public void run() {
                     try {
                         go.await();
@@ -265,7 +263,7 @@ public final class DefaultDispatcherTest {
         for (int i = 0; i < 20; i++) {
             final int index = i;
             dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
-                @Override
+
                 public void onEvent(Event<String> event) throws Exception {
                     if (inProcess.get())
                         paralellCalls.incrementAndGet();
@@ -300,7 +298,7 @@ public final class DefaultDispatcherTest {
 
         for (int i = 0; i < 20; i++) {
             new Thread("T" + i) {
-                @Override
+
                 public void run() {
                     try {
                         go.await();
@@ -319,7 +317,7 @@ public final class DefaultDispatcherTest {
         for (int i = 0; i < 20; i++) {
             final int index = i;
             dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
-                @Override
+
                 public void onEvent(Event<String> event) throws Exception {
                     if (inProcess.get())
                         paralellCalls.incrementAndGet();
@@ -354,7 +352,7 @@ public final class DefaultDispatcherTest {
 
         for (int i = 0; i < 20; i++) {
             new Thread("T" + i) {
-                @Override
+
                 public void run() {
                     try {
                         go.await();
@@ -373,7 +371,7 @@ public final class DefaultDispatcherTest {
         for (int i = 0; i < 20; i++) {
             final int index = i;
             dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
-                @Override
+
                 public void onEvent(Event<String> event) throws Exception {
                     if (inProcess.get())
                         paralellCalls.incrementAndGet();

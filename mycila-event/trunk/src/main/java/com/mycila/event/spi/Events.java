@@ -35,17 +35,14 @@ final class Events {
         return new Event<E>() {
             private final long timestamp = System.nanoTime();
 
-            @Override
             public Topic getTopic() {
                 return topic;
             }
 
-            @Override
             public E getSource() {
                 return source;
             }
 
-            @Override
             public long getTimestamp() {
                 return timestamp;
             }

@@ -47,19 +47,16 @@ class DefaultDispatcher implements Dispatcher {
         this.subscriberExecutor = notNull(subscriberExecutor, "Subscriber executor");
     }
 
-    @Override
     public final <E> void publish(final Topic topic, final E source) {
         notNull(topic, "Topic");
         notNull(source, "Event source");
         publishExecutor.execute(new Runnable() {
-            @Override
             public void run() {
                 final Event<E> event = Events.event(topic, source);
                 final Iterator<Subscription<E>> subscriptionIterator = subscriptionManager.getSubscriptions(event);
                 while (subscriptionIterator.hasNext()) {
                     final Subscription<E> subscription = subscriptionIterator.next();
                     subscriberExecutor.execute(new Runnable() {
-                        @Override
                         public void run() {
                             try {
                                 subscription.getSubscriber().onEvent(event);
@@ -73,7 +70,6 @@ class DefaultDispatcher implements Dispatcher {
         });
     }
 
-    @Override
     public final <E> void subscribe(TopicMatcher matcher, Class<?> eventType, Subscriber<E> subscriber) {
         notNull(matcher, "TopicMatcher");
         notNull(eventType, "Event type");
@@ -81,13 +77,11 @@ class DefaultDispatcher implements Dispatcher {
         subscriptionManager.addSubscription(Subscriptions.create(matcher, eventType, subscriber));
     }
 
-    @Override
     public final <E> void unsubscribe(Subscriber<E> subscriber) {
         notNull(subscriber, "Subscriber");
         subscriptionManager.removeSubscriber(subscriber);
     }
 
-    @Override
     public void close() {
     }
 

@@ -33,7 +33,6 @@ public final class ReachabilityTest {
     public void test() throws Exception {
         assertEquals(Reachability.of(new Object()), Reachability.HARD);
         assertEquals(Reachability.of(new Subscriber() {
-            @Override
             public void onEvent(Event event) throws Exception {
             }
         }), Reachability.HARD);
@@ -42,7 +41,6 @@ public final class ReachabilityTest {
 
     @Reference(Reachability.WEAK)
     private static class S implements Subscriber {
-        @Override
         public void onEvent(Event event) throws Exception {
         }
     }

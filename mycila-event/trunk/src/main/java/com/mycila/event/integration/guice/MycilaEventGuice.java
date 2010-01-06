@@ -34,7 +34,6 @@ public final class MycilaEventGuice {
             @Inject
             Provider<AnnotationProcessor> annotationProcessor;
 
-            @Override
             public T get() {
                 return annotationProcessor.get().proxy(clazz);
             }

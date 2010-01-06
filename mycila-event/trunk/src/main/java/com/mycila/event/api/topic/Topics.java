@@ -60,7 +60,6 @@ public final class Topics {
             return name;
         }
 
-        @Override
         public boolean matches(Topic topic) {
             return equals(topic);
         }
@@ -106,7 +105,6 @@ public final class Topics {
             this.matcher = notNull(matcher, "TopicMatcher");
         }
 
-        @Override
         public boolean matches(Topic t) {
             return matcher.matches(notNull(t, "Topic"));
         }
@@ -142,7 +140,6 @@ public final class Topics {
             this.matcher = notNull(matcher, "TopicMatcher");
         }
 
-        @Override
         public boolean matches(Topic t) {
             return !matcher.matches(notNull(t, "Topic"));
         }
@@ -179,7 +176,6 @@ public final class Topics {
             this.topic = topic;
         }
 
-        @Override
         public boolean matches(Topic other) {
             return topic.equals(other);
         }
@@ -220,7 +216,6 @@ public final class Topics {
             this.matchers = notNull(matchers, "TopicMatcher list");
         }
 
-        @Override
         public boolean matches(Topic t) {
             notNull(t, "Topic");
             for (TopicMatcher matcher : matchers)

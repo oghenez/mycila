@@ -46,7 +46,6 @@ public abstract class MycilaEventGuiceModule implements Module {
         @Inject
         Provider<AnnotationProcessor> annotationProcessor;
 
-        @Override
         public <I> void process(I instance) {
             ConcurrentLinkedQueue<Object> r = references.get();
             if (r != null) r.offer(instance);
@@ -61,13 +60,11 @@ public abstract class MycilaEventGuiceModule implements Module {
         }
     };
 
-    @Override
     public void configure(Binder binder) {
         bindDispatcher(binder.bind(Dispatcher.class)).in(Singleton.class);
         bindAnnotationProcessor(binder.bind(AnnotationProcessor.class)).in(Singleton.class);
         binder.bind(Processor.class).toInstance(processor);
         binder.bindListener(any(), new TypeListener() {
-            @Override
             public <I> void hear(TypeLiteral<I> type, final TypeEncounter<I> encounter) {
                 throw new AssertionError("TODO");
                 /*encounter.register(new InjectionListener<I>() {

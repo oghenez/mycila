@@ -39,7 +39,6 @@ public final class ClassUtils {
 
     public static Iterable<Method> filterAnnotatedMethods(final Iterable<Method> iterable, final Iterable<Class<? extends Annotation>> allowedAnnotations) {
         return new Iterable<Method>() {
-            @Override
             public Iterator<Method> iterator() {
                 final Iterator<Method> methodIterator = iterable.iterator();
                 return new FilterIterator<Method, Method>(methodIterator) {

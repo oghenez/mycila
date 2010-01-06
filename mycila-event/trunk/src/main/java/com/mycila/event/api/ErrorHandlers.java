@@ -31,14 +31,12 @@ public final class ErrorHandlers {
     }
 
     private static final ErrorHandler SILENT = new ErrorHandler() {
-        @Override
         public <E> void onError(Subscription<E> subscription, Event<E> event, Exception e) {
         }
     };
 
     public static ErrorHandler rethrow() {
         return new ErrorHandler() {
-            @Override
             public <E> void onError(Subscription<E> subscription, Event<E> event, Exception e) {
                 Throwable t = e;
                 if (e instanceof InvocationTargetException)

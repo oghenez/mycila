@@ -31,6 +31,8 @@ import java.util.concurrent.TimeUnit;
 @Documented
 public @interface Request {
     String topic();
+
     long timeout() default -1;
+
     TimeUnit unit() default TimeUnit.MILLISECONDS;
 }
