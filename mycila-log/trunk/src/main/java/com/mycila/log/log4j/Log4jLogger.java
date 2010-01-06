@@ -30,7 +30,6 @@ public final class Log4jLogger extends AbstractLogger {
         this.logger = Logger.getLogger(name);
     }
 
-    @Override
     public boolean canLog(com.mycila.log.Level level) {
         switch (level) {
             case TRACE:

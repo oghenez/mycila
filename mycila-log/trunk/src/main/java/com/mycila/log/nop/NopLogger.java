@@ -33,7 +33,6 @@ public final class NopLogger extends AbstractLogger {
     protected void doLog(Level level, Throwable throwable, Object message, Object... args) {
     }
 
-    @Override
     public boolean canLog(Level level) {
         return false;
     }

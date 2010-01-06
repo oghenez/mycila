@@ -28,7 +28,6 @@ final class Sample {
             public Logger get(String name) {
                 final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(name);
                 return new AbstractLogger() {
-                    @Override
                     public boolean canLog(com.mycila.log.Level level) {
                         switch (level) {
                             case TRACE:

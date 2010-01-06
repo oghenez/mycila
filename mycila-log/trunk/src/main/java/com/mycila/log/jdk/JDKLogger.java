@@ -31,7 +31,6 @@ public final class JDKLogger extends AbstractLogger {
         this.logger = java.util.logging.Logger.getLogger(name);
     }
 
-    @Override
     public boolean canLog(com.mycila.log.Level level) {
         switch (level) {
             case TRACE:

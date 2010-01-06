@@ -38,7 +38,6 @@ public final class AsyncInvocationHandler<T extends Handler> extends MycilaInvoc
         logger.start();
     }
 
-    @Override
     public void run() {
         while (running.get() && !Thread.currentThread().isInterrupted()) {
             try {
@@ -53,7 +52,6 @@ public final class AsyncInvocationHandler<T extends Handler> extends MycilaInvoc
     @Override
     public void publish(final T handler, final LogRecord record) {
         Runnable r = new Runnable() {
-            @Override
             public void run() {
                 handler.publish(record);
                 handler.flush();
