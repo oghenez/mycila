@@ -9,9 +9,6 @@ import org.springframework.stereotype.Controller;
  */
 @Controller("categoryAdminViewController")
 public final class CategoryAdminViewController {
-
     @Autowired
-    @Qualifier("categoryService")
     CategoryService categoryService;
-
 }
