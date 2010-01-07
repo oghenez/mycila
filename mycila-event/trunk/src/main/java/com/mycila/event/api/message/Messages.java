@@ -46,8 +46,9 @@ public final class Messages {
         }
 
         public R getResponse(long timeout, TimeUnit unit) throws TimeoutException, InterruptedException {
-            answered.await(timeout, unit);
-            return result();
+            if(answered.await(timeout, unit))
+                return result();
+            throw new TimeoutException("No response returned within " + timeout + " " + unit);
         }
 
         public void reply(R reply) {
@@ -65,9 +66,7 @@ public final class Messages {
                 if (t instanceof Error) throw (Error) t;
                 if (t instanceof RuntimeException) this.error = (RuntimeException) t;
                 else {
-                    DispatcherException wrapped = new DispatcherException(t.getMessage(), t);
-                    wrapped.setStackTrace(t.getStackTrace());
-                    this.error = wrapped;
+                    this.error = DispatcherException.wrap(t);
                 }
                 answered.countDown();
             } else throw new DispatcherException("Request has already been replied");

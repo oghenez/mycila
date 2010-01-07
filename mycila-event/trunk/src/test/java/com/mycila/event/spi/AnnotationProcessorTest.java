@@ -55,14 +55,14 @@ public final class AnnotationProcessorTest {
     @Test
     public void test_subscribe_strong() {
         Object o = new Object() {
-            @Subscribe(topics = {"prog/events/a", "prog/events/b/**"}, eventType = String.class)
+            @Subscribe(topics = {"prog/events/a", "prog/events/**"}, eventType = String.class)
             private void handle(Event<String> event) {
                 sequence.add(event.getSource());
             }
         };
         processor.process(o);
         publish();
-        assertEquals(sequence.toString(), "[Hello for a, hello for b1, hello for b2]");
+        assertEquals(sequence.toString(), "[Hello for a, Hello for a1, Hello for a1]");
     }
 
     @Test

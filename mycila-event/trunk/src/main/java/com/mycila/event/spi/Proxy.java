@@ -20,6 +20,7 @@ import net.sf.cglib.core.DefaultGeneratorStrategy;
 import net.sf.cglib.core.NamingPolicy;
 import net.sf.cglib.core.Predicate;
 import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.Factory;
 import net.sf.cglib.proxy.MethodProxy;
 import net.sf.cglib.reflect.FastClass;
 import net.sf.cglib.reflect.FastMethod;
@@ -100,7 +101,7 @@ final class Proxy {
         enhancer.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
         enhancer.setNamingPolicy(NAMING_POLICY);
         enhancer.setCallback(toCGLIB(interceptor));
-        enhancer.setUseFactory(false);
+        enhancer.setUseFactory(true);
         return (T) enhancer.create();
     }
 
@@ -152,7 +153,7 @@ final class Proxy {
 
                     public Object proceed() throws Throwable {
                         try {
-                            return proxy.invoke(obj, args);
+                            return proxy.invokeSuper(obj, args);
                         } catch (Exception e) {
                             ExceptionUtils.reThrow(e);
                         }
@@ -172,9 +173,19 @@ final class Proxy {
     }
 
     static boolean isProxy(Class<?> c) {
+        return c != null
+                && !c.isInterface()
+                && !c.equals(Object.class)
+                && (java.lang.reflect.Proxy.isProxyClass(c)
+                || Factory.class.isAssignableFrom(c)
+                || net.sf.cglib.proxy.Proxy.isProxyClass(c)
+                || isMycilaProxy(c));
+    }
+
+    static boolean isMycilaProxy(Class<?> c) {
         return ProxyMarker.class.isAssignableFrom(c);
     }
 
-    private static interface ProxyMarker {
+    public static interface ProxyMarker {
     }
 }

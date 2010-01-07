@@ -25,6 +25,7 @@ import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.binder.AnnotatedBindingBuilder;
 import com.google.inject.binder.ScopedBindingBuilder;
+import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 import com.mycila.event.api.Dispatcher;
@@ -66,13 +67,11 @@ public abstract class MycilaEventGuiceModule implements Module {
         binder.bind(Processor.class).toInstance(processor);
         binder.bindListener(any(), new TypeListener() {
             public <I> void hear(TypeLiteral<I> type, final TypeEncounter<I> encounter) {
-                throw new AssertionError("TODO");
-                /*encounter.register(new InjectionListener<I>() {
-                    @Override
+                encounter.register(new InjectionListener<I>() {
                     public void afterInjection(I injectee) {
                         processor.process(injectee);
                     }
-                });*/
+                });
             }
         });
     }

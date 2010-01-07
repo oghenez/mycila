@@ -43,9 +43,7 @@ public final class ErrorHandlers {
                     t = ((InvocationTargetException) e).getTargetException();
                 if (t instanceof Error) throw (Error) t;
                 if (t instanceof RuntimeException) throw (RuntimeException) t;
-                DispatcherException wrapped = new DispatcherException(t.getMessage(), t);
-                wrapped.setStackTrace(t.getStackTrace());
-                throw wrapped;
+                throw DispatcherException.wrap(t);
             }
         };
     }

@@ -27,4 +27,10 @@ public final class DispatcherException extends RuntimeException {
     public DispatcherException(String message, Throwable cause) {
         super(message, cause);
     }
+
+    public static DispatcherException wrap(Throwable t) {
+        DispatcherException wrapped = new DispatcherException(t.getClass().getName() + ": " + t.getMessage(), t);
+        wrapped.setStackTrace(t.getStackTrace());
+        return wrapped;
+    }
 }

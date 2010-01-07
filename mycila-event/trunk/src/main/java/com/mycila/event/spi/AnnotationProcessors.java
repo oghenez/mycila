@@ -16,7 +16,6 @@
 
 package com.mycila.event.spi;
 
-import com.mycila.event.api.ClassUtils;
 import com.mycila.event.api.Dispatcher;
 import com.mycila.event.api.annotation.AnnotationProcessor;
 import com.mycila.event.api.annotation.Multiple;
@@ -45,59 +44,69 @@ public abstract class AnnotationProcessors {
         return new AnnotationProcessor() {
             public <T> T process(T instance) {
                 notNull(instance, "Instance");
-                final Iterable<Method> methods = ClassUtils.getAllDeclaredMethods(instance.getClass());
+                return Proxy.isMycilaProxy(instance.getClass()) ?
+                        instance :
+                        processInternal(instance);
+            }
+
+            public <T> T proxy(Class<T> abstractClassOrInterface) {
+                notNull(abstractClassOrInterface, "Abstract class or interface");
+                return processInternal(Proxy.proxy(abstractClassOrInterface, new PublisherInterceptor(dispatcher, abstractClassOrInterface)));
+            }
+
+            private <T> T processInternal(T instance) {
+                final Iterable<Method> methods = ClassUtils.getAllDeclaredMethods(instance.getClass(), false);
                 for (Method method : ClassUtils.filterAnnotatedMethods(methods, Subscribe.class)) {
                     Subscribe subscribe = method.getAnnotation(Subscribe.class);
                     dispatcher.subscribe(Topics.anyOf(subscribe.topics()), subscribe.eventType(), Subscriptions.createSubscriber(instance, method));
                 }
                 return instance;
             }
-
-            public <T> T proxy(Class<T> abstractClassOrInterface) {
-                notNull(abstractClassOrInterface, "Abstract class or interface");
-                return process(Proxy.proxy(abstractClassOrInterface, new PublisherInterceptor(dispatcher, abstractClassOrInterface)));
-            }
         };
     }
 
     private static final class PublisherInterceptor implements MethodInterceptor {
-        private final Map<Method, Publisher> publisherCache = new HashMap<Method, Publisher>();
-        private final Map<Method, Requestor> requestorCache = new HashMap<Method, Requestor>();
+        private final Map<MethodSignature, Publisher> publisherCache = new HashMap<MethodSignature, Publisher>();
+        private final Map<MethodSignature, Requestor> requestorCache = new HashMap<MethodSignature, Requestor>();
         private final Object delegate;
 
-        private PublisherInterceptor(Dispatcher dispatcher, Class<?> c) {
-            Iterable<Method> allMethods = ClassUtils.getAllDeclaredMethods(c);
+        private PublisherInterceptor(Dispatcher dispatcher, final Class<?> c) {
+            Iterable<Method> allMethods = ClassUtils.getAllDeclaredMethods(c, false);
             // find publishers
             for (Method method : ClassUtils.filterAnnotatedMethods(allMethods, Publish.class)) {
                 hasSomeArgs(method);
                 Publish annotation = method.getAnnotation(Publish.class);
                 Publisher publisher = Publishers.createPublisher(dispatcher, Topics.topics(annotation.topics()));
-                publisherCache.put(method, publisher);
+                publisherCache.put(MethodSignature.of(method), publisher);
             }
             // find requestors
             for (Method method : ClassUtils.filterAnnotatedMethods(allMethods, Request.class)) {
                 Request annotation = method.getAnnotation(Request.class);
                 Requestor requestor = Publishers.createRequestor(dispatcher, Topics.topic(annotation.topic()), annotation.timeout(), annotation.unit());
-                requestorCache.put(method, requestor);
+                requestorCache.put(MethodSignature.of(method), requestor);
             }
-            delegate = new Object() {
+            delegate = !c.isInterface() ? null : new Object() {
                 @Override
                 public String toString() {
-                    return "MycilaEvent Generated Publisher " + hashCode();
+                    // com.mycila.event.spi.ComTest$DU$$EnhancerByMycilaEvent$$acd8e1af@1971afc
+                    return c.getName() + "$$EnhancerByMycilaEvent@" + Integer.toHexString(hashCode());
                 }
             };
         }
 
         @SuppressWarnings({"unchecked"})
         public Object invoke(MethodInvocation invocation) throws Throwable {
-            Publisher publisher = publisherCache.get(invocation.getMethod());
+            MethodSignature methodSignature = MethodSignature.of(invocation.getMethod());
+            Publisher publisher = publisherCache.get(methodSignature);
             if (publisher != null)
                 return handlePublishing(publisher, invocation);
-            Requestor requestor = requestorCache.get(invocation.getMethod());
+            Requestor requestor = requestorCache.get(methodSignature);
             if (requestor != null)
                 return handleRequest(requestor, invocation);
             try {
-                return invocation.getMethod().invoke(delegate, invocation.getArguments());
+                return delegate == null ?
+                        invocation.proceed() :
+                        invocation.getMethod().invoke(delegate, invocation.getArguments());
             } catch (Exception e) {
                 ExceptionUtils.reThrow(e);
             }
