@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.mycila.event.api;
+package com.mycila.event.spi;
+
+import com.mycila.event.api.FilterIterator;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -28,16 +30,16 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ClassUtils {
+final class ClassUtils {
 
     private ClassUtils() {
     }
 
-    public static Iterable<Method> filterAnnotatedMethods(final Iterable<Method> iterable, final Class<? extends Annotation>... allowedAnnotations) {
+    static Iterable<Method> filterAnnotatedMethods(final Iterable<Method> iterable, final Class<? extends Annotation>... allowedAnnotations) {
         return filterAnnotatedMethods(iterable, Arrays.asList(allowedAnnotations));
     }
 
-    public static Iterable<Method> filterAnnotatedMethods(final Iterable<Method> iterable, final Iterable<Class<? extends Annotation>> allowedAnnotations) {
+    static Iterable<Method> filterAnnotatedMethods(final Iterable<Method> iterable, final Iterable<Class<? extends Annotation>> allowedAnnotations) {
         return new Iterable<Method>() {
             public Iterator<Method> iterator() {
                 final Iterator<Method> methodIterator = iterable.iterator();
@@ -54,10 +56,11 @@ public final class ClassUtils {
         };
     }
 
-    public static Iterable<Method> getAllDeclaredMethods(Class<?> clazz) {
+    static Iterable<Method> getAllDeclaredMethods(Class<?> clazz, boolean includeProxyMethods) {
         List<Class<?>> hierarchy = new ArrayList<Class<?>>();
         while (clazz != null && clazz != Object.class) {
-            hierarchy.add(clazz);
+            if (includeProxyMethods || !Proxy.isProxy(clazz))
+                hierarchy.add(clazz);
             clazz = clazz.getSuperclass();
         }
         LinkedHashMap<MethodSignature, Method> all = new LinkedHashMap<MethodSignature, Method>();

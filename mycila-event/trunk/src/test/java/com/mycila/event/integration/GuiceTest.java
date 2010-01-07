@@ -113,11 +113,21 @@ public final class GuiceTest implements Module {
         @Publish(topics = "a/topic/path")
         @Multiple
         abstract void send(int event1, String... otherEvents);
+
+        @Subscribe(topics = "a/topic/path", eventType = String.class)
+        void subscribe(Event<String> event) {
+            System.out.println("MyCustomPublisher2 Got: " + event);
+        }
     }
 
     static abstract class MyCustomPublisher3 {
         @Publish(topics = "a/topic/path")
         @Multiple
         abstract void send(int event1, Iterable<String> events);
+
+        @Subscribe(topics = "a/topic/path", eventType = String.class)
+        void subscribe(Event<String> event) {
+            System.out.println("MyCustomPublisher3 Got: " + event);
+        }
     }
 }

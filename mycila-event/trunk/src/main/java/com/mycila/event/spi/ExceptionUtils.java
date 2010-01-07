@@ -33,9 +33,7 @@ final class ExceptionUtils {
             e = ((InvocationTargetException) e).getTargetException();
         if (e instanceof Error) throw (Error) e;
         if (e instanceof RuntimeException) throw (RuntimeException) e;
-        DispatcherException wrapped = new DispatcherException(e.getMessage(), e);
-        wrapped.setStackTrace(e.getStackTrace());
-        throw wrapped;
+        throw DispatcherException.wrap(e);
     }
 
 }

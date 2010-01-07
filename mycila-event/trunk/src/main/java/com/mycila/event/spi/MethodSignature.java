@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.event.api;
+package com.mycila.event.spi;
 
 import java.lang.reflect.Method;
 
