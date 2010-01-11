@@ -23,6 +23,7 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -48,6 +49,10 @@ public final class Dispatchers {
                 subscriberExecutor.shutdown();
             }
         };
+    }
+
+    public static Dispatcher synchronousSafe(ErrorHandler errorHandler, long blockingTimeout, TimeUnit unit) {
+        return new DefaultDispatcher(errorHandler, Executors.blocking(blockingTimeout, unit), Executors.immediate());
     }
 
     public static Dispatcher synchronousSafe(ErrorHandler errorHandler) {
