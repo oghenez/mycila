@@ -16,7 +16,13 @@
 
 package com.mycila.event.spi;
 
+import com.mycila.event.api.DispatcherException;
+
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -42,4 +48,25 @@ final class Executors {
         };
     }
 
+    public static Executor blocking(final long blockingTimeout, final TimeUnit unit) {
+        return new Executor() {
+            private final Lock lock = new ReentrantLock();
+
+            public void execute(Runnable command) {
+                boolean acquired;
+                try {
+                    acquired = lock.tryLock(blockingTimeout, unit);
+                } catch (InterruptedException e) {
+                    throw DispatcherException.wrap(e);
+                }
+                if (acquired) {
+                    try {
+                        command.run();
+                    } finally {
+                        lock.unlock();
+                    }
+                } else throw DispatcherException.wrap(new TimeoutException("Unable to acquire lock in " + blockingTimeout + " " + unit));
+            }
+        };
+    }
 }
