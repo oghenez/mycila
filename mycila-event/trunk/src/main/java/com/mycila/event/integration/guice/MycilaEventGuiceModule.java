@@ -18,7 +18,6 @@ package com.mycila.event.integration.guice;
 
 import com.google.inject.Binder;
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -31,8 +30,10 @@ import com.google.inject.spi.TypeListener;
 import com.mycila.event.api.Dispatcher;
 import com.mycila.event.api.annotation.AnnotationProcessor;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicReference;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import static com.google.inject.matcher.Matchers.*;
 
@@ -41,25 +42,34 @@ import static com.google.inject.matcher.Matchers.*;
  */
 public abstract class MycilaEventGuiceModule implements Module {
 
-    private final AtomicReference<ConcurrentLinkedQueue<Object>> references = new AtomicReference<ConcurrentLinkedQueue<Object>>(new ConcurrentLinkedQueue<Object>());
-
     protected final Processor processor = new Processor() {
+
+        private final Queue<Reference<Object>> references = new LinkedList<Reference<Object>>();
+        private volatile boolean injectedCreated;
+
         @Inject
         Provider<AnnotationProcessor> annotationProcessor;
 
         public <I> void process(I instance) {
-            ConcurrentLinkedQueue<Object> r = references.get();
-            if (r != null) r.offer(instance);
-            else annotationProcessor.get().process(instance);
+            if (injectedCreated)
+                annotationProcessor.get().process(instance);
+            else
+                references.offer(new WeakReference<Object>(instance));
         }
 
-        @Inject
-        void init(Injector injector) {
-            ConcurrentLinkedQueue<Object> r = references.getAndSet(null);
-            while (!r.isEmpty())
-                annotationProcessor.get().process(r.poll());
+        public void start() {
+            injectedCreated = true;
+            while (!references.isEmpty()) {
+                Object o = references.poll().get();
+                if (o != null)
+                    annotationProcessor.get().process(o);
+            }
         }
     };
+
+    public void afterCreation() {
+        processor.start();
+    }
 
     public void configure(Binder binder) {
         bindDispatcher(binder.bind(Dispatcher.class)).in(Singleton.class);
@@ -80,7 +90,9 @@ public abstract class MycilaEventGuiceModule implements Module {
 
     protected abstract ScopedBindingBuilder bindDispatcher(AnnotatedBindingBuilder<Dispatcher> bindDispatcher);
 
-    private static interface Processor {
+    public static interface Processor {
         <I> void process(I instance);
+
+        void start();
     }
 }
