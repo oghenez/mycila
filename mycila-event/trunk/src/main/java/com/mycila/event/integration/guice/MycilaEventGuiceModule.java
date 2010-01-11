@@ -30,8 +30,6 @@ import com.google.inject.spi.TypeListener;
 import com.mycila.event.api.Dispatcher;
 import com.mycila.event.api.annotation.AnnotationProcessor;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -42,25 +40,25 @@ import static com.google.inject.matcher.Matchers.*;
  */
 public abstract class MycilaEventGuiceModule implements Module {
 
+    @Inject
+    Provider<AnnotationProcessor> annotationProcessor;
+
     protected final Processor processor = new Processor() {
 
-        private final Queue<Reference<Object>> references = new LinkedList<Reference<Object>>();
+        private final Queue<Object> references = new LinkedList<Object>();
         private volatile boolean injectedCreated;
-
-        @Inject
-        Provider<AnnotationProcessor> annotationProcessor;
 
         public <I> void process(I instance) {
             if (injectedCreated)
                 annotationProcessor.get().process(instance);
             else
-                references.offer(new WeakReference<Object>(instance));
+                references.offer(instance);
         }
 
         public void start() {
             injectedCreated = true;
             while (!references.isEmpty()) {
-                Object o = references.poll().get();
+                Object o = references.poll();
                 if (o != null)
                     annotationProcessor.get().process(o);
             }
@@ -74,7 +72,7 @@ public abstract class MycilaEventGuiceModule implements Module {
     public void configure(Binder binder) {
         bindDispatcher(binder.bind(Dispatcher.class)).in(Singleton.class);
         bindAnnotationProcessor(binder.bind(AnnotationProcessor.class)).in(Singleton.class);
-        binder.bind(Processor.class).toInstance(processor);
+        binder.bind(MycilaEventGuiceModule.class).toInstance(this);
         binder.bindListener(any(), new TypeListener() {
             public <I> void hear(TypeLiteral<I> type, final TypeEncounter<I> encounter) {
                 encounter.register(new InjectionListener<I>() {
@@ -90,7 +88,7 @@ public abstract class MycilaEventGuiceModule implements Module {
 
     protected abstract ScopedBindingBuilder bindDispatcher(AnnotatedBindingBuilder<Dispatcher> bindDispatcher);
 
-    public static interface Processor {
+    private static interface Processor {
         <I> void process(I instance);
 
         void start();
