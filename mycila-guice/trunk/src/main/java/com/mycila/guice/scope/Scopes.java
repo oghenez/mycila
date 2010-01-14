@@ -16,8 +16,11 @@
 
 package com.mycila.guice.scope;
 
+import com.google.inject.Key;
+import com.google.inject.Provider;
 import com.google.inject.Scope;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -25,10 +28,38 @@ import java.util.concurrent.TimeUnit;
  */
 public final class Scopes {
 
-    private Scopes() {}
+    private Scopes() {
+    }
 
     public static Scope cachedScope(long duration, TimeUnit unit) {
-        return new CachedScope(duration, unit);
+        final long delay = unit.toNanos(duration);
+        final ConcurrentHashMap<Object, Long> times = new ConcurrentHashMap<Object, Long>();
+        return new CachedScope(new ExpirationStrategy() {
+            @Override
+            public boolean hasExpired(Object val) {
+                Long time = times.get(val);
+                return time == null || System.nanoTime() - time >= delay;
+            }
+        }, new ReloadStrategy() {
+            @Override
+            public Object load(Key key, Provider creator) {
+                final Object t = creator.get();
+                times.put(t, System.nanoTime());
+                return t;
+            }
+
+            @Override
+            public Object reload(Key key, Provider creator, Object current) {
+                times.remove(current);
+                final Object t = creator.get();
+                times.put(t, System.nanoTime());
+                return t;
+            }
+        });
+    }
+
+    public static Scope cachedScope(ExpirationStrategy expirationStrategy, ReloadStrategy reloadStrategy) {
+        return new CachedScope(expirationStrategy, reloadStrategy);
     }
 
 }
