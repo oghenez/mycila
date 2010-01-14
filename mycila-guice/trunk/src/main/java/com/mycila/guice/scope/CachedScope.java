@@ -20,52 +20,35 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 final class CachedScope implements Scope {
 
-    private final Map<Key<?>, CachedValue<?>> cache = new HashMap<Key<?>, CachedValue<?>>();
-    private final long duration;
+    private final Map<Key<?>, Object> cache = new ConcurrentHashMap<Key<?>, Object>();
+    private final ExpirationStrategy expirationStrategy;
+    private final ReloadStrategy reloadStrategy;
 
-    CachedScope(long duration, TimeUnit unit) {
-        this.duration = unit.toNanos(duration);
+    CachedScope(ExpirationStrategy expirationStrategy, ReloadStrategy reloadStrategy) {
+        this.expirationStrategy = expirationStrategy;
+        this.reloadStrategy = reloadStrategy;
     }
 
     @Override
     public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
         return new Provider<T>() {
-            @SuppressWarnings({"unchecked"})
             @Override
             public T get() {
-                CachedValue<T> cachedValue = (CachedValue<T>) cache.get(key);
-                if (cachedValue == null || cachedValue.hasExpired()) {
-                    synchronized (cache) {
-                        cachedValue = (CachedValue<T>) cache.get(key);
-                        if (cachedValue == null || cachedValue.hasExpired())
-                            cache.put(key, cachedValue = new CachedValue<T>(creator.get()));
-                    }
-                }
-                return cachedValue.value;
+                T cachedValue = (T) cache.get(key);
+                if (cachedValue == null)
+                    cache.put(key, cachedValue = (T) reloadStrategy.load(key, creator));
+                else if(expirationStrategy.hasExpired(cachedValue))
+                    cache.put(key, cachedValue = (T) reloadStrategy.reload(key, creator, cachedValue));
+                return cachedValue;
             }
         };
-    }
-
-    private class CachedValue<T> {
-        final T value;
-        final long time;
-
-        CachedValue(T value) {
-            this.value = value;
-            this.time = System.nanoTime();
-        }
-
-        boolean hasExpired() {
-            return System.nanoTime() - time > duration;
-        }
     }
 }
