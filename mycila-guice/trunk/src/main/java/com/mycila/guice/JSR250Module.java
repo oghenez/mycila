@@ -15,24 +15,48 @@
  */
 package com.mycila.guice;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Key;
+import com.google.inject.MembersInjector;
+import com.google.inject.Provider;
 import com.google.inject.Provides;
-import org.guiceyfruit.support.GuiceyFruitModule;
+import com.google.inject.ProvisionException;
+import com.google.inject.TypeLiteral;
+import com.google.inject.binder.LinkedBindingBuilder;
+import com.google.inject.internal.Lists;
+import com.google.inject.internal.Maps;
+import com.google.inject.internal.Sets;
+import com.google.inject.name.Names;
+import com.google.inject.spi.InjectionListener;
+import com.google.inject.spi.TypeEncounter;
+import com.google.inject.spi.TypeListener;
+import org.guiceyfruit.Configures;
+import org.guiceyfruit.support.AnnotationMemberProvider;
+import org.guiceyfruit.support.EncounterProvider;
 import org.guiceyfruit.support.MethodHandler;
+import org.guiceyfruit.support.Reflectors;
+import org.guiceyfruit.support.internal.MethodKey;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import static com.google.inject.matcher.Matchers.*;
+import static org.guiceyfruit.support.EncounterProvider.*;
 
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class JSR250Module extends GuiceyFruitModule {
+public class JSR250Module extends AbstractModule {
     @Override
     protected void configure() {
-        super.configure();
         bindAnnotationInjector(Resource.class, ResourceMemberProvider.class);
         bindMethodHandler(PostConstruct.class, new MethodHandler() {
             public void afterInjection(Object injectee, Annotation annotation, Method method)
@@ -48,4 +72,336 @@ public class JSR250Module extends GuiceyFruitModule {
     Injector injector(com.google.inject.Injector injector) {
         return Injector.wrap(injector);
     }
+
+    private List<Method> getConfiguresMethods() {
+        List<Method> answer = Lists.newArrayList();
+        List<Method> list = Reflectors.getAllMethods(getClass());
+        for (Method method : list) {
+            if (method.getAnnotation(Configures.class) != null) {
+                answer.add(method);
+            }
+        }
+        return answer;
+    }
+
+    /**
+     * Binds a post injection hook method annotated with the given annotation to the given method
+     * handler.
+     */
+    protected <A extends Annotation> void bindMethodHandler(final Class<A> annotationType,
+                                                            final MethodHandler methodHandler) {
+
+        bindMethodHandler(annotationType, encounterProvider(methodHandler));
+    }
+
+    /**
+     * Binds a post injection hook method annotated with the given annotation to the given method
+     * handler.
+     */
+    protected <A extends Annotation> void bindMethodHandler(final Class<A> annotationType,
+                                                            final Key<? extends MethodHandler> methodHandlerKey) {
+
+        bindMethodHandler(annotationType, encounterProvider(methodHandlerKey));
+    }
+
+    /**
+     * Binds a post injection hook method annotated with the given annotation to the given method
+     * handler.
+     */
+    protected <A extends Annotation> void bindMethodHandler(final Class<A> annotationType,
+                                                            final Class<? extends MethodHandler> methodHandlerType) {
+
+        bindMethodHandler(annotationType, encounterProvider(methodHandlerType));
+    }
+
+    private <A extends Annotation> void bindMethodHandler(final Class<A> annotationType,
+                                                          final EncounterProvider<MethodHandler> encounterProvider) {
+
+        bindListener(any(), new TypeListener() {
+            public <I> void hear(TypeLiteral<I> injectableType, TypeEncounter<I> encounter) {
+                Class<? super I> type = injectableType.getRawType();
+                while (type != null && !type.equals(Object.class)) {
+                    Method[] methods = type.getDeclaredMethods();
+                    for (final Method method : methods) {
+                        final A annotation = method.getAnnotation(annotationType);
+                        if (annotation != null) {
+                            final Provider<? extends MethodHandler> provider = encounterProvider.get(encounter);
+
+                            encounter.register(new InjectionListener<I>() {
+                                public void afterInjection(I injectee) {
+
+                                    MethodHandler methodHandler = provider.get();
+                                    try {
+                                        methodHandler.afterInjection(injectee, annotation, method);
+                                    }
+                                    catch (InvocationTargetException ie) {
+                                        Throwable e = ie.getTargetException();
+                                        throw new ProvisionException(e.getMessage(), e);
+                                    }
+                                    catch (IllegalAccessException e) {
+                                        throw new ProvisionException(e.getMessage(), e);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    type = type.getSuperclass();
+                }
+            }
+        });
+    }
+
+    /**
+     * Binds a custom injection point for a given injection annotation to the annotation member
+     * provider so that occurrences of the annotation on fields and methods with a single parameter
+     * will be injected by Guice after the constructor and @Inject have been processed.
+     *
+     * @param annotationType              the annotation class used to define the injection point
+     * @param annotationMemberProviderKey the key of the annotation member provider which can be
+     *                                    instantiated and injected by guice
+     * @param <A>                         the annotation type used as the injection point
+     */
+    protected <A extends Annotation> void bindAnnotationInjector(Class<A> annotationType,
+                                                                 Key<? extends AnnotationMemberProvider> annotationMemberProviderKey) {
+
+        bindAnnotationInjector(annotationType, encounterProvider(annotationMemberProviderKey));
+    }
+
+    /**
+     * Binds a custom injection point for a given injection annotation to the annotation member
+     * provider so that occurrences of the annotation on fields and methods with a single parameter
+     * will be injected by Guice after the constructor and @Inject have been processed.
+     *
+     * @param annotationType           the annotation class used to define the injection point
+     * @param annotationMemberProvider the annotation member provider which can be instantiated and
+     *                                 injected by guice
+     * @param <A>                      the annotation type used as the injection point
+     */
+    protected <A extends Annotation> void bindAnnotationInjector(Class<A> annotationType,
+                                                                 AnnotationMemberProvider annotationMemberProvider) {
+
+        bindAnnotationInjector(annotationType, encounterProvider(annotationMemberProvider));
+    }
+
+    /**
+     * Binds a custom injection point for a given injection annotation to the annotation member
+     * provider so that occurrences of the annotation on fields and methods with a single parameter
+     * will be injected by Guice after the constructor and @Inject have been processed.
+     *
+     * @param annotationType               the annotation class used to define the injection point
+     * @param annotationMemberProviderType the type of the annotation member provider which can be
+     *                                     instantiated and injected by guice
+     * @param <A>                          the annotation type used as the injection point
+     */
+    protected <A extends Annotation> void bindAnnotationInjector(Class<A> annotationType,
+                                                                 Class<? extends AnnotationMemberProvider> annotationMemberProviderType) {
+
+        bindAnnotationInjector(annotationType, encounterProvider(annotationMemberProviderType));
+    }
+
+    private <A extends Annotation> void bindAnnotationInjector(final Class<A> annotationType,
+                                                               final EncounterProvider<AnnotationMemberProvider> memberProviderProvider) {
+
+        bindListener(any(), new TypeListener() {
+            Provider<? extends AnnotationMemberProvider> providerProvider;
+
+            public <I> void hear(TypeLiteral<I> injectableType, TypeEncounter<I> encounter) {
+
+                Set<Field> boundFields = Sets.newHashSet();
+                Map<MethodKey, Method> boundMethods = Maps.newHashMap();
+
+                TypeLiteral<?> startType = injectableType;
+                while (true) {
+                    Class<?> type = startType.getRawType();
+                    if (type == Object.class) {
+                        break;
+                    }
+
+                    Field[] fields = type.getDeclaredFields();
+                    for (Field field : fields) {
+                        if (boundFields.add(field)) {
+                            bindAnnotationInjectorToField(encounter, startType, field);
+                        }
+                    }
+
+                    Method[] methods = type.getDeclaredMethods();
+                    for (final Method method : methods) {
+                        MethodKey key = new MethodKey(method);
+                        if (boundMethods.get(key) == null) {
+                            boundMethods.put(key, method);
+                            bindAnnotationInjectionToMember(encounter, startType, method);
+                        }
+                    }
+
+                    Class<?> supertype = type.getSuperclass();
+                    if (supertype == Object.class) {
+                        break;
+                    }
+                    startType = startType.getSupertype(supertype);
+                }
+            }
+
+            protected <I> void bindAnnotationInjectionToMember(final TypeEncounter<I> encounter,
+                                                               final TypeLiteral<?> type, final Method method) {
+                // TODO lets exclude methods with @Inject?
+                final A annotation = method.getAnnotation(annotationType);
+                if (annotation != null) {
+                    if (providerProvider == null) {
+                        providerProvider = memberProviderProvider.get(encounter);
+                    }
+
+                    encounter.register(new MembersInjector<I>() {
+                        public void injectMembers(I injectee) {
+                            AnnotationMemberProvider provider = providerProvider.get();
+
+                            int size = method.getParameterTypes().length;
+                            Object[] values = new Object[size];
+                            for (int i = 0; i < size; i++) {
+                                Class<?> paramType = getParameterType(type, method, i);
+                                Object value = provider.provide(annotation, type, method, paramType, i);
+                                checkInjectedValueType(value, paramType, encounter);
+
+                                // if we have a null value then assume the injection point cannot be satisfied
+                                // which is the spring @Autowired way of doing things
+                                if (value == null && !provider
+                                        .isNullParameterAllowed(annotation, method, paramType, i)) {
+                                    return;
+                                }
+                                values[i] = value;
+                            }
+                            try {
+                                method.setAccessible(true);
+                                method.invoke(injectee, values);
+                            }
+                            catch (IllegalAccessException e) {
+                                throw new ProvisionException("Failed to inject method " + method + ". Reason: " + e,
+                                        e);
+                            }
+                            catch (InvocationTargetException ie) {
+                                Throwable e = ie.getTargetException();
+                                throw new ProvisionException("Failed to inject method " + method + ". Reason: " + e,
+                                        e);
+                            }
+                        }
+                    });
+                }
+            }
+
+            protected <I> void bindAnnotationInjectorToField(final TypeEncounter<I> encounter,
+                                                             final TypeLiteral<?> type, final Field field) {
+                // TODO lets exclude fields with @Inject?
+                final A annotation = field.getAnnotation(annotationType);
+                if (annotation != null) {
+                    if (providerProvider == null) {
+                        providerProvider = memberProviderProvider.get(encounter);
+                    }
+
+                    encounter.register(new InjectionListener<I>() {
+                        public void afterInjection(I injectee) {
+                            AnnotationMemberProvider provider = providerProvider.get();
+                            Object value = provider.provide(annotation, type, field);
+                            checkInjectedValueType(value, field.getType(), encounter);
+
+                            try {
+                                field.setAccessible(true);
+                                field.set(injectee, value);
+                            }
+                            catch (IllegalAccessException e) {
+                                throw new ProvisionException("Failed to inject field " + field + ". Reason: " + e,
+                                        e);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    protected Class<?> getParameterType(TypeLiteral<?> type, Method method, int i) {
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        List<TypeLiteral<?>> list = type.getParameterTypes(method);
+        TypeLiteral<?> typeLiteral = list.get(i);
+
+        Class<?> paramType = typeLiteral.getRawType();
+        if (paramType == Object.class
+                || paramType.isArray() && paramType.getComponentType() == Object.class) {
+            // if the TypeLiteral ninja doesn't work, lets fall back to the actual type
+            paramType = parameterTypes[i];
+        }
+        return paramType;
+    }
+
+/*
+  protected void bindCloseHook() {
+    bindListener(any(), new Listener() {
+      public <I> void hear(InjectableType<I> injectableType, Encounter<I> encounter) {
+        encounter.registerPostInjectListener(new InjectionListener<I>() {
+          public void afterInjection(I injectee) {
+
+          }
+        });
+      }
+    });
+  }
+*/
+
+    /**
+     * Returns true if the value to be injected is of the correct type otherwise an error is raised on
+     * the encounter and false is returned
+     */
+    protected <I> void checkInjectedValueType(Object value, Class<?> type,
+                                              TypeEncounter<I> encounter) {
+        // TODO check the type
+    }
+
+    /**
+     * A helper method to bind the given type with the binding annotation.
+     * <p/>
+     * This allows you to replace this code <code> bind(Key.get(MyType.class, SomeAnnotation.class))
+     * </code>
+     * <p/>
+     * with this <code> bind(KMyType.class, SomeAnnotation.class) </code>
+     */
+    protected <T> LinkedBindingBuilder<T> bind(Class<T> type,
+                                               Class<? extends Annotation> annotationType) {
+        return bind(Key.get(type, annotationType));
+    }
+
+    /**
+     * A helper method to bind the given type with the binding annotation.
+     * <p/>
+     * This allows you to replace this code <code> bind(Key.get(MyType.class, someAnnotation))
+     * </code>
+     * <p/>
+     * with this <code> bind(KMyType.class, someAnnotation) </code>
+     */
+    protected <T> LinkedBindingBuilder<T> bind(Class<T> type, Annotation annotation) {
+        return bind(Key.get(type, annotation));
+    }
+
+    /**
+     * A helper method to bind the given type with the {@link com.google.inject.name.Named} annotation
+     * of the given text value.
+     * <p/>
+     * This allows you to replace this code <code> bind(Key.get(MyType.class, Names.named("myName")))
+     * </code>
+     * <p/>
+     * with this <code> bind(KMyType.class, "myName") </code>
+     */
+    protected <T> LinkedBindingBuilder<T> bind(Class<T> type, String namedText) {
+        return bind(type, Names.named(namedText));
+    }
+
+    /**
+     * A helper method which binds a named instance to a key defined by the given name and the
+     * instances type. So this method is short hand for
+     * <p/>
+     * <code> bind(instance.getClass(), name).toInstance(instance); </code>
+     */
+    protected <T> void bindInstance(String name, T instance) {
+        // TODO not sure the generics ninja to avoid this cast
+        Class<T> aClass = (Class<T>) instance.getClass();
+        bind(aClass, name).toInstance(instance);
+    }
+
 }
