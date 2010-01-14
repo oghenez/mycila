@@ -18,6 +18,7 @@ package com.mycila.event.integration.guice;
 
 import com.google.inject.Binder;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Provider;
 import com.google.inject.binder.ScopedBindingBuilder;
 import com.mycila.event.api.annotation.AnnotationProcessor;
@@ -33,9 +34,13 @@ public final class MycilaEventGuice {
         return new Provider<T>() {
             @Inject
             Provider<AnnotationProcessor> annotationProcessor;
+            @Inject
+            Provider<Injector> injector;
 
             public T get() {
-                return annotationProcessor.get().proxy(clazz);
+                T proxy = annotationProcessor.get().proxy(clazz);
+                injector.get().injectMembers(proxy);
+                return proxy;
             }
         };
     }
