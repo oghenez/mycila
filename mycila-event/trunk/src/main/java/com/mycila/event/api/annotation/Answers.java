@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package com.mycila.event.spi;
+package com.mycila.event.api.annotation;
 
-import com.mycila.event.api.DispatcherException;
-
-import java.lang.reflect.InvocationTargetException;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class ExceptionUtils {
-
-    private ExceptionUtils() {
-    }
-
-    static RuntimeException handle(Throwable e) {
-        if (e instanceof InvocationTargetException)
-            e = ((InvocationTargetException) e).getTargetException();
-        if (e instanceof Error) throw (Error) e;
-        if (e instanceof RuntimeException) return (RuntimeException) e;
-        return DispatcherException.wrap(e);
-    }
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@Documented
+@Inherited
+public @interface Answers {
+    public abstract String[] topics();
 }
