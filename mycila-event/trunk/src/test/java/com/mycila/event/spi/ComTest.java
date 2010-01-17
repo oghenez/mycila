@@ -44,6 +44,8 @@ import static org.junit.Assert.*;
 @RunWith(JUnit4.class)
 public final class ComTest {
 
+    static boolean throwExcepiton = false;
+
     @Test
     public void test() throws Exception {
         Dispatcher dispatcher = Dispatchers.synchronousSafe(ErrorHandlers.rethrow());
@@ -96,6 +98,17 @@ public final class ComTest {
             assertEquals("java.io.FileNotFoundException: rm did not found folder err", e.getMessage());
         }
 
+        assertEquals(222, du.rm());
+        try {
+            throwExcepiton = true;
+            du.rm();
+            fail();
+        } catch (Exception e) {
+            assertTrue(e instanceof DispatcherException);
+            assertTrue(e.getCause() instanceof FileNotFoundException);
+            assertEquals("java.io.FileNotFoundException: rm2 did not found folder", e.getMessage());
+        }
+
         // manually
         MessageRequest<Integer> req1 = Messages.createRequest("home");
         MessageRequest<Integer> req2 = Messages.createRequest("inexisting");
@@ -135,6 +148,17 @@ public final class ComTest {
             if ("err".equals(folder))
                 throw new FileNotFoundException("rm did not found folder " + folder);
             else return 111;
+        }
+
+        @Request(topic = "system/rm2")
+        abstract int rm();
+
+        @Answers(topics = "system/rm2")
+        int rmRequest() throws FileNotFoundException {
+            System.out.println("rm2 request on folder");
+            if (throwExcepiton)
+                throw new FileNotFoundException("rm2 did not found folder");
+            else return 222;
         }
     }
 
