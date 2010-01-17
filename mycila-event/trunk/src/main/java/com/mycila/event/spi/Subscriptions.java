@@ -22,6 +22,7 @@ import com.mycila.event.api.Referencable;
 import com.mycila.event.api.Subscriber;
 import com.mycila.event.api.Subscription;
 import com.mycila.event.api.annotation.Reference;
+import com.mycila.event.api.message.MessageResponse;
 import com.mycila.event.api.topic.TopicMatcher;
 import net.sf.cglib.reflect.FastMethod;
 
@@ -36,10 +37,6 @@ import static com.mycila.event.api.Ensure.*;
 final class Subscriptions {
 
     private Subscriptions() {
-    }
-
-    static <E> Subscriber<E> createSubscriber(Object instance, Method method) {
-        return new MethodSubscriber<E>(instance, method);
     }
 
     static <E> Subscription create(final TopicMatcher matcher, final Class<?> eventType, final Subscriber<E> subscriber) {
@@ -69,10 +66,18 @@ final class Subscriptions {
         };
     }
 
-    private static class ReferencableMethod implements Referencable {
-        final Reachability reachability;
-        final Object target;
-        final Invokable invokable;
+    static <E> Subscriber<E> createSubscriber(Object instance, Method method) {
+        return new MethodSubscriber<E>(instance, method);
+    }
+
+    static <P, R> Subscriber<MessageResponse<P, R>> createResponder(Object instance, Method method) {
+        return new MethodResponder<P, R>(instance, method);
+    }
+
+    private static class ReferencableMethod<T> implements Referencable {
+        private final Reachability reachability;
+        private final Object target;
+        private final Invokable<T> invokable;
 
         ReferencableMethod(Object target, final Method method) {
             notNull(target, "Target object");
@@ -83,26 +88,28 @@ final class Subscriptions {
                     Reachability.of(target.getClass());
             notNull(reachability, "Value of @Reference on method " + method);
             this.invokable = Modifier.isPrivate(method.getModifiers()) ?
-                    new Invokable() {
+                    new Invokable<T>() {
                         {
                             if (!method.isAccessible())
                                 method.setAccessible(true);
                         }
-                        public void invoke(Object target, Object... args) throws Exception {
+
+                        public T invoke(Object target, Object... args) throws Exception {
                             try {
-                                method.invoke(target, args);
+                                return (T) method.invoke(target, args);
                             } catch (Exception e) {
-                                ExceptionUtils.reThrow(e);
+                                throw ExceptionUtils.handle(e);
                             }
                         }
                     } :
-                    new Invokable() {
+                    new Invokable<T>() {
                         final FastMethod m = Proxy.fastMethod(method);
-                        public void invoke(Object target, Object... args) throws Exception {
+
+                        public T invoke(Object target, Object... args) throws Exception {
                             try {
-                                m.invoke(target, args);
+                                return (T) m.invoke(target, args);
                             } catch (Exception e) {
-                                ExceptionUtils.reThrow(e);
+                                throw ExceptionUtils.handle(e);
                             }
                         }
                     };
@@ -113,8 +120,8 @@ final class Subscriptions {
             return reachability;
         }
 
-        protected final void invoke(Object... args) throws Exception {
-            invokable.invoke(target, args);
+        protected final T invoke(Object... args) throws Exception {
+            return invokable.invoke(target, args);
         }
     }
 
@@ -124,13 +131,37 @@ final class Subscriptions {
             hasOneArg(Event.class, method);
         }
 
-
         public void onEvent(Event<E> event) throws Exception {
             invoke(event);
         }
     }
 
-    private static interface Invokable {
-        void invoke(Object target, Object... args) throws Exception;
+    private static final class MethodResponder<P, R> extends ReferencableMethod<R> implements Subscriber<MessageResponse<P, R>> {
+
+        private final Method method;
+        private final int len;
+
+        MethodResponder(Object target, Method method) {
+            super(target, method);
+            hasAtMostOneArg(method);
+            this.method = method;
+            this.len = method.getParameterTypes().length;
+        }
+
+        public void onEvent(Event<MessageResponse<P, R>> event) throws Exception {
+            P parameter = event.getSource().getParameter();
+            if (parameter != null && len > 0 && !method.getParameterTypes()[0].isAssignableFrom(parameter.getClass()))
+                throw new IllegalArgumentException("Bad parameter type in event request to topic " + event.getTopic() + " handled by method " + method + ": received parameter of type " + parameter.getClass().getName());
+            try {
+                if (len == 0) event.getSource().reply(invoke());
+                else event.getSource().reply(invoke(parameter));
+            } catch (Exception e) {
+                event.getSource().replyError(ExceptionUtils.handle(e));
+            }
+        }
+    }
+
+    private static interface Invokable<T> {
+        T invoke(Object target, Object... args) throws Exception;
     }
 }

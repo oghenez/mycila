@@ -17,10 +17,12 @@
 package com.mycila.event.spi;
 
 import com.mycila.event.api.Dispatcher;
+import com.mycila.event.api.DispatcherException;
 import com.mycila.event.api.ErrorHandlers;
 import com.mycila.event.api.Event;
 import com.mycila.event.api.Subscriber;
 import com.mycila.event.api.annotation.AnnotationProcessor;
+import com.mycila.event.api.annotation.Answers;
 import com.mycila.event.api.annotation.Request;
 import com.mycila.event.api.annotation.Subscribe;
 import com.mycila.event.api.message.MessageRequest;
@@ -84,6 +86,16 @@ public final class ComTest {
             assertEquals("java.io.FileNotFoundException: du did not found folder notFound", e.getMessage());
         }
 
+        assertEquals(111, du.rm("root"));
+        try {
+            du.rm("err");
+            fail();
+        } catch (Exception e) {
+            assertTrue(e instanceof DispatcherException);
+            assertTrue(e.getCause() instanceof FileNotFoundException);
+            assertEquals("java.io.FileNotFoundException: rm did not found folder err", e.getMessage());
+        }
+
         // manually
         MessageRequest<Integer> req1 = Messages.createRequest("home");
         MessageRequest<Integer> req2 = Messages.createRequest("inexisting");
@@ -112,6 +124,17 @@ public final class ComTest {
                 event.getSource().replyError(new FileNotFoundException("du did not found folder " + folder));
             else
                 event.getSource().reply(40);
+        }
+
+        @Request(topic = "system/rm")
+        abstract int rm(String folder);
+
+        @Answers(topics = "system/rm")
+        int rmRequest(String folder) throws FileNotFoundException {
+            System.out.println("rm request on folder " + folder);
+            if ("err".equals(folder))
+                throw new FileNotFoundException("rm did not found folder " + folder);
+            else return 111;
         }
     }
 

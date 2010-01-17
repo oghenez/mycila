@@ -18,10 +18,12 @@ package com.mycila.event.spi;
 
 import com.mycila.event.api.Dispatcher;
 import com.mycila.event.api.annotation.AnnotationProcessor;
+import com.mycila.event.api.annotation.Answers;
 import com.mycila.event.api.annotation.Multiple;
 import com.mycila.event.api.annotation.Publish;
 import com.mycila.event.api.annotation.Request;
 import com.mycila.event.api.annotation.Subscribe;
+import com.mycila.event.api.message.MessageResponse;
 import com.mycila.event.api.topic.Topics;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -59,6 +61,10 @@ public abstract class AnnotationProcessors {
                 for (Method method : ClassUtils.filterAnnotatedMethods(methods, Subscribe.class)) {
                     Subscribe subscribe = method.getAnnotation(Subscribe.class);
                     dispatcher.subscribe(Topics.anyOf(subscribe.topics()), subscribe.eventType(), Subscriptions.createSubscriber(instance, method));
+                }
+                for (Method method : ClassUtils.filterAnnotatedMethods(methods, Answers.class)) {
+                    Answers answers = method.getAnnotation(Answers.class);
+                    dispatcher.subscribe(Topics.anyOf(answers.topics()), MessageResponse.class, Subscriptions.createResponder(instance, method));
                 }
                 return instance;
             }
@@ -108,9 +114,8 @@ public abstract class AnnotationProcessors {
                         invocation.proceed() :
                         invocation.getMethod().invoke(delegate, invocation.getArguments());
             } catch (Exception e) {
-                ExceptionUtils.reThrow(e);
+                throw ExceptionUtils.handle(e);
             }
-            throw new AssertionError("BUG - SHOULD NOT GO HERE");
         }
 
         private static Object handleRequest(Requestor<Object, Object> requestor, MethodInvocation invocation) throws Exception {

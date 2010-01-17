@@ -121,9 +121,8 @@ final class Proxy {
                         try {
                             return method.invoke(proxy, args);
                         } catch (Exception e) {
-                            ExceptionUtils.reThrow(e);
+                            throw ExceptionUtils.handle(e);
                         }
-                        throw new AssertionError("BUG - SHOULD NOT GO HERE");
                     }
 
                     public Object getThis() {
@@ -155,9 +154,8 @@ final class Proxy {
                         try {
                             return proxy.invokeSuper(obj, args);
                         } catch (Exception e) {
-                            ExceptionUtils.reThrow(e);
+                            throw ExceptionUtils.handle(e);
                         }
-                        throw new AssertionError("BUG - SHOULD NOT GO HERE");
                     }
 
                     public Object getThis() {
