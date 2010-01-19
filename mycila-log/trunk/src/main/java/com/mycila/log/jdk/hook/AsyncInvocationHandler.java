@@ -15,8 +15,6 @@
  */
 package com.mycila.log.jdk.hook;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -27,29 +25,29 @@ import java.util.logging.LogRecord;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class AsyncInvocationHandler<T extends Handler> extends MycilaInvocationHandler<T> implements Runnable {
+public final class AsyncInvocationHandler<T extends Handler> extends MycilaInvocationHandler<T> {
 
-    private final BlockingQueue<Runnable> records = new LinkedBlockingQueue<Runnable>();
-    private final Thread logger = new Thread(this, AsyncInvocationHandler.class.getSimpleName() + "-Thread");
-    private final AtomicBoolean running = new AtomicBoolean(true);
+    private static final AtomicBoolean running = new AtomicBoolean(true);
+    private static final BlockingQueue<Runnable> records = new LinkedBlockingQueue<Runnable>();
+    private static final Thread logger = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            while (running.get() && !Thread.currentThread().isInterrupted()) {
+                try {
+                    Runnable r = records.poll(10, TimeUnit.SECONDS);
+                    if (r != null) r.run();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+    }, AsyncInvocationHandler.class.getSimpleName() + "-Thread");
 
-    {
+    static {
         logger.setDaemon(true);
         logger.start();
     }
 
-    public void run() {
-        while (running.get() && !Thread.currentThread().isInterrupted()) {
-            try {
-                Runnable r = records.poll(10, TimeUnit.SECONDS);
-                if (r != null) r.run();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
-
-    @Override
     public void publish(final T handler, final LogRecord record) {
         Runnable r = new Runnable() {
             public void run() {
@@ -59,16 +57,5 @@ public final class AsyncInvocationHandler<T extends Handler> extends MycilaInvoc
         };
         if (running.get()) records.offer(r);
         else r.run();
-    }
-
-    @Override
-    public void close(T handler) throws SecurityException {
-        if (running.getAndSet(false)) {
-            logger.interrupt();
-            List<Runnable> remaing = new LinkedList<Runnable>();
-            records.drainTo(remaing);
-            for (Runnable runnable : remaing)
-                runnable.run();
-        }
     }
 }
