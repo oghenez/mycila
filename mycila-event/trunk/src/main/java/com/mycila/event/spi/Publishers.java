@@ -52,16 +52,16 @@ final class Publishers {
         };
     }
 
-    static Requestor<Object, Object> createRequestor(final Dispatcher dispatcher, final Topic topic, final long timeout, final TimeUnit unit) {
-        return new Requestor<Object, Object>() {
+    static Requestor<Object[], Object> createRequestor(final Dispatcher dispatcher, final Topic topic, final long timeout, final TimeUnit unit) {
+        return new Requestor<Object[], Object>() {
             public Topic getTopic() {
                 return topic;
             }
 
-            public Object request(Object parameter) throws InterruptedException, TimeoutException {
+            public Object request(Object[] parameter) throws InterruptedException, TimeoutException {
                 MessageRequest<Object> req = Messages.createRequest(parameter);
                 dispatcher.publish(topic, req);
-                return timeout < 0 ?
+                return timeout < 0L ?
                         req.getResponse() :
                         req.getResponse(timeout, unit);
             }

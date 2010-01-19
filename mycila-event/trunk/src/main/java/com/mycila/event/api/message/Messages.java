@@ -32,27 +32,23 @@ public final class Messages {
     private Messages() {
     }
 
-    public static <R> MessageRequest<R> createRequest() {
-        return createRequest(null);
+    public static <R> MessageRequest<R> createRequest(Object... parameters) {
+        return new Message<R>(parameters);
     }
 
-    public static <P, R> MessageRequest<R> createRequest(P parameter) {
-        return new Message<P, R>(parameter);
-    }
-
-    private static class Message<P, R> implements MessageRequest<R>, MessageResponse<P, R> {
+    private static class Message<R> implements MessageRequest<R>, MessageResponse<R> {
 
         private final CountDownLatch answered = new CountDownLatch(1);
         private final AtomicBoolean replied = new AtomicBoolean(false);
-        private final P parameter;
+        private final Object[] parameter;
         private R reply;
         private RuntimeException error;
 
-        private Message(P parameter) {
+        private Message(Object[] parameter) {
             this.parameter = parameter;
         }
 
-        public P getParameter() {
+        public Object[] getParameter() {
             return parameter;
         }
 

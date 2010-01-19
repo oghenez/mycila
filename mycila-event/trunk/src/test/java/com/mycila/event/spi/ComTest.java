@@ -47,12 +47,23 @@ public final class ComTest {
     static boolean throwExcepiton = false;
 
     @Test
+    public void test_args() throws Exception {
+        Dispatcher dispatcher = Dispatchers.synchronousSafe(ErrorHandlers.rethrow());
+        AnnotationProcessor processor = AnnotationProcessors.create(dispatcher);
+
+        DU du = processor.proxy(DU.class);
+
+        assertEquals(30, du.mult(5, 6));
+        //assertEquals(15, du.add(1, 2, 3, 4, 5));
+    }
+
+    @Test
     public void test() throws Exception {
         Dispatcher dispatcher = Dispatchers.synchronousSafe(ErrorHandlers.rethrow());
 
-        dispatcher.subscribe(only("system/df"), MessageResponse.class, new Subscriber<MessageResponse<String, Integer>>() {
-            public void onEvent(Event<MessageResponse<String, Integer>> event) throws Exception {
-                String folder = event.getSource().getParameter();
+        dispatcher.subscribe(only("system/df"), MessageResponse.class, new Subscriber<MessageResponse<Integer>>() {
+            public void onEvent(Event<MessageResponse<Integer>> event) throws Exception {
+                String folder = (String) event.getSource().getParameter()[0];
                 System.out.println("df request on folder " + folder);
                 // call df -h <folder>
                 if ("inexisting".equals(folder))
@@ -129,8 +140,8 @@ public final class ComTest {
         abstract Integer getSize(String folder);
 
         @Subscribe(topics = "system/du", eventType = MessageResponse.class)
-        void duRequest(Event<MessageResponse<String, Integer>> event) {
-            String folder = event.getSource().getParameter();
+        void duRequest(Event<MessageResponse<Integer>> event) {
+            String folder = (String) event.getSource().getParameter()[0];
             System.out.println("du request on folder " + folder);
             // call du -h <folder>
             if ("notFound".equals(folder))
@@ -159,6 +170,24 @@ public final class ComTest {
             if (throwExcepiton)
                 throw new FileNotFoundException("rm2 did not found folder");
             else return 222;
+        }
+
+        @Request(topic = "system/mult")
+        abstract int mult(int p1, int p2);
+
+        @Answers(topics = "system/mult")
+        int multRequest(int p1, int p2) {
+            return p1 * p2;
+        }
+
+        @Request(topic = "system/add")
+        abstract int add(int... p);
+
+        @Answers(topics = "system/add")
+        int addRequest(int... p) {
+            int c = 0;
+            for (int i : p) c += i;
+            return c;
         }
     }
 

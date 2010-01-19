@@ -70,8 +70,8 @@ final class Subscriptions {
         return new MethodSubscriber<E>(instance, method);
     }
 
-    static <P, R> Subscriber<MessageResponse<P, R>> createResponder(Object instance, Method method) {
-        return new MethodResponder<P, R>(instance, method);
+    static <R> Subscriber<MessageResponse<R>> createResponder(Object instance, Method method) {
+        return new MethodResponder<R>(instance, method);
     }
 
     private static class ReferencableMethod<T> implements Referencable {
@@ -136,25 +136,19 @@ final class Subscriptions {
         }
     }
 
-    private static final class MethodResponder<P, R> extends ReferencableMethod<R> implements Subscriber<MessageResponse<P, R>> {
+    private static final class MethodResponder<R> extends ReferencableMethod<R> implements Subscriber<MessageResponse<R>> {
 
-        private final Method method;
         private final int len;
 
         MethodResponder(Object target, Method method) {
             super(target, method);
-            hasAtMostOneArg(method);
-            this.method = method;
             this.len = method.getParameterTypes().length;
         }
 
-        public void onEvent(Event<MessageResponse<P, R>> event) throws Exception {
-            P parameter = event.getSource().getParameter();
-            if (parameter != null && len > 0 && !method.getParameterTypes()[0].isAssignableFrom(parameter.getClass()))
-                throw new IllegalArgumentException("Bad parameter type in event request to topic " + event.getTopic() + " handled by method " + method + ": received parameter of type " + parameter.getClass().getName());
+        public void onEvent(Event<MessageResponse<R>> event) throws Exception {
             try {
                 if (len == 0) event.getSource().reply(invoke());
-                else event.getSource().reply(invoke(parameter));
+                else event.getSource().reply(invoke(event.getSource().getParameter()));
             } catch (Exception e) {
                 event.getSource().replyError(ExceptionUtils.handle(e));
             }
