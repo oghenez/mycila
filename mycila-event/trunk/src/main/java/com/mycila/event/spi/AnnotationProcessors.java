@@ -72,8 +72,8 @@ public abstract class AnnotationProcessors {
     }
 
     private static final class PublisherInterceptor implements MethodInterceptor {
-        private final Map<MethodSignature, Publisher> publisherCache = new HashMap<MethodSignature, Publisher>();
-        private final Map<MethodSignature, Requestor> requestorCache = new HashMap<MethodSignature, Requestor>();
+        private final Map<MethodSignature, Publisher<Object>> publisherCache = new HashMap<MethodSignature, Publisher<Object>>();
+        private final Map<MethodSignature, Requestor<Object[], Object>> requestorCache = new HashMap<MethodSignature, Requestor<Object[], Object>>();
         private final Object delegate;
 
         private PublisherInterceptor(Dispatcher dispatcher, final Class<?> c) {
@@ -82,13 +82,13 @@ public abstract class AnnotationProcessors {
             for (Method method : ClassUtils.filterAnnotatedMethods(allMethods, Publish.class)) {
                 hasSomeArgs(method);
                 Publish annotation = method.getAnnotation(Publish.class);
-                Publisher publisher = Publishers.createPublisher(dispatcher, Topics.topics(annotation.topics()));
+                Publisher<Object> publisher = Publishers.createPublisher(dispatcher, Topics.topics(annotation.topics()));
                 publisherCache.put(MethodSignature.of(method), publisher);
             }
             // find requestors
             for (Method method : ClassUtils.filterAnnotatedMethods(allMethods, Request.class)) {
                 Request annotation = method.getAnnotation(Request.class);
-                Requestor requestor = Publishers.createRequestor(dispatcher, Topics.topic(annotation.topic()), annotation.timeout(), annotation.unit());
+                Requestor<Object[], Object> requestor = Publishers.createRequestor(dispatcher, Topics.topic(annotation.topic()), annotation.timeout(), annotation.unit());
                 requestorCache.put(MethodSignature.of(method), requestor);
             }
             delegate = !c.isInterface() ? null : new Object() {
@@ -103,29 +103,18 @@ public abstract class AnnotationProcessors {
         @SuppressWarnings({"unchecked"})
         public Object invoke(MethodInvocation invocation) throws Throwable {
             MethodSignature methodSignature = MethodSignature.of(invocation.getMethod());
-            Publisher publisher = publisherCache.get(methodSignature);
+            Publisher<Object> publisher = publisherCache.get(methodSignature);
             if (publisher != null)
                 return handlePublishing(publisher, invocation);
-            Requestor requestor = requestorCache.get(methodSignature);
+            Requestor<Object[], Object> requestor = requestorCache.get(methodSignature);
             if (requestor != null)
-                return handleRequest(requestor, invocation);
+                return requestor.request(invocation.getArguments());
             try {
                 return delegate == null ?
                         invocation.proceed() :
                         invocation.getMethod().invoke(delegate, invocation.getArguments());
             } catch (Exception e) {
                 throw ExceptionUtils.handle(e);
-            }
-        }
-
-        private static Object handleRequest(Requestor<Object, Object> requestor, MethodInvocation invocation) throws Exception {
-            switch (invocation.getArguments().length) {
-                case 0:
-                    return requestor.request(null);
-                case 1:
-                    return requestor.request(invocation.getArguments()[0]);
-                default:
-                    return requestor.request(invocation.getArguments());
             }
         }
 
