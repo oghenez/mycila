@@ -92,7 +92,7 @@ public final class Messages {
 
         @Override
         public String toString() {
-            return "req(" + Arrays.deepToString(getParameters()) + ") => reply(" + reply + ")";
+            return "req(" + Arrays.deepToString(getParameters()) + ") => reply(" + (replied.get() ? reply : "<waiting>") + ")";
         }
     }
 
