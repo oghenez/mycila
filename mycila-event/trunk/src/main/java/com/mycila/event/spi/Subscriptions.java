@@ -148,7 +148,7 @@ final class Subscriptions {
         public void onEvent(Event<MessageResponse<R>> event) throws Exception {
             try {
                 if (len == 0) event.getSource().reply(invoke());
-                else event.getSource().reply(invoke(event.getSource().getParameter()));
+                else event.getSource().reply(invoke(event.getSource().getParameters()));
             } catch (Exception e) {
                 event.getSource().replyError(ExceptionUtils.handle(e));
             }

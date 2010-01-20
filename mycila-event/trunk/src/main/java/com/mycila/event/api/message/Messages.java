@@ -48,7 +48,7 @@ public final class Messages {
             this.parameter = parameter;
         }
 
-        public Object[] getParameter() {
+        public Object[] getParameters() {
             return parameter;
         }
 
