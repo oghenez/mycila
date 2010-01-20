@@ -20,7 +20,7 @@ package com.mycila.event.api.message;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface MessageResponse<R> {
-    Object[] getParameter();
+    Object[] getParameters();
 
     void replyError(Exception error);
 
