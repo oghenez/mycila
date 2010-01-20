@@ -20,33 +20,28 @@ import com.mycila.event.api.FilterIterator;
 import com.mycila.event.api.Ref;
 import com.mycila.event.api.Subscription;
 
-import java.util.AbstractCollection;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class SubscriptionList<E> extends AbstractCollection<Subscription<E>> {
+final class SubscriptionList<E> implements Iterable<Subscription<E>> {
 
     private final CopyOnWriteArrayList<Ref<Subscription<E>>> subscriptions = new CopyOnWriteArrayList<Ref<Subscription<E>>>();
 
-    @Override
     public boolean add(Subscription<E> subscription) {
         return subscriptions.add(subscription.getReachability().wrap(subscription));
     }
 
-    @Override
     public boolean isEmpty() {
         return subscriptions.isEmpty();
     }
 
-    @Override
     public int size() {
         return subscriptions.size();
     }
 
-    @Override
     public Iterator<Subscription<E>> iterator() {
         return new FilterIterator<Subscription<E>, Ref<Subscription<E>>>(subscriptions.iterator()) {
             @Override
@@ -56,5 +51,11 @@ final class SubscriptionList<E> extends AbstractCollection<Subscription<E>> {
                 return next;
             }
         };
+    }
+
+    public void remove(Subscription<E> subscription) {
+        for (Ref<Subscription<E>> ref : subscriptions)
+            if (subscription.equals(ref.get()))
+                subscriptions.remove(ref);
     }
 }
