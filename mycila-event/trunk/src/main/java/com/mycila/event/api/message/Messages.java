@@ -19,6 +19,7 @@ package com.mycila.event.api.message;
 import com.mycila.event.api.DispatcherException;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -58,7 +59,7 @@ public final class Messages {
         }
 
         public R getResponse(long timeout, TimeUnit unit) throws TimeoutException, InterruptedException {
-            if(answered.await(timeout, unit))
+            if (answered.await(timeout, unit))
                 return result();
             throw new TimeoutException("No response returned within " + timeout + " " + unit);
         }
@@ -87,6 +88,11 @@ public final class Messages {
         private R result() {
             if (error != null) throw error;
             return reply;
+        }
+
+        @Override
+        public String toString() {
+            return "req(" + Arrays.deepToString(getParameters()) + ") => reply(" + reply + ")";
         }
     }
 
