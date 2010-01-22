@@ -10,7 +10,7 @@ import java.util.Arrays;
  */
 public final class DefaultJVMUpdater implements JVMUpdater {
 
-    final JVMImpl jvm = new JVMImpl();
+    private final JVMImpl jvm = new JVMImpl();
 
     public JVM get() {
         return jvm;
@@ -20,15 +20,11 @@ public final class DefaultJVMUpdater implements JVMUpdater {
         return addClasses(Arrays.asList(classes));
     }
 
-    public JVMUpdater addLoaders(ClassLoader... classLoaders) {
-        return addLoaders(Arrays.asList(classLoaders));
-    }
-
-    public JVMUpdater addLoaders(Iterable<? extends ClassLoader> classLoaders) {
-        return null;
-    }
-
     public JVMUpdater addClasses(Iterable<Class<?>> classes) {
-        return null;
+        for (Class<?> aClass : classes)
+            if (!aClass.isArray() // ignore arrays
+                    && aClass.getClassLoader() != null) // ignore classes loaded by bootstrap classloader
+                jvm.classManager.add(aClass);
+        return this;
     }
 }

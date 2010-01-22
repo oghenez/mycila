@@ -71,7 +71,7 @@
         <url>http://code.google.com/p/mycila/issues/list</url>
     </issueManagement>
 
-    <ciManagement />
+    <ciManagement/>
 
     <mailingLists>
         <mailingList>
@@ -192,6 +192,50 @@
                 </executions>
             </plugin>
             <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <configuration>
+                    <silent>true</silent>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" />
+                                <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
+                                    <zipfileset src="${project.build.directory}/dependency/google-collections-1.0.jar" />
+                                    <rule pattern="com.google.**" result="com.mycila.ujd.internal.com.google.@1" />
+                                    <keep pattern="com.mycila.ujd.**" />
+                                </jarjar>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>jarjar</groupId>
+                        <artifactId>jarjar</artifactId>
+                        <version>1.0</version>
+                        <scope>system</scope>
+                        <systemPath>${basedir}/lib/jarjar-1.0.jar</systemPath>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptors>
@@ -255,6 +299,14 @@
     -->
 
     <dependencies>
+        <!-- packaged with jar jar -->
+        <dependency>
+            <groupId>com.google.collections</groupId>
+            <artifactId>google-collections</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- test -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
