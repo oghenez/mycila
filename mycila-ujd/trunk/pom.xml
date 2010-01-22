@@ -156,6 +156,7 @@
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
                         <manifestEntries>
+                            <Premain-Class>com.mycila.ujd.Agent</Premain-Class>
                             <Agent-Class>com.mycila.ujd.Agent</Agent-Class>
                             <Can-Redefine-Classes>false</Can-Redefine-Classes>
                             <Can-Retransform-Classes>false</Can-Retransform-Classes>
