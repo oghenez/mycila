@@ -37,7 +37,7 @@ import java.util.ServiceConfigurationError;
 public final class ServiceClassLoader<S> implements Iterable<Class<S>> {
 
     private static final String PREFIX = "META-INF/services/";
-    private Class<S> service;
+    private Class<? super S> service;
     private ClassLoader loader;
     private LinkedHashMap<String, Class<S>> providers = new LinkedHashMap<String, Class<S>>();
     private LazyIterator lookupIterator;
@@ -47,7 +47,7 @@ public final class ServiceClassLoader<S> implements Iterable<Class<S>> {
         lookupIterator = new LazyIterator(service, loader);
     }
 
-    private ServiceClassLoader(Class<S> svc, ClassLoader cl) {
+    private ServiceClassLoader(Class<? super S> svc, ClassLoader cl) {
         service = svc;
         loader = cl;
         reload();
@@ -112,13 +112,13 @@ public final class ServiceClassLoader<S> implements Iterable<Class<S>> {
     }
 
     private class LazyIterator implements Iterator<Class<S>> {
-        Class<S> service;
+        Class<? super S> service;
         ClassLoader loader;
         Enumeration<URL> configs = null;
         Iterator<String> pending = null;
         String nextName = null;
 
-        private LazyIterator(Class<S> service, ClassLoader loader) {
+        private LazyIterator(Class<? super S> service, ClassLoader loader) {
             this.service = service;
             this.loader = loader;
         }
@@ -195,7 +195,7 @@ public final class ServiceClassLoader<S> implements Iterable<Class<S>> {
         };
     }
 
-    public static <S> ServiceClassLoader<S> load(Class<S> service, ClassLoader loader) {
+    public static <S> ServiceClassLoader<S> load(Class<? super S> service, ClassLoader loader) {
         return new ServiceClassLoader<S>(service, loader);
     }
 

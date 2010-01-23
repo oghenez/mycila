@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mycila.guice;
+package com.mycila.guice.loader;
 
 import com.google.inject.Inject;
 import com.google.inject.Key;
@@ -37,7 +37,7 @@ public final class ServiceLoaderProvider<T> implements Provider<T[]> {
 
     Key<? extends ClassLoader> classLoaderKey;
 
-    public ServiceLoaderProvider(Class<T> type) {
+    private ServiceLoaderProvider(Class<T> type) {
         this.type = type;
     }
 
@@ -63,8 +63,8 @@ public final class ServiceLoaderProvider<T> implements Provider<T[]> {
     public T[] get() {
         List<T> instances = new ArrayList<T>();
         ServiceClassLoader<T> loader = classLoaderKey == null ?
-                ServiceClassLoader.load(type, Thread.currentThread().getContextClassLoader()) :
-                ServiceClassLoader.load(type, injector.getInstance(classLoaderKey));
+                ServiceClassLoader.<T>load(type, Thread.currentThread().getContextClassLoader()) :
+                ServiceClassLoader.<T>load(type, injector.getInstance(classLoaderKey));
         for (Class<T> clazz : loader)
             instances.add(injector.getInstance(clazz));
         return instances.toArray((T[]) Array.newInstance(type, instances.size()));
