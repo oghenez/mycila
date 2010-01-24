@@ -76,4 +76,12 @@ binder.bind(AgentPlugin[].class)
 
 This binding creates in a cached scope for 20 seconds a list of AgentPlugin instances on the classpath, loaded by the JDK ServiceLoader (META-INF/services/...). When loaded, each service will be injected with its dependencies.
 
+*or*
+
+{{{
+install(ServiceLoaderModule.withClassLoader(ClassLoader.class).of(AgentPlugin.class));
+}}}
+
+In this case. the module creates a binding of key `Set<AgentPlugin>` containing all loaded and injected instances from the META-INF/services definitions.
+
 `withClassLoader` is optional and takes as parameter the KEY of the binding where to get the classloader. In my case, i have a binding of type ClassLoader which points to the ClassLaoder instance i want to use to discover the services.
