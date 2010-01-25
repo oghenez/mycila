@@ -1,4 +1,4 @@
-package com.mycila.ujd;
+package com.mycila.ujd.agent;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
