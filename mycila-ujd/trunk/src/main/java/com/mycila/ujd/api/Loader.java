@@ -9,4 +9,5 @@ public interface Loader {
     Iterable<? extends Loader> getChilds();
     Iterable<? extends Container> getContainers();
     Iterable<? extends LoadedClass> getClasses();
+    ClassLoader get();
 }

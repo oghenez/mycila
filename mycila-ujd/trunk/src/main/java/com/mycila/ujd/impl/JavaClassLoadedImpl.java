@@ -9,19 +9,39 @@ import com.mycila.ujd.api.Loader;
  */
 class JavaClassLoadedImpl<T> implements JavaClass<T>, LoadedClass {
 
-    private final Class<T> theClass;
-    private final LoaderImpl loader;
+    protected final Class<T> theClass;
+    protected final JVMImpl jvm;
+    private final int hashCode;
 
-    JavaClassLoadedImpl(Class<T> theClass) {
+    JavaClassLoadedImpl(JVMImpl jvm, Class<T> theClass) {
+        this.jvm = jvm;
         this.theClass = theClass;
-        this.loader = new LoaderImpl(theClass.getClassLoader());
+        this.hashCode = 31 * theClass.hashCode() + theClass.getClassLoader().hashCode();
     }
 
-    public Loader getLoader() {
-        return null;
+    public final Loader getLoader() {
+        return jvm.loaderRegistry.get(this);
     }
 
-    public Class<T> get() {
+    public final Class<T> get() {
         return theClass;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JavaClassLoadedImpl that = (JavaClassLoadedImpl) o;
+        return get().equals(that.get()) && get().getClassLoader().equals(that.get().getClassLoader());
+    }
+
+    @Override
+    public final int hashCode() {
+        return hashCode;
+    }
+
+    @Override
+    public String toString() {
+        return get().getName() + "@" + Integer.toHexString(hashCode);
     }
 }

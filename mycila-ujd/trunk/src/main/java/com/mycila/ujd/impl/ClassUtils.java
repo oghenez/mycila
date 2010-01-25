@@ -12,7 +12,7 @@ final class ClassUtils {
 
     static boolean isGeneratedClass(Class<?> aClass) {
         return Proxy.isProxyClass(aClass)
-                || aClass.getClassLoader().getResource(ClassUtils.getPath(aClass)) == null;
+                || (aClass.getClassLoader() != null
+                && aClass.getClassLoader().getResource(ClassUtils.getPath(aClass)) == null);
     }
-
 }
