@@ -1,9 +1,11 @@
 package com.mycila.ujd.api;
 
+import java.net.URL;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface Container {
-    Location getLocation();
+    URL getURL();
     Iterable<? extends ContainedClass> getClasses();
 }

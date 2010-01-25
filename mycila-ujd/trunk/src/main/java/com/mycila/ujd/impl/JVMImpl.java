@@ -1,11 +1,13 @@
 package com.mycila.ujd.impl;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.mycila.ujd.api.ContainedClass;
 import com.mycila.ujd.api.Container;
 import com.mycila.ujd.api.JVM;
+import com.mycila.ujd.api.JavaClass;
 import com.mycila.ujd.api.LoadedClass;
 import com.mycila.ujd.api.Loader;
 
@@ -16,10 +18,16 @@ import java.util.Iterator;
  */
 final class JVMImpl implements JVM {
 
-    final JavaClassManager classManager = new JavaClassManager();
+    final JavaClassRegistry classRegistry = new JavaClassRegistry(this);
+    final LoaderRegistry loaderRegistry = new LoaderRegistry(this);
+    final ContainerRegistry containerRegistry = new ContainerRegistry();
+
+    public <T extends JavaClass<?>> Iterable<T> getClasses(Predicate<? super JavaClass<?>> predicate) {
+        return Iterables.<T>filter((Iterable<T>) classRegistry.getJavaClasses(), predicate);
+    }
 
     public Iterable<? extends LoadedClass> getLoadedClasses() {
-        return Iterables.filter(classManager.getJavaClasses(), LoadedClass.class);
+        return Iterables.filter(classRegistry.getJavaClasses(), LoadedClass.class);
     }
 
     public Iterable<? extends Loader> getLoaders() {

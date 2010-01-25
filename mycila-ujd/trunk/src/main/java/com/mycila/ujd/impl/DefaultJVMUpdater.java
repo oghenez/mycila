@@ -24,7 +24,7 @@ public final class DefaultJVMUpdater implements JVMUpdater {
         for (Class<?> aClass : classes)
             if (!aClass.isArray() // ignore arrays
                     && aClass.getClassLoader() != null) // ignore classes loaded by bootstrap classloader
-                jvm.classManager.add(aClass);
+                jvm.classRegistry.add(aClass);
         return this;
     }
 }
