@@ -7,5 +7,6 @@ import java.net.URL;
  */
 public interface Container {
     URL getURL();
+
     Iterable<? extends ContainedClass> getClasses();
 }

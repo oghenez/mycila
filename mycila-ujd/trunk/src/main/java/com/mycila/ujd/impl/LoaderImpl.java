@@ -4,7 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.mycila.ujd.api.Container;
-import com.mycila.ujd.api.LoadedClass;
+import com.mycila.ujd.api.JavaClass;
 import com.mycila.ujd.api.Loader;
 
 import java.net.URL;
@@ -52,9 +52,9 @@ final class LoaderImpl implements Loader {
                 }) : Collections.<Container>emptyList();
     }
 
-    public Iterable<? extends LoadedClass> getClasses() {
-        return Iterables.filter(jvm.getLoadedClasses(), new Predicate<LoadedClass>() {
-            public boolean apply(LoadedClass input) {
+    public Iterable<? extends JavaClass<?>> getClasses() {
+        return Iterables.filter(jvm.getClasses(), new Predicate<JavaClass<?>>() {
+            public boolean apply(JavaClass<?> input) {
                 return input.getLoader() == LoaderImpl.this;
             }
         });

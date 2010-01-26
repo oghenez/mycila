@@ -5,6 +5,8 @@ package com.mycila.ujd.api;
  */
 public interface JVMUpdater {
     JVM get();
+
     JVMUpdater addClasses(Class<?>... classes);
+
     JVMUpdater addClasses(Iterable<Class<?>> classes);
 }
