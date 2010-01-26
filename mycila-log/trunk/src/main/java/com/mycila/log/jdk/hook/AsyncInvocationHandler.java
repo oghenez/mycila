@@ -30,7 +30,6 @@ public final class AsyncInvocationHandler<T extends Handler> extends MycilaInvoc
     private static final AtomicBoolean running = new AtomicBoolean(true);
     private static final BlockingQueue<Runnable> records = new LinkedBlockingQueue<Runnable>();
     private static final Thread logger = new Thread(new Runnable() {
-        @Override
         public void run() {
             while (running.get() && !Thread.currentThread().isInterrupted()) {
                 try {
