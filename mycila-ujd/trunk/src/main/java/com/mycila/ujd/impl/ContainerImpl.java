@@ -5,6 +5,7 @@ import com.mycila.ujd.api.Container;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
@@ -62,21 +63,30 @@ final class ContainerImpl implements Container {
                     break;
                 }
                 case JAR_LOCAL: {
+                    JarFile jarFile = null;
                     try {
-                        add(new JarFile(new File(url.toURI())));
+                        jarFile = new JarFile(new File(url.toURI()));
+                        add(jarFile);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e.getMessage(), e);
+                    } finally {
+                        if (jarFile != null)
+                            try {
+                                jarFile.close();
+                            } catch (IOException ignored) {
+                            }
+                    }
+                    break;
+                }
+                case JAR_REMOTE: {
+                    try {
+                        JarFile jarFile = ((JarURLConnection) new URL("jar", "", url + "!/").openConnection()).getJarFile();
+                        add(jarFile);
                     } catch (Exception e) {
                         throw new RuntimeException(e.getMessage(), e);
                     }
                     break;
                 }
-                /*case JAR_REMOTE: {
-                    try {
-                        add(((JarURLConnection) url.openConnection()).getJarFile());
-                    } catch (Exception e) {
-                        throw new RuntimeException(e.getMessage(), e);
-                    }
-                    break;
-                }*/
             }
         }
         return containedClasses;
@@ -89,7 +99,6 @@ final class ContainerImpl implements Container {
             if (entry.endsWith(".class"))
                 containedClasses.add(new ContainedClassImpl(this, entry));
         }
-        jarFile.close();
     }
 
     @Override

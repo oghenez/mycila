@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 final class JavaClassRegistry {
 
-    private final ConcurrentHashMap<Class<?>, JavaClassLoadedImpl<?>> classes = new ConcurrentHashMap<Class<?>, JavaClassLoadedImpl<?>>();
+    private final ConcurrentHashMap<Class<?>, JavaClassImpl<?>> classes = new ConcurrentHashMap<Class<?>, JavaClassImpl<?>>();
     private final JVMImpl jvm;
 
     JavaClassRegistry(JVMImpl jvm) {
@@ -17,7 +17,7 @@ final class JavaClassRegistry {
     }
 
     <T> JavaClass<T> add(Class<T> aClass) {
-        JavaClassLoadedImpl<?> jc = classes.get(aClass);
+        JavaClassImpl<?> jc = classes.get(aClass);
         if (jc == null)
             classes.put(aClass, jc = create(aClass));
         return (JavaClass<T>) jc;
@@ -27,10 +27,10 @@ final class JavaClassRegistry {
         return classes.values();
     }
 
-    private <T> JavaClassLoadedImpl<T> create(Class<T> aClass) {
+    private <T> JavaClassImpl<T> create(Class<T> aClass) {
         return ClassUtils.isGeneratedClass(aClass) ?
-                new JavaClassLoadedImpl<T>(jvm, aClass) :
-                new JavaClassContainedLoadedImpl<T>(jvm, aClass);
+                new JavaClassImpl<T>(jvm, aClass) :
+                new ContainedJavaClassImpl<T>(jvm, aClass);
     }
-    
+
 }

@@ -19,7 +19,7 @@ public enum ContainerType {
         if ("file".equals(url.getProtocol()))
             return JAR_LOCAL;
         try {
-            if (url.openConnection() instanceof JarURLConnection)
+            if (new URL("jar", "", url + "!/").openConnection() instanceof JarURLConnection)
                 return JAR_REMOTE;
         } catch (IOException ignored) {
         }

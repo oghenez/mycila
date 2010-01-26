@@ -7,7 +7,10 @@ import java.net.URL;
  */
 public interface ContainedClass {
     Container getContainer();
+
     String getClassName();
+
     String getPath();
+
     URL getURL();
 }

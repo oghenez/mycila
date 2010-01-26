@@ -8,7 +8,6 @@ import com.mycila.ujd.api.ContainedClass;
 import com.mycila.ujd.api.Container;
 import com.mycila.ujd.api.JVM;
 import com.mycila.ujd.api.JavaClass;
-import com.mycila.ujd.api.LoadedClass;
 import com.mycila.ujd.api.Loader;
 
 import java.util.Iterator;
@@ -22,21 +21,21 @@ final class JVMImpl implements JVM {
     final LoaderRegistry loaderRegistry = new LoaderRegistry(this);
     final ContainerRegistry containerRegistry = new ContainerRegistry();
 
-    public <T extends JavaClass<?>> Iterable<T> getClasses(Predicate<? super JavaClass<?>> predicate) {
-        return Iterables.<T>filter((Iterable<T>) classRegistry.getJavaClasses(), predicate);
+    public Iterable<? extends JavaClass<?>> getClasses() {
+        return classRegistry.getJavaClasses();
     }
 
-    public Iterable<? extends LoadedClass> getLoadedClasses() {
-        return Iterables.filter(classRegistry.getJavaClasses(), LoadedClass.class);
+    public <T extends JavaClass<?>> Iterable<T> getClasses(Predicate<? super T> predicate) {
+        return Iterables.<T>filter((Iterable<T>) getClasses(), predicate);
     }
 
     public Iterable<? extends Loader> getLoaders() {
         return new Iterable<Loader>() {
             public Iterator<Loader> iterator() {
                 return new MemoizingIterator<Loader>(Iterators.transform(
-                        getLoadedClasses().iterator(),
-                        new Function<LoadedClass, Loader>() {
-                            public Loader apply(LoadedClass from) {
+                        getClasses().iterator(),
+                        new Function<JavaClass<?>, Loader>() {
+                            public Loader apply(JavaClass<?> from) {
                                 return from.getLoader();
                             }
                         }));

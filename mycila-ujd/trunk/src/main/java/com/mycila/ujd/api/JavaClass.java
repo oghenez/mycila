@@ -5,4 +5,6 @@ package com.mycila.ujd.api;
  */
 public interface JavaClass<T> {
     Class<T> get();
+
+    Loader getLoader();
 }
