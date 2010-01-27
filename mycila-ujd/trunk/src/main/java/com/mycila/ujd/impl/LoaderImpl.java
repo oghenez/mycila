@@ -35,12 +35,10 @@ final class LoaderImpl implements Loader {
 
     private final ClassLoader classLoader;
     private final JVMImpl jvm;
-    private final int hashCode;
 
     LoaderImpl(JVMImpl jvm, ClassLoader classLoader) {
         this.jvm = jvm;
         this.classLoader = classLoader;
-        this.hashCode = 31 * classLoader.hashCode() + classLoader.getClass().hashCode();
     }
 
     public Iterable<? extends Loader> getChilds() {
@@ -52,7 +50,7 @@ final class LoaderImpl implements Loader {
     }
 
     public String getName() {
-        return classLoader.toString();
+        return classLoader.getClass().getName() + "@" + Integer.toHexString(classLoader.hashCode());
     }
 
     public Loader getParent() {
@@ -90,7 +88,7 @@ final class LoaderImpl implements Loader {
 
     @Override
     public int hashCode() {
-        return hashCode;
+        return classLoader.hashCode();
     }
 
     @Override

@@ -152,7 +152,7 @@
                     <archive>
                         <index>true</index>
                         <manifest>
-                            <mainClass>com.mycila.ujd.MycilaUJD</mainClass>                            
+                            <mainClass>com.mycila.ujd.MycilaUJD</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
@@ -213,11 +213,11 @@
                         <phase>package</phase>
                         <configuration>
                             <tasks>
-                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" />
+                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"/>
                                 <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
-                                    <zipfileset src="${project.build.directory}/dependency/google-collections-1.0.jar" />
-                                    <rule pattern="com.google.**" result="com.mycila.ujd.internal.com.google.@1" />
-                                    <keep pattern="com.mycila.ujd.**" />
+                                    <zipfileset src="${project.build.directory}/dependency/google-collections-1.0.jar"/>
+                                    <rule pattern="com.google.**" result="com.mycila.ujd.internal.com.google.@1"/>
+                                    <keep pattern="com.mycila.ujd.**"/>
                                 </jarjar>
                             </tasks>
                         </configuration>
@@ -307,6 +307,12 @@
             <version>1.0</version>
             <scope>provided</scope>
         </dependency>
+        <!--<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>3.0.0.RELEASE</version>
+            <scope>provided</scope>
+        </dependency>-->
         <!-- test -->
         <dependency>
             <groupId>junit</groupId>

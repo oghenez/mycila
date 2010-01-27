@@ -24,7 +24,7 @@ import java.net.URL;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public enum ContainerType {
+enum ContainerType {
     DIR, JAR_LOCAL, JAR_REMOTE, UNKNOWN;
 
     public static ContainerType from(URL url) {
