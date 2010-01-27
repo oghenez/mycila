@@ -26,12 +26,10 @@ class JavaClassImpl<T> implements JavaClass<T> {
 
     protected final Class<T> theClass;
     protected final JVMImpl jvm;
-    private final int hashCode;
 
     JavaClassImpl(JVMImpl jvm, Class<T> theClass) {
         this.jvm = jvm;
         this.theClass = theClass;
-        this.hashCode = 31 * theClass.hashCode() + theClass.getClassLoader().hashCode();
     }
 
     public final Loader getLoader() {
@@ -47,16 +45,16 @@ class JavaClassImpl<T> implements JavaClass<T> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         JavaClassImpl that = (JavaClassImpl) o;
-        return get().equals(that.get()) && get().getClassLoader().equals(that.get().getClassLoader());
+        return theClass.equals(that.theClass) && theClass.getClassLoader().equals(that.theClass.getClassLoader());
     }
 
     @Override
     public final int hashCode() {
-        return hashCode;
+        return 31 * theClass.hashCode() + theClass.getClassLoader().hashCode();
     }
 
     @Override
     public String toString() {
-        return get().getName() + "@" + Integer.toHexString(hashCode);
+        return theClass.getName() + "@" + Integer.toHexString(hashCode());
     }
 }

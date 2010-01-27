@@ -63,7 +63,7 @@ final class ContainedClassImpl implements ContainedClass {
 
     @Override
     public int hashCode() {
-        return className != null ? className.hashCode() : 0;
+        return className.hashCode();
     }
 
     @Override
