@@ -18,6 +18,7 @@ package com.mycila.event.spi;
 
 import com.mycila.event.api.Dispatcher;
 import com.mycila.event.api.ErrorHandler;
+import com.mycila.event.api.ErrorHandlers;
 
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
@@ -33,10 +34,22 @@ public final class Dispatchers {
     private Dispatchers() {
     }
 
+    /* custom */
+
+    public static Dispatcher custom(Executor publishExecutor,
+                                    Executor subscriberExecutor) {
+        return custom(ErrorHandlers.rethrow(), publishExecutor, subscriberExecutor);
+    }
+
     public static Dispatcher custom(ErrorHandler errorHandler,
                                     Executor publishExecutor,
                                     Executor subscriberExecutor) {
         return new DefaultDispatcher(errorHandler, publishExecutor, subscriberExecutor);
+    }
+
+    public static Dispatcher custom(ExecutorService publishExecutor,
+                                    ExecutorService subscriberExecutor) {
+        return custom(ErrorHandlers.rethrow(), publishExecutor, subscriberExecutor);
     }
 
     public static Dispatcher custom(ErrorHandler errorHandler,
@@ -51,16 +64,38 @@ public final class Dispatchers {
         };
     }
 
+    /* synchronousSafe */
+
+    public static Dispatcher synchronousSafe(long blockingTimeout, TimeUnit unit) {
+        return synchronousSafe(ErrorHandlers.rethrow(), blockingTimeout, unit);
+    }
+
     public static Dispatcher synchronousSafe(ErrorHandler errorHandler, long blockingTimeout, TimeUnit unit) {
         return new DefaultDispatcher(errorHandler, Executors.blocking(blockingTimeout, unit), Executors.immediate());
+    }
+
+    public static Dispatcher synchronousSafe() {
+        return synchronousSafe(ErrorHandlers.rethrow());
     }
 
     public static Dispatcher synchronousSafe(ErrorHandler errorHandler) {
         return new DefaultDispatcher(errorHandler, Executors.blocking(), Executors.immediate());
     }
 
+    /* synchronousUnsafe */
+
+    public static Dispatcher synchronousUnsafe() {
+        return asynchronousUnsafe(ErrorHandlers.rethrow());
+    }
+
     public static Dispatcher synchronousUnsafe(ErrorHandler errorHandler) {
         return new DefaultDispatcher(errorHandler, Executors.immediate(), Executors.immediate());
+    }
+
+    /* asynchronousSafe */
+
+    public static Dispatcher asynchronousSafe() {
+        return asynchronousSafe(ErrorHandlers.rethrow());
     }
 
     public static Dispatcher asynchronousSafe(ErrorHandler errorHandler) {
@@ -74,8 +109,18 @@ public final class Dispatchers {
         };
     }
 
+    /* asynchronousUnsafe */
+
+    public static Dispatcher asynchronousUnsafe() {
+        return asynchronousUnsafe(ErrorHandlers.rethrow());
+    }
+
     public static Dispatcher asynchronousUnsafe(ErrorHandler errorHandler) {
         return asynchronousUnsafe(Runtime.getRuntime().availableProcessors() * 4, errorHandler);
+    }
+
+    public static Dispatcher asynchronousUnsafe(int corePoolSize) {
+        return asynchronousUnsafe(corePoolSize, ErrorHandlers.rethrow());
     }
 
     public static Dispatcher asynchronousUnsafe(int corePoolSize, ErrorHandler errorHandler) {
@@ -90,8 +135,18 @@ public final class Dispatchers {
         };
     }
 
+    /* broadcastOrdered */
+
+    public static Dispatcher broadcastOrdered() {
+        return broadcastOrdered(ErrorHandlers.rethrow());
+    }
+
     public static Dispatcher broadcastOrdered(ErrorHandler errorHandler) {
         return broadcastOrdered(Runtime.getRuntime().availableProcessors() * 4, errorHandler);
+    }
+
+    public static Dispatcher broadcastOrdered(int corePoolSize) {
+        return broadcastOrdered(corePoolSize, ErrorHandlers.rethrow());
     }
 
     public static Dispatcher broadcastOrdered(int corePoolSize, ErrorHandler errorHandler) {
@@ -119,22 +174,6 @@ public final class Dispatchers {
             public void close() {
                 publishingExecutor.shutdown();
                 subscriberExecutor.shutdown();
-            }
-        };
-    }
-
-    public static Dispatcher broadcastUnordered(ErrorHandler errorHandler) {
-        return broadcastUnordered(Runtime.getRuntime().availableProcessors() * 4, errorHandler);
-    }
-
-    public static Dispatcher broadcastUnordered(int corePoolSize, ErrorHandler errorHandler) {
-        final ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(
-                corePoolSize,
-                new DefaultThreadFactory("BroadcastUnordered", "dispatcher", false));
-        return new DefaultDispatcher(errorHandler, executor, executor) {
-            @Override
-            public void close() {
-                executor.shutdown();
             }
         };
     }
@@ -169,4 +208,32 @@ public final class Dispatchers {
         }
 
     }
+
+    /* broadcastUnordered */
+
+
+    public static Dispatcher broadcastUnordered() {
+        return broadcastUnordered(ErrorHandlers.rethrow());
+    }
+
+    public static Dispatcher broadcastUnordered(ErrorHandler errorHandler) {
+        return broadcastUnordered(Runtime.getRuntime().availableProcessors() * 4, errorHandler);
+    }
+
+    public static Dispatcher broadcastUnordered(int corePoolSize) {
+        return broadcastUnordered(corePoolSize, ErrorHandlers.rethrow());
+    }
+
+    public static Dispatcher broadcastUnordered(int corePoolSize, ErrorHandler errorHandler) {
+        final ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(
+                corePoolSize,
+                new DefaultThreadFactory("BroadcastUnordered", "dispatcher", false));
+        return new DefaultDispatcher(errorHandler, executor, executor) {
+            @Override
+            public void close() {
+                executor.shutdown();
+            }
+        };
+    }
+
 }

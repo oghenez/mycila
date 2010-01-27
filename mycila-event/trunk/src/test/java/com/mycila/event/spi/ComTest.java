@@ -56,8 +56,7 @@ public final class ComTest {
 
         final CountDownLatch finished = new CountDownLatch(2);
 
-        MessageRequest<Integer> req1 = Messages.createRequest(new int[]{1, 2, 3, 4, 5});
-        req1.addListener(new MessageListener<Integer>() {
+        dispatcher.publish(topic("system/add"), Messages.<Integer>createRequest(new int[]{1, 2, 3, 4, 5}).addListener(new MessageListener<Integer>() {
             public void onResponse(Integer value) {
                 assertEquals(15, value.intValue());
                 finished.countDown();
@@ -67,8 +66,7 @@ public final class ComTest {
                 t.printStackTrace();
                 fail();
             }
-        });
-        dispatcher.publish(topic("system/add"), req1);
+        }));
 
         MessageRequest<Integer> req2 = Messages.createRequest("err");
         req2.addListener(new MessageListener<Integer>() {
