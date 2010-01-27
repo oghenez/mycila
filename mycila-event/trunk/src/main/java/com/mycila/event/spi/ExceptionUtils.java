@@ -28,12 +28,11 @@ final class ExceptionUtils {
     private ExceptionUtils() {
     }
 
-    static RuntimeException handle(Throwable e) {
-        if (e instanceof InvocationTargetException)
-            e = ((InvocationTargetException) e).getTargetException();
-        if (e instanceof Error) throw (Error) e;
-        if (e instanceof RuntimeException) return (RuntimeException) e;
-        return DispatcherException.wrap(e);
+    static RuntimeException handle(Throwable t) {
+        if (t instanceof InvocationTargetException) t = ((InvocationTargetException) t).getTargetException();
+        if (t instanceof DispatcherException) t = t.getCause();
+        if (t instanceof RuntimeException) return (RuntimeException) t;
+        return DispatcherException.wrap(t);
     }
 
 }

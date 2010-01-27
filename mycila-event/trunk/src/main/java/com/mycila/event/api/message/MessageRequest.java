@@ -23,7 +23,7 @@ import java.util.concurrent.TimeoutException;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface MessageRequest<R> {
+    void addListener(MessageListener<R> listener);
     R getResponse() throws InterruptedException;
-
     R getResponse(long timeout, TimeUnit unit) throws TimeoutException, InterruptedException;
 }

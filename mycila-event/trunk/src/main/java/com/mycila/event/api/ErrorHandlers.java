@@ -39,8 +39,8 @@ public final class ErrorHandlers {
         return new ErrorHandler() {
             public <E> void onError(Subscription<E> subscription, Event<E> event, Exception e) {
                 Throwable t = e;
-                if (e instanceof InvocationTargetException)
-                    t = ((InvocationTargetException) e).getTargetException();
+                if (t instanceof InvocationTargetException) t = ((InvocationTargetException) t).getTargetException();
+                if (t instanceof DispatcherException) t = t.getCause();
                 if (t instanceof Error) throw (Error) t;
                 if (t instanceof RuntimeException) throw (RuntimeException) t;
                 throw DispatcherException.wrap(t);
