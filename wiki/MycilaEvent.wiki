@@ -53,7 +53,7 @@ Snapshots are available at https://mc-repo.googlecode.com/svn/maven2/snapshots/c
 
 == Subscribing ==
 
-Subscribing is done with the Dispatcher.subscribe method, which take the topic to subscribe to, the event type and an instance of Subscriber<T>, where T is the event type. The method receives an Event object, containing the timestamp (in nanoseconds) and the source.
+Subscribing is done with the Dispatcher.subscribe method, which take the topic to subscribe to, the event type and an instance of `Subscriber<T>`, where T is the event type. The method receives an Event object, containing the timestamp (in nanoseconds) and the source.
 
 Example:
 
