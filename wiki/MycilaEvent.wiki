@@ -107,14 +107,15 @@ dispatcher.publish(topic("system/add"), adddRequest);
 To be able to repond to an answer on a topic, you simply have to subscribe, with the specific event type `MessageResponse`:
 
 {{{
-@Subscribe(topics = "system/add", eventType = MessageResponse.class)
-void addRequest(Event<MessageResponse<Integer>> event) {
-    int[] p = (int[]) event.getSource().getParameters()[0];
-    System.out.printl(event.getSource().getParameters()[1]); // output the second parameter
-    int c = 0;
-    for (int i : p) c += i;
-    event.getSource.reply(c);
-}
+dispatcher.subscribe(only("system/add"), MessageResponse.class, new Subscriber<MessageResponse<Integer>>() {
+    public void onEvent(Event<MessageResponse<Integer>> event) throws Exception {
+        int[] p = (int[]) event.getSource().getParameters()[0];
+        System.out.printl(event.getSource().getParameters()[1]); // output the second parameter
+        int c = 0;
+        for (int i : p) c += i;
+        event.getSource.reply(c);
+    }
+});
 }}}
 
 The event type is a special class which enable to take the parameters and reply a response. You could also respond by an exception if an error occured in the subscriber:
@@ -239,45 +240,7 @@ processor.process(c1);;
 
 === Publisher ===
 
-Publishers can be created using the annotation `@Publish`. 
-
-*Injected publishers*
-
-If the annotation is used in a concrete classes instantiated by you, you can use it like this:
-
-{{{
-@Reference(WEAK)
-class A {
-    Publisher<String> publisher;
-
-    @Subscribe(topics = "prog/events/a/**", eventType = String.class)
-    private void handle(Event<String> event) {
-        // do something
-    }
-
-    @Publish(topics = "prog/events/b/b1")
-    private void send(Publisher<String> publisher) {
-        this.publisher = publisher;
-    }
-
-    void sendAll() {
-        publisher.publish("hello for b1");
-        publisher.publish("hello for b2");
-    }
-}
-}}}
-
-In the example above, you will instanciate class A and the `@Publish` annotation mark a method *to be injected* with a `Publisher`. The AnnotationProcessor will create the publisher for you and inject it:
-
-{{{
-A a = new A();
-annotationProcessor.process(a);
-a.sendAll();
-}}}
-
-*Generated publishers*
-
-The best feature is that you can completely decouple your code by creating interface (or abstract classes) that will be automatically generated thanks to annotations.
+Publishers can be created using the annotation `@Publish`. You can completely decouple your code by creating interface (or abstract classes) that will be automatically generated thanks to annotations.
 
 In example:
 
@@ -298,8 +261,8 @@ These two classes defines publishing methods. B will publish two events (a strin
 To automatically generate their implementation, you can use, after having created a Dispacther:
 
 {{{
-B b = annotationProcessor.createPublisher(B.class);
-C c = annotationProcessor.createPublisher(C.class);
+B b = annotationProcessor.proxy(B.class);
+C c = annotationProcessor.proxy(C.class);
 
 b.send("Hello for a", 1);
 c.send("Hello for a1", 4);
@@ -321,6 +284,69 @@ abstract class MyCustomPublisher2 {
 myCustomPublisher2.send(1, "each", "string", "will", "be", "an", "event")
 }}}
 
+*Note*: you can then create abstract classes which act sa event managers: abstract methods annotated by @Publish will be generated and concrete methods annotated by @Subscribe will receive events.
+
+=== Requests ===
+
+Requesting methods acts the same as publishers. They differ in the annotation, which provides a way to timeout and wait for the response to come back. In example, suppose you have an additioner plugin exposing its computation method to the topic `system/add`. You can create a subscriber like this:
+
+{{{
+interface Requestor {
+    @Request(topic = "system/add", timeout = 1, unit = TimeUnit.SECONDS)
+    int addNumbers(int... p);
+}
+Dispatcher dispatcher = Dispatchers.synchronousSafe();
+AnnotationProcessor processor = AnnotationProcessors.create(dispatcher);
+Requestor req = processor.proxy(Requestor.class);
+assertEquals(15, req.addNumbers(1,2,3,4,5));
+}}}
+
+Given the nature of a method call, it is obvious that the call is synchronous and will wait either indefinitely for a response or only with the given time.
+
+=== Answering requests ===
+
+There is two way for answering requests: as we seen, we have to register a simple subscriber. It can be done like this:
+
+{{{
+static class DU {
+    @Subscribe(topics = "system/du", eventType = MessageResponse.class)
+    void duRequest(Event<MessageResponse<Integer>> event) {
+        String folder = (String) event.getSource().getParameters()[0];
+        System.out.println("du request on folder " + folder);
+        // call du -h <folder>
+        if ("notFound".equals(folder))
+            event.getSource().replyError(new FileNotFoundException("du did not found folder " + folder));
+        else
+            event.getSource().reply(40);
+    }
+}
+Dispatcher dispatcher = Dispatchers.synchronousSafe();
+AnnotationProcessor processor = AnnotationProcessors.create(dispatcher);
+DU du = new DU();
+processor.process(du);
+}}}
+
+Hopefully, there is a better way. The request sends as parameter a String, and the subscriber replies with an integer. So what if we can simply call a method ? This can be done like this:
+
+{{{
+static class DU {
+    @Answers(topics = "system/du")
+    int getSize(String folder) throws FileNotFoundException {
+        System.out.println("du request on folder " + folder);
+        // call du -h <folder>
+        if ("notFound".equals(folder))
+            throw new FileNotFoundException("du did not found folder " + folder);
+        return 40;
+    }
+}
+Dispatcher dispatcher = Dispatchers.synchronousSafe();
+AnnotationProcessor processor = AnnotationProcessors.create(dispatcher);
+DU du = new DU();
+processor.process(du);
+}}}
+
+The method output (or the exception) will then be used as the reply if an request is made to the topic `system/du`.
+
 == Event dispatching strategies ==
 
 There are several strategies regarding about how you want the order of events and the order of listeners be respected and whether or not you have multiple threads publishing events.
@@ -336,7 +362,7 @@ This strategy guarantees the order of listeners called and that only one thread 
 This behavior allows you to have stateful non thread-safe subscribers. When multiple threads are publishing, this strategy is slower.
 
 {{{
-Dispatcher dispatcher = Dispatchers.synchronousSafe(ErrorHandlers.rethrowErrorsAfterPublish());
+Dispatcher dispatcher = Dispatchers.synchronousSafe();
 }}}
 
 === Synchronous Unsafe Dispatching ===
@@ -350,7 +376,7 @@ This strategy guarantees the order of listeners called. The publish method only 
 Your subscribers need to be stateless and thread-safe. Multiple threads can publish at the same time.
 
 {{{
-Dispatcher dispatcher = Dispatchers.synchronousUnsafe(ErrorHandlers.rethrowErrorsAfterPublish());
+Dispatcher dispatcher = Dispatchers.synchronousUnsafe();
 }}}
 
 === Asynchronous Safe Dispatching ===
@@ -368,7 +394,7 @@ This strategy is useful when your publishers must execute as fast as possible, b
 Since this strategy uses an unbounded queue, be careful to have fast subscribers and to not publish events more than your subscribers can consume.
 
 {{{
-Dispatcher dispatcher = Dispatchers.asynchronousSafe(ErrorHandlers.rethrowErrorsAfterPublish());
+Dispatcher dispatcher = Dispatchers.asynchronousSafe();
 }}}
 
 === Asynchronous Unsafe Dispatching ===
@@ -387,7 +413,7 @@ Since this strategy uses an unbounded queue, be careful to have fast subscribers
 Your subscribers need to be stateless and thread-safe. Multiple threads can send events at the same time.
 
 {{{
-Dispatcher dispatcher = Dispatchers.asynchronousUnsafe(ErrorHandlers.rethrowErrorsImmediately());
+Dispatcher dispatcher = Dispatchers.asynchronousUnsafe();
 }}}
 
 === Broadcast Ordered Dispatching ===
@@ -406,7 +432,7 @@ Note that when a thread publishes an event, it is enqueued. A thread is used to 
 This guarantees that all subscribers will be called concurrently, but they will all receive the events in the same order.
 
 {{{
-Dispatcher dispatcher = Dispatchers.broadcastOrdered(ErrorHandlers.rethrowErrorsImmediately());
+Dispatcher dispatcher = Dispatchers.broadcastOrdered();
 }}}
 
 === Broadcast Unordered Dispatching ===
@@ -421,7 +447,7 @@ This type of dispatching is really useful when you don't care about any ordering
 Thus, subscribers taking a long time to execute don't affect publishing of other events to other subscribers.
 
 {{{
-Dispatcher dispatcher = Dispatchers.broadcastUnordered(ErrorHandlers.rethrowErrorsImmediately());
+Dispatcher dispatcher = Dispatchers.broadcastUnordered();
 }}}
 
 === Custom strategy ===
@@ -434,7 +460,7 @@ Dispatcher dispatcher = Dispatchers.custom(errorHandlerProvider, publishingExecu
 
 Executors are implementations of `java.util.concurrent.Executor`. The first one control the concurrency of the whole publishing process and the second one control the concurrency for calling a subscriber. The class `com.mycila.event.util.Executors` has two flavors that can help you for basic cases: 
  * `Executors.immediate()`: execute the runnable immediately
- * `Executors.blocking()`: idem, but blocks so that only one thread can execute a runnable at a time
+ * `Executors.blocking()`: idem, but blocks so that only one thread can execute a subscriber at a time
 
 === Summary and Statistics ===
 
@@ -465,10 +491,6 @@ These statistics are for a worst case meaning that:
 http://code.google.com/p/google-guice/
 
 Mycila Event can be used without any IOC. But thanks to the powerful annotation support and injection listeners of [http://code.google.com/p/google-guice/ Google Guice], this dependency injection library integrates very well with Mycila Event.
-
-{{{
-
-}}}
 
 *Binding generated publishers*
 
@@ -538,7 +560,7 @@ public final class MyImpl implements MyClass {
 }
 }}}
 
-When configuring Guice, simply put MycileEventModule likt this:
+When configuring Guice, simply put MycileEventModule like this:
 
 {{{
 Injector injector = Guice.createInjector(new MycilaEventGuiceModule(), new AbstractModule() {
