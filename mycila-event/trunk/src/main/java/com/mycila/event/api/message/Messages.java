@@ -64,8 +64,9 @@ public final class Messages {
             return parameter;
         }
 
-        public void addListener(MessageListener<R> listener) {
+        public MessageRequest<R> addListener(MessageListener<R> listener) {
             listeners.add(listener);
+            return this;
         }
 
         public R getResponse() throws InterruptedException {
