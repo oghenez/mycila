@@ -35,6 +35,10 @@ public final class Messages {
     private Messages() {
     }
 
+    public static <R> MessageRequest<R> createRequest() {
+        return new Message<R>();
+    }
+
     public static <R> MessageRequest<R> createRequest(Object parameter) {
         return new Message<R>(parameter);
     }
