@@ -49,6 +49,80 @@ http://repo2.maven.org/maven2/com/mycila/mycila-event/
 
 Snapshots are available at https://mc-repo.googlecode.com/svn/maven2/snapshots/com/mycila/mycila-guice/
 
+= Usage =
+
+== Subscribing ==
+
+Subscribing is done with the Dispatcher.subscribe method, which take the topic to subscribe to, the event type and an instance of Subscriber<T>, where T is the event type. The method receives an Event object, containing the timestamp (in nanoseconds) and the source.
+
+Example:
+
+{{{
+dispatcher.subscribe(only("prog/events/a").or(matching("prog/events/b/**")), String.class, new Subscriber<String>() {
+    public void onEvent(Event<String> event) throws Exception {
+        sequence.add(event.getSource());
+    }
+});
+}}}
+
+== Publishing ==
+
+Publishing is done by simply sending to a topic an event object.
+
+{{{
+dispatcher.publish(topic("prog/events/a"), "Hello for a");
+}}}
+
+== Synchronous requests ==
+
+An event system is asynchronous by default, but you sometimes need to wait for an answer before proceding. This is the request/response pattern that everyone know. You can create a request and wait for its response (or wait with a timeout). The request is created through `Messages.createRequest`, where you can pass request parameters. The you call MessageRequest.getResponse() to obtain the response.
+
+{{{
+MessageRequest<Integer> adddRequest = Messages.createRequest(new int[]{1, 2, 3, 4, 5}, "param2");
+dispatcher.publish(topic("system/add"), adddRequest);
+int sum = adddRequest.getResponse(1, TimeUnit.SECOND);
+}}}
+
+== Asynchronous requests ==
+
+You can also request in asynchronous mode by adding listeners, which will be triggered when the response will be received;
+
+{{{
+MessageRequest<Integer> adddRequest = Messages.createRequest(new int[]{1, 2, 3, 4, 5}, "param2");
+adddRequest.addListener(new MessageListener<Integer>() {
+    public void onResponse(Integer value) {
+        assertEquals(15, value.intValue());
+    }
+
+    public void onError(Throwable t) {
+        t.printStackTrace();
+        fail();
+    }
+});
+dispatcher.publish(topic("system/add"), adddRequest);
+}}}
+
+== Request answers ==
+
+To be able to repond to an answer on a topic, you simply have to subscribe, with the specific event type `MessageResponse`:
+
+{{{
+@Subscribe(topics = "system/add", eventType = MessageResponse.class)
+void addRequest(Event<MessageResponse<Integer>> event) {
+    int[] p = (int[]) event.getSource().getParameters()[0];
+    System.out.printl(event.getSource().getParameters()[1]); // output the second parameter
+    int c = 0;
+    for (int i : p) c += i;
+    event.getSource.reply(c);
+}
+}}}
+
+The event type is a special class which enable to take the parameters and reply a response. You could also respond by an exception if an error occured in the subscriber:
+
+{{{
+event.getSource().replyError(new ArithmeticException("Overflow !"));
+}}}
+
 = Features =
 
 == Topics and Event types ==
@@ -94,22 +168,19 @@ dispatcher.subscribe(matcher, String.class, pluginLoadedByAnotherSystem);
 
 When registering the plugin, a weak registration will be done so that if the plugin is unloaded or not used anymore, the subscription could be removed automatically.
 
+`@Reference` can also be put on methods, when used with annotations.
+
 == Exception handling ==
 
-By default, if a subscriber launches an exception, the exception is put in a list and an aggregate exception will be thrown when all subscribers will be processed. This behavior enables subscribers to be completely independent since the publishing won't be interrupted by a failing subscriber.
-
-You can change this default behavior by using your proper `ErrorHandler`. The class `ErrorHandlers` already has several methods to help you provide error handlers:
+By default, if a subscriber launches an exception, the exception is rethrown immediately, in the thread firering the event. You can change this behavior by providing your own `ErrorHandler`, or by using existing one:
 
  * `ErrorHandlers.ignoreErrors()`: ignore all exceptions thrown by subscribers
- * `ErrorHandlers.rethrowErrorsAfterPublish()`: the default behavior: when an event is published, stack all errors and throw an aggregated exception at the end if some errors occured.
- * `ErrorHandlers.rethrowErrorsImmediately()`: the behavior if error handlers weren't be there: if a publisher fail, the publishing is stopped and its exception thrown.
+ * `ErrorHandlers.rethrow()`: the default behavior.
 
-`ErrorHandlers` also has other methods to help you build your own `ErrorHandler` class and its associated provider `ErrorHandlerProvider`. At each publishing, `ErrorHandlerProvider.get()` is called to obtain a new `ErrorHandler`. Note that `ErrorHandlerProvider.get()` can act as a singleton: you only need to wrap your `ErrorHandlerProvider` or `ErrorHandler` by using `ErrorHandlers.singleton(...)` and the same instance will be reused each time.
-
-To create an Dispatcher with the appropriate event handler, you just have to set the `ErrorHandlerProvider` instance when creating it:
+To create an Dispatcher with the appropriate event handler, you just have to set the `ErrorHandler` instance when creating it:
 
 {{{
-Dispatcher dispatcher = Dispatchers.synchronousSafe(ErrorHandlers.ignoreErrorsh());
+Dispatcher dispatcher = Dispatchers.synchronousSafe(ErrorHandlers.ignoreErrors());
 }}}
 
 == Topic Matchers ==
