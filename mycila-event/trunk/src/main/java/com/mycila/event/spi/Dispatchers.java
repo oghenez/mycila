@@ -24,6 +24,9 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -99,8 +102,16 @@ public final class Dispatchers {
     }
 
     public static Dispatcher asynchronousSafe(ErrorHandler errorHandler) {
-        final ExecutorService executor = java.util.concurrent.Executors.newSingleThreadExecutor(
-                new DefaultThreadFactory("AsynchronousSafe", "dispatcher", false));
+        final ExecutorService executor = new ThreadPoolExecutor(
+                1, 1,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(),
+                new DefaultThreadFactory("AsynchronousSafe", "dispatcher", false),
+                new RejectedExecutionHandler() {
+                    public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+                        r.run();
+                    }
+                });
         return new DefaultDispatcher(errorHandler, executor, Executors.immediate()) {
             @Override
             public void close() {
@@ -124,9 +135,16 @@ public final class Dispatchers {
     }
 
     public static Dispatcher asynchronousUnsafe(int corePoolSize, ErrorHandler errorHandler) {
-        final ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(
-                corePoolSize,
-                new DefaultThreadFactory("AsynchronousUnsafe", "dispatcher", false));
+        final ExecutorService executor = new ThreadPoolExecutor(
+                corePoolSize, corePoolSize,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(),
+                new DefaultThreadFactory("AsynchronousSafe", "dispatcher", false),
+                new RejectedExecutionHandler() {
+                    public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+                        r.run();
+                    }
+                });
         return new DefaultDispatcher(errorHandler, executor, Executors.immediate()) {
             @Override
             public void close() {
@@ -150,11 +168,26 @@ public final class Dispatchers {
     }
 
     public static Dispatcher broadcastOrdered(int corePoolSize, ErrorHandler errorHandler) {
-        final ExecutorService publishingExecutor = java.util.concurrent.Executors.newSingleThreadExecutor(
-                new DefaultThreadFactory("BroadcastOrdered", "dispatcher", false));
-        final ExecutorService subscriberExecutor = java.util.concurrent.Executors.newFixedThreadPool(
-                corePoolSize,
-                new DefaultThreadFactory("BroadcastOrdered", "dispatcher", false));
+        final ExecutorService publishingExecutor = new ThreadPoolExecutor(
+                1, 1,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(),
+                new DefaultThreadFactory("BroadcastOrdered", "dispatcher", false),
+                new RejectedExecutionHandler() {
+                    public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+                        r.run();
+                    }
+                });
+        final ExecutorService subscriberExecutor = new ThreadPoolExecutor(
+                corePoolSize, corePoolSize,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(),
+                new DefaultThreadFactory("BroadcastOrdered", "dispatcher", false),
+                new RejectedExecutionHandler() {
+                    public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+                        r.run();
+                    }
+                });
         final SubscriberCompletionExecutor subscriberCompletionExecutor = new SubscriberCompletionExecutor(subscriberExecutor);
         return new DefaultDispatcher(errorHandler, new Executor() {
             public void execute(final Runnable command) {
@@ -225,9 +258,16 @@ public final class Dispatchers {
     }
 
     public static Dispatcher broadcastUnordered(int corePoolSize, ErrorHandler errorHandler) {
-        final ExecutorService executor = java.util.concurrent.Executors.newFixedThreadPool(
-                corePoolSize,
-                new DefaultThreadFactory("BroadcastUnordered", "dispatcher", false));
+        final ExecutorService executor = new ThreadPoolExecutor(
+                corePoolSize, corePoolSize,
+                0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>(),
+                new DefaultThreadFactory("BroadcastUnordered", "dispatcher", false),
+                new RejectedExecutionHandler() {
+                    public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+                        r.run();
+                    }
+                });
         return new DefaultDispatcher(errorHandler, executor, executor) {
             @Override
             public void close() {
