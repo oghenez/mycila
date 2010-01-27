@@ -25,6 +25,7 @@ import com.mycila.event.api.annotation.AnnotationProcessor;
 import com.mycila.event.api.annotation.Answers;
 import com.mycila.event.api.annotation.Request;
 import com.mycila.event.api.annotation.Subscribe;
+import com.mycila.event.api.message.MessageListener;
 import com.mycila.event.api.message.MessageRequest;
 import com.mycila.event.api.message.MessageResponse;
 import com.mycila.event.api.message.Messages;
@@ -33,6 +34,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.FileNotFoundException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static com.mycila.event.api.topic.Topics.*;
@@ -45,6 +47,44 @@ import static org.junit.Assert.*;
 public final class ComTest {
 
     static boolean throwExcepiton = false;
+
+    @Test
+    public void test_async_request() throws Exception {
+        Dispatcher dispatcher = Dispatchers.synchronousSafe(ErrorHandlers.rethrow());
+        AnnotationProcessor processor = AnnotationProcessors.create(dispatcher);
+        processor.proxy(DU.class);
+
+        final CountDownLatch finished = new CountDownLatch(2);
+
+        MessageRequest<Integer> req1 = Messages.createRequest(new int[]{1, 2, 3, 4, 5});
+        req1.addListener(new MessageListener<Integer>() {
+            public void onResponse(Integer value) {
+                assertEquals(15, value.intValue());
+                finished.countDown();
+            }
+
+            public void onError(Throwable t) {
+                t.printStackTrace();
+                fail();
+            }
+        });
+        dispatcher.publish(topic("system/add"), req1);
+
+        MessageRequest<Integer> req2 = Messages.createRequest("err");
+        req2.addListener(new MessageListener<Integer>() {
+            public void onResponse(Integer value) {
+                fail();
+            }
+
+            public void onError(Throwable t) {
+                t.printStackTrace();
+                assertTrue(t instanceof FileNotFoundException);
+                finished.countDown();
+            }
+        });
+        dispatcher.publish(topic("system/rm"), req2);
+        finished.await();
+    }
 
     @Test
     public void test_args() throws Exception {

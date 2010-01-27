@@ -20,6 +20,8 @@ import com.mycila.event.api.DispatcherException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -33,24 +35,33 @@ public final class Messages {
     private Messages() {
     }
 
+    public static <R> MessageRequest<R> createRequest(Object parameter) {
+        return new Message<R>(parameter);
+    }
+
     public static <R> MessageRequest<R> createRequest(Object... parameters) {
         return new Message<R>(parameters);
     }
 
     private static class Message<R> implements MessageRequest<R>, MessageResponse<R> {
 
+        private final Collection<MessageListener<R>> listeners = new CopyOnWriteArrayList<MessageListener<R>>();
         private final CountDownLatch answered = new CountDownLatch(1);
         private final AtomicBoolean replied = new AtomicBoolean(false);
         private final Object[] parameter;
-        private R reply;
-        private RuntimeException error;
+        private volatile R reply;
+        private volatile RuntimeException error;
 
-        private Message(Object[] parameter) {
+        private Message(Object... parameter) {
             this.parameter = parameter;
         }
 
         public Object[] getParameters() {
             return parameter;
+        }
+
+        public void addListener(MessageListener<R> listener) {
+            listeners.add(listener);
         }
 
         public R getResponse() throws InterruptedException {
@@ -65,23 +76,24 @@ public final class Messages {
         }
 
         public void reply(R reply) {
-            if (!replied.getAndSet(true)) {
+            if (replied.compareAndSet(false, true)) {
                 this.reply = reply;
                 answered.countDown();
+                for (MessageListener<R> listener : listeners)
+                    listener.onResponse(reply);
             } else throw new DispatcherException("Request has already been replied");
         }
 
         public void replyError(Exception error) {
-            if (!replied.getAndSet(true)) {
+            if (replied.compareAndSet(false, true)) {
                 Throwable t = error;
-                if (t instanceof InvocationTargetException)
-                    t = ((InvocationTargetException) error).getTargetException();
-                if (t instanceof Error) throw (Error) t;
+                if (t instanceof InvocationTargetException) t = ((InvocationTargetException) error).getTargetException();
+                if (t instanceof DispatcherException) t = t.getCause();
                 if (t instanceof RuntimeException) this.error = (RuntimeException) t;
-                else {
-                    this.error = DispatcherException.wrap(t);
-                }
+                else this.error = DispatcherException.wrap(t);
                 answered.countDown();
+                for (MessageListener<R> listener : listeners)
+                    listener.onError(t);
             } else throw new DispatcherException("Request has already been replied");
         }
 
