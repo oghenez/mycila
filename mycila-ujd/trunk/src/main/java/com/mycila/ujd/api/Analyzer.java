@@ -21,5 +21,22 @@ package com.mycila.ujd.api;
  */
 public interface Analyzer {
     JVM getJVM();
-    void close();
+
+    int getClassCount();
+
+    int getLoaderCount();
+
+    Iterable<String> getLoaderNames();
+
+    Iterable<? extends Container> getClassPath(String loaderName);
+
+    Iterable<? extends Container> getUsedClassPath(String loaderName);
+
+    Iterable<? extends Container> getUnusedClassPath(String loaderName);
+
+    Iterable<? extends ContainedClass> getClasses(String loaderName, String packagePrefix);
+
+    Iterable<? extends ContainedJavaClass<?>> getUsedClasses(String loaderName, String packagePrefix);
+
+    Iterable<? extends ContainedClass> getUnusedClasses(String loaderName, String packagePrefix);
 }

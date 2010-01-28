@@ -25,9 +25,9 @@ import com.mycila.ujd.api.Loader;
 class JavaClassImpl<T> implements JavaClass<T> {
 
     protected final Class<T> theClass;
-    protected final JVMImpl jvm;
+    protected final DefaultJVM jvm;
 
-    JavaClassImpl(JVMImpl jvm, Class<T> theClass) {
+    JavaClassImpl(DefaultJVM jvm, Class<T> theClass) {
         this.jvm = jvm;
         this.theClass = theClass;
     }
@@ -55,6 +55,6 @@ class JavaClassImpl<T> implements JavaClass<T> {
 
     @Override
     public String toString() {
-        return theClass.getName() + "@" + Integer.toHexString(hashCode());
+        return theClass.getName();
     }
 }

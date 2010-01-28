@@ -19,28 +19,79 @@ package com.mycila.ujd.impl;
 import com.mycila.ujd.api.JVM;
 import com.mycila.ujd.api.JVMUpdater;
 
-import java.util.Arrays;
+import java.lang.instrument.Instrumentation;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class DefaultJVMUpdater implements JVMUpdater {
 
-    private final JVMImpl jvm = new JVMImpl();
+    private final JVM jvm;
+    private final Instrumentation instrumentation;
+    private long updateInterval = 20;
+    private volatile Thread updater;
+    private CountDownLatch stopped;
+
+    public DefaultJVMUpdater(JVM jvm, Instrumentation instrumentation) {
+        this.instrumentation = instrumentation;
+        this.jvm = jvm;
+    }
+
+    public void update() {
+        jvm.addClasses(instrumentation.getAllLoadedClasses());
+    }
 
     public JVM get() {
         return jvm;
     }
 
-    public JVMUpdater addClasses(Class<?>... classes) {
-        return addClasses(Arrays.asList(classes));
+    public void stop() {
+        if (isRunning()) {
+            updater.interrupt();
+            updater = null;
+            stopped.countDown();
+        }
     }
 
-    public JVMUpdater addClasses(Iterable<Class<?>> classes) {
-        for (Class<?> aClass : classes)
-            if (!aClass.isArray() // ignore arrays
-                    && aClass.getClassLoader() != null) // ignore classes loaded by bootstrap classloader
-                jvm.classRegistry.add(aClass);
-        return this;
+    public void start() {
+        start(updateInterval);
+    }
+
+    public void start(final long updateInterval) {
+        if (!isRunning()) {
+            stopped = new CountDownLatch(1);
+            this.updateInterval = updateInterval;
+            updater = new Thread(getClass().getSimpleName() + "-Thread") {
+                @Override
+                public void run() {
+                    while (isRunning()
+                            && !Thread.currentThread().isInterrupted()) {
+                        try {
+                            update();
+                            Thread.sleep(updateInterval * 1000);
+                        } catch (Exception e) {
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                    updater = null;
+                    stopped.countDown();
+                }
+            };
+            updater.setDaemon(true);
+            updater.start();
+        } else throw new IllegalStateException("Already started !");
+    }
+
+    public long getUpdateInterval() {
+        return updateInterval;
+    }
+
+    public boolean isRunning() {
+        return updater != null;
+    }
+
+    public void await() throws InterruptedException {
+        if(isRunning()) stopped.await();
     }
 }

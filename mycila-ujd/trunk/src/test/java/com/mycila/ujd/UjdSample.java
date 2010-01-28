@@ -20,10 +20,10 @@ import com.google.common.base.Predicates;
 import com.mycila.ujd.api.ContainedClass;
 import com.mycila.ujd.api.ContainedJavaClass;
 import com.mycila.ujd.api.Container;
-import com.mycila.ujd.api.JVMUpdater;
+import com.mycila.ujd.api.JVM;
 import com.mycila.ujd.api.JavaClass;
 import com.mycila.ujd.api.Loader;
-import com.mycila.ujd.impl.DefaultJVMUpdater;
+import com.mycila.ujd.impl.DefaultJVM;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -44,17 +44,17 @@ final class UjdSample {
         Class<?> remote1 = cl.loadClass("org.apache.log4j.Level");
         Class<?> remote2 = cl.loadClass("com.mycila.ujd.api.Loader");
 
-        JVMUpdater updater = new DefaultJVMUpdater();
-        updater.addClasses(remote1, remote2);
-        for (JavaClass<?> loadedClass : updater.get().getClasses()) {
+        JVM jvm = new DefaultJVM();
+        jvm.addClasses(remote1, remote2);
+        for (JavaClass<?> loadedClass : jvm.getClasses()) {
             System.out.println(loadedClass);
             for (Container container : loadedClass.getLoader().getContainers())
                 for (ContainedClass aClass : container.getClasses())
                     System.out.println(aClass);
         }
 
-        updater.addClasses(UjdSample.class, Loader.class, Predicates.class);
-        for (ContainedJavaClass<?> loadedClass : updater.get().<ContainedJavaClass<?>>getClasses(Predicates.instanceOf(ContainedJavaClass.class))) {
+        jvm.addClasses(UjdSample.class, Loader.class, Predicates.class);
+        for (ContainedJavaClass<?> loadedClass : jvm.<ContainedJavaClass<?>>getClasses(Predicates.instanceOf(ContainedJavaClass.class))) {
             System.out.println(loadedClass);
             System.out.println(loadedClass.getLoader());
             System.out.println(loadedClass.getContainer());

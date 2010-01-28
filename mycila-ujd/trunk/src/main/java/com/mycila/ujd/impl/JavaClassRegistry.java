@@ -26,9 +26,9 @@ import java.util.concurrent.ConcurrentHashMap;
 final class JavaClassRegistry {
 
     private final ConcurrentHashMap<Class<?>, JavaClassImpl<?>> classes = new ConcurrentHashMap<Class<?>, JavaClassImpl<?>>();
-    private final JVMImpl jvm;
+    private final DefaultJVM jvm;
 
-    JavaClassRegistry(JVMImpl jvm) {
+    JavaClassRegistry(DefaultJVM jvm) {
         this.jvm = jvm;
     }
 

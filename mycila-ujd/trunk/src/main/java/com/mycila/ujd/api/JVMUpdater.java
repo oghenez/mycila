@@ -22,7 +22,17 @@ package com.mycila.ujd.api;
 public interface JVMUpdater {
     JVM get();
 
-    JVMUpdater addClasses(Class<?>... classes);
+    void update();
 
-    JVMUpdater addClasses(Iterable<Class<?>> classes);
+    void stop();
+
+    void start();
+
+    void start(long updateInterval);
+
+    long getUpdateInterval();
+
+    boolean isRunning();
+
+    void await() throws InterruptedException;
 }

@@ -27,9 +27,9 @@ import java.util.concurrent.ConcurrentHashMap;
 final class LoaderRegistry {
 
     private final ConcurrentHashMap<ClassLoader, LoaderImpl> loaders = new ConcurrentHashMap<ClassLoader, LoaderImpl>();
-    private final JVMImpl jvm;
+    private final DefaultJVM jvm;
 
-    LoaderRegistry(JVMImpl jvm) {
+    LoaderRegistry(DefaultJVM jvm) {
         this.jvm = jvm;
     }
 

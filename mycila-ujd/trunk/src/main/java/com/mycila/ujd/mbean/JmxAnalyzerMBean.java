@@ -20,5 +20,23 @@ package com.mycila.ujd.mbean;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface JmxAnalyzerMBean {
-    void close();
+
+    int getClassCount();
+
+    int getLoaderCount();
+
+    String getLoaderNames();
+
+    String getClasses(String loaderName, String packagePrefix);
+
+    String getUsedClasses(String loaderName, String packagePrefix);
+
+    String getUnusedClasses(String loaderName, String packagePrefix);
+
+    String getClassPath(String loaderName);
+
+    String getUsedClasspath(String loaderName);
+
+    String getUnusedClassPath(String loaderName);
+
 }
