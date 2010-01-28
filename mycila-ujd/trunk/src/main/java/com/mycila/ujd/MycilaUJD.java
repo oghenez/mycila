@@ -16,8 +16,14 @@
 
 package com.mycila.ujd;
 
+import com.mycila.ujd.api.Analyzer;
+import com.mycila.ujd.api.JVM;
+import com.mycila.ujd.api.JVMUpdater;
+import com.mycila.ujd.impl.DefaultJVM;
+import com.mycila.ujd.impl.DefaultJVMUpdater;
 import com.mycila.ujd.impl.MycilaUJDAnalyzer;
 import com.mycila.ujd.mbean.JmxAnalyzer;
+import com.mycila.ujd.mbean.JmxUpdater;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -35,22 +41,36 @@ import java.util.jar.JarFile;
  */
 public final class MycilaUJD {
 
-    private static MycilaUJDAnalyzer mycilaUJDAnalyzer;
+    private static JVMUpdater updater;
 
     public static void premain(String agentArgs, Instrumentation instrumentation) throws Exception {
         agentmain(agentArgs, instrumentation);
     }
 
     public static void agentmain(String agentArgs, Instrumentation instrumentation) throws Exception {
-        mycilaUJDAnalyzer = new MycilaUJDAnalyzer(instrumentation);
+        System.out.println("Mycila Unnecessary JAR Detector loaded !");
+        int interval = 20;
+        if(agentArgs != null) {
+            int pos = agentArgs.indexOf("interval=");
+            if (pos != -1) interval = Integer.parseInt(agentArgs.substring(pos + 9));
+        }
+        JVM jvm = new DefaultJVM();
+        Analyzer analyzer = new MycilaUJDAnalyzer(jvm);
+        updater = new DefaultJVMUpdater(jvm, instrumentation);
+        register("Mycila UJD:name=Analyzer", new JmxAnalyzer(analyzer));
+        register("Mycila UJD:name=Updater", new JmxUpdater(updater));
+        updater.start(interval);
+    }
+
+    private static void register(String objectName, Object o) throws Exception {
         MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-        ObjectName objectName = new ObjectName("Mycila UJD:name=Analyzer");
+        ObjectName on = new ObjectName(objectName);
         try {
-            if (server.isRegistered(objectName))
-                server.unregisterMBean(objectName);
+            if (server.isRegistered(on))
+                server.unregisterMBean(on);
         } catch (Exception ignored) {
         }
-        server.registerMBean(new JmxAnalyzer(mycilaUJDAnalyzer), objectName);
+        server.registerMBean(o, on);
     }
 
     // only for testing purposes
@@ -120,6 +140,6 @@ public final class MycilaUJD {
                 return 0;
             }
         });
-        mycilaUJDAnalyzer.awaitClose();
+        updater.await();
     }
 }

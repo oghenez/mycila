@@ -16,8 +16,12 @@
 
 package com.mycila.ujd.mbean;
 
+import com.google.common.base.Functions;
+import com.google.common.collect.Iterables;
 import com.mycila.ujd.api.Analyzer;
-import com.mycila.ujd.impl.MycilaUJDAnalyzer;
+
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -30,7 +34,51 @@ public final class JmxAnalyzer implements JmxAnalyzerMBean {
         this.analyzer = analyzer;
     }
 
-    public void close() {
-        analyzer.close();
+    public int getClassCount() {
+        return analyzer.getClassCount();
+    }
+
+    public int getLoaderCount() {
+        return analyzer.getLoaderCount();
+    }
+
+    public String getLoaderNames() {
+        return asString(sort(analyzer.getLoaderNames()));
+    }
+
+    public String getClasses(String loaderName, String packagePrefix) {
+        return asString(sort(analyzer.getClasses(loaderName, packagePrefix)));
+    }
+
+    public String getUsedClasses(String loaderName, String packagePrefix) {
+        return asString(sort(analyzer.getUsedClasses(loaderName, packagePrefix)));
+    }
+
+    public String getUnusedClasses(String loaderName, String packagePrefix) {
+        return asString(sort(analyzer.getUnusedClasses(loaderName, packagePrefix)));
+    }
+
+    public String getClassPath(String loaderName) {
+        return asString(analyzer.getClassPath(loaderName));
+    }
+
+    public String getUsedClasspath(String loaderName) {
+        return asString(sort(analyzer.getUsedClassPath(loaderName)));
+    }
+
+    public String getUnusedClassPath(String loaderName) {
+        return asString(sort(analyzer.getUnusedClassPath(loaderName)));
+    }
+
+    private <T> Iterable<String> sort(Iterable<T> it) {
+        Set<String> sorted = new TreeSet<String>();
+        Iterables.addAll(sorted, Iterables.transform(it, Functions.toStringFunction()));
+        return sorted;
+    }
+
+    private <T> String asString(Iterable<T> it) {
+        StringBuilder sb = new StringBuilder();
+        for (T t : it) sb.append(t).append("\n");
+        return sb.toString();
     }
 }

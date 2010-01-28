@@ -26,16 +26,29 @@ import com.mycila.ujd.api.JVM;
 import com.mycila.ujd.api.JavaClass;
 import com.mycila.ujd.api.Loader;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class JVMImpl implements JVM {
+public final class DefaultJVM implements JVM {
 
     final JavaClassRegistry classRegistry = new JavaClassRegistry(this);
     final LoaderRegistry loaderRegistry = new LoaderRegistry(this);
     final ContainerRegistry containerRegistry = new ContainerRegistry();
+
+    public JVM addClasses(Class<?>... classes) {
+        return addClasses(Arrays.asList(classes));
+    }
+
+    public JVM addClasses(Iterable<Class<?>> classes) {
+        for (Class<?> aClass : classes)
+            if (!aClass.isArray() // ignore arrays
+                    && aClass.getClassLoader() != null) // ignore classes loaded by bootstrap classloader
+                classRegistry.add(aClass);
+        return this;
+    }
 
     public Iterable<? extends JavaClass<?>> getClasses() {
         return classRegistry.getJavaClasses();

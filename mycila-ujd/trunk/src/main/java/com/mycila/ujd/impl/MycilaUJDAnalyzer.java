@@ -16,34 +16,122 @@
 
 package com.mycila.ujd.impl;
 
+import com.google.common.base.Function;
+import com.google.common.base.Functions;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.mycila.ujd.api.Analyzer;
+import com.mycila.ujd.api.ContainedClass;
+import com.mycila.ujd.api.ContainedJavaClass;
+import com.mycila.ujd.api.Container;
 import com.mycila.ujd.api.JVM;
+import com.mycila.ujd.api.JavaClass;
+import com.mycila.ujd.api.Loader;
 
-import java.lang.instrument.Instrumentation;
-import java.util.concurrent.CountDownLatch;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class MycilaUJDAnalyzer implements Analyzer {
 
-    private final Instrumentation instrumentation;
-    private final CountDownLatch stopped = new CountDownLatch(1);
-    private final DefaultJVMUpdater updater = new DefaultJVMUpdater();
+    private final JVM jvm;
 
-    public MycilaUJDAnalyzer(Instrumentation instrumentation) {
-        this.instrumentation = instrumentation;
-    }
-
-    public void close() {
-        stopped.countDown();
-    }
-
-    public void awaitClose() throws InterruptedException {
-        stopped.await();
+    public MycilaUJDAnalyzer(JVM jvm) {
+        this.jvm = jvm;
     }
 
     public JVM getJVM() {
-        return updater.get();
+        return jvm;
     }
+
+    public int getClassCount() {
+        return Iterables.size(jvm.getClasses());
+    }
+
+    public int getLoaderCount() {
+        return Iterables.size(jvm.getLoaders());
+    }
+
+    public Iterable<String> getLoaderNames() {
+        SortedSet<String> names = new TreeSet<String>();
+        for (Loader loader : jvm.getLoaders()) names.add(loader.getName());
+        return names;
+    }
+
+    public Iterable<? extends Container> getClassPath(final String loaderName) {
+        if (loaderName == null) throw new IllegalArgumentException("Loader name parameter is required");
+        try {
+            return Iterables.find(jvm.getLoaders(), new Predicate<Loader>() {
+                public boolean apply(Loader input) {
+                    return input.getName().equals(loaderName);
+                }
+            }).getContainers();
+        } catch (NoSuchElementException e) {
+            return Collections.<Container>emptySet();
+        }
+    }
+
+    public Iterable<? extends ContainedClass> getClasses(String loaderName, final String packagePrefix) {
+        return Iterables.filter(Iterables.concat(Iterables.transform(getClassPath(loaderName), new Function<Container, Iterable<? extends ContainedClass>>() {
+            public Iterable<? extends ContainedClass> apply(Container from) {
+                return from.getClasses();
+            }
+        })), new Predicate<ContainedClass>() {
+            public boolean apply(ContainedClass input) {
+                return packagePrefix == null || input.getClassName().startsWith(packagePrefix);
+            }
+        });
+    }
+
+    public Iterable<? extends ContainedJavaClass<?>> getUsedClasses(final String loaderName, final String packagePrefix) {
+        if (loaderName == null) throw new IllegalArgumentException("Loader name parameter is required");
+        return jvm.getClasses(new Predicate<JavaClass<?>>() {
+            public boolean apply(JavaClass<?> input) {
+                return input instanceof ContainedJavaClass
+                        && input.getLoader().getName().equals(loaderName)
+                        && (packagePrefix == null || input.getClass().getName().startsWith(packagePrefix));
+            }
+        });
+    }
+
+    public Iterable<? extends Container> getUsedClassPath(final String loaderName) {
+        if (loaderName == null) throw new IllegalArgumentException("Loader name parameter is required");
+        return new Iterable<Container>() {
+            public Iterator<Container> iterator() {
+                return new MemoizingIterator<Container>(Iterables.transform(getUsedClasses(loaderName, null), new Function<ContainedJavaClass<?>, Container>() {
+                    public Container apply(ContainedJavaClass<?> from) {
+                        return from.getContainer();
+                    }
+                }).iterator());
+            }
+        };
+    }
+
+    public Iterable<? extends ContainedClass> getUnusedClasses(String loaderName, String packagePrefix) {
+        final Set<String> used = new HashSet<String>();
+        Iterables.addAll(used, Iterables.transform(getUsedClasses(loaderName, packagePrefix), Functions.toStringFunction()));
+        return Iterables.filter(getClasses(loaderName, packagePrefix), new Predicate<ContainedClass>() {
+            public boolean apply(ContainedClass input) {
+                return !used.contains(input.getClassName());
+            }
+        });
+    }
+
+    public Iterable<? extends Container> getUnusedClassPath(final String loaderName) {
+        final Set<String> used = new HashSet<String>();
+        Iterables.addAll(used, Iterables.transform(getUsedClassPath(loaderName), Functions.toStringFunction()));
+        return Iterables.filter(getClassPath(loaderName), new Predicate<Container>() {
+            public boolean apply(Container input) {
+                return !used.contains(input.toString());
+            }
+        });
+    }
+
 }

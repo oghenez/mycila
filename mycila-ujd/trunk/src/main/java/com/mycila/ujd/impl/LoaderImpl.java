@@ -34,9 +34,9 @@ import java.util.Collections;
 final class LoaderImpl implements Loader {
 
     private final ClassLoader classLoader;
-    private final JVMImpl jvm;
+    private final DefaultJVM jvm;
 
-    LoaderImpl(JVMImpl jvm, ClassLoader classLoader) {
+    LoaderImpl(DefaultJVM jvm, ClassLoader classLoader) {
         this.jvm = jvm;
         this.classLoader = classLoader;
     }

@@ -26,7 +26,7 @@ import java.net.URL;
  */
 final class ContainedJavaClassImpl<T> extends JavaClassImpl<T> implements ContainedJavaClass<T> {
 
-    ContainedJavaClassImpl(JVMImpl jvm, Class<T> theClass) {
+    ContainedJavaClassImpl(DefaultJVM jvm, Class<T> theClass) {
         super(jvm, theClass);
     }
 
@@ -43,6 +43,6 @@ final class ContainedJavaClassImpl<T> extends JavaClassImpl<T> implements Contai
     }
 
     public String getClassName() {
-        return getClass().getName();
+        return theClass.getName();
     }
 }

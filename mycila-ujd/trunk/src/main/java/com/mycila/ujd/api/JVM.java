@@ -22,6 +22,10 @@ import com.google.common.base.Predicate;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface JVM {
+    JVM addClasses(Class<?>... classes);
+
+    JVM addClasses(Iterable<Class<?>> classes);
+
     Iterable<? extends Loader> getLoaders();
 
     Iterable<? extends JavaClass<?>> getClasses();
