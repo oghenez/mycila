@@ -63,6 +63,19 @@ When the application starts, you should see the following output:
 
 autostart (false) and interval (20) are the default values but you should see the ones your provided if you put some parameters.
 
+*Example: JBoss*
+
+Configure JBoss to use the default plateform MBeanServer:
+
+{{{
+set JAVA_OPTS=%JAVA_OPTS% -javaagent:C:\data\workspace\PERSO\mycila-ujd\target\mycila-ujd-1.1.jar
+set JAVA_OPTS=%JAVA_OPTS% -Dcom.sun.management.jmxremote.port=4456
+set JAVA_OPTS=%JAVA_OPTS% -Dcom.sun.management.jmxremote.authenticate=false
+set JAVA_OPTS=%JAVA_OPTS% -Dcom.sun.management.jmxremote.ssl=false
+set JAVA_OPTS=%JAVA_OPTS% -Djboss.platform.mbeanserver
+set JAVA_OPTS=%JAVA_OPTS% -Djavax.management.builder.initial=org.jboss.system.server.jmx.MBeanServerBuilderImpl
+}}}
+
 = Parameters =
 
  * autostart: whether the update thread should start immediately, or manually. Default to false
