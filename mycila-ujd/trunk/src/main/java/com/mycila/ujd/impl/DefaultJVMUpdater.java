@@ -64,7 +64,7 @@ public final class DefaultJVMUpdater implements JVMUpdater {
             jvm.clear();
             stopped = new CountDownLatch(1);
             this.updateInterval = updateInterval;
-            updater = new Thread(getClass().getSimpleName() + "-Thread") {
+            updater = new Thread("MycilaUJD-UpdaterThread") {
                 @Override
                 public void run() {
                     while (isRunning()
