@@ -26,6 +26,7 @@ import com.mycila.ujd.api.JVM;
 import com.mycila.ujd.api.JavaClass;
 import com.mycila.ujd.api.Loader;
 
+import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -44,7 +45,9 @@ public final class DefaultJVM implements JVM {
 
     public JVM addClasses(Iterable<Class<?>> classes) {
         for (Class<?> aClass : classes)
-            if (!aClass.isArray())
+            if (!aClass.isArray()
+                    && aClass.getClassLoader() != null
+                    && aClass.getClassLoader() instanceof URLClassLoader)
                 classRegistry.add(aClass);
         return this;
     }

@@ -25,10 +25,13 @@ import com.mycila.ujd.api.JavaClass;
 import com.mycila.ujd.api.Loader;
 import com.mycila.ujd.impl.DefaultJVM;
 
+import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 
 /**
+ * Run with: -javaagent:./target/mycila-ujd-1.0-SNAPSHOT.jar
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 final class UjdSample {
@@ -38,7 +41,7 @@ final class UjdSample {
                         //new URL(new URL("http://repo2.maven.org/maven2/com/mycila/mycila-log/2.9/mycila-log-2.9.jar"), "jar:http://repo2.maven.org/maven2/com/mycila/mycila-log/2.9/mycila-log-2.9.jar!/"),
                         //new URL("jar:http://repo2.maven.org/maven2/com/mycila/mycila-log/2.9/mycila-log-2.9.jar!/"),
                         new URL("http://repo2.maven.org/maven2/log4j/log4j/1.2.15/log4j-1.2.15.jar"),
-                        new URL("file:/C:/data/workspace/PERSO/mycila-ujd/target/classes/")},
+                        new File("target/classes/").toURI().toURL()},
                 ClassLoader.getSystemClassLoader().getParent());
 
         Class<?> remote1 = cl.loadClass("org.apache.log4j.Level");
