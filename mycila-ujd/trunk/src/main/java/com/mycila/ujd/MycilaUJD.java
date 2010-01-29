@@ -26,7 +26,6 @@ import com.mycila.ujd.mbean.JmxAnalyzer;
 import com.mycila.ujd.mbean.JmxUpdater;
 
 import javax.management.MBeanServer;
-import javax.management.MBeanServerFactory;
 import javax.management.ObjectName;
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.ClassFileTransformer;
@@ -34,7 +33,6 @@ import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Vector;
 import java.util.jar.JarFile;
 
@@ -60,34 +58,40 @@ public final class MycilaUJD {
         final JVMUpdater updater = new DefaultJVMUpdater(jvm, instrumentation);
         register("Mycila UJD:name=Analyzer", new JmxAnalyzer(analyzer));
         register("Mycila UJD:name=Updater", new JmxUpdater(updater));
+        /*for (MBeanServer mBeanServer : (List<MBeanServer>) MBeanServerFactory.findMBeanServer(null)) {
+            System.out.println("MBEAN Server: " + mBeanServer.getAttribute(new ObjectName(ServiceName.DELEGATE), "MBeanServerId"));
+        }
         Thread t = new Thread("MycilaUJD-RegisteringThread") {
             @Override
             public void run() {
                 try {
-                    final Field mBeanServerList = MBeanServerFactory.class.getDeclaredField("mBeanServerList");
-                    mBeanServerList.setAccessible(true);
                     final ObjectName test = new ObjectName("Mycila UJD:name=Updater");
                     while (!Thread.currentThread().isInterrupted()) {
                         Thread.sleep(10000);
-                        List<MBeanServer> mBeanServers = (List<MBeanServer>) mBeanServerList.get(null);
-                        for (MBeanServer mBeanServer : mBeanServers)
+                        for (MBeanServer mBeanServer : (List<MBeanServer>) MBeanServerFactory.findMBeanServer(null)) {
+                            String name = (String) mBeanServer.getAttribute(new ObjectName(ServiceName.DELEGATE), "MBeanServerId");
+                            System.out.println("================> MBEAN Server: " + name);
                             if (!mBeanServer.isRegistered(test)) {
+                                System.out.println("================> REGISTERING INTO: " + name);
                                 register("Mycila UJD:name=Analyzer", new JmxAnalyzer(analyzer));
                                 register("Mycila UJD:name=Updater", new JmxUpdater(updater));
                             }
+                        }
                     }
                 } catch (Exception e) {
                     Thread.currentThread().interrupt();
-                    throw new RuntimeException(e.getMessage(), e);
+                    e.printStackTrace();
                 }
             }
         };
         t.setDaemon(true);
-        t.start();
+        t.start();*/
         System.out.println("[Mycila UJD Agent] Mycila Unnecessary JAR Detector loaded !" +
                 "\n[Mycila UJD Agent] Please visit http://code.mycila.com/wiki/MycilaUJD" +
                 "\n[Mycila UJD Agent] - autostart = " + start +
-                "\n[Mycila UJD Agent] - update interval = " + interval + " seconds");
+                "\n[Mycila UJD Agent] - update interval = " + interval + " seconds" +
+                "\n[Mycila UJD Agent] - MBean Mycila UJD:name=Analyzer registered" +
+                "\n[Mycila UJD Agent] - MBean Mycila UJD:name=Updater registered");
         if (start) updater.start(interval);
     }
 

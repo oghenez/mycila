@@ -65,6 +65,19 @@ public final class DefaultJVMAnalyzer implements JVMAnalyzer {
         return names;
     }
 
+    public Iterable<String> getLoaderNames(final String packagePrefix) {
+        SortedSet<String> names = new TreeSet<String>();
+        Iterables.addAll(names, Iterables.transform(Iterables.filter(jvm.getLoaders(), new Predicate<Loader>() {
+            public boolean apply(Loader input) {
+                for (JavaClass<?> javaClass : input.getClasses())
+                    if (javaClass.get().getName().startsWith(packagePrefix))
+                        return true;
+                return false;
+            }
+        }), Functions.toStringFunction()));
+        return names;
+    }
+
     public Iterable<? extends Container> getClassPath(final String loaderName) {
         if (loaderName == null) throw new IllegalArgumentException("Loader name parameter is required");
         try {

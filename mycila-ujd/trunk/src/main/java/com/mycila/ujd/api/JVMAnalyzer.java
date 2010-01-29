@@ -27,6 +27,8 @@ public interface JVMAnalyzer {
     int getLoaderCount();
 
     Iterable<String> getLoaderNames();
+    
+    Iterable<String> getLoaderNames(String packagePrefix);
 
     Iterable<? extends Container> getClassPath(String loaderName);
 
