@@ -71,7 +71,7 @@ public final class JmxAnalyzer implements JmxAnalyzerMBean {
         return asString(analyzer.getClassPath(loaderName));
     }
 
-    public String getUsedClasspath(String loaderName) {
+    public String getUsedClassPath(String loaderName) {
         return asString(sort(analyzer.getUsedClassPath(loaderName)));
     }
 

@@ -39,7 +39,7 @@ public interface JmxAnalyzerMBean {
 
     String getClassPath(String loaderName);
 
-    String getUsedClasspath(String loaderName);
+    String getUsedClassPath(String loaderName);
 
     String getUnusedClassPath(String loaderName);
 
