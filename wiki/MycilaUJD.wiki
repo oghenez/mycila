@@ -52,6 +52,17 @@ DO NOT FORGET TO STOP THE UPDATER THREAD WHEN YOU HAVE FINISHED ! Analyzing requ
 
 [http://mycila.googlecode.com/files/updater.JPG]
 
+When the application starts, you should see the following output:
+
+{{{
+[Mycila UJD Agent] Mycila Unnecessary JAR Detector loaded !
+[Mycila UJD Agent] Please visit http://code.mycila.com/wiki/MycilaUJD
+[Mycila UJD Agent] - autostart = false
+[Mycila UJD Agent] - update interval = 20 seconds
+}}}
+
+autostart (false) and interval (20) are the default values but you should see the ones your provided if you put some parameters.
+
 = Parameters =
 
  * autostart: whether the update thread should start immediately, or manually. Default to false
