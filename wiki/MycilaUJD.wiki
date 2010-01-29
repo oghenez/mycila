@@ -66,7 +66,7 @@ Analysis is done through the Mycila UJD Analyzer Mbean. You have access to the f
  * *LoaderCount*: number of classlaoders (not that some classloaders are skipped, in example bootstrap classloader, delegating classloaders used when creating proxies, ...)
 
  * *String getLoaderNames()*: get all the list of classloaders
-String getClasses(String loaderName, String packagePrefix)*
+ * *String getClasses(String loaderName, String packagePrefix)*
  * *String getUsedClasses(String loaderName, String packagePrefix)*
  * *String getUnusedClasses(String loaderName, String packagePrefix)*
  * *String getClassPath(String loaderName)*
