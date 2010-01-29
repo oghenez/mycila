@@ -58,3 +58,17 @@ DO NOT FORGET TO STOP THE UPDATER THREAD WHEN YOU HAVE FINISHED ! Analyzing requ
  * interval: interval in seconds before getting each time the loaded classes by the JVM. It does not clear and refresh: it just appends newly classed to the analyzer. Default to 20 seconds.
 
 = Analysis =
+
+Analysis is done through the Mycila UJD Analyzer Mbean. You have access to the following methods:
+
+ * *HTMLOutput*: wheter the output is in plain text or html (line feeds or BRs)
+ * *ClassCount*: number of classes
+ * *LoaderCount*: number of classlaoders (not that some classloaders are skipped, in example bootstrap classloader, delegating classloaders used when creating proxies, ...)
+
+ * *String getLoaderNames()*: get all the list of classloaders
+String getClasses(String loaderName, String packagePrefix)*
+ * *String getUsedClasses(String loaderName, String packagePrefix)*
+ * *String getUnusedClasses(String loaderName, String packagePrefix)*
+ * *String getClassPath(String loaderName)*
+ * *String getUsedClassPath(String loaderName)*
+ * *String getUnusedClassPath(String loaderName)*
