@@ -3,7 +3,17 @@
 
 = Introduction =
 
+Mycila Unnecessary Jar Detector is a runtime classpath analyzer enabling you to see what classes and jars are used and not used when running an application. It takes a different and modern approach to give reliable results and also aiming at being efficient.
 
+It is not a static analyzer parsing your java classes (this technique is so much unreliable). Instead, it used the Java 5 Instrumentation API to regularly update used classes and classloader. 
+
+Mycila UJD's API is able to represent and parse a whole Classloading hierarchy, going to parent classlaoder, navigating into child classloaders, getting classloader's classpath, getting classes contained in a classpath entry without loading them, getting loaded classes, ...
+
+It also has advanced analyzing API enabling filtering, i.e. to only see classes for a specific classlaoder, classpath for a specific classloader, to only get classes starting with a specific package, ...
+
+*Performance*
+
+Event if it is using the instrumentation API, Mycila UJD does not tranform classes or crate classes, and does not plug any hook when classes are loaded. The instrumentation API is only used to get all classes loaded by the JVM at a regular interval time. Thus, your program does not suffer from any point when installing this agent.
 
 = Download =
 
@@ -25,3 +35,15 @@ http://repo2.maven.org/maven2/com/mycila/mycila-ujd/
 Snapshots are available at https://mc-repo.googlecode.com/svn/maven2/snapshots/com/mycila/mycila-ujd/
 
 = Usage =
+
+`-javaagent:path/to/mycila-ujd-1.1.jar`
+
+Note: If you are analyzing a Main application, you probably want to use:
+
+`-javaagent:path/to/mycila-ujd-1.1.jar=autostart=true,interval=5`
+
+The application won't exit until you stop the analyzing thread from the JMX console. 
+
+= Parameters =
+
+= Analysis =
