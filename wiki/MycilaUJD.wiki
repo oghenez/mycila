@@ -44,6 +44,14 @@ Note: If you are analyzing a Main application, you probably want to use:
 
 The application won't exit until you stop the analyzing thread from the JMX console, or if you kill it. This way, the application can be run entirely and when finished, you have time to open your JMX Console (i.e. [https://visualvm.dev.java.net/ Visual VM] or jvisualvm from the JDK) and analyze.
 
+*If you do not specify autostart=true* (i.e. often the case when you run Mycila UJD in an application server), you will need to start it automatically when needed.
+
+*When running on an application Server*
+
+DO NOT FORGET TO STOP THE UPDATER THREAD WHEN YOU HAVE FINISHED ! Analyzing requires having strong references on classes, classloaders, .. which prevent them to be garbaged collected during the time of the analysis.
+
+[http://mycila.googlecode.com/files/updater.JPG]
+
 = Parameters =
 
  * autostart: whether the update thread should start immediately, or manually. Default to false
