@@ -68,7 +68,6 @@ autostart (false) and interval (20) are the default values but you should see th
 Configure JBoss to use the default plateform MBeanServer:
 
 {{{
-set JAVA_OPTS=%JAVA_OPTS%
 JAVA_OPTS=$JAVA_OPTS" -javaagent:/path/to/mycila-ujd-1.1.jar"
 JAVA_OPTS=$JAVA_OPTS" -Dcom.sun.management.jmxremote.port=4456"
 JAVA_OPTS=$JAVA_OPTS" -Dcom.sun.management.jmxremote.authenticate=false"
