@@ -50,6 +50,7 @@ public final class DefaultJVMUpdater implements JVMUpdater {
         if (isRunning()) {
             updater.interrupt();
             updater = null;
+            jvm.clear();
             stopped.countDown();
         }
     }
@@ -60,6 +61,7 @@ public final class DefaultJVMUpdater implements JVMUpdater {
 
     public void start(final long updateInterval) {
         if (!isRunning()) {
+            jvm.clear();
             stopped = new CountDownLatch(1);
             this.updateInterval = updateInterval;
             updater = new Thread(getClass().getSimpleName() + "-Thread") {

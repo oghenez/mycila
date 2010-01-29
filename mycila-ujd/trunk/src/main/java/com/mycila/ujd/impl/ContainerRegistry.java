@@ -54,4 +54,8 @@ final class ContainerRegistry {
             throw new IllegalStateException("Cannot get container for resource [" + resource + "]. Malformed URL [" + url + "].", e);
         }
     }
+
+    public void clear() {
+        containers.clear();
+    }
 }

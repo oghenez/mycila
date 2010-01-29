@@ -48,4 +48,7 @@ final class LoaderRegistry {
         return get(theClass.get().getClassLoader());
     }
 
+    public void clear() {
+        loaders.clear();
+    }
 }
