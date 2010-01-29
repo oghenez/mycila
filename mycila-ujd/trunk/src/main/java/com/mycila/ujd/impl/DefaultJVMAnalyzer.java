@@ -20,11 +20,11 @@ import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.mycila.ujd.api.Analyzer;
 import com.mycila.ujd.api.ContainedClass;
 import com.mycila.ujd.api.ContainedJavaClass;
 import com.mycila.ujd.api.Container;
 import com.mycila.ujd.api.JVM;
+import com.mycila.ujd.api.JVMAnalyzer;
 import com.mycila.ujd.api.JavaClass;
 import com.mycila.ujd.api.Loader;
 
@@ -39,11 +39,11 @@ import java.util.TreeSet;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class MycilaUJDAnalyzer implements Analyzer {
+public final class DefaultJVMAnalyzer implements JVMAnalyzer {
 
     private final JVM jvm;
 
-    public MycilaUJDAnalyzer(JVM jvm) {
+    public DefaultJVMAnalyzer(JVM jvm) {
         this.jvm = jvm;
     }
 

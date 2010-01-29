@@ -44,8 +44,7 @@ public final class DefaultJVM implements JVM {
 
     public JVM addClasses(Iterable<Class<?>> classes) {
         for (Class<?> aClass : classes)
-            if (!aClass.isArray() // ignore arrays
-                    && aClass.getClassLoader() != null) // ignore classes loaded by bootstrap classloader
+            if (!aClass.isArray())
                 classRegistry.add(aClass);
         return this;
     }

@@ -35,7 +35,7 @@ final class ContainedJavaClassImpl<T> extends JavaClassImpl<T> implements Contai
     }
 
     public URL getURL() {
-        return theClass.getClassLoader().getResource(getPath());
+        return getLoader().get().getResource(getPath());
     }
 
     public String getPath() {

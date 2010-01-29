@@ -21,6 +21,10 @@ package com.mycila.ujd.mbean;
  */
 public interface JmxAnalyzerMBean {
 
+    void setHTMLOutput(boolean b);
+
+    boolean isHTMLOutput();
+
     int getClassCount();
 
     int getLoaderCount();

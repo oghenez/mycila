@@ -18,7 +18,7 @@ package com.mycila.ujd.mbean;
 
 import com.google.common.base.Functions;
 import com.google.common.collect.Iterables;
-import com.mycila.ujd.api.Analyzer;
+import com.mycila.ujd.api.JVMAnalyzer;
 
 import java.util.Set;
 import java.util.TreeSet;
@@ -28,10 +28,19 @@ import java.util.TreeSet;
  */
 public final class JmxAnalyzer implements JmxAnalyzerMBean {
 
-    private final Analyzer analyzer;
+    private final JVMAnalyzer analyzer;
+    private boolean html;
 
-    public JmxAnalyzer(Analyzer analyzer) {
+    public JmxAnalyzer(JVMAnalyzer analyzer) {
         this.analyzer = analyzer;
+    }
+
+    public void setHTMLOutput(boolean b) {
+        html = b;
+    }
+
+    public boolean isHTMLOutput() {
+        return html;
     }
 
     public int getClassCount() {
@@ -79,6 +88,6 @@ public final class JmxAnalyzer implements JmxAnalyzerMBean {
     private <T> String asString(Iterable<T> it) {
         StringBuilder sb = new StringBuilder();
         for (T t : it) sb.append(t).append("\n");
-        return sb.toString();
+        return isHTMLOutput() ? sb.toString().replaceAll("\n", "<br/>") : sb.toString();
     }
 }

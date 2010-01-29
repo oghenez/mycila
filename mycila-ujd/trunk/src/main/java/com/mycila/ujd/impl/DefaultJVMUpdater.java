@@ -78,7 +78,7 @@ public final class DefaultJVMUpdater implements JVMUpdater {
                     stopped.countDown();
                 }
             };
-            updater.setDaemon(true);
+            updater.setDaemon(false);
             updater.start();
         } else throw new IllegalStateException("Already started !");
     }
@@ -92,6 +92,6 @@ public final class DefaultJVMUpdater implements JVMUpdater {
     }
 
     public void await() throws InterruptedException {
-        if(isRunning()) stopped.await();
+        if (isRunning()) stopped.await();
     }
 }

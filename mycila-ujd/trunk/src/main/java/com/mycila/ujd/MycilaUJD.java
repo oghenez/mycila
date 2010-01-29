@@ -16,12 +16,12 @@
 
 package com.mycila.ujd;
 
-import com.mycila.ujd.api.Analyzer;
 import com.mycila.ujd.api.JVM;
+import com.mycila.ujd.api.JVMAnalyzer;
 import com.mycila.ujd.api.JVMUpdater;
 import com.mycila.ujd.impl.DefaultJVM;
+import com.mycila.ujd.impl.DefaultJVMAnalyzer;
 import com.mycila.ujd.impl.DefaultJVMUpdater;
-import com.mycila.ujd.impl.MycilaUJDAnalyzer;
 import com.mycila.ujd.mbean.JmxAnalyzer;
 import com.mycila.ujd.mbean.JmxUpdater;
 
@@ -41,8 +41,6 @@ import java.util.jar.JarFile;
  */
 public final class MycilaUJD {
 
-    private static JVMUpdater updater;
-
     public static void premain(String agentArgs, Instrumentation instrumentation) throws Exception {
         agentmain(agentArgs, instrumentation);
     }
@@ -50,13 +48,13 @@ public final class MycilaUJD {
     public static void agentmain(String agentArgs, Instrumentation instrumentation) throws Exception {
         System.out.println("Mycila Unnecessary JAR Detector loaded !");
         int interval = 20;
-        if(agentArgs != null) {
+        if (agentArgs != null) {
             int pos = agentArgs.indexOf("interval=");
             if (pos != -1) interval = Integer.parseInt(agentArgs.substring(pos + 9));
         }
         JVM jvm = new DefaultJVM();
-        Analyzer analyzer = new MycilaUJDAnalyzer(jvm);
-        updater = new DefaultJVMUpdater(jvm, instrumentation);
+        JVMAnalyzer analyzer = new DefaultJVMAnalyzer(jvm);
+        JVMUpdater updater = new DefaultJVMUpdater(jvm, instrumentation);
         register("Mycila UJD:name=Analyzer", new JmxAnalyzer(analyzer));
         register("Mycila UJD:name=Updater", new JmxUpdater(updater));
         updater.start(interval);
@@ -140,6 +138,5 @@ public final class MycilaUJD {
                 return 0;
             }
         });
-        updater.await();
     }
 }
