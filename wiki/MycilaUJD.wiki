@@ -42,8 +42,11 @@ Note: If you are analyzing a Main application, you probably want to use:
 
 `-javaagent:path/to/mycila-ujd-1.1.jar=autostart=true,interval=5`
 
-The application won't exit until you stop the analyzing thread from the JMX console. 
+The application won't exit until you stop the analyzing thread from the JMX console, or if you kill it. This way, the application can be run entirely and when finished, you have time to open your JMX Console (i.e. [https://visualvm.dev.java.net/ Visual VM] or jvisualvm from the JDK) and analyze.
 
 = Parameters =
+
+ * autostart: whether the update thread should start immediately, or manually. Default to false
+ * interval: interval in seconds before getting each time the loaded classes by the JVM. It does not clear and refresh: it just appends newly classed to the analyzer. Default to 20 seconds.
 
 = Analysis =
