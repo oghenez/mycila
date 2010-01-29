@@ -35,7 +35,7 @@ final class LoaderRegistry {
 
     Loader get(ClassLoader classLoader) {
         if (classLoader == null)
-            classLoader = ClassLoader.getSystemClassLoader().getParent();
+            classLoader = ClassLoader.getSystemClassLoader();
         if (classLoader == null)
             throw new AssertionError("Error locating bootstrap classloader !");
         LoaderImpl loader = loaders.get(classLoader);

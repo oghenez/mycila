@@ -45,7 +45,7 @@ class JavaClassImpl<T> implements JavaClass<T> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         JavaClassImpl that = (JavaClassImpl) o;
-        return theClass.equals(that.theClass) && theClass.getClassLoader().equals(that.theClass.getClassLoader());
+        return theClass.equals(that.theClass) && getLoader().equals(that.getLoader());
     }
 
     @Override

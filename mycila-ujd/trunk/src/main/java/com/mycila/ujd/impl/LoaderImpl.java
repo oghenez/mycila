@@ -58,8 +58,13 @@ final class LoaderImpl implements Loader {
     }
 
     public Iterable<? extends Container> getContainers() {
+        final String javaHome = System.getProperty("java.home");
         return classLoader instanceof URLClassLoader ?
-                Iterables.transform(Arrays.asList(((URLClassLoader) classLoader).getURLs()), new Function<URL, Container>() {
+                Iterables.transform(Iterables.filter(Arrays.asList(((URLClassLoader) classLoader).getURLs()), new Predicate<URL>() {
+                    public boolean apply(URL url) {
+                        return !url.toExternalForm().contains(javaHome);
+                    }
+                }), new Function<URL, Container>() {
                     public Container apply(URL from) {
                         return jvm.containerRegistry.get(from);
                     }
