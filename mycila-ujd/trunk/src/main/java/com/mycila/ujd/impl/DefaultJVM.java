@@ -39,6 +39,12 @@ public final class DefaultJVM implements JVM {
     final LoaderRegistry loaderRegistry = new LoaderRegistry(this);
     final ContainerRegistry containerRegistry = new ContainerRegistry();
 
+    public void clear() {
+        classRegistry.clear();
+        loaderRegistry.clear();
+        containerRegistry.clear();
+    }
+
     public JVM addClasses(Class<?>... classes) {
         return addClasses(Arrays.asList(classes));
     }

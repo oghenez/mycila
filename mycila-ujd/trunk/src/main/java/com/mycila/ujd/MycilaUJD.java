@@ -46,18 +46,23 @@ public final class MycilaUJD {
     }
 
     public static void agentmain(String agentArgs, Instrumentation instrumentation) throws Exception {
-        System.out.println("Mycila Unnecessary JAR Detector loaded !");
         int interval = 20;
+        boolean start = false;
         if (agentArgs != null) {
             int pos = agentArgs.indexOf("interval=");
             if (pos != -1) interval = Integer.parseInt(agentArgs.substring(pos + 9));
+            if (agentArgs.indexOf("autostart=true") != -1) start = true;
         }
         JVM jvm = new DefaultJVM();
         JVMAnalyzer analyzer = new DefaultJVMAnalyzer(jvm);
         JVMUpdater updater = new DefaultJVMUpdater(jvm, instrumentation);
         register("Mycila UJD:name=Analyzer", new JmxAnalyzer(analyzer));
         register("Mycila UJD:name=Updater", new JmxUpdater(updater));
-        updater.start(interval);
+        System.out.println("[Mycila UJD Agent] Mycila Unnecessary JAR Detector loaded !" +
+                "\n[Mycila UJD Agent] Please visit http://code.mycila.com/wiki/MycilaUJD" +
+                "\n[Mycila UJD Agent] - autostart = " + start +
+                "\n[Mycila UJD Agent] - update interval = " + interval + " seconds");
+        if (start) updater.start(interval);
     }
 
     private static void register(String objectName, Object o) throws Exception {

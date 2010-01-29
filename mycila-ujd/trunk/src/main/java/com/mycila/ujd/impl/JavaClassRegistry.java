@@ -49,4 +49,7 @@ final class JavaClassRegistry {
                 new ContainedJavaClassImpl<T>(jvm, aClass);
     }
 
+    public void clear() {
+        classes.clear();
+    }
 }
