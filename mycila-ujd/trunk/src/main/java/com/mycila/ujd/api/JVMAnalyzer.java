@@ -27,7 +27,7 @@ public interface JVMAnalyzer {
     int getLoaderCount();
 
     Iterable<String> getLoaderNames();
-    
+
     Iterable<String> getLoaderNames(String packagePrefix);
 
     Iterable<? extends Container> getClassPath(String loaderName);
@@ -41,4 +41,8 @@ public interface JVMAnalyzer {
     Iterable<? extends ContainedJavaClass<?>> getUsedClasses(String loaderName, String packagePrefix);
 
     Iterable<? extends ContainedClass> getUnusedClasses(String loaderName, String packagePrefix);
+
+    Iterable<? extends Container> getUsedContainers(String packagePrefix);
+
+    Iterable<? extends Container> getContainers(String packagePrefix);
 }

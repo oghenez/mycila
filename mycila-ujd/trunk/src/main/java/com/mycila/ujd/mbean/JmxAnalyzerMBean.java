@@ -45,4 +45,8 @@ public interface JmxAnalyzerMBean {
 
     String getUnusedClassPath(String loaderName);
 
+    String getContainers(String packagePrefix);
+
+    String getUsedContainers(String packagePrefix);
+
 }

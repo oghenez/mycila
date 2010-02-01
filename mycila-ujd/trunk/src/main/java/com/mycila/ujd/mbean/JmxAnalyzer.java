@@ -83,6 +83,14 @@ public final class JmxAnalyzer implements JmxAnalyzerMBean {
         return asString(sort(analyzer.getUnusedClassPath(loaderName)));
     }
 
+    public String getContainers(String packagePrefix) {
+        return asString(sort(analyzer.getContainers(packagePrefix)));
+    }
+
+    public String getUsedContainers(String packagePrefix) {
+        return asString(sort(analyzer.getUsedContainers(packagePrefix)));
+    }
+
     private <T> Iterable<String> sort(Iterable<T> it) {
         Set<String> sorted = new TreeSet<String>();
         Iterables.addAll(sorted, Iterables.transform(it, Functions.toStringFunction()));

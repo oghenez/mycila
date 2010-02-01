@@ -137,6 +137,43 @@ public final class DefaultJVMAnalyzer implements JVMAnalyzer {
         });
     }
 
+    public Iterable<? extends Container> getUsedContainers(final String packagePrefix) {
+        if (packagePrefix == null) throw new IllegalArgumentException("packagePrefix parameter is required");
+        return new Iterable<Container>() {
+            public Iterator<Container> iterator() {
+                return new MemoizingIterator<Container>(Iterables.transform(
+                        jvm.getClasses(new Predicate<JavaClass<?>>() {
+                            public boolean apply(JavaClass<?> input) {
+                                return input instanceof ContainedClass
+                                        && input.get().getName().startsWith(packagePrefix);
+                            }
+                        }), new Function<JavaClass<?>, Container>() {
+                            public Container apply(JavaClass<?> from) {
+                                return ((ContainedClass) from).getContainer();
+                            }
+                        }).iterator());
+            }
+        };
+    }
+
+    public Iterable<? extends Container> getContainers(final String packagePrefix) {
+        if (packagePrefix == null) throw new IllegalArgumentException("packagePrefix parameter is required");
+        return new Iterable<Container>() {
+            public Iterator<Container> iterator() {
+                return new MemoizingIterator<Container>(Iterables.transform(
+                        jvm.getContainedClasses(new Predicate<ContainedClass>() {
+                            public boolean apply(ContainedClass input) {
+                                return input.getClassName().startsWith(packagePrefix);
+                            }
+                        }), new Function<ContainedClass, Container>() {
+                            public Container apply(ContainedClass from) {
+                                return from.getContainer();
+                            }
+                        }).iterator());
+            }
+        };
+    }
+
     public Iterable<? extends Container> getUnusedClassPath(final String loaderName) {
         final Set<String> used = new HashSet<String>();
         Iterables.addAll(used, Iterables.transform(getUsedClassPath(loaderName), Functions.toStringFunction()));
