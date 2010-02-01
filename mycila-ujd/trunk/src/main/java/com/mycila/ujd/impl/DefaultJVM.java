@@ -108,4 +108,8 @@ public final class DefaultJVM implements JVM {
         };
     }
 
+    public Iterable<? extends ContainedClass> getContainedClasses(Predicate<? super ContainedClass> predicate) {
+        return Iterables.filter(getContainedClasses(), predicate);
+    }
+
 }

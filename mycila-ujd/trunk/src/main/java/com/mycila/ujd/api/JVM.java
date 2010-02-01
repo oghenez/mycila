@@ -38,4 +38,6 @@ public interface JVM {
     Iterable<? extends Container> getContainers();
 
     Iterable<? extends ContainedClass> getContainedClasses();
+
+    Iterable<? extends ContainedClass> getContainedClasses(Predicate<? super ContainedClass> predicate);
 }
