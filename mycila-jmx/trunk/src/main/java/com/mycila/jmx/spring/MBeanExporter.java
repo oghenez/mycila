@@ -1,11 +1,11 @@
-/*
- * Copyright 2002-2009 the original author or authors.
+/**
+ * Copyright (C) 2010 Mathieu Carbou <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -773,22 +773,22 @@ public class MBeanExporter extends MBeanRegistrationSupport implements MBeanExpo
     }
 
     //---------------------------------------------------------------------
-	// Inner classes for internal use
-	//---------------------------------------------------------------------
+    // Inner classes for internal use
+    //---------------------------------------------------------------------
 
-	/**
-	 * Internal callback interface for the autodetection process.
-	 */
-	private static interface AutodetectCallback {
+    /**
+     * Internal callback interface for the autodetection process.
+     */
+    private static interface AutodetectCallback {
 
-		/**
+        /**
          * Called during the autodetection process to decide whether
          * or not a bean should be included.
          *
          * @param beanClass the class of the bean
          * @param beanName  the name of the bean
          */
-		boolean include(Class beanClass, String beanName);
+        boolean include(Class beanClass, String beanName);
 	}
 
 

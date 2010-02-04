@@ -1,11 +1,11 @@
-/*
- * Copyright 2002-2009 the original author or authors.
+/**
+ * Copyright (C) 2010 Mathieu Carbou <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -1120,11 +1120,11 @@ public abstract class StringUtils {
      * @param coll the Collection to display
      * @return the delimited String
      */
-	public static String collectionToCommaDelimitedString(Collection coll) {
-		return collectionToDelimitedString(coll, ",");
-	}
+    public static String collectionToCommaDelimitedString(Collection coll) {
+        return collectionToDelimitedString(coll, ",");
+    }
 
-	/**
+    /**
      * Convenience method to return a String array as a delimited (e.g. CSV)
      * String. E.g. useful for <code>toString()</code> implementations.
      *
@@ -1132,31 +1132,31 @@ public abstract class StringUtils {
      * @param delim the delimiter to use (probably a ",")
      * @return the delimited String
      */
-	public static String arrayToDelimitedString(Object[] arr, String delim) {
-		/*if (ObjectUtils.isEmpty(arr)) {
-			return "";
-		}*/
-		if (arr.length == 1) {
-			return "";//ObjectUtils.nullSafeToString(arr[0]);
-		}
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < arr.length; i++) {
-			if (i > 0) {
-				sb.append(delim);
-			}
-			sb.append(arr[i]);
-		}
-		return sb.toString();
-	}
+    public static String arrayToDelimitedString(Object[] arr, String delim) {
+        /*if (ObjectUtils.isEmpty(arr)) {
+              return "";
+          }*/
+        if (arr.length == 1) {
+            return "";//ObjectUtils.nullSafeToString(arr[0]);
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < arr.length; i++) {
+            if (i > 0) {
+                sb.append(delim);
+            }
+            sb.append(arr[i]);
+        }
+        return sb.toString();
+    }
 
-	/**
+    /**
      * Convenience method to return a String array as a CSV String.
      * E.g. useful for <code>toString()</code> implementations.
      *
      * @param arr the array to display
      * @return the delimited String
      */
-	public static String arrayToCommaDelimitedString(Object[] arr) {
+    public static String arrayToCommaDelimitedString(Object[] arr) {
 		return arrayToDelimitedString(arr, ",");
 	}
 

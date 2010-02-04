@@ -1,11 +1,11 @@
-/*
- * Copyright 2002-2009 the original author or authors.
+/**
+ * Copyright (C) 2010 Mathieu Carbou <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -1081,29 +1081,29 @@ public abstract class ClassUtils {
      * @return the merged interface as Class
      * @see java.lang.reflect.Proxy#getProxyClass
      */
-	public static Class<?> createCompositeInterface(Class<?>[] interfaces, ClassLoader classLoader) {
+    public static Class<?> createCompositeInterface(Class<?>[] interfaces, ClassLoader classLoader) {
 
-		return Proxy.getProxyClass(classLoader, interfaces);
-	}
+        return Proxy.getProxyClass(classLoader, interfaces);
+    }
 
-	/**
+    /**
      * Check whether the given class is visible in the given ClassLoader.
      *
      * @param clazz       the class to check (typically an interface)
      * @param classLoader the ClassLoader to check against (may be <code>null</code>,
      *                    in which case this method will always return <code>true</code>)
      */
-	public static boolean isVisible(Class<?> clazz, ClassLoader classLoader) {
-		if (classLoader == null) {
-			return true;
-		}
-		try {
-			Class<?> actualClass = classLoader.loadClass(clazz.getName());
-			return (clazz == actualClass);
-			// Else: different interface class found...
-		}
-		catch (ClassNotFoundException ex) {
-			// No interface class found...
+    public static boolean isVisible(Class<?> clazz, ClassLoader classLoader) {
+        if (classLoader == null) {
+            return true;
+        }
+        try {
+            Class<?> actualClass = classLoader.loadClass(clazz.getName());
+            return (clazz == actualClass);
+            // Else: different interface class found...
+        }
+        catch (ClassNotFoundException ex) {
+            // No interface class found...
 			return false;
 		}
 	}

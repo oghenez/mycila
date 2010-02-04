@@ -1,11 +1,11 @@
-/*
- * Copyright 2002-2009 the original author or authors.
+/**
+ * Copyright (C) 2010 Mathieu Carbou <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -311,13 +311,13 @@ public abstract class GenericTypeResolver {
                     // the nearest match on the bridge method will be the bounded type.
                     TypeVariable typeVariableArgument = (TypeVariable) actualTypeArgument;
                     Type resolvedType = typeVariableMap.get(typeVariableArgument);
-					if (resolvedType == null) {
-						resolvedType = extractBoundForTypeVariable(typeVariableArgument);
-					}
-					typeVariableMap.put(variable, resolvedType);
-				}
-			}
-		}
-	}
+                    if (resolvedType == null) {
+                        resolvedType = extractBoundForTypeVariable(typeVariableArgument);
+                    }
+                    typeVariableMap.put(variable, resolvedType);
+                }
+            }
+        }
+    }
 
 }
