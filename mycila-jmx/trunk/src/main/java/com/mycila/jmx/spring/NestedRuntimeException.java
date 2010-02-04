@@ -1,11 +1,11 @@
-/*
- * Copyright 2002-2009 the original author or authors.
+/**
+ * Copyright (C) 2010 Mathieu Carbou <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,8 +15,6 @@
  */
 
 package com.mycila.jmx.spring;
-
-import org.springframework.core.NestedExceptionUtils;
 
 /**
  * Handy class for wrapping runtime <code>Exceptions</code> with a root cause.
@@ -40,12 +38,6 @@ public abstract class NestedRuntimeException extends RuntimeException {
      * Use serialVersionUID from Spring 1.2 for interoperability
      */
     private static final long serialVersionUID = 5439915454935047936L;
-
-    static {
-        // Eagerly load the NestedExceptionUtils class to avoid classloader deadlock
-        // issues on OSGi when calling getMessage(). Reported by Don Brown; SPR-5607.
-        NestedExceptionUtils.class.getName();
-    }
 
 
     /**
@@ -75,7 +67,7 @@ public abstract class NestedRuntimeException extends RuntimeException {
      */
     @Override
     public String getMessage() {
-        return NestedExceptionUtils.buildMessage(super.getMessage(), getCause());
+        return buildMessage(super.getMessage(), getCause());
     }
 
 
@@ -136,12 +128,24 @@ public abstract class NestedRuntimeException extends RuntimeException {
                     return true;
                 }
                 if (cause.getCause() == cause) {
-					break;
-				}
-				cause = cause.getCause();
-			}
-			return false;
-		}
-	}
+                    break;
+                }
+                cause = cause.getCause();
+            }
+            return false;
+        }
+    }
 
+    private static String buildMessage(String message, Throwable cause) {
+        if (cause != null) {
+            StringBuilder sb = new StringBuilder();
+            if (message != null) {
+                sb.append(message).append("; ");
+            }
+            sb.append("nested exception is ").append(cause);
+            return sb.toString();
+        } else {
+            return message;
+        }
+    }
 }

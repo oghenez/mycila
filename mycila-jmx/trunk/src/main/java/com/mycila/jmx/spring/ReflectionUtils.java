@@ -1,11 +1,11 @@
-/*
- * Copyright 2002-2009 the original author or authors.
+/**
+ * Copyright (C) 2010 Mathieu Carbou <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -615,35 +615,35 @@ public abstract class ReflectionUtils {
 
     /**
      * Callback optionally used to filter fields to be operated on by a field callback.
-	 */
-	public interface FieldFilter {
+     */
+    public interface FieldFilter {
 
-		/**
+        /**
          * Determine whether the given field matches.
          *
          * @param field the field to check
          */
-		boolean matches(Field field);
-	}
+        boolean matches(Field field);
+    }
 
 
-	/**
-	 * Pre-built FieldFilter that matches all non-static, non-final fields.
-	 */
-	public static FieldFilter COPYABLE_FIELDS = new FieldFilter() {
+    /**
+     * Pre-built FieldFilter that matches all non-static, non-final fields.
+     */
+    public static FieldFilter COPYABLE_FIELDS = new FieldFilter() {
 
-		public boolean matches(Field field) {
-			return !(Modifier.isStatic(field.getModifiers()) || Modifier.isFinal(field.getModifiers()));
-		}
-	};
+        public boolean matches(Field field) {
+            return !(Modifier.isStatic(field.getModifiers()) || Modifier.isFinal(field.getModifiers()));
+        }
+    };
 
-	/**
-	 * Pre-built MethodFilter that matches all non-bridge methods.
-	 */
-	public static MethodFilter NON_BRIDGED_METHODS = new MethodFilter() {
+    /**
+     * Pre-built MethodFilter that matches all non-bridge methods.
+     */
+    public static MethodFilter NON_BRIDGED_METHODS = new MethodFilter() {
 
-		public boolean matches(Method method) {
-			return !method.isBridge();
+        public boolean matches(Method method) {
+            return !method.isBridge();
 		}
 	};
 
