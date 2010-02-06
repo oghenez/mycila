@@ -19,7 +19,7 @@ import com.mycila.log.jdk.JDKLoggerProvider;
 import com.mycila.log.log4j.Log4jLoggerProvider;
 import com.mycila.log.nop.NopLoggerProvider;
 
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -37,18 +37,12 @@ public final class LoggerProviders {
      */
     public static LoggerProvider cache(final LoggerProvider loggerProvider) {
         return new LoggerProvider() {
-            final Map<String, Logger> cache = new SoftHashMap<String, Logger>();
+            final ConcurrentHashMap<String, Logger> cache = new ConcurrentHashMap<String, Logger>();
 
             public Logger get(String name) {
-                Logger logger;
-                if ((logger = cache.get(name)) == null) {
-                    synchronized (cache) {
-                        if ((logger = cache.get(name)) == null) {
-                            logger = loggerProvider.get(name);
-                            cache.put(name, logger);
-                        }
-                    }
-                }
+                Logger logger = cache.get(name);
+                if (logger == null)
+                    cache.putIfAbsent(name, logger = loggerProvider.get(name));
                 return logger;
             }
         };
