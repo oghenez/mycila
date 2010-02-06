@@ -161,7 +161,7 @@ public final class ServiceClassLoader<S> implements Iterable<Class<S>> {
             } catch (ClassNotFoundException x) {
                 fail(service,
                         "Provider " + cn + " not found");
-            } catch (Throwable x) {
+            } catch (RuntimeException x) {
                 fail(service,
                         "Provider " + cn + " could not be instantiated: " + x,
                         x);
