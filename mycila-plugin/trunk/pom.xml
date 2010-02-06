@@ -13,7 +13,7 @@
 
     <name>mycila-plugin</name>
     <description>Plugin Framework</description>
-    <url>http://old.mycila.com/p/mycila/${project.artifactId}</url>
+    <url>http://code.mycila.com/</url>
     <inceptionYear>2008</inceptionYear>
 
     <!--
@@ -72,7 +72,7 @@
         <url>http://code.google.com/p/mycila/issues/list</url>
     </issueManagement>
 
-    <ciManagement />
+    <ciManagement/>
 
     <mailingLists>
         <mailingList>
@@ -220,11 +220,11 @@
                         <phase>package</phase>
                         <configuration>
                             <tasks>
-                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" />
+                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"/>
                                 <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
-                                    <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5-0.7.3.jar" />
-                                    <rule pattern="org.jgrapht.**" result="com.mycila.plugin.spi.internal.org.jgrapht.@1" />
-                                    <keep pattern="com.mycila.plugin.**" />
+                                    <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5-0.7.3.jar"/>
+                                    <rule pattern="org.jgrapht.**" result="com.mycila.plugin.spi.internal.org.jgrapht.@1"/>
+                                    <keep pattern="com.mycila.plugin.**"/>
                                 </jarjar>
                             </tasks>
                         </configuration>
