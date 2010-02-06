@@ -16,13 +16,14 @@
 package com.mycila.testing.core;
 
 import com.mycila.testing.core.api.Attributes;
-import static com.mycila.testing.core.api.Ensure.*;
 import com.mycila.testing.core.api.Execution;
 import com.mycila.testing.core.api.Step;
 import com.mycila.testing.core.api.TestContext;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import static com.mycila.testing.core.api.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -73,9 +74,8 @@ final class ExecutionImpl implements Execution {
     }
 
     public void setThrowable(Throwable throwable) {
-        if (throwable != null && throwable instanceof InvocationTargetException) {
+        if (throwable instanceof InvocationTargetException)
             throwable = ((InvocationTargetException) throwable).getTargetException();
-        }
         this.throwable = throwable;
     }
 }

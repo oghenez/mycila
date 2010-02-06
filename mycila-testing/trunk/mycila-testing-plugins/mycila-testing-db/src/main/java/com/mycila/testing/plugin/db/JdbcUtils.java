@@ -57,7 +57,7 @@ final class JdbcUtils {
         if (con != null) {
             try {
                 con.close();
-            } catch (Throwable ignored) {
+            } catch (Exception ignored) {
             }
         }
     }
@@ -72,7 +72,7 @@ final class JdbcUtils {
         if (stmt != null) {
             try {
                 stmt.close();
-            } catch (Throwable ignored) {
+            } catch (Exception ignored) {
             }
         }
     }
@@ -196,7 +196,7 @@ final class JdbcUtils {
             } else {
                 obj = rs.getDate(index);
             }
-        } else if (obj != null && obj instanceof java.sql.Date) {
+        } else if (obj instanceof java.sql.Date) {
             if ("java.sql.Timestamp".equals(rs.getMetaData().getColumnClassName(index))) {
                 obj = rs.getTimestamp(index);
             }

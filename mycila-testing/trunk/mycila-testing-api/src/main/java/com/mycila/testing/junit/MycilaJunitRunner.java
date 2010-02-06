@@ -83,7 +83,7 @@ public class MycilaJunitRunner extends BlockJUnit4ClassRunner {
                     try {
                         LOGGER.debug("Calling test method %s.%s", testExecution.method().getDeclaringClass().getName(), testExecution.method().getName());
                         MycilaJunitRunner.super.methodInvoker(method, test).evaluate();
-                    } catch (Throwable t) {
+                    } catch (Exception t) {
                         testExecution.setThrowable(t);
                     }
                 }
