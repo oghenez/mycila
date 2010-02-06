@@ -8,7 +8,7 @@
 
     <groupId>com.mycila</groupId>
     <artifactId>mycila-plugin</artifactId>
-    <version>1.10-SNAPSHOT</version>
+    <version>1.10</version>
     <packaging>jar</packaging>
 
     <name>mycila-plugin</name>
@@ -29,9 +29,9 @@
     -->
 
     <scm>
-        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-plugin/trunk</connection>
-        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-plugin/trunk</developerConnection>
-        <url>http://mycila.googlecode.com/svn/mycila-plugin/trunk</url>
+        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-plugin/tags/mycila-plugin-1.10</connection>
+        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-plugin/tags/mycila-plugin-1.10</developerConnection>
+        <url>http://mycila.googlecode.com/svn/mycila-plugin/tags/mycila-plugin-1.10</url>
     </scm>
 
     <!--
@@ -72,7 +72,7 @@
         <url>http://code.google.com/p/mycila/issues/list</url>
     </issueManagement>
 
-    <ciManagement/>
+    <ciManagement />
 
     <mailingLists>
         <mailingList>
@@ -220,11 +220,11 @@
                         <phase>package</phase>
                         <configuration>
                             <tasks>
-                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"/>
+                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" />
                                 <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
-                                    <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5-0.7.3.jar"/>
-                                    <rule pattern="org.jgrapht.**" result="com.mycila.plugin.spi.internal.org.jgrapht.@1"/>
-                                    <keep pattern="com.mycila.plugin.**"/>
+                                    <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5-0.7.3.jar" />
+                                    <rule pattern="org.jgrapht.**" result="com.mycila.plugin.spi.internal.org.jgrapht.@1" />
+                                    <keep pattern="com.mycila.plugin.**" />
                                 </jarjar>
                             </tasks>
                         </configuration>
