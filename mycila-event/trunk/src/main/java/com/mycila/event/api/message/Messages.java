@@ -47,7 +47,7 @@ public final class Messages {
         return new Message<R>(parameters);
     }
 
-    private static class Message<R> implements MessageRequest<R>, MessageResponse<R> {
+    private static final class Message<R> implements MessageRequest<R>, MessageResponse<R> {
 
         private final Collection<MessageListener<R>> listeners = new CopyOnWriteArrayList<MessageListener<R>>();
         private final CountDownLatch answered = new CountDownLatch(1);
