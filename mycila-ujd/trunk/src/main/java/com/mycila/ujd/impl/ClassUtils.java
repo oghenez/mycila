@@ -22,6 +22,10 @@ import java.lang.reflect.Proxy;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 final class ClassUtils {
+
+    private ClassUtils() {
+    }
+
     static String getPath(Class<?> aClass) {
         return aClass.getName().replace('.', '/') + ".class";
     }

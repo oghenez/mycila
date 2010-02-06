@@ -41,6 +41,9 @@ import java.util.jar.JarFile;
  */
 public final class MycilaUJD {
 
+    private MycilaUJD() {
+    }
+
     public static void premain(String agentArgs, Instrumentation instrumentation) throws Exception {
         agentmain(agentArgs, instrumentation);
     }
