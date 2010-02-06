@@ -13,7 +13,7 @@
 
     <name>mycila-testing</name>
     <description>Mycila testing parent POM</description>
-    <url>http://old.mycila.com/p/mycila/mycila-testing/</url>
+    <url>http://code.mycila.com/</url>
     <inceptionYear>2008</inceptionYear>
 
     <!--
@@ -362,7 +362,7 @@
             <dependency>
                 <groupId>com.mycila</groupId>
                 <artifactId>mycila-plugin</artifactId>
-                <version>1.9</version>
+                <version>1.10</version>
             </dependency>
             <dependency>
                 <groupId>com.mycila</groupId>
