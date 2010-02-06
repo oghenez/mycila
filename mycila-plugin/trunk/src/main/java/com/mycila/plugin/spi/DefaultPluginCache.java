@@ -22,12 +22,13 @@ import com.mycila.plugin.api.Plugin;
 import com.mycila.plugin.api.PluginBinding;
 import com.mycila.plugin.api.PluginCache;
 import com.mycila.plugin.api.PluginLoader;
-import static com.mycila.plugin.spi.Ensure.*;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.mycila.plugin.spi.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -83,14 +84,9 @@ final class DefaultPluginCache<T extends Plugin> implements PluginCache<T> {
 
     private Map<String, PluginBinding<T>> bindings() {
         if (!loaded) {
-            synchronized (this) {
-                if (!loaded) {
-                    for (PluginBinding<T> binding : loader.loadPlugins()) {
-                        plugins.put(binding.getName(), binding);
-                    }
-                    loaded = true;
-                }
-            }
+            for (PluginBinding<T> binding : loader.loadPlugins())
+                plugins.put(binding.getName(), binding);
+            loaded = true;
         }
         return plugins;
     }
