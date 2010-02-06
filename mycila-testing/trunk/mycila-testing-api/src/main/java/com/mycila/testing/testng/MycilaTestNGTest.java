@@ -59,7 +59,7 @@ public abstract class MycilaTestNGTest extends Assert implements IHookable {
                 Field field = callBack.getClass().getDeclaredField("val$instance");
                 field.setAccessible(true);
                 MethodHelper.invokeMethod(testResult.getMethod().getMethod(), field.get(callBack), testResult.getParameters());
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 testExecution.setThrowable(e);
             }
         }

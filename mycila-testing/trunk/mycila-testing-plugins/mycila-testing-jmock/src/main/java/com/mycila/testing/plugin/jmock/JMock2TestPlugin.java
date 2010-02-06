@@ -17,7 +17,6 @@
 package com.mycila.testing.plugin.jmock;
 
 import com.mycila.testing.core.api.TestContext;
-import static com.mycila.testing.core.introspect.Filters.*;
 import com.mycila.testing.core.plugin.DefaultTestPlugin;
 import org.jmock.Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -26,6 +25,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.mycila.testing.core.introspect.Filters.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -66,7 +67,7 @@ public final class JMock2TestPlugin extends DefaultTestPlugin {
             List<Method> methods = context.introspector().selectMethods(excludeOverridenMethods(methodsAnnotatedBy(MockContextProvider.class)));
             if (methods.size() > 0) {
                 Object o = context.introspector().invoke(methods.get(0));
-                if (o != null && o instanceof Mockery) {
+                if (o instanceof Mockery) {
                     return (Mockery) o;
                 }
                 throw new IllegalArgumentException(String.format("Method '%s' annotated with @MockContextProvider did not returned a valid Mockery object: %s", methods.get(0), o));
@@ -76,7 +77,7 @@ public final class JMock2TestPlugin extends DefaultTestPlugin {
             List<Field> fields = context.introspector().selectFields(fieldsAnnotatedBy(MockContextProvider.class));
             if (fields.size() > 0) {
                 Object o = context.introspector().get(fields.get(0));
-                if (o != null && o instanceof Mockery) {
+                if (o instanceof Mockery) {
                     return (Mockery) o;
                 }
                 throw new IllegalArgumentException(String.format("Field '%s' annotated with @MockContextProvider does not have a valid Mockery object: %s", fields.get(0), o));
