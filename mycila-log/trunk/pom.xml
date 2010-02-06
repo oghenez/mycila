@@ -13,7 +13,7 @@
 
     <name>mycila-log</name>
     <description>Log Wrappers</description>
-    <url>http://old.mycila.com/p/mycila/${project.artifactId}</url>
+    <url>http://code.mycila.com/</url>
     <inceptionYear>2008</inceptionYear>
 
     <!--
