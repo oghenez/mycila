@@ -60,7 +60,7 @@ public abstract class MycilaJunit3Test extends TestCase {
                 try {
                     LOGGER.debug("Calling test method %s.%s", testExecution.method().getDeclaringClass().getName(), testExecution.method().getName());
                     super.runTest();
-                } catch (Exception t) {
+                } catch (Throwable t) {
                     testExecution.setThrowable(t);
                 }
             }
