@@ -50,9 +50,8 @@ public final class LazySingletonScope implements Scope, HasScopeAnnotation {
                     * objects and offer to load them in parallel.
                     */
                     synchronized (LazySingletonScope.class) {
-                        if (instance == null) {
+                        if (instance == null)
                             instance = creator.get();
-                        }
                     }
                 }
                 return instance;
