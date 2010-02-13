@@ -19,11 +19,20 @@ package com.mycila.guice.scope;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
+import com.mycila.guice.annotation.LazySingleton;
+import org.guiceyfruit.support.HasScopeAnnotation;
+
+import java.lang.annotation.Annotation;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class LazySingletonScope implements Scope {
+public final class LazySingletonScope implements Scope, HasScopeAnnotation {
+
+    @Override
+    public Class<? extends Annotation> getScopeAnnotation() {
+        return LazySingleton.class;
+    }
 
     public <T> Provider<T> scope(Key<T> key, final Provider<T> creator) {
         return new Provider<T>() {
@@ -57,6 +66,6 @@ public final class LazySingletonScope implements Scope {
 
     @Override
     public String toString() {
-        return "Scopes.SINGLETON";
+        return "LazySingletonScope";
     }
 }
