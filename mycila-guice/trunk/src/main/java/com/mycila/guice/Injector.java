@@ -32,6 +32,7 @@ import com.google.inject.internal.Sets;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.name.Names;
 import com.mycila.guice.annotation.LazySingleton;
+import com.mycila.guice.annotation.OnStartSingleton;
 import org.guiceyfruit.support.CloseErrors;
 import org.guiceyfruit.support.CloseFailedException;
 import org.guiceyfruit.support.Closer;
@@ -59,6 +60,12 @@ public class Injector implements com.google.inject.Injector {
         this.injector = injector;
     }
 
+    public void fireStarted() {
+        for (Binding<?> binding : getAllBindings().values())
+            if (OnStartSingleton.class.equals(getScopeAnnotation(binding)))
+                binding.getProvider().get();
+    }
+
     // From Guicey Injectors class
 
     public void close() throws CloseFailedException {
@@ -68,6 +75,7 @@ public class Injector implements com.google.inject.Injector {
     public void close(CloseErrors errors) throws CloseFailedException {
         close(Singleton.class, errors);
         close(LazySingleton.class, errors);
+        close(OnStartSingleton.class, errors);
     }
 
     public void close(Class<? extends Annotation> scopeAnnotationToClose) throws CloseFailedException {
