@@ -31,6 +31,7 @@ import com.google.inject.internal.Scoping;
 import com.google.inject.internal.Sets;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.name.Names;
+import com.mycila.guice.annotation.LazySingleton;
 import org.guiceyfruit.support.CloseErrors;
 import org.guiceyfruit.support.CloseFailedException;
 import org.guiceyfruit.support.Closer;
@@ -66,6 +67,7 @@ public class Injector implements com.google.inject.Injector {
 
     public void close(CloseErrors errors) throws CloseFailedException {
         close(Singleton.class, errors);
+        close(LazySingleton.class, errors);
     }
 
     public void close(Class<? extends Annotation> scopeAnnotationToClose) throws CloseFailedException {
