@@ -17,6 +17,10 @@ package com.mycila.log.log4j;
 
 import com.mycila.log.Logger;
 import com.mycila.log.LoggerProvider;
+import com.mycila.log.LoggerProviders;
+import org.apache.log4j.xml.DOMConfigurator;
+
+import java.net.URL;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -26,6 +30,12 @@ public final class Log4jLoggerProvider implements LoggerProvider {
     private static final LoggerProvider INSTANCE = new Log4jLoggerProvider();
 
     public Log4jLoggerProvider() {
+        String file = LoggerProviders.getConfigFile();
+        if (file == null) file = "log4j.xml";
+        URL config = Thread.currentThread().getContextClassLoader().getResource(file);
+        if (config != null) {
+            DOMConfigurator.configure(config);
+        }
     }
 
     public Logger get(String name) {
@@ -35,5 +45,5 @@ public final class Log4jLoggerProvider implements LoggerProvider {
     public static LoggerProvider get() {
         return INSTANCE;
     }
-    
+
 }
