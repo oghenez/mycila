@@ -64,7 +64,7 @@ public final class LoggerProviders {
     }
 
     public static String getConfigFile() {
-        return System.getProperty("mycila.log.file");
+        return System.getProperty("mycila.log.config");
     }
 
     /**
