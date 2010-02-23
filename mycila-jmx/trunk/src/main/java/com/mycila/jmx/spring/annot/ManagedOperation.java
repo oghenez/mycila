@@ -38,6 +38,4 @@ public @interface ManagedOperation {
 
     public abstract String description() default "";
 
-    public abstract int currencyTimeLimit() default -1;
-
 }

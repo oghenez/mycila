@@ -47,10 +47,6 @@ public @interface ManagedMetric {
 
     public abstract MetricType metricType() default MetricType.GAUGE;
 
-    public abstract int persistPeriod() default -1;
-
-    public abstract String persistPolicy() default "";
-
     public abstract String unit() default "";
 
 }
