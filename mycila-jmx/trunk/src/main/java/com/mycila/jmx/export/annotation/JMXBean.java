@@ -32,9 +32,14 @@ public @interface JMXBean {
     /**
      * Equivalent to {@link #objectName()}}
      */
-    public abstract String value() default "";
+    String value() default "";
 
-    public abstract String objectName() default "";
+    String objectName() default "";
 
-    public abstract String description() default "";
+    String description() default "";
+
+    /**
+     * Choose which elements to expose. By default, expose only annotated methods and fields
+     */
+    Element[] expose() default Element.ANNOTATED;
 }
