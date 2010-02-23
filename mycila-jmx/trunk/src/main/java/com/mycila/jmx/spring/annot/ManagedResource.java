@@ -53,18 +53,5 @@ public @interface ManagedResource {
 
     public abstract String description() default "";
 
-    public abstract int currencyTimeLimit() default -1;
-
-    public abstract boolean log() default false;
-
-    public abstract String logFile() default "";
-
-    public abstract String persistPolicy() default "";
-
-    public abstract int persistPeriod() default -1;
-
-    public abstract String persistName() default "";
-
-    public abstract String persistLocation() default "";
 
 }

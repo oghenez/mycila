@@ -33,10 +33,6 @@ public class ManagedMetric extends AbstractJmxAttribute {
 
     private MetricType metricType = MetricType.GAUGE;
 
-    private int persistPeriod = -1;
-
-    private String persistPolicy = "";
-
     private String unit = "";
 
 
@@ -80,34 +76,6 @@ public class ManagedMetric extends AbstractJmxAttribute {
      */
     public MetricType getMetricType() {
         return this.metricType;
-    }
-
-    /**
-     * The persist period for this metric.
-     */
-    public void setPersistPeriod(int persistPeriod) {
-        this.persistPeriod = persistPeriod;
-    }
-
-    /**
-     * The persist period for this metric.
-     */
-    public int getPersistPeriod() {
-        return this.persistPeriod;
-    }
-
-    /**
-     * The persist policy for this metric.
-     */
-    public void setPersistPolicy(String persistPolicy) {
-        this.persistPolicy = persistPolicy;
-    }
-
-    /**
-     * The persist policy for this metric.
-     */
-    public String getPersistPolicy() {
-        return this.persistPolicy;
     }
 
     /**

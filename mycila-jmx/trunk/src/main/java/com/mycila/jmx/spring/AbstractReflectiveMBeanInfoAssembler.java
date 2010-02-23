@@ -99,45 +99,11 @@ public abstract class AbstractReflectiveMBeanInfoAssembler extends AbstractMBean
      * Constant identifier for the class field in a JMX {@link javax.management.Descriptor}.
      */
     protected static final String FIELD_CLASS = "class";
-    /**
-     * Constant identifier for the log field in a JMX {@link javax.management.Descriptor}.
-     */
-    protected static final String FIELD_LOG = "log";
-
-    /**
-     * Constant identifier for the logfile field in a JMX {@link javax.management.Descriptor}.
-     */
-    protected static final String FIELD_LOG_FILE = "logFile";
 
     /**
      * Constant identifier for the currency time limit field in a JMX {@link javax.management.Descriptor}.
      */
     protected static final String FIELD_CURRENCY_TIME_LIMIT = "currencyTimeLimit";
-
-    /**
-     * Constant identifier for the default field in a JMX {@link javax.management.Descriptor}.
-     */
-    protected static final String FIELD_DEFAULT = "default";
-
-    /**
-     * Constant identifier for the persistPolicy field in a JMX {@link javax.management.Descriptor}.
-     */
-    protected static final String FIELD_PERSIST_POLICY = "persistPolicy";
-
-    /**
-     * Constant identifier for the persistPeriod field in a JMX {@link javax.management.Descriptor}.
-     */
-    protected static final String FIELD_PERSIST_PERIOD = "persistPeriod";
-
-    /**
-     * Constant identifier for the persistLocation field in a JMX {@link javax.management.Descriptor}.
-     */
-    protected static final String FIELD_PERSIST_LOCATION = "persistLocation";
-
-    /**
-     * Constant identifier for the persistName field in a JMX {@link javax.management.Descriptor}.
-     */
-    protected static final String FIELD_PERSIST_NAME = "persistName";
 
     /**
      * Constant identifier for the displayName field in a JMX {@link javax.management.Descriptor}.
@@ -575,7 +541,7 @@ public abstract class AbstractReflectiveMBeanInfoAssembler extends AbstractMBean
         } else {
             // "never cache"
             applyDefaultCurrencyTimeLimit(desc);
-		}
-	}
+        }
+    }
 
 }

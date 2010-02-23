@@ -57,9 +57,6 @@ public class AnnotationJmxAttributeSource implements JmxAttributeSource {
         }
         ManagedAttribute managedAttribute = new ManagedAttribute();
         //TODO AnnotationBeanUtils.copyPropertiesToBean(ann, managedAttribute, "defaultValue");
-        if (ann.defaultValue().length() > 0) {
-            managedAttribute.setDefaultValue(ann.defaultValue());
-        }
         return managedAttribute;
     }
 

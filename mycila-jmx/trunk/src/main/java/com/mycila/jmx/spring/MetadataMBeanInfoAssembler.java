@@ -254,43 +254,6 @@ public class MetadataMBeanInfoAssembler extends AbstractReflectiveMBeanInfoAssem
     }
 
     /**
-     * Adds descriptor fields from the <code>ManagedResource</code> attribute
-     * to the MBean descriptor. Specifically, adds the <code>currencyTimeLimit</code>,
-     * <code>persistPolicy</code>, <code>persistPeriod</code>, <code>persistLocation</code>
-     * and <code>persistName</code> descriptor fields if they are present in the metadata.
-     */
-    @Override
-    protected void populateMBeanDescriptor(Descriptor desc, Object managedBean, String beanKey) {
-        ManagedResource mr = this.attributeSource.getManagedResource(getClassToExpose(managedBean));
-        if (mr == null) {
-            throw new InvalidMetadataException(
-                    "No ManagedResource attribute found for class: " + getClassToExpose(managedBean));
-        }
-
-        applyCurrencyTimeLimit(desc, mr.getCurrencyTimeLimit());
-
-        if (mr.isLog()) {
-            desc.setField(FIELD_LOG, "true");
-        }
-        if (StringUtils.hasLength(mr.getLogFile())) {
-            desc.setField(FIELD_LOG_FILE, mr.getLogFile());
-        }
-
-        if (StringUtils.hasLength(mr.getPersistPolicy())) {
-            desc.setField(FIELD_PERSIST_POLICY, mr.getPersistPolicy());
-        }
-        if (mr.getPersistPeriod() >= 0) {
-            desc.setField(FIELD_PERSIST_PERIOD, Integer.toString(mr.getPersistPeriod()));
-        }
-        if (StringUtils.hasLength(mr.getPersistName())) {
-            desc.setField(FIELD_PERSIST_NAME, mr.getPersistName());
-        }
-        if (StringUtils.hasLength(mr.getPersistLocation())) {
-            desc.setField(FIELD_PERSIST_LOCATION, mr.getPersistLocation());
-        }
-    }
-
-    /**
      * Adds descriptor fields from the <code>ManagedAttribute</code> attribute or the <code>ManagedMetric</code> attribute
      * to the attribute descriptor.
      */
@@ -298,41 +261,10 @@ public class MetadataMBeanInfoAssembler extends AbstractReflectiveMBeanInfoAssem
     protected void populateAttributeDescriptor(Descriptor desc, Method getter, Method setter, String beanKey) {
         if (getter != null && hasManagedMetric(getter)) {
             populateMetricDescriptor(desc, this.attributeSource.getManagedMetric(getter));
-        } else {
-            ManagedAttribute gma =
-                    (getter == null) ? ManagedAttribute.EMPTY : this.attributeSource.getManagedAttribute(getter);
-            ManagedAttribute sma =
-                    (setter == null) ? ManagedAttribute.EMPTY : this.attributeSource.getManagedAttribute(setter);
-            populateAttributeDescriptor(desc, gma, sma);
-        }
-    }
-
-    private void populateAttributeDescriptor(Descriptor desc, ManagedAttribute gma, ManagedAttribute sma) {
-        applyCurrencyTimeLimit(desc, resolveIntDescriptor(gma.getCurrencyTimeLimit(), sma.getCurrencyTimeLimit()));
-
-        Object defaultValue = resolveObjectDescriptor(gma.getDefaultValue(), sma.getDefaultValue());
-        desc.setField(FIELD_DEFAULT, defaultValue);
-
-        String persistPolicy = resolveStringDescriptor(gma.getPersistPolicy(), sma.getPersistPolicy());
-        if (StringUtils.hasLength(persistPolicy)) {
-            desc.setField(FIELD_PERSIST_POLICY, persistPolicy);
-        }
-        int persistPeriod = resolveIntDescriptor(gma.getPersistPeriod(), sma.getPersistPeriod());
-        if (persistPeriod >= 0) {
-            desc.setField(FIELD_PERSIST_PERIOD, Integer.toString(persistPeriod));
         }
     }
 
     private void populateMetricDescriptor(Descriptor desc, ManagedMetric metric) {
-        applyCurrencyTimeLimit(desc, metric.getCurrencyTimeLimit());
-
-        if (StringUtils.hasLength(metric.getPersistPolicy())) {
-            desc.setField(FIELD_PERSIST_POLICY, metric.getPersistPolicy());
-        }
-        if (metric.getPersistPeriod() >= 0) {
-            desc.setField(FIELD_PERSIST_PERIOD, Integer.toString(metric.getPersistPeriod()));
-        }
-
         if (StringUtils.hasLength(metric.getDisplayName())) {
             desc.setField(FIELD_DISPLAY_NAME, metric.getDisplayName());
         }
@@ -348,60 +280,5 @@ public class MetadataMBeanInfoAssembler extends AbstractReflectiveMBeanInfoAssem
         String metricType = (metric.getMetricType() == null) ? MetricType.GAUGE.toString() : metric.getMetricType().toString();
         desc.setField(FIELD_METRIC_TYPE, metricType);
     }
-
-    /**
-     * Adds descriptor fields from the <code>ManagedAttribute</code> attribute
-     * to the attribute descriptor. Specifically, adds the <code>currencyTimeLimit</code>
-     * descriptor field if it is present in the metadata.
-     */
-    @Override
-    protected void populateOperationDescriptor(Descriptor desc, Method method, String beanKey) {
-        ManagedOperation mo = this.attributeSource.getManagedOperation(method);
-        if (mo != null) {
-            applyCurrencyTimeLimit(desc, mo.getCurrencyTimeLimit());
-        }
-    }
-
-    /**
-     * Determines which of two <code>int</code> values should be used as the value
-     * for an attribute descriptor. In general, only the getter or the setter will
-     * be have a non-negative value so we use that value. In the event that both values
-     * are non-negative, we use the greater of the two. This method can be used to
-     * resolve any <code>int</code> valued descriptor where there are two possible values.
-     *
-     * @param getter the int value associated with the getter for this attribute
-     * @param setter the int associated with the setter for this attribute
-     */
-    private int resolveIntDescriptor(int getter, int setter) {
-        return (getter >= setter ? getter : setter);
-    }
-
-    /**
-     * Locates the value of a descriptor based on values attached
-     * to both the getter and setter methods. If both have values
-     * supplied then the value attached to the getter is preferred.
-     *
-     * @param getter the Object value associated with the get method
-     * @param setter the Object value associated with the set method
-     * @return the appropriate Object to use as the value for the descriptor
-     */
-    private Object resolveObjectDescriptor(Object getter, Object setter) {
-        return (getter != null ? getter : setter);
-    }
-
-    /**
-     * Locates the value of a descriptor based on values attached
-     * to both the getter and setter methods. If both have values
-     * supplied then the value attached to the getter is preferred.
-     * The supplied default value is used to check to see if the value
-     * associated with the getter has changed from the default.
-     *
-     * @param getter the String value associated with the get method
-     * @param setter the String value associated with the set method
-     * @return the appropriate String to use as the value for the descriptor
-     */
-    private String resolveStringDescriptor(String getter, String setter) {
-        return (StringUtils.hasLength(getter) ? getter : setter);
-	}
 
 }
