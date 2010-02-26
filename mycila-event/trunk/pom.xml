@@ -71,7 +71,7 @@
         <url>http://code.google.com/p/mycila/issues/list</url>
     </issueManagement>
 
-    <ciManagement />
+    <ciManagement/>
 
     <mailingLists>
         <mailingList>
@@ -229,15 +229,15 @@
                         <phase>package</phase>
                         <configuration>
                             <tasks>
-                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" />
+                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"/>
                                 <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
-                                    <zipfileset src="${project.build.directory}/dependency/cglib-2.2.jar" />
-                                    <zipfileset src="${project.build.directory}/dependency/asm-3.1.jar" />
-                                    <zipfileset src="${project.build.directory}/dependency/aopalliance-1.0.jar" />
-                                    <rule pattern="net.sf.cglib.**" result="com.mycila.event.internal.cglib.@1" />
-                                    <rule pattern="org.objectweb.asm.**" result="com.mycila.event.internal.asm.@1" />
-                                    <rule pattern="org.aopalliance.**" result="com.mycila.event.internal.aopalliance.@1" />
-                                    <keep pattern="com.mycila.event.**" />
+                                    <zipfileset src="${project.build.directory}/dependency/cglib-2.2.jar"/>
+                                    <zipfileset src="${project.build.directory}/dependency/asm-3.1.jar"/>
+                                    <zipfileset src="${project.build.directory}/dependency/aopalliance-1.0.jar"/>
+                                    <rule pattern="net.sf.cglib.**" result="com.mycila.event.internal.cglib.@1"/>
+                                    <rule pattern="org.objectweb.asm.**" result="com.mycila.event.internal.asm.@1"/>
+                                    <rule pattern="org.aopalliance.**" result="com.mycila.event.internal.aopalliance.@1"/>
+                                    <keep pattern="com.mycila.event.**"/>
                                 </jarjar>
                             </tasks>
                         </configuration>
@@ -317,6 +317,82 @@
             </plugin>
         </plugins>
     </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <configuration>
+                    <linkJavadoc>true</linkJavadoc>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <quiet>true</quiet>
+                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>javadoc</report>
+                        </reports>
+                        <configuration>
+                            <links>
+                                <link>http://java.sun.com/javase/6/docs/api/</link>
+                            </links>
+                        </configuration>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <configuration>
+                    <targetJdk>${jdk.version}</targetJdk>
+                    <minimumTokens>100</minimumTokens>
+                    <rulesets>
+                        <ruleset>/rulesets/basic.xml</ruleset>
+                        <ruleset>/rulesets/braces.xml</ruleset>
+                        <ruleset>/rulesets/finalizers.xml</ruleset>
+                        <ruleset>/rulesets/imports.xml</ruleset>
+                        <ruleset>/rulesets/migrating.xml</ruleset>
+                        <ruleset>/rulesets/strings.xml</ruleset>
+                        <ruleset>/rulesets/unusedcode.xml</ruleset>
+                    </rulesets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jdepend-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>javancss-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>taglist-maven-plugin</artifactId>
+                <configuration>
+                    <tags>
+                        <tag>TODO</tag>
+                        <tag>FIXME</tag>
+                        <tag>@todo</tag>
+                        <tag>@fixme</tag>
+                        <tag>@deprecated</tag>
+                    </tags>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </reporting>
 
     <!--
          LIBS
