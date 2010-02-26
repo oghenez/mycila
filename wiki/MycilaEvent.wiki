@@ -466,7 +466,7 @@ Executors are implementations of `java.util.concurrent.Executor`. The first one 
 
 Using this test: http://mycila.googlecode.com/svn/mycila-event/trunk/src/test/java/com/mycila/event/DefaultDispatcherTest.java
 
-We have the following time for each strategy on my DELL 6400 laptop (Intel Centrino Duo)
+We have the following time for each strategy on my DELL 6400 laptop (Intel Centrino Duo), 5 years old.
 
 RUN1: For 1000 publishing threads sending each 1000 events to a random topic between 5 topics, and each topic being watched by two consumers, pool core size has been set to 1000 threads.
 
