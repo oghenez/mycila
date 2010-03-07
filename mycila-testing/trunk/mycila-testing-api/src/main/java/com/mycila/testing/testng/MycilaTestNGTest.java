@@ -79,6 +79,9 @@ public abstract class MycilaTestNGTest extends Assert implements IHookable {
 
     @AfterSuite(alwaysRun = true)
     protected final void shutdown() {
-        testNotifier.shutdown();
+        // testNotifier can be null: if the class has no test methods
+        // testng won't run the @BeforeClass methods
+        if (testNotifier != null)
+            testNotifier.shutdown();
     }
 }
