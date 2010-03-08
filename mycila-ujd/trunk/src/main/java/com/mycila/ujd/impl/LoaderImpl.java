@@ -37,6 +37,8 @@ final class LoaderImpl implements Loader {
     private final DefaultJVM jvm;
 
     LoaderImpl(DefaultJVM jvm, ClassLoader classLoader) {
+        if (jvm == null || classLoader == null)
+            throw new IllegalArgumentException("args cannot be null");
         this.jvm = jvm;
         this.classLoader = classLoader;
     }
@@ -59,16 +61,30 @@ final class LoaderImpl implements Loader {
 
     public Iterable<? extends Container> getContainers() {
         final String javaHome = System.getProperty("java.home");
-        return classLoader instanceof URLClassLoader ?
-                Iterables.transform(Iterables.filter(Arrays.asList(((URLClassLoader) classLoader).getURLs()), new Predicate<URL>() {
-                    public boolean apply(URL url) {
-                        return !url.toExternalForm().contains(javaHome);
-                    }
-                }), new Function<URL, Container>() {
-                    public Container apply(URL from) {
-                        return jvm.containerRegistry.get(from);
-                    }
-                }) : Collections.<Container>emptyList();
+        if (classLoader instanceof URLClassLoader) {
+            final Iterable<URL> urls;
+            try {
+                // when tomcat/jboss unload the webapp classloader (hot deploy)
+                // the classloader with some classes may stay there (in case of
+                // programming errors from webapp auhtors). Calling getURLs() on
+                // such a classloader fails
+                urls = Arrays.asList(((URLClassLoader) classLoader).getURLs());
+            } catch (RuntimeException e) {
+                return Collections.<Container>emptyList();
+            }
+            Iterables.transform(Iterables.filter(urls, new Predicate<URL>() {
+                public boolean apply(URL url) {
+                    // skip JVM classpath
+                    return !url.toExternalForm().contains(javaHome);
+                }
+            }), new Function<URL, Container>() {
+                public Container apply(URL from) {
+                    // transform URL into container, caching it if needed
+                    return jvm.containerRegistry.get(from);
+                }
+            });
+        }
+        return Collections.<Container>emptyList();
     }
 
     public Iterable<? extends JavaClass<?>> getClasses() {
