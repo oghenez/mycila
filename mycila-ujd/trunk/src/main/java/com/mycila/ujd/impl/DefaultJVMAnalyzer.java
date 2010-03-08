@@ -61,15 +61,10 @@ public final class DefaultJVMAnalyzer implements JVMAnalyzer {
     }
 
     public Iterable<String> getLoaderNames(final String packagePrefix) {
-        return UJD.memoize(
-                transform(
-                        UJD.memoize(
-                                filter(
-                                        transform(
-                                                jvm.getClasses(UJD.javaClassStartsWith(packagePrefix)),
-                                                UJD.JAVACLASS_TO_LOADER),
-                                        notNull())),
-                        UJD.LOADER_NAME));
+        return UJD.memoize(transform(UJD.memoize(filter(transform(
+                jvm.getClasses(UJD.javaClassStartsWith(packagePrefix)),
+                UJD.JAVACLASS_TO_LOADER),
+                notNull())), UJD.LOADER_NAME));
     }
 
     public Iterable<? extends Container> getClassPath(final String loaderName) {
