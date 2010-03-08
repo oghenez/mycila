@@ -14,28 +14,32 @@
  * limitations under the License.
  */
 
-package com.mycila.ujd;
+package com.mycila.ujd.api;
 
-import com.mycila.ujd.api.JVMAnalyzer;
-import com.mycila.ujd.api.JVMUpdater;
+import com.google.common.collect.AbstractIterator;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class MycilaUJD {
+final class MemoizingIterator<T> extends AbstractIterator<T> {
+    private final Iterator<? extends T> it;
+    private final Set<T> cache = new HashSet<T>();
 
-    static JVMAnalyzer analyzer;
-    static JVMUpdater updater;
-
-    private MycilaUJD() {
+    MemoizingIterator(Iterator<? extends T> it) {
+        this.it = it;
     }
 
-    public static JVMAnalyzer getAnalyzer() {
-        return analyzer;
+    @Override
+    protected T computeNext() {
+        while (it.hasNext()) {
+            T t = it.next();
+            if (cache.add(t))
+                return t;
+        }
+        return endOfData();
     }
-
-    public static JVMUpdater getUpdater() {
-        return updater;
-    }
-
 }

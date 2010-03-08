@@ -18,15 +18,17 @@ package com.mycila.ujd.impl;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.mycila.ujd.api.Container;
 import com.mycila.ujd.api.JavaClass;
 import com.mycila.ujd.api.Loader;
+import com.mycila.ujd.api.UJD;
 
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
 import java.util.Collections;
+
+import static com.google.common.collect.Iterables.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -44,11 +46,7 @@ final class LoaderImpl implements Loader {
     }
 
     public Iterable<? extends Loader> getChilds() {
-        return Iterables.filter(jvm.getLoaders(), new Predicate<Loader>() {
-            public boolean apply(Loader input) {
-                return input.getParent() == LoaderImpl.this;
-            }
-        });
+        return filter(jvm.getLoaders(), UJD.hasParentLoader(LoaderImpl.this));
     }
 
     public String getName() {
@@ -72,27 +70,25 @@ final class LoaderImpl implements Loader {
             } catch (RuntimeException e) {
                 return Collections.<Container>emptyList();
             }
-            Iterables.transform(Iterables.filter(urls, new Predicate<URL>() {
-                public boolean apply(URL url) {
-                    // skip JVM classpath
-                    return !url.toExternalForm().contains(javaHome);
-                }
-            }), new Function<URL, Container>() {
-                public Container apply(URL from) {
-                    // transform URL into container, caching it if needed
-                    return jvm.containerRegistry.get(from);
-                }
-            });
+            return transform(
+                    filter(urls, new Predicate<URL>() {
+                        public boolean apply(URL url) {
+                            // skip JVM classpath
+                            return !url.toExternalForm().contains(javaHome);
+                        }
+                    }),
+                    new Function<URL, Container>() {
+                        public Container apply(URL from) {
+                            // transform URL into container, caching it if needed
+                            return jvm.containerRegistry.get(from);
+                        }
+                    });
         }
         return Collections.<Container>emptyList();
     }
 
     public Iterable<? extends JavaClass<?>> getClasses() {
-        return Iterables.filter(jvm.getClasses(), new Predicate<JavaClass<?>>() {
-            public boolean apply(JavaClass<?> input) {
-                return input.getLoader() == LoaderImpl.this;
-            }
-        });
+        return filter(jvm.getClasses(), UJD.hasLoader(LoaderImpl.this));
     }
 
     public ClassLoader get() {

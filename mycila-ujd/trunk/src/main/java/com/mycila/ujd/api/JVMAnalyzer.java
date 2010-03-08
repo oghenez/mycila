@@ -36,7 +36,7 @@ public interface JVMAnalyzer {
 
     Iterable<? extends Container> getUnusedClassPath(String loaderName);
 
-    Iterable<? extends ContainedClass> getClasses(String loaderName, String packagePrefix);
+    Iterable<? extends ContainedClass> getContainedClasses(String loaderName, String packagePrefix);
 
     Iterable<? extends ContainedJavaClass<?>> getUsedClasses(String loaderName, String packagePrefix);
 

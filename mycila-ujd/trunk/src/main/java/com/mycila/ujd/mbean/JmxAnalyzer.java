@@ -60,7 +60,7 @@ public final class JmxAnalyzer implements JmxAnalyzerMBean {
     }
 
     public String getClasses(String loaderName, String packagePrefix) {
-        return asString(sort(analyzer.getClasses(loaderName, packagePrefix)));
+        return asString(sort(analyzer.getContainedClasses(loaderName, packagePrefix)));
     }
 
     public String getUsedClasses(String loaderName, String packagePrefix) {

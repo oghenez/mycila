@@ -16,19 +16,20 @@
 
 package com.mycila.ujd.impl;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Iterators;
 import com.mycila.ujd.api.ContainedClass;
 import com.mycila.ujd.api.Container;
 import com.mycila.ujd.api.JVM;
 import com.mycila.ujd.api.JavaClass;
 import com.mycila.ujd.api.Loader;
+import com.mycila.ujd.api.UJD;
 
 import java.net.URLClassLoader;
 import java.util.Arrays;
-import java.util.Iterator;
+
+import static com.google.common.collect.Iterables.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -50,6 +51,9 @@ public final class DefaultJVM implements JVM {
     }
 
     public JVM addClasses(Iterable<Class<?>> classes) {
+        // only keep classes we can analyze.
+        // This also skips bootstrap classes, JDK ones and
+        // proxy-generated classes and classlaoders 
         for (Class<?> aClass : classes)
             if (!aClass.isArray()
                     && aClass.getClassLoader() != null
@@ -67,49 +71,21 @@ public final class DefaultJVM implements JVM {
     }
 
     public Iterable<? extends Loader> getLoaders() {
-        return new Iterable<Loader>() {
-            public Iterator<Loader> iterator() {
-                return new MemoizingIterator<Loader>(Iterators.transform(
-                        getClasses().iterator(),
-                        new Function<JavaClass<?>, Loader>() {
-                            public Loader apply(JavaClass<?> from) {
-                                return from.getLoader();
-                            }
-                        }));
-            }
-        };
+        return UJD.memoize(filter(
+                transform(getClasses(), UJD.JAVACLASS_TO_LOADER),
+                Predicates.notNull()));
     }
 
     public Iterable<? extends Container> getContainers() {
-        return new Iterable<Container>() {
-            public Iterator<Container> iterator() {
-                return new MemoizingIterator<Container>(Iterables.concat(Iterables.transform(
-                        getLoaders(),
-                        new Function<Loader, Iterable<? extends Container>>() {
-                            public Iterable<? extends Container> apply(Loader from) {
-                                return from.getContainers();
-                            }
-                        })).iterator());
-            }
-        };
+        return UJD.memoize(concat(transform(getLoaders(), UJD.LOADER_TO_CONTAINER)));
     }
 
     public Iterable<? extends ContainedClass> getContainedClasses() {
-        return new Iterable<ContainedClass>() {
-            public Iterator<ContainedClass> iterator() {
-                return new MemoizingIterator<ContainedClass>(Iterables.concat(Iterables.transform(
-                        getContainers(),
-                        new Function<Container, Iterable<? extends ContainedClass>>() {
-                            public Iterable<? extends ContainedClass> apply(Container from) {
-                                return from.getClasses();
-                            }
-                        })).iterator());
-            }
-        };
+        return UJD.memoize(concat(transform(getContainers(), UJD.CONTAINER_TO_CONTAINED_CLASSES)));
     }
 
     public Iterable<? extends ContainedClass> getContainedClasses(Predicate<? super ContainedClass> predicate) {
-        return Iterables.filter(getContainedClasses(), predicate);
+        return filter(getContainedClasses(), predicate);
     }
 
 }

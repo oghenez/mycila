@@ -14,32 +14,21 @@
  * limitations under the License.
  */
 
-package com.mycila.ujd.impl;
+package com.mycila.ujd.api;
 
-import com.google.common.collect.AbstractIterator;
-
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class MemoizingIterator<T> extends AbstractIterator<T> {
-    private final Iterator<? extends T> it;
-    private final Set<T> cache = new HashSet<T>();
+final class MemoizingIterable<T> implements Iterable<T> {
+    private final Iterable<? extends T> it;
 
-    MemoizingIterator(Iterator<? extends T> it) {
+    MemoizingIterable(Iterable<? extends T> it) {
         this.it = it;
     }
 
-    @Override
-    protected T computeNext() {
-        while (it.hasNext()) {
-            T t = it.next();
-            if (cache.add(t))
-                return t;
-        }
-        return endOfData();
+    public Iterator<T> iterator() {
+        return new MemoizingIterator<T>(it.iterator());
     }
 }
