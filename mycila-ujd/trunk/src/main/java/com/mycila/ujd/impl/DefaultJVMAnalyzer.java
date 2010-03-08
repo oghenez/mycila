@@ -18,6 +18,7 @@ package com.mycila.ujd.impl;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.mycila.ujd.api.ContainedClass;
 import com.mycila.ujd.api.ContainedJavaClass;
@@ -98,7 +99,9 @@ public final class DefaultJVMAnalyzer implements JVMAnalyzer {
     public Iterable<? extends Container> getUsedClassPath(final String loaderName) {
         if (loaderName == null)
             throw new IllegalArgumentException("Loader name parameter is required");
-        return UJD.memoize(transform(getUsedClasses(loaderName, null), UJD.CONTAINED_CLASS_TO_CONTAINER));
+        return UJD.memoize(Iterables.<ContainedJavaClass<?>, Container>transform(
+                (Iterable<ContainedJavaClass<?>>) getUsedClasses(loaderName, null),
+                UJD.CONTAINED_CLASS_TO_CONTAINER));
     }
 
     public Iterable<? extends ContainedClass> getUnusedClasses(String loaderName, String packagePrefix) {
