@@ -50,9 +50,9 @@ public final class UJD {
         }
     };
 
-    public static final Function<? extends ContainedClass, Container> CONTAINED_CLASS_TO_CONTAINER
-            = new Function<ContainedJavaClass<?>, Container>() {
-        public Container apply(ContainedJavaClass<?> from) {
+    public static final Function<? super ContainedClass, Container> CONTAINED_CLASS_TO_CONTAINER
+            = new Function<ContainedClass, Container>() {
+        public Container apply(ContainedClass from) {
             return from.getContainer();
         }
     };
