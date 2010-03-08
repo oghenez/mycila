@@ -16,25 +16,22 @@
 
 package com.mycila.ujd.impl;
 
-import com.google.common.base.Function;
-import com.google.common.base.Functions;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Sets;
 import com.mycila.ujd.api.ContainedClass;
 import com.mycila.ujd.api.ContainedJavaClass;
 import com.mycila.ujd.api.Container;
+import com.mycila.ujd.api.InexistingClassLoaderException;
 import com.mycila.ujd.api.JVM;
 import com.mycila.ujd.api.JVMAnalyzer;
 import com.mycila.ujd.api.JavaClass;
-import com.mycila.ujd.api.Loader;
+import com.mycila.ujd.api.UJD;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+
+import static com.google.common.base.Predicates.*;
+import static com.google.common.collect.Iterables.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -52,59 +49,48 @@ public final class DefaultJVMAnalyzer implements JVMAnalyzer {
     }
 
     public int getClassCount() {
-        return Iterables.size(jvm.getClasses());
+        return size(jvm.getClasses());
     }
 
     public int getLoaderCount() {
-        return Iterables.size(jvm.getLoaders());
+        return size(jvm.getLoaders());
     }
 
     public Iterable<String> getLoaderNames() {
-        SortedSet<String> names = new TreeSet<String>();
-        for (Loader loader : jvm.getLoaders()) names.add(loader.getName());
-        return names;
+        return UJD.memoize(transform(jvm.getLoaders(), UJD.LOADER_NAME));
     }
 
     public Iterable<String> getLoaderNames(final String packagePrefix) {
-        SortedSet<String> names = new TreeSet<String>();
-        Iterables.addAll(names, Iterables.transform(Iterables.filter(jvm.getLoaders(), new Predicate<Loader>() {
-            public boolean apply(Loader input) {
-                for (JavaClass<?> javaClass : input.getClasses())
-                    if (javaClass.get().getName().startsWith(packagePrefix))
-                        return true;
-                return false;
-            }
-        }), Functions.toStringFunction()));
-        return names;
+        return UJD.memoize(
+                transform(
+                        UJD.memoize(
+                                filter(
+                                        transform(
+                                                jvm.getClasses(UJD.javaClassStartsWith(packagePrefix)),
+                                                UJD.JAVACLASS_TO_LOADER),
+                                        notNull())),
+                        UJD.LOADER_NAME));
     }
 
     public Iterable<? extends Container> getClassPath(final String loaderName) {
-        if (loaderName == null) throw new IllegalArgumentException("Loader name parameter is required");
+        if (loaderName == null)
+            throw new IllegalArgumentException("Loader name parameter is required");
         try {
-            return Iterables.find(jvm.getLoaders(), new Predicate<Loader>() {
-                public boolean apply(Loader input) {
-                    return input.getName().equals(loaderName);
-                }
-            }).getContainers();
+            return find(jvm.getLoaders(), UJD.isLoaderNamed(loaderName)).getContainers();
         } catch (NoSuchElementException e) {
-            return Collections.<Container>emptySet();
+            throw new InexistingClassLoaderException(loaderName);
         }
     }
 
-    public Iterable<? extends ContainedClass> getClasses(String loaderName, final String packagePrefix) {
-        return Iterables.filter(Iterables.concat(Iterables.transform(getClassPath(loaderName), new Function<Container, Iterable<? extends ContainedClass>>() {
-            public Iterable<? extends ContainedClass> apply(Container from) {
-                return from.getClasses();
-            }
-        })), new Predicate<ContainedClass>() {
-            public boolean apply(ContainedClass input) {
-                return packagePrefix == null || input.getClassName().startsWith(packagePrefix);
-            }
-        });
+    public Iterable<? extends ContainedClass> getContainedClasses(String loaderName, final String packagePrefix) {
+        return filter(
+                concat(transform(getClassPath(loaderName), UJD.CONTAINER_TO_CONTAINED_CLASSES)),
+                packagePrefix == null ? Predicates.<ContainedClass>alwaysTrue() : UJD.containedClassStartsWith(packagePrefix));
     }
 
     public Iterable<? extends ContainedJavaClass<?>> getUsedClasses(final String loaderName, final String packagePrefix) {
-        if (loaderName == null) throw new IllegalArgumentException("Loader name parameter is required");
+        if (loaderName == null)
+            throw new IllegalArgumentException("Loader name parameter is required");
         return jvm.getClasses(new Predicate<JavaClass<?>>() {
             public boolean apply(JavaClass<?> input) {
                 return input instanceof ContainedJavaClass
@@ -115,73 +101,38 @@ public final class DefaultJVMAnalyzer implements JVMAnalyzer {
     }
 
     public Iterable<? extends Container> getUsedClassPath(final String loaderName) {
-        if (loaderName == null) throw new IllegalArgumentException("Loader name parameter is required");
-        return new Iterable<Container>() {
-            public Iterator<Container> iterator() {
-                return new MemoizingIterator<Container>(Iterables.transform(getUsedClasses(loaderName, null), new Function<ContainedJavaClass<?>, Container>() {
-                    public Container apply(ContainedJavaClass<?> from) {
-                        return from.getContainer();
-                    }
-                }).iterator());
-            }
-        };
+        if (loaderName == null)
+            throw new IllegalArgumentException("Loader name parameter is required");
+        return UJD.memoize(transform(getUsedClasses(loaderName, null), UJD.CONTAINED_CLASS_TO_CONTAINER));
     }
 
     public Iterable<? extends ContainedClass> getUnusedClasses(String loaderName, String packagePrefix) {
-        final Set<String> used = new HashSet<String>();
-        Iterables.addAll(used, Iterables.transform(getUsedClasses(loaderName, packagePrefix), Functions.toStringFunction()));
-        return Iterables.filter(getClasses(loaderName, packagePrefix), new Predicate<ContainedClass>() {
-            public boolean apply(ContainedClass input) {
-                return !used.contains(input.getClassName());
-            }
-        });
-    }
-
-    public Iterable<? extends Container> getUsedContainers(final String packagePrefix) {
-        if (packagePrefix == null) throw new IllegalArgumentException("packagePrefix parameter is required");
-        return new Iterable<Container>() {
-            public Iterator<Container> iterator() {
-                return new MemoizingIterator<Container>(Iterables.transform(
-                        jvm.getClasses(new Predicate<JavaClass<?>>() {
-                            public boolean apply(JavaClass<?> input) {
-                                return input instanceof ContainedClass
-                                        && input.get().getName().startsWith(packagePrefix);
-                            }
-                        }), new Function<JavaClass<?>, Container>() {
-                            public Container apply(JavaClass<?> from) {
-                                return ((ContainedClass) from).getContainer();
-                            }
-                        }).iterator());
-            }
-        };
-    }
-
-    public Iterable<? extends Container> getContainers(final String packagePrefix) {
-        if (packagePrefix == null) throw new IllegalArgumentException("packagePrefix parameter is required");
-        return new Iterable<Container>() {
-            public Iterator<Container> iterator() {
-                return new MemoizingIterator<Container>(Iterables.transform(
-                        jvm.getContainedClasses(new Predicate<ContainedClass>() {
-                            public boolean apply(ContainedClass input) {
-                                return input.getClassName().startsWith(packagePrefix);
-                            }
-                        }), new Function<ContainedClass, Container>() {
-                            public Container apply(ContainedClass from) {
-                                return from.getContainer();
-                            }
-                        }).iterator());
-            }
-        };
+        return filter(getContainedClasses(loaderName, packagePrefix), not(UJD.containedClassNameIn(
+                Sets.newHashSet(UJD.memoize(transform(getUsedClasses(loaderName, packagePrefix), UJD.CONTAINED_CLASS_NAME))))));
     }
 
     public Iterable<? extends Container> getUnusedClassPath(final String loaderName) {
-        final Set<String> used = new HashSet<String>();
-        Iterables.addAll(used, Iterables.transform(getUsedClassPath(loaderName), Functions.toStringFunction()));
-        return Iterables.filter(getClassPath(loaderName), new Predicate<Container>() {
-            public boolean apply(Container input) {
-                return !used.contains(input.toString());
-            }
-        });
+        if (loaderName == null)
+            throw new IllegalArgumentException("Loader name parameter is required");
+        return UJD.memoize(transform(getUnusedClasses(loaderName, null), UJD.CONTAINED_CLASS_TO_CONTAINER));
+    }
+
+    public Iterable<? extends Container> getUsedContainers(final String packagePrefix) {
+        if (packagePrefix == null)
+            throw new IllegalArgumentException("packagePrefix parameter is required");
+        return UJD.memoize(transform(
+                jvm.<ContainedJavaClass<?>>getClasses(Predicates.<ContainedJavaClass<?>>and(
+                        instanceOf(ContainedClass.class),
+                        UJD.javaClassStartsWith(packagePrefix))),
+                UJD.CONTAINED_CLASS_TO_CONTAINER));
+    }
+
+    public Iterable<? extends Container> getContainers(final String packagePrefix) {
+        if (packagePrefix == null)
+            throw new IllegalArgumentException("packagePrefix parameter is required");
+        return UJD.memoize(transform(
+                jvm.getContainedClasses(UJD.containedClassStartsWith(packagePrefix)),
+                UJD.CONTAINED_CLASS_TO_CONTAINER));
     }
 
 }
