@@ -16,30 +16,29 @@
 
 package com.mycila.jmx.export.annotation;
 
-import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Inherited
-@Documented
-public @interface JMXBean {
+@Target(ElementType.METHOD)
+public @interface JmxOperation {
 
     /**
-     * Equivalent to {@link #objectName()}}
+     * Equivalent to {@link #name()}}
      */
     String value() default "";
 
-    String objectName() default "";
+    /**
+     * Attribute name to expose. If not given, will use method name.
+     */
+    String name() default "";
 
     String description() default "";
 
     /**
-     * Choose which elements to expose. By default, expose only annotated methods and fields
+     * Description of parameters. If not given, parameter names will be generated from their types.
      */
-    Element[] expose() default Element.ANNOTATED;
+    JmxParameter[] parameters() default {};
 }
