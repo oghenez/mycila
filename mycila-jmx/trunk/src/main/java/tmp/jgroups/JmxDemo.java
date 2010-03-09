@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.jmx.jgroups;
+package tmp.jgroups;
 
 import javax.management.MBeanServer;
 import javax.management.MBeanServerFactory;
