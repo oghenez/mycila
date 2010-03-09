@@ -16,31 +16,22 @@
 
 package com.mycila.jmx.export.annotation;
 
-import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
-/**
- * Annotate a field to be exposed
- */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface JmxAttribute {
+public @interface JmxParameter {
+
     /**
      * Equivalent to {@link #name()}}
      */
     String value() default "";
 
     /**
-     * Attribute name to expose. If not given, will use field name.
+     * Parameter name to expose. If not given, will generate a name from parameter type.
      */
     String name() default "";
 
     String description() default "";
 
-    /**
-     * Field access type: read-only, read-write or write only
-     */
-    Access access() default Access.RO;
 }

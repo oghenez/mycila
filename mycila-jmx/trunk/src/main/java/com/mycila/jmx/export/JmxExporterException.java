@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-package com.mycila.jmx.export.annotation;
+package com.mycila.jmx.export;
 
-/**
- * @author Mathieu Carbou (mathieu.carbou@gmail.com)
- */
-public enum Element {
+import com.mycila.jmx.JmxException;
 
-    /**
-     * Expose all annotated methods and fields of the class and its super classes
-     */
-    ANNOTATED,
+public final class JmxExporterException extends JmxException {
 
-    /**
-     * Expose all methods of the class and its super classes
-     */
-    ALL_METHODS,
+    JmxExporterException(String msg) {
+        super(msg);
+    }
 
-    /**
-     * Expose all public methods of the class and its super classes
-     */
-    PUBLIC_METHODS
+    JmxExporterException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+
 }

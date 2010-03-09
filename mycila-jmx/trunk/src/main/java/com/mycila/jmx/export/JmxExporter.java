@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package com.mycila.jmx.export.annotation;
+package com.mycila.jmx.export;
+
+import javax.management.ObjectName;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public enum Element {
+public final class JmxExporter implements JmxOperations {
 
-    /**
-     * Expose all annotated methods and fields of the class and its super classes
-     */
-    ANNOTATED,
 
-    /**
-     * Expose all methods of the class and its super classes
-     */
-    ALL_METHODS,
+    public void register(Object o) throws JmxExporterException {
+    }
 
-    /**
-     * Expose all public methods of the class and its super classes
-     */
-    PUBLIC_METHODS
+    public void unregister(ObjectName objectName) {
+    }
+
+    public void register(ObjectName objectName, Object o) throws JmxExporterException {
+    }
 }

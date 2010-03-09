@@ -16,31 +16,34 @@
 
 package com.mycila.jmx.export.annotation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Annotate a field to be exposed
- */
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface JmxAttribute {
+@Inherited
+@Documented
+public @interface JmxBean {
+
     /**
-     * Equivalent to {@link #name()}}
+     * Equivalent to {@link #objectName()}}
      */
     String value() default "";
 
     /**
-     * Attribute name to expose. If not given, will use field name.
+     * Complete name of JMX export. I.e. <code>java.lang:type=ClassLoading</code>. if not given,
+     * The generated name will be of the form <code>package:type=classname</code>
      */
-    String name() default "";
+    String objectName() default "";
 
     String description() default "";
 
     /**
-     * Field access type: read-only, read-write or write only
+     * Choose which elements to expose. By default, expose only annotated methods and fields
      */
-    Access access() default Access.RO;
+    Element[] expose() default Element.ANNOTATED;
 }
