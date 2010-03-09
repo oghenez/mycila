@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.jmx.jgroups;
+package tmp.jgroups;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.jmx.jgroups;
+package tmp.jgroups;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -22,23 +22,19 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Indicates that a public method or a field (any visibility) in
- * an MBean class defines an MBean attribute. This annotation can
- * be applied to either a field or a public setter and/or getter
- * method of a public class that is itself is optionally annotated
- * with an @MBean annotation, or inherits such an annotation from
- * a superclass.
+ * Indicates that a method in an MBean class defines an MBean
+ * operation. @ManagedOperation annotation can be applied to a
+ * public method of a public class that is itself optionally
+ * annotated with an @MBean annotation, or inherits such an
+ * annotation from a superclass.
  *
  * @author Chris Mills
- * @version $Id: ManagedAttribute.java,v 1.6 2008/03/13 02:00:23 vlada Exp $
+ * @version $Id: ManagedOperation.java,v 1.4 2008/03/12 00:26:42 vlada Exp $
  */
 
+
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.FIELD})
-public @interface ManagedAttribute {
+@Target({ElementType.METHOD})
+public @interface ManagedOperation {
     public abstract String description() default "";
-
-    public abstract String name() default "";
-
-    public abstract boolean writable() default false;
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.jmx.jgroups;
+package tmp.jgroups;
 
 import javax.management.Attribute;
 import javax.management.AttributeList;
@@ -40,9 +40,9 @@ import java.util.regex.Pattern;
  * @author Chris Mills
  * @author Vladimir Blagojevic
  * @version $Id: ResourceDMBean.java,v 1.32 2009/12/11 13:21:17 belaban Exp $
- * @see com.mycila.jmx.jgroups.ManagedAttribute
- * @see com.mycila.jmx.jgroups.ManagedOperation
- * @see com.mycila.jmx.jgroups.MBean
+ * @see tmp.jgroups.ManagedAttribute
+ * @see tmp.jgroups.ManagedOperation
+ * @see tmp.jgroups.MBean
  */
 public class ResourceDMBean implements DynamicMBean {
     private static final Class<?>[] primitives = {int.class,

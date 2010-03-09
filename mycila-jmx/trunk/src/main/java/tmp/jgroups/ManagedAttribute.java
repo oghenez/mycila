@@ -14,35 +14,31 @@
  * limitations under the License.
  */
 
-package com.mycila.jmx.jgroups;
+package tmp.jgroups;
 
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Optional annotation that exposes all public methods in the class
- * hierarchy (excluding Object) as MBean operations. All methods
- * are exposed if and only if exposeAll attribute is true.
- * <p/>
- * <p/>
- * If a more fine grained MBean attribute and operation exposure is needed
- * do not use @MBean annotation but annotate fields and public methods directly
- * using @ManagedOperation and @ManagedAttribute annotations.
+ * Indicates that a public method or a field (any visibility) in
+ * an MBean class defines an MBean attribute. This annotation can
+ * be applied to either a field or a public setter and/or getter
+ * method of a public class that is itself is optionally annotated
+ * with an @MBean annotation, or inherits such an annotation from
+ * a superclass.
  *
  * @author Chris Mills
- * @version $Id: MBean.java,v 1.6 2008/04/28 13:43:10 vlada Exp $
+ * @version $Id: ManagedAttribute.java,v 1.6 2008/03/13 02:00:23 vlada Exp $
  */
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-@Inherited
-public @interface MBean {
-    public abstract String objectName() default "";
-
-    public abstract boolean exposeAll() default false;
-
+@Target({ElementType.METHOD, ElementType.FIELD})
+public @interface ManagedAttribute {
     public abstract String description() default "";
+
+    public abstract String name() default "";
+
+    public abstract boolean writable() default false;
 }
