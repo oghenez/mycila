@@ -33,7 +33,7 @@ public interface JmxAnalyzerMBean {
 
     String getLoaderNames(String packagePrefix);
 
-    String getClasses(String loaderName, String packagePrefix);
+    String getContainedClasses(String loaderName, String packagePrefix);
 
     String getUsedClasses(String loaderName, String packagePrefix);
 

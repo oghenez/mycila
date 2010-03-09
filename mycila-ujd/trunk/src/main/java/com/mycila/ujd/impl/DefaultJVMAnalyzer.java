@@ -62,10 +62,10 @@ public final class DefaultJVMAnalyzer implements JVMAnalyzer {
     }
 
     public Iterable<String> getLoaderNames(final String packagePrefix) {
-        return UJD.memoize(transform(UJD.memoize(filter(transform(
+        return UJD.memoize(transform(filter(transform(
                 jvm.getClasses(UJD.javaClassStartsWith(packagePrefix)),
                 UJD.JAVACLASS_TO_LOADER),
-                notNull())), UJD.LOADER_NAME));
+                notNull()), UJD.LOADER_NAME));
     }
 
     public Iterable<? extends Container> getClassPath(final String loaderName) {
@@ -106,13 +106,14 @@ public final class DefaultJVMAnalyzer implements JVMAnalyzer {
 
     public Iterable<? extends ContainedClass> getUnusedClasses(String loaderName, String packagePrefix) {
         return filter(getContainedClasses(loaderName, packagePrefix), not(UJD.containedClassNameIn(
-                Sets.newHashSet(UJD.memoize(transform(getUsedClasses(loaderName, packagePrefix), UJD.CONTAINED_CLASS_NAME))))));
+                Sets.newHashSet(transform(getUsedClasses(loaderName, packagePrefix), UJD.CONTAINED_CLASS_NAME)))));
     }
 
     public Iterable<? extends Container> getUnusedClassPath(final String loaderName) {
         if (loaderName == null)
             throw new IllegalArgumentException("Loader name parameter is required");
-        return UJD.memoize(transform(getUnusedClasses(loaderName, null), UJD.CONTAINED_CLASS_TO_CONTAINER));
+        return filter(UJD.memoize(transform(getUnusedClasses(loaderName, null), UJD.CONTAINED_CLASS_TO_CONTAINER)),
+                not(in(Sets.newHashSet(getUsedClassPath(loaderName)))));
     }
 
     public Iterable<? extends Container> getUsedContainers(final String packagePrefix) {
