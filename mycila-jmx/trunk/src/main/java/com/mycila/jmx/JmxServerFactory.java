@@ -34,30 +34,30 @@ public final class JmxServerFactory {
      * @throws JmxServerException If not found
      */
     public MBeanServer locateDefault() throws JmxServerException {
-        return locateByAgentId(null);
+        return locateByAgent(null);
     }
 
     /**
-     * Locate an existing MBean server from its agent id
+     * Locate an existing MBean server from its agent name
      *
-     * @param agentId MBean serevr name
+     * @param agent MBean serevr name
      * @return The located MBean server
      * @throws JmxServerException If not found
      */
-    public MBeanServer locateByAgentId(String agentId) throws JmxServerException {
+    public MBeanServer locateByAgent(String agent) throws JmxServerException {
         // null means any registered server, but "" specifically means the platform server
-        if (!"".equals(agentId)) {
-            List<MBeanServer> servers = MBeanServerFactory.findMBeanServer(agentId);
+        if (!"".equals(agent)) {
+            List<MBeanServer> servers = MBeanServerFactory.findMBeanServer(agent);
             if (servers != null && !servers.isEmpty()) return servers.get(0);
         }
-        if (agentId == null || agentId.length() == 0)
+        if (agent == null || agent.length() == 0)
             try {
                 return ManagementFactory.getPlatformMBeanServer();
             }
             catch (SecurityException ex) {
                 throw new JmxServerException("No specific MBeanServer found, and not allowed to obtain the Java platform MBeanServer", ex);
             }
-        throw new JmxServerException("Unable to locate an MBeanServer instance" + (agentId != null ? " with agent id [" + agentId + "]" : ""));
+        throw new JmxServerException("Unable to locate an MBeanServer instance" + (agent != null ? " with agent id [" + agent + "]" : ""));
     }
 
     /**
