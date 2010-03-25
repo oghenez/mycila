@@ -19,6 +19,9 @@ package com.mycila.jmx.export.annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+/**
+ * Describe a method parameter
+ */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface JmxParameter {
 
