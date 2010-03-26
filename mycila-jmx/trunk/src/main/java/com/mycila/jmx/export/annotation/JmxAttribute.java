@@ -16,6 +16,8 @@
 
 package com.mycila.jmx.export.annotation;
 
+import com.mycila.jmx.export.Access;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

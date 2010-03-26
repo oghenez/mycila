@@ -4,17 +4,29 @@ import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.AttributeNotFoundException;
 import javax.management.DynamicMBean;
+import javax.management.ImmutableDescriptor;
 import javax.management.InvalidAttributeValueException;
 import javax.management.MBeanException;
 import javax.management.MBeanInfo;
+import javax.management.ObjectName;
 import javax.management.ReflectionException;
+import javax.management.modelmbean.DescriptorSupport;
+import javax.management.modelmbean.XMLParseException;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class DynamicMBeanSample {
+public final class DynamicMBeanSample {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        MyObject object = new MyObject();
+        DynaBean mbean = new DynaBean(object);
+        new JmxServerFactory().locateDefault().registerMBean(mbean, new ObjectName(object.getClass().getPackage().getName() + ":type=" + object.getClass().getSimpleName()));
+        new CountDownLatch(1).await();
+    }
+
+    public static class MyObject {
 
     }
 
@@ -22,23 +34,16 @@ final class DynamicMBeanSample {
 
         Object object;
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        MBeanInfo mBeanInfo = new MBeanInfo(getObject().getClass().getCanonicalName(),
-                description,
-                attrInfo,
-                null,
-                opInfo,
-                null);
 
         DynaBean(Object object) {
             this.object = object;
-
         }
 
         public Object getAttribute(String attribute) throws AttributeNotFoundException, MBeanException, ReflectionException {
             ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(classLoader);
-                //TODO
+                return null;//TODO
             }
             finally {
                 Thread.currentThread().setContextClassLoader(currentClassLoader);
@@ -60,7 +65,7 @@ final class DynamicMBeanSample {
             ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(classLoader);
-                //TODO
+                return null;//TODO
             }
             finally {
                 Thread.currentThread().setContextClassLoader(currentClassLoader);
@@ -71,7 +76,7 @@ final class DynamicMBeanSample {
             ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(classLoader);
-                //TODO
+                return null;//TODO
             }
             finally {
                 Thread.currentThread().setContextClassLoader(currentClassLoader);
@@ -82,7 +87,7 @@ final class DynamicMBeanSample {
             ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
             try {
                 Thread.currentThread().setContextClassLoader(classLoader);
-                //TODO
+                return null;//TODO
             }
             finally {
                 Thread.currentThread().setContextClassLoader(currentClassLoader);
@@ -90,7 +95,9 @@ final class DynamicMBeanSample {
         }
 
         public MBeanInfo getMBeanInfo() {
-            return null;
+            MBeanInfo mBeanInfo = new MBeanInfo(object.getClass().getName(), "my desc", null, null, null, null, new ImmutableDescriptor("immutableInfo=true"));
+            //mBeanInfo.getDescriptor().setField("immutableInfo", true);
+            return mBeanInfo;
         }
     }
 

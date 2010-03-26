@@ -16,6 +16,8 @@
 
 package com.mycila.jmx.export.annotation;
 
+import com.mycila.jmx.export.Element;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
