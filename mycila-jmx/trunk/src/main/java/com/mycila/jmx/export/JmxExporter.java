@@ -21,15 +21,12 @@ import javax.management.ObjectName;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class JmxExporter implements JmxOperations {
+public interface JmxExporter {
 
+    ObjectName register(Object managedResource) throws JmxExportException;
 
-    public void register(Object o) throws JmxExporterException {
-    }
+    void register(Object managedResource, ObjectName objectName) throws JmxExportException;
 
-    public void unregister(ObjectName objectName) {
-    }
+    void unregister(ObjectName objectName);
 
-    public void register(ObjectName objectName, Object o) throws JmxExporterException {
-    }
 }
