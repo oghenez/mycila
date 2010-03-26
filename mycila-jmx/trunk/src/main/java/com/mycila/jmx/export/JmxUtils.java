@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.jmx;
+package com.mycila.jmx.export;
 
 import tmp.spring.ClassUtils;
 import tmp.spring.ObjectNameManager;
@@ -27,7 +27,7 @@ import java.util.Hashtable;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class JmxUtils {
+final class JmxUtils {
 
     /**
      * Suffix used to identify an MBean interface.
@@ -67,9 +67,7 @@ public final class JmxUtils {
      * @throws javax.management.MalformedObjectNameException
      *          in case of an invalid object name specification
      */
-    public static ObjectName appendIdentityToObjectName(ObjectName objectName, Object managedResource)
-            throws MalformedObjectNameException {
-
+    public static ObjectName appendIdentityToObjectName(ObjectName objectName, Object managedResource) throws MalformedObjectNameException {
         Hashtable<String, String> keyProperties = objectName.getKeyPropertyList();
         keyProperties.put(IDENTITY_OBJECT_NAME_KEY, Integer.toHexString(System.identityHashCode(managedResource)));
         return ObjectNameManager.getInstance(objectName.getDomain(), keyProperties);
@@ -85,9 +83,10 @@ public final class JmxUtils {
      * @return whether the class qualifies as an MBean
      */
     public static boolean isMBean(Class beanClass) {
-        return (beanClass != null &&
-                (DynamicMBean.class.isAssignableFrom(beanClass) ||
-                        (getMBeanInterface(beanClass) != null || getMXBeanInterface(beanClass) != null)));
+        return beanClass != null
+                && (DynamicMBean.class.isAssignableFrom(beanClass)
+                || getMBeanInterface(beanClass) != null
+                || getMXBeanInterface(beanClass) != null);
     }
 
     /**
@@ -99,16 +98,13 @@ public final class JmxUtils {
      * @return the Standard MBean interface for the given class
      */
     public static Class getMBeanInterface(Class clazz) {
-        if (clazz.getSuperclass() == null) {
+        if (clazz.getSuperclass() == null)
             return null;
-        }
         String mbeanInterfaceName = clazz.getName() + MBEAN_SUFFIX;
         Class[] implementedInterfaces = clazz.getInterfaces();
-        for (Class iface : implementedInterfaces) {
-            if (iface.getName().equals(mbeanInterfaceName)) {
+        for (Class iface : implementedInterfaces)
+            if (iface.getName().equals(mbeanInterfaceName))
                 return iface;
-            }
-        }
         return getMBeanInterface(clazz.getSuperclass());
     }
 
@@ -121,21 +117,16 @@ public final class JmxUtils {
      * @return whether there is an MXBean interface for the given class
      */
     public static Class getMXBeanInterface(Class clazz) {
-        if (clazz.getSuperclass() == null) {
+        if (clazz.getSuperclass() == null)
             return null;
-        }
         Class[] implementedInterfaces = clazz.getInterfaces();
         for (Class iface : implementedInterfaces) {
             boolean isMxBean = iface.getName().endsWith(MXBEAN_SUFFIX);
             if (mxBeanAnnotationAvailable) {
                 Boolean checkResult = MXBeanChecker.evaluateMXBeanAnnotation(iface);
-                if (checkResult != null) {
-                    isMxBean = checkResult;
-                }
+                if (checkResult != null) isMxBean = checkResult;
             }
-            if (isMxBean) {
-                return iface;
-            }
+            if (isMxBean) return iface;
         }
         return getMXBeanInterface(clazz.getSuperclass());
     }
@@ -144,7 +135,6 @@ public final class JmxUtils {
      * Inner class to avoid a Java 6 dependency.
      */
     private static class MXBeanChecker {
-
         public static Boolean evaluateMXBeanAnnotation(Class<?> iface) {
             javax.management.MXBean mxBean = iface.getAnnotation(javax.management.MXBean.class);
             return (mxBean != null ? mxBean.value() : null);

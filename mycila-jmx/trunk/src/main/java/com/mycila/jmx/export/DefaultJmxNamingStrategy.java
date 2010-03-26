@@ -25,6 +25,7 @@ import javax.management.ObjectName;
 public class DefaultJmxNamingStrategy implements JmxNamingStrategy {
     @Override
     public ObjectName getObjectName(Object managedBean) throws MalformedObjectNameException {
+        //TODO
         return null;
     }
 }

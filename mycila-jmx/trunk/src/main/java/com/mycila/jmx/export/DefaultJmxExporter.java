@@ -16,13 +16,13 @@
 
 package com.mycila.jmx.export;
 
-import com.mycila.jmx.JmxUtils;
-
+import javax.management.DynamicMBean;
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.JMException;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
+import javax.management.StandardMBean;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -62,7 +62,9 @@ public class DefaultJmxExporter implements JmxExporter {
         if (JmxUtils.isMBean(managedResource.getClass()))
             doRegister(managedResource, objectName);
         else {
-            Object mbean = createMBean(managedResource);
+            DynamicMBean mbean = adaptMBeanIfPossible(managedResource);
+            if (mbean == null)
+                mbean = createMBean(managedResource);
             doRegister(mbean, objectName);
         }
     }
@@ -108,7 +110,38 @@ public class DefaultJmxExporter implements JmxExporter {
         }
     }
 
-    protected Object createMBean(Object managedResource) {
+    /**
+     * Build an adapted MBean for the given bean instance, if possible.
+     * <p>The default implementation builds a JMX 1.2 StandardMBean
+     * for the target's MBean/MXBean interface in case of an AOP proxy,
+     * delegating the interface's management operations to the proxy.
+     *
+     * @param bean the original bean instance
+     * @return the adapted MBean, or <code>null</code> if not possible
+     */
+    @SuppressWarnings("unchecked")
+    protected DynamicMBean adaptMBeanIfPossible(Object bean) {
+        Class<?> targetClass = AopUtils.getTargetClass(bean);
+        if (targetClass != bean.getClass()) {
+            Class ifc = JmxUtils.getMXBeanInterface(targetClass);
+            if (ifc != null) {
+                if (ifc.isInstance(bean))
+                    return new StandardMBean(bean, ifc, true);
+                throw new JmxExportException("Managed bean [" + bean + "] has a target class with an MXBean interface but does not expose it in the proxy");
+            } else {
+                ifc = JmxUtils.getMBeanInterface(targetClass);
+                if (ifc != null) {
+                    if (ifc.isInstance(bean))
+                        return new StandardMBean(bean, ifc, false);
+                    throw new JmxExportException("Managed bean [" + bean + "] has a target class with an MBean interface but does not expose it in the proxy");
+                }
+            }
+        }
+        return null;
+    }
+
+    protected DynamicMBean createMBean(Object managedResource) {
+        //TODO
         return null;
     }
 
