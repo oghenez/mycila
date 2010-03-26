@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.jmx;
+package com.mycila.jmx.export;
 
-public abstract class JmxException extends RuntimeException {
+import com.mycila.jmx.JmxException;
 
-    protected JmxException(String msg) {
-        super(msg);
-    }
+public final class JmxExportException extends JmxException {
 
-    protected JmxException(String msg, Throwable cause) {
+    JmxExportException(String msg, Throwable cause) {
         super(msg, cause);
-    }
-
-    protected JmxException(Throwable cause) {
-        super(cause.getMessage(), cause);
     }
 }

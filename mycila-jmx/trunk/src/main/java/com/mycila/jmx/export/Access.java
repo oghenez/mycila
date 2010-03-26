@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.jmx.export.annotation;
+package com.mycila.jmx.export;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
