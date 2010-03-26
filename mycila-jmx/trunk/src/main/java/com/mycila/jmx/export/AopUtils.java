@@ -1,0 +1,81 @@
+package com.mycila.jmx.export;
+
+import java.lang.reflect.Proxy;
+
+/**
+ * @author Mathieu Carbou (mathieu.carbou@gmail.com)
+ */
+final class AopUtils {
+
+    private AopUtils() {
+    }
+
+    /**
+     * Determine the target class of the given bean instance,
+     * which might be an AOP proxy.
+     * <p>Returns the target class for an AOP proxy and the plain class else.
+     *
+     * @param candidate the instance to check (might be an AOP proxy)
+     * @return the target class (or the plain class of the given object as fallback)
+     */
+    public static Class getTargetClass(Object candidate) {
+        for (SupportedProxy supportedProxy : SupportedProxy.values()) {
+            Class<?> c = supportedProxy.getTargetType(candidate);
+            if (c != null) return c;
+        }
+        return candidate.getClass();
+    }
+
+    private static enum SupportedProxy {
+        SPRING {
+            @Override
+            Class<?> getTargetType(Object proxy) {
+                try {
+                    for (Class<?> itf : proxy.getClass().getInterfaces())
+                        if ("org.springframework.aop.TargetClassAware".equals(itf.getName()))
+                            return (Class<?>) proxy.getClass().getMethod("getTargetClass").invoke(proxy);
+                } catch (Exception ignored) {
+                }
+                return null;
+            }
+            @Override
+            boolean isProxyClass(Class<?> c) {
+                for (Class<?> itf : c.getInterfaces())
+                    if ("org.springframework.aop.SpringProxy".equals(itf.getName())
+                            || "org.springframework.aop.TargetClassAware".equals(itf.getName()))
+                        return true;
+                return false;
+            }},
+        CGLIB {
+            @Override
+            Class<?> getTargetType(Object proxy) {
+                return proxy.getClass().getSuperclass();
+            }
+            @Override
+            boolean isProxyClass(Class<?> c) {
+                if (c.getName().contains("$$"))
+                    return true;
+                for (Class<?> itf : c.getInterfaces())
+                    if ("net.sf.cglib.proxy.Factory".equals(itf.getName()))
+                        return true;
+                return false;
+            }},
+        JDK {
+            @Override
+            Class<?> getTargetType(Object proxy) {
+                return null;
+            }
+            @Override
+            boolean isProxyClass(Class<?> c) {
+                return Proxy.isProxyClass(c);
+            }};
+
+        boolean isProxy(Object o) {
+            return isProxyClass(o.getClass());
+        }
+
+        abstract boolean isProxyClass(Class<?> c);
+
+        abstract Class<?> getTargetType(Object proxy);
+    }
+}

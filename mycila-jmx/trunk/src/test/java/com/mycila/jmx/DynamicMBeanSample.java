@@ -26,6 +26,7 @@ import javax.management.MBeanException;
 import javax.management.MBeanInfo;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
+import javax.management.StandardMBean;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -36,12 +37,21 @@ public final class DynamicMBeanSample {
     public static void main(String[] args) throws Exception {
         MyObject object = new MyObject();
         DynaBean mbean = new DynaBean(object);
-        new JmxServerFactory().locateDefault().registerMBean(mbean, new ObjectName(object.getClass().getPackage().getName() + ":type=" + object.getClass().getSimpleName()));
+        new JmxServerFactory().locateDefault().registerMBean(mbean, new ObjectName("com:type=a"));
+
+        MyObject2 object2 = new MyObject2();
+        new JmxServerFactory().locateDefault().registerMBean(new StandardMBean(new MyObject2(), MyObject2MBean.class), new ObjectName("com:type=b"));
+
         new CountDownLatch(1).await();
     }
 
     public static class MyObject {
+    }
 
+    public static interface MyObject2MBean {
+    }
+
+    public static class MyObject2 implements MyObject2MBean {
     }
 
     private static final class DynaBean implements DynamicMBean {
@@ -111,6 +121,8 @@ public final class DynamicMBeanSample {
         public MBeanInfo getMBeanInfo() {
             MBeanInfo mBeanInfo = new MBeanInfo(object.getClass().getName(), "my desc", null, null, null, null, new ImmutableDescriptor("immutableInfo=true"));
             //mBeanInfo.getDescriptor().setField("immutableInfo", true);
+            //interfaceClassName
+            // isMXBean
             return mBeanInfo;
         }
     }
