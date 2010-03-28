@@ -16,17 +16,15 @@
 
 package com.mycila.jmx;
 
-import javax.management.Attribute;
-import javax.management.AttributeList;
-import javax.management.AttributeNotFoundException;
-import javax.management.DynamicMBean;
+import com.mycila.jmx.export.DefaultDynamicMBean;
+
 import javax.management.ImmutableDescriptor;
-import javax.management.InvalidAttributeValueException;
-import javax.management.MBeanException;
 import javax.management.MBeanInfo;
 import javax.management.ObjectName;
-import javax.management.ReflectionException;
 import javax.management.StandardMBean;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -36,11 +34,18 @@ public final class DynamicMBeanSample {
 
     public static void main(String[] args) throws Exception {
         MyObject object = new MyObject();
-        DynaBean mbean = new DynaBean(object);
+        DynaBean mbean = new DynaBean(object, null);
         new JmxServerFactory().locateDefault().registerMBean(mbean, new ObjectName("com:type=a"));
 
         MyObject2 object2 = new MyObject2();
         new JmxServerFactory().locateDefault().registerMBean(new StandardMBean(new MyObject2(), MyObject2MBean.class), new ObjectName("com:type=b"));
+
+        MyObject2MBean object2MBean = (MyObject2MBean) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class[]{MyObject2MBean.class}, new InvocationHandler() {
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                return method.invoke(proxy, args);
+            }
+        });
 
         new CountDownLatch(1).await();
     }
@@ -54,76 +59,14 @@ public final class DynamicMBeanSample {
     public static class MyObject2 implements MyObject2MBean {
     }
 
-    private static final class DynaBean implements DynamicMBean {
-
-        Object object;
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-
-        DynaBean(Object object) {
-            this.object = object;
+    private static final class DynaBean extends DefaultDynamicMBean {
+        private DynaBean(Object managedResource, MBeanInfo mBeanInfo) {
+            super(managedResource, mBeanInfo);
         }
 
-        public Object getAttribute(String attribute) throws AttributeNotFoundException, MBeanException, ReflectionException {
-            ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
-            try {
-                Thread.currentThread().setContextClassLoader(classLoader);
-                return null;//TODO
-            }
-            finally {
-                Thread.currentThread().setContextClassLoader(currentClassLoader);
-            }
-        }
-
-        public void setAttribute(Attribute attribute) throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException {
-            ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
-            try {
-                Thread.currentThread().setContextClassLoader(classLoader);
-                //TODO
-            }
-            finally {
-                Thread.currentThread().setContextClassLoader(currentClassLoader);
-            }
-        }
-
-        public AttributeList getAttributes(String[] attributes) {
-            ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
-            try {
-                Thread.currentThread().setContextClassLoader(classLoader);
-                return null;//TODO
-            }
-            finally {
-                Thread.currentThread().setContextClassLoader(currentClassLoader);
-            }
-        }
-
-        public AttributeList setAttributes(AttributeList attributes) {
-            ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
-            try {
-                Thread.currentThread().setContextClassLoader(classLoader);
-                return null;//TODO
-            }
-            finally {
-                Thread.currentThread().setContextClassLoader(currentClassLoader);
-            }
-        }
-
-        public Object invoke(String actionName, Object[] params, String[] signature) throws MBeanException, ReflectionException {
-            ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
-            try {
-                Thread.currentThread().setContextClassLoader(classLoader);
-                return null;//TODO
-            }
-            finally {
-                Thread.currentThread().setContextClassLoader(currentClassLoader);
-            }
-        }
-
+        @Override
         public MBeanInfo getMBeanInfo() {
-            MBeanInfo mBeanInfo = new MBeanInfo(object.getClass().getName(), "my desc", null, null, null, null, new ImmutableDescriptor("immutableInfo=true"));
-            //mBeanInfo.getDescriptor().setField("immutableInfo", true);
-            //interfaceClassName
-            // isMXBean
-            return mBeanInfo;
+            return new MBeanInfo(getManagedResource().getClass().getName(), "my desc", null, null, null, null, new ImmutableDescriptor("immutableInfo=true"));
         }
     }
 

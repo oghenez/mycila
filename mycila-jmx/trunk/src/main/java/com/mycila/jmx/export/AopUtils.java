@@ -34,7 +34,7 @@ final class AopUtils {
      * @param candidate the instance to check (might be an AOP proxy)
      * @return the target class (or the plain class of the given object as fallback)
      */
-    public static Class getTargetClass(Object candidate) {
+    public static Class<?> getTargetClass(Object candidate) {
         for (SupportedProxy supportedProxy : SupportedProxy.values()) {
             Class<?> c = supportedProxy.getTargetType(candidate);
             if (c != null) return c;

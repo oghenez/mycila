@@ -16,6 +16,8 @@
 
 package com.mycila.jmx.export;
 
+import com.mycila.jmx.export.annotation.JmxBean;
+
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
@@ -25,7 +27,17 @@ import javax.management.ObjectName;
 public class DefaultJmxNamingStrategy implements JmxNamingStrategy {
     @Override
     public ObjectName getObjectName(Object managedBean) throws MalformedObjectNameException {
-        //TODO
-        return null;
+        // check JmxSelfNaming
+        if (managedBean instanceof JmxSelfNaming)
+            return ((JmxSelfNaming) managedBean).getObjectName();
+        // check annotation
+        Class<?> managedClass = AopUtils.getTargetClass(managedBean);
+        JmxBean jmxBean = managedClass.getAnnotation(JmxBean.class);
+        if (StringUtils.hasLength(jmxBean.objectName()))
+            return ObjectName.getInstance(jmxBean.objectName());
+        if (StringUtils.hasLength(jmxBean.value()))
+            return ObjectName.getInstance(jmxBean.value());
+        // default
+        return ObjectName.getInstance(ClassUtils.getPackageName(managedClass) + ":type=" + ClassUtils.getSimpleName(managedClass));
     }
 }
