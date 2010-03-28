@@ -19,6 +19,7 @@ package com.mycila.jmx.export;
 import javax.management.DynamicMBean;
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.JMException;
+import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
@@ -141,8 +142,11 @@ public class DefaultJmxExporter implements JmxExporter {
     }
 
     protected DynamicMBean createMBean(Object managedResource) {
-        //TODO
-        return null;
+        MBeanInfo mBeanInfo = getMBeanInfo(managedResource);
+        return new ContextualDynamicMBean(managedResource, mBeanInfo);
     }
 
+    protected MBeanInfo getMBeanInfo(Object managedBean) {
+        return null;//TODO
+    }
 }
