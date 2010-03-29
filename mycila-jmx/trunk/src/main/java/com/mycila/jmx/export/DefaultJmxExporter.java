@@ -19,7 +19,6 @@ package com.mycila.jmx.export;
 import javax.management.DynamicMBean;
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.JMException;
-import javax.management.MBeanInfo;
 import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
@@ -28,14 +27,36 @@ import javax.management.StandardMBean;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class DefaultJmxExporter implements JmxExporter {
+public final class DefaultJmxExporter implements JmxExporter {
 
     private final MBeanServer mBeanServer;
-    private final ExportBehavior exportBehavior = ExportBehavior.FAIL_ON_EXISTING;
-    private final JmxNamingStrategy namingStrategy = new DefaultJmxNamingStrategy();
+    private final ExportBehavior exportBehavior;
+    private final JmxNamingStrategy namingStrategy;
+    private final JmxMetadataReader metadataReader;
 
     public DefaultJmxExporter(MBeanServer mBeanServer) {
+        this(mBeanServer, ExportBehavior.FAIL_ON_EXISTING);
+    }
+
+    public DefaultJmxExporter(MBeanServer mBeanServer,
+                              ExportBehavior exportBehavior) {
+        this(mBeanServer, exportBehavior, new DefaultJmxNamingStrategy());
+    }
+
+    public DefaultJmxExporter(MBeanServer mBeanServer,
+                              ExportBehavior exportBehavior,
+                              JmxNamingStrategy namingStrategy) {
+        this(mBeanServer, exportBehavior, namingStrategy, new DefaultJmxMetadataBuilder());
+    }
+
+    public DefaultJmxExporter(MBeanServer mBeanServer,
+                              ExportBehavior exportBehavior,
+                              JmxNamingStrategy namingStrategy,
+                              JmxMetadataReader metadataReader) {
         this.mBeanServer = mBeanServer;
+        this.exportBehavior = exportBehavior;
+        this.namingStrategy = namingStrategy;
+        this.metadataReader = metadataReader;
     }
 
     /* IMPL */
@@ -70,13 +91,11 @@ public class DefaultJmxExporter implements JmxExporter {
         }
     }
 
-    /* NON OVERRIDABLE */
+    /* MIGHT BECOME OVERRIDABLE */
 
-    public final MBeanServer getMBeanServer() {
+    public MBeanServer getMBeanServer() {
         return mBeanServer;
     }
-
-    /* OVERRIDABLE */
 
     protected ExportBehavior getExportBehavior() {
         return exportBehavior;
@@ -142,11 +161,14 @@ public class DefaultJmxExporter implements JmxExporter {
     }
 
     protected DynamicMBean createMBean(Object managedResource) {
-        MBeanInfo mBeanInfo = getMBeanInfo(managedResource);
-        return new ContextualDynamicMBean(managedResource, mBeanInfo);
+        Class<?> targetClass = AopUtils.getTargetClass(managedResource);
+        JmxMetadata metadata = getJmxMetadata(targetClass);
+        return new ContextualDynamicMBean(
+                new DefaultDynamicMBean(managedResource, metadata),
+                managedResource.getClass().getClassLoader());
     }
 
-    protected MBeanInfo getMBeanInfo(Object managedBean) {
-        return null;//TODO
+    protected JmxMetadata getJmxMetadata(Class<?> clazz) {
+        return metadataReader.readJmxMetadata(clazz);
     }
 }

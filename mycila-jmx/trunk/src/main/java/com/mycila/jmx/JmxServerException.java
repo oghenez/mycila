@@ -18,11 +18,11 @@ package com.mycila.jmx;
 
 public final class JmxServerException extends JmxException {
 
-    JmxServerException(String msg) {
+    public JmxServerException(String msg) {
         super(msg);
     }
 
-    JmxServerException(String msg, Throwable cause) {
+    public JmxServerException(String msg, Throwable cause) {
         super(msg, cause);
     }
 
