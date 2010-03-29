@@ -19,11 +19,11 @@ package com.mycila.jmx.export;
 import com.mycila.jmx.JmxException;
 
 public final class JmxExportException extends JmxException {
-    JmxExportException(String msg) {
+    public JmxExportException(String msg) {
         super(msg);
     }
 
-    JmxExportException(String msg, Throwable cause) {
+    public JmxExportException(String msg, Throwable cause) {
         super(msg, cause);
     }
 }

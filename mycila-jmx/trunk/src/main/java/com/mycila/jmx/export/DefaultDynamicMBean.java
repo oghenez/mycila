@@ -29,54 +29,102 @@ import javax.management.RuntimeOperationsException;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class DefaultDynamicMBean implements DynamicMBean {
+public final class DefaultDynamicMBean implements DynamicMBean {
 
     private final Object managedResource;
-    private final MBeanInfo mBeanInfo;
+    private final JmxMetadata jmxMetadata;
 
-    public DefaultDynamicMBean(Object managedResource, MBeanInfo mBeanInfo) {
+    public DefaultDynamicMBean(Object managedResource, JmxMetadata jmxMetadata) {
         this.managedResource = managedResource;
-        this.mBeanInfo = mBeanInfo;
+        this.jmxMetadata = jmxMetadata;
     }
 
     @Override
     public Object getAttribute(String attribute) throws AttributeNotFoundException, MBeanException, ReflectionException {
         // validation from javax.management.modelmbean.RequiredModelMBean
         if (attribute == null)
-            throw new RuntimeOperationsException(new IllegalArgumentException("attributeName must not be null"), "Exception occurred trying to get attribute of a RequiredModelMBean");
+            throw new RuntimeOperationsException(new IllegalArgumentException("attributeName must not be null"), "Exception occurred trying to get attribute of a " + getClass().getSimpleName());
+        JmxAttribute attr = getJmxMetadata().getAttribute(attribute);
+        return attr.get(getManagedResource());
     }
 
     @Override
     public AttributeList getAttributes(String[] attributes) {
         // validation from javax.management.modelmbean.RequiredModelMBean
         if (attributes == null)
-            throw new RuntimeOperationsException(new IllegalArgumentException("attributeNames must not be null"), "Exception occurred trying to get attributes of a RequiredModelMBean");
+            throw new RuntimeOperationsException(new IllegalArgumentException("attributeNames must not be null"), "Exception occurred trying to get attributes of a " + getClass().getSimpleName());
+        AttributeList list = new AttributeList();
+        for (String attribute : attributes) {
+            if (attribute == null)
+                throw new RuntimeOperationsException(new IllegalArgumentException("attributeName must not be null"), "Exception occurred trying to get attribute of a " + getClass().getSimpleName());
+            try {
+                JmxAttribute attr = getJmxMetadata().getAttribute(attribute);
+                list.add(new Attribute(attr.getName(), attr.get(getManagedResource())));
+            } catch (AttributeNotFoundException ignored) {
+            } catch (ReflectionException ignored) {
+            }
+        }
+        return list;
     }
 
     @Override
     public void setAttribute(Attribute attribute) throws AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException {
         // validation from javax.management.modelmbean.RequiredModelMBean
         if (attribute == null)
-            throw new RuntimeOperationsException(new IllegalArgumentException("attribute must not be null"), "Exception occurred trying to set an attribute of a RequiredModelMBean");
+            throw new RuntimeOperationsException(new IllegalArgumentException("attribute must not be null"), "Exception occurred trying to set an attribute of a " + getClass().getSimpleName());
+        JmxAttribute attr = getJmxMetadata().getAttribute(attribute.getName());
+        attr.set(getManagedResource(), attribute.getValue());
     }
 
     @Override
     public AttributeList setAttributes(AttributeList attributes) {
         // validation from javax.management.modelmbean.RequiredModelMBean
         if (attributes == null)
-            throw new RuntimeOperationsException(new IllegalArgumentException("attributes must not be null"), "Exception occurred trying to set attributes of a RequiredModelMBean");
+            throw new RuntimeOperationsException(new IllegalArgumentException("attributes must not be null"), "Exception occurred trying to set attributes of a " + getClass().getSimpleName());
+        AttributeList list = new AttributeList();
+        for (Attribute attribute : attributes.asList()) {
+            try {
+                JmxAttribute attr = getJmxMetadata().getAttribute(attribute.getName());
+                attr.set(getManagedResource(), attribute.getValue());
+                list.add(attribute);
+            } catch (AttributeNotFoundException ignored) {
+            } catch (ReflectionException ignored) {
+            } catch (InvalidAttributeValueException ignored) {
+            }
+        }
+        return list;
     }
 
     @Override
-    public Object invoke(String actionName, Object[] params, String[] signature) throws MBeanException, ReflectionException {
+    public Object invoke(String actionName, Object[] params, String[] signature) throws MBeanException, ReflectionException, RuntimeOperationsException {
         // validation from javax.management.modelmbean.RequiredModelMBean
         if (actionName == null)
-            throw new RuntimeOperationsException(new IllegalArgumentException("Method name must not be null"), "An exception occurred while trying to invoke a method on a RequiredModelMBean");
+            throw new RuntimeOperationsException(new IllegalArgumentException("Method name must not be null"), "An exception occurred while trying to invoke a method on a " + getClass().getSimpleName());
+        Object o = getManagedResource();
+        ClassLoader loader = o.getClass().getClassLoader();
+        Class[] paramTypes = new Class[signature.length];
+        try {
+            for (int i = 0; i < signature.length; i++)
+                paramTypes[i] = ClassUtils.forName(signature[i], loader);
+        } catch (ClassNotFoundException e) {
+            throw new ReflectionException(e, "An exception occurred while trying to invoke a method on a " + getClass().getSimpleName());
+        }
+        JmxOperation op;
+        try {
+            op = getJmxMetadata().getOperation(actionName, paramTypes);
+        } catch (OperationNotFoundException e) {
+            throw new RuntimeOperationsException(e, "An exception occurred while trying to invoke a method on a " + getClass().getSimpleName());
+        }
+        return op.invoke(o, params);
     }
 
     @Override
     public MBeanInfo getMBeanInfo() {
-        return mBeanInfo;
+        return jmxMetadata.getMBeanInfo();
+    }
+
+    public JmxMetadata getJmxMetadata() {
+        return jmxMetadata;
     }
 
     public Object getManagedResource() {

@@ -16,12 +16,11 @@
 
 package com.mycila.jmx;
 
-import com.mycila.jmx.export.DefaultDynamicMBean;
+import com.mycila.jmx.export.DefaultJmxMetadata;
 
-import javax.management.ImmutableDescriptor;
-import javax.management.MBeanInfo;
 import javax.management.ObjectName;
 import javax.management.StandardMBean;
+import javax.management.modelmbean.RequiredModelMBean;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -33,10 +32,6 @@ import java.util.concurrent.CountDownLatch;
 public final class DynamicMBeanSample {
 
     public static void main(String[] args) throws Exception {
-        MyObject object = new MyObject();
-        DynaBean mbean = new DynaBean(object, null);
-        new JmxServerFactory().locateDefault().registerMBean(mbean, new ObjectName("com:type=a"));
-
         MyObject2 object2 = new MyObject2();
         new JmxServerFactory().locateDefault().registerMBean(new StandardMBean(new MyObject2(), MyObject2MBean.class), new ObjectName("com:type=b"));
 
@@ -46,6 +41,15 @@ public final class DynamicMBeanSample {
                 return method.invoke(proxy, args);
             }
         });
+
+        DefaultJmxMetadata jmxMetadata = new DefaultJmxMetadata(MyObject3.class)
+                .withDescription("my desc");
+
+
+        RequiredModelMBean modelMBean = new RequiredModelMBean();
+        modelMBean.setModelMBeanInfo(jmxMetadata.getMBeanInfo());
+        modelMBean.setManagedResource(new MyObject3(), "ObjectReference");
+        new JmxServerFactory().locateDefault().registerMBean(modelMBean, new ObjectName("a:type=b"));
 
         new CountDownLatch(1).await();
     }
@@ -59,15 +63,8 @@ public final class DynamicMBeanSample {
     public static class MyObject2 implements MyObject2MBean {
     }
 
-    private static final class DynaBean extends DefaultDynamicMBean {
-        private DynaBean(Object managedResource, MBeanInfo mBeanInfo) {
-            super(managedResource, mBeanInfo);
-        }
-
-        @Override
-        public MBeanInfo getMBeanInfo() {
-            return new MBeanInfo(getManagedResource().getClass().getName(), "my desc", null, null, null, null, new ImmutableDescriptor("immutableInfo=true"));
-        }
+    public static class MyObject3 {
     }
-
 }
+
+// TODO: http://java.sun.com/javase/7/docs/api/javax/management/Descriptor.html

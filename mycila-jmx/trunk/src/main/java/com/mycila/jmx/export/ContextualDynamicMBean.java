@@ -28,7 +28,7 @@ import javax.management.ReflectionException;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class ContextualDynamicMBean implements DynamicMBean {
+public final class ContextualDynamicMBean implements DynamicMBean {
 
     private final DynamicMBean delegate;
     private final ClassLoader classLoader;
