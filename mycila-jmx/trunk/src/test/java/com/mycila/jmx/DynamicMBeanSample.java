@@ -16,11 +16,14 @@
 
 package com.mycila.jmx;
 
-import com.mycila.jmx.export.DefaultJmxMetadata;
+import com.mycila.jmx.export.DefaultJmxExporter;
+import com.mycila.jmx.export.DefaultJmxNamingStrategy;
+import com.mycila.jmx.export.ExportBehavior;
+import com.mycila.jmx.export.JmxExporter;
+import com.mycila.jmx.export.ReflectiveJmxMetadataAssembler;
 
 import javax.management.ObjectName;
 import javax.management.StandardMBean;
-import javax.management.modelmbean.RequiredModelMBean;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -42,14 +45,15 @@ public final class DynamicMBeanSample {
             }
         });
 
-        DefaultJmxMetadata jmxMetadata = new DefaultJmxMetadata(MyObject3.class)
-                .withDescription("my desc");
+        MyObject3 object3 = new MyObject3();
 
+        JmxExporter jmxExporter = new DefaultJmxExporter(
+                new JmxServerFactory().locateDefault(),
+                ExportBehavior.FAIL_ON_EXISTING,
+                new DefaultJmxNamingStrategy(),
+                new ReflectiveJmxMetadataAssembler());
 
-        RequiredModelMBean modelMBean = new RequiredModelMBean();
-        modelMBean.setModelMBeanInfo(jmxMetadata.getMBeanInfo());
-        modelMBean.setManagedResource(new MyObject3(), "ObjectReference");
-        new JmxServerFactory().locateDefault().registerMBean(modelMBean, new ObjectName("a:type=b"));
+        jmxExporter.register(object3);
 
         new CountDownLatch(1).await();
     }
@@ -61,9 +65,13 @@ public final class DynamicMBeanSample {
     }
 
     public static class MyObject2 implements MyObject2MBean {
+        final String abc = "abc1";
+        public final String ghi = "ghi";
     }
 
-    public static class MyObject3 {
+    public static class MyObject3 extends MyObject2 {
+        public final String abc = "abc2";
+        final String def = "def";
     }
 }
 

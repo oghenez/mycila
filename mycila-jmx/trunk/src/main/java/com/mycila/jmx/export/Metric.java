@@ -14,27 +14,19 @@
  * limitations under the License.
  */
 
-package com.mycila.jmx.export.annotation;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+package com.mycila.jmx.export;
 
 /**
- * Describe a method parameter
+ * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@Retention(RetentionPolicy.RUNTIME)
-public @interface JmxParameter {
+public enum Metric {
+    /**
+     * The measurement values may go up or down over time
+     */
+    GAUGE,
 
     /**
-     * Equivalent to {@link #name()}}
+     * The measurement values will always increase
      */
-    String value() default "";
-
-    /**
-     * Parameter name to expose. If not given, will generate a name from parameter type.
-     */
-    String name() default "";
-
-    String description() default "";
-
+    COUNTER
 }

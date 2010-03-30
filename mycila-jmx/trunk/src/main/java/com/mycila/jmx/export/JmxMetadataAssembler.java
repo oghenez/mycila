@@ -16,19 +16,9 @@
 
 package com.mycila.jmx.export;
 
-import javax.management.InvalidAttributeValueException;
-import javax.management.MBeanAttributeInfo;
-import javax.management.ReflectionException;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface JmxAttribute {
-    String getName();
-
-    MBeanAttributeInfo getMetadata();
-
-    Object get(Object managedResource) throws ReflectionException;
-
-    void set(Object managedResource, Object value) throws InvalidAttributeValueException, ReflectionException;
+public interface JmxMetadataAssembler {
+    JmxMetadata getMetadata(Class<?> clazz);
 }

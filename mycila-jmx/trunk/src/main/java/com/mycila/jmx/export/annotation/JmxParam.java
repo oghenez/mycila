@@ -16,19 +16,14 @@
 
 package com.mycila.jmx.export.annotation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 /**
- * Annotate a method to be exposed by JMX
+ * Describe a method parameter
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@Inherited
-public @interface JmxOperation {
+public @interface JmxParam {
 
     /**
      * Equivalent to {@link #name()}}
@@ -36,14 +31,10 @@ public @interface JmxOperation {
     String value() default "";
 
     /**
-     * Attribute name to expose. If not given, will use method name.
+     * Parameter name to expose. If not given, will generate a name from parameter type.
      */
     String name() default "";
 
     String description() default "";
 
-    /**
-     * Description of parameters. If not given, parameter names will be generated from their types.
-     */
-    JmxParameter[] parameters() default {};
 }

@@ -16,10 +16,19 @@
 
 package com.mycila.jmx.export;
 
-import com.mycila.jmx.JmxException;
+import java.util.Collection;
 
-public final class OperationNotFoundException extends JmxException {
-    public OperationNotFoundException(String message) {
-        super(message);
+/**
+ * @author Mathieu Carbou (mathieu.carbou@gmail.com)
+ */
+public final class ReflectiveJmxMetadataAssembler extends AbstractJmxMetadataAssembler {
+    @Override
+    protected Collection<JmxAttribute> getAttributes(Class<?> clazz) {
+        return null;
+    }
+
+    @Override
+    protected Collection<JmxOperation> getOperations(Class<?> clazz) {
+        return null;
     }
 }

@@ -59,7 +59,7 @@ public final class DefaultDynamicMBean implements DynamicMBean {
                 throw new RuntimeOperationsException(new IllegalArgumentException("attributeName must not be null"), "Exception occurred trying to get attribute of a " + getClass().getSimpleName());
             try {
                 JmxAttribute attr = getJmxMetadata().getAttribute(attribute);
-                list.add(new Attribute(attr.getName(), attr.get(getManagedResource())));
+                list.add(new Attribute(attr.getMetadata().getName(), attr.get(getManagedResource())));
             } catch (AttributeNotFoundException ignored) {
             } catch (ReflectionException ignored) {
             }

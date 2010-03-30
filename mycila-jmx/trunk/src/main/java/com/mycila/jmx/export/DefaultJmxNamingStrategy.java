@@ -38,6 +38,6 @@ public final class DefaultJmxNamingStrategy implements JmxNamingStrategy {
         if (StringUtils.hasLength(jmxBean.value()))
             return ObjectName.getInstance(jmxBean.value());
         // default
-        return ObjectName.getInstance(ClassUtils.getPackageName(managedClass) + ":type=" + ClassUtils.getSimpleName(managedClass));
+        return ObjectName.getInstance(ClassUtils.getPackageName(managedClass) + ":type=" + ClassUtils.getQualifiedName(managedClass));
     }
 }
