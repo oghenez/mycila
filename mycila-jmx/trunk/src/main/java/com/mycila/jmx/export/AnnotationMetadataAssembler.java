@@ -16,19 +16,36 @@
 
 package com.mycila.jmx.export;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ReflectiveJmxMetadataAssembler extends AbstractJmxMetadataAssembler {
+public class AnnotationMetadataAssembler extends JmxMetadataAssemblerSkeleton {
     @Override
-    protected Collection<JmxAttribute> getAttributes(Class<?> clazz) {
+    protected Collection<Field> getAttributes(Class<?> managedClass) {
+        Set<Field> fields = new HashSet<Field>();
+        while (managedClass != null && !managedClass.equals(Object.class)) {
+            for (Field field : managedClass.getDeclaredFields()) {
+                
+            }
+            managedClass = managedClass.getSuperclass();
+        }
+        return fields;
+    }
+
+    @Override
+    protected Collection<Method[]> getProperties(Class<?> managedClass) {
         return null;
     }
 
     @Override
-    protected Collection<JmxOperation> getOperations(Class<?> clazz) {
+    protected Collection<Method> getMethodOperations(Class<?> managedClass) {
         return null;
     }
 }

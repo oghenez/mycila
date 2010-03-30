@@ -16,12 +16,15 @@
 
 package com.mycila.jmx.export;
 
+import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface JmxExporter {
+
+    MBeanServer getMBeanServer();
 
     ObjectName register(Object managedResource) throws JmxExportException;
 

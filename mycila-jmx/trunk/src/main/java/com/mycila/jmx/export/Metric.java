@@ -28,5 +28,10 @@ public enum Metric {
     /**
      * The measurement values will always increase
      */
-    COUNTER
+    COUNTER;
+
+    @Override
+    public String toString() {
+        return name().toLowerCase();
+    }
 }

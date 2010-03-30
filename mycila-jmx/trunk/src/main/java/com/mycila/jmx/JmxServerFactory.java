@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class JmxServerFactory {
+public class JmxServerFactory {
 
     /**
      * Locate the default MBean server: first one in registered MBean servers,

@@ -20,11 +20,7 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 
 /**
- * Interface that allows infrastructure components to provide their own
- * <code>ObjectName</code>s to the <code>MBeanExporter</code>.
- *
- * @author Rob Harrop
- * @since 1.2.2
+ * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface JmxSelfNaming {
     /**

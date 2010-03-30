@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.jmx.export;
+package com.mycila.jmx.util;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -27,7 +27,7 @@ import java.util.List;
 
 //TODO: SORT
 
-final class ReflectionUtils {
+public final class ReflectionUtils {
 
     private ReflectionUtils() {
     }
