@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package com.mycila.jmx.export;
+package com.mycila.jmx.util;
 
-import tmp.spring.ClassUtils;
-import tmp.spring.ObjectNameManager;
+import com.mycila.jmx.export.Role;
 
+import javax.management.Descriptor;
 import javax.management.DynamicMBean;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Method;
 import java.util.Hashtable;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class JmxUtils {
+public final class JmxUtils {
 
     /**
      * Suffix used to identify an MBean interface.
@@ -70,7 +73,7 @@ final class JmxUtils {
     public static ObjectName appendIdentityToObjectName(ObjectName objectName, Object managedResource) throws MalformedObjectNameException {
         Hashtable<String, String> keyProperties = objectName.getKeyPropertyList();
         keyProperties.put(IDENTITY_OBJECT_NAME_KEY, Integer.toHexString(System.identityHashCode(managedResource)));
-        return ObjectNameManager.getInstance(objectName.getDomain(), keyProperties);
+        return ObjectName.getInstance(objectName.getDomain(), keyProperties);
     }
 
     /**
@@ -129,6 +132,63 @@ final class JmxUtils {
             if (isMxBean) return iface;
         }
         return getMXBeanInterface(clazz.getSuperclass());
+    }
+
+    public static String getProperty(Method m) {
+        String attName = m.getName();
+        return ClassUtils.isGetMethod(m) || ClassUtils.isSetter(m) ?
+                attName.substring(3) : attName.substring(2);
+    }
+
+    /**
+     * Return the JMX attribute name to use for the given JavaBeans property.
+     * <p>When using strict casing, a JavaBean property with a getter method
+     * such as <code>getFoo()</code> translates to an attribute called
+     * <code>Foo</code>. With strict casing disabled, <code>getFoo()</code>
+     * would translate to just <code>foo</code>.
+     *
+     * @param property        the JavaBeans property descriptor
+     * @param useStrictCasing whether to use strict casing
+     * @return the JMX attribute name to use
+     */
+    public static String getAttributeName(PropertyDescriptor property, boolean useStrictCasing) {
+        if (useStrictCasing) {
+            return StringUtils.capitalize(property.getName());
+        } else {
+            return property.getName();
+        }
+    }
+
+    public static void populateDeprecation(Descriptor desc, AccessibleObject object) {
+        // see http://java.sun.com/javase/7/docs/api/javax/management/Descriptor.html
+        if (object != null && object.isAnnotationPresent(Deprecated.class))
+            desc.setField("deprecated", "");
+    }
+
+    public static void populateDisplayName(Descriptor desc, String name) {
+        // see http://java.sun.com/javase/7/docs/api/javax/management/Descriptor.html
+        desc.setField("displayName", name);
+    }
+
+    public static void populateEnable(Descriptor desc, boolean enabled) {
+        // see http://java.sun.com/javase/7/docs/api/javax/management/Descriptor.html
+        desc.setField("enabled", "" + enabled);
+    }
+
+    public static void populateRole(Descriptor desc, Role role) {
+        // see http://java.sun.com/javase/7/docs/api/javax/management/Descriptor.html
+        desc.setField("role", role.toString());
+    }
+
+    public static void populateVisibility(Descriptor desc, int level) {
+        // see http://java.sun.com/javase/7/docs/api/javax/management/Descriptor.html
+        desc.setField("visibility", level);
+    }
+
+    public static void populateAccessors(Descriptor desc, Method getter, Method setter) {
+        // see http://java.sun.com/javase/7/docs/api/javax/management/Descriptor.html
+        if (getter != null) desc.setField("getMethod", getter.getName());
+        if (setter != null) desc.setField("setMethod", setter.getName());
     }
 
     /**

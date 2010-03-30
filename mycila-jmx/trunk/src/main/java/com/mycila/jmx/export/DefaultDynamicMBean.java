@@ -16,6 +16,8 @@
 
 package com.mycila.jmx.export;
 
+import com.mycila.jmx.util.ClassUtils;
+
 import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.AttributeNotFoundException;

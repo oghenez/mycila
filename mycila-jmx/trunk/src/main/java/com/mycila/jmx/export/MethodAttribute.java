@@ -18,26 +18,32 @@ package com.mycila.jmx.export;
 
 import com.mycila.jmx.util.ClassUtils;
 
+import javax.management.IntrospectionException;
 import javax.management.InvalidAttributeValueException;
 import javax.management.ReflectionException;
 import javax.management.modelmbean.ModelMBeanAttributeInfo;
-import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class FieldJmxAttribute implements JmxAttribute {
+public final class MethodAttribute implements JmxAttribute {
 
-    private final Field field;
+    private final Method getter;
+    private final Method setter;
     private final ModelMBeanAttributeInfo attributeInfo;
 
-    public FieldJmxAttribute(Field field, String exportName, String description, Access access) {
-        this.field = field;
-        this.attributeInfo = new ModelMBeanAttributeInfo(
-                exportName, field.getType().getName(), description,
-                access == Access.RO || access == Access.RW,
-                access == Access.WO || access == Access.RW,
-                false);
+    public MethodAttribute(Method getter, Method setter, String exportName, String description) {
+        this.getter = getter;
+        this.setter = setter;
+        try {
+            this.attributeInfo = new ModelMBeanAttributeInfo(
+                    exportName, description,
+                    getter, setter);
+        } catch (IntrospectionException e) {
+            throw new RuntimeException("Error creating property from getter " + getter + " and setter " + setter + ": " + e.getMessage(), e);
+        }
     }
 
     @Override
@@ -52,29 +58,37 @@ public final class FieldJmxAttribute implements JmxAttribute {
 
     @Override
     public Object get(Object managedResource) throws ReflectionException {
-        if (!attributeInfo.isReadable())
+        if (getter == null)
             throw new ReflectionException(new IllegalAccessException("Attribute not readable: " + this));
-        if (!field.isAccessible())
-            field.setAccessible(true);
+        if (!getter.isAccessible())
+            getter.setAccessible(true);
         try {
-            return field.get(managedResource);
-        } catch (Exception e) {
+            return getter.invoke(managedResource);
+        } catch (IllegalAccessException e) {
             throw new ReflectionException(e, "Error getting attribute " + this);
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof Exception)
+                throw new ReflectionException((Exception) e.getTargetException(), "Error getting attribute " + this);
+            throw new ReflectionException(new Exception(e.getTargetException()), "Error getting attribute " + this);
         }
     }
 
     @Override
     public void set(Object managedResource, Object value) throws InvalidAttributeValueException, ReflectionException {
-        if (!attributeInfo.isWritable())
+        if (setter == null)
             throw new ReflectionException(new IllegalAccessException("Attribute not writable: " + this));
-        if (!field.isAccessible())
-            field.setAccessible(true);
-        if (!ClassUtils.isAssignableValue(field.getType(), value))
+        if (!setter.isAccessible())
+            setter.setAccessible(true);
+        if (!ClassUtils.isAssignableValue(setter.getParameterTypes()[0], value))
             throw new InvalidAttributeValueException("Invalid type specified for " + this + ": " + value);
         try {
-            field.set(managedResource, value);
+            setter.invoke(managedResource, value);
         } catch (IllegalAccessException e) {
             throw new ReflectionException(e, "Error setting attribute " + this);
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof Exception)
+                throw new ReflectionException((Exception) e.getTargetException(), "Error setting attribute " + this);
+            throw new ReflectionException(new Exception(e.getTargetException()), "Error setting attribute " + this);
         }
     }
 
@@ -87,12 +101,14 @@ public final class FieldJmxAttribute implements JmxAttribute {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FieldJmxAttribute that = (FieldJmxAttribute) o;
-        return field.equals(that.field);
+        MethodAttribute that = (MethodAttribute) o;
+        return !(getter != null ? !getter.equals(that.getter) : that.getter != null) && !(setter != null ? !setter.equals(that.setter) : that.setter != null);
     }
 
     @Override
     public int hashCode() {
-        return field.hashCode();
+        int result = getter != null ? getter.hashCode() : 0;
+        result = 31 * result + (setter != null ? setter.hashCode() : 0);
+        return result;
     }
 }

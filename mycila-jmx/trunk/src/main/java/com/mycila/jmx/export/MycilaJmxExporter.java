@@ -16,6 +16,10 @@
 
 package com.mycila.jmx.export;
 
+import com.mycila.jmx.JmxServerFactory;
+import com.mycila.jmx.util.AopUtils;
+import com.mycila.jmx.util.JmxUtils;
+
 import javax.management.DynamicMBean;
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.JMException;
@@ -27,29 +31,33 @@ import javax.management.StandardMBean;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class DefaultJmxExporter implements JmxExporter {
+public class MycilaJmxExporter implements JmxExporter {
 
     private final MBeanServer mBeanServer;
     private final ExportBehavior exportBehavior;
     private final JmxNamingStrategy namingStrategy;
     private final JmxMetadataAssembler metadataAssembler;
 
-    public DefaultJmxExporter(MBeanServer mBeanServer) {
+    public MycilaJmxExporter() {
+        this(new JmxServerFactory().locateDefault());
+    }
+
+    public MycilaJmxExporter(MBeanServer mBeanServer) {
         this(mBeanServer, ExportBehavior.FAIL_ON_EXISTING);
     }
 
-    public DefaultJmxExporter(MBeanServer mBeanServer,
+    public MycilaJmxExporter(MBeanServer mBeanServer,
                               ExportBehavior exportBehavior) {
-        this(mBeanServer, exportBehavior, new DefaultJmxNamingStrategy());
+        this(mBeanServer, exportBehavior, new MBeanNamingStrategy());
     }
 
-    public DefaultJmxExporter(MBeanServer mBeanServer,
+    public MycilaJmxExporter(MBeanServer mBeanServer,
                               ExportBehavior exportBehavior,
                               JmxNamingStrategy namingStrategy) {
-        this(mBeanServer, exportBehavior, namingStrategy, new AnnotationJmxMetadataAssembler());
+        this(mBeanServer, exportBehavior, namingStrategy, new AnnotationMetadataAssembler());
     }
 
-    public DefaultJmxExporter(MBeanServer mBeanServer,
+    public MycilaJmxExporter(MBeanServer mBeanServer,
                               ExportBehavior exportBehavior,
                               JmxNamingStrategy namingStrategy,
                               JmxMetadataAssembler metadataAssembler) {
@@ -71,7 +79,6 @@ public final class DefaultJmxExporter implements JmxExporter {
     public ObjectName register(Object managedResource) throws JmxExportException {
         try {
             ObjectName objectName = getNamingStrategy().getObjectName(managedResource);
-            objectName = JmxUtils.appendIdentityToObjectName(objectName, managedResource);
             register(managedResource, objectName);
             return objectName;
         } catch (MalformedObjectNameException e) {
@@ -91,11 +98,12 @@ public final class DefaultJmxExporter implements JmxExporter {
         }
     }
 
-    /* MIGHT BECOME OVERRIDABLE */
-
+    @Override
     public MBeanServer getMBeanServer() {
         return mBeanServer;
     }
+
+    /* OVERRIDABLE */
 
     protected ExportBehavior getExportBehavior() {
         return exportBehavior;

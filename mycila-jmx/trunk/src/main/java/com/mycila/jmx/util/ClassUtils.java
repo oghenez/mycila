@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.mycila.jmx.export;
+package com.mycila.jmx.util;
+
+import com.mycila.jmx.util.ReflectionUtils;
 
 import java.beans.Introspector;
 import java.lang.reflect.Array;
@@ -36,7 +38,7 @@ import java.util.Set;
 
 //TODO: SORT
 
-final class ClassUtils {
+public final class ClassUtils {
 
     private ClassUtils() {
     }
@@ -44,7 +46,7 @@ final class ClassUtils {
     /**
      * Suffix for array class names: "[]"
      */
-    public static final String ARRAY_SUFFIX = "[]";
+    private static final String ARRAY_SUFFIX = "[]";
 
     /**
      * Prefix for internal array class names: "["
@@ -69,12 +71,12 @@ final class ClassUtils {
     /**
      * The CGLIB class separator character "$$"
      */
-    public static final String CGLIB_CLASS_SEPARATOR = "$$";
+    private static final String CGLIB_CLASS_SEPARATOR = "$$";
 
     /**
      * The ".class" file suffix
      */
-    public static final String CLASS_FILE_SUFFIX = ".class";
+    private static final String CLASS_FILE_SUFFIX = ".class";
 
 
     /**
@@ -100,7 +102,6 @@ final class ClassUtils {
      * Primarily for efficient deserialization of remote invocations.
      */
     private static final Map<String, Class<?>> commonClassCache = new HashMap<String, Class<?>>(32);
-
 
     static {
         primitiveWrapperTypeMap.put(Boolean.class, boolean.class);
@@ -139,6 +140,31 @@ final class ClassUtils {
             commonClassCache.put(clazz.getName(), clazz);
 
         }
+    }
+
+    public static boolean isSetter(Method method) {
+        return method != null
+                && method.getName().startsWith("set")
+                && method.getParameterTypes().length == 1
+                && method.getReturnType() == Void.TYPE;
+    }
+
+    public static boolean isGetter(Method method) {
+        return isGetMethod(method) || isIsMethod(method);
+    }
+
+    public static boolean isGetMethod(Method method) {
+        return method != null
+                && method.getParameterTypes().length == 0
+                && method.getReturnType() != Void.TYPE
+                && method.getName().startsWith("get");
+    }
+
+    public static boolean isIsMethod(Method method) {
+        return method != null
+                && method.getParameterTypes().length == 0
+                && (method.getReturnType() == boolean.class || method.getReturnType() == Boolean.class)
+                && method.getName().startsWith("is");
     }
 
     /**

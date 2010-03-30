@@ -30,21 +30,23 @@ import java.util.Map;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class DefaultJmxMetadata implements JmxMetadata {
+public final class MBeanMetadata implements JmxMetadata {
 
     private final MBeanInfo mBeanInfo;
     private final Map<String, JmxAttribute> attributes = new HashMap<String, JmxAttribute>();
     private final Map<Signature, JmxOperation> operations = new HashMap<Signature, JmxOperation>();
 
-    public DefaultJmxMetadata(String className, String description, Collection<JmxAttribute> attributes, Collection<JmxOperation> operations) {
+    public MBeanMetadata(String className, String description, Collection<JmxAttribute> attributes, Collection<JmxOperation> operations) {
         List<MBeanAttributeInfo> attrs = new ArrayList<MBeanAttributeInfo>(attributes.size());
         for (JmxAttribute attribute : attributes) {
-            this.attributes.put(attribute.getName(), attribute);
+            if (this.attributes.put(attribute.getName(), attribute) != null)
+                throw new IllegalArgumentException("Duplicate attribute found: " + attribute.getName());
             attrs.add(attribute.getMetadata());
         }
         List<MBeanOperationInfo> ops = new ArrayList<MBeanOperationInfo>(attributes.size());
         for (JmxOperation operation : operations) {
-            this.operations.put(operation.getSignature(), operation);
+            if (this.operations.put(operation.getSignature(), operation) != null)
+                throw new IllegalArgumentException("Duplicate operation found: " + operation.getSignature());
             ops.add(operation.getMetadata());
         }
         this.mBeanInfo = new MBeanInfo(

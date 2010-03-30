@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package com.mycila.jmx.export;
+package com.mycila.jmx.util;
 
 import java.lang.reflect.Proxy;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class AopUtils {
+public final class AopUtils {
 
     private AopUtils() {
     }
@@ -36,8 +36,10 @@ final class AopUtils {
      */
     public static Class<?> getTargetClass(Object candidate) {
         for (SupportedProxy supportedProxy : SupportedProxy.values()) {
-            Class<?> c = supportedProxy.getTargetType(candidate);
-            if (c != null) return c;
+            if (supportedProxy.isProxy(candidate)) {
+                Class<?> c = supportedProxy.getTargetType(candidate);
+                if (c != null) return c;
+            }
         }
         return candidate.getClass();
     }
