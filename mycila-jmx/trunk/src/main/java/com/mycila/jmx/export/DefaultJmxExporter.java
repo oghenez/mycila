@@ -32,7 +32,7 @@ public final class DefaultJmxExporter implements JmxExporter {
     private final MBeanServer mBeanServer;
     private final ExportBehavior exportBehavior;
     private final JmxNamingStrategy namingStrategy;
-    private final JmxMetadataReader metadataReader;
+    private final JmxMetadataAssembler metadataAssembler;
 
     public DefaultJmxExporter(MBeanServer mBeanServer) {
         this(mBeanServer, ExportBehavior.FAIL_ON_EXISTING);
@@ -46,17 +46,17 @@ public final class DefaultJmxExporter implements JmxExporter {
     public DefaultJmxExporter(MBeanServer mBeanServer,
                               ExportBehavior exportBehavior,
                               JmxNamingStrategy namingStrategy) {
-        this(mBeanServer, exportBehavior, namingStrategy, new DefaultJmxMetadataBuilder());
+        this(mBeanServer, exportBehavior, namingStrategy, new AnnotationJmxMetadataAssembler());
     }
 
     public DefaultJmxExporter(MBeanServer mBeanServer,
                               ExportBehavior exportBehavior,
                               JmxNamingStrategy namingStrategy,
-                              JmxMetadataReader metadataReader) {
+                              JmxMetadataAssembler metadataAssembler) {
         this.mBeanServer = mBeanServer;
         this.exportBehavior = exportBehavior;
         this.namingStrategy = namingStrategy;
-        this.metadataReader = metadataReader;
+        this.metadataAssembler = metadataAssembler;
     }
 
     /* IMPL */
@@ -169,6 +169,6 @@ public final class DefaultJmxExporter implements JmxExporter {
     }
 
     protected JmxMetadata getJmxMetadata(Class<?> clazz) {
-        return metadataReader.readJmxMetadata(clazz);
+        return metadataAssembler.getMetadata(clazz);
     }
 }
