@@ -26,12 +26,12 @@ import java.lang.reflect.Field;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class FieldJmxAttribute implements JmxAttribute {
+public final class MBeanAttribute<T> implements JmxAttribute<T> {
 
     private final Field field;
     private final ModelMBeanAttributeInfo attributeInfo;
 
-    public FieldJmxAttribute(Field field, String exportName, String description, Access access) {
+    public MBeanAttribute(Field field, String exportName, String description, Access access) {
         this.field = field;
         this.attributeInfo = new ModelMBeanAttributeInfo(
                 exportName, field.getType().getName(), description,
@@ -51,21 +51,21 @@ public final class FieldJmxAttribute implements JmxAttribute {
     }
 
     @Override
-    public Object get(Object managedResource) throws ReflectionException {
-        if (!attributeInfo.isReadable())
+    public T get(Object managedResource) throws ReflectionException {
+        if (!getMetadata().isReadable())
             throw new ReflectionException(new IllegalAccessException("Attribute not readable: " + this));
         if (!field.isAccessible())
             field.setAccessible(true);
         try {
-            return field.get(managedResource);
+            return (T) field.get(managedResource);
         } catch (Exception e) {
             throw new ReflectionException(e, "Error getting attribute " + this);
         }
     }
 
     @Override
-    public void set(Object managedResource, Object value) throws InvalidAttributeValueException, ReflectionException {
-        if (!attributeInfo.isWritable())
+    public void set(Object managedResource, T value) throws InvalidAttributeValueException, ReflectionException {
+        if (!getMetadata().isWritable())
             throw new ReflectionException(new IllegalAccessException("Attribute not writable: " + this));
         if (!field.isAccessible())
             field.setAccessible(true);
@@ -87,7 +87,7 @@ public final class FieldJmxAttribute implements JmxAttribute {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FieldJmxAttribute that = (FieldJmxAttribute) o;
+        MBeanAttribute that = (MBeanAttribute) o;
         return field.equals(that.field);
     }
 

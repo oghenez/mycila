@@ -36,7 +36,7 @@ import java.util.Set;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class ReflectionMetadataAssembler extends JmxMetadataAssemblerSkeleton {
+public class ReflectionMetadataAssembler extends MetadataAssemblerSkeleton {
     @Override
     protected Collection<Field> getAttributes(Class<?> managedClass) {
         Set<Field> fields = new HashSet<Field>();
@@ -60,9 +60,10 @@ public class ReflectionMetadataAssembler extends JmxMetadataAssemblerSkeleton {
     }
 
     @Override
-    protected Collection<Method[]> getProperties(Class<?> managedClass) {
-        Map<PropertyDescriptor, Method[]> methods = new HashMap<PropertyDescriptor, Method[]>();
-        PropertyDescriptor[] desc;
+    protected Collection<BeanProperty> getProperties(Class<?> managedClass) {
+        Map<PropertyDescriptor, BeanProperty> methods = new HashMap<PropertyDescriptor, BeanProperty>();
+        //TODO
+        /*PropertyDescriptor[] desc;
         try {
             desc = Introspector.getBeanInfo(managedClass).getPropertyDescriptors();
         } catch (IntrospectionException e) {
@@ -114,12 +115,12 @@ public class ReflectionMetadataAssembler extends JmxMetadataAssemblerSkeleton {
                 if (isGetter) pair[0] = method;
                 if (isSetter) pair[1] = method;
             }
-        }
+        }*/
         return methods.values();
     }
 
     @Override
-    protected String getPropertyDescription(Class<?> managedClass, Method getter, Method setter) {
+    protected String getPropertyDescription(Class<?> managedClass, BeanProperty property) {
         return "Property";
     }
 

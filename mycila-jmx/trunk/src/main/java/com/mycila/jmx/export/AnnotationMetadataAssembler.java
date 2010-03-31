@@ -18,7 +18,6 @@ package com.mycila.jmx.export;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -26,7 +25,7 @@ import java.util.Set;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class AnnotationMetadataAssembler extends JmxMetadataAssemblerSkeleton {
+public class AnnotationMetadataAssembler extends MetadataAssemblerSkeleton {
     @Override
     protected Collection<Field> getAttributes(Class<?> managedClass) {
         Set<Field> fields = new HashSet<Field>();
@@ -40,7 +39,7 @@ public class AnnotationMetadataAssembler extends JmxMetadataAssemblerSkeleton {
     }
 
     @Override
-    protected Collection<Method[]> getProperties(Class<?> managedClass) {
+    protected Collection<BeanProperty> getProperties(Class<?> managedClass) {
         return null;
     }
 
