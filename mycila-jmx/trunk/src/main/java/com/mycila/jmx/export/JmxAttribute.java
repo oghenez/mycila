@@ -23,12 +23,12 @@ import javax.management.ReflectionException;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface JmxAttribute {
+public interface JmxAttribute<T> {
     String getName();
 
     MBeanAttributeInfo getMetadata();
 
-    Object get(Object managedResource) throws ReflectionException;
+    T get(Object managedResource) throws ReflectionException;
 
-    void set(Object managedResource, Object value) throws InvalidAttributeValueException, ReflectionException;
+    void set(Object managedResource, T value) throws InvalidAttributeValueException, ReflectionException;
 }

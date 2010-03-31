@@ -16,15 +16,14 @@
 
 package com.mycila.jmx.util;
 
+import com.mycila.jmx.export.BeanProperty;
 import com.mycila.jmx.export.Role;
 
 import javax.management.Descriptor;
 import javax.management.DynamicMBean;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Method;
 import java.util.Hashtable;
 
 /**
@@ -134,31 +133,6 @@ public final class JmxUtils {
         return getMXBeanInterface(clazz.getSuperclass());
     }
 
-    public static String getProperty(Method m) {
-        String attName = m.getName();
-        return ClassUtils.isGetMethod(m) || ClassUtils.isSetter(m) ?
-                attName.substring(3) : attName.substring(2);
-    }
-
-    /**
-     * Return the JMX attribute name to use for the given JavaBeans property.
-     * <p>When using strict casing, a JavaBean property with a getter method
-     * such as <code>getFoo()</code> translates to an attribute called
-     * <code>Foo</code>. With strict casing disabled, <code>getFoo()</code>
-     * would translate to just <code>foo</code>.
-     *
-     * @param property        the JavaBeans property descriptor
-     * @param useStrictCasing whether to use strict casing
-     * @return the JMX attribute name to use
-     */
-    public static String getAttributeName(PropertyDescriptor property, boolean useStrictCasing) {
-        if (useStrictCasing) {
-            return StringUtils.capitalize(property.getName());
-        } else {
-            return property.getName();
-        }
-    }
-
     public static void populateDeprecation(Descriptor desc, AccessibleObject object) {
         // see http://java.sun.com/javase/7/docs/api/javax/management/Descriptor.html
         if (object != null && object.isAnnotationPresent(Deprecated.class))
@@ -185,10 +159,10 @@ public final class JmxUtils {
         desc.setField("visibility", level);
     }
 
-    public static void populateAccessors(Descriptor desc, Method getter, Method setter) {
+    public static void populateAccessors(Descriptor desc, BeanProperty property) {
         // see http://java.sun.com/javase/7/docs/api/javax/management/Descriptor.html
-        if (getter != null) desc.setField("getMethod", getter.getName());
-        if (setter != null) desc.setField("setMethod", setter.getName());
+        if (property.isReadable()) desc.setField("getMethod", property.getReadMethod().getName());
+        if (property.isWritable()) desc.setField("setMethod", property.getWriteMethod().getName());
     }
 
     /**

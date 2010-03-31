@@ -18,6 +18,7 @@ package com.mycila.jmx.export;
 
 import com.mycila.jmx.util.ClassUtils;
 import com.mycila.jmx.util.JmxUtils;
+import com.mycila.jmx.util.StringUtils;
 
 import javax.management.Descriptor;
 import javax.management.MBeanParameterInfo;
@@ -31,7 +32,7 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class JmxMetadataAssemblerSkeleton implements JmxMetadataAssembler {
+public abstract class MetadataAssemblerSkeleton implements JmxMetadataAssembler {
     @Override
     public JmxMetadata getMetadata(Class<?> managedClass) {
         return new MBeanMetadata(
@@ -45,20 +46,17 @@ public abstract class JmxMetadataAssemblerSkeleton implements JmxMetadataAssembl
         return managedClass.getName();
     }
 
-    protected Collection<JmxAttribute> getMBeanAttributes(Class<?> managedClass) {
-        List<JmxAttribute> jmxAttributes = new LinkedList<JmxAttribute>();
-        for (Method[] accessors : getProperties(managedClass)) {
-            if (accessors.length != 2 || accessors[0] == null && accessors[1] == null)
-                throw new IllegalStateException("getMethodAttributes(managedClass) must return an array of two methods [getter, setter] with at least one method which is non null");
-            jmxAttributes.add(buildProperty(managedClass, accessors[0], accessors[1]));
-        }
+    protected Collection<JmxAttribute<?>> getMBeanAttributes(Class<?> managedClass) {
+        List<JmxAttribute<?>> jmxAttributes = new LinkedList<JmxAttribute<?>>();
+        for (BeanProperty property : getProperties(managedClass))
+            jmxAttributes.add(buildProperty(managedClass, property));
         for (Field field : getAttributes(managedClass))
             jmxAttributes.add(buildAttribute(managedClass, field));
         return jmxAttributes;
     }
 
-    protected JmxAttribute buildAttribute(Class<?> managedClass, Field field) {
-        FieldJmxAttribute jmxAttribute = new FieldJmxAttribute(
+    protected JmxAttribute<?> buildAttribute(Class<?> managedClass, Field field) {
+        MBeanAttribute<?> jmxAttribute = new MBeanAttribute(
                 field,
                 getAttributeExportName(managedClass, field),
                 getAttributeDescription(managedClass, field),
@@ -69,26 +67,27 @@ public abstract class JmxMetadataAssemblerSkeleton implements JmxMetadataAssembl
         return jmxAttribute;
     }
 
-    protected JmxAttribute buildProperty(Class<?> managedClass, Method getter, Method setter) {
-        MethodAttribute jmxAttribute = new MethodAttribute(
-                getter, setter,
-                getPropertyExportName(managedClass, getter, setter),
-                getPropertyDescription(managedClass, getter, setter));
+    protected JmxAttribute<?> buildProperty(Class<?> managedClass, BeanProperty<?> property) {
+        MBeanProperty<?> jmxAttribute = new MBeanProperty(
+                property,
+                getPropertyExportName(managedClass, property),
+                getPropertyDescription(managedClass, property),
+                getPropertyAccess(managedClass, property));
         Descriptor desc = jmxAttribute.getMetadata().getDescriptor();
-        populatePropertyDescriptor(managedClass, getter, setter, desc);
+        populatePropertyDescriptor(managedClass, property, desc);
         jmxAttribute.getMetadata().setDescriptor(desc);
         return jmxAttribute;
     }
 
-    protected Collection<JmxOperation> getMBeanOperations(Class<?> managedClass) {
-        List<JmxOperation> jmxOperations = new LinkedList<JmxOperation>();
+    protected Collection<JmxOperation<?>> getMBeanOperations(Class<?> managedClass) {
+        List<JmxOperation<?>> jmxOperations = new LinkedList<JmxOperation<?>>();
         for (Method method : getMethodOperations(managedClass))
             jmxOperations.add(buildOperation(managedClass, method));
         return jmxOperations;
     }
 
-    protected JmxOperation buildOperation(Class<?> managedClass, Method operation) {
-        MethodOperation jmxOperation = new MethodOperation(
+    protected JmxOperation<?> buildOperation(Class<?> managedClass, Method operation) {
+        MBeanOperation<?> jmxOperation = new MBeanOperation(
                 operation,
                 getOperationExportName(managedClass, operation),
                 getOperationDescription(managedClass, operation),
@@ -99,7 +98,7 @@ public abstract class JmxMetadataAssemblerSkeleton implements JmxMetadataAssembl
         return jmxOperation;
     }
 
-    // field attributes
+    // attributes
 
     protected abstract Collection<Field> getAttributes(Class<?> managedClass);
 
@@ -122,25 +121,35 @@ public abstract class JmxMetadataAssemblerSkeleton implements JmxMetadataAssembl
         JmxUtils.populateVisibility(desc, 1);
     }
 
-    // method attributes
+    // properties
 
-    protected abstract Collection<Method[]> getProperties(Class<?> managedClass);
+    protected abstract Collection<BeanProperty> getProperties(Class<?> managedClass);
 
-    protected String getPropertyExportName(Class<?> managedClass, Method getter, Method setter) {
-        return getter != null ? JmxUtils.getProperty(getter) : JmxUtils.getProperty(setter);
+    protected String getPropertyExportName(Class<?> managedClass, BeanProperty property) {
+        return StringUtils.capitalize(property.getName());
     }
 
-    protected String getPropertyDescription(Class<?> managedClass, Method getter, Method setter) {
-        return getter != null ? JmxUtils.getProperty(getter) : JmxUtils.getProperty(setter);
+    protected String getPropertyDescription(Class<?> managedClass, BeanProperty property) {
+        return StringUtils.capitalize(property.getName());
     }
 
-    protected void populatePropertyDescriptor(Class<?> managedClass, Method getter, Method setter, Descriptor desc) {
-        JmxUtils.populateDeprecation(desc, getter);
-        JmxUtils.populateDeprecation(desc, setter);
+    protected Access getPropertyAccess(Class<?> managedClass, BeanProperty property) {
+        if (property.isReadable() && property.isWritable())
+            return Access.RW;
+        if (property.isReadable() && !property.isWritable())
+            return Access.RO;
+        if (!property.isReadable() && property.isWritable())
+            return Access.WO;
+        return Access.NONE;
+    }
+
+    protected void populatePropertyDescriptor(Class<?> managedClass, BeanProperty property, Descriptor desc) {
+        JmxUtils.populateDeprecation(desc, property.getReadMethod());
+        JmxUtils.populateDeprecation(desc, property.getWriteMethod());
         JmxUtils.populateEnable(desc, true);
-        JmxUtils.populateDisplayName(desc, getter != null ? JmxUtils.getProperty(getter) : JmxUtils.getProperty(setter));
+        JmxUtils.populateDisplayName(desc, StringUtils.capitalize(property.getName()));
         JmxUtils.populateVisibility(desc, 1);
-        JmxUtils.populateAccessors(desc, getter, setter);
+        JmxUtils.populateAccessors(desc, property);
     }
 
     // method operations
@@ -168,12 +177,14 @@ public abstract class JmxMetadataAssemblerSkeleton implements JmxMetadataAssembl
         JmxUtils.populateEnable(desc, true);
         JmxUtils.populateDisplayName(desc, operation.getName());
         JmxUtils.populateVisibility(desc, 1);
-        if (ClassUtils.isGetter(operation))
+
+        //TODO
+        /*if (ClassUtils.isGetter(operation))
             JmxUtils.populateRole(desc, Role.GETTER);
         else if (ClassUtils.isSetter(operation))
             JmxUtils.populateRole(desc, Role.SETTER);
         else
-            JmxUtils.populateRole(desc, Role.OPERATION);
+            JmxUtils.populateRole(desc, Role.OPERATION);*/
     }
 
 }

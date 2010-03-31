@@ -142,7 +142,7 @@ public final class ClassUtils {
         }
     }
 
-    public static boolean isSetter(Method method) {
+    /*public static boolean isSetter(Method method) {
         return method != null
                 && method.getName().startsWith("set")
                 && method.getParameterTypes().length == 1
@@ -165,7 +165,7 @@ public final class ClassUtils {
                 && method.getParameterTypes().length == 0
                 && (method.getReturnType() == boolean.class || method.getReturnType() == Boolean.class)
                 && method.getName().startsWith("is");
-    }
+    }*/
 
     /**
      * Return the default ClassLoader to use: typically the thread context

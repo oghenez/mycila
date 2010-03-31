@@ -33,5 +33,10 @@ public enum Access {
     /**
      * Write Only
      */
-    WO
+    WO,
+
+    /**
+     * No access
+     */
+    NONE
 }
