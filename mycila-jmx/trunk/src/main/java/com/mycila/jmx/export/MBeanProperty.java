@@ -57,28 +57,28 @@ public final class MBeanProperty<T> implements JmxAttribute<T> {
     @Override
     public T get(Object managedResource) throws ReflectionException {
         if (!getMetadata().isReadable())
-            throw new ReflectionException(new IllegalAccessException("Attribute not readable: " + this));
+            throw new ReflectionException(new IllegalAccessException("Property not readable: " + this));
         try {
             return beanProperty.get(managedResource);
         } catch (Throwable e) {
             if (e instanceof Exception)
-                throw new ReflectionException((Exception) e, "Error getting attribute " + this);
-            throw new ReflectionException(new Exception(e), "Error getting attribute " + this);
+                throw new ReflectionException((Exception) e, "Error getting property " + this + ": " + e.getMessage());
+            throw new ReflectionException(new Exception(e), "Error getting property " + this + ": " + e.getMessage());
         }
     }
 
     @Override
     public void set(Object managedResource, T value) throws InvalidAttributeValueException, ReflectionException {
         if (!getMetadata().isWritable())
-            throw new ReflectionException(new IllegalAccessException("Attribute not writable: " + this));
+            throw new ReflectionException(new IllegalAccessException("Property not writable: " + this));
         if (!ClassUtils.isAssignableValue(beanProperty.getType(), value))
-            throw new InvalidAttributeValueException("Invalid type specified for " + this + ": " + value);
+            throw new InvalidAttributeValueException("Invalid type specified for property " + this + ": " + value);
         try {
-            beanProperty.set(managedResource, beanProperty.getType().cast(value));
+            beanProperty.set(managedResource, value);
         } catch (Throwable e) {
             if (e instanceof Exception)
-                throw new ReflectionException((Exception) e, "Error setting attribute " + this);
-            throw new ReflectionException(new Exception(e), "Error setting attribute " + this);
+                throw new ReflectionException((Exception) e, "Error setting property " + this + ": " + e.getMessage());
+            throw new ReflectionException(new Exception(e), "Error setting property " + this + ": " + e.getMessage());
         }
     }
 

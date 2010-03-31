@@ -164,7 +164,7 @@ public abstract class MetadataAssemblerSkeleton implements JmxMetadataAssembler 
         return operation.getName();
     }
 
-    private MBeanParameterInfo[] getOperationParameters(Class<?> managedClass, Method operation) {
+    protected MBeanParameterInfo[] getOperationParameters(Class<?> managedClass, Method operation) {
         Class<?>[] paramTypes = operation.getParameterTypes();
         MBeanParameterInfo[] params = new MBeanParameterInfo[paramTypes.length];
         for (int i = 0; i < params.length; i++)
@@ -177,14 +177,20 @@ public abstract class MetadataAssemblerSkeleton implements JmxMetadataAssembler 
         JmxUtils.populateEnable(desc, true);
         JmxUtils.populateDisplayName(desc, operation.getName());
         JmxUtils.populateVisibility(desc, 1);
-
-        //TODO
-        /*if (ClassUtils.isGetter(operation))
-            JmxUtils.populateRole(desc, Role.GETTER);
-        else if (ClassUtils.isSetter(operation))
-            JmxUtils.populateRole(desc, Role.SETTER);
-        else
-            JmxUtils.populateRole(desc, Role.OPERATION);*/
+        JmxUtils.populateRole(desc, Role.OPERATION);
+        // verify if this is a property
+        Collection<BeanProperty> beanProperties = getProperties(managedClass);
+        for (BeanProperty beanProperty : beanProperties) {
+            if (operation.equals(beanProperty.getReadMethod())) {
+                JmxUtils.populateRole(desc, Role.GETTER);
+                JmxUtils.populateVisibility(desc, 4);
+                break;
+            } else if (operation.equals(beanProperty.getWriteMethod())) {
+                JmxUtils.populateRole(desc, Role.SETTER);
+                JmxUtils.populateVisibility(desc, 4);
+                break;
+            }
+        }
     }
 
 }

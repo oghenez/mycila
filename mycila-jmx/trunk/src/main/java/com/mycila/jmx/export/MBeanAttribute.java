@@ -59,22 +59,22 @@ public final class MBeanAttribute<T> implements JmxAttribute<T> {
         try {
             return (T) field.get(managedResource);
         } catch (Exception e) {
-            throw new ReflectionException(e, "Error getting attribute " + this);
+            throw new ReflectionException(e, "Error getting attribute " + this + ": " + e.getMessage());
         }
     }
 
     @Override
     public void set(Object managedResource, T value) throws InvalidAttributeValueException, ReflectionException {
         if (!getMetadata().isWritable())
-            throw new ReflectionException(new IllegalAccessException("Attribute not writable: " + this));
+            throw new ReflectionException(new IllegalAccessException("Attribute not writable: " + this), "Attribute not writable: " + this);
         if (!field.isAccessible())
             field.setAccessible(true);
         if (!ClassUtils.isAssignableValue(field.getType(), value))
-            throw new InvalidAttributeValueException("Invalid type specified for " + this + ": " + value);
+            throw new InvalidAttributeValueException("Invalid type specified for attribute " + this + ": " + value);
         try {
             field.set(managedResource, value);
         } catch (IllegalAccessException e) {
-            throw new ReflectionException(e, "Error setting attribute " + this);
+            throw new ReflectionException(e, "Error setting attribute " + this + ": " + e.getMessage());
         }
     }
 
