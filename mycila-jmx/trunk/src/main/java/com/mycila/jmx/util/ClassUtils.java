@@ -16,8 +16,6 @@
 
 package com.mycila.jmx.util;
 
-import com.mycila.jmx.util.ReflectionUtils;
-
 import java.beans.Introspector;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -28,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -141,31 +140,6 @@ public final class ClassUtils {
 
         }
     }
-
-    /*public static boolean isSetter(Method method) {
-        return method != null
-                && method.getName().startsWith("set")
-                && method.getParameterTypes().length == 1
-                && method.getReturnType() == Void.TYPE;
-    }
-
-    public static boolean isGetter(Method method) {
-        return isGetMethod(method) || isIsMethod(method);
-    }
-
-    public static boolean isGetMethod(Method method) {
-        return method != null
-                && method.getParameterTypes().length == 0
-                && method.getReturnType() != Void.TYPE
-                && method.getName().startsWith("get");
-    }
-
-    public static boolean isIsMethod(Method method) {
-        return method != null
-                && method.getParameterTypes().length == 0
-                && (method.getReturnType() == boolean.class || method.getReturnType() == Boolean.class)
-                && method.getName().startsWith("is");
-    }*/
 
     /**
      * Return the default ClassLoader to use: typically the thread context
@@ -714,7 +688,7 @@ public final class ClassUtils {
         Method specificMethod = null;
         if (method != null && isOverridable(method, targetClass) &&
                 targetClass != null && !targetClass.equals(method.getDeclaringClass())) {
-            specificMethod = ReflectionUtils.findMethod(targetClass, method.getName(), method.getParameterTypes());
+            specificMethod = ReflectionUtils.findMethod(targetClass, method.getName(), method.getReturnType(), method.getParameterTypes());
         }
         return (specificMethod != null ? specificMethod : method);
     }

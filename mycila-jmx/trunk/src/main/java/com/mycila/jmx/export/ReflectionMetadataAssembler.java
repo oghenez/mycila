@@ -17,19 +17,16 @@
 package com.mycila.jmx.export;
 
 import com.mycila.jmx.util.ClassUtils;
-import com.mycila.jmx.util.JmxUtils;
+import com.mycila.jmx.util.ReflectionUtils;
 
-import javax.management.Descriptor;
-import javax.management.modelmbean.ModelMBeanAttributeInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,7 +39,7 @@ public class ReflectionMetadataAssembler extends MetadataAssemblerSkeleton {
         Set<Field> fields = new HashSet<Field>();
         while (managedClass != null && !managedClass.equals(Object.class)) {
             for (Field field : managedClass.getFields())
-                if (Modifier.isPublic(field.getModifiers()) && !field.isSynthetic())
+                if (canInclude(managedClass, field))
                     fields.add(field);
             managedClass = managedClass.getSuperclass();
         }
@@ -61,62 +58,14 @@ public class ReflectionMetadataAssembler extends MetadataAssemblerSkeleton {
 
     @Override
     protected Collection<BeanProperty> getProperties(Class<?> managedClass) {
-        Map<PropertyDescriptor, BeanProperty> methods = new HashMap<PropertyDescriptor, BeanProperty>();
-        //TODO
-        /*PropertyDescriptor[] desc;
-        try {
-            desc = Introspector.getBeanInfo(managedClass).getPropertyDescriptors();
-        } catch (IntrospectionException e) {
-            throw new RuntimeException(e.getMessage(), e);
+        Map<String, BeanProperty> properties = new HashMap<String, BeanProperty>();
+        Collection<Method> methods = getMethodOperations(managedClass);
+        for (Method method : methods) {
+            BeanProperty prop = BeanProperty.findProperty(managedClass, method);
+            if (prop != null && !properties.containsKey(prop.getName()) && canInclude(managedClass, prop))
+                properties.put(prop.getName(), prop);
         }
-        for (PropertyDescriptor prop : desc) {
-            Method[] accessors = new Method[]{prop.getReadMethod(), prop.getWriteMethod()};
-            if (accessors[0] != null
-                    && accessors[0].getDeclaringClass() == Object.class
-                    || accessors[0] == null && accessors[1] == null)
-                continue;
-
-            //TODO: JmxProperty class
-
-            // If both getter and setter are null, then this does not need exposing.
-            String attrName = JmxUtils.getAttributeName(prop, true);
-
-            String description = getAttributeDescription(prop, beanKey);
-            ModelMBeanAttributeInfo info = new ModelMBeanAttributeInfo(attrName, description, getter, setter);
-
-            Descriptor desc = info.getDescriptor();
-            if (getter != null) {
-                desc.setField(FIELD_GET_METHOD, getter.getName());
-            }
-            if (setter != null) {
-                desc.setField(FIELD_SET_METHOD, setter.getName());
-            }
-
-            populateAttributeDescriptor(desc, getter, setter, beanKey);
-            info.setDescriptor(desc);
-            infos.add(info);
-
-        }
-
-
-        for (Method method : managedClass.getMethods()) {
-            if (Object.class.equals(method.getDeclaringClass())
-                    || method.isSynthetic() || method.isBridge())
-                continue;
-            boolean isGetter = ClassUtils.isGetter(method);
-            boolean isSetter = ClassUtils.isSetter(method);
-            if (isGetter || isSetter) {
-                String property = JmxUtils.getProperty(method);
-                if (isGetter)
-                    property = method
-
-                Method[] pair = methods.get(property);
-                if (pair == null) methods.put(property, pair = new Method[2]);
-                if (isGetter) pair[0] = method;
-                if (isSetter) pair[1] = method;
-            }
-        }*/
-        return methods.values();
+        return properties.values();
     }
 
     @Override
@@ -126,18 +75,27 @@ public class ReflectionMetadataAssembler extends MetadataAssemblerSkeleton {
 
     @Override
     protected Collection<Method> getMethodOperations(Class<?> managedClass) {
-        Set<Method> methods = new HashSet<Method>();
-        for (Method method : managedClass.getMethods()) {
-            if (Object.class.equals(method.getDeclaringClass())
-                    || method.isSynthetic() || method.isBridge())
-                continue;
-            methods.add(method);
-        }
+        List<Method> methods = new ArrayList<Method>();
+        for (Method method : ReflectionUtils.getMethods(managedClass))
+            if (canInclude(managedClass, method))
+                methods.add(method);
         return methods;
     }
 
     @Override
     protected String getOperationDescription(Class<?> managedClass, Method operation) {
         return "Operation";
+    }
+
+    protected boolean canInclude(Class<?> managedClass, BeanProperty property) {
+        return property.getReadMethod() == null || !property.getReadMethod().getDeclaringClass().equals(Object.class);
+    }
+
+    protected boolean canInclude(Class<?> managedClass, Method method) {
+        return !(method.isSynthetic() || method.isBridge() || Object.class.equals(method.getDeclaringClass()));
+    }
+
+    protected boolean canInclude(Class<?> managedClass, Field field) {
+        return Modifier.isPublic(field.getModifiers()) && !field.isSynthetic();
     }
 }

@@ -23,6 +23,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 //TODO: SORT
@@ -30,6 +32,43 @@ import java.util.List;
 public final class ReflectionUtils {
 
     private ReflectionUtils() {
+    }
+
+    public static boolean isSetter(Method method) {
+        return method != null
+                && method.getName().startsWith("set")
+                && method.getParameterTypes().length == 1
+                && method.getReturnType() == Void.TYPE;
+    }
+
+    public static boolean isGetter(Method method) {
+        return isGetMethod(method) || isIsMethod(method);
+    }
+
+    public static boolean isGetMethod(Method method) {
+        return method != null
+                && method.getParameterTypes().length == 0
+                && method.getReturnType() != Void.TYPE
+                && method.getName().startsWith("get");
+    }
+
+    public static boolean isIsMethod(Method method) {
+        return method != null
+                && method.getParameterTypes().length == 0
+                && (method.getReturnType() == boolean.class || method.getReturnType() == Boolean.class)
+                && method.getName().startsWith("is");
+    }
+
+    public static List<Method> getMethods(Class<?> c) {
+        List<Method> existing = new ArrayList<Method>(Arrays.asList(c.getMethods()));
+        Collections.sort(existing, new Comparator<Method>() {
+            @Override
+            public int compare(Method o1, Method o2) {
+                if (o1.getDeclaringClass().equals(o2.getDeclaringClass())) return 0;
+                return o1.getDeclaringClass().isAssignableFrom(o2.getDeclaringClass()) ? 1 : -1;
+            }
+        });
+        return existing;
     }
 
     /**
@@ -123,7 +162,7 @@ public final class ReflectionUtils {
      * @return the Method object, or <code>null</code> if none found
      */
     public static Method findMethod(Class<?> clazz, String name) {
-        return findMethod(clazz, name, new Class[0]);
+        return findMethod(clazz, name, null, new Class[0]);
     }
 
     /**
@@ -137,12 +176,13 @@ public final class ReflectionUtils {
      *                   (may be <code>null</code> to indicate any signature)
      * @return the Method object, or <code>null</code> if none found
      */
-    public static Method findMethod(Class<?> clazz, String name, Class<?>... paramTypes) {
+    public static Method findMethod(Class<?> clazz, String name, Class<?> returnType, Class<?>... paramTypes) {
         Class<?> searchType = clazz;
         while (searchType != null) {
             Method[] methods = (searchType.isInterface() ? searchType.getMethods() : searchType.getDeclaredMethods());
             for (Method method : methods) {
                 if (name.equals(method.getName())
+                        && (returnType == null || method.getReturnType().equals(returnType))
                         && (paramTypes == null || Arrays.equals(paramTypes, method.getParameterTypes()))) {
                     return method;
                 }

@@ -23,7 +23,11 @@ import com.mycila.jmx.export.MycilaJmxExporter;
 import com.mycila.jmx.export.ReflectionMetadataAssembler;
 import mx4j.tools.adaptor.http.HttpAdaptor;
 import mx4j.tools.adaptor.http.XSLTProcessor;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.export.annotation.ManagedResource;
 
+import javax.management.ObjectName;
+import java.lang.management.ManagementFactory;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -43,8 +47,11 @@ public final class ReflectionSample {
 
         HttpAdaptor httpAdaptor = new HttpAdaptor(80, "localhost");
         httpAdaptor.setProcessor(new XSLTProcessor());
-        jmxExporter.register(httpAdaptor);
+        ManagementFactory.getPlatformMBeanServer().registerMBean(httpAdaptor, ObjectName.getInstance("mx4j:type=HttpAdaptor"));
         httpAdaptor.start();
+
+        //ClassPathXmlApplicationContext c = new ClassPathXmlApplicationContext("/spring.xml");
+
         new CountDownLatch(1).await();
     }
 
@@ -63,8 +70,13 @@ public final class ReflectionSample {
         public CharSequence getText() {
             return "hello UP";
         }
+
+        private String getAbc() {
+            return abc;
+        }
     }
 
+    @ManagedResource(objectName = "bean:name=testBean4", description = "My Managed Bean")
     public static class MyObject3 extends MyObject {
         public String abc = "abc2";
         String def = "def";
@@ -102,15 +114,18 @@ public final class ReflectionSample {
         public void setVal(int val) {
         }
 
+        @ManagedAttribute(description = "Name")
         public String getName() {
             return "hello";
         }
 
         @Deprecated
+        @ManagedAttribute(description = "Text")
         public String getText() {
             return "hello DOWN";
         }
 
+        @ManagedAttribute(description = "Text")
         public void setText(String c) {
         }
 
