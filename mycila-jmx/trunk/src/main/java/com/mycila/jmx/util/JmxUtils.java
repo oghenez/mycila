@@ -41,12 +41,6 @@ public final class JmxUtils {
      */
     private static final String MXBEAN_SUFFIX = "MXBean";
 
-    /**
-     * The key used when extending an existing {@link javax.management.ObjectName} with the
-     * identity hash code of its corresponding managed resource.
-     */
-    private static final String IDENTITY_OBJECT_NAME_KEY = "identity";
-
     private static final String MXBEAN_ANNOTATION_CLASS_NAME = "javax.management.MXBean";
 
     private static final boolean mxBeanAnnotationAvailable =
@@ -71,7 +65,7 @@ public final class JmxUtils {
      */
     public static ObjectName appendIdentityToObjectName(ObjectName objectName, Object managedResource) throws MalformedObjectNameException {
         Hashtable<String, String> keyProperties = objectName.getKeyPropertyList();
-        keyProperties.put(IDENTITY_OBJECT_NAME_KEY, Integer.toHexString(System.identityHashCode(managedResource)));
+        keyProperties.put("identity", Integer.toHexString(System.identityHashCode(managedResource)));
         return ObjectName.getInstance(objectName.getDomain(), keyProperties);
     }
 

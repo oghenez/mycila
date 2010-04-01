@@ -16,6 +16,8 @@
 
 package com.mycila.jmx.util;
 
+import com.mycila.jmx.export.Signature;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -23,9 +25,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 //TODO: SORT
 
@@ -59,16 +62,17 @@ public final class ReflectionUtils {
                 && method.getName().startsWith("is");
     }
 
-    public static List<Method> getMethods(Class<?> c) {
-        List<Method> existing = new ArrayList<Method>(Arrays.asList(c.getMethods()));
-        Collections.sort(existing, new Comparator<Method>() {
-            @Override
-            public int compare(Method o1, Method o2) {
-                if (o1.getDeclaringClass().equals(o2.getDeclaringClass())) return 0;
-                return o1.getDeclaringClass().isAssignableFrom(o2.getDeclaringClass()) ? 1 : -1;
+    public static Collection<Method> getDeclaredMethods(Class<?> c) {
+        Map<Signature, Method> methods = new LinkedHashMap<Signature, Method>();
+        while (c != null) {
+            for (Method method : c.getDeclaredMethods()) {
+                Signature signature = new Signature(method);
+                if (!methods.containsKey(signature) && !method.isSynthetic() && !method.isBridge())
+                    methods.put(signature, method);
             }
-        });
-        return existing;
+            c = c.getSuperclass();
+        }
+        return methods.values();
     }
 
     /**
@@ -98,11 +102,9 @@ public final class ReflectionUtils {
         Class<?> searchType = clazz;
         while (!Object.class.equals(searchType) && searchType != null) {
             Field[] fields = searchType.getDeclaredFields();
-            for (Field field : fields) {
-                if ((name == null || name.equals(field.getName())) && (type == null || type.equals(field.getType()))) {
+            for (Field field : fields)
+                if ((name == null || name.equals(field.getName())) && (type == null || type.equals(field.getType())))
                     return field;
-                }
-            }
             searchType = searchType.getSuperclass();
         }
         return null;
@@ -165,18 +167,12 @@ public final class ReflectionUtils {
         return findMethod(clazz, name, null, new Class[0]);
     }
 
-    /**
-     * Attempt to find a {@link java.lang.reflect.Method} on the supplied class with the supplied name
-     * and parameter types. Searches all superclasses up to <code>Object</code>.
-     * <p>Returns <code>null</code> if no {@link java.lang.reflect.Method} can be found.
-     *
-     * @param clazz      the class to introspect
-     * @param name       the name of the method
-     * @param paramTypes the parameter types of the method
-     *                   (may be <code>null</code> to indicate any signature)
-     * @return the Method object, or <code>null</code> if none found
-     */
+    public static Method findMethod(Class<?> clazz, String name, Class<?> returnType) {
+        return findMethod(clazz, name, returnType, (Class<?>[]) null);
+    }
+
     public static Method findMethod(Class<?> clazz, String name, Class<?> returnType, Class<?>... paramTypes) {
+        if (paramTypes != null && paramTypes.length == 1 && paramTypes[0] == null) paramTypes = null;
         Class<?> searchType = clazz;
         while (searchType != null) {
             Method[] methods = (searchType.isInterface() ? searchType.getMethods() : searchType.getDeclaredMethods());

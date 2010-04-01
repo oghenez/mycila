@@ -34,37 +34,17 @@ import javax.management.StandardMBean;
 public class MycilaJmxExporter implements JmxExporter {
 
     private final MBeanServer mBeanServer;
-    private final ExportBehavior exportBehavior;
-    private final JmxNamingStrategy namingStrategy;
-    private final JmxMetadataAssembler metadataAssembler;
+    private ExportBehavior exportBehavior = ExportBehavior.FAIL_ON_EXISTING;
+    private JmxNamingStrategy namingStrategy = new MBeanNamingStrategy();
+    private JmxMetadataAssembler metadataAssembler = new AnnotationMetadataAssembler();
+    private boolean ensureUnique = false;
 
     public MycilaJmxExporter() {
         this(new JmxServerFactory().locateDefault());
     }
 
     public MycilaJmxExporter(MBeanServer mBeanServer) {
-        this(mBeanServer, ExportBehavior.FAIL_ON_EXISTING);
-    }
-
-    public MycilaJmxExporter(MBeanServer mBeanServer,
-                              ExportBehavior exportBehavior) {
-        this(mBeanServer, exportBehavior, new MBeanNamingStrategy());
-    }
-
-    public MycilaJmxExporter(MBeanServer mBeanServer,
-                              ExportBehavior exportBehavior,
-                              JmxNamingStrategy namingStrategy) {
-        this(mBeanServer, exportBehavior, namingStrategy, new AnnotationMetadataAssembler());
-    }
-
-    public MycilaJmxExporter(MBeanServer mBeanServer,
-                              ExportBehavior exportBehavior,
-                              JmxNamingStrategy namingStrategy,
-                              JmxMetadataAssembler metadataAssembler) {
         this.mBeanServer = mBeanServer;
-        this.exportBehavior = exportBehavior;
-        this.namingStrategy = namingStrategy;
-        this.metadataAssembler = metadataAssembler;
     }
 
     /* IMPL */
@@ -78,7 +58,9 @@ public class MycilaJmxExporter implements JmxExporter {
     @Override
     public ObjectName register(Object managedResource) throws JmxExportException {
         try {
-            ObjectName objectName = getNamingStrategy().getObjectName(managedResource);
+            ObjectName objectName = namingStrategy.getObjectName(managedResource);
+            if (ensureUnique)
+                objectName = JmxUtils.appendIdentityToObjectName(objectName, managedResource);
             register(managedResource, objectName);
             return objectName;
         } catch (MalformedObjectNameException e) {
@@ -105,12 +87,20 @@ public class MycilaJmxExporter implements JmxExporter {
 
     /* OVERRIDABLE */
 
-    protected ExportBehavior getExportBehavior() {
-        return exportBehavior;
+    public void setEnsureUnique(boolean ensureUnique) {
+        this.ensureUnique = ensureUnique;
     }
 
-    protected JmxNamingStrategy getNamingStrategy() {
-        return namingStrategy;
+    public void setExportBehavior(ExportBehavior exportBehavior) {
+        this.exportBehavior = exportBehavior;
+    }
+
+    public void setMetadataAssembler(JmxMetadataAssembler metadataAssembler) {
+        this.metadataAssembler = metadataAssembler;
+    }
+
+    public void setNamingStrategy(JmxNamingStrategy namingStrategy) {
+        this.namingStrategy = namingStrategy;
     }
 
     protected void doUnregister(ObjectName objectName) {
@@ -124,14 +114,14 @@ public class MycilaJmxExporter implements JmxExporter {
         try {
             getMBeanServer().registerMBean(managedResource, objectName);
         } catch (InstanceAlreadyExistsException e) {
-            if (getExportBehavior() == ExportBehavior.REPLACE_EXISTING) {
+            if (exportBehavior == ExportBehavior.REPLACE_EXISTING) {
                 doUnregister(objectName);
                 try {
                     getMBeanServer().registerMBean(managedResource, objectName);
                 } catch (JMException e2) {
                     throw new JmxExportException("Unable to register MBean [" + managedResource + "] with object name [" + objectName + "]", e2);
                 }
-            } else if (getExportBehavior() == ExportBehavior.FAIL_ON_EXISTING)
+            } else if (exportBehavior == ExportBehavior.FAIL_ON_EXISTING)
                 throw new JmxExportException("Unable to register MBean [" + managedResource + "] with object name [" + objectName + "]", e);
         } catch (JMException e) {
             throw new JmxExportException("Unable to register MBean [" + managedResource + "] with object name [" + objectName + "]", e);

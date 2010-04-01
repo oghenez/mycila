@@ -32,9 +32,13 @@ public final class BeanProperty<T> {
     private final Class<T> type;
     private final String name;
 
-    private BeanProperty(String name, Class<T> type, Method readMethod, Method writeMethod) {
+    private BeanProperty(String name, Method readMethod, Method writeMethod) {
+        if (readMethod == null && writeMethod == null)
+            throw new IllegalArgumentException("Invalid property " + name + ": missing at least one accessor method");
+        if (readMethod != null && writeMethod != null && !readMethod.getReturnType().equals(writeMethod.getParameterTypes()[0]))
+            throw new IllegalArgumentException("return type differs: " + readMethod.getReturnType() + " and " + writeMethod.getParameterTypes()[0]);
         this.name = name;
-        this.type = type;
+        this.type = (Class<T>) (readMethod != null ? readMethod.getReturnType() : writeMethod.getParameterTypes()[0]);
         this.readMethod = readMethod;
         this.writeMethod = writeMethod;
     }
@@ -92,7 +96,7 @@ public final class BeanProperty<T> {
 
     @Override
     public String toString() {
-        return getName();
+        return ClassUtils.getQualifiedName(getType()) + " " + getName();
     }
 
     @Override
@@ -110,27 +114,30 @@ public final class BeanProperty<T> {
         return result;
     }
 
-    public static BeanProperty<?> findProperty(Class<?> managedClass, Method method) {
+    public static BeanProperty<?> findProperty(Class<?> clazz, Method method) {
         if (ReflectionUtils.isIsMethod(method))
-            return findProperty(managedClass, StringUtils.uncapitalize(method.getName().substring(2)), method.getReturnType());
+            return findProperty(clazz, StringUtils.uncapitalize(method.getName().substring(2)), method.getReturnType());
         if (ReflectionUtils.isGetMethod(method))
-            return findProperty(managedClass, StringUtils.uncapitalize(method.getName().substring(3)), method.getReturnType());
+            return findProperty(clazz, StringUtils.uncapitalize(method.getName().substring(3)), method.getReturnType());
         if (ReflectionUtils.isSetter(method))
-            return findProperty(managedClass, StringUtils.uncapitalize(method.getName().substring(3)), method.getParameterTypes()[0]);
+            return findProperty(clazz, StringUtils.uncapitalize(method.getName().substring(3)), method.getParameterTypes()[0]);
         return null;
     }
 
-    public static BeanProperty<?> findProperty(Class<?> managedClass, String property) {
-        return findProperty(managedClass, property, null);
+    public static BeanProperty<?> findProperty(Class<?> clazz, String property) {
+        return findProperty(clazz, property, null);
     }
 
-    public static <T> BeanProperty<T> findProperty(Class<?> managedClass, String property, Class<T> type) {
+    public static <T> BeanProperty<T> findProperty(Class<?> clazz, String property, Class<T> type) {
         String name = StringUtils.capitalize(property);
-        Method is = ReflectionUtils.findMethod(managedClass, "is" + name, type);
-        Method get = ReflectionUtils.findMethod(managedClass, "get" + name, type);
-        Method setter = ReflectionUtils.findMethod(managedClass, "set" + name, Void.TYPE, type);
+        Method is = ReflectionUtils.findMethod(clazz, "is" + name, type);
+        Method get = ReflectionUtils.findMethod(clazz, "get" + name, type);
+        Method setter = ReflectionUtils.findMethod(clazz, "set" + name, Void.TYPE, type);
         Method getter = get != null ? get : is;
-        return setter == null && getter == null ? null : new BeanProperty<T>(property, type, getter, setter);
+        if (setter == null && getter == null
+                || setter != null && getter != null && !setter.getParameterTypes()[0].equals(getter.getReturnType()))
+            return null;
+        return new BeanProperty<T>(property, getter, setter);
     }
 
 }
