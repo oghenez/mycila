@@ -53,7 +53,7 @@ public final class MBeanAttribute<T> implements JmxAttribute<T> {
     @Override
     public T get(Object managedResource) throws ReflectionException {
         if (!getMetadata().isReadable())
-            throw new ReflectionException(new IllegalAccessException("Attribute not readable: " + this));
+            throw new ReflectionException(new IllegalAccessException("Attribute not readable: " + this), "Attribute not readable: " + this);
         if (!field.isAccessible())
             field.setAccessible(true);
         try {

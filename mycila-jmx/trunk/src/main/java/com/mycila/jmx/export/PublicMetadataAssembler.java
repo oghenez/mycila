@@ -24,12 +24,24 @@ import java.lang.reflect.Modifier;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public class PublicMetadataAssembler extends ReflectionMetadataAssemblerSkeleton {
+
+    private boolean exposeObjectElements;
+
+    public PublicMetadataAssembler() {
+        this(true);
+    }
+
+    public PublicMetadataAssembler(boolean exposeObjectElements) {
+        this.exposeObjectElements = exposeObjectElements;
+    }
+
     @Override
     protected boolean canInclude(Class<?> managedClass, BeanProperty property) {
         if (property.getReadMethod() != null) {
-            if (property.getReadMethod().getDeclaringClass().equals(Object.class))
+            if (!exposeObjectElements && property.getReadMethod().getDeclaringClass().equals(Object.class))
                 return false;
-            if (!Modifier.isPublic(property.getReadMethod().getModifiers()))
+            if (Modifier.isStatic(property.getReadMethod().getModifiers())
+                    || !Modifier.isPublic(property.getReadMethod().getModifiers()))
                 return false;
         }
         if (property.getWriteMethod() != null) {
@@ -41,11 +53,14 @@ public class PublicMetadataAssembler extends ReflectionMetadataAssemblerSkeleton
 
     @Override
     protected boolean canInclude(Class<?> managedClass, Method method) {
-        return Modifier.isPublic(method.getModifiers()) && !Object.class.equals(method.getDeclaringClass());
+        return Modifier.isPublic(method.getModifiers())
+                && !Modifier.isStatic(method.getModifiers())
+                && (exposeObjectElements || !Object.class.equals(method.getDeclaringClass()));
     }
 
     @Override
     protected boolean canInclude(Class<?> managedClass, Field field) {
-        return Modifier.isPublic(field.getModifiers());
+        return Modifier.isPublic(field.getModifiers())
+                && !Modifier.isStatic(field.getModifiers());
     }
 }

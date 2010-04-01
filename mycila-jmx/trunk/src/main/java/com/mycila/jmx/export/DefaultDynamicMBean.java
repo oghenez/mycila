@@ -115,7 +115,7 @@ public final class DefaultDynamicMBean implements DynamicMBean {
         try {
             op = getJmxMetadata().getOperation(actionName, paramTypes);
         } catch (OperationNotFoundException e) {
-            throw new RuntimeOperationsException(e, "An exception occurred while trying to invoke a method on a " + getClass().getSimpleName());
+            throw new RuntimeOperationsException(e, "An exception occurred while trying to find method " + actionName + " on " + getClass().getSimpleName());
         }
         return op.invoke(o, params);
     }
