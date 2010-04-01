@@ -53,9 +53,8 @@ public final class StringUtils {
     }
 
     public static String changeFirstCharacterCase(String str, boolean capitalize) {
-        if (str == null || str.length() == 0) {
+        if (str == null || str.length() == 0)
             return str;
-        }
         StringBuilder sb = new StringBuilder(str.length());
         if (capitalize) {
             sb.append(Character.toUpperCase(str.charAt(0)));

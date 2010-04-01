@@ -57,7 +57,7 @@ public final class MBeanProperty<T> implements JmxAttribute<T> {
     @Override
     public T get(Object managedResource) throws ReflectionException {
         if (!getMetadata().isReadable())
-            throw new ReflectionException(new IllegalAccessException("Property not readable: " + this));
+            throw new ReflectionException(new IllegalAccessException("Property not readable: " + this), "Property not readable: " + this);
         try {
             return beanProperty.get(managedResource);
         } catch (Throwable e) {
@@ -70,7 +70,7 @@ public final class MBeanProperty<T> implements JmxAttribute<T> {
     @Override
     public void set(Object managedResource, T value) throws InvalidAttributeValueException, ReflectionException {
         if (!getMetadata().isWritable())
-            throw new ReflectionException(new IllegalAccessException("Property not writable: " + this));
+            throw new ReflectionException(new IllegalAccessException("Property not writable: " + this), "Property not writable: " + this);
         if (!ClassUtils.isAssignableValue(beanProperty.getType(), value))
             throw new InvalidAttributeValueException("Invalid type specified for property " + this + ": " + value);
         try {

@@ -64,7 +64,7 @@ public class MycilaJmxExporter implements JmxExporter {
             register(managedResource, objectName);
             return objectName;
         } catch (MalformedObjectNameException e) {
-            throw new JmxExportException("Unable to generate ObjectName for MBean [" + managedResource + "]", e);
+            throw new JmxExportException("Unable to generate ObjectName for MBean [" + managedResource.getClass().getName() + "]", e);
         }
     }
 
@@ -119,12 +119,12 @@ public class MycilaJmxExporter implements JmxExporter {
                 try {
                     getMBeanServer().registerMBean(managedResource, objectName);
                 } catch (JMException e2) {
-                    throw new JmxExportException("Unable to register MBean [" + managedResource + "] with object name [" + objectName + "]", e2);
+                    throw new JmxExportException("Unable to register MBean [" + managedResource.getClass().getName() + "] with object name [" + objectName + "]", e2);
                 }
             } else if (exportBehavior == ExportBehavior.FAIL_ON_EXISTING)
-                throw new JmxExportException("Unable to register MBean [" + managedResource + "] with object name [" + objectName + "]", e);
+                throw new JmxExportException("Unable to register MBean [" + managedResource.getClass().getName() + "] with object name [" + objectName + "]", e);
         } catch (JMException e) {
-            throw new JmxExportException("Unable to register MBean [" + managedResource + "] with object name [" + objectName + "]", e);
+            throw new JmxExportException("Unable to register MBean [" + managedResource.getClass().getName() + "] with object name [" + objectName + "]", e);
         }
     }
 

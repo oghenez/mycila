@@ -130,8 +130,8 @@ public final class BeanProperty<T> {
 
     public static <T> BeanProperty<T> findProperty(Class<?> clazz, String property, Class<T> type) {
         String name = StringUtils.capitalize(property);
-        Method is = ReflectionUtils.findMethod(clazz, "is" + name, type);
-        Method get = ReflectionUtils.findMethod(clazz, "get" + name, type);
+        Method is = ReflectionUtils.findMethod(clazz, "is" + name, type, new Class<?>[0]);
+        Method get = ReflectionUtils.findMethod(clazz, "get" + name, type, new Class<?>[0]);
         Method setter = ReflectionUtils.findMethod(clazz, "set" + name, Void.TYPE, type);
         Method getter = get != null ? get : is;
         if (setter == null && getter == null

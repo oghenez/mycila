@@ -16,6 +16,7 @@
 
 package com.mycila.jmx.export;
 
+import com.mycila.jmx.util.BeanUtils;
 import com.mycila.jmx.util.ClassUtils;
 import com.mycila.jmx.util.ReflectionUtils;
 
@@ -59,11 +60,9 @@ public abstract class ReflectionMetadataAssemblerSkeleton extends MetadataAssemb
     @Override
     protected Collection<BeanProperty> getProperties(Class<?> managedClass) {
         Map<String, BeanProperty> properties = new HashMap<String, BeanProperty>();
-        for (Method method : ReflectionUtils.getDeclaredMethods(managedClass)) {
-            BeanProperty prop = BeanProperty.findProperty(managedClass, method);
-            if (prop != null && !properties.containsKey(prop.getName()) && canInclude(managedClass, prop))
+        for (BeanProperty prop : BeanUtils.getProperties(managedClass))
+            if (!properties.containsKey(prop.getName()) && canInclude(managedClass, prop))
                 properties.put(prop.getName(), prop);
-        }
         return properties.values();
     }
 
