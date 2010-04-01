@@ -21,30 +21,30 @@ import com.mycila.jmx.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class ReflectionMetadataAssembler extends MetadataAssemblerSkeleton {
+public abstract class ReflectionMetadataAssemblerSkeleton extends MetadataAssemblerSkeleton {
+
     @Override
     protected Collection<Field> getAttributes(Class<?> managedClass) {
-        Set<Field> fields = new HashSet<Field>();
+        List<Field> fields = new LinkedList<Field>();
         while (managedClass != null && !managedClass.equals(Object.class)) {
-            for (Field field : managedClass.getFields())
-                if (canInclude(managedClass, field))
+            for (Field field : managedClass.getDeclaredFields())
+                if (!field.isSynthetic() && canInclude(managedClass, field))
                     fields.add(field);
             managedClass = managedClass.getSuperclass();
         }
         return fields;
     }
+
+    protected abstract boolean canInclude(Class<?> managedClass, Field field);
 
     @Override
     protected String getAttributeExportName(Class<?> managedClass, Field attribute) {
@@ -53,14 +53,13 @@ public class ReflectionMetadataAssembler extends MetadataAssemblerSkeleton {
 
     @Override
     protected String getAttributeDescription(Class<?> managedClass, Field attribute) {
-        return "Field";
+        return attribute.toString();
     }
 
     @Override
     protected Collection<BeanProperty> getProperties(Class<?> managedClass) {
         Map<String, BeanProperty> properties = new HashMap<String, BeanProperty>();
-        Collection<Method> methods = getMethodOperations(managedClass);
-        for (Method method : methods) {
+        for (Method method : ReflectionUtils.getDeclaredMethods(managedClass)) {
             BeanProperty prop = BeanProperty.findProperty(managedClass, method);
             if (prop != null && !properties.containsKey(prop.getName()) && canInclude(managedClass, prop))
                 properties.put(prop.getName(), prop);
@@ -68,34 +67,27 @@ public class ReflectionMetadataAssembler extends MetadataAssemblerSkeleton {
         return properties.values();
     }
 
+    protected abstract boolean canInclude(Class<?> managedClass, BeanProperty property);
+
     @Override
     protected String getPropertyDescription(Class<?> managedClass, BeanProperty property) {
-        return "Property";
+        return property.toString();
     }
 
     @Override
     protected Collection<Method> getMethodOperations(Class<?> managedClass) {
-        List<Method> methods = new ArrayList<Method>();
-        for (Method method : ReflectionUtils.getMethods(managedClass))
+        List<Method> methods = new LinkedList<Method>();
+        for (Method method : ReflectionUtils.getDeclaredMethods(managedClass))
             if (canInclude(managedClass, method))
                 methods.add(method);
         return methods;
     }
 
+    protected abstract boolean canInclude(Class<?> managedClass, Method method);
+
     @Override
     protected String getOperationDescription(Class<?> managedClass, Method operation) {
-        return "Operation";
+        return operation.toString();
     }
 
-    protected boolean canInclude(Class<?> managedClass, BeanProperty property) {
-        return property.getReadMethod() == null || !property.getReadMethod().getDeclaringClass().equals(Object.class);
-    }
-
-    protected boolean canInclude(Class<?> managedClass, Method method) {
-        return !(method.isSynthetic() || method.isBridge() || Object.class.equals(method.getDeclaringClass()));
-    }
-
-    protected boolean canInclude(Class<?> managedClass, Field field) {
-        return Modifier.isPublic(field.getModifiers()) && !field.isSynthetic();
-    }
 }

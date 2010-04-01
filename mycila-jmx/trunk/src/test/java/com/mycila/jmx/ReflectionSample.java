@@ -16,13 +16,12 @@
 
 package com.mycila.jmx;
 
-import com.mycila.jmx.export.ExportBehavior;
-import com.mycila.jmx.export.JmxExporter;
-import com.mycila.jmx.export.MBeanNamingStrategy;
+import com.mycila.jmx.export.CustomMetadataAssembler;
 import com.mycila.jmx.export.MycilaJmxExporter;
-import com.mycila.jmx.export.ReflectionMetadataAssembler;
+import com.mycila.jmx.export.PublicMetadataAssembler;
 import mx4j.tools.adaptor.http.HttpAdaptor;
 import mx4j.tools.adaptor.http.XSLTProcessor;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.export.annotation.ManagedResource;
 
@@ -36,26 +35,34 @@ import java.util.concurrent.CountDownLatch;
 public final class ReflectionSample {
 
     public static void main(String[] args) throws Exception {
-        JmxExporter jmxExporter = new MycilaJmxExporter(
-                new JmxServerFactory().locateDefault(),
-                ExportBehavior.FAIL_ON_EXISTING,
-                new MBeanNamingStrategy(),
-                new ReflectionMetadataAssembler());
 
-        MyObject3 object3 = new MyObject3();
-        jmxExporter.register(object3);
+        CustomMetadataAssembler customMetadataAssembler = new CustomMetadataAssembler()
+                .addAttribute(MyObject.class, "hello")
+                .addAttribute(MyObject4.class, "hello2")
+                .addOperation(MyObject4.class, "op")
+                .addProperty(MyObject4.class, "mno");
 
-        HttpAdaptor httpAdaptor = new HttpAdaptor(80, "localhost");
+        MycilaJmxExporter jmxExporter1 = new MycilaJmxExporter();
+        jmxExporter1.setMetadataAssembler(customMetadataAssembler);
+        jmxExporter1.register(new MyObject4());
+
+        MycilaJmxExporter jmxExporter2 = new MycilaJmxExporter();
+        jmxExporter2.setMetadataAssembler(new PublicMetadataAssembler());
+        jmxExporter2.register(new MyObject3());
+
+        HttpAdaptor httpAdaptor = new HttpAdaptor(8080, "localhost");
         httpAdaptor.setProcessor(new XSLTProcessor());
         ManagementFactory.getPlatformMBeanServer().registerMBean(httpAdaptor, ObjectName.getInstance("mx4j:type=HttpAdaptor"));
         httpAdaptor.start();
 
-        //ClassPathXmlApplicationContext c = new ClassPathXmlApplicationContext("/spring.xml");
+        ClassPathXmlApplicationContext c = new ClassPathXmlApplicationContext("/spring.xml");
 
         new CountDownLatch(1).await();
     }
 
     public static class MyObject {
+        private String hello = "hello";
+        private final String hello2 = "hello2";
         public final String abc = "abc1";
         @Deprecated
         public final String ghi = "ghi";
@@ -73,6 +80,10 @@ public final class ReflectionSample {
 
         private String getAbc() {
             return abc;
+        }
+
+        private void setMno(int a) {
+
         }
     }
 
@@ -128,6 +139,16 @@ public final class ReflectionSample {
         @ManagedAttribute(description = "Text")
         public void setText(String c) {
         }
+
+        private void op(int a) {
+        }
+
+        int getMno() {
+            return 0;
+        }
+    }
+
+    public static class MyObject4 extends MyObject3 {
 
     }
 }
