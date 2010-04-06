@@ -36,7 +36,7 @@ public class PublicMetadataAssembler extends ReflectionMetadataAssemblerSkeleton
     }
 
     @Override
-    protected boolean canInclude(Class<?> managedClass, BeanProperty property) {
+    public boolean canInclude(Class<?> managedClass, BeanProperty property) {
         if (property.getReadMethod() != null) {
             if (!exposeObjectElements && property.getReadMethod().getDeclaringClass().equals(Object.class))
                 return false;
@@ -52,14 +52,14 @@ public class PublicMetadataAssembler extends ReflectionMetadataAssemblerSkeleton
     }
 
     @Override
-    protected boolean canInclude(Class<?> managedClass, Method method) {
+    public boolean canInclude(Class<?> managedClass, Method method) {
         return Modifier.isPublic(method.getModifiers())
                 && !Modifier.isStatic(method.getModifiers())
                 && (exposeObjectElements || !Object.class.equals(method.getDeclaringClass()));
     }
 
     @Override
-    protected boolean canInclude(Class<?> managedClass, Field field) {
+    public boolean canInclude(Class<?> managedClass, Field field) {
         return Modifier.isPublic(field.getModifiers())
                 && !Modifier.isStatic(field.getModifiers());
     }

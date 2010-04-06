@@ -16,8 +16,14 @@
 
 package com.mycila.jmx.export;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface JmxExposure {
+    boolean canInclude(Class<?> managedClass, Field field);
+    boolean canInclude(Class<?> managedClass, BeanProperty property);
+    boolean canInclude(Class<?> managedClass, Method method);
 }

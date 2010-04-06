@@ -33,17 +33,6 @@ import java.lang.annotation.Target;
 @Inherited
 @Documented
 public @interface JmxMetric {
-    /**
-     * Equivalent to {@link #name()}}
-     */
-    String value() default "";
-
-    /**
-     * Attribute name to expose. If not given, will use field name.
-     */
-    String name() default "";
-
-    String description() default "";
 
     Metric metric() default Metric.GAUGE;
 

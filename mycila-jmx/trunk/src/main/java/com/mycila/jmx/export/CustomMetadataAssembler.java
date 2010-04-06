@@ -33,12 +33,12 @@ public final class CustomMetadataAssembler extends PublicMetadataAssembler {
     private final Collection<BeanProperty> properties = new HashSet<BeanProperty>();
 
     @Override
-    protected boolean canInclude(Class<?> managedClass, Field field) {
+    public boolean canInclude(Class<?> managedClass, Field field) {
         return fields.contains(field);
     }
 
     @Override
-    protected boolean canInclude(Class<?> managedClass, Method method) {
+    public boolean canInclude(Class<?> managedClass, Method method) {
         for (BeanProperty property : properties) {
             if (method.equals(property.getReadMethod())
                     || method.equals(property.getWriteMethod()))
@@ -48,7 +48,7 @@ public final class CustomMetadataAssembler extends PublicMetadataAssembler {
     }
 
     @Override
-    protected boolean canInclude(Class<?> managedClass, BeanProperty property) {
+    public boolean canInclude(Class<?> managedClass, BeanProperty property) {
         return properties.contains(property);
     }
 

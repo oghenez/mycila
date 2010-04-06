@@ -22,21 +22,21 @@ import java.lang.reflect.Method;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class AnnotationMetadataAssembler extends ReflectionMetadataAssemblerSkeleton {
+public class DelegatingMetadataAssembler extends ReflectionMetadataAssemblerSkeleton {
 
     @Override
     public boolean canInclude(Class<?> managedClass, Field field) {
-        return false;
+        return Exposures.get(managedClass).canInclude(managedClass, field);
     }
 
     @Override
     public boolean canInclude(Class<?> managedClass, BeanProperty property) {
-        return false;
+        return Exposures.get(managedClass).canInclude(managedClass, property);
     }
 
     @Override
     public boolean canInclude(Class<?> managedClass, Method method) {
-        return false;
+        return Exposures.get(managedClass).canInclude(managedClass, method);
     }
-
+    
 }

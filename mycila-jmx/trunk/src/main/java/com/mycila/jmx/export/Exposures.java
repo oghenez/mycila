@@ -16,6 +16,8 @@
 
 package com.mycila.jmx.export;
 
+import com.mycila.jmx.export.annotation.JmxBean;
+
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
@@ -32,13 +34,21 @@ public final class Exposures {
     private Exposures() {
     }
 
-    public static JmxExposure get(Class<? extends JmxExposure> exp) {
-        if (exp == null) exp = AnnotationExposure.class;
+    public static JmxExposure get(Class<?> mbeanClass) {
+        JmxBean jmxBean = mbeanClass.getAnnotation(JmxBean.class);
+        if (jmxBean == null)
+            throw new IllegalArgumentException("No @JmxBean annotation on class hierarchy: " + mbeanClass.getName());
+        return load(jmxBean.exposure());
+    }
+
+    private static JmxExposure load(Class<? extends JmxExposure> exp) {
+        if (exp == null) exp = AnnotationMetadataAssembler.class;
         Reference<JmxExposure> ref = cache.get(exp);
         JmxExposure exposure;
         if (ref != null) {
             exposure = ref.get();
-            if (exposure != null) return exposure;
+            if (exposure != null)
+                return exposure;
         }
         try {
             exposure = exp.getConstructor().newInstance();
@@ -55,7 +65,4 @@ public final class Exposures {
         return exposure;
     }
 
-    public static final class AnnotationExposure implements JmxExposure {
-
-    }
 }
