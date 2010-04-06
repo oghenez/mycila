@@ -36,7 +36,7 @@ public class MycilaJmxExporter implements JmxExporter {
     private final MBeanServer mBeanServer;
     private ExportBehavior exportBehavior = ExportBehavior.FAIL_ON_EXISTING;
     private JmxNamingStrategy namingStrategy = new MBeanNamingStrategy();
-    private JmxMetadataAssembler metadataAssembler = new AnnotationMetadataAssembler();
+    private JmxMetadataAssembler metadataAssembler = new DelegatingMetadataAssembler();
     private boolean ensureUnique = false;
 
     public MycilaJmxExporter() {
