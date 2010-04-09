@@ -89,7 +89,7 @@ public final class Messages {
             } else throw new DispatcherException("Request has already been replied");
         }
 
-        public void replyError(Exception error) {
+        public void replyError(Throwable error) {
             if (replied.compareAndSet(false, true)) {
                 Throwable t = error;
                 if (t instanceof InvocationTargetException) t = ((InvocationTargetException) error).getTargetException();

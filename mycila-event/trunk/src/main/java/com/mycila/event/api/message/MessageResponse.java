@@ -22,7 +22,7 @@ package com.mycila.event.api.message;
 public interface MessageResponse<R> {
     Object[] getParameters();
 
-    void replyError(Exception error);
+    void replyError(Throwable error);
 
     void reply(R reply);
 }
