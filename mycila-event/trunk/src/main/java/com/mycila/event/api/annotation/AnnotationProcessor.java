@@ -20,7 +20,7 @@ package com.mycila.event.api.annotation;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface AnnotationProcessor {
-    public abstract <T> T process(T instance);
+    <T> T process(T instance);
 
-    public abstract <T> T proxy(Class<T> abstractClassOrInterface);
+    <T> T proxy(Class<T> abstractClassOrInterface);
 }

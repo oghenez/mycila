@@ -37,7 +37,7 @@ import static com.mycila.event.api.Ensure.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class AnnotationProcessors {
+public final class AnnotationProcessors {
 
     private AnnotationProcessors() {
     }
