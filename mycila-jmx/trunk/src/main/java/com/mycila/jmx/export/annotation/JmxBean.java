@@ -18,7 +18,6 @@ package com.mycila.jmx.export.annotation;
 
 import com.mycila.jmx.export.AnnotationMetadataAssembler;
 import com.mycila.jmx.export.JmxExposure;
-import com.mycila.jmx.export.Exposures;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
