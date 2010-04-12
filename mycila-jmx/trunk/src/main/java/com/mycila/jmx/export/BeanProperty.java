@@ -27,8 +27,8 @@ import java.lang.reflect.Method;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class BeanProperty<T> {
-    private final Method readMethod;
-    private final Method writeMethod;
+    private Method readMethod;
+    private Method writeMethod;
     private final Class<T> type;
     private final String name;
 
@@ -140,4 +140,11 @@ public final class BeanProperty<T> {
         return new BeanProperty<T>(property, getter, setter);
     }
 
+    public void clearReadable() {
+        readMethod = null;
+    }
+
+    public void clearWritable() {
+        writeMethod = null;
+    }
 }
