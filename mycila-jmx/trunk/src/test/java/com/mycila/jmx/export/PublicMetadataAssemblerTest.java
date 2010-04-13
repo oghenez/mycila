@@ -241,7 +241,7 @@ public final class PublicMetadataAssemblerTest extends JmxTest {
         final ObjectName on = register(new Object() {
             private String name = "mat";
 
-            public String getName() {
+            private  String getName() {
                 return name;
             }
 
@@ -249,29 +249,17 @@ public final class PublicMetadataAssemblerTest extends JmxTest {
                 this.name = name;
             }
         });
-        assertEquals("mat", server.getAttribute(on, "Name"));
-
+        assertThat(new Code() {
+            public void run() throws Throwable {
+                server.getAttribute(on, "Name");
+            }
+        }, fire(ReflectionException.class, "Property not readable: Name"));
     }
 
     @Test
     public void export_object_props() throws Exception {
-        final ObjectName on = register(new Object() {
-            private String name = "mat";
-
-            public String getName() {
-                return name;
-            }
-
-            private void setName(String name) {
-                this.name = name;
-            }
-        });
-        assertEquals("mat", server.getAttribute(on, "Name"));
-        assertThat(new Code() {
-            public void run() throws Throwable {
-                server.setAttribute(on, new Attribute("Name", "new value"));
-            }
-        }, fire(ReflectionException.class, "Property not writable: Name"));
+        final ObjectName on = register(new Object() {});
+        server.getAttribute(on, "Class");
     }
 
 }
