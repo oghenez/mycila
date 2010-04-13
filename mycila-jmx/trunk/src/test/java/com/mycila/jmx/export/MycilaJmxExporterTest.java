@@ -19,6 +19,7 @@ package com.mycila.jmx.export;
 import com.mycila.jmx.test.Code;
 import org.junit.Test;
 
+import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import java.lang.reflect.Field;
 
@@ -93,6 +94,24 @@ public final class MycilaJmxExporterTest {
         ObjectName on2 = exporter.register(o2);
         assertEquals(on1.getKeyProperty("identity"), "" + Integer.toHexString(o1.hashCode()));
         assertEquals(on2.getKeyProperty("identity"), "" + Integer.toHexString(o2.hashCode()));
+    }
+
+    @Test
+    public void test_malformed() throws Exception {
+        final MycilaJmxExporter exporter = new MycilaJmxExporter();
+        exporter.setMetadataAssembler(new PublicMetadataAssembler());
+        exporter.setEnsureUnique(true);
+
+        assertThat(new Code() {
+            public void run() throws Throwable {
+                exporter.register(new JmxSelfNaming() {
+                    @Override
+                    public ObjectName getObjectName() throws MalformedObjectNameException {
+                        return ObjectName.getInstance("----");
+                    }
+                });
+            }
+        }, fire(JmxExportException.class, "Unable to generate ObjectName for MBean [com.mycila.jmx.export.MycilaJmxExporterTest$6$1]"));
     }
 
 }

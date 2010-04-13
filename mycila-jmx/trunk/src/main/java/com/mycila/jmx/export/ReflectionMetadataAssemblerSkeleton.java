@@ -36,7 +36,8 @@ public abstract class ReflectionMetadataAssemblerSkeleton extends MetadataAssemb
     @Override
     protected Collection<Field> getAttributes(Class<?> managedClass) {
         List<Field> fields = new LinkedList<Field>();
-        while (managedClass != null && !managedClass.equals(Object.class)) {
+        while (managedClass != null
+                && !managedClass.equals(Object.class)) {
             for (Field field : managedClass.getDeclaredFields())
                 if (!field.isSynthetic() && canInclude(managedClass, field))
                     fields.add(field);
@@ -59,7 +60,8 @@ public abstract class ReflectionMetadataAssemblerSkeleton extends MetadataAssemb
     protected Collection<BeanProperty> getProperties(Class<?> managedClass) {
         Map<String, BeanProperty> properties = new HashMap<String, BeanProperty>();
         for (BeanProperty prop : BeanUtils.getProperties(managedClass))
-            if (!properties.containsKey(prop.getName()) && canInclude(managedClass, prop))
+            if (!properties.containsKey(prop.getName())
+                    && canInclude(managedClass, prop))
                 properties.put(prop.getName(), prop);
         return properties.values();
     }

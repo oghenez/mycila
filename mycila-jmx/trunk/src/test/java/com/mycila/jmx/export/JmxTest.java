@@ -56,6 +56,7 @@ public abstract class JmxTest {
     public final void setup() {
         jmxExporter = new MycilaJmxExporter();
         ((MycilaJmxExporter) jmxExporter).setMetadataAssembler(getMetadataAssembler());
+        ((MycilaJmxExporter) jmxExporter).setEnsureUnique(true);
     }
 
     @After
