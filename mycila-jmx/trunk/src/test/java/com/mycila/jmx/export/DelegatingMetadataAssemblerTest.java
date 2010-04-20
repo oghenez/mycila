@@ -16,20 +16,45 @@
 
 package com.mycila.jmx.export;
 
-import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
+import com.mycila.jmx.export.annotation.JmxBean;
+import org.junit.Test;
+
+import javax.management.Attribute;
+import javax.management.ObjectName;
 
 import static org.junit.Assert.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@RunWith(JUnit4.class)
-public final class DelegatingMetadataAssemblerTest {
+public final class DelegatingMetadataAssemblerTest extends JmxTest {
 
-    @Test
-    public void test() throws Exception {
+    @Override
+    protected JmxMetadataAssembler getMetadataAssembler() {
+        return new DelegatingMetadataAssembler();
     }
 
+    @Test
+    public void export_fields_public_rw_get() throws Exception {
+        ObjectName on = register(new MyClass());
+        Thread.sleep(30000);
+        assertEquals("value", server.getAttribute(on, "prop"));
+        server.setAttribute(on, new Attribute("prop", "new value"));
+        assertEquals("new value", server.getAttribute(on, "prop"));
+        assertEquals("new value", server.getAttribute(on, ));
+
+    }
+
+    @JmxBean(exposure = PublicMetadataAssembler.class)
+    public static class MyClass {
+        public String rw = "value";
+
+        public String getProp() {
+            return rw;
+        }
+
+        public void setProp(String rw) {
+            this.rw = rw;
+        }
+    }
 }
