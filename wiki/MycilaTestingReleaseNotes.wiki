@@ -1,4 +1,3 @@
-#labels Featured
 #sidebar PluginBar
 
 Issues are logged at http://code.google.com/p/mycila/issues/list?can=1
