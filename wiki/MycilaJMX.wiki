@@ -1,4 +1,4 @@
-#summary Mycila Event, a brand-new powerful in-process Event System
+#summary Mycila JMX, Export anything to JMX !
 #labels Featured
 
 <wiki:toc max_depth="5" /> 
