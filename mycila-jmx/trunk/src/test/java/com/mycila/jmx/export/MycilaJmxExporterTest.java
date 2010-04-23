@@ -21,7 +21,6 @@ import org.junit.Test;
 
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
-import java.lang.reflect.Field;
 
 import static com.mycila.jmx.test.Throws.*;
 import static org.junit.Assert.*;
@@ -34,12 +33,7 @@ public final class MycilaJmxExporterTest {
     @Test
     public void test_beavior() throws Exception {
         final MycilaJmxExporter exporter = new MycilaJmxExporter();
-        exporter.setMetadataAssembler(new PublicMetadataAssembler() {
-            @Override
-            protected String getAttributeExportName(Class<?> managedClass, Field attribute) {
-                return attribute.getName();
-            }
-        });
+        exporter.setMetadataAssembler(new PublicMetadataAssembler());
         exporter.setExportBehavior(ExportBehavior.FAIL_ON_EXISTING);
 
         final ObjectName on = ObjectName.getInstance("a:type=b");
@@ -111,7 +105,7 @@ public final class MycilaJmxExporterTest {
                     }
                 });
             }
-        }, fire(JmxExportException.class, "Unable to generate ObjectName for MBean [com.mycila.jmx.export.MycilaJmxExporterTest$6$1]"));
+        }, fire(JmxExportException.class, "Unable to generate ObjectName for MBean [com.mycila.jmx.export.MycilaJmxExporterTest$5$1]"));
     }
 
 }

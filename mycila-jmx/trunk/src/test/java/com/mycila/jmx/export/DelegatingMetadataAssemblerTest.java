@@ -37,12 +37,10 @@ public final class DelegatingMetadataAssemblerTest extends JmxTest {
     @Test
     public void export_fields_public_rw_get() throws Exception {
         ObjectName on = register(new MyClass());
-        Thread.sleep(30000);
-        assertEquals("value", server.getAttribute(on, "prop"));
-        server.setAttribute(on, new Attribute("prop", "new value"));
-        assertEquals("new value", server.getAttribute(on, "prop"));
-        assertEquals("new value", server.getAttribute(on, ));
-
+        assertEquals("value", server.getAttribute(on, "Prop"));
+        server.setAttribute(on, new Attribute("Prop", "new value"));
+        assertEquals("new value", server.getAttribute(on, "Prop"));
+        assertEquals("new value", server.getAttribute(on, "rw"));
     }
 
     @JmxBean(exposure = PublicMetadataAssembler.class)

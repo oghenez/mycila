@@ -17,6 +17,7 @@
 package com.mycila.jmx.export;
 
 import com.mycila.jmx.util.ClassUtils;
+import com.mycila.jmx.util.JmxUtils;
 
 import javax.management.IntrospectionException;
 import javax.management.InvalidAttributeValueException;
@@ -40,7 +41,7 @@ public final class MBeanProperty<T> implements JmxAttribute<T> {
                     access == Access.RO || access == Access.RW ? beanProperty.getReadMethod() : null,
                     access == Access.WO || access == Access.RW ? beanProperty.getWriteMethod() : null);
         } catch (IntrospectionException e) {
-            throw new RuntimeException("Error creating property from " + beanProperty + ": " + e.getMessage(), e);
+            throw new IllegalArgumentException("Error creating property from " + beanProperty + ": " + e.getMessage(), e);
         }
     }
 
@@ -61,9 +62,7 @@ public final class MBeanProperty<T> implements JmxAttribute<T> {
         try {
             return beanProperty.get(managedResource);
         } catch (Throwable e) {
-            if (e instanceof Exception)
-                throw new ReflectionException((Exception) e, "Error getting property " + this + ": " + e.getMessage());
-            throw new ReflectionException(new Exception(e), "Error getting property " + this + ": " + e.getMessage());
+            throw JmxUtils.rethrow(e);
         }
     }
 
@@ -76,9 +75,7 @@ public final class MBeanProperty<T> implements JmxAttribute<T> {
         try {
             beanProperty.set(managedResource, value);
         } catch (Throwable e) {
-            if (e instanceof Exception)
-                throw new ReflectionException((Exception) e, "Error setting property " + this + ": " + e.getMessage());
-            throw new ReflectionException(new Exception(e), "Error setting property " + this + ": " + e.getMessage());
+            throw JmxUtils.rethrow(e);
         }
     }
 

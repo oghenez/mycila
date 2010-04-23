@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
+//TODO
 public class AnnotationMetadataAssembler extends ReflectionMetadataAssemblerSkeleton {
 
     @Override

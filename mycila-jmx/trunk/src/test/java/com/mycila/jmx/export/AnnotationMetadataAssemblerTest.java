@@ -28,6 +28,7 @@ public final class AnnotationMetadataAssemblerTest {
 
     @Test
     public void test() throws Exception {
+        //TODO
     }
 
 }

@@ -17,7 +17,6 @@
 package com.mycila.jmx.export;
 
 import com.mycila.jmx.util.BeanUtils;
-import com.mycila.jmx.util.ClassUtils;
 import com.mycila.jmx.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -47,16 +46,6 @@ public abstract class ReflectionMetadataAssemblerSkeleton extends MetadataAssemb
     }
 
     @Override
-    protected String getAttributeExportName(Class<?> managedClass, Field attribute) {
-        return ClassUtils.getShortName(attribute.getDeclaringClass()) + "." + attribute.getName();
-    }
-
-    @Override
-    protected String getAttributeDescription(Class<?> managedClass, Field attribute) {
-        return attribute.toString();
-    }
-
-    @Override
     protected Collection<BeanProperty> getProperties(Class<?> managedClass) {
         Map<String, BeanProperty> properties = new HashMap<String, BeanProperty>();
         for (BeanProperty prop : BeanUtils.getProperties(managedClass))
@@ -67,22 +56,12 @@ public abstract class ReflectionMetadataAssemblerSkeleton extends MetadataAssemb
     }
 
     @Override
-    protected String getPropertyDescription(Class<?> managedClass, BeanProperty property) {
-        return property.toString();
-    }
-
-    @Override
     protected Collection<Method> getMethodOperations(Class<?> managedClass) {
         List<Method> methods = new LinkedList<Method>();
         for (Method method : ReflectionUtils.getDeclaredMethods(managedClass))
             if (canInclude(managedClass, method))
                 methods.add(method);
         return methods;
-    }
-
-    @Override
-    protected String getOperationDescription(Class<?> managedClass, Method operation) {
-        return operation.toString();
     }
 
 }

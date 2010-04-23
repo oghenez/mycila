@@ -16,11 +16,12 @@
 
 package com.mycila.jmx.export;
 
+import com.mycila.jmx.util.JmxUtils;
+
 import javax.management.MBeanOperationInfo;
 import javax.management.MBeanParameterInfo;
 import javax.management.ReflectionException;
 import javax.management.modelmbean.ModelMBeanOperationInfo;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -57,12 +58,8 @@ public final class MBeanOperation<T> implements JmxOperation<T> {
     public T invoke(Object managedResource, Object... params) throws ReflectionException {
         try {
             return (T) operation.invoke(managedResource, params);
-        } catch (IllegalAccessException e) {
-            throw new ReflectionException(e, e.getMessage());
-        } catch (InvocationTargetException e) {
-            if (e.getTargetException() instanceof Exception)
-                throw new ReflectionException((Exception) e.getTargetException(), e.getTargetException().getMessage());
-            throw new ReflectionException(new Exception(e.getTargetException()), e.getTargetException().getMessage());
+        } catch (Throwable e) {
+            throw JmxUtils.rethrow(e);
         }
     }
 

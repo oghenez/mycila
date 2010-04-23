@@ -16,7 +16,6 @@
 
 package com.mycila.jmx.export;
 
-import com.mycila.jmx.Mx4j;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -44,12 +43,12 @@ public abstract class JmxTest {
 
     @BeforeClass
     public static void startMX4J() throws Exception {
-        Mx4j.start();
+        //Mx4j.start();
     }
 
     @AfterClass
     public static void stopMX4J() throws Exception {
-        Mx4j.stop();
+        //Mx4j.stop();
     }
 
     @Before

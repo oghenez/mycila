@@ -23,8 +23,8 @@ import javax.management.Attribute;
 import javax.management.AttributeNotFoundException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
+import javax.management.RuntimeMBeanException;
 import javax.management.RuntimeOperationsException;
-import java.lang.reflect.Field;
 import java.util.List;
 
 import static com.mycila.jmx.test.Throws.*;
@@ -38,12 +38,7 @@ public final class PublicMetadataAssemblerTest extends JmxTest {
 
     @Override
     protected JmxMetadataAssembler getMetadataAssembler() {
-        return new PublicMetadataAssembler() {
-            @Override
-            protected String getAttributeExportName(Class<?> managedClass, Field attribute) {
-                return attribute.getName();
-            }
-        };
+        return new PublicMetadataAssembler();
     }
 
     /* ATTRIBUTES */
@@ -132,7 +127,7 @@ public final class PublicMetadataAssemblerTest extends JmxTest {
             public void run() throws Throwable {
                 server.invoke(on, "toString", new Object[0], new String[0]);
             }
-        }, fire(ReflectionException.class, "bouh!"));
+        }, fire(RuntimeMBeanException.class, "java.lang.IllegalArgumentException: bouh!"));
     }
 
     @Test
@@ -199,7 +194,7 @@ public final class PublicMetadataAssemblerTest extends JmxTest {
         });
         List<Attribute> list = server.getAttributes(on, new String[]{"Name", "Class"}).asList();
         assertEquals("mat", list.get(0).getValue());
-        assertTrue(list.get(1).getValue().toString().contains("com.mycila.jmx.export.PublicMetadataAssemblerTest"));
+        assertTrue(list.get(1).getValue().toString().contains(PublicMetadataAssemblerTest.class.getName()));
     }
 
     @Test
@@ -241,7 +236,7 @@ public final class PublicMetadataAssemblerTest extends JmxTest {
         final ObjectName on = register(new Object() {
             private String name = "mat";
 
-            private  String getName() {
+            private String getName() {
                 return name;
             }
 
@@ -258,7 +253,8 @@ public final class PublicMetadataAssemblerTest extends JmxTest {
 
     @Test
     public void export_object_props() throws Exception {
-        final ObjectName on = register(new Object() {});
+        final ObjectName on = register(new Object() {
+        });
         server.getAttribute(on, "Class");
     }
 

@@ -17,6 +17,7 @@
 package com.mycila.jmx.export;
 
 import com.mycila.jmx.util.ClassUtils;
+import com.mycila.jmx.util.JmxUtils;
 
 import javax.management.InvalidAttributeValueException;
 import javax.management.ReflectionException;
@@ -59,7 +60,7 @@ public final class MBeanAttribute<T> implements JmxAttribute<T> {
         try {
             return (T) field.get(managedResource);
         } catch (Exception e) {
-            throw new ReflectionException(e, "Error getting attribute " + this + ": " + e.getMessage());
+            throw JmxUtils.rethrow(e);
         }
     }
 
@@ -73,8 +74,8 @@ public final class MBeanAttribute<T> implements JmxAttribute<T> {
             throw new InvalidAttributeValueException("Invalid type specified for attribute " + this + ": " + value);
         try {
             field.set(managedResource, value);
-        } catch (IllegalAccessException e) {
-            throw new ReflectionException(e, "Error setting attribute " + this + ": " + e.getMessage());
+        } catch (Exception e) {
+            throw JmxUtils.rethrow(e);
         }
     }
 
