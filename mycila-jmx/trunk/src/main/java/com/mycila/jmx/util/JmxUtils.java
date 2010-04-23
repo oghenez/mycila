@@ -23,6 +23,7 @@ import javax.management.Descriptor;
 import javax.management.DynamicMBean;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
+import javax.management.ReflectionException;
 import java.lang.reflect.AccessibleObject;
 import java.util.Hashtable;
 
@@ -47,6 +48,10 @@ public final class JmxUtils {
             ClassUtils.isPresent(MXBEAN_ANNOTATION_CLASS_NAME, JmxUtils.class.getClassLoader());
 
     private JmxUtils() {
+    }
+
+    public static ReflectionException rethrow(Throwable e) throws ReflectionException {
+        throw new ReflectionException(ExceptionUtils.rethrowOrWrap(e), e.getMessage());
     }
 
     /**

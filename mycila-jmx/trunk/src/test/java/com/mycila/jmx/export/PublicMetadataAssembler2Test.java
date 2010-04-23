@@ -23,7 +23,6 @@ import javax.management.Attribute;
 import javax.management.AttributeNotFoundException;
 import javax.management.ObjectName;
 import javax.management.ReflectionException;
-import java.lang.reflect.Field;
 
 import static com.mycila.jmx.test.Throws.*;
 import static org.junit.Assert.*;
@@ -36,12 +35,7 @@ public final class PublicMetadataAssembler2Test extends JmxTest {
 
     @Override
     protected JmxMetadataAssembler getMetadataAssembler() {
-        return new PublicMetadataAssembler(false) {
-            @Override
-            protected String getAttributeExportName(Class<?> managedClass, Field attribute) {
-                return attribute.getName();
-            }
-        };
+        return new PublicMetadataAssembler(false);
     }
 
     /* OBJECT */

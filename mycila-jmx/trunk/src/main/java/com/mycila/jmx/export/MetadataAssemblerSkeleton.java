@@ -16,7 +16,6 @@
 
 package com.mycila.jmx.export;
 
-import com.mycila.jmx.util.ClassUtils;
 import com.mycila.jmx.util.JmxUtils;
 import com.mycila.jmx.util.StringUtils;
 
@@ -107,7 +106,7 @@ public abstract class MetadataAssemblerSkeleton implements JmxMetadataAssembler 
     }
 
     protected String getAttributeDescription(Class<?> managedClass, Field attribute) {
-        return attribute.getName();
+        return "";
     }
 
     protected Access getAttributeAccess(Class<?> managedClass, Field attribute) {
@@ -130,7 +129,7 @@ public abstract class MetadataAssemblerSkeleton implements JmxMetadataAssembler 
     }
 
     protected String getPropertyDescription(Class<?> managedClass, BeanProperty property) {
-        return StringUtils.capitalize(property.getName());
+        return "";
     }
 
     protected Access getPropertyAccess(Class<?> managedClass, BeanProperty property) {
@@ -161,15 +160,26 @@ public abstract class MetadataAssemblerSkeleton implements JmxMetadataAssembler 
     }
 
     protected String getOperationDescription(Class<?> managedClass, Method operation) {
-        return operation.getName();
+        return "";
     }
 
     protected MBeanParameterInfo[] getOperationParameters(Class<?> managedClass, Method operation) {
         Class<?>[] paramTypes = operation.getParameterTypes();
         MBeanParameterInfo[] params = new MBeanParameterInfo[paramTypes.length];
         for (int i = 0; i < params.length; i++)
-            params[i] = new MBeanParameterInfo(ClassUtils.getShortName(paramTypes[i]), paramTypes[i].getName(), "");
+            params[i] = new MBeanParameterInfo(
+                    getParameterExportName(managedClass, operation, paramTypes[i]),
+                    paramTypes[i].getName(),
+                    getParameterDescription(managedClass, operation, paramTypes[i]));
         return params;
+    }
+
+    protected String getParameterExportName(Class<?> managedClass, Method operation, Class<?> paramType) {
+        return paramType.getSimpleName();
+    }
+
+    protected String getParameterDescription(Class<?> managedClass, Method operation, Class<?> paramType) {
+        return "";
     }
 
     protected void populateOperationDescriptor(Class<?> managedClass, Method operation, Descriptor desc) {

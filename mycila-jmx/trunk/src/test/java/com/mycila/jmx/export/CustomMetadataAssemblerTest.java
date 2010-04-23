@@ -16,9 +16,12 @@
 
 package com.mycila.jmx.export;
 
-import org.junit.*;
-import org.junit.runner.*;
-import org.junit.runners.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import javax.management.Attribute;
+import javax.management.ObjectName;
 
 import static org.junit.Assert.*;
 
@@ -26,10 +29,43 @@ import static org.junit.Assert.*;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @RunWith(JUnit4.class)
-public final class CustomMetadataAssemblerTest {
+public final class CustomMetadataAssemblerTest extends JmxTest {
+
+    static String gone;
+
+    @Override
+    protected JmxMetadataAssembler getMetadataAssembler() {
+        return new CustomMetadataAssembler()
+                .addAttribute(MyClass.class, "rw")
+                .addProperty(MyClass.class, "prop")
+                .addOperation(MyClass.class, "go");
+    }
 
     @Test
     public void test() throws Exception {
+        ObjectName on = register(new MyClass());
+        assertEquals("value", server.getAttribute(on, "Prop"));
+        server.setAttribute(on, new Attribute("Prop", "new value"));
+        assertEquals("new value", server.getAttribute(on, "Prop"));
+        assertEquals("new value", server.getAttribute(on, "rw"));
+        assertNull(gone);
+        server.invoke(on, "go", new Object[]{"shopping"}, new String[]{String.class.getName()});
+        assertEquals("shopping", gone);
     }
 
+    public static class MyClass {
+        public String rw = "value";
+
+        public String getProp() {
+            return rw;
+        }
+
+        public void setProp(String rw) {
+            this.rw = rw;
+        }
+
+        public void go(String where) {
+            gone = where;
+        }
+    }
 }

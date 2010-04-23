@@ -29,7 +29,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.util.HashSet;
 import java.util.Set;
@@ -66,13 +65,7 @@ final class SwingSample {
 
                 export(frame, exporter);
                 button.setText("Done !");
-                String url = "http://localhost:" + httpAdaptor.getPort() + "/";
-                try {
-                    Runtime.getRuntime().exec(new String[]{"rundll32.exe", "url.dll,FileProtocolHandler", url});
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                    System.exit(1);
-                }
+                System.out.println("http://localhost:" + httpAdaptor.getPort() + "/");
             }
         });
 

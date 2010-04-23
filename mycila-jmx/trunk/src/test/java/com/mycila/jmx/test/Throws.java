@@ -16,6 +16,7 @@
 
 package com.mycila.jmx.test;
 
+import com.mycila.jmx.util.ExceptionUtils;
 import org.hamcrest.Description;
 import org.junit.internal.matchers.TypeSafeMatcher;
 
@@ -48,7 +49,7 @@ public final class Throws extends TypeSafeMatcher<Code> {
             if (checkMessage
                     && (throwable.getMessage() == null && message != null
                     || throwable.getMessage() != null && !throwable.getMessage().equals(message))) {
-                throwable.printStackTrace();
+                System.out.println(ExceptionUtils.asString(throwable));
                 throw new AssertionError("Code thrown bad message: " + throwable.getMessage());
             }
         }

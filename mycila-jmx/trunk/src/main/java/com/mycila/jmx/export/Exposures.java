@@ -17,10 +17,10 @@
 package com.mycila.jmx.export;
 
 import com.mycila.jmx.export.annotation.JmxBean;
+import com.mycila.jmx.util.ExceptionUtils;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -52,14 +52,8 @@ public final class Exposures {
         }
         try {
             exposure = exp.getConstructor().newInstance();
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e.getTargetException().getMessage(), e.getTargetException());
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e.getMessage(), e);
+        } catch (Throwable e) {
+            throw ExceptionUtils.rethrow(e);
         }
         cache.put(exp, new WeakReference<JmxExposure>(exposure));
         return exposure;
