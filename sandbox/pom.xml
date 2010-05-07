@@ -10,49 +10,35 @@
     <name>mycila-sandbox</name>
     <description>Sandbox</description>
 
-    <properties>
-        <jdk.version>1.6</jdk.version>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>.clover</directory>
-                        </fileset>
-                        <fileset>
-                            <directory>test-output</directory>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-idea-plugin</artifactId>
-                <configuration>
-                    <downloadSources>true</downloadSources>
-                    <downloadJavadocs>false</downloadJavadocs>
-                </configuration>
-            </plugin>
-            <!-- compilation -->
-            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <showDeprecation>true</showDeprecation>
-                    <showWarnings>true</showWarnings>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.groovy.maven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.7</version>
+            <version>4.8.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
