@@ -7,8 +7,7 @@ import java.util.Random;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@Concurrent
-public final class ATest3 {
+public final class ATest4 {
 
     @Test public void test0() throws Throwable { printAndWait(); }
     @Test public void test1() throws Throwable { printAndWait(); }

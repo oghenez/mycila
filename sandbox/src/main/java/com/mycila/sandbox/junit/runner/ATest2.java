@@ -7,6 +7,7 @@ import java.util.Random;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
+@Concurrent
 public final class ATest2 {
 
     @Test public void test0() throws Throwable { printAndWait(); }
@@ -22,8 +23,9 @@ public final class ATest2 {
 
     void printAndWait() throws Throwable {
         int w = new Random().nextInt(1000);
-        System.out.println(String.format("[%s] ATest %s %s",
+        System.out.println(String.format("[%s] %s %s %s",
                 Thread.currentThread().getName(),
+                getClass().getName(),
                 new Throwable().getStackTrace()[1].getMethodName(),
                 w));
         Thread.sleep(w);
