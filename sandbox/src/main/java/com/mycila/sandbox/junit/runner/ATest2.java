@@ -1,17 +1,13 @@
 package com.mycila.sandbox.junit.runner;
 
 import org.junit.Test;
-import org.junit.runner.JUnitCore;
-import org.junit.runner.RunWith;
 
 import java.util.Random;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@RunWith(ConcurrentJunitRunner.class)
-@Concurrent(threads = 6)
-public final class ATest {
+public final class ATest2 {
 
     @Test public void test0() throws Throwable { printAndWait(); }
     @Test public void test1() throws Throwable { printAndWait(); }
@@ -31,9 +27,5 @@ public final class ATest {
                 new Throwable().getStackTrace()[1].getMethodName(),
                 w));
         Thread.sleep(w);
-    }
-
-    public static void main(String[] args) {
-        JUnitCore.main("com.mycila.sandbox.junit.runner.ATest");
     }
 }
