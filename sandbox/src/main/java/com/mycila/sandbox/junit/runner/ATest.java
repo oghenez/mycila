@@ -26,8 +26,9 @@ public final class ATest {
 
     void printAndWait() throws Throwable {
         int w = new Random().nextInt(1000);
-        System.out.println(String.format("[%s] ATest %s %s",
+        System.out.println(String.format("[%s] %s %s %s",
                 Thread.currentThread().getName(),
+                getClass().getName(),
                 new Throwable().getStackTrace()[1].getMethodName(),
                 w));
         Thread.sleep(w);
