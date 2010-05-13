@@ -40,13 +40,13 @@ public final class ErrorHandlers {
     public static ErrorHandler rethrow() {
         return new ErrorHandler() {
             public <E> void onError(Subscription<E> subscription, Event<E> event, Exception e) {
-                if(event.getSource() instanceof MessageResponse)
-                    ((MessageResponse) event.getSource()).replyError(e);
+                Throwable t = e;
+                if (t instanceof InvocationTargetException) t = ((InvocationTargetException) t).getTargetException();
+                if (t instanceof DispatcherException) t = t.getCause();
+                if (t instanceof Error) throw (Error) t;
+                if (event.getSource() instanceof MessageResponse)
+                    ((MessageResponse) event.getSource()).replyError(t);
                 else {
-                    Throwable t = e;
-                    if (t instanceof InvocationTargetException) t = ((InvocationTargetException) t).getTargetException();
-                    if (t instanceof DispatcherException) t = t.getCause();
-                    if (t instanceof Error) throw (Error) t;
                     if (t instanceof RuntimeException) throw (RuntimeException) t;
                     throw DispatcherException.wrap(t);
                 }
