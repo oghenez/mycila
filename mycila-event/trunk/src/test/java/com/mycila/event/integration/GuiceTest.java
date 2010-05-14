@@ -18,25 +18,16 @@ package com.mycila.event.integration;
 
 import com.google.inject.Binder;
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
-import com.google.inject.binder.AnnotatedBindingBuilder;
-import com.google.inject.binder.ScopedBindingBuilder;
-import com.mycila.event.api.Dispatcher;
-import com.mycila.event.api.ErrorHandlers;
 import com.mycila.event.api.Event;
 import com.mycila.event.api.Reachability;
-import com.mycila.event.api.annotation.AnnotationProcessor;
 import com.mycila.event.api.annotation.Multiple;
 import com.mycila.event.api.annotation.Publish;
 import com.mycila.event.api.annotation.Reference;
 import com.mycila.event.api.annotation.Subscribe;
 import com.mycila.event.integration.guice.MycilaEventGuiceModule;
-import com.mycila.event.spi.AnnotationProcessors;
-import com.mycila.event.spi.Dispatchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -60,28 +51,7 @@ public final class GuiceTest implements Module {
 
     @Test
     public void test() throws Exception {
-        Module m = new MycilaEventGuiceModule() {
-            @Override
-            protected ScopedBindingBuilder bindAnnotationProcessor(AnnotatedBindingBuilder<AnnotationProcessor> bindAnnotationProcessor) {
-                return bindAnnotationProcessor.toProvider(new Provider<AnnotationProcessor>() {
-                    @Inject
-                    Provider<Dispatcher> dispatcher;
-
-                    public AnnotationProcessor get() {
-                        return AnnotationProcessors.create(dispatcher.get());
-                    }
-                });
-            }
-
-            @Override
-            protected ScopedBindingBuilder bindDispatcher(AnnotatedBindingBuilder<Dispatcher> bindDispatcher) {
-                return bindDispatcher.toProvider(new Provider<Dispatcher>() {
-                    public Dispatcher get() {
-                        return Dispatchers.synchronousUnsafe(ErrorHandlers.rethrow());
-                    }
-                });
-            }
-        };
+        Module m = new MycilaEventGuiceModule();
         Injector injector = Guice.createInjector(this, m);
         injector.getInstance(MyCustomPublisher.class).send("A", "cut", "message", "containing", "bad words");
         injector.getInstance(MyCustomPublisher2.class).send(1, "A", "cut", "message", "containing", "bad words", "in varg");
