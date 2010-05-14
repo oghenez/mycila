@@ -32,14 +32,14 @@ import static com.mycila.event.api.Ensure.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-class DefaultDispatcher implements Dispatcher {
+public class DefaultDispatcher implements Dispatcher {
 
     private final SubscriptionManager subscriptionManager = new SubscriptionManager();
     private final ErrorHandler errorHandler;
     private final Executor publishExecutor;
     private final Executor subscriberExecutor;
 
-    DefaultDispatcher(ErrorHandler errorHandler,
+    public DefaultDispatcher(ErrorHandler errorHandler,
                       Executor publishExecutor,
                       Executor subscriberExecutor) {
         this.errorHandler = notNull(errorHandler, "ErrorHandler");

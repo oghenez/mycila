@@ -20,7 +20,6 @@ import com.google.inject.Binder;
 import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provider;
-import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.binder.AnnotatedBindingBuilder;
@@ -101,18 +100,10 @@ public class MycilaEventGuiceModule implements Module {
 
     protected ScopedBindingBuilder bindDispatcher(AnnotatedBindingBuilder<Dispatcher> bindDispatcher) {
         return bindDispatcher.toProvider(new Provider<Dispatcher>() {
-            @Inject
-            Provider<ErrorHandler> errorHandler;
             public Dispatcher get() {
-                return buildDispatcher(errorHandler.get());
+                return buildDispatcher(ErrorHandlers.rethrow());
             }
         });
-    }
-
-    @Provides
-    @Singleton
-    protected ErrorHandler errorHandler() {
-        return ErrorHandlers.rethrow();
     }
 
     protected Dispatcher buildDispatcher(ErrorHandler errorHandler) {

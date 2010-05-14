@@ -24,7 +24,7 @@ import static com.mycila.event.api.Ensure.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class DefaultThreadFactory implements ThreadFactory {
+public final class DefaultThreadFactory implements ThreadFactory {
     private static final AtomicInteger poolNumber = new AtomicInteger(1);
 
     private final AtomicInteger threadNumber = new AtomicInteger(1);
@@ -33,7 +33,7 @@ final class DefaultThreadFactory implements ThreadFactory {
     private final String poolPrefix;
     private final boolean daemon;
 
-    DefaultThreadFactory(String poolPrefix, String namePrefix, boolean daemon) {
+    public DefaultThreadFactory(String poolPrefix, String namePrefix, boolean daemon) {
         notNull(poolPrefix, "Thread pool prefix");
         notNull(namePrefix, "Thread name prefix");
         this.daemon = daemon;
