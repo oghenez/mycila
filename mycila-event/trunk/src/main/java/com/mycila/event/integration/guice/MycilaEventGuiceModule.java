@@ -20,6 +20,7 @@ import com.google.inject.Binder;
 import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.Provider;
+import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.binder.AnnotatedBindingBuilder;
@@ -28,7 +29,11 @@ import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 import com.mycila.event.api.Dispatcher;
+import com.mycila.event.api.ErrorHandler;
+import com.mycila.event.api.ErrorHandlers;
 import com.mycila.event.api.annotation.AnnotationProcessor;
+import com.mycila.event.spi.AnnotationProcessors;
+import com.mycila.event.spi.Dispatchers;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -38,7 +43,7 @@ import static com.google.inject.matcher.Matchers.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class MycilaEventGuiceModule implements Module {
+public class MycilaEventGuiceModule implements Module {
 
     @Inject
     Provider<AnnotationProcessor> annotationProcessor;
@@ -84,9 +89,35 @@ public abstract class MycilaEventGuiceModule implements Module {
         });
     }
 
-    protected abstract ScopedBindingBuilder bindAnnotationProcessor(AnnotatedBindingBuilder<AnnotationProcessor> bindAnnotationProcessor);
+    protected ScopedBindingBuilder bindAnnotationProcessor(AnnotatedBindingBuilder<AnnotationProcessor> bindAnnotationProcessor) {
+        return bindAnnotationProcessor.toProvider(new Provider<AnnotationProcessor>() {
+            @Inject
+            Provider<Dispatcher> dipatcher;
+            public AnnotationProcessor get() {
+                return AnnotationProcessors.create(dipatcher.get());
+            }
+        });
+    }
 
-    protected abstract ScopedBindingBuilder bindDispatcher(AnnotatedBindingBuilder<Dispatcher> bindDispatcher);
+    protected ScopedBindingBuilder bindDispatcher(AnnotatedBindingBuilder<Dispatcher> bindDispatcher) {
+        return bindDispatcher.toProvider(new Provider<Dispatcher>() {
+            @Inject
+            Provider<ErrorHandler> errorHandler;
+            public Dispatcher get() {
+                return buildDispatcher(errorHandler.get());
+            }
+        });
+    }
+
+    @Provides
+    @Singleton
+    protected ErrorHandler errorHandler() {
+        return ErrorHandlers.rethrow();
+    }
+
+    protected Dispatcher buildDispatcher(ErrorHandler errorHandler) {
+        return Dispatchers.synchronousUnsafe(errorHandler);
+    }
 
     private static interface Processor {
         <I> void process(I instance);
