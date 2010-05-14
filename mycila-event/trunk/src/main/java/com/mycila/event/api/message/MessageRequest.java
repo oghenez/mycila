@@ -16,6 +16,8 @@
 
 package com.mycila.event.api.message;
 
+import com.mycila.event.api.SubscriberExecutionException;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -24,6 +26,6 @@ import java.util.concurrent.TimeoutException;
  */
 public interface MessageRequest<R> {
     MessageRequest<R> addListener(MessageListener<R> listener);
-    R getResponse() throws InterruptedException;
-    R getResponse(long timeout, TimeUnit unit) throws TimeoutException, InterruptedException;
+    R getResponse() throws SubscriberExecutionException, InterruptedException;
+    R getResponse(long timeout, TimeUnit unit) throws SubscriberExecutionException, TimeoutException, InterruptedException;
 }

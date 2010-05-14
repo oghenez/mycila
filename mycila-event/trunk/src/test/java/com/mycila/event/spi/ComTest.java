@@ -17,10 +17,10 @@
 package com.mycila.event.spi;
 
 import com.mycila.event.api.Dispatcher;
-import com.mycila.event.api.DispatcherException;
 import com.mycila.event.api.ErrorHandlers;
 import com.mycila.event.api.Event;
 import com.mycila.event.api.Subscriber;
+import com.mycila.event.api.SubscriberExecutionException;
 import com.mycila.event.api.annotation.AnnotationProcessor;
 import com.mycila.event.api.annotation.Answers;
 import com.mycila.event.api.annotation.Request;
@@ -126,7 +126,8 @@ public final class ComTest {
             du.getSize("notFound");
             fail();
         } catch (Exception e) {
-            assertEquals("java.io.FileNotFoundException: du did not found folder notFound", e.getMessage());
+            assertEquals(SubscriberExecutionException.class, e.getClass());
+            assertEquals("du did not found folder notFound", e.getMessage());
         }
 
         assertEquals(40, du2.getSize("root").intValue());
@@ -134,7 +135,8 @@ public final class ComTest {
             du2.getSize("notFound");
             fail();
         } catch (Exception e) {
-            assertEquals("java.io.FileNotFoundException: du did not found folder notFound", e.getMessage());
+            assertEquals(SubscriberExecutionException.class, e.getClass());
+            assertEquals("du did not found folder notFound", e.getMessage());
         }
 
         assertEquals(111, du.rm("root"));
@@ -142,9 +144,8 @@ public final class ComTest {
             du.rm("err");
             fail();
         } catch (Exception e) {
-            assertTrue(e instanceof DispatcherException);
-            assertTrue(e.getCause() instanceof FileNotFoundException);
-            assertEquals("java.io.FileNotFoundException: rm did not found folder err", e.getMessage());
+            assertEquals(SubscriberExecutionException.class, e.getClass());
+            assertEquals("rm did not found folder err", e.getMessage());
         }
 
         assertEquals(222, du.rm());
@@ -153,9 +154,8 @@ public final class ComTest {
             du.rm();
             fail();
         } catch (Exception e) {
-            assertTrue(e instanceof DispatcherException);
-            assertTrue(e.getCause() instanceof FileNotFoundException);
-            assertEquals("java.io.FileNotFoundException: rm2 did not found folder", e.getMessage());
+            assertEquals(SubscriberExecutionException.class, e.getClass());
+            assertEquals("rm2 did not found folder", e.getMessage());
         }
 
         // manually
@@ -169,7 +169,7 @@ public final class ComTest {
             req2.getResponse();
             fail();
         } catch (Exception e) {
-            assertEquals("java.io.FileNotFoundException: df did not found folder inexisting", e.getMessage());
+            assertEquals("df did not found folder inexisting", e.getMessage());
         }
     }
 

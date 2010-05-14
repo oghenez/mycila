@@ -17,8 +17,8 @@
 package com.mycila.event.api.message;
 
 import com.mycila.event.api.DispatcherException;
+import com.mycila.event.api.SubscriberExecutionException;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -54,7 +54,7 @@ public final class Messages {
         private final AtomicBoolean replied = new AtomicBoolean(false);
         private final Object[] parameter;
         private volatile R reply;
-        private volatile RuntimeException error;
+        private volatile SubscriberExecutionException error;
 
         private Message(Object... parameter) {
             this.parameter = parameter;
@@ -69,12 +69,12 @@ public final class Messages {
             return this;
         }
 
-        public R getResponse() throws InterruptedException {
+        public R getResponse() throws SubscriberExecutionException, InterruptedException {
             answered.await();
             return result();
         }
 
-        public R getResponse(long timeout, TimeUnit unit) throws TimeoutException, InterruptedException {
+        public R getResponse(long timeout, TimeUnit unit) throws SubscriberExecutionException, TimeoutException, InterruptedException {
             if (answered.await(timeout, unit))
                 return result();
             throw new TimeoutException("No response returned within " + timeout + " " + unit);
@@ -86,23 +86,21 @@ public final class Messages {
                 answered.countDown();
                 for (MessageListener<R> listener : listeners)
                     listener.onResponse(reply);
-            } else throw new DispatcherException("Request has already been replied");
+            } else
+                throw new DispatcherException("Request has already been replied");
         }
 
         public void replyError(Throwable error) {
             if (replied.compareAndSet(false, true)) {
-                Throwable t = error;
-                if (t instanceof InvocationTargetException) t = ((InvocationTargetException) error).getTargetException();
-                if (t instanceof DispatcherException) t = t.getCause();
-                if (t instanceof RuntimeException) this.error = (RuntimeException) t;
-                else this.error = DispatcherException.wrap(t);
+                this.error = SubscriberExecutionException.wrap(error);
                 answered.countDown();
                 for (MessageListener<R> listener : listeners)
-                    listener.onError(t);
-            } else throw new DispatcherException("Request has already been replied");
+                    listener.onError(this.error.getCause());
+            } else
+                throw new DispatcherException("Request has already been replied");
         }
 
-        private R result() {
+        private R result() throws SubscriberExecutionException {
             if (error != null) throw error;
             return reply;
         }

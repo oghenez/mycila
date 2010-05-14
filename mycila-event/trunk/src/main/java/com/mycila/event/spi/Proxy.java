@@ -118,11 +118,7 @@ final class Proxy {
                     }
 
                     public Object proceed() throws Throwable {
-                        try {
-                            return method.invoke(proxy, args);
-                        } catch (Exception e) {
-                            throw ExceptionUtils.handle(e);
-                        }
+                        return method.invoke(proxy, args);
                     }
 
                     public Object getThis() {
@@ -151,11 +147,7 @@ final class Proxy {
                     }
 
                     public Object proceed() throws Throwable {
-                        try {
-                            return proxy.invokeSuper(obj, args);
-                        } catch (Exception e) {
-                            throw ExceptionUtils.handle(e);
-                        }
+                        return proxy.invokeSuper(obj, args);
                     }
 
                     public Object getThis() {
