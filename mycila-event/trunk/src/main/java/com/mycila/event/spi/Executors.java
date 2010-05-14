@@ -57,7 +57,8 @@ final class Executors {
                 try {
                     acquired = lock.tryLock(blockingTimeout, unit);
                 } catch (InterruptedException e) {
-                    throw DispatcherException.wrap(e);
+                    Thread.currentThread().interrupt();
+                    throw new DispatcherException(e);
                 }
                 if (acquired) {
                     try {
@@ -65,7 +66,7 @@ final class Executors {
                     } finally {
                         lock.unlock();
                     }
-                } else throw DispatcherException.wrap(new TimeoutException("Unable to acquire lock in " + blockingTimeout + " " + unit));
+                } else throw new DispatcherException(new TimeoutException("Unable to acquire lock in " + blockingTimeout + " " + unit));
             }
         };
     }

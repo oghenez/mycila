@@ -19,18 +19,13 @@ package com.mycila.event.api;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class DispatcherException extends RuntimeException {
+public class DispatcherException extends RuntimeException {
     public DispatcherException(String message) {
         super(message);
     }
 
-    public DispatcherException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public static DispatcherException wrap(Throwable t) {
-        DispatcherException wrapped = new DispatcherException(t.getClass().getName() + ": " + t.getMessage(), t);
-        wrapped.setStackTrace(t.getStackTrace());
-        return wrapped;
+    public  DispatcherException(Throwable cause) {
+        super(cause.getMessage(), cause);
+        setStackTrace(cause.getStackTrace());
     }
 }

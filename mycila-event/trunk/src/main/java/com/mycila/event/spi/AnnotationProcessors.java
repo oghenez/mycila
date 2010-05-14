@@ -109,13 +109,9 @@ public final class AnnotationProcessors {
             Requestor<Object[], Object> requestor = requestorCache.get(methodSignature);
             if (requestor != null)
                 return requestor.request(invocation.getArguments());
-            try {
-                return delegate == null ?
-                        invocation.proceed() :
-                        invocation.getMethod().invoke(delegate, invocation.getArguments());
-            } catch (Exception e) {
-                throw ExceptionUtils.handle(e);
-            }
+            return delegate == null ?
+                    invocation.proceed() :
+                    invocation.getMethod().invoke(delegate, invocation.getArguments());
         }
 
         private static Object handlePublishing(Publisher<Object> publisher, MethodInvocation invocation) {

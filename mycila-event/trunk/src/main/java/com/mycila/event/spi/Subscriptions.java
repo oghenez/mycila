@@ -95,22 +95,14 @@ final class Subscriptions {
                         }
 
                         public T invoke(Object target, Object... args) throws Exception {
-                            try {
-                                return (T) method.invoke(target, args);
-                            } catch (Exception e) {
-                                throw ExceptionUtils.handle(e);
-                            }
+                            return (T) method.invoke(target, args);
                         }
                     } :
                     new Invokable<T>() {
                         final FastMethod m = Proxy.fastMethod(method);
 
                         public T invoke(Object target, Object... args) throws Exception {
-                            try {
-                                return (T) m.invoke(target, args);
-                            } catch (Exception e) {
-                                throw ExceptionUtils.handle(e);
-                            }
+                            return (T) m.invoke(target, args);
                         }
                     };
         }
@@ -146,12 +138,8 @@ final class Subscriptions {
         }
 
         public void onEvent(Event<MessageResponse<R>> event) throws Exception {
-            try {
-                if (len == 0) event.getSource().reply(invoke());
+            if (len == 0) event.getSource().reply(invoke());
                 else event.getSource().reply(invoke(event.getSource().getParameters()));
-            } catch (Exception e) {
-                event.getSource().replyError(ExceptionUtils.handle(e));
-            }
         }
     }
 

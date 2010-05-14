@@ -18,8 +18,6 @@ package com.mycila.event.api;
 
 import com.mycila.event.api.message.MessageResponse;
 
-import java.lang.reflect.InvocationTargetException;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
@@ -37,19 +35,14 @@ public final class ErrorHandlers {
         }
     };
 
-    public static ErrorHandler rethrow() {
+    public static ErrorHandler rethrow() throws SubscriberExecutionException {
         return new ErrorHandler() {
             public <E> void onError(Subscription<E> subscription, Event<E> event, Exception e) {
-                Throwable t = e;
-                if (t instanceof InvocationTargetException) t = ((InvocationTargetException) t).getTargetException();
-                if (t instanceof DispatcherException) t = t.getCause();
-                if (t instanceof Error) throw (Error) t;
+                SubscriberExecutionException ee = SubscriberExecutionException.wrap(e);
                 if (event.getSource() instanceof MessageResponse)
-                    ((MessageResponse) event.getSource()).replyError(t);
-                else {
-                    if (t instanceof RuntimeException) throw (RuntimeException) t;
-                    throw DispatcherException.wrap(t);
-                }
+                    ((MessageResponse) event.getSource()).replyError(ee.getCause());
+                else
+                    throw ee;
             }
         };
     }
