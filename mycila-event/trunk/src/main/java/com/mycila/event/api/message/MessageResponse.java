@@ -16,11 +16,13 @@
 
 package com.mycila.event.api.message;
 
+import java.util.List;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface MessageResponse<R> {
-    Object[] getParameters();
+    List<?> getParameters();
 
     void replyError(Throwable error);
 

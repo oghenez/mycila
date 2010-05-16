@@ -19,8 +19,10 @@ package com.mycila.event.api.message;
 import com.mycila.event.api.DispatcherException;
 import com.mycila.event.api.SubscriberExecutionException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -36,14 +38,18 @@ public final class Messages {
     }
 
     public static <R> MessageRequest<R> createRequest() {
-        return new Message<R>();
+        return new Message<R>(Arrays.asList());
     }
 
     public static <R> MessageRequest<R> createRequest(Object parameter) {
-        return new Message<R>(parameter);
+        return new Message<R>(Arrays.asList(parameter));
     }
 
     public static <R> MessageRequest<R> createRequest(Object... parameters) {
+        return new Message<R>(Arrays.asList(parameters));
+    }
+
+    public static <R> MessageRequest<R> createRequest(Iterable<Object> parameters) {
         return new Message<R>(parameters);
     }
 
@@ -52,16 +58,17 @@ public final class Messages {
         private final Collection<MessageListener<R>> listeners = new CopyOnWriteArrayList<MessageListener<R>>();
         private final CountDownLatch answered = new CountDownLatch(1);
         private final AtomicBoolean replied = new AtomicBoolean(false);
-        private final Object[] parameter;
+        private final List<Object> parameters = new ArrayList<Object>();
         private volatile R reply;
         private volatile SubscriberExecutionException error;
 
-        private Message(Object... parameter) {
-            this.parameter = parameter;
+        private Message(Iterable parameters) {
+            for (Object o : parameters)
+                this.parameters.add(o);
         }
 
-        public Object[] getParameters() {
-            return parameter;
+        public List<?> getParameters() {
+            return parameters;
         }
 
         public MessageRequest<R> addListener(MessageListener<R> listener) {
@@ -107,7 +114,7 @@ public final class Messages {
 
         @Override
         public String toString() {
-            return "req(" + Arrays.deepToString(getParameters()) + ") => reply(" + (replied.get() ? reply : "<waiting>") + ")";
+            return "req(" + getParameters() + ") => reply(" + (replied.get() ? reply : "<waiting>") + ")";
         }
     }
 

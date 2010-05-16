@@ -102,7 +102,7 @@ public final class ComTest {
 
         dispatcher.subscribe(only("system/df"), MessageResponse.class, new Subscriber<MessageResponse<Integer>>() {
             public void onEvent(Event<MessageResponse<Integer>> event) throws Exception {
-                String folder = (String) event.getSource().getParameters()[0];
+                String folder = (String) event.getSource().getParameters().get(0);
                 System.out.println("df request on folder " + folder);
                 // call df -h <folder>
                 if ("inexisting".equals(folder))
@@ -180,7 +180,7 @@ public final class ComTest {
 
         @Subscribe(topics = "system/du", eventType = MessageResponse.class)
         void duRequest(Event<MessageResponse<Integer>> event) {
-            String folder = (String) event.getSource().getParameters()[0];
+            String folder = (String) event.getSource().getParameters().get(0);
             System.out.println("du request on folder " + folder);
             // call du -h <folder>
             if ("notFound".equals(folder))
