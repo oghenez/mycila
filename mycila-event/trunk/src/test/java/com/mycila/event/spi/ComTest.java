@@ -55,7 +55,7 @@ public final class ComTest {
         processor.proxy(DU.class);
 
         final CountDownLatch finished = new CountDownLatch(2);
-        MessageRequest req = Messages.<Integer>createRequest(new int[]{1, 2, 3, 4, 5}).addListener(new MessageListener<Integer>() {
+        MessageRequest req = Messages.<Integer>createRequest("my sum", new int[]{1, 2, 3, 4, 5}).addListener(new MessageListener<Integer>() {
             public void onResponse(Integer value) {
                 assertEquals(15, value.intValue());
                 finished.countDown();
@@ -223,7 +223,8 @@ public final class ComTest {
         abstract int add(int... p);
 
         @Answers(topics = "system/add")
-        int addRequest(int... p) {
+        int addRequest(String str, int... p) {
+            System.out.println("add: " + str);
             int c = 0;
             for (int i : p) c += i;
             return c;
