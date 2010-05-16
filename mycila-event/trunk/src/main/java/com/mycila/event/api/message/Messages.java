@@ -36,11 +36,11 @@ public final class Messages {
     }
 
     public static <R> MessageRequest<R> createRequest() {
-        return new Message<R>();
+        return createRequest(new Object[0]);
     }
 
     public static <R> MessageRequest<R> createRequest(Object parameter) {
-        return new Message<R>(parameter);
+        return new Message<R>(parameter.getClass().isArray() ? (Object[]) parameter : new Object[]{parameter});
     }
 
     public static <R> MessageRequest<R> createRequest(Object... parameters) {
@@ -56,7 +56,7 @@ public final class Messages {
         private volatile R reply;
         private volatile SubscriberExecutionException error;
 
-        private Message(Object... parameter) {
+        private Message(Object[] parameter) {
             this.parameter = parameter;
         }
 
