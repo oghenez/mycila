@@ -107,18 +107,19 @@ final class Proxy {
 
     static InvocationHandler toJDK(final MethodInterceptor interceptor) {
         return new InvocationHandler() {
-            public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+            public Object invoke(final Object proxy, final Method method, Object[] args) throws Throwable {
+                final Object[] arguments = args == null ? new Object[0] : args;
                 return interceptor.invoke(new MethodInvocation() {
                     public Method getMethod() {
                         return method;
                     }
 
                     public Object[] getArguments() {
-                        return args;
+                        return arguments;
                     }
 
                     public Object proceed() throws Throwable {
-                        return method.invoke(proxy, args);
+                        return method.invoke(proxy, arguments);
                     }
 
                     public Object getThis() {
@@ -135,19 +136,19 @@ final class Proxy {
 
     static net.sf.cglib.proxy.MethodInterceptor toCGLIB(final MethodInterceptor interceptor) {
         return new net.sf.cglib.proxy.MethodInterceptor() {
-            public Object intercept(final Object obj, final Method method, final Object[] args, final MethodProxy proxy) throws Throwable {
+            public Object intercept(final Object obj, final Method method, Object[] args, final MethodProxy proxy) throws Throwable {
+                final Object[] arguments = args == null ? new Object[0] : args;
                 return interceptor.invoke(new MethodInvocation() {
-
                     public Method getMethod() {
                         return method;
                     }
 
                     public Object[] getArguments() {
-                        return args;
+                        return arguments;
                     }
 
                     public Object proceed() throws Throwable {
-                        return proxy.invokeSuper(obj, args);
+                        return proxy.invokeSuper(obj, arguments);
                     }
 
                     public Object getThis() {
