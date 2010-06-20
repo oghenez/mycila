@@ -91,9 +91,12 @@ public final class ComTest {
         AnnotationProcessor processor = AnnotationProcessors.create(dispatcher);
 
         DU du = processor.proxy(DU.class);
+        DU2 du2 = processor.proxy(DU2.class);
 
         assertEquals(30, du.mult(5, 6));
         //assertEquals(15, du.add(1, 2, 3, 4, 5));
+
+        assertEquals("hello", du2.reqHello());
     }
 
     @Test
@@ -222,6 +225,11 @@ public final class ComTest {
         @Request(topic = "system/add")
         abstract int add(int... p);
 
+        @Answers(topics = "hello")
+        String hello() {
+            return "hello";
+        }
+
         @Answers(topics = "system/add")
         int addRequest(String str, int... p) {
             System.out.println("add: " + str);
@@ -234,6 +242,9 @@ public final class ComTest {
     interface DU2 {
         @Request(topic = "system/du", timeout = 5, unit = TimeUnit.SECONDS)
         Integer getSize(String folder);
+
+        @Request(topic = "hello")
+        String reqHello();
     }
 
 }
