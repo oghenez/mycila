@@ -19,8 +19,10 @@ package com.mycila.jmx.export;
 import com.mycila.jmx.export.annotation.JmxBean;
 import com.mycila.jmx.export.annotation.JmxField;
 import com.mycila.jmx.export.annotation.JmxMethod;
+import com.mycila.jmx.export.annotation.JmxMetric;
 import com.mycila.jmx.export.annotation.JmxParam;
 
+import javax.management.Descriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
@@ -67,6 +69,13 @@ public class AnnotationMetadataAssembler extends ReflectionMetadataAssemblerSkel
         return attribute.getAnnotation(JmxField.class).access();
     }
 
+    @Override
+    protected void populateAttributeDescriptor(Class<?> managedClass, Field attribute, Descriptor desc) {
+        super.populateAttributeDescriptor(managedClass, attribute, desc);
+        JmxMetric metric = attribute.getAnnotation(JmxMetric.class);
+        if (metric != null) fillMetric(metric, desc);
+    }
+
     // OPERATIONS
 
     @Override
@@ -110,11 +119,18 @@ public class AnnotationMetadataAssembler extends ReflectionMetadataAssemblerSkel
         return params[index].description();
     }
 
+    @Override
+    protected void populateOperationDescriptor(Class<?> managedClass, Method operation, Descriptor desc) {
+        super.populateOperationDescriptor(managedClass, operation, desc);
+        JmxMetric metric = operation.getAnnotation(JmxMetric.class);
+        if (metric != null) fillMetric(metric, desc);
+    }
+
     // PROPERTIES
 
     @Override
     public boolean canInclude(Class<?> managedClass, BeanProperty property) {
-        return false;
+        return isAnnotated(managedClass);
     }
 
     @Override
@@ -132,4 +148,19 @@ public class AnnotationMetadataAssembler extends ReflectionMetadataAssemblerSkel
         return super.getPropertyAccess(managedClass, property);
     }
 
+    @Override
+    protected void populatePropertyDescriptor(Class<?> managedClass, BeanProperty property, Descriptor desc) {
+        super.populatePropertyDescriptor(managedClass, property, desc);
+
+    }
+
+    // METRICS
+
+    private void fillMetric(JmxMetric metric, Descriptor desc) {
+        if (metric.unit().length() > 0)
+            desc.setField("units", metric.unit());
+        if (metric.category().length() > 0)
+            desc.setField("metricCategory", metric.category());
+        desc.setField("metricType", metric.type().toString());
+    }
 }

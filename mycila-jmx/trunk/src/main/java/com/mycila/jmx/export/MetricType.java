@@ -19,7 +19,7 @@ package com.mycila.jmx.export;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public enum Metric {
+public enum MetricType {
     /**
      * The measurement values may go up or down over time
      */
