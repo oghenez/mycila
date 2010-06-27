@@ -16,7 +16,7 @@
 
 package com.mycila.jmx;
 
-import com.mycila.jmx.export.CustomMetadataAssembler;
+/*import com.mycila.jmx.export.CustomMetadataAssembler;
 import com.mycila.jmx.export.MycilaJmxExporter;
 import com.mycila.jmx.export.PublicMetadataAssembler;
 import mx4j.tools.adaptor.http.HttpAdaptor;
@@ -27,14 +27,16 @@ import org.springframework.jmx.export.annotation.ManagedResource;
 
 import javax.management.ObjectName;
 import java.lang.management.ManagementFactory;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CountDownLatch;*/
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class ReflectionSample {
 
-    public static void main(String[] args) throws Exception {
+    // old test with spring stuff
+
+    /*public static void main(String[] args) throws Exception {
 
         CustomMetadataAssembler customMetadataAssembler = new CustomMetadataAssembler()
                 .addAttribute(MyObject.class, "hello")
@@ -150,5 +152,5 @@ public final class ReflectionSample {
 
     public static class MyObject4 extends MyObject3 {
 
-    }
+    }*/
 }
