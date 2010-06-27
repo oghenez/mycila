@@ -26,7 +26,7 @@ import java.util.HashSet;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class CustomMetadataAssembler extends PublicMetadataAssembler {
+public final class CustomMetadataAssembler extends ReflectionMetadataAssemblerSkeleton {
 
     private final Collection<Field> fields = new HashSet<Field>();
     private final Collection<Method> methods = new HashSet<Method>();
