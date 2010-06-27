@@ -122,17 +122,17 @@ public abstract class MetadataAssemblerSkeleton implements JmxMetadataAssembler 
 
     // properties
 
-    protected abstract Collection<BeanProperty> getProperties(Class<?> managedClass);
+    protected abstract Collection<BeanProperty<?>> getProperties(Class<?> managedClass);
 
-    protected String getPropertyExportName(Class<?> managedClass, BeanProperty property) {
+    protected String getPropertyExportName(Class<?> managedClass, BeanProperty<?> property) {
         return StringUtils.capitalize(property.getName());
     }
 
-    protected String getPropertyDescription(Class<?> managedClass, BeanProperty property) {
+    protected String getPropertyDescription(Class<?> managedClass, BeanProperty<?> property) {
         return "";
     }
 
-    protected Access getPropertyAccess(Class<?> managedClass, BeanProperty property) {
+    protected Access getPropertyAccess(Class<?> managedClass, BeanProperty<?> property) {
         if (property.isReadable() && property.isWritable())
             return Access.RW;
         if (property.isReadable() && !property.isWritable())
@@ -142,7 +142,7 @@ public abstract class MetadataAssemblerSkeleton implements JmxMetadataAssembler 
         return Access.NONE;
     }
 
-    protected void populatePropertyDescriptor(Class<?> managedClass, BeanProperty property, Descriptor desc) {
+    protected void populatePropertyDescriptor(Class<?> managedClass, BeanProperty<?> property, Descriptor desc) {
         JmxUtils.populateDeprecation(desc, property.getReadMethod());
         JmxUtils.populateDeprecation(desc, property.getWriteMethod());
         JmxUtils.populateEnable(desc, true);
@@ -189,8 +189,8 @@ public abstract class MetadataAssemblerSkeleton implements JmxMetadataAssembler 
         JmxUtils.populateVisibility(desc, 1);
         JmxUtils.populateRole(desc, Role.OPERATION);
         // verify if this is a property
-        Collection<BeanProperty> beanProperties = getProperties(managedClass);
-        for (BeanProperty beanProperty : beanProperties) {
+        Collection<BeanProperty<?>> beanProperties = getProperties(managedClass);
+        for (BeanProperty<?> beanProperty : beanProperties) {
             if (operation.equals(beanProperty.getReadMethod())) {
                 JmxUtils.populateRole(desc, Role.GETTER);
                 JmxUtils.populateVisibility(desc, 4);

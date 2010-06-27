@@ -21,6 +21,7 @@ import com.mycila.jmx.export.annotation.JmxField;
 import com.mycila.jmx.export.annotation.JmxMethod;
 import com.mycila.jmx.export.annotation.JmxMetric;
 import com.mycila.jmx.export.annotation.JmxParam;
+import com.mycila.jmx.export.annotation.JmxProperty;
 
 import javax.management.Descriptor;
 import java.lang.reflect.Field;
@@ -129,29 +130,33 @@ public class AnnotationMetadataAssembler extends ReflectionMetadataAssemblerSkel
     // PROPERTIES
 
     @Override
-    public boolean canInclude(Class<?> managedClass, BeanProperty property) {
-        return isAnnotated(managedClass);
+    public boolean canInclude(Class<?> managedClass, BeanProperty<?> property) {
+        return isAnnotated(managedClass) && property.isAnnotationPresent(JmxProperty.class);
     }
 
     @Override
-    protected String getPropertyExportName(Class<?> managedClass, BeanProperty property) {
-        return super.getPropertyExportName(managedClass, property);
+    protected String getPropertyExportName(Class<?> managedClass, BeanProperty<?> property) {
+        String name = property.getAnnotation(JmxProperty.class).name();
+        if (name.length() == 0)
+            name = property.getAnnotation(JmxProperty.class).value();
+        return name.length() != 0 ? name : super.getPropertyExportName(managedClass, property);
     }
 
     @Override
-    protected String getPropertyDescription(Class<?> managedClass, BeanProperty property) {
-        return super.getPropertyDescription(managedClass, property);
+    protected String getPropertyDescription(Class<?> managedClass, BeanProperty<?> property) {
+        return property.getAnnotation(JmxProperty.class).description();
     }
 
     @Override
-    protected Access getPropertyAccess(Class<?> managedClass, BeanProperty property) {
-        return super.getPropertyAccess(managedClass, property);
+    protected Access getPropertyAccess(Class<?> managedClass, BeanProperty<?> property) {
+        return property.getAnnotation(JmxProperty.class).access();
     }
 
     @Override
-    protected void populatePropertyDescriptor(Class<?> managedClass, BeanProperty property, Descriptor desc) {
+    protected void populatePropertyDescriptor(Class<?> managedClass, BeanProperty<?> property, Descriptor desc) {
         super.populatePropertyDescriptor(managedClass, property, desc);
-
+        JmxMetric metric = property.getAnnotation(JmxMetric.class);
+        if (metric != null) fillMetric(metric, desc);
     }
 
     // METRICS

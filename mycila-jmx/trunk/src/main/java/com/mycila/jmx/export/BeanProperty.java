@@ -20,13 +20,15 @@ import com.mycila.jmx.util.ClassUtils;
 import com.mycila.jmx.util.ReflectionUtils;
 import com.mycila.jmx.util.StringUtils;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class BeanProperty<T> {
+public final class BeanProperty<T> implements AnnotatedElement {
     private Method readMethod;
     private Method writeMethod;
     private final Class<T> type;
@@ -67,13 +69,21 @@ public final class BeanProperty<T> {
         return writeMethod != null;
     }
 
+    public void clearReadable() {
+        readMethod = null;
+    }
+
+    public void clearWritable() {
+        writeMethod = null;
+    }
+
     public T get(Object o) throws Throwable {
         if (!isReadable())
             throw new IllegalStateException("Property not readable: " + this);
-        if (!readMethod.isAccessible())
-            readMethod.setAccessible(true);
+        if (!getReadMethod().isAccessible())
+            getReadMethod().setAccessible(true);
         try {
-            Object res = readMethod.invoke(o);
+            Object res = getReadMethod().invoke(o);
             if (!ClassUtils.isAssignableValue(getType(), res))
                 throw new IllegalArgumentException("Invalid property: got type " + res.getClass().getName() + " but expect " + getType().getName());
             return (T) res;
@@ -85,13 +95,49 @@ public final class BeanProperty<T> {
     public void set(Object o, T value) throws Throwable {
         if (!isWritable())
             throw new IllegalStateException("Property not writable: " + this);
-        if (!writeMethod.isAccessible())
-            writeMethod.setAccessible(true);
+        if (!getWriteMethod().isAccessible())
+            getWriteMethod().setAccessible(true);
         try {
-            writeMethod.invoke(o, value);
+            getWriteMethod().invoke(o, value);
         } catch (InvocationTargetException e) {
             throw e.getTargetException();
         }
+    }
+
+    @Override
+    public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
+        A annot = null;
+        if (isReadable())
+            annot = getReadMethod().getAnnotation(annotationClass);
+        if (annot == null && isWritable())
+            annot = getWriteMethod().getAnnotation(annotationClass);
+        return annot;
+    }
+
+    @Override
+    public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
+        return isReadable() && getReadMethod().isAnnotationPresent(annotationClass)
+                || isWritable() && getWriteMethod().isAnnotationPresent(annotationClass);
+    }
+
+    @Override
+    public Annotation[] getAnnotations() {
+        Annotation[] annots = new Annotation[0];
+        if (isReadable())
+            annots = getReadMethod().getAnnotations();
+        if (annots.length == 0 && isWritable())
+            annots = getWriteMethod().getAnnotations();
+        return annots;
+    }
+
+    @Override
+    public Annotation[] getDeclaredAnnotations() {
+        Annotation[] annots = new Annotation[0];
+        if (isReadable())
+            annots = getReadMethod().getDeclaredAnnotations();
+        if (annots.length == 0 && isWritable())
+            annots = getWriteMethod().getDeclaredAnnotations();
+        return annots;
     }
 
     @Override
@@ -104,13 +150,13 @@ public final class BeanProperty<T> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BeanProperty that = (BeanProperty) o;
-        return name.equals(that.name) && type.equals(that.type);
+        return getName().equals(that.getName()) && getType().equals(that.getType());
     }
 
     @Override
     public int hashCode() {
-        int result = type.hashCode();
-        result = 31 * result + name.hashCode();
+        int result = getType().hashCode();
+        result = 31 * result + getName().hashCode();
         return result;
     }
 
@@ -140,11 +186,4 @@ public final class BeanProperty<T> {
         return new BeanProperty<T>(property, getter, setter);
     }
 
-    public void clearReadable() {
-        readMethod = null;
-    }
-
-    public void clearWritable() {
-        writeMethod = null;
-    }
 }

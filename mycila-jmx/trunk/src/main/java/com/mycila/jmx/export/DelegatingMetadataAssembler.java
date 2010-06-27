@@ -30,7 +30,7 @@ public class DelegatingMetadataAssembler extends ReflectionMetadataAssemblerSkel
     }
 
     @Override
-    public boolean canInclude(Class<?> managedClass, BeanProperty property) {
+    public boolean canInclude(Class<?> managedClass, BeanProperty<?> property) {
         return Exposures.get(managedClass).canInclude(managedClass, property);
     }
 
@@ -38,5 +38,5 @@ public class DelegatingMetadataAssembler extends ReflectionMetadataAssemblerSkel
     public boolean canInclude(Class<?> managedClass, Method method) {
         return Exposures.get(managedClass).canInclude(managedClass, method);
     }
-    
+
 }
