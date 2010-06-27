@@ -46,9 +46,9 @@ public abstract class ReflectionMetadataAssemblerSkeleton extends MetadataAssemb
     }
 
     @Override
-    protected Collection<BeanProperty> getProperties(Class<?> managedClass) {
-        Map<String, BeanProperty> properties = new HashMap<String, BeanProperty>();
-        for (BeanProperty prop : BeanUtils.getProperties(managedClass))
+    protected Collection<BeanProperty<?>> getProperties(Class<?> managedClass) {
+        Map<String, BeanProperty<?>> properties = new HashMap<String, BeanProperty<?>>();
+        for (BeanProperty<?> prop : BeanUtils.getProperties(managedClass))
             if (!properties.containsKey(prop.getName())
                     && canInclude(managedClass, prop))
                 properties.put(prop.getName(), prop);

@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
  * which can be access to set / get a value
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target({ElementType.METHOD})
 public @interface JmxProperty {
     /**
      * Equivalent to {@link #name()}}
