@@ -16,7 +16,7 @@
 
 package com.mycila.jmx.export.annotation;
 
-import com.mycila.jmx.export.Metric;
+import com.mycila.jmx.export.MetricType;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface JmxMetric {
 
-    Metric metric() default Metric.GAUGE;
+    MetricType type() default MetricType.GAUGE;
 
     String category() default "";
 
