@@ -168,17 +168,17 @@ public abstract class MetadataAssemblerSkeleton implements JmxMetadataAssembler 
         MBeanParameterInfo[] params = new MBeanParameterInfo[paramTypes.length];
         for (int i = 0; i < params.length; i++)
             params[i] = new MBeanParameterInfo(
-                    getParameterExportName(managedClass, operation, paramTypes[i]),
+                    getParameterExportName(managedClass, operation, paramTypes[i], i),
                     paramTypes[i].getName(),
-                    getParameterDescription(managedClass, operation, paramTypes[i]));
+                    getParameterDescription(managedClass, operation, paramTypes[i], i));
         return params;
     }
 
-    protected String getParameterExportName(Class<?> managedClass, Method operation, Class<?> paramType) {
+    protected String getParameterExportName(Class<?> managedClass, Method operation, Class<?> paramType, int index) {
         return paramType.getSimpleName();
     }
 
-    protected String getParameterDescription(Class<?> managedClass, Method operation, Class<?> paramType) {
+    protected String getParameterDescription(Class<?> managedClass, Method operation, Class<?> paramType, int index) {
         return "";
     }
 
