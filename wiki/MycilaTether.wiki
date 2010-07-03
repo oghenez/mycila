@@ -4,6 +4,8 @@
 
 = Introduction =
 
+= Report an issue =
+
 = Links =
 
 http://code.mycila.com/
