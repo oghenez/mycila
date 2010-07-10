@@ -2,41 +2,29 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!--
-         POM settings
-     -->
-
     <groupId>com.mycila</groupId>
     <artifactId>mycila-plugin</artifactId>
-    <version>1.11-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>mycila-plugin</name>
     <description>Plugin Framework</description>
     <url>http://code.mycila.com/</url>
-    <inceptionYear>2008</inceptionYear>
+    <inceptionYear>2010</inceptionYear>
 
-    <!--
-        Properties
-    -->
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
 
     <properties>
-        <jdk.version>1.5</jdk.version>
+        <jdk.version>1.6</jdk.version>
     </properties>
-
-    <!--
-        Versionning system
-    -->
 
     <scm>
         <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-plugin/trunk</connection>
         <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-plugin/trunk</developerConnection>
         <url>http://mycila.googlecode.com/svn/mycila-plugin/trunk</url>
     </scm>
-
-    <!--
-         Project settings
-     -->
 
     <organization>
         <name>Mycila</name>
@@ -83,10 +71,6 @@
         </mailingList>
     </mailingLists>
 
-    <!--
-        Distributions
-    -->
-
     <distributionManagement>
         <repository>
             <id>mc-release</id>
@@ -106,14 +90,6 @@
         </site>
     </distributionManagement>
 
-    <!--
-        BUILD
-    -->
-
-    <prerequisites>
-        <maven>2.0.9</maven>
-    </prerequisites>
-
     <build>
         <extensions>
             <extension>
@@ -124,53 +100,10 @@
         </extensions>
         <plugins>
             <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>.clover</directory>
-                        </fileset>
-                        <fileset>
-                            <directory>test-output</directory>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
-            <!-- IDE descriptors -->
-            <plugin>
-                <artifactId>maven-eclipse-plugin</artifactId>
-                <configuration>
-                    <downloadSources>true</downloadSources>
-                    <downloadJavadocs>false</downloadJavadocs>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-idea-plugin</artifactId>
-                <configuration>
-                    <downloadSources>true</downloadSources>
-                    <downloadJavadocs>false</downloadJavadocs>
-                </configuration>
-            </plugin>
-            <!-- compilation -->
-            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <showDeprecation>true</showDeprecation>
-                    <showWarnings>true</showWarnings>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
-                </configuration>
-            </plugin>
-            <!-- packaging -->
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                        </manifest>
-                    </archive>
                 </configuration>
             </plugin>
             <plugin>
@@ -200,88 +133,34 @@
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <configuration>
-                    <silent>true</silent>
-                </configuration>
+                <artifactId>maven-shade-plugin</artifactId>
                 <executions>
                     <execution>
                         <phase>package</phase>
                         <goals>
-                            <goal>copy-dependencies</goal>
+                            <goal>shade</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
                         <configuration>
-                            <tasks>
-                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"/>
-                                <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar" update="true">
-                                    <zipfileset src="${project.build.directory}/dependency/jgrapht-jdk1.5-0.7.3.jar"/>
-                                    <rule pattern="org.jgrapht.**" result="com.mycila.plugin.spi.internal.org.jgrapht.@1"/>
-                                    <keep pattern="com.mycila.plugin.**"/>
-                                </jarjar>
-                            </tasks>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>bundle</shadedClassifierName>
+                            <createSourcesJar>true</createSourcesJar>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.jgrapht</pattern>
+                                    <shadedPattern>com.mycila.plugin.internal.jgrapht</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
                     </execution>
                 </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>jarjar</groupId>
-                        <artifactId>jarjar</artifactId>
-                        <version>1.0rc8</version>
-                        <scope>system</scope>
-                        <systemPath>${basedir}/etc/jarjar-1.0rc8.jar</systemPath>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>${basedir}/etc/project.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                        <goals>
-                            <goal>attached</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- releasing -->
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <updateReleaseInfo>true</updateReleaseInfo>
-                </configuration>
-            </plugin>
-            <!-- documentation -->
-            <plugin>
-                <artifactId>maven-site-plugin</artifactId>
-                <configuration>
-                    <locales>en</locales>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
                 <version>1.5.0</version>
                 <configuration>
-                    <header>${basedir}/etc/header.txt</header>
+                    <header>${basedir}/src/main/etc/header.txt</header>
                     <failIfMissing>true</failIfMissing>
-                    <aggregate>true</aggregate>
                     <properties>
                         <owner>Mathieu Carbou</owner>
                         <year>${project.inceptionYear}</year>
@@ -306,112 +185,17 @@
         </plugins>
     </build>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <quiet>true</quiet>
-                </configuration>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>javadoc</report>
-                        </reports>
-                        <configuration>
-                            <links>
-                                <link>http://java.sun.com/javase/6/docs/api/</link>
-                            </links>
-                        </configuration>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <artifactId>maven-changelog-plugin</artifactId>
-                <configuration>
-                    <displayFileDetailUrl>http://mycila.googlecode.com/svn%FILE%</displayFileDetailUrl>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <configuration>
-                    <linkJavadoc>true</linkJavadoc>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <configuration>
-                    <targetJdk>${jdk.version}</targetJdk>
-                    <minimumTokens>100</minimumTokens>
-                    <rulesets>
-                        <!-- Rule sets that come bundled with PMD -->
-                        <ruleset>/rulesets/basic.xml</ruleset>
-                        <ruleset>/rulesets/braces.xml</ruleset>
-                        <ruleset>/rulesets/finalizers.xml</ruleset>
-                        <ruleset>/rulesets/imports.xml</ruleset>
-                        <ruleset>/rulesets/migrating.xml</ruleset>
-                        <ruleset>/rulesets/strings.xml</ruleset>
-                        <ruleset>/rulesets/unusedcode.xml</ruleset>
-                    </rulesets>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jdepend-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>javancss-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>taglist-maven-plugin</artifactId>
-                <configuration>
-                    <tags>
-                        <tag>TODO</tag>
-                        <tag>FIXME</tag>
-                        <tag>@todo</tag>
-                        <tag>@fixme</tag>
-                        <tag>@deprecated</tag>
-                    </tags>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </reporting>
-
-    <!--
-         LIBS
-    -->
-
     <dependencies>
         <dependency>
-            <groupId>com.mycila</groupId>
-            <artifactId>mycila-log</artifactId>
-            <version>2.11</version>
-        </dependency>
-        <dependency>
             <groupId>org.jgrapht</groupId>
-            <artifactId>jgrapht-jdk1.5</artifactId>
-            <version>0.7.3</version>
-            <scope>provided</scope>
+            <artifactId>jgrapht</artifactId>
+            <version>0.8.1</version>
         </dependency>
-        <!-- test frameworks -->
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <classifier>jdk15</classifier>
-            <version>5.8</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 
