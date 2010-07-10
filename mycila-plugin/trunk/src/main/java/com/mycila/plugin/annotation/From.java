@@ -7,13 +7,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Specify that this plugin must be activated before all plugins listed here.
+ *
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
+@Target({ElementType.PARAMETER})
 @Inherited
-public @interface ActivateBefore {
-    Class<?>[] value() default {};
+public @interface From {
+    Class<?> value();
 }

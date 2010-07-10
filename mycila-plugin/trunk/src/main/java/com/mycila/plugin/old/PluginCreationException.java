@@ -16,6 +16,8 @@
 
 package com.mycila.plugin.old;
 
+import com.mycila.plugin.PluginException;
+
 import static java.lang.String.*;
 import java.net.URL;
 

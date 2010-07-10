@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.old;
+package com.mycila.plugin.scope;
 
 import com.mycila.plugin.PluginException;
+import com.mycila.plugin.metadata.ExportMetadata;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class InexistingPluginException extends PluginException {
-    private static final long serialVersionUID = 5781552689799348255L;
-    private final String plugin;
+public final class MissingScopeParameterException extends PluginException {
+    private static final long serialVersionUID = 1;
 
-    public InexistingPluginException(String plugin) {
-        super(String.format("Plugin '%s' does not exist", plugin));
-        this.plugin = plugin;
-    }
-
-    public String getPlugin() {
-        return plugin;
+    public MissingScopeParameterException(ExportMetadata<?> export, String parameterName) {
+        super("@Param(name=\"" + parameterName + "\") is missing on " + export);
     }
 }
