@@ -31,7 +31,7 @@ public final class DelegatingMetadataAssemblerTest extends JmxTest {
 
     @Override
     protected JmxMetadataAssembler getMetadataAssembler() {
-        return new DelegatingMetadataAssembler();
+        return new DiscoveringMetadataAssembler();
     }
 
     @Test
@@ -43,7 +43,7 @@ public final class DelegatingMetadataAssemblerTest extends JmxTest {
         assertEquals("new value", server.getAttribute(on, "rw"));
     }
 
-    @JmxBean(exposure = PublicMetadataAssembler.class)
+    @JmxBean(assembler = PublicMetadataAssembler.class)
     public static class MyClass {
         public String rw = "value";
 

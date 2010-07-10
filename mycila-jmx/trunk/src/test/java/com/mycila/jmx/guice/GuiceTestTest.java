@@ -17,34 +17,33 @@
 package com.mycila.jmx.guice;
 
 import com.google.inject.Binder;
-import com.google.inject.Inject;
+import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Provider;
-import com.google.inject.binder.ScopedBindingBuilder;
+import com.google.inject.Module;
+import com.google.inject.name.Names;
+import com.mycila.jmx.export.JmxExporter;
+import com.mycila.jmx.export.MycilaJmxExporter;
+import org.junit.*;
+import org.junit.runner.*;
+import org.junit.runners.*;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class MycilaEventGuice {
-    private MycilaEventGuice() {
-    }
+@RunWith(JUnit4.class)
+public final class GuiceTestTest {
 
-    public static <T> Provider<T> publisher(final Class<T> clazz) {
-        return new Provider<T>() {
-            //@Inject
-            //Provider<AnnotationProcessor> annotationProcessor;
-            @Inject
-            Provider<Injector> injector;
-
-            public T get() {
-                T proxy = /*annotationProcessor.get().proxy(clazz);*/ null;
-                injector.get().injectMembers(proxy);
-                return proxy;
+    @Test
+    public void test() throws Exception {
+        Injector injector = Guice.createInjector(new Module() {
+            @Override
+            public void configure(Binder binder) {
+                binder.bind(JmxExporter.class).annotatedWith(Names.named("one")).to(MycilaJmxExporter.class);
+                MycilaJmx.exportJmxBeans(binder);
             }
-        };
+        });
     }
 
-    public static <T> ScopedBindingBuilder bindPublisher(Binder binder, Class<T> clazz) {
-        return binder.bind(clazz).toProvider(publisher(clazz));
-    }
 }

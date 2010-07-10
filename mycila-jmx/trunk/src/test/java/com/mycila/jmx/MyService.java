@@ -14,29 +14,36 @@
  * limitations under the License.
  */
 
-package com.mycila.jmx.export;
+package com.mycila.jmx;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
+import com.mycila.jmx.export.annotation.JmxBean;
+import com.mycila.jmx.export.annotation.JmxField;
+import com.mycila.jmx.export.annotation.JmxMethod;
+import com.mycila.jmx.export.annotation.JmxParam;
+import com.mycila.jmx.export.annotation.JmxProperty;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class DelegatingMetadataAssembler extends ReflectionMetadataAssemblerSkeleton {
+@JmxBean("app:name=MyService")
+public final class MyService {
 
-    @Override
-    public boolean canInclude(Class<?> managedClass, Field field) {
-        return Exposures.get(managedClass).canInclude(managedClass, field);
+    private String name;
+
+    @JmxField
+    private int internalField = 10;
+
+    @JmxProperty
+    public String getName() {
+        return name;
     }
 
-    @Override
-    public boolean canInclude(Class<?> managedClass, BeanProperty<?> property) {
-        return Exposures.get(managedClass).canInclude(managedClass, property);
+    public void setName(String name) {
+        this.name = name;
     }
 
-    @Override
-    public boolean canInclude(Class<?> managedClass, Method method) {
-        return Exposures.get(managedClass).canInclude(managedClass, method);
+    @JmxMethod(parameters = {@JmxParam(value = "number", description = "put a big number please !")})
+    void increment(int n) {
+        internalField += n;
     }
-
 }

@@ -30,7 +30,7 @@ import java.util.Map;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class ReflectionMetadataAssemblerSkeleton extends MetadataAssemblerSkeleton implements JmxExposure {
+public abstract class ReflectionMetadataAssemblerSkeleton extends MetadataAssemblerSkeleton {
 
     @Override
     protected Collection<Field> getAttributes(Class<?> managedClass) {
@@ -45,6 +45,8 @@ public abstract class ReflectionMetadataAssemblerSkeleton extends MetadataAssemb
         return fields;
     }
 
+    protected abstract boolean canInclude(Class<?> managedClass, Field attribute);
+
     @Override
     protected Collection<BeanProperty<?>> getProperties(Class<?> managedClass) {
         Map<String, BeanProperty<?>> properties = new HashMap<String, BeanProperty<?>>();
@@ -55,6 +57,8 @@ public abstract class ReflectionMetadataAssemblerSkeleton extends MetadataAssemb
         return properties.values();
     }
 
+    protected abstract boolean canInclude(Class<?> managedClass, BeanProperty<?> property);
+
     @Override
     protected Collection<Method> getMethodOperations(Class<?> managedClass) {
         List<Method> methods = new LinkedList<Method>();
@@ -63,5 +67,7 @@ public abstract class ReflectionMetadataAssemblerSkeleton extends MetadataAssemb
                 methods.add(method);
         return methods;
     }
+
+    protected abstract boolean canInclude(Class<?> managedClass, Method operation);
 
 }

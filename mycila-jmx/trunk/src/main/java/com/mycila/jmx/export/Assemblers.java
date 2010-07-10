@@ -17,6 +17,7 @@
 package com.mycila.jmx.export;
 
 import com.mycila.jmx.export.annotation.JmxBean;
+import com.mycila.jmx.util.AopUtils;
 import com.mycila.jmx.util.ExceptionUtils;
 
 import java.lang.ref.Reference;
@@ -27,24 +28,23 @@ import java.util.WeakHashMap;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Exposures {
+public final class Assemblers {
 
-    private static final Map<Class<? extends JmxExposure>, Reference<JmxExposure>> cache = new WeakHashMap<Class<? extends JmxExposure>, Reference<JmxExposure>>();
+    private static final Map<Class<? extends JmxMetadataAssembler>, Reference<JmxMetadataAssembler>> cache = new WeakHashMap<Class<? extends JmxMetadataAssembler>, Reference<JmxMetadataAssembler>>();
 
-    private Exposures() {
+    private Assemblers() {
     }
 
-    public static JmxExposure get(Class<?> mbeanClass) {
+    public static JmxMetadataAssembler get(Class<?> mbeanClass) {
+        mbeanClass = AopUtils.getTargetClass(mbeanClass);
         JmxBean jmxBean = mbeanClass.getAnnotation(JmxBean.class);
-        if (jmxBean == null)
-            throw new IllegalArgumentException("No @JmxBean annotation on class hierarchy: " + mbeanClass.getName());
-        return load(jmxBean.exposure());
+        return jmxBean == null ? load(PublicMetadataAssembler.class) : load(jmxBean.assembler());
     }
 
-    private static JmxExposure load(Class<? extends JmxExposure> exp) {
+    private static JmxMetadataAssembler load(Class<? extends JmxMetadataAssembler> exp) {
         if (exp == null) exp = AnnotationMetadataAssembler.class;
-        Reference<JmxExposure> ref = cache.get(exp);
-        JmxExposure exposure;
+        Reference<JmxMetadataAssembler> ref = cache.get(exp);
+        JmxMetadataAssembler exposure;
         if (ref != null) {
             exposure = ref.get();
             if (exposure != null)
@@ -55,7 +55,7 @@ public final class Exposures {
         } catch (Throwable e) {
             throw ExceptionUtils.rethrow(e);
         }
-        cache.put(exp, new WeakReference<JmxExposure>(exposure));
+        cache.put(exp, new WeakReference<JmxMetadataAssembler>(exposure));
         return exposure;
     }
 
