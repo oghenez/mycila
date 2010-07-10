@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.old;
-
-import com.mycila.plugin.PluginException;
+package com.mycila.plugin;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class InexistingPluginException extends PluginException {
-    private static final long serialVersionUID = 5781552689799348255L;
-    private final String plugin;
+public abstract class PluginException extends RuntimeException {
 
-    public InexistingPluginException(String plugin) {
-        super(String.format("Plugin '%s' does not exist", plugin));
-        this.plugin = plugin;
+    public PluginException(String message) {
+        super(message);
     }
 
-    public String getPlugin() {
-        return plugin;
+    public PluginException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

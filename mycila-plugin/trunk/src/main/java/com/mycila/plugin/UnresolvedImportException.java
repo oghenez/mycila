@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.old;
+package com.mycila.plugin;
+
+import com.mycila.plugin.metadata.ExportMetadata;
+import com.mycila.plugin.metadata.ImportMetadata;
+
+import java.util.Arrays;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class PluginException extends RuntimeException {
+public final class UnresolvedImportException extends PluginException {
+    private static final long serialVersionUID = 1;
 
-    private static final long serialVersionUID = -35690073735188474L;
-
-    public PluginException(String message) {
-        super(message);
-    }
-
-    public PluginException(String message, Throwable cause) {
-        super(message, cause);
+    public UnresolvedImportException(ImportMetadata<?> wanted, ExportMetadata<?>... matches) {
+        super("Unable to resolve which import to use for " + wanted + " amongst " + Arrays.toString(matches));
     }
 }
