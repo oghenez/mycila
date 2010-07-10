@@ -141,8 +141,6 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <shadedClassifierName>bundle</shadedClassifierName>
                             <createSourcesJar>true</createSourcesJar>
                             <relocations>
                                 <relocation>
@@ -170,6 +168,7 @@
                         <exclude>LICENSE.txt</exclude>
                         <exclude>**/src/test/resources/**</exclude>
                         <exclude>**/src/test/data/**</exclude>
+                        <exclude>dependency-reduced-pom.xml</exclude>
                     </excludes>
                 </configuration>
                 <executions>
