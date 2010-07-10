@@ -17,7 +17,7 @@
 package com.mycila.jmx.export.annotation;
 
 import com.mycila.jmx.export.AnnotationMetadataAssembler;
-import com.mycila.jmx.export.JmxExposure;
+import com.mycila.jmx.export.JmxMetadataAssembler;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -51,6 +51,6 @@ public @interface JmxBean {
     /**
      * Choose which elements to expose. By default, expose only annotated methods and fields
      */
-    Class<? extends JmxExposure> exposure() default AnnotationMetadataAssembler.class;
+    Class<? extends JmxMetadataAssembler> assembler() default AnnotationMetadataAssembler.class;
 
 }
