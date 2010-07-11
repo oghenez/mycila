@@ -16,13 +16,13 @@
 
 package com.mycila.plugin.old;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -34,19 +34,19 @@ public final class DefaultPluginLoaderTest {
         DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/inexisting.properties");
         assertEquals(repo.descriptor, "inexisting.properties");
         assertEquals(repo.loadPlugins().size(), 0);
-        repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/spi/empty.properties");
+        repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/old/empty.properties");
         assertEquals(repo.loadPlugins().size(), 0);
     }
 
     @Test
     public void test_load_ok() {
-        DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/spi/two.properties");
+        DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/old/two.properties");
         assertEquals(repo.loadPlugins().size(), 2);
     }
 
     @Test
     public void test_load_other_cp() {
-        DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/spi/two.properties");
+        DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/old/two.properties");
         repo.setLoader(new URLClassLoader(new URL[0], null));
         assertEquals(repo.loadPlugins().size(), 0);
     }
@@ -54,12 +54,12 @@ public final class DefaultPluginLoaderTest {
     @Test
     public void test_bad_class() {
         try {
-            DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/spi/badClass.properties");
+            DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/old/badClass.properties");
             repo.loadPlugins();
             fail("must throw PluginCreationException");
         } catch (PluginCreationException e) {
             assertEquals(e.getClazz(), "#$#$#$");
-            assertEquals(e.getDescriptor(), getClass().getResource("/com/mycila/plugin/spi/badClass.properties"));
+            assertEquals(e.getDescriptor(), getClass().getResource("/com/mycila/plugin/old/badClass.properties"));
             assertEquals(e.getPlugin(), "plugin1");
             assertEquals(e.getPluginType(), MyPlugin.class);
         }
@@ -68,12 +68,12 @@ public final class DefaultPluginLoaderTest {
     @Test
     public void test_not_plugin_class() {
         try {
-            DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/spi/notPlugin.properties");
+            DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/old/notPlugin.properties");
             repo.loadPlugins();
             fail("must throw PluginCreationException");
         } catch (PluginCreationException e) {
             assertEquals(e.getClazz(), "java.lang.String");
-            assertEquals(e.getDescriptor(), getClass().getResource("/com/mycila/plugin/spi/notPlugin.properties"));
+            assertEquals(e.getDescriptor(), getClass().getResource("/com/mycila/plugin/old/notPlugin.properties"));
             assertEquals(e.getPlugin(), "plugin1");
             assertEquals(e.getPluginType(), MyPlugin.class);
         }
@@ -82,12 +82,12 @@ public final class DefaultPluginLoaderTest {
     @Test
     public void test_cannot_instanciate() {
         try {
-            DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/spi/instance.properties");
+            DefaultPluginLoader<MyPlugin> repo = new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/old/instance.properties");
             repo.loadPlugins();
             fail("must throw PluginCreationException");
         } catch (PluginCreationException e) {
             assertEquals(e.getClazz(), "com.mycila.plugin.spi.PrivatePlugin");
-            assertEquals(e.getDescriptor(), getClass().getResource("/com/mycila/plugin/spi/instance.properties"));
+            assertEquals(e.getDescriptor(), getClass().getResource("/com/mycila/plugin/old/instance.properties"));
             assertEquals(e.getPlugin(), "plugin3");
             assertEquals(e.getPluginType(), MyPlugin.class);
         }

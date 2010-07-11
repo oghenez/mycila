@@ -16,13 +16,13 @@
 
 package com.mycila.plugin.old;
 
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -33,7 +33,7 @@ public final class DefaultPluginCacheTest {
 
     @Before
     public void resetAndGet() {
-        cache = new DefaultPluginCache<MyPlugin>(new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/spi/two.properties"));
+        cache = new DefaultPluginCache<MyPlugin>(new DefaultPluginLoader<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/old/two.properties"));
         assertEquals(cache.getBindings().size(), 2);
     }
 
