@@ -142,7 +142,7 @@ public final class ScopeTest {
             fail();
         } catch (Exception e) {
             assertSame(exception, e);
-            assertEquals("Scope parameter 'duration' is missing at: a context", e.getMessage());
+            assertEquals("Scope parameter 'duration' is missing at method null for scope ExpiringSingleton", e.getMessage());
         }
     }
 
