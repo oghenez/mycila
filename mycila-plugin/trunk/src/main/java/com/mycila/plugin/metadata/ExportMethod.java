@@ -3,6 +3,6 @@ package com.mycila.plugin.metadata;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface MetadataBuilder {
-    <T> PluginMetadata<T> getMetadata(T plugin);
+public interface ExportMethod<T> {
+    String toString();
 }

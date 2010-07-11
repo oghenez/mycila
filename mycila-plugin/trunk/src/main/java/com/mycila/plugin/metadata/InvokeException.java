@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.scope;
+package com.mycila.plugin.metadata;
 
 import com.mycila.plugin.PluginException;
+
+import java.lang.reflect.Method;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ScopeInstanciationException extends PluginException {
+public final class InvokeException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public ScopeInstanciationException(Class<? extends ScopeProvider> scope, Throwable cause) {
-        super("Unable to instanciate scope " + scope.getName() + ": " + cause.getMessage(), cause);
+    public InvokeException(Method method, Throwable t) {
+        super("Error invoking method " + method + " : " + t.getMessage(), t);
     }
 }

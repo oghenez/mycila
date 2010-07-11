@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
+package com.mycila.plugin.inject;
 
-import com.mycila.plugin.metadata.ExportMetadata;
-import com.mycila.plugin.metadata.ImportMetadata;
+import com.mycila.plugin.PluginException;
+import com.mycila.plugin.metadata.ExportMethod;
+import com.mycila.plugin.metadata.ImportMethod;
 
 import java.util.Arrays;
 
@@ -27,7 +28,7 @@ import java.util.Arrays;
 public final class UnresolvedImportException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public UnresolvedImportException(ImportMetadata<?> wanted, ExportMetadata<?>... matches) {
+    public UnresolvedImportException(ImportMethod<?> wanted, ExportMethod<?>... matches) {
         super("Unable to resolve which import to use for " + wanted + " amongst " + Arrays.toString(matches));
     }
 }

@@ -7,7 +7,7 @@ import com.mycila.plugin.Provider;
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface ExportProvider<T> extends Provider<T> {
+public interface ScopeProvider<T> extends Provider<T> {
 
     /**
      * @param context The scope context, form which you can invoke the exporting method and get scope parameters

@@ -1,6 +1,10 @@
 package com.mycila.plugin.scope;
 
 import com.mycila.plugin.Provider;
+import com.mycila.plugin.scope.defaults.ExpiringSingleton;
+import com.mycila.plugin.scope.defaults.None;
+import com.mycila.plugin.scope.defaults.Singleton;
+import com.mycila.plugin.scope.defaults.WeakSingleton;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -28,7 +32,7 @@ public final class ScopeTest {
             }
         });
 
-        Provider<String> provider = Providers.build(None.class, mock);
+        Provider<String> provider = ScopeProviders.build(None.class, mock);
 
         assertEquals("0", provider.get());
         assertEquals("1", provider.get());
@@ -46,7 +50,7 @@ public final class ScopeTest {
             }
         });
 
-        Provider<String> provider = Providers.build(Singleton.class, mock);
+        Provider<String> provider = ScopeProviders.build(Singleton.class, mock);
 
         assertEquals("0", provider.get());
         assertEquals("0", provider.get());
@@ -62,7 +66,7 @@ public final class ScopeTest {
             }
         });
 
-        Provider<Object> provider = Providers.build(WeakSingleton.class, mock);
+        Provider<Object> provider = ScopeProviders.build(WeakSingleton.class, mock);
 
         Object o = provider.get();
         int hash = o.hashCode();
@@ -91,7 +95,7 @@ public final class ScopeTest {
             }
         });
 
-        Provider<Object> provider = Providers.build(ExpiringSingleton.class, mock);
+        Provider<Object> provider = ScopeProviders.build(ExpiringSingleton.class, mock);
 
         Object o = provider.get();
         assertNotNull(o);
@@ -109,7 +113,7 @@ public final class ScopeTest {
         MissingScopeParameterException exception = new MissingScopeParameterException(mock, "duration");
         when(mock.getParameter("duration")).thenThrow(exception);
         try {
-            Providers.build(ExpiringSingleton.class, mock);
+            ScopeProviders.build(ExpiringSingleton.class, mock);
             fail();
         } catch (Exception e) {
             assertSame(exception, e);
@@ -121,14 +125,14 @@ public final class ScopeTest {
     public void test_creation_fail() throws Exception {
         ScopeContext<Object> mock = mock(ScopeContext.class);
         try {
-            Providers.build(Error1.class, mock);
+            ScopeProviders.build(Error1.class, mock);
             fail();
         } catch (Exception e) {
             assertSame(ScopeInstanciationException.class, e.getClass());
             assertEquals("Unable to instanciate scope com.mycila.plugin.scope.Error1: com.mycila.plugin.scope.Error1.<init>()", e.getMessage());
         }
         try {
-            Providers.build(Error2.class, mock);
+            ScopeProviders.build(Error2.class, mock);
             fail();
         } catch (Exception e) {
             assertSame(ScopeInstanciationException.class, e.getClass());

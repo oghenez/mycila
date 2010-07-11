@@ -12,22 +12,22 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Providers {
+public final class ScopeProviders {
 
     private static final ConcurrentMap<Class<?>, FastConstructor> CTORS = new ConcurrentHashMap<Class<?>, FastConstructor>();
 
-    private Providers() {
+    private ScopeProviders() {
 
     }
 
-    public static <T> ExportProvider<T> get(Class<? extends ExportProvider> scope) throws ScopeInstanciationException {
+    public static <T> ScopeProvider<T> get(Class<? extends ScopeProvider> scope) throws ScopeInstanciationException {
         FastConstructor ctor = CTORS.get(scope);
         try {
             if (ctor == null) {
                 FastClass fastClass = FastClass.create(ClassUtils.getDefaultClassLoader(), scope);
                 CTORS.putIfAbsent(scope, ctor = fastClass.getConstructor(new Class[0]));
             }
-            return (ExportProvider<T>) ctor.newInstance();
+            return (ScopeProvider<T>) ctor.newInstance();
         } catch (NoSuchMethodError e) {
             throw new ScopeInstanciationException(scope, e);
         } catch (InvocationTargetException e) {
@@ -35,8 +35,8 @@ public final class Providers {
         }
     }
 
-    public static <T> Provider<T> build(Class<? extends ExportProvider> scope, ScopeContext<T> context) throws ScopeInstanciationException {
-        ExportProvider<T> t = get(scope);
+    public static <T> Provider<T> build(Class<? extends ScopeProvider> scope, ScopeContext<T> context) throws ScopeInstanciationException {
+        ScopeProvider<T> t = get(scope);
         t.init(context);
         return t;
     }
