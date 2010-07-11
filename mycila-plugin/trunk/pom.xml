@@ -174,15 +174,11 @@
                     </properties>
                     <excludes>
                         <exclude>LICENSE.txt</exclude>
-                        <exclude>**/src/test/resources/**</exclude>
-                        <exclude>**/src/test/data/**</exclude>
-                        <exclude>dependency-reduced-pom.xml</exclude>
+                        <exclude>src/test/resources/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>check-headers</id>
-                        <phase>verify</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>
