@@ -21,10 +21,10 @@ import com.mycila.plugin.PluginException;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class MissingScopeParameterException extends PluginException {
+public final class ScopeInstanciationException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public MissingScopeParameterException(ScopeContext<?> context, String parameterName) {
-        super("Scope parameter '" + parameterName + "' is missing at: " + context);
+    public ScopeInstanciationException(Class<? extends ExportProvider> scope, Throwable cause) {
+        super("Unable to instanciate scope " + scope.getName() + ": " + cause.getMessage(), cause);
     }
 }
