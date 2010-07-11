@@ -175,6 +175,7 @@
                     <excludes>
                         <exclude>LICENSE.txt</exclude>
                         <exclude>src/test/resources/**</exclude>
+                        <exclude>dependency-reduced-pom.xml</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -222,8 +223,8 @@
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht</artifactId>
             <version>0.8.1</version>
+            <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>com.google</groupId>
             <artifactId>guava</artifactId>
