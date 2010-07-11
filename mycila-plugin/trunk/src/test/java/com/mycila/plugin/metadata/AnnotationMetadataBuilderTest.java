@@ -13,7 +13,7 @@ public final class AnnotationMetadataBuilderTest {
     @Test
     public void test() throws Exception {
         AnnotationMetadataBuilder builder = new AnnotationMetadataBuilder();
-        
+        PluginMetadata<MyPlugin> metadata = builder.getMetadata(new MyPlugin());
     }
 
 }

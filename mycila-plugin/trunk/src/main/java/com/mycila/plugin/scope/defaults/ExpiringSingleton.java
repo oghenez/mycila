@@ -29,7 +29,7 @@ public final class ExpiringSingleton<T> extends ScopeProviderSkeleton<T> {
             synchronized (this) {
                 if (expire < System.currentTimeMillis()) {
                     expire = System.currentTimeMillis() + duration;
-                    instance = context.invoke();
+                    instance = context.getInvokable().invoke();
                 }
             }
         }

@@ -1,6 +1,6 @@
 package com.mycila.plugin.metadata.model;
 
-import com.mycila.plugin.metadata.Invokable;
+import com.mycila.plugin.Invokable;
 import com.mycila.plugin.metadata.InvokeException;
 import net.sf.cglib.reflect.FastMethod;
 
@@ -32,6 +32,6 @@ public final class InvokableMethod<T> implements Invokable<T> {
 
     @Override
     public String toString() {
-        return "Invoke " + method.getJavaMethod();
+        return "InvokableMethod " + method.getJavaMethod();
     }
 }
