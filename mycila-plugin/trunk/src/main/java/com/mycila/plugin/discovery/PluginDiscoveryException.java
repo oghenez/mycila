@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.scope;
+package com.mycila.plugin.discovery;
 
 import com.mycila.plugin.PluginException;
+
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class MissingScopeParameterException extends PluginException {
+public final class PluginDiscoveryException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public MissingScopeParameterException(ScopeContext<?> context, String parameterName) {
-        super("Scope parameter '" + parameterName + "' is missing at: " + context);
+    public PluginDiscoveryException(Throwable cause, Class<? extends Annotation> pluginAnnotation, String... packages) {
+        super("Error when scanning for plugin annotated by @" + pluginAnnotation.getName() + " in packages " + Arrays.toString(packages) + " : " + cause.getMessage(), cause);
     }
 }
