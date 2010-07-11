@@ -2,38 +2,67 @@ package com.mycila.plugin.metadata;
 
 import com.mycila.plugin.annotation.ActivateAfter;
 import com.mycila.plugin.annotation.ActivateBefore;
+import com.mycila.plugin.annotation.Export;
 import com.mycila.plugin.annotation.OnStart;
 import com.mycila.plugin.annotation.OnStop;
+import com.mycila.plugin.annotation.Param;
 import com.mycila.plugin.annotation.Plugin;
+import com.mycila.plugin.annotation.Scope;
+import com.mycila.plugin.metadata.model.PluginMetadataImpl;
+import com.mycila.plugin.scope.defaults.None;
+import com.mycila.plugin.util.AopUtils;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class AnnotationMetadataBuilder extends AbstractMetadataBuilder {
+public final class AnnotationMetadataBuilder implements MetadataBuilder {
 
     @Override
-    protected String getName(Class<?> pluginClass) {
-        Plugin plugin = pluginClass.getAnnotation(Plugin.class);
-        if (plugin == null || plugin.name().length() == 0)
-            return pluginClass.getSimpleName();
-        return plugin.name();
+    public final PluginMetadata getMetadata(Object plugin) {
+        Class<?> pluginClass = AopUtils.getTargetClass(plugin.getClass());
+
+        Plugin pluginAnnot = pluginClass.getAnnotation(Plugin.class);
+
+        PluginMetadataImpl pluginMetadata = new PluginMetadataImpl(
+                pluginClass,
+                plugin,
+                pluginAnnot == null || pluginAnnot.name().length() == 0 ? pluginClass.getSimpleName() : pluginAnnot.name(),
+                pluginAnnot == null || pluginAnnot.description().length() == 0 ? pluginClass.getName() : pluginAnnot.description())
+                .withActivateBefore(getActivateBefore(pluginClass))
+                .withActivateAfter(getActivateAfter(pluginClass));
+
+        for (Method method : pluginClass.getMethods()) {
+
+            if (method.isAnnotationPresent(OnStart.class))
+                pluginMetadata.addOnStart(method.getName());
+
+            if (method.isAnnotationPresent(OnStop.class))
+                pluginMetadata.addOnStop(method.getName());
+
+            if (method.isAnnotationPresent(Export.class)) {
+                Scope scope = method.getAnnotation(Scope.class);
+                Map<String, String> parameters = new HashMap<String, String>();
+                if (scope != null)
+                    for (Param param : scope.params())
+                        parameters.put(param.name(), param.value());
+                pluginMetadata.addExport(
+                        method.getName(),
+                        scope == null ? None.class : scope.value(),
+                        parameters);
+            }
+        }
+
+        return pluginMetadata;
     }
 
-    @Override
-    protected String getDescription(Class<?> pluginClass) {
-        Plugin plugin = pluginClass.getAnnotation(Plugin.class);
-        if (plugin == null || plugin.description().length() == 0)
-            return pluginClass.getSimpleName();
-        return plugin.description();
-    }
-
-    @Override
-    protected Set<Class<?>> getActivateBefore(Class<?> pluginClass) {
+    private Set<Class<?>> getActivateBefore(Class<?> pluginClass) {
         Set<Class<?>> plugins = new HashSet<Class<?>>(2);
         ActivateBefore activateBefore = pluginClass.getAnnotation(ActivateBefore.class);
         if (activateBefore != null && activateBefore.value().length > 0)
@@ -41,23 +70,12 @@ public final class AnnotationMetadataBuilder extends AbstractMetadataBuilder {
         return plugins;
     }
 
-    @Override
-    protected Set<Class<?>> getActivateAfter(Class<?> pluginClass) {
+    private Set<Class<?>> getActivateAfter(Class<?> pluginClass) {
         Set<Class<?>> plugins = new HashSet<Class<?>>(2);
         ActivateAfter activateAfter = pluginClass.getAnnotation(ActivateAfter.class);
         if (activateAfter != null && activateAfter.value().length > 0)
             plugins.addAll(Arrays.asList(activateAfter.value()));
         return plugins;
-    }
-
-    @Override
-    protected boolean isOnStart(Method method) {
-        return method.isAnnotationPresent(OnStart.class);
-    }
-
-    @Override
-    protected boolean isOnStop(Method method) {
-        return method.isAnnotationPresent(OnStop.class);
     }
 
 }

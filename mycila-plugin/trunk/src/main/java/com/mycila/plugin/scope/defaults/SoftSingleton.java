@@ -22,7 +22,7 @@ public final class SoftSingleton<T> extends ScopeProviderSkeleton<T> {
             synchronized (this) {
                 t = instance.get();
                 if (t == null) {
-                    t = context.getInvokable().invoke();
+                    t = (T) context.getInvokable().invoke();
                     instance = new SoftReference<T>(t);
                 }
             }

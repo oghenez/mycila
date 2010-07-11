@@ -1,33 +1,35 @@
 package com.mycila.plugin.metadata.model;
 
 import com.mycila.plugin.Invokable;
-import com.mycila.plugin.metadata.InvokeException;
 import com.mycila.plugin.metadata.PluginExport;
 import com.mycila.plugin.metadata.PluginMetadata;
 import com.mycila.plugin.metadata.PluginMetadataException;
+import com.mycila.plugin.scope.ScopeProvider;
 import net.sf.cglib.reflect.FastClass;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class PluginMetadataImpl<T> implements PluginMetadata<T> {
+public final class PluginMetadataImpl implements PluginMetadata {
 
     private final FastClass pluginClass;
-    private final T plugin;
+    private final Object plugin;
     private final String name;
     private final String description;
     private final Set<Class<?>> activateAfter = new LinkedHashSet<Class<?>>(2);
     private final Set<Class<?>> activateBefore = new LinkedHashSet<Class<?>>(2);
-    private final List<Invokable<?>> onStart = new LinkedList<Invokable<?>>();
-    private final List<Invokable<?>> onStop = new LinkedList<Invokable<?>>();
+    private final InvokableComposite onStart = new InvokableComposite();
+    private final InvokableComposite onStop = new InvokableComposite();
+    private final List<PluginExport<?>> exports = new LinkedList<PluginExport<?>>();
 
-    public PluginMetadataImpl(Class<T> pluginClass, T plugin, String name, String description) {
+    public PluginMetadataImpl(Class<?> pluginClass, Object plugin, String name, String description) {
         this.pluginClass = FastClass.create(pluginClass);
         this.plugin = plugin;
         this.name = name;
@@ -35,30 +37,17 @@ public final class PluginMetadataImpl<T> implements PluginMetadata<T> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PluginMetadataImpl that = (PluginMetadataImpl) o;
-        return pluginClass.equals(that.pluginClass);
-    }
-
-    @Override
-    public int hashCode() {
-        return pluginClass.hashCode();
-    }
-
-    @Override
     public String toString() {
-        return "PluginMetadata of " + pluginClass.getName();
+        return "Plugin " + getName() + " (" + getDescription() + ") : " + getType();
     }
 
     @Override
-    public T getPlugin() {
+    public Object getTarget() {
         return plugin;
     }
 
     @Override
-    public Class<T> getPluginClass() {
+    public Class<?> getType() {
         return pluginClass.getJavaClass();
     }
 
@@ -84,34 +73,32 @@ public final class PluginMetadataImpl<T> implements PluginMetadata<T> {
 
     @Override
     public Iterable<? extends PluginExport<?>> getExports() {
-        return null;
+        return exports;
     }
 
     @Override
-    public void onStart() throws InvokeException {
-        for (Invokable<?> invokable : onStart)
-            invokable.invoke();
+    public Invokable onStart() {
+        return onStart;
     }
 
     @Override
-    public void onStop() throws InvokeException {
-        for (Invokable<?> invokable : onStop)
-            invokable.invoke();
+    public Invokable onStop() {
+        return onStop;
     }
 
-    public PluginMetadataImpl<T> withActivateBefore(Collection<Class<?>> plugins) {
+    public PluginMetadataImpl withActivateBefore(Collection<Class<?>> plugins) {
         activateBefore.addAll(plugins);
         return this;
     }
 
-    public PluginMetadataImpl<T> withActivateAfter(Collection<Class<?>> plugins) {
+    public PluginMetadataImpl withActivateAfter(Collection<Class<?>> plugins) {
         activateAfter.addAll(plugins);
         return this;
     }
 
     public void addOnStart(String methodName) {
         try {
-            onStart.add(new InvokableMethod<Object>(plugin, pluginClass.getMethod(methodName, new Class[0])));
+            onStart.add(new InvokableMethod(plugin, pluginClass.getMethod(methodName, new Class[0])));
         } catch (NoSuchMethodError e) {
             throw new PluginMetadataException("Unable to find public method " + methodName + "() in class " + pluginClass.getName() + " with no parameter");
         }
@@ -119,7 +106,19 @@ public final class PluginMetadataImpl<T> implements PluginMetadata<T> {
 
     public void addOnStop(String methodName) {
         try {
-            onStop.add(new InvokableMethod<Object>(plugin, pluginClass.getMethod(methodName, new Class[0])));
+            onStop.add(new InvokableMethod(plugin, pluginClass.getMethod(methodName, new Class[0])));
+        } catch (NoSuchMethodError e) {
+            throw new PluginMetadataException("Unable to find public method " + methodName + "() in class " + pluginClass.getName() + " with no parameter");
+        }
+    }
+
+    public void addExport(String methodName, Class<? extends ScopeProvider> scopeClass, Map<String, String> parameters) {
+        try {
+            exports.add(new PluginExportMethod(
+                    this,
+                    pluginClass.getMethod(methodName, new Class[0]),
+                    scopeClass,
+                    parameters));
         } catch (NoSuchMethodError e) {
             throw new PluginMetadataException("Unable to find public method " + methodName + "() in class " + pluginClass.getName() + " with no parameter");
         }

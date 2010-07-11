@@ -5,6 +5,6 @@ import com.mycila.plugin.metadata.InvokeException;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Invokable<T> {
-    T invoke(Object... args) throws InvokeException;
+public interface Invokable {
+    Object invoke(Object... args) throws InvokeException;
 }

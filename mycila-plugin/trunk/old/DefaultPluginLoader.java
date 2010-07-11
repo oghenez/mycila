@@ -20,16 +20,17 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import static java.util.Arrays.*;
 import java.util.Collection;
 import java.util.Collections;
-import static java.util.Collections.*;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
+
+import static java.util.Arrays.*;
+import static java.util.Collections.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

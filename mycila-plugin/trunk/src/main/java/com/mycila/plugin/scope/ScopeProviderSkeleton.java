@@ -14,6 +14,6 @@ public abstract class ScopeProviderSkeleton<T> implements ScopeProvider<T> {
 
     @Override
     public String toString() {
-        return "Scope." + getClass().getSimpleName() + "(" + context + ")";
+        return "Scope " + getClass().getSimpleName() + " for " + context;
     }
 }

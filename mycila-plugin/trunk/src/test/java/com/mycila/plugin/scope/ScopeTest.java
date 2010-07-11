@@ -119,7 +119,7 @@ public final class ScopeTest {
     public void test_expire_param_fail() throws Exception {
         ScopeContext<Object> mock = mock(ScopeContext.class);
         when(mock.toString()).thenReturn("a context");
-        MissingScopeParameterException exception = new MissingScopeParameterException(mock, "duration");
+        MissingScopeParameterException exception = new MissingScopeParameterException(null, ExpiringSingleton.class, "duration");
         when(mock.getParameter("duration")).thenThrow(exception);
         try {
             ScopeProviders.build(ExpiringSingleton.class, mock);
