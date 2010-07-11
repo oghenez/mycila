@@ -1,11 +1,13 @@
 package com.mycila.plugin.metadata;
 
+import com.mycila.plugin.Invokable;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface PluginMetadata<T> {
-    Class<T> getPluginClass();
-    T getPlugin();
+public interface PluginMetadata {
+    Class<?> getType();
+    Object getTarget();
 
     String getName();
     String getDescription();
@@ -16,6 +18,6 @@ public interface PluginMetadata<T> {
 
     Iterable<? extends PluginExport<?>> getExports();
 
-    void onStart() throws InvokeException;
-    void onStop() throws InvokeException;
+    Invokable onStart();
+    Invokable onStop();
 }

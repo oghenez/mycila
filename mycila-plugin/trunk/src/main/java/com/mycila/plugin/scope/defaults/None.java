@@ -10,6 +10,6 @@ import com.mycila.plugin.scope.ScopeProviderSkeleton;
 public final class None<T> extends ScopeProviderSkeleton<T> {
     @Override
     public T get() {
-        return context.getInvokable().invoke();
+        return (T) context.getInvokable().invoke();
     }
 }

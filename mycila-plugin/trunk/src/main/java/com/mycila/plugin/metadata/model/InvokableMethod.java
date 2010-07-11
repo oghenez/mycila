@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class InvokableMethod<T> implements Invokable<T> {
+public final class InvokableMethod implements Invokable {
 
     private final FastMethod method;
     private final Object target;
@@ -20,9 +20,9 @@ public final class InvokableMethod<T> implements Invokable<T> {
     }
 
     @Override
-    public T invoke(Object... args) throws InvokeException {
+    public Object invoke(Object... args) throws InvokeException {
         try {
-            return (T) method.invoke(target, args);
+            return method.invoke(target, args);
         } catch (InvocationTargetException e) {
             throw new InvokeException(method.getJavaMethod(), e.getTargetException());
         } catch (Exception e) {

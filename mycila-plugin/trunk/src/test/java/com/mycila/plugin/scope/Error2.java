@@ -10,6 +10,6 @@ public final class Error2<T> extends ScopeProviderSkeleton<T> {
 
     @Override
     public T get() {
-        return context.getInvokable().invoke();
+        return (T) context.getInvokable().invoke();
     }
 }

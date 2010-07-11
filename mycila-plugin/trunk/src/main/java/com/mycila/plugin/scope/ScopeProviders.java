@@ -20,7 +20,7 @@ public final class ScopeProviders {
 
     }
 
-    public static <T> ScopeProvider<T> get(Class<? extends ScopeProvider> scope) throws ScopeInstanciationException {
+    public static <T> ScopeProvider<T> build(Class<? extends ScopeProvider> scope) throws ScopeInstanciationException {
         FastConstructor ctor = CTORS.get(scope);
         try {
             if (ctor == null) {
@@ -36,7 +36,7 @@ public final class ScopeProviders {
     }
 
     public static <T> Provider<T> build(Class<? extends ScopeProvider> scope, ScopeContext<T> context) throws ScopeInstanciationException {
-        ScopeProvider<T> t = get(scope);
+        ScopeProvider<T> t = build(scope);
         t.init(context);
         return t;
     }

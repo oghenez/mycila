@@ -22,8 +22,6 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
 
-import static org.junit.Assert.*;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */

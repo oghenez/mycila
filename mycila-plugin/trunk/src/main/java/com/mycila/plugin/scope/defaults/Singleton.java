@@ -15,7 +15,7 @@ public final class Singleton<T> extends ScopeProviderSkeleton<T> {
         if (instance == null) {
             synchronized (this) {
                 if (instance == null) {
-                    instance = context.getInvokable().invoke();
+                    instance = (T) context.getInvokable().invoke();
                 }
             }
         }

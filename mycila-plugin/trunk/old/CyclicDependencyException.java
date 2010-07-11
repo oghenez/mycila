@@ -18,10 +18,11 @@ package com.mycila.plugin.old;
 
 import com.mycila.plugin.PluginException;
 
-import static java.lang.String.*;
 import java.util.Collections;
 import java.util.Map;
 import java.util.SortedMap;
+
+import static java.lang.String.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

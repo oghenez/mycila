@@ -16,10 +16,10 @@
 
 package com.mycila.plugin.old;
 
-import static org.junit.Assert.*;
-
 import com.mycila.plugin.old.Binding;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

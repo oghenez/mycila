@@ -18,13 +18,15 @@ package com.mycila.plugin.scope;
 
 import com.mycila.plugin.PluginException;
 
+import java.lang.reflect.Method;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class MissingScopeParameterException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public MissingScopeParameterException(ScopeContext<?> context, String parameterName) {
-        super("Scope parameter '" + parameterName + "' is missing at: " + context);
+    public MissingScopeParameterException(Method method, Class<? extends ScopeProvider> scopeClass, String parameterName) {
+        super("Scope parameter '" + parameterName + "' is missing at method " + method + " for scope " + scopeClass.getSimpleName());
     }
 }

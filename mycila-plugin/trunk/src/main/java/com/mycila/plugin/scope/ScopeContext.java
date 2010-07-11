@@ -12,7 +12,7 @@ public interface ScopeContext<T> {
      *
      * @return The service
      */
-    Invokable<T> getInvokable();
+    Invokable getInvokable();
 
     /**
      * Check if a scope parameter exists
