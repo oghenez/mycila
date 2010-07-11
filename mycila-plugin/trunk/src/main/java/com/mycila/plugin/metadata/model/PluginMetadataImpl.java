@@ -1,8 +1,10 @@
 package com.mycila.plugin.metadata.model;
 
-import com.mycila.plugin.metadata.Invokable;
+import com.mycila.plugin.Invokable;
 import com.mycila.plugin.metadata.InvokeException;
+import com.mycila.plugin.metadata.PluginExport;
 import com.mycila.plugin.metadata.PluginMetadata;
+import com.mycila.plugin.metadata.PluginMetadataException;
 import net.sf.cglib.reflect.FastClass;
 
 import java.util.Collection;
@@ -81,6 +83,11 @@ public final class PluginMetadataImpl<T> implements PluginMetadata<T> {
     }
 
     @Override
+    public Iterable<? extends PluginExport<?>> getExports() {
+        return null;
+    }
+
+    @Override
     public void onStart() throws InvokeException {
         for (Invokable<?> invokable : onStart)
             invokable.invoke();
@@ -103,10 +110,18 @@ public final class PluginMetadataImpl<T> implements PluginMetadata<T> {
     }
 
     public void addOnStart(String methodName) {
-        onStart.add(new InvokableMethod<Object>(plugin, pluginClass.getMethod(methodName, new Class[0])));
+        try {
+            onStart.add(new InvokableMethod<Object>(plugin, pluginClass.getMethod(methodName, new Class[0])));
+        } catch (NoSuchMethodError e) {
+            throw new PluginMetadataException("Unable to find public method " + methodName + "() in class " + pluginClass.getName() + " with no parameter");
+        }
     }
 
     public void addOnStop(String methodName) {
-        onStop.add(new InvokableMethod<Object>(plugin, pluginClass.getMethod(methodName, new Class[0])));
+        try {
+            onStop.add(new InvokableMethod<Object>(plugin, pluginClass.getMethod(methodName, new Class[0])));
+        } catch (NoSuchMethodError e) {
+            throw new PluginMetadataException("Unable to find public method " + methodName + "() in class " + pluginClass.getName() + " with no parameter");
+        }
     }
 }

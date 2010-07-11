@@ -17,10 +17,9 @@
 package com.mycila.plugin.inject;
 
 import com.mycila.plugin.PluginException;
-import com.mycila.plugin.metadata.ExportMethod;
 import com.mycila.plugin.metadata.ImportMethod;
-
-import java.util.Arrays;
+import com.mycila.plugin.metadata.PluginExport;
+import com.mycila.plugin.util.StringUtils;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -28,7 +27,7 @@ import java.util.Arrays;
 public final class UnresolvedImportException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public UnresolvedImportException(ImportMethod<?> wanted, ExportMethod<?>... matches) {
-        super("Unable to resolve which import to use for " + wanted + " amongst " + Arrays.toString(matches));
+    public UnresolvedImportException(ImportMethod<?> wanted, PluginExport<?>... matches) {
+        super("Unable to resolve which import to use for " + wanted + " amongst " + StringUtils.arrayToCommaDelimitedString(matches));
     }
 }

@@ -21,12 +21,10 @@ public abstract class AbstractMetadataBuilder implements MetadataBuilder {
                 .withActivateBefore(getActivateBefore(pluginClass))
                 .withActivateAfter(getActivateAfter(pluginClass));
         for (Method method : pluginClass.getMethods()) {
-            if (method.getParameterTypes().length == 0) {
-                if (isOnStart(method))
-                    pluginMetadata.addOnStart(method.getName());
-                if (isOnStop(method))
-                    pluginMetadata.addOnStop(method.getName());
-            }
+            if (isOnStart(method))
+                pluginMetadata.addOnStart(method.getName());
+            if (isOnStop(method))
+                pluginMetadata.addOnStop(method.getName());
         }
         return pluginMetadata;
     }

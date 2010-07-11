@@ -3,6 +3,7 @@ package com.mycila.plugin.discovery;
 import com.mycila.plugin.annotation.Plugin;
 import com.mycila.plugin.discovery.support.ResourcePatternResolver;
 import com.mycila.plugin.util.ClassUtils;
+import com.mycila.plugin.util.StringUtils;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassReader;
@@ -17,26 +18,31 @@ import java.io.InputStream;
 import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class AnnotatedPluginDiscovery implements PluginDiscovery {
 
-    private static final Object V = new Object();
+    private static final Logger LOGGER = Logger.getLogger(AnnotatedPluginDiscovery.class.getName());
 
     private final Class<? extends Annotation> annotationClass;
     private final String annotationClassDesc;
     private final ResourcePatternResolver resolver;
     private String[] includedPackages = new String[0];
+    private String[] excludedPackages = {"java", "javax"};
 
     public AnnotatedPluginDiscovery() {
         this(Plugin.class, ClassUtils.getDefaultClassLoader());
@@ -45,7 +51,6 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
     public AnnotatedPluginDiscovery(Class<? extends Annotation> annotationClass, ClassLoader classLoader) {
         this.annotationClass = annotationClass;
         this.resolver = new ResourcePatternResolver(classLoader);
-        this.resolver.setExcludePrefixes("java/", "javax/");
         this.annotationClassDesc = Type.getDescriptor(annotationClass);
     }
 
@@ -54,91 +59,100 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
     }
 
     public void excludePackages(String... packages) {
-        String[] prefixes = new String[packages.length];
-        for (int i = 0; i < prefixes.length; i++)
-            prefixes[i] = ClassUtils.convertClassNameToResourcePath(packages[i]) + "/";
-        this.resolver.setExcludePrefixes(prefixes);
+        this.excludedPackages = packages;
     }
 
     @Override
     public Iterable<? extends Class<?>> scan() throws PluginDiscoveryException {
-        final ConcurrentMap<Class<?>, Object> plugins = new ConcurrentHashMap<Class<?>, Object>();
-        final BlockingQueue<URL> toProcess = new LinkedBlockingQueue<URL>();
-        final AtomicReference<Throwable> failure = new AtomicReference<Throwable>();
-        final Thread[] runners = new Thread[(int) (Runtime.getRuntime().availableProcessors() * 1.5)];
-
+        setExclusions();
+        ExecutorService executorService = Executors.newFixedThreadPool((int) (Runtime.getRuntime().availableProcessors() * 1.5));
+        ExecutorCompletionService<Class<?>> completionService = new ExecutorCompletionService<Class<?>>(executorService);
         try {
-            for (int i = 0; i < runners.length; i++) {
-                runners[i] = new Thread("AnnotatedPluginDiscovery-Thread-" + i) {
-                    @Override
-                    public void run() {
-                        while (!Thread.currentThread().isInterrupted() && failure.get() == null) {
-                            try {
-                                process(toProcess.take(), plugins);
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                                return;
-                            } catch (Exception e) {
-                                failure.set(e);
-                                Thread.currentThread().interrupt();
-                                return;
-                            }
-                        }
-                    }
-                };
-                runners[i].start();
-            }
-
-            try {
-                if (includedPackages == null || includedPackages.length == 0)
-                    toProcess.addAll(Arrays.asList(resolver.getResources("classpath*:**/*.class")));
-                else for (String p : includedPackages)
-                    toProcess.addAll(Arrays.asList(resolver.getResources("classpath*:" + ClassUtils.convertClassNameToResourcePath(p) + "/**/*.class")));
-            } catch (IOException e) {
-                throw new PluginDiscoveryException(e, annotationClass, includedPackages);
-            }
-
-            while (!toProcess.isEmpty() && failure.get() == null)
-                try {
-                    process(toProcess.take(), plugins);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
-                } catch (Exception e) {
-                    failure.set(e);
-                    break;
-                }
-
-            if (failure.get() != null)
-                throw new PluginDiscoveryException(failure.get(), annotationClass, includedPackages);
-
+            long count = submitTasks(completionService);
+            SortedSet<Class<?>> plugins = collectResults(completionService, count);
+            if (LOGGER.isLoggable(Level.CONFIG))
+                LOGGER.config("Found " + plugins.size() + " plugins.");
+            return Collections.unmodifiableSortedSet(plugins);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException e) {
+            throw new PluginDiscoveryException(e.getCause(), annotationClass, includedPackages);
+        } catch (IOException e) {
+            throw new PluginDiscoveryException(e, annotationClass, includedPackages);
         } finally {
-            for (int i = 0; i < runners.length; i++) {
-                if (runners[i] != null) {
-                    runners[i].interrupt();
-                    runners[i] = null;
+            executorService.shutdownNow();
+        }
+        return Collections.emptySet();
+    }
+
+    private SortedSet<Class<?>> collectResults(ExecutorCompletionService<Class<?>> completionService, long count) throws InterruptedException, ExecutionException {
+        SortedSet<Class<?>> plugins = new TreeSet<Class<?>>(new Comparator<Class<?>>() {
+            @Override
+            public int compare(Class<?> o1, Class<?> o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        while (count-- > 0) {
+            Class<?> c = completionService.take().get();
+            if (c != null) plugins.add(c);
+        }
+        return plugins;
+    }
+
+    private long submitTasks(ExecutorCompletionService<Class<?>> completionService) throws IOException {
+        long count = 0;
+        if (includedPackages == null || includedPackages.length == 0) {
+            if (LOGGER.isLoggable(Level.CONFIG))
+                LOGGER.config("Scanning for classes annotated by @" + annotationClass.getSimpleName() + " in all packages, excluding packages " + StringUtils.arrayToCommaDelimitedString(excludedPackages) + "...");
+            for (URL url : resolver.getResources("classpath*:**/*.class")) {
+                count++;
+                completionService.submit(new Processor(url));
+            }
+        } else {
+            if (LOGGER.isLoggable(Level.CONFIG))
+                LOGGER.config("Scanning for classes annotated by @" + annotationClass.getSimpleName() + " in packages " + StringUtils.arrayToCommaDelimitedString(includedPackages) + " excluding packages " + StringUtils.arrayToCommaDelimitedString(excludedPackages) + "...");
+            for (String p : includedPackages) {
+                for (URL url : resolver.getResources("classpath*:" + ClassUtils.convertClassNameToResourcePath(p) + "/**/*.class")) {
+                    count++;
+                    completionService.submit(new Processor(url));
                 }
             }
         }
-
-        return Collections.unmodifiableSet(plugins.keySet());
+        return count;
     }
 
-    private void process(URL url, ConcurrentMap<Class<?>, Object> plugins) throws IOException, ClassNotFoundException {
-        InputStream is = null;
-        try {
-            is = url.openStream();
-            ClassReader classReader = new ClassReader(is);
-            ClassAnnotationVisitor visitor = new ClassAnnotationVisitor();
-            classReader.accept(visitor, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
-            if ((visitor.access & Opcodes.ACC_PUBLIC) != 0 && visitor.annotations.contains(annotationClassDesc))
-                plugins.putIfAbsent(resolver.getClassLoader().loadClass(ClassUtils.convertResourcePathToClassName(visitor.name)), V);
-        } finally {
-            if (is != null)
-                try {
-                    is.close();
-                } catch (IOException ignored) {
-                }
+    private void setExclusions() {
+        String[] prefixes = new String[excludedPackages.length];
+        for (int i = 0; i < prefixes.length; i++)
+            prefixes[i] = ClassUtils.convertClassNameToResourcePath(excludedPackages[i]) + "/";
+        this.resolver.setExcludePrefixes(prefixes);
+    }
+
+    private class Processor implements Callable<Class<?>> {
+        final URL url;
+
+        private Processor(URL url) {
+            this.url = url;
+        }
+
+        @Override
+        public Class<?> call() throws Exception {
+            InputStream is = null;
+            try {
+                is = url.openStream();
+                ClassReader classReader = new ClassReader(is);
+                ClassAnnotationVisitor visitor = new ClassAnnotationVisitor();
+                classReader.accept(visitor, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+                if ((visitor.access & Opcodes.ACC_PUBLIC) != 0 && visitor.annotations.contains(annotationClassDesc))
+                    return resolver.getClassLoader().loadClass(ClassUtils.convertResourcePathToClassName(visitor.name));
+            } finally {
+                if (is != null)
+                    try {
+                        is.close();
+                    } catch (IOException ignored) {
+                    }
+            }
+            return null;
         }
     }
 

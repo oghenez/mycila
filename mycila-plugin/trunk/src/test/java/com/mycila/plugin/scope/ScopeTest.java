@@ -1,5 +1,6 @@
 package com.mycila.plugin.scope;
 
+import com.mycila.plugin.Invokable;
 import com.mycila.plugin.Provider;
 import com.mycila.plugin.scope.defaults.ExpiringSingleton;
 import com.mycila.plugin.scope.defaults.None;
@@ -23,7 +24,9 @@ public final class ScopeTest {
     @Test
     public void test_none() throws Exception {
         ScopeContext<String> mock = mock(ScopeContext.class);
-        when(mock.invoke()).thenAnswer(new Answer<String>() {
+        Invokable invokable = mock(Invokable.class);
+        when(mock.getInvokable()).thenReturn(invokable);
+        when(invokable.invoke()).thenAnswer(new Answer<String>() {
             int count = 0;
 
             @Override
@@ -41,7 +44,9 @@ public final class ScopeTest {
     @Test
     public void test_singleton() throws Exception {
         ScopeContext<String> mock = mock(ScopeContext.class);
-        when(mock.invoke()).thenAnswer(new Answer<String>() {
+        Invokable invokable = mock(Invokable.class);
+        when(mock.getInvokable()).thenReturn(invokable);
+        when(invokable.invoke()).thenAnswer(new Answer<String>() {
             int count = 0;
 
             @Override
@@ -59,7 +64,9 @@ public final class ScopeTest {
     @Test
     public void test_weak() throws Exception {
         ScopeContext<Object> mock = mock(ScopeContext.class);
-        when(mock.invoke()).thenAnswer(new Answer<Object>() {
+        Invokable invokable = mock(Invokable.class);
+        when(mock.getInvokable()).thenReturn(invokable);
+        when(invokable.invoke()).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return new Object();
@@ -88,7 +95,9 @@ public final class ScopeTest {
     public void test_expire() throws Exception {
         ScopeContext<Object> mock = mock(ScopeContext.class);
         when(mock.getParameter("duration")).thenReturn("500");
-        when(mock.invoke()).thenAnswer(new Answer<Object>() {
+        Invokable invokable = mock(Invokable.class);
+        when(mock.getInvokable()).thenReturn(invokable);
+        when(invokable.invoke()).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return new Object();

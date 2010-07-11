@@ -9,12 +9,13 @@ public interface PluginMetadata<T> {
 
     String getName();
     String getDescription();
+    String toString();
 
     Iterable<? extends Class<?>> getActivateAfter();
     Iterable<? extends Class<?>> getActivateBefore();
 
+    Iterable<? extends PluginExport<?>> getExports();
+
     void onStart() throws InvokeException;
     void onStop() throws InvokeException;
-
-    String toString();
 }

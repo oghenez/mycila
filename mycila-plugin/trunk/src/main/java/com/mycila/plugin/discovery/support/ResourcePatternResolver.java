@@ -60,6 +60,10 @@ public final class ResourcePatternResolver {
         this.excludePrefixes = excludePrefixes;
     }
 
+    public String[] getExcludePrefixes() {
+        return excludePrefixes;
+    }
+
     public URL[] getResources(String locationPattern) throws IOException {
         Assert.notNull(locationPattern, "Location pattern must not be null");
         if (locationPattern.startsWith(CLASSPATH_ALL_URL_PREFIX)) {
