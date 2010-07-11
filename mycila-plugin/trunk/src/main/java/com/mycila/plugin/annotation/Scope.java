@@ -1,7 +1,7 @@
 package com.mycila.plugin.annotation;
 
-import com.mycila.plugin.scope.ExportProvider;
-import com.mycila.plugin.scope.None;
+import com.mycila.plugin.scope.ScopeProvider;
+import com.mycila.plugin.scope.defaults.None;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 public @interface Scope {
-    Class<? extends ExportProvider> value() default None.class;
+    Class<? extends ScopeProvider> value() default None.class;
 
     Param[] params() default {};
 }

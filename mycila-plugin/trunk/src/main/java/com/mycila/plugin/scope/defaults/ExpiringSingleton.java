@@ -1,13 +1,16 @@
-package com.mycila.plugin.scope;
+package com.mycila.plugin.scope.defaults;
+
+import com.mycila.plugin.scope.ScopeContext;
+import com.mycila.plugin.scope.ScopeProviderSkeleton;
 
 /**
- * Same as {@link com.mycila.plugin.scope.Singleton}, except that the result is only valid for N milliseconds.
+ * Same as {@link Singleton}, except that the result is only valid for N milliseconds.
  * The time is specified by the parameter 'duration', in milliseconds.
  * When the export is requested and the duration expired, the method will be called to refresh the instance.
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ExpiringSingleton<T> extends ProviderSkeleton<T> {
+public final class ExpiringSingleton<T> extends ScopeProviderSkeleton<T> {
 
     private long duration;
 

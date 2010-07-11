@@ -3,7 +3,7 @@ package com.mycila.plugin.scope;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class ProviderSkeleton<T> implements ExportProvider<T> {
+public abstract class ScopeProviderSkeleton<T> implements ScopeProvider<T> {
 
     protected volatile ScopeContext<T> context;
 

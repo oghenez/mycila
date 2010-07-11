@@ -3,5 +3,6 @@ package com.mycila.plugin.metadata;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ImportMetadata<T> {
+public interface Invokable<T> {
+    T invoke(Object... args) throws InvokeException;
 }

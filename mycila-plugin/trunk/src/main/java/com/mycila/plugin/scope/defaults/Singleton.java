@@ -1,11 +1,13 @@
-package com.mycila.plugin.scope;
+package com.mycila.plugin.scope.defaults;
+
+import com.mycila.plugin.scope.ScopeProviderSkeleton;
 
 /**
  * Singleton scope: the method is called once and the result kept in memory.
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Singleton<T> extends ProviderSkeleton<T> {
+public final class Singleton<T> extends ScopeProviderSkeleton<T> {
     private volatile T instance;
 
     @Override
