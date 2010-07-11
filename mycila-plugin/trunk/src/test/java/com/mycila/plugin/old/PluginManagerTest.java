@@ -16,12 +16,12 @@
 
 package com.mycila.plugin.old;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -30,7 +30,7 @@ public final class PluginManagerTest {
 
     @Test
     public void test_create() {
-        PluginManager<MyPlugin> manager = new PluginManager<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/spi/complex1.properties");
+        PluginManager<MyPlugin> manager = new PluginManager<MyPlugin>(MyPlugin.class, "/com/mycila/plugin/old/complex1.properties");
         manager.getLoader().setExclusions("plugin1");
         manager.getCache().registerPlugin("plugin1", new MyPlugin4());
         List<String> list = manager.getResolver().getResolvedPluginsName();

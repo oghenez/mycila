@@ -35,20 +35,20 @@ public final class DefaultPluginResolverTest {
 
     @Test
     public void test_getPlugins() {
-        setupResolver("/com/mycila/plugin/spi/two.properties");
+        setupResolver("/com/mycila/plugin/old/two.properties");
         assertEquals(resolver.getPlugins().size(), 2);
     }
 
     @Test
     public void test_getPlugin() {
-        setupResolver("/com/mycila/plugin/spi/two.properties");
+        setupResolver("/com/mycila/plugin/old/two.properties");
         assertNotNull(resolver.getPlugin("plugin1"));
     }
 
     @Test
     public void test_getPlugin_error() {
         try {
-            setupResolver("/com/mycila/plugin/spi/two.properties");
+            setupResolver("/com/mycila/plugin/old/two.properties");
             resolver.getPlugin("plugin3");
             fail("must throw InexistingPluginException");
         } catch (InexistingPluginException e) {
@@ -58,17 +58,17 @@ public final class DefaultPluginResolverTest {
 
     @Test
     public void test_contains() {
-        setupResolver("/com/mycila/plugin/spi/two.properties");
+        setupResolver("/com/mycila/plugin/old/two.properties");
         assertTrue(resolver.contains("plugin1"));
         assertFalse(resolver.contains("plugin3"));
     }
 
     @Test
     public void test_getMissingDependenciesByPlugin() {
-        setupResolver("/com/mycila/plugin/spi/noMiss.properties");
+        setupResolver("/com/mycila/plugin/old/noMiss.properties");
         assertTrue(resolver.getMissingDependenciesByPlugin().isEmpty());
 
-        setupResolver("/com/mycila/plugin/spi/two.properties");
+        setupResolver("/com/mycila/plugin/old/two.properties");
         assertFalse(resolver.getMissingDependenciesByPlugin().isEmpty());
         assertEquals(resolver.getMissingDependenciesByPlugin().size(), 2);
         assertEquals(resolver.getMissingDependenciesByPlugin().firstKey(), "plugin1");
@@ -78,20 +78,20 @@ public final class DefaultPluginResolverTest {
 
     @Test
     public void test_getResolvedPluginsName_empty() {
-        setupResolver("/com/mycila/plugin/spi/empty.properties");
+        setupResolver("/com/mycila/plugin/old/empty.properties");
         assertEquals(resolver.getResolvedPluginsName().size(), 0);
     }
 
     @Test
     public void test_getResolvedPluginsName_simple() {
-        setupResolver("/com/mycila/plugin/spi/two.properties");
+        setupResolver("/com/mycila/plugin/old/two.properties");
         assertEquals(resolver.getResolvedPluginsName().size(), 2);
         assertListEquals(resolver.getResolvedPluginsName(), "plugin2", "plugin1");
     }
 
     @Test
     public void test_getResolvedPluginsName_simple_noMiss() {
-        setupResolver("/com/mycila/plugin/spi/noMiss.properties");
+        setupResolver("/com/mycila/plugin/old/noMiss.properties");
         List<String> list = resolver.getResolvedPluginsName();
         assertEquals(list.size(), 4);
         assertListEquals(list, "inexisting", "plugin2", "plugin1", "plugin3");
@@ -99,7 +99,7 @@ public final class DefaultPluginResolverTest {
 
     @Test
     public void test_getResolvedPluginsName_complex1() {
-        setupResolver("/com/mycila/plugin/spi/complex1.properties");
+        setupResolver("/com/mycila/plugin/old/complex1.properties");
         List<String> list = resolver.getResolvedPluginsName();
         assertEquals(list.size(), 6);
         assertListEquals(list, "plugin2", "plugin1", "plugin5", "plugin6", "plugin3", "plugin4");
@@ -234,7 +234,7 @@ public final class DefaultPluginResolverTest {
 
     @Test
     public void test_getResolvedPlugins() {
-        setupResolver("/com/mycila/plugin/spi/noMiss.properties");
+        setupResolver("/com/mycila/plugin/old/noMiss.properties");
         List<PluginBinding<MyPlugin>> plugins = resolver.getResolvedPlugins();
         assertEquals(plugins.get(0).getPlugin().getClass(), MyPlugin4.class);
         assertEquals(plugins.get(1).getPlugin().getClass(), MyPlugin2.class);
