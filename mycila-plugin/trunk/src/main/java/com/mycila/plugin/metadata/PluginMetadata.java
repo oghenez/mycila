@@ -19,11 +19,15 @@ package com.mycila.plugin.metadata;
 import com.mycila.plugin.Invokable;
 import com.mycila.plugin.scope.ScopeProvider;
 import net.sf.cglib.reflect.FastClass;
+import net.sf.cglib.reflect.FastMethod;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,15 +63,15 @@ public final class PluginMetadata {
         return builder.description;
     }
 
-    public Iterable<? extends Class<?>> getActivateAfter() {
+    public Iterable<Class<?>> getActivateAfter() {
         return builder.activateAfter;
     }
 
-    public Iterable<? extends Class<?>> getActivateBefore() {
+    public Iterable<Class<?>> getActivateBefore() {
         return builder.activateBefore;
     }
 
-    public Iterable<? extends PluginExport<?>> getExports() {
+    public Iterable<PluginExport<?>> getExports() {
         return builder.exports.values();
     }
 
@@ -88,6 +92,10 @@ public final class PluginMetadata {
         return (PluginExport<T>) builder.exports.get(unPerfectMatched); // the export is a subclass of the requested type
     }
 
+    public Iterable<InjectionPoint> getInjectionPoints() {
+        return builder.injectionPoints;
+    }
+
     public Invokable onStart() {
         return builder.onStart;
     }
@@ -105,13 +113,14 @@ public final class PluginMetadata {
         private final PluginMetadata metadata = new PluginMetadata(this);
         private final FastClass pluginClass;
         private final Object plugin;
-        private String name = "";
-        private String description = "";
         private final Set<Class<?>> activateAfter = new LinkedHashSet<Class<?>>(2);
         private final Set<Class<?>> activateBefore = new LinkedHashSet<Class<?>>(2);
         private final InvokableComposite onStart = InvokableComposite.empty();
         private final InvokableComposite onStop = InvokableComposite.empty();
         private final Map<Class<?>, PluginExport<?>> exports = new LinkedHashMap<Class<?>, PluginExport<?>>();
+        private final List<InjectionPoint> injectionPoints = new LinkedList<InjectionPoint>();
+        private String name = "";
+        private String description = "";
         private volatile boolean built;
 
         private Builder(Class<?> pluginClass, Object plugin) {
@@ -145,39 +154,54 @@ public final class PluginMetadata {
 
         public Builder addOnStart(String methodName) {
             check();
-            try {
-                onStart.add(InvokableMethod.create(plugin, pluginClass.getMethod(methodName, new Class[0])));
-            } catch (NoSuchMethodError e) {
-                throw new PluginMetadataException("Unable to find public method " + methodName + "() in class " + pluginClass.getName() + " with no parameter");
-            }
+            onStart.add(InvokableMethod.create(plugin, getCall(methodName)));
             return this;
         }
 
         public Builder addOnStop(String methodName) {
             check();
-            try {
-                onStop.add(InvokableMethod.create(plugin, pluginClass.getMethod(methodName, new Class[0])));
-            } catch (NoSuchMethodError e) {
-                throw new PluginMetadataException("Unable to find public method " + methodName + "() in class " + pluginClass.getName() + " with no parameter");
-            }
+            onStop.add(InvokableMethod.create(plugin, getCall(methodName)));
+            return this;
+        }
+
+        public Builder addInjectionPoint(Method method, List<PluginImport> dependencies) {
+            check();
+            if (method.getParameterTypes().length == 0)
+                throw new PluginMetadataException("Method " + method + " on plugin class " + pluginClass.getName() + " cannot be an injection point since it has no parameter.");
+            injectionPoints.add(InjectionPoint.create(
+                    metadata,
+                    getMethod(method),
+                    dependencies));
             return this;
         }
 
         public Builder addExport(String methodName, Class<? extends ScopeProvider> scopeClass, Map<String, String> parameters) {
             check();
+            PluginExport export = PluginExport.create(
+                    metadata,
+                    getCall(methodName),
+                    scopeClass,
+                    parameters);
+            if (exports.containsKey(export.getType()))
+                throw new DuplicateExportException(pluginClass.getJavaClass(), export.getType());
+            exports.put(export.getType(), export);
+            return this;
+        }
+
+        private FastMethod getCall(String methodName) {
             try {
-                PluginExport export = PluginExport.create(
-                        metadata,
-                        pluginClass.getMethod(methodName, new Class[0]),
-                        scopeClass,
-                        parameters);
-                if (exports.containsKey(export.getType()))
-                    throw new DuplicateExportException(pluginClass.getJavaClass(), export.getType());
-                exports.put(export.getType(), export);
+                return pluginClass.getMethod(methodName, new Class[0]);
             } catch (NoSuchMethodError e) {
                 throw new PluginMetadataException("Unable to find public method " + methodName + "() in class " + pluginClass.getName() + " with no parameter");
             }
-            return this;
+        }
+
+        private FastMethod getMethod(Method method) {
+            try {
+                return pluginClass.getMethod(method);
+            } catch (NoSuchMethodError e) {
+                throw new PluginMetadataException("Unable to find public method " + method + " in class " + pluginClass.getName());
+            }
         }
 
         public PluginMetadata build() {

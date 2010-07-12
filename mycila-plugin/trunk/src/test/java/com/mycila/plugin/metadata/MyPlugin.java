@@ -19,6 +19,8 @@ package com.mycila.plugin.metadata;
 import com.mycila.plugin.annotation.ActivateAfter;
 import com.mycila.plugin.annotation.ActivateBefore;
 import com.mycila.plugin.annotation.Export;
+import com.mycila.plugin.annotation.From;
+import com.mycila.plugin.annotation.Import;
 import com.mycila.plugin.annotation.OnStart;
 import com.mycila.plugin.annotation.OnStop;
 import com.mycila.plugin.annotation.Param;
@@ -57,5 +59,15 @@ public final class MyPlugin {
     @Scope(value = ExpiringSingleton.class, params = @Param(name = "duration", value = "500"))
     public JLabel label() {
         return new JLabel("a label at " + System.currentTimeMillis());
+    }
+
+    @Import
+    public void inject1(@From(JButton.class) String a, Integer b) {
+
+    }
+
+    @Import
+    public void inject1(Byte b) {
+
     }
 }

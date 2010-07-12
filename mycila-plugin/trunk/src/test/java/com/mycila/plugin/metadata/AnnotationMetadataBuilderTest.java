@@ -104,4 +104,23 @@ public final class AnnotationMetadataBuilderTest {
         assertFalse(txt.equals(txt2));
     }
 
+    @Test
+    public void test_deps() throws Exception {
+        AnnotationMetadataBuilder builder = new AnnotationMetadataBuilder();
+        PluginMetadata metadata = builder.getMetadata(new MyPlugin());
+
+        assertEquals(2, Iterables.size(metadata.getInjectionPoints()));
+
+        for (InjectionPoint point : metadata.getInjectionPoints()) {
+            if (point.getDependencies().size() == 1) {
+                assertEquals(Byte.class, point.getDependencies().get(0).getType());
+                assertEquals(PluginImport.FROM_ANY_PLUGIN, point.getDependencies().get(0).getPlugin());
+            } else {
+                assertEquals(String.class, point.getDependencies().get(0).getType());
+                assertEquals(JButton.class, point.getDependencies().get(0).getPlugin());
+                assertEquals(Integer.class, point.getDependencies().get(1).getType());
+                assertEquals(PluginImport.FROM_ANY_PLUGIN, point.getDependencies().get(1).getPlugin());
+            }
+        }
+    }
 }

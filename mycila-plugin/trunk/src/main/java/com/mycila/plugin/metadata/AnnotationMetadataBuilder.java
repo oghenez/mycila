@@ -19,6 +19,8 @@ package com.mycila.plugin.metadata;
 import com.mycila.plugin.annotation.ActivateAfter;
 import com.mycila.plugin.annotation.ActivateBefore;
 import com.mycila.plugin.annotation.Export;
+import com.mycila.plugin.annotation.From;
+import com.mycila.plugin.annotation.Import;
 import com.mycila.plugin.annotation.OnStart;
 import com.mycila.plugin.annotation.OnStop;
 import com.mycila.plugin.annotation.Param;
@@ -27,10 +29,13 @@ import com.mycila.plugin.annotation.Scope;
 import com.mycila.plugin.scope.defaults.None;
 import com.mycila.plugin.util.AopUtils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -69,6 +74,23 @@ public final class AnnotationMetadataBuilder implements MetadataBuilder {
                         method.getName(),
                         scope == null ? None.class : scope.value(),
                         parameters);
+            }
+
+            if (method.isAnnotationPresent(Import.class)) {
+                Class<?>[] params = method.getParameterTypes();
+                Annotation[][] annots = method.getParameterAnnotations();
+                List<PluginImport> dependencies = new ArrayList<PluginImport>(params.length);
+                for (int i = 0; i < params.length; i++) {
+                    Class<?> from = PluginImport.FROM_ANY_PLUGIN;
+                    for (Annotation annot : annots[i]) {
+                        if (From.class.isInstance(annot)) {
+                            from = ((From) annot).value();
+                            break;
+                        }
+                    }
+                    dependencies.add(PluginImport.create(params[i], from));
+                }
+                builder.addInjectionPoint(method, dependencies);
             }
         }
 

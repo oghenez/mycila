@@ -55,7 +55,7 @@ public final class AnnotatedPluginDiscoveryPerfTest {
     public void test_local() throws Exception {
         AnnotatedPluginDiscovery discovery = new AnnotatedPluginDiscovery(Retention.class, ClassUtils.getDefaultClassLoader());
         discovery.includePackages("com.mycila.plugin.annotation");
-        Iterable<? extends Class<?>> it = discovery.scan();
+        Iterable<Class<?>> it = discovery.scan();
         System.out.println(Iterables.toString(it));
         assertEquals(10, Iterables.size(it));
     }
