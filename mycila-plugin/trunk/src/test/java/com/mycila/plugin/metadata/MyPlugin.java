@@ -50,11 +50,11 @@ public final class MyPlugin {
     @Export
     @Scope(Singleton.class)
     public JButton button() {
-        return new JButton("hello");
+        return new JButton("button");
     }
 
     @Export
-    @Scope(value = ExpiringSingleton.class, params = @Param(name = "duration", value = "1000"))
+    @Scope(value = ExpiringSingleton.class, params = @Param(name = "duration", value = "500"))
     public JLabel label() {
         return new JLabel("a label at " + System.currentTimeMillis());
     }

@@ -18,7 +18,6 @@ package com.mycila.plugin.inject;
 
 import com.mycila.plugin.PluginException;
 import com.mycila.plugin.metadata.PluginExport;
-import com.mycila.plugin.metadata.PluginImport;
 import com.mycila.plugin.util.StringUtils;
 
 /**
@@ -27,7 +26,7 @@ import com.mycila.plugin.util.StringUtils;
 public final class UnresolvedImportException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public UnresolvedImportException(PluginImport wanted, PluginExport<?>... matches) {
-        super("Unable to resolve which import to use for " + wanted + " amongst " + StringUtils.arrayToCommaDelimitedString(matches));
+    public UnresolvedImportException(PluginExport<?>... matches) {
+        super("Unable to resolve which import to use for <wanted> amongst " + StringUtils.arrayToCommaDelimitedString(matches));
     }
 }

@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.metadata;
-
-import com.mycila.plugin.PluginException;
+package com.mycila.plugin;
 
 import java.lang.reflect.Method;
 

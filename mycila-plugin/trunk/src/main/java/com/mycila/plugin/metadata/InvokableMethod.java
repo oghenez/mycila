@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.metadata.model;
+package com.mycila.plugin.metadata;
 
 import com.mycila.plugin.Invokable;
-import com.mycila.plugin.metadata.InvokeException;
+import com.mycila.plugin.InvokeException;
 import net.sf.cglib.reflect.FastMethod;
 
 import java.lang.reflect.InvocationTargetException;
@@ -30,7 +30,7 @@ public final class InvokableMethod implements Invokable {
     private final FastMethod method;
     private final Object target;
 
-    public InvokableMethod(Object target, FastMethod method) {
+    private InvokableMethod(Object target, FastMethod method) {
         this.target = target;
         this.method = method;
     }
@@ -49,5 +49,9 @@ public final class InvokableMethod implements Invokable {
     @Override
     public String toString() {
         return "InvokableMethod " + method.getJavaMethod();
+    }
+
+    public static InvokableMethod create(Object target, FastMethod method) {
+        return new InvokableMethod(target, method);
     }
 }
