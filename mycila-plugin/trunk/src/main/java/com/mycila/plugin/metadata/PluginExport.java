@@ -16,19 +16,81 @@
 
 package com.mycila.plugin.metadata;
 
+import com.mycila.plugin.Invokable;
 import com.mycila.plugin.Provider;
+import com.mycila.plugin.scope.MissingScopeParameterException;
+import com.mycila.plugin.scope.ScopeContext;
+import com.mycila.plugin.scope.ScopeProvider;
+import com.mycila.plugin.scope.ScopeProviders;
+import net.sf.cglib.reflect.FastMethod;
+
+import java.util.Map;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface PluginExport<T> {
-    PluginMetadata getPluginMetadata();
+public final class PluginExport<T> {
 
-    Class<T> getType();
+    private final FastMethod method;
+    private final PluginMetadata plugin;
+    private final Class<? extends ScopeProvider> scopeClass;
+    private final Provider<? extends T> provider;
 
-    Class<?> getScope();
+    private PluginExport(final PluginMetadata metadata, final FastMethod method, final Class<? extends ScopeProvider> scopeClass, final Map<String, String> parameters) {
+        this.plugin = metadata;
+        this.method = method;
+        this.scopeClass = scopeClass;
+        this.provider = ScopeProviders.build(scopeClass, new ScopeContext<T>() {
+            final Invokable exportGetter = InvokableMethod.create(metadata.getTarget(), method);
 
-    Provider<? extends T> getProvider();
+            @Override
+            public Invokable getInvokable() {
+                return exportGetter;
+            }
 
-    String toString();
+            @Override
+            public boolean hasParameter(String name) {
+                return parameters.containsKey(name);
+            }
+
+            @Override
+            public String getParameter(String name) throws MissingScopeParameterException {
+                String val = parameters.get(name);
+                if (val == null)
+                    throw new MissingScopeParameterException(method.getJavaMethod(), scopeClass, name);
+                return val;
+            }
+
+            @Override
+            public String toString() {
+                return getType().getName();
+            }
+        });
+    }
+
+    public Class<T> getType() {
+        return method.getReturnType();
+    }
+
+    public Class<?> getScope() {
+        return scopeClass;
+    }
+
+    public PluginMetadata getPluginMetadata() {
+        return plugin;
+    }
+
+    public Provider<? extends T> getProvider() {
+        return provider;
+    }
+
+    @Override
+    public String toString() {
+        return "Export " + getType().getName() + " with scope " + getScope().getSimpleName();
+    }
+    
+    public static <T> PluginExport<T> create(final PluginMetadata metadata, final FastMethod method, final Class<? extends ScopeProvider> scopeClass, final Map<String, String> parameters) {
+        return new PluginExport<T>(metadata, method, scopeClass, parameters);
+    }
+    
 }

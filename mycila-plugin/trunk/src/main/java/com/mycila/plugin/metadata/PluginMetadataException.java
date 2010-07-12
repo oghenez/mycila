@@ -21,7 +21,7 @@ import com.mycila.plugin.PluginException;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class PluginMetadataException extends PluginException {
+public class PluginMetadataException extends PluginException {
     private static final long serialVersionUID = 1;
 
     public PluginMetadataException(String message) {

@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
+package com.mycila.plugin.scope;
+
+import com.mycila.plugin.PluginException;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class PluginException extends RuntimeException {
+public class PluginScopeException extends PluginException {
+    private static final long serialVersionUID = 1;
 
-    protected PluginException(String message) {
+    public PluginScopeException(String message) {
         super(message);
     }
 
-    protected PluginException(String message, Throwable cause) {
+    public PluginScopeException(String message, Throwable cause) {
         super(message, cause);
-    }
-
-    protected PluginException(Throwable cause) {
-        super(cause.getMessage(), cause);
     }
 }

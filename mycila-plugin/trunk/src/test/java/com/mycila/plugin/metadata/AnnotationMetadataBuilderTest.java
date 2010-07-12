@@ -16,10 +16,15 @@
 
 package com.mycila.plugin.metadata;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.mycila.plugin.scope.defaults.ExpiringSingleton;
+import com.mycila.plugin.scope.defaults.Singleton;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+
+import javax.swing.*;
 
 import static org.junit.Assert.*;
 
@@ -30,7 +35,7 @@ import static org.junit.Assert.*;
 public final class AnnotationMetadataBuilderTest {
 
     @Test
-    public void test() throws Exception {
+    public void test_metadata() throws Exception {
         AnnotationMetadataBuilder builder = new AnnotationMetadataBuilder();
         PluginMetadata metadata = builder.getMetadata(new MyPlugin());
 
@@ -46,6 +51,57 @@ public final class AnnotationMetadataBuilderTest {
 
         assertEquals("start", metadata.onStart().invoke());
         assertEquals("stop", metadata.onStop().invoke());
+    }
+
+    @Test
+    public void test_exports() throws Exception {
+        AnnotationMetadataBuilder builder = new AnnotationMetadataBuilder();
+        PluginMetadata metadata = builder.getMetadata(new MyPlugin());
+
+        assertEquals(2, Iterables.size(metadata.getExports()));
+
+        assertTrue(Iterables.indexOf(metadata.getExports(), new Predicate<PluginExport<?>>() {
+            @Override
+            public boolean apply(PluginExport<?> input) {
+                return JButton.class.equals(input.getType()) && Singleton.class.equals(input.getScope());
+            }
+        }) != -1);
+
+        assertTrue(Iterables.indexOf(metadata.getExports(), new Predicate<PluginExport<?>>() {
+            @Override
+            public boolean apply(PluginExport<?> input) {
+                return JLabel.class.equals(input.getType()) && ExpiringSingleton.class.equals(input.getScope());
+            }
+        }) != -1);
+
+        assertNotNull(metadata.getExport(JButton.class));
+        assertNotNull(metadata.getExport(AbstractButton.class));
+        assertNotNull(metadata.getExport(JLabel.class));
+
+        try {
+            metadata.getExport(JComponent.class);
+            fail();
+        } catch (TooManyExportException e) {
+            //ok
+        }
+
+        try {
+            metadata.getExport(Void.class);
+            fail();
+        } catch (InexistingExportException e) {
+            //ok
+        }
+
+        assertEquals("button", metadata.getExport(JButton.class).getProvider().get().getText());
+        assertEquals("button", metadata.getExport(JButton.class).getProvider().get().getText());
+
+        String txt = metadata.getExport(JLabel.class).getProvider().get().getText();
+        assertEquals(txt, metadata.getExport(JLabel.class).getProvider().get().getText());
+        System.out.println(txt);
+        Thread.sleep(600);
+        String txt2 = metadata.getExport(JLabel.class).getProvider().get().getText();
+        System.out.println(txt2);
+        assertFalse(txt.equals(txt2));
     }
 
 }

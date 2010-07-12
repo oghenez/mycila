@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.metadata.model;
+package com.mycila.plugin.metadata;
 
 import com.mycila.plugin.Invokable;
-import com.mycila.plugin.metadata.InvokeException;
+import com.mycila.plugin.InvokeException;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -30,11 +30,11 @@ public final class InvokableComposite implements Invokable {
 
     private final List<Invokable> invokables = new LinkedList<Invokable>();
 
-    public InvokableComposite(Invokable... invokables) {
+    private InvokableComposite(Invokable... invokables) {
         add(invokables);
     }
 
-    public InvokableComposite(Iterable<Invokable> invokables) {
+    private InvokableComposite(Iterable<Invokable> invokables) {
         add(invokables);
     }
 
@@ -53,5 +53,17 @@ public final class InvokableComposite implements Invokable {
         for (Invokable invokable : invokables)
             res = invokable.invoke(args);
         return res;
+    }
+
+    public static InvokableComposite compose(Invokable... invokables) {
+        return new InvokableComposite(invokables);
+    }
+
+    public static InvokableComposite compose(Iterable<Invokable> invokables) {
+        return new InvokableComposite(invokables);
+    }
+
+    public static InvokableComposite empty() {
+        return new InvokableComposite();
     }
 }

@@ -16,14 +16,12 @@
 
 package com.mycila.plugin.scope;
 
-import com.mycila.plugin.PluginException;
-
 import java.lang.reflect.Method;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class MissingScopeParameterException extends PluginException {
+public final class MissingScopeParameterException extends PluginScopeException {
     private static final long serialVersionUID = 1;
 
     public MissingScopeParameterException(Method method, Class<? extends ScopeProvider> scopeClass, String parameterName) {

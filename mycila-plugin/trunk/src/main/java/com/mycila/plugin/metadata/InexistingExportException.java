@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
+package com.mycila.plugin.metadata;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class PluginException extends RuntimeException {
+public final class InexistingExportException extends PluginMetadataException {
+    private static final long serialVersionUID = 1;
 
-    protected PluginException(String message) {
-        super(message);
-    }
-
-    protected PluginException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    protected PluginException(Throwable cause) {
-        super(cause.getMessage(), cause);
+    public InexistingExportException(Class pluginClass, Class exportType) {
+        super("Unable to find export of type " + exportType.getName() + " in plugin class " + pluginClass.getName());
     }
 }

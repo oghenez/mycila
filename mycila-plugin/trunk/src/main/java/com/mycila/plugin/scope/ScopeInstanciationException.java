@@ -16,12 +16,10 @@
 
 package com.mycila.plugin.scope;
 
-import com.mycila.plugin.PluginException;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ScopeInstanciationException extends PluginException {
+public final class ScopeInstanciationException extends PluginScopeException {
     private static final long serialVersionUID = 1;
 
     public ScopeInstanciationException(Class<? extends ScopeProvider> scope, Throwable cause) {

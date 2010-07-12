@@ -24,7 +24,6 @@ import com.mycila.plugin.annotation.OnStop;
 import com.mycila.plugin.annotation.Param;
 import com.mycila.plugin.annotation.Plugin;
 import com.mycila.plugin.annotation.Scope;
-import com.mycila.plugin.metadata.model.PluginMetadataImpl;
 import com.mycila.plugin.scope.defaults.None;
 import com.mycila.plugin.util.AopUtils;
 
@@ -46,21 +45,19 @@ public final class AnnotationMetadataBuilder implements MetadataBuilder {
 
         Plugin pluginAnnot = pluginClass.getAnnotation(Plugin.class);
 
-        PluginMetadataImpl pluginMetadata = new PluginMetadataImpl(
-                pluginClass,
-                plugin,
-                pluginAnnot == null || pluginAnnot.name().length() == 0 ? pluginClass.getSimpleName() : pluginAnnot.name(),
-                pluginAnnot == null || pluginAnnot.description().length() == 0 ? pluginClass.getName() : pluginAnnot.description())
+        PluginMetadata.Builder builder = PluginMetadata.create(pluginClass, plugin)
+                .withName(pluginAnnot == null || pluginAnnot.name().length() == 0 ? pluginClass.getSimpleName() : pluginAnnot.name())
+                .withDescription(pluginAnnot == null || pluginAnnot.description().length() == 0 ? pluginClass.getName() : pluginAnnot.description())
                 .withActivateBefore(getActivateBefore(pluginClass))
                 .withActivateAfter(getActivateAfter(pluginClass));
 
         for (Method method : pluginClass.getMethods()) {
 
             if (method.isAnnotationPresent(OnStart.class))
-                pluginMetadata.addOnStart(method.getName());
+                builder.addOnStart(method.getName());
 
             if (method.isAnnotationPresent(OnStop.class))
-                pluginMetadata.addOnStop(method.getName());
+                builder.addOnStop(method.getName());
 
             if (method.isAnnotationPresent(Export.class)) {
                 Scope scope = method.getAnnotation(Scope.class);
@@ -68,14 +65,14 @@ public final class AnnotationMetadataBuilder implements MetadataBuilder {
                 if (scope != null)
                     for (Param param : scope.params())
                         parameters.put(param.name(), param.value());
-                pluginMetadata.addExport(
+                builder.addExport(
                         method.getName(),
                         scope == null ? None.class : scope.value(),
                         parameters);
             }
         }
 
-        return pluginMetadata;
+        return builder.build();
     }
 
     private Set<Class<?>> getActivateBefore(Class<?> pluginClass) {
