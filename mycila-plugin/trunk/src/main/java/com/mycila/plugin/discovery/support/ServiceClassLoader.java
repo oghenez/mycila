@@ -200,21 +200,6 @@ public final class ServiceClassLoader<S> implements Iterable<Class<S>> {
         return new ServiceClassLoader<S>(service, loader);
     }
 
-    public static <S> ServiceClassLoader<S> load(Class<S> service) {
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        return ServiceClassLoader.load(service, cl);
-    }
-
-    public static <S> ServiceClassLoader<S> loadInstalled(Class<S> service) {
-        ClassLoader cl = ClassLoader.getSystemClassLoader();
-        ClassLoader prev = null;
-        while (cl != null) {
-            prev = cl;
-            cl = cl.getParent();
-        }
-        return ServiceClassLoader.load(service, prev);
-    }
-
     public String toString() {
         return "com.mycila.util.ServiceClassLoader[" + service.getName() + "]";
     }

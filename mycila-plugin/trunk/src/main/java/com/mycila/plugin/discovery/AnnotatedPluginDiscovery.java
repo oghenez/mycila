@@ -79,7 +79,7 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
     }
 
     @Override
-    public Iterable<? extends Class<?>> scan() throws PluginDiscoveryException {
+    public Iterable<Class<?>> scan() throws PluginDiscoveryException {
         setExclusions();
         ExecutorService executorService = Executors.newFixedThreadPool((int) (Runtime.getRuntime().availableProcessors() * 1.5));
         ExecutorCompletionService<Class<?>> completionService = new ExecutorCompletionService<Class<?>>(executorService);

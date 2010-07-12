@@ -14,36 +14,35 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.discovery;
-
-import java.util.Arrays;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+package com.mycila.plugin.metadata;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class CustomPluginDiscovery implements PluginDiscovery {
+public final class PluginImport {
+    public static final Class<?> FROM_ANY_PLUGIN = Void.TYPE;
 
-    private final Set<Class<?>> plugins = new CopyOnWriteArraySet<Class<?>>();
+    private final Class<?> type;
+    private final Class<?> plugin;
 
-    public CustomPluginDiscovery add(Class<?> plugin) {
-        plugins.add(plugin);
-        return this;
+    private PluginImport(Class<?> type, Class<?> plugin) {
+        this.type = type;
+        this.plugin = plugin;
     }
 
-    public CustomPluginDiscovery add(Class<?>... plugins) {
-        return add(Arrays.asList(plugins));
+    public Class<?> getPlugin() {
+        return plugin;
     }
 
-    public CustomPluginDiscovery add(Iterable<Class<?>> plugins) {
-        for (Class<?> plugin : plugins)
-            add(plugin);
-        return this;
+    public boolean acceptPlugin(Class<?> plugin) {
+        return plugin == FROM_ANY_PLUGIN || this.plugin.equals(plugin);
     }
 
-    @Override
-    public Iterable<Class<?>> scan() {
-        return plugins;
+    public Class<?> getType() {
+        return type;
+    }
+
+    public static PluginImport create(Class<?> type, Class<?> plugin) {
+        return new PluginImport(type, plugin);
     }
 }
