@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.aop;
+package com.mycila.plugin.invoke;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

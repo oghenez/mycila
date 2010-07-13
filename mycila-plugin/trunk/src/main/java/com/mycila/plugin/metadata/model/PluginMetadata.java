@@ -16,9 +16,9 @@
 
 package com.mycila.plugin.metadata.model;
 
-import com.mycila.plugin.aop.Invokable;
-import com.mycila.plugin.aop.InvokableComposite;
-import com.mycila.plugin.aop.Invokables;
+import com.mycila.plugin.invoke.Invokable;
+import com.mycila.plugin.invoke.InvokableComposite;
+import com.mycila.plugin.invoke.Invokables;
 import com.mycila.plugin.scope.ScopeProvider;
 
 import java.lang.reflect.Method;

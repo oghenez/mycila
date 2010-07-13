@@ -16,7 +16,7 @@
 
 package com.mycila.plugin.metadata.model;
 
-import com.mycila.plugin.aop.InvokableMember;
+import com.mycila.plugin.invoke.InvokableMember;
 
 import java.util.ArrayList;
 import java.util.Collections;

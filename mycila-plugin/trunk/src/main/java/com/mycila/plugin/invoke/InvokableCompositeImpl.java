@@ -14,47 +14,44 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.aop;
+package com.mycila.plugin.invoke;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class InvokableCtor<T> implements InvokableMember<T> {
+final class InvokableCompositeImpl<T> implements InvokableComposite<T> {
 
-    private final Constructor<T> ctor;
+    private final List<Invokable<T>> invokables = new LinkedList<Invokable<T>>();
 
-    InvokableCtor(Constructor<T> ctor) {
-        this.ctor = ctor;
+    InvokableCompositeImpl() {
     }
 
     @Override
-    public Member getMember() {
-        return ctor;
+    public void add(Invokable<T> invokable) {
+        this.invokables.add(invokable);
     }
 
     @Override
-    public Class<T> getType() {
-        return ctor.getDeclaringClass();
+    public void addAll(Iterable<Invokable<T>> invokables) {
+        for (Invokable<T> invokable : invokables)
+            this.invokables.add(invokable);
     }
 
     @Override
-    public String toString() {
-        return ctor.toString();
+    public Iterator<Invokable<T>> iterator() {
+        return invokables.iterator();
     }
 
     @Override
     public T invoke(Object... args) throws InvokeException {
-        try {
-            return ctor.newInstance(args);
-        } catch (InvocationTargetException e) {
-            throw new InvokeException(this, e.getTargetException());
-        } catch (Exception e) {
-            throw new InvokeException(this, e);
-        }
+        T res = null;
+        for (Invokable<? extends T> invokable : invokables)
+            res = invokable.invoke(args);
+        return res;
     }
 
 }

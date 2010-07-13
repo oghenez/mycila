@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.aop;
+package com.mycila.plugin.invoke;
+
+import net.sf.cglib.reflect.FastMethod;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
@@ -23,29 +25,29 @@ import java.lang.reflect.Method;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class InvokableMethod<T> implements InvokableMember<T> {
+final class InvokableFastMethod<T> implements InvokableMember<T> {
 
-    private final Method method;
+    private final FastMethod method;
     private final Object target;
 
-    InvokableMethod(Object target, Method method) {
+    InvokableFastMethod(Object target, Method method) {
         this.target = target;
-        this.method = method;
+        this.method = CglibCache.getFastClass(method.getDeclaringClass()).getMethod(method);
     }
 
     @Override
     public Member getMember() {
-        return method;
+        return method.getJavaMethod();
     }
 
     @Override
     public Class<T> getType() {
-        return (Class<T>) method.getReturnType();
+        return (Class<T>) method.getJavaMethod().getReturnType();
     }
 
     @Override
     public String toString() {
-        return method.toString();
+        return method.getJavaMethod().toString();
     }
 
     @Override

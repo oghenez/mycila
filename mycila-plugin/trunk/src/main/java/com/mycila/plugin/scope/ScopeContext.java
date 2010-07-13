@@ -16,7 +16,7 @@
 
 package com.mycila.plugin.scope;
 
-import com.mycila.plugin.aop.Invokable;
+import com.mycila.plugin.invoke.Invokable;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
