@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.inject;
+package com.mycila.plugin.aop;
 
 import com.mycila.plugin.PluginException;
-import com.mycila.plugin.metadata.model.PluginExport;
-import com.mycila.plugin.util.StringUtils;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class UnresolvedImportException extends PluginException {
+public final class InvokeException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public UnresolvedImportException(PluginExport<?>... matches) {
-        super("Unable to resolve which import to use for <wanted> amongst " + StringUtils.arrayToCommaDelimitedString(matches));
+    public InvokeException(InvokableMember<?> invokable, Throwable t) {
+        super("Error invoking " + invokable.getMember() + " : " + t.getMessage(), t);
     }
 }

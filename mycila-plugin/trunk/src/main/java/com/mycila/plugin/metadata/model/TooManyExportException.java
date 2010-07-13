@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.metadata;
+package com.mycila.plugin.metadata.model;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class InexistingExportException extends PluginMetadataException {
+public final class TooManyExportException extends PluginMetadataException {
     private static final long serialVersionUID = 1;
 
-    public InexistingExportException(Class pluginClass, Class exportType) {
-        super("Unable to find export of type " + exportType.getName() + " in plugin class " + pluginClass.getName());
+    public TooManyExportException(Class pluginClass, Class exportType) {
+        super("Found to many export of type " + exportType.getName() + " in plugin class " + pluginClass.getName());
     }
 }

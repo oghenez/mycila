@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.metadata;
+package com.mycila.plugin.metadata.model;
 
-import net.sf.cglib.reflect.FastMethod;
+import com.mycila.plugin.aop.InvokableMember;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,24 +28,25 @@ import java.util.List;
 public final class InjectionPoint {
 
     private final PluginMetadata metadata;
-    private final FastMethod method; //TODO
-    private final List<PluginImport> dependencies;
+    private final InvokableMember<?> invokable; // TODO
+    private final List<PluginImport> imports;
 
-    private InjectionPoint(PluginMetadata metadata, FastMethod method, List<PluginImport> dependencies) {
+    InjectionPoint(PluginMetadata metadata, InvokableMember<?> invokable, List<PluginImport> imports) {
         this.metadata = metadata;
-        this.method = method;
-        this.dependencies = Collections.unmodifiableList(new ArrayList<PluginImport>(dependencies));
+        this.invokable = invokable;
+        this.imports = Collections.unmodifiableList(new ArrayList<PluginImport>(imports));
     }
 
-    public PluginMetadata getMetadata() {
+    public PluginMetadata getPluginMetadata() {
         return metadata;
     }
 
-    public List<PluginImport> getDependencies() {
-        return dependencies;
+    public List<PluginImport> getImports() {
+        return imports;
     }
 
-    public static InjectionPoint create(PluginMetadata metadata, FastMethod method, List<PluginImport> dependencies) {
-        return new InjectionPoint(metadata, method, dependencies);
+    @Override
+    public String toString() {
+        return "InjectionPoint " + invokable.getMember();
     }
 }

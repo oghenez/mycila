@@ -23,9 +23,9 @@ import com.mycila.plugin.scope.ScopeProviderSkeleton;
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class None<T> extends ScopeProviderSkeleton<T> {
+public final class None extends ScopeProviderSkeleton {
     @Override
-    public T get() {
-        return (T) context.getInvokable().invoke();
+    public Object get() {
+        return  context.getInvokable().invoke();
     }
 }

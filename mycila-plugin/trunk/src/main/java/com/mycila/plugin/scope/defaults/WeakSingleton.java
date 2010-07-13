@@ -28,18 +28,18 @@ import java.lang.ref.WeakReference;
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class WeakSingleton<T> extends ScopeProviderSkeleton<T> {
-    private volatile Reference<T> instance = new WeakReference<T>(null);
+public final class WeakSingleton extends ScopeProviderSkeleton {
+    private volatile Reference<Object> instance = new WeakReference<Object>(null);
 
     @Override
-    public T get() {
-        T t = instance.get();
+    public Object get() {
+        Object t = instance.get();
         if (t == null) {
             synchronized (this) {
                 t = instance.get();
                 if (t == null) {
-                    t = (T) context.getInvokable().invoke();
-                    instance = new WeakReference<T>(t);
+                    t = context.getInvokable().invoke();
+                    instance = new WeakReference<Object>(t);
                 }
             }
         }

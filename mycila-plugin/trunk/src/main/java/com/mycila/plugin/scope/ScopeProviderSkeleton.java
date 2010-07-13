@@ -19,12 +19,12 @@ package com.mycila.plugin.scope;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class ScopeProviderSkeleton<T> implements ScopeProvider<T> {
+public abstract class ScopeProviderSkeleton implements ScopeProvider {
 
-    protected volatile ScopeContext<T> context;
+    protected volatile ScopeContext context;
 
     @Override
-    public void init(ScopeContext<T> context) {
+    public void init(ScopeContext context) {
         this.context = context;
     }
 

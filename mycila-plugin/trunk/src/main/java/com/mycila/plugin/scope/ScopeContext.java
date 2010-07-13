@@ -16,19 +16,19 @@
 
 package com.mycila.plugin.scope;
 
-import com.mycila.plugin.Invokable;
+import com.mycila.plugin.aop.Invokable;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface ScopeContext<T> {
+public interface ScopeContext {
 
     /**
-     * Get the invokable returning the instance of T 
+     * Get the invokable returning the export instance 
      *
      * @return The service
      */
-    Invokable getInvokable();
+    Invokable<?> getInvokable();
 
     /**
      * Check if a scope parameter exists

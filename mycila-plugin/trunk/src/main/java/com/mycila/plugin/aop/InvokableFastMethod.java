@@ -14,44 +14,51 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.metadata;
+package com.mycila.plugin.aop;
 
-import com.mycila.plugin.Invokable;
-import com.mycila.plugin.InvokeException;
 import net.sf.cglib.reflect.FastMethod;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class InvokableMethod implements Invokable {
+final class InvokableFastMethod<T> implements InvokableMember<T> {
 
     private final FastMethod method;
     private final Object target;
 
-    private InvokableMethod(Object target, FastMethod method) {
+    InvokableFastMethod(Object target, Method method) {
         this.target = target;
-        this.method = method;
+        this.method = CglibCache.getFastClass(method.getDeclaringClass()).getMethod(method);
     }
 
     @Override
-    public Object invoke(Object... args) throws InvokeException {
-        try {
-            return method.invoke(target, args);
-        } catch (InvocationTargetException e) {
-            throw new InvokeException(method.getJavaMethod(), e.getTargetException());
-        } catch (Exception e) {
-            throw new InvokeException(method.getJavaMethod(), e);
-        }
+    public Member getMember() {
+        return method.getJavaMethod();
+    }
+
+    @Override
+    public Class<T> getType() {
+        return (Class<T>) method.getJavaMethod().getReturnType();
     }
 
     @Override
     public String toString() {
-        return "InvokableMethod " + method.getJavaMethod();
+        return method.getJavaMethod().toString();
     }
 
-    public static InvokableMethod create(Object target, FastMethod method) {
-        return new InvokableMethod(target, method);
+    @Override
+    public T invoke(Object... args) throws InvokeException {
+        try {
+            return (T) method.invoke(target, args);
+        } catch (InvocationTargetException e) {
+            throw new InvokeException(this, e.getTargetException());
+        } catch (Exception e) {
+            throw new InvokeException(this, e);
+        }
     }
+
 }

@@ -18,6 +18,12 @@ package com.mycila.plugin.metadata;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.mycila.plugin.metadata.model.InexistingExportException;
+import com.mycila.plugin.metadata.model.InjectionPoint;
+import com.mycila.plugin.metadata.model.PluginExport;
+import com.mycila.plugin.metadata.model.PluginImport;
+import com.mycila.plugin.metadata.model.PluginMetadata;
+import com.mycila.plugin.metadata.model.TooManyExportException;
 import com.mycila.plugin.scope.defaults.ExpiringSingleton;
 import com.mycila.plugin.scope.defaults.Singleton;
 import org.junit.Test;
@@ -112,14 +118,14 @@ public final class AnnotationMetadataBuilderTest {
         assertEquals(2, Iterables.size(metadata.getInjectionPoints()));
 
         for (InjectionPoint point : metadata.getInjectionPoints()) {
-            if (point.getDependencies().size() == 1) {
-                assertEquals(Byte.class, point.getDependencies().get(0).getType());
-                assertEquals(PluginImport.FROM_ANY_PLUGIN, point.getDependencies().get(0).getPlugin());
+            if (point.getImports().size() == 1) {
+                assertEquals(Byte.class, point.getImports().get(0).getType());
+                assertEquals(PluginImport.FROM_ANY_PLUGIN, point.getImports().get(0).getPlugin());
             } else {
-                assertEquals(String.class, point.getDependencies().get(0).getType());
-                assertEquals(JButton.class, point.getDependencies().get(0).getPlugin());
-                assertEquals(Integer.class, point.getDependencies().get(1).getType());
-                assertEquals(PluginImport.FROM_ANY_PLUGIN, point.getDependencies().get(1).getPlugin());
+                assertEquals(String.class, point.getImports().get(0).getType());
+                assertEquals(JButton.class, point.getImports().get(0).getPlugin());
+                assertEquals(Integer.class, point.getImports().get(1).getType());
+                assertEquals(PluginImport.FROM_ANY_PLUGIN, point.getImports().get(1).getPlugin());
             }
         }
     }

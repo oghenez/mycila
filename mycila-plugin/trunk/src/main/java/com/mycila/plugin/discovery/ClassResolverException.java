@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.metadata;
+package com.mycila.plugin.discovery;
+
+import com.mycila.plugin.PluginException;
+
+import java.net.URL;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class DuplicateExportException extends PluginMetadataException {
+public final class ClassResolverException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public DuplicateExportException(Class pluginClass, Class exportType) {
-        super("Two exports found for same type " + exportType.getName() + " in plugin class " + pluginClass.getName());
+    public ClassResolverException(URL url, Throwable err) {
+        super("Error resolving class from " + url + " : " + err.getMessage(), err);
     }
 }

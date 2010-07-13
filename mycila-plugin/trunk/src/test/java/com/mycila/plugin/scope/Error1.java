@@ -19,10 +19,10 @@ package com.mycila.plugin.scope;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Error1<T> extends ScopeProviderSkeleton<T> {
+public final class Error1 extends ScopeProviderSkeleton {
     private Error1(){}
     @Override
-    public T get() {
-        return (T) context.getInvokable().invoke();
+    public Object get() {
+        return context.getInvokable().invoke();
     }
 }

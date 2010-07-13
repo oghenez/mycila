@@ -16,8 +16,8 @@
 
 package com.mycila.plugin.scope;
 
-import com.mycila.plugin.Invokable;
 import com.mycila.plugin.Provider;
+import com.mycila.plugin.aop.Invokable;
 import com.mycila.plugin.scope.defaults.ExpiringSingleton;
 import com.mycila.plugin.scope.defaults.None;
 import com.mycila.plugin.scope.defaults.Singleton;
@@ -39,7 +39,7 @@ public final class ScopeTest {
 
     @Test
     public void test_none() throws Exception {
-        ScopeContext<String> mock = mock(ScopeContext.class);
+        ScopeContext mock = mock(ScopeContext.class);
         Invokable invokable = mock(Invokable.class);
         when(mock.getInvokable()).thenReturn(invokable);
         when(invokable.invoke()).thenAnswer(new Answer<String>() {
@@ -59,7 +59,7 @@ public final class ScopeTest {
 
     @Test
     public void test_singleton() throws Exception {
-        ScopeContext<String> mock = mock(ScopeContext.class);
+        ScopeContext mock = mock(ScopeContext.class);
         Invokable invokable = mock(Invokable.class);
         when(mock.getInvokable()).thenReturn(invokable);
         when(invokable.invoke()).thenAnswer(new Answer<String>() {
@@ -79,7 +79,7 @@ public final class ScopeTest {
 
     @Test
     public void test_weak() throws Exception {
-        ScopeContext<Object> mock = mock(ScopeContext.class);
+        ScopeContext mock = mock(ScopeContext.class);
         Invokable invokable = mock(Invokable.class);
         when(mock.getInvokable()).thenReturn(invokable);
         when(invokable.invoke()).thenAnswer(new Answer<Object>() {
@@ -109,7 +109,7 @@ public final class ScopeTest {
 
     @Test
     public void test_expire() throws Exception {
-        ScopeContext<Object> mock = mock(ScopeContext.class);
+        ScopeContext mock = mock(ScopeContext.class);
         when(mock.getParameter("duration")).thenReturn("500");
         Invokable invokable = mock(Invokable.class);
         when(mock.getInvokable()).thenReturn(invokable);
@@ -133,7 +133,7 @@ public final class ScopeTest {
 
     @Test
     public void test_expire_param_fail() throws Exception {
-        ScopeContext<Object> mock = mock(ScopeContext.class);
+        ScopeContext mock = mock(ScopeContext.class);
         when(mock.toString()).thenReturn("a context");
         MissingScopeParameterException exception = new MissingScopeParameterException(null, ExpiringSingleton.class, "duration");
         when(mock.getParameter("duration")).thenThrow(exception);
@@ -142,13 +142,13 @@ public final class ScopeTest {
             fail();
         } catch (Exception e) {
             assertSame(exception, e);
-            assertEquals("Scope parameter 'duration' is missing at method null for scope ExpiringSingleton", e.getMessage());
+            assertEquals("Scope parameter 'duration' is missing at member null for scope ExpiringSingleton", e.getMessage());
         }
     }
 
     @Test
     public void test_creation_fail() throws Exception {
-        ScopeContext<Object> mock = mock(ScopeContext.class);
+        ScopeContext mock = mock(ScopeContext.class);
         try {
             ScopeProviders.build(Error1.class, mock);
             fail();

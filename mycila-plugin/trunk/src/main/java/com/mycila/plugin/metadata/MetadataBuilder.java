@@ -16,6 +16,8 @@
 
 package com.mycila.plugin.metadata;
 
+import com.mycila.plugin.metadata.model.PluginMetadata;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */

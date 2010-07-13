@@ -19,13 +19,13 @@ package com.mycila.plugin.scope;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Error2<T> extends ScopeProviderSkeleton<T> {
+public final class Error2 extends ScopeProviderSkeleton {
     public Error2() {
         throw new IllegalArgumentException("yo");
     }
 
     @Override
-    public T get() {
-        return (T) context.getInvokable().invoke();
+    public Object get() {
+        return context.getInvokable().invoke();
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.metadata;
+package com.mycila.plugin.metadata.model;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -42,7 +42,13 @@ public final class PluginImport {
         return type;
     }
 
+    @Override
+    public String toString() {
+        return "Import " + type.getName() + " from " + (plugin == FROM_ANY_PLUGIN ? "any plugin" : "plugin" + plugin.getName());
+    }
+
     public static PluginImport create(Class<?> type, Class<?> plugin) {
         return new PluginImport(type, plugin);
     }
+
 }
