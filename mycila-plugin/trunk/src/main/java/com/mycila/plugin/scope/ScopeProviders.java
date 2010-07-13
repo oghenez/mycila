@@ -17,9 +17,9 @@
 package com.mycila.plugin.scope;
 
 import com.mycila.plugin.Provider;
-import com.mycila.plugin.aop.Invokable;
-import com.mycila.plugin.aop.Invokables;
-import com.mycila.plugin.aop.InvokeException;
+import com.mycila.plugin.invoke.Invokable;
+import com.mycila.plugin.invoke.Invokables;
+import com.mycila.plugin.invoke.InvokeException;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

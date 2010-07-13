@@ -17,8 +17,8 @@
 package com.mycila.plugin.metadata.model;
 
 import com.mycila.plugin.Provider;
-import com.mycila.plugin.aop.Invokable;
-import com.mycila.plugin.aop.InvokableMember;
+import com.mycila.plugin.invoke.Invokable;
+import com.mycila.plugin.invoke.InvokableMember;
 import com.mycila.plugin.scope.MissingScopeParameterException;
 import com.mycila.plugin.scope.ScopeContext;
 import com.mycila.plugin.scope.ScopeProvider;

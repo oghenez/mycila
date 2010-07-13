@@ -17,7 +17,7 @@
 package com.mycila.plugin.scope;
 
 import com.mycila.plugin.Provider;
-import com.mycila.plugin.aop.Invokable;
+import com.mycila.plugin.invoke.Invokable;
 import com.mycila.plugin.scope.defaults.ExpiringSingleton;
 import com.mycila.plugin.scope.defaults.None;
 import com.mycila.plugin.scope.defaults.Singleton;

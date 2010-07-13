@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.aop;
+package com.mycila.plugin.invoke;
+
+import java.lang.reflect.Member;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Invokable<T> {
-    T invoke(Object... args) throws InvokeException;
+public interface InvokableMember<T> extends Invokable<T> {
+    Class<T> getType();
+    Member getMember();
 }

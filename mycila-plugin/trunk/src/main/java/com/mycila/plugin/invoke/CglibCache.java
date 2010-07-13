@@ -14,14 +14,30 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.aop;
+package com.mycila.plugin.invoke;
 
-import java.lang.reflect.Member;
+import net.sf.cglib.reflect.FastClass;
+
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface InvokableMember<T> extends Invokable<T> {
-    Class<T> getType();
-    Member getMember();
+final class CglibCache {
+    private CglibCache() {
+    }
+
+    static final Map<Class<?>, WeakReference<FastClass>> CLASSES = new WeakHashMap<Class<?>, WeakReference<FastClass>>();
+
+    public static FastClass getFastClass(Class<?> c) {
+        WeakReference<FastClass> ref = CLASSES.get(c);
+        FastClass fast = null;
+        if (ref != null)
+            fast = ref.get();
+        if (fast == null)
+            CLASSES.put(c, new WeakReference<FastClass>(fast = FastClass.create(c)));
+        return fast;
+    }
 }
