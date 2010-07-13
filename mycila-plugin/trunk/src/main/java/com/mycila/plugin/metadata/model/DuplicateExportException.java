@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
-
-import java.lang.reflect.Method;
+package com.mycila.plugin.metadata.model;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class InvokeException extends PluginException {
+public final class DuplicateExportException extends PluginMetadataException {
     private static final long serialVersionUID = 1;
 
-    public InvokeException(Method method, Throwable t) {
-        super("Error invoking method " + method + " : " + t.getMessage(), t);
+    public DuplicateExportException(Class pluginClass, Class exportType) {
+        super("Two exports found for same type " + exportType.getName() + " in plugin class " + pluginClass.getName());
     }
 }

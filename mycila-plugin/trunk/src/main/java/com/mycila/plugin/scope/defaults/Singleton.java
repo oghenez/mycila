@@ -23,15 +23,15 @@ import com.mycila.plugin.scope.ScopeProviderSkeleton;
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Singleton<T> extends ScopeProviderSkeleton<T> {
-    private volatile T instance;
+public final class Singleton extends ScopeProviderSkeleton {
+    private volatile Object instance;
 
     @Override
-    public T get() {
+    public Object get() {
         if (instance == null) {
             synchronized (this) {
                 if (instance == null) {
-                    instance = (T) context.getInvokable().invoke();
+                    instance = context.getInvokable().invoke();
                 }
             }
         }

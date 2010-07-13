@@ -28,18 +28,18 @@ import java.lang.ref.SoftReference;
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class SoftSingleton<T> extends ScopeProviderSkeleton<T> {
-    private volatile Reference<T> instance = new SoftReference<T>(null);
+public final class SoftSingleton extends ScopeProviderSkeleton {
+    private volatile Reference<Object> instance = new SoftReference<Object>(null);
 
     @Override
-    public T get() {
-        T t = instance.get();
+    public Object get() {
+        Object t = instance.get();
         if (t == null) {
             synchronized (this) {
                 t = instance.get();
                 if (t == null) {
-                    t = (T) context.getInvokable().invoke();
-                    instance = new SoftReference<T>(t);
+                    t = context.getInvokable().invoke();
+                    instance = new SoftReference<Object>(t);
                 }
             }
         }

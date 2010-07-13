@@ -26,26 +26,26 @@ import com.mycila.plugin.scope.ScopeProviderSkeleton;
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ExpiringSingleton<T> extends ScopeProviderSkeleton<T> {
+public final class ExpiringSingleton extends ScopeProviderSkeleton {
 
     private long duration;
 
-    private volatile T instance;
+    private volatile Object instance;
     private volatile long expire;
 
     @Override
-    public void init(ScopeContext<T> context) {
+    public void init(ScopeContext context) {
         super.init(context);
         this.duration = Long.parseLong(context.getParameter("duration"));
     }
 
     @Override
-    public T get() {
+    public Object get() {
         if (expire < System.currentTimeMillis()) {
             synchronized (this) {
                 if (expire < System.currentTimeMillis()) {
                     expire = System.currentTimeMillis() + duration;
-                    instance = (T) context.getInvokable().invoke();
+                    instance = context.getInvokable().invoke();
                 }
             }
         }

@@ -16,7 +16,7 @@
 
 package com.mycila.plugin.scope;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Member;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 public final class MissingScopeParameterException extends PluginScopeException {
     private static final long serialVersionUID = 1;
 
-    public MissingScopeParameterException(Method method, Class<? extends ScopeProvider> scopeClass, String parameterName) {
-        super("Scope parameter '" + parameterName + "' is missing at method " + method + " for scope " + scopeClass.getSimpleName());
+    public MissingScopeParameterException(Member member, Class<? extends ScopeProvider> scopeClass, String parameterName) {
+        super("Scope parameter '" + parameterName + "' is missing at member " + member + " for scope " + scopeClass.getSimpleName());
     }
 }

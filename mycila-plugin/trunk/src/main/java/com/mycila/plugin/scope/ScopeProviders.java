@@ -17,11 +17,10 @@
 package com.mycila.plugin.scope;
 
 import com.mycila.plugin.Provider;
-import com.mycila.plugin.util.ClassUtils;
-import net.sf.cglib.reflect.FastClass;
-import net.sf.cglib.reflect.FastConstructor;
+import com.mycila.plugin.aop.Invokable;
+import com.mycila.plugin.aop.Invokables;
+import com.mycila.plugin.aop.InvokeException;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -30,28 +29,26 @@ import java.util.concurrent.ConcurrentMap;
  */
 public final class ScopeProviders {
 
-    private static final ConcurrentMap<Class<?>, FastConstructor> CTORS = new ConcurrentHashMap<Class<?>, FastConstructor>();
+    private static final ConcurrentMap<Class<?>, Invokable<? extends ScopeProvider>> CTORS = new ConcurrentHashMap<Class<?>, Invokable<? extends ScopeProvider>>();
 
     private ScopeProviders() {
 
     }
 
     public static <T> ScopeProvider<T> build(Class<? extends ScopeProvider> scope) throws ScopeInstanciationException {
-        FastConstructor ctor = CTORS.get(scope);
         try {
-            if (ctor == null) {
-                FastClass fastClass = FastClass.create(ClassUtils.getDefaultClassLoader(), scope);
-                CTORS.putIfAbsent(scope, ctor = fastClass.getConstructor(new Class[0]));
-            }
-            return (ScopeProvider<T>) ctor.newInstance();
-        } catch (NoSuchMethodError e) {
+            Invokable<? extends ScopeProvider> ctor = CTORS.get(scope);
+            if (ctor == null)
+                CTORS.putIfAbsent(scope, ctor = Invokables.get(scope.getConstructor()));
+            return ctor.invoke();
+        } catch (InvokeException e) {
+            throw new ScopeInstanciationException(scope, e.getCause());
+        } catch (NoSuchMethodException e) {
             throw new ScopeInstanciationException(scope, e);
-        } catch (InvocationTargetException e) {
-            throw new ScopeInstanciationException(scope, e.getTargetException());
         }
     }
 
-    public static <T> Provider<T> build(Class<? extends ScopeProvider> scope, ScopeContext<T> context) throws ScopeInstanciationException {
+    public static <T> Provider<T> build(Class<? extends ScopeProvider> scope, ScopeContext context) throws ScopeInstanciationException {
         ScopeProvider<T> t = build(scope);
         t.init(context);
         return t;

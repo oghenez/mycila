@@ -26,6 +26,8 @@ import com.mycila.plugin.annotation.OnStop;
 import com.mycila.plugin.annotation.Param;
 import com.mycila.plugin.annotation.Plugin;
 import com.mycila.plugin.annotation.Scope;
+import com.mycila.plugin.metadata.model.PluginImport;
+import com.mycila.plugin.metadata.model.PluginMetadata;
 import com.mycila.plugin.scope.defaults.None;
 import com.mycila.plugin.util.AopUtils;
 
@@ -82,15 +84,14 @@ public final class AnnotationMetadataBuilder implements MetadataBuilder {
                 List<PluginImport> dependencies = new ArrayList<PluginImport>(params.length);
                 for (int i = 0; i < params.length; i++) {
                     Class<?> from = PluginImport.FROM_ANY_PLUGIN;
-                    for (Annotation annot : annots[i]) {
+                    for (Annotation annot : annots[i])
                         if (From.class.isInstance(annot)) {
                             from = ((From) annot).value();
                             break;
                         }
-                    }
                     dependencies.add(PluginImport.create(params[i], from));
                 }
-                builder.addInjectionPoint(method, dependencies);
+                builder.addInjectionPoint(method.getName(), dependencies);
             }
         }
 
