@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.discovery.support;
-
-import com.mycila.plugin.util.StringUtils;
+package com.mycila.plugin.util;
 
 import java.util.Map;
 

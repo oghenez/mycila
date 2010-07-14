@@ -16,13 +16,26 @@
 
 package com.mycila.plugin;
 
+import com.mycila.plugin.discovery.PluginDiscovery;
+import com.mycila.plugin.metadata.MetadataBuilder;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class PluginManager {
+public final class DefaultPluginManager {
 
-    public void go() {
+    private PluginDiscovery pluginDiscovery;
+    private MetadataBuilder metadataBuilder;
 
+    public DefaultPluginManager() {
+
+    }
+
+    public void start() {
+
+    }
+
+    public void stop() {
 
     }
 

@@ -16,6 +16,7 @@
 
 package com.mycila.plugin.discovery;
 
+import com.mycila.plugin.classpath.Loader;
 import com.mycila.plugin.util.ClassUtils;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
@@ -39,16 +40,16 @@ import java.util.List;
 public final class ASMClassResolver implements ClassResolver {
 
     private final String annotationClassDesc;
-    private final ClassLoader classLoader;
+    private final Loader loader;
 
-    public ASMClassResolver(Class<? extends Annotation> annotationClass, ClassLoader classLoader) {
+    public ASMClassResolver(Class<? extends Annotation> annotationClass, Loader loader) {
         this.annotationClassDesc = Type.getDescriptor(annotationClass);
-        this.classLoader = classLoader;
+        this.loader = loader;
     }
 
     @Override
-    public ClassLoader getClassLoader() {
-        return classLoader;
+    public Loader getLoader() {
+        return loader;
     }
 
     @Override
@@ -60,10 +61,8 @@ public final class ASMClassResolver implements ClassResolver {
             ClassAnnotationVisitor visitor = new ClassAnnotationVisitor();
             classReader.accept(visitor, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
             if ((visitor.access & Opcodes.ACC_PUBLIC) != 0 && visitor.annotations.contains(annotationClassDesc))
-                return classLoader.loadClass(ClassUtils.convertResourcePathToClassName(visitor.name));
+                return loader.loadClass(ClassUtils.convertResourcePathToClassName(visitor.name));
         } catch (IOException e) {
-            throw new ClassResolverException(url, e);
-        } catch (ClassNotFoundException e) {
             throw new ClassResolverException(url, e);
         } finally {
             if (is != null)

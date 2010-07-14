@@ -14,32 +14,24 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.discovery.support;
+package com.mycila.plugin.classpath;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.ServiceConfigurationError;
+import java.util.*;
 
 /**
- * @author Mark Reinhold
  * @author Mathieu Carbou <mathieu.carbou@gmail.com>
  * @param <S> The type of the service to be loaded by this loader
  */
 public final class ServiceClassLoader<S> implements Iterable<Class<S>> {
 
     private static final String PREFIX = "META-INF/services/";
-    private Class<S> service;
-    private ClassLoader loader;
+    private final  Class<S> service;
+    private final  Loader loader;
     private LinkedHashMap<String, Class<S>> providers = new LinkedHashMap<String, Class<S>>();
     private LazyIterator lookupIterator;
 
@@ -48,9 +40,9 @@ public final class ServiceClassLoader<S> implements Iterable<Class<S>> {
         lookupIterator = new LazyIterator(service, loader);
     }
 
-    private ServiceClassLoader(Class<S> svc, ClassLoader cl) {
-        service = svc;
-        loader = cl;
+    private ServiceClassLoader(Class<S> svc, Loader loader) {
+        this.service = svc;
+        this.loader = loader;
         reload();
     }
 
@@ -113,13 +105,13 @@ public final class ServiceClassLoader<S> implements Iterable<Class<S>> {
     }
 
     private class LazyIterator implements Iterator<Class<S>> {
-        Class<? super S> service;
-        ClassLoader loader;
-        Enumeration<URL> configs = null;
+        final Class<? super S> service;
+        final Loader loader;
+        Iterator<URL> configs = null;
         Iterator<String> pending = null;
         String nextName = null;
 
-        private LazyIterator(Class<? super S> service, ClassLoader loader) {
+        private LazyIterator(Class<? super S> service, Loader loader) {
             this.service = service;
             this.loader = loader;
         }
@@ -129,21 +121,14 @@ public final class ServiceClassLoader<S> implements Iterable<Class<S>> {
                 return true;
             }
             if (configs == null) {
-                try {
-                    String fullName = PREFIX + service.getName();
-                    if (loader == null)
-                        configs = ClassLoader.getSystemResources(fullName);
-                    else
-                        configs = loader.getResources(fullName);
-                } catch (IOException x) {
-                    fail(service, "Error locating configuration files", x);
-                }
+                String fullName = PREFIX + service.getName();
+                configs = loader.getResources(fullName).iterator();
             }
             while ((pending == null) || !pending.hasNext()) {
-                if (!configs.hasMoreElements()) {
+                if (!configs.hasNext()) {
                     return false;
                 }
-                pending = parse(service, configs.nextElement());
+                pending = parse(service, configs.next());
             }
             nextName = pending.next();
             return true;
@@ -156,12 +141,9 @@ public final class ServiceClassLoader<S> implements Iterable<Class<S>> {
             String cn = nextName;
             nextName = null;
             try {
-                Class<S> p = (Class<S>) Class.forName(cn, true, loader);
+                Class<S> p = (Class<S>) loader.loadClass(cn);
                 providers.put(cn, p);
                 return p;
-            } catch (ClassNotFoundException x) {
-                fail(service,
-                        "Provider " + cn + " not found");
             } catch (RuntimeException x) {
                 fail(service,
                         "Provider " + cn + " could not be instantiated: " + x,
@@ -196,7 +178,7 @@ public final class ServiceClassLoader<S> implements Iterable<Class<S>> {
         };
     }
 
-    public static <S> ServiceClassLoader<S> load(Class<S> service, ClassLoader loader) {
+    public static <S> ServiceClassLoader<S> load(Class<S> service, Loader loader) {
         return new ServiceClassLoader<S>(service, loader);
     }
 

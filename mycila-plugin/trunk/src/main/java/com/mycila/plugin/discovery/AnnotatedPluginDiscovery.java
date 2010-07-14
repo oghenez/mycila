@@ -16,7 +16,9 @@
 
 package com.mycila.plugin.discovery;
 
-import com.mycila.plugin.discovery.support.ResourcePatternResolver;
+import com.mycila.plugin.annotation.Plugin;
+import com.mycila.plugin.classpath.Loader;
+import com.mycila.plugin.classpath.ResourcePatternResolver;
 import com.mycila.plugin.util.ClassUtils;
 import com.mycila.plugin.util.StringUtils;
 
@@ -27,11 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,10 +47,14 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
     private String[] includedPackages = new String[0];
     private String[] excludedPackages = {"java", "javax"};
 
-    public AnnotatedPluginDiscovery(Class<? extends Annotation> annotationClass, ClassLoader classLoader) {
+    public AnnotatedPluginDiscovery(Loader loader) {
+        this(Plugin.class, loader);
+    }
+
+    public AnnotatedPluginDiscovery(Class<? extends Annotation> annotationClass, Loader loader) {
         this.annotationClass = annotationClass;
-        this.pathResolver = new ResourcePatternResolver(classLoader);
-        this.classResolver = new ASMClassResolver(annotationClass, classLoader);
+        this.pathResolver = new ResourcePatternResolver(loader);
+        this.classResolver = new ASMClassResolver(annotationClass, loader);
     }
 
     public void setClassResolver(ClassResolver classResolver) {
@@ -69,10 +71,6 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
 
     public Class<? extends Annotation> getAnnotationClass() {
         return annotationClass;
-    }
-
-    public ClassLoader getClassLoader() {
-        return classResolver.getClassLoader();
     }
 
     @Override
