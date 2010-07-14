@@ -36,7 +36,8 @@ public final class StringUtils {
     /**
      * Convenience method to return a String array as a delimited (e.g. CSV)
      * String. E.g. useful for <code>toString()</code> implementations.
-     * @param arr the array to display
+     *
+     * @param arr   the array to display
      * @param delim the delimiter to use (probably a ",")
      * @return the delimited String
      */
@@ -60,6 +61,7 @@ public final class StringUtils {
     /**
      * Convenience method to return a String array as a CSV String.
      * E.g. useful for <code>toString()</code> implementations.
+     *
      * @param arr the array to display
      * @return the delimited String
      */

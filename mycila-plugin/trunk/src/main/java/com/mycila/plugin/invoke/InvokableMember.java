@@ -23,5 +23,6 @@ import java.lang.reflect.Member;
  */
 public interface InvokableMember<T> extends Invokable<T> {
     Class<T> getType();
+
     Member getMember();
 }

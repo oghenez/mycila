@@ -17,7 +17,6 @@
 package com.mycila.plugin.discovery.support;
 
 import com.mycila.plugin.util.Assert;
-import com.mycila.plugin.util.ClassUtils;
 import com.mycila.plugin.util.ResourceUtils;
 import com.mycila.plugin.util.StringUtils;
 
@@ -86,24 +85,23 @@ public final class ResourcePatternResolver {
     }
 
     private URL getResource(String location) {
-		if (location.startsWith(CLASSPATH_URL_PREFIX)) {
+        if (location.startsWith(CLASSPATH_URL_PREFIX)) {
             location = StringUtils.cleanPath(location);
             if (location.startsWith("/"))
                 location = location.substring(1);
             return classLoader.getResource(location.substring(CLASSPATH_URL_PREFIX.length()));
-		}
-		else {
-			try {
-				return new URL(location);
-			}
-			catch (MalformedURLException ex) {
+        } else {
+            try {
+                return new URL(location);
+            }
+            catch (MalformedURLException ex) {
                 location = StringUtils.cleanPath(location);
                 if (location.startsWith("/"))
                     location = location.substring(1);
                 return classLoader.getResource(location);
-			}
-		}
-	}
+            }
+        }
+    }
 
     /**
      * Find all class location resources with the given location via the ClassLoader.
@@ -123,7 +121,7 @@ public final class ResourcePatternResolver {
         while (resourceUrls.hasMoreElements()) {
             result.add(resourceUrls.nextElement());
         }
-        if(path.length() == 0) {
+        if (path.length() == 0) {
             resourceUrls = classLoader.getResources("META-INF/MANIFEST.MF");
             while (resourceUrls.hasMoreElements()) {
                 String url = resourceUrls.nextElement().toExternalForm();
@@ -237,7 +235,7 @@ public final class ResourcePatternResolver {
                 String entryPath = entry.getName();
                 boolean keep = true;
                 for (String prefix : excludePrefixes) {
-                    if(entryPath.startsWith(prefix)) {
+                    if (entryPath.startsWith(prefix)) {
                         keep = false;
                         break;
                     }
