@@ -18,12 +18,7 @@ package com.mycila.plugin.metadata;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.mycila.plugin.metadata.model.InexistingExportException;
-import com.mycila.plugin.metadata.model.InjectionPoint;
-import com.mycila.plugin.metadata.model.NoUniqueExportException;
-import com.mycila.plugin.metadata.model.PluginExport;
-import com.mycila.plugin.metadata.model.PluginImport;
-import com.mycila.plugin.metadata.model.PluginMetadata;
+import com.mycila.plugin.metadata.model.*;
 import com.mycila.plugin.scope.annotation.ExpiringSingleton;
 import com.mycila.plugin.scope.annotation.Singleton;
 import org.junit.Test;
@@ -114,27 +109,16 @@ public final class AnnotationMetadataBuilderTest {
     }
 
     @Test
-    public void test_deps() throws Exception {
+    public void test_imports() throws Exception {
         AnnotationMetadataBuilder builder = new AnnotationMetadataBuilder();
         PluginMetadata metadata = builder.getMetadata(new MyPlugin());
 
-        assertEquals(2, Iterables.size(metadata.getInjectionPoints()));
+        assertEquals(3, Iterables.size(metadata.getInjectionPoints()));
 
         for (InjectionPoint point : metadata.getInjectionPoints()) {
-
             System.out.println(point);
             for (PluginImport pluginImport : point.getImports())
                 System.out.println(" - " + pluginImport);
-
-            if (point.getImports().size() == 1) {
-                assertEquals(Byte.class, point.getImports().get(0).getType());
-                assertEquals(PluginImport.FROM_ANY_PLUGIN, point.getImports().get(0).getPlugin());
-            } else {
-                assertEquals(String.class, point.getImports().get(0).getType());
-                assertEquals(JButton.class, point.getImports().get(0).getPlugin());
-                assertEquals(Integer.class, point.getImports().get(1).getType());
-                assertEquals(PluginImport.FROM_ANY_PLUGIN, point.getImports().get(1).getPlugin());
-            }
         }
     }
 }

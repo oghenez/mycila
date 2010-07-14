@@ -21,16 +21,9 @@ import com.mycila.plugin.invoke.InvokableComposite;
 import com.mycila.plugin.invoke.Invokables;
 import com.mycila.plugin.scope.ScopeBinding;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.ConcurrentModificationException;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -136,6 +129,12 @@ public final class PluginMetadata {
         injectionPoints.add(new InjectionPoint(this, Invokables.get(method, plugin), dependencies));
     }
 
+    private void addInjectionPoint(Field field, List<PluginImport> dependencies) {
+        if (!field.getDeclaringClass().isAssignableFrom(pluginClass))
+            throw new PluginMetadataException("Field  " + field + " is no part of class's hierarchy " + pluginClass.getName());
+        injectionPoints.add(new InjectionPoint(this, Invokables.get(field, plugin), dependencies));
+    }
+
     private <T> void add(InvokableComposite<T> onEvent, String methodName) {
         onEvent.add(Invokables.<T>get(getMethod(methodName), plugin));
     }
@@ -205,6 +204,12 @@ public final class PluginMetadata {
         public Builder addInjectionPoint(String methodName, List<PluginImport> dependencies) {
             check();
             metadata.addInjectionPoint(methodName, dependencies);
+            return this;
+        }
+
+        public Builder addInjectionPoint(Field field, List<PluginImport> dependencies) {
+            check();
+            metadata.addInjectionPoint(field, dependencies);
             return this;
         }
 

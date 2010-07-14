@@ -44,7 +44,7 @@ public final class PluginImport {
 
     @Override
     public String toString() {
-        return "Import " + type.getName() + " from " + (plugin == FROM_ANY_PLUGIN ? "any plugin" : "plugin" + plugin.getName());
+        return "Import " + type.getName() + " from " + (plugin == FROM_ANY_PLUGIN ? "any plugin" : "plugin " + plugin.getName());
     }
 
     public static PluginImport create(Class<?> type, Class<?> plugin) {

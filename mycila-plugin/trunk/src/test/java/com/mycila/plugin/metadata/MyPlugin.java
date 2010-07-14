@@ -16,14 +16,7 @@
 
 package com.mycila.plugin.metadata;
 
-import com.mycila.plugin.annotation.ActivateAfter;
-import com.mycila.plugin.annotation.ActivateBefore;
-import com.mycila.plugin.annotation.Export;
-import com.mycila.plugin.annotation.From;
-import com.mycila.plugin.annotation.Import;
-import com.mycila.plugin.annotation.OnStart;
-import com.mycila.plugin.annotation.OnStop;
-import com.mycila.plugin.annotation.Plugin;
+import com.mycila.plugin.annotation.*;
 import com.mycila.plugin.scope.annotation.ExpiringSingleton;
 import com.mycila.plugin.scope.annotation.Singleton;
 
@@ -36,6 +29,9 @@ import javax.swing.*;
 @ActivateAfter(String.class)
 @ActivateBefore(Integer.class)
 public final class MyPlugin {
+
+    @Import
+    private String val;
 
     @OnStart
     public String onStart() {
