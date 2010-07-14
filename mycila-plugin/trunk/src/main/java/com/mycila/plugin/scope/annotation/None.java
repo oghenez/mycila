@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.scope.defaults;
+package com.mycila.plugin.scope.annotation;
 
-import com.mycila.plugin.scope.ScopeProviderSkeleton;
+import com.mycila.plugin.annotation.ScopeAnnotation;
+import com.mycila.plugin.scope.Scopes;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Singleton scope: the method is called once and the result kept in memory.
+ * No scope
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Singleton extends ScopeProviderSkeleton {
-    private volatile Object instance;
-
-    @Override
-    public Object get() {
-        if (instance == null) {
-            synchronized (this) {
-                if (instance == null) {
-                    instance = context.getInvokable().invoke();
-                }
-            }
-        }
-        return instance;
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
+@ScopeAnnotation(Scopes.None.class)
+public @interface None {
 }

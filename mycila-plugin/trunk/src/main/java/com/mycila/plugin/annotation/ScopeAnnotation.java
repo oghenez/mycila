@@ -14,15 +14,22 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.scope;
+package com.mycila.plugin.annotation;
+
+import com.mycila.plugin.scope.Scope;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * Mark an annotation to be a scope annotation
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Error1 extends ScopeProviderSkeleton {
-    private Error1(){}
-    @Override
-    public Object get() {
-        return context.getInvokable().invoke();
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE})
+public @interface ScopeAnnotation {
+    Class<? extends Scope> value();
 }

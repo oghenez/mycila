@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.metadata.model;
+package com.mycila.plugin.scope;
+
+import java.lang.reflect.AnnotatedElement;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class TooManyExportException extends PluginMetadataException {
+public final class TooManyScopeException extends PluginScopeException {
     private static final long serialVersionUID = 1;
 
-    public TooManyExportException(Class pluginClass, Class exportType) {
-        super("Found to many export of type " + exportType.getName() + " in plugin class " + pluginClass.getName());
+    public TooManyScopeException(AnnotatedElement element) {
+        super("Too many scopes found at " + element);
     }
 }

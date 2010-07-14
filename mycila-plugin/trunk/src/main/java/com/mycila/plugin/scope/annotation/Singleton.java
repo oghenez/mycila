@@ -14,16 +14,23 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.annotation;
+package com.mycila.plugin.scope.annotation;
 
+import com.mycila.plugin.annotation.ScopeAnnotation;
+import com.mycila.plugin.scope.Scopes;
+
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * No scope
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Param {
-    String name();
-    String value();
+@Target({ElementType.METHOD})
+@ScopeAnnotation(Scopes.Singleton.class)
+public @interface Singleton {
 }

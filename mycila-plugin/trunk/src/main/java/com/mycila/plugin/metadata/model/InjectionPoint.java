@@ -47,6 +47,6 @@ public final class InjectionPoint {
 
     @Override
     public String toString() {
-        return "InjectionPoint " + invokable.getMember();
+        return "Injection Point " + invokable.getMember();
     }
 }

@@ -16,7 +16,6 @@
 
 package com.mycila.plugin.discovery;
 
-import com.mycila.plugin.annotation.Plugin;
 import com.mycila.plugin.discovery.support.ResourcePatternResolver;
 import com.mycila.plugin.util.ClassUtils;
 import com.mycila.plugin.util.StringUtils;
@@ -50,10 +49,6 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
     private String[] includedPackages = new String[0];
     private String[] excludedPackages = {"java", "javax"};
 
-    public AnnotatedPluginDiscovery() {
-        this(Plugin.class, ClassUtils.getDefaultClassLoader());
-    }
-
     public AnnotatedPluginDiscovery(Class<? extends Annotation> annotationClass, ClassLoader classLoader) {
         this.annotationClass = annotationClass;
         this.pathResolver = new ResourcePatternResolver(classLoader);
@@ -74,6 +69,10 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
 
     public Class<? extends Annotation> getAnnotationClass() {
         return annotationClass;
+    }
+
+    public ClassLoader getClassLoader() {
+        return classResolver.getClassLoader();
     }
 
     @Override

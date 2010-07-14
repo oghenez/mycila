@@ -40,13 +40,9 @@ public final class ResourcePatternResolver {
     private static final String CLASSPATH_ALL_URL_PREFIX = "classpath*:";
     private static final String CLASSPATH_URL_PREFIX = "classpath:";
 
-    private AntPathMatcher pathMatcher = new AntPathMatcher();
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
     private final ClassLoader classLoader;
     private String[] excludePrefixes = new String[0];
-
-    public ResourcePatternResolver() {
-        this(ClassUtils.getDefaultClassLoader());
-    }
 
     public ResourcePatternResolver(ClassLoader classLoader) {
         this.classLoader = classLoader;
@@ -94,7 +90,7 @@ public final class ResourcePatternResolver {
             location = StringUtils.cleanPath(location);
             if (location.startsWith("/"))
                 location = location.substring(1);
-            return ClassUtils.getDefaultClassLoader().getResource(location.substring(CLASSPATH_URL_PREFIX.length()));
+            return classLoader.getResource(location.substring(CLASSPATH_URL_PREFIX.length()));
 		}
 		else {
 			try {
@@ -104,7 +100,7 @@ public final class ResourcePatternResolver {
                 location = StringUtils.cleanPath(location);
                 if (location.startsWith("/"))
                     location = location.substring(1);
-                return ClassUtils.getDefaultClassLoader().getResource(location);
+                return classLoader.getResource(location);
 			}
 		}
 	}

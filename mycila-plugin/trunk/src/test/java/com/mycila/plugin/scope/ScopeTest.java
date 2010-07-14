@@ -17,11 +17,7 @@
 package com.mycila.plugin.scope;
 
 import com.mycila.plugin.Provider;
-import com.mycila.plugin.invoke.Invokable;
-import com.mycila.plugin.scope.defaults.ExpiringSingleton;
-import com.mycila.plugin.scope.defaults.None;
-import com.mycila.plugin.scope.defaults.Singleton;
-import com.mycila.plugin.scope.defaults.WeakSingleton;
+import com.mycila.plugin.scope.annotation.ExpiringSingleton;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -39,10 +35,8 @@ public final class ScopeTest {
 
     @Test
     public void test_none() throws Exception {
-        ScopeContext mock = mock(ScopeContext.class);
-        Invokable invokable = mock(Invokable.class);
-        when(mock.getInvokable()).thenReturn(invokable);
-        when(invokable.invoke()).thenAnswer(new Answer<String>() {
+        Provider<String> unscoped = mock(Provider.class);
+        when(unscoped.get()).thenAnswer(new Answer<String>() {
             int count = 0;
 
             @Override
@@ -51,7 +45,7 @@ public final class ScopeTest {
             }
         });
 
-        Provider<String> provider = ScopeProviders.build(None.class, mock);
+        Provider<String> provider = new Scopes.None().getProvider(null, unscoped);
 
         assertEquals("0", provider.get());
         assertEquals("1", provider.get());
@@ -59,10 +53,8 @@ public final class ScopeTest {
 
     @Test
     public void test_singleton() throws Exception {
-        ScopeContext mock = mock(ScopeContext.class);
-        Invokable invokable = mock(Invokable.class);
-        when(mock.getInvokable()).thenReturn(invokable);
-        when(invokable.invoke()).thenAnswer(new Answer<String>() {
+        Provider<String> unscoped = mock(Provider.class);
+        when(unscoped.get()).thenAnswer(new Answer<String>() {
             int count = 0;
 
             @Override
@@ -71,7 +63,7 @@ public final class ScopeTest {
             }
         });
 
-        Provider<String> provider = ScopeProviders.build(Singleton.class, mock);
+        Provider<String> provider = new Scopes.Singleton().getProvider(null, unscoped);
 
         assertEquals("0", provider.get());
         assertEquals("0", provider.get());
@@ -79,17 +71,15 @@ public final class ScopeTest {
 
     @Test
     public void test_weak() throws Exception {
-        ScopeContext mock = mock(ScopeContext.class);
-        Invokable invokable = mock(Invokable.class);
-        when(mock.getInvokable()).thenReturn(invokable);
-        when(invokable.invoke()).thenAnswer(new Answer<Object>() {
+        Provider<Object> unscoped = mock(Provider.class);
+        when(unscoped.get()).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return new Object();
             }
         });
 
-        Provider<Object> provider = ScopeProviders.build(WeakSingleton.class, mock);
+        Provider<Object> provider = new Scopes.WeakSingleton().getProvider(null, unscoped);
 
         Object o = provider.get();
         int hash = o.hashCode();
@@ -109,18 +99,17 @@ public final class ScopeTest {
 
     @Test
     public void test_expire() throws Exception {
-        ScopeContext mock = mock(ScopeContext.class);
-        when(mock.getParameter("duration")).thenReturn("500");
-        Invokable invokable = mock(Invokable.class);
-        when(mock.getInvokable()).thenReturn(invokable);
-        when(invokable.invoke()).thenAnswer(new Answer<Object>() {
+        Provider<Object> unscoped = mock(Provider.class);
+        when(unscoped.get()).thenAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 return new Object();
             }
         });
 
-        Provider<Object> provider = ScopeProviders.build(ExpiringSingleton.class, mock);
+        ExpiringSingleton annot = mock(ExpiringSingleton.class);
+        when(annot.value()).thenReturn(500l);
+        Provider<Object> provider = new Scopes.ExpiringSingleton().getProvider(annot, unscoped);
 
         Object o = provider.get();
         assertNotNull(o);
@@ -131,37 +120,4 @@ public final class ScopeTest {
         assertNotSame(o, provider.get());
     }
 
-    @Test
-    public void test_expire_param_fail() throws Exception {
-        ScopeContext mock = mock(ScopeContext.class);
-        when(mock.toString()).thenReturn("a context");
-        MissingScopeParameterException exception = new MissingScopeParameterException(null, ExpiringSingleton.class, "duration");
-        when(mock.getParameter("duration")).thenThrow(exception);
-        try {
-            ScopeProviders.build(ExpiringSingleton.class, mock);
-            fail();
-        } catch (Exception e) {
-            assertSame(exception, e);
-            assertEquals("Scope parameter 'duration' is missing at member null for scope ExpiringSingleton", e.getMessage());
-        }
-    }
-
-    @Test
-    public void test_creation_fail() throws Exception {
-        ScopeContext mock = mock(ScopeContext.class);
-        try {
-            ScopeProviders.build(Error1.class, mock);
-            fail();
-        } catch (Exception e) {
-            assertSame(ScopeInstanciationException.class, e.getClass());
-            assertEquals("Unable to instanciate scope com.mycila.plugin.scope.Error1: com.mycila.plugin.scope.Error1.<init>()", e.getMessage());
-        }
-        try {
-            ScopeProviders.build(Error2.class, mock);
-            fail();
-        } catch (Exception e) {
-            assertSame(ScopeInstanciationException.class, e.getClass());
-            assertEquals("Unable to instanciate scope com.mycila.plugin.scope.Error2: yo", e.getMessage());
-        }
-    }
 }
