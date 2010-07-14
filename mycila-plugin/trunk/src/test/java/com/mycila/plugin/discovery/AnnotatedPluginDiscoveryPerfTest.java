@@ -18,6 +18,7 @@ package com.mycila.plugin.discovery;
 
 import com.google.common.collect.Iterables;
 import com.mycila.plugin.ShowDurationRule;
+import com.mycila.plugin.classpath.DefaultClassLoader;
 import com.mycila.plugin.util.ClassUtils;
 import org.junit.Rule;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public final class AnnotatedPluginDiscoveryPerfTest {
 
     @Test
     public void test_local() throws Exception {
-        AnnotatedPluginDiscovery discovery = new AnnotatedPluginDiscovery(Retention.class, ClassUtils.getDefaultClassLoader());
+        AnnotatedPluginDiscovery discovery = new AnnotatedPluginDiscovery(Retention.class, new DefaultClassLoader(ClassUtils.getDefaultClassLoader()));
         discovery.includePackages("com.mycila.plugin.annotation");
         Iterable<Class<?>> it = discovery.scan();
         System.out.println(Iterables.toString(it));
@@ -62,14 +63,14 @@ public final class AnnotatedPluginDiscoveryPerfTest {
 
     @Test
     public void test_large() throws Exception {
-        AnnotatedPluginDiscovery discovery = new AnnotatedPluginDiscovery(Retention.class, ClassUtils.getDefaultClassLoader());
+        AnnotatedPluginDiscovery discovery = new AnnotatedPluginDiscovery(Retention.class, new DefaultClassLoader(ClassUtils.getDefaultClassLoader()));
         for (Class<?> aClass : discovery.scan()) ;
         //System.out.println(aClass);
     }
 
     @Test
     public void test_large_exclude() throws Exception {
-        AnnotatedPluginDiscovery discovery = new AnnotatedPluginDiscovery(Retention.class, ClassUtils.getDefaultClassLoader());
+        AnnotatedPluginDiscovery discovery = new AnnotatedPluginDiscovery(Retention.class, new DefaultClassLoader(ClassUtils.getDefaultClassLoader()));
         discovery.excludePackages("com.sun", "com.google");
         for (Class<?> aClass : discovery.scan()) ;
         //System.out.println(aClass);

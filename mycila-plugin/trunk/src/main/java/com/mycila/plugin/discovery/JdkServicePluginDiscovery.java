@@ -16,7 +16,8 @@
 
 package com.mycila.plugin.discovery;
 
-import com.mycila.plugin.discovery.support.ServiceClassLoader;
+import com.mycila.plugin.classpath.Loader;
+import com.mycila.plugin.classpath.ServiceClassLoader;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -24,15 +25,15 @@ import com.mycila.plugin.discovery.support.ServiceClassLoader;
 public final class JdkServicePluginDiscovery implements PluginDiscovery {
 
     private final Class<?> markerClass;
-    private final ClassLoader classLoader;
+    private final Loader loader;
 
-    public JdkServicePluginDiscovery(Class<?> markerClass, ClassLoader classLoader) {
+    public JdkServicePluginDiscovery(Class<?> markerClass, Loader loader) {
         this.markerClass = markerClass;
-        this.classLoader = classLoader;
+        this.loader = loader;
     }
 
     @Override
     public Iterable<? extends Class<?>> scan() {
-        return ServiceClassLoader.load(markerClass, classLoader);
+        return ServiceClassLoader.load(markerClass, loader);
     }
 }

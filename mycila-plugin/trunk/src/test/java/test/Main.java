@@ -16,12 +16,27 @@
 
 package test;
 
+import com.mycila.plugin.classpath.DefaultClassLoader;
+import com.mycila.plugin.classpath.Loader;
+import com.mycila.plugin.discovery.AnnotatedPluginDiscovery;
+import com.mycila.plugin.discovery.PluginDiscovery;
+import com.mycila.plugin.metadata.AnnotationMetadataBuilder;
+import com.mycila.plugin.metadata.MetadataBuilder;
+import com.mycila.plugin.metadata.model.PluginMetadata;
+import com.mycila.plugin.util.ClassUtils;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 final class Main {
-    public static void main(String[] args) {
-        System.out.println(Main.class.getResource("/test/Main.class"));
-        System.out.println(Main.class.getResource("/org/objectweb/asm/ClassVisitor.class"));
+    public static void main(String[] args) throws Exception {
+        Loader loader = new DefaultClassLoader(ClassUtils.getDefaultClassLoader());
+        PluginDiscovery pluginDiscovery = new AnnotatedPluginDiscovery(loader);
+        MetadataBuilder metadataBuilder = new AnnotationMetadataBuilder();
+        for (Class<?> pluginClass : pluginDiscovery.scan()) {
+            Object plugin = pluginClass.getConstructor().newInstance();
+            PluginMetadata metadata = metadataBuilder.getMetadata(plugin);
+            System.out.println(metadata);
+        }
     }
 }

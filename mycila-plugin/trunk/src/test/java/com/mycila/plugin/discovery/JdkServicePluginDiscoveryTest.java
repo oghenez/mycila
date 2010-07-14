@@ -17,6 +17,8 @@
 package com.mycila.plugin.discovery;
 
 import com.google.common.collect.Iterables;
+import com.mycila.plugin.classpath.DefaultClassLoader;
+import com.mycila.plugin.util.ClassUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -31,7 +33,7 @@ public final class JdkServicePluginDiscoveryTest {
 
     @Test
     public void test() throws Exception {
-        JdkServicePluginDiscovery discovery = new JdkServicePluginDiscovery(Serv.class, getClass().getClassLoader());
+        JdkServicePluginDiscovery discovery = new JdkServicePluginDiscovery(Serv.class, new DefaultClassLoader(ClassUtils.getDefaultClassLoader()));
         assertEquals(2, Iterables.size(discovery.scan()));
     }
 

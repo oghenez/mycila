@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.discovery.support;
+package com.mycila.plugin.util;
 
 import java.util.LinkedList;
 import java.util.List;

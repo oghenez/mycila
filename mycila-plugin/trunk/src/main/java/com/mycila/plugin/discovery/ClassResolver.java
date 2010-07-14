@@ -16,6 +16,8 @@
 
 package com.mycila.plugin.discovery;
 
+import com.mycila.plugin.classpath.Loader;
+
 import java.net.URL;
 
 /**
@@ -23,6 +25,5 @@ import java.net.URL;
  */
 public interface ClassResolver {
     Class<?> resolve(URL url) throws ClassResolverException;
-
-    ClassLoader getClassLoader();
+    Loader getLoader();
 }

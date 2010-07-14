@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.discovery.support;
+package com.mycila.plugin.classpath;
 
+import com.mycila.plugin.util.AntPathMatcher;
 import com.mycila.plugin.util.Assert;
 import com.mycila.plugin.util.ResourceUtils;
 import com.mycila.plugin.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.JarURLConnection;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.net.*;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -40,15 +34,11 @@ public final class ResourcePatternResolver {
     private static final String CLASSPATH_URL_PREFIX = "classpath:";
 
     private final AntPathMatcher pathMatcher = new AntPathMatcher();
-    private final ClassLoader classLoader;
+    private final Loader loader;
     private String[] excludePrefixes = new String[0];
 
-    public ResourcePatternResolver(ClassLoader classLoader) {
-        this.classLoader = classLoader;
-    }
-
-    public ClassLoader getClassLoader() {
-        return classLoader;
+    public ResourcePatternResolver(Loader loader) {
+        this.loader = loader;
     }
 
     public void setExcludePrefixes(String... excludePrefixes) {
@@ -89,7 +79,7 @@ public final class ResourcePatternResolver {
             location = StringUtils.cleanPath(location);
             if (location.startsWith("/"))
                 location = location.substring(1);
-            return classLoader.getResource(location.substring(CLASSPATH_URL_PREFIX.length()));
+            return loader.getResource(location.substring(CLASSPATH_URL_PREFIX.length()));
         } else {
             try {
                 return new URL(location);
@@ -98,7 +88,7 @@ public final class ResourcePatternResolver {
                 location = StringUtils.cleanPath(location);
                 if (location.startsWith("/"))
                     location = location.substring(1);
-                return classLoader.getResource(location);
+                return loader.getResource(location);
             }
         }
     }
@@ -116,16 +106,12 @@ public final class ResourcePatternResolver {
         if (path.startsWith("/")) {
             path = path.substring(1);
         }
-        Enumeration<URL> resourceUrls = classLoader.getResources(path);
-        Set<URL> result = new LinkedHashSet<URL>(16);
-        while (resourceUrls.hasMoreElements()) {
-            result.add(resourceUrls.nextElement());
-        }
+        Set<URL> result = new LinkedHashSet<URL>(loader.getResources(path));
         if (path.length() == 0) {
-            resourceUrls = classLoader.getResources("META-INF/MANIFEST.MF");
-            while (resourceUrls.hasMoreElements()) {
-                String url = resourceUrls.nextElement().toExternalForm();
-                result.add(new URL(url.substring(0, url.length() - 20)));
+            List<URL> urls = loader.getResources("META-INF/MANIFEST.MF");
+            for (URL url : urls) {
+                String str = url.toExternalForm();
+                result.add(new URL(str.substring(0, str.length() - 20)));
             }
         }
         return result.toArray(new URL[result.size()]);

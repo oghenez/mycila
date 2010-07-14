@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.util;
+package com.mycila.plugin.classpath;
 
 import java.io.File;
 import java.io.IOException;
