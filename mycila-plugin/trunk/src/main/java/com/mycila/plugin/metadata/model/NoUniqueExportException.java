@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.scope;
-
-import java.lang.reflect.Member;
+package com.mycila.plugin.metadata.model;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class MissingScopeParameterException extends PluginScopeException {
+public final class NoUniqueExportException extends PluginMetadataException {
     private static final long serialVersionUID = 1;
 
-    public MissingScopeParameterException(Member member, Class<? extends ScopeProvider> scopeClass, String parameterName) {
-        super("Scope parameter '" + parameterName + "' is missing at member " + member + " for scope " + scopeClass.getSimpleName());
+    public NoUniqueExportException(Class pluginClass, Class exportType) {
+        super("Found to many export of type " + exportType.getName() + " in plugin class " + pluginClass.getName());
     }
 }

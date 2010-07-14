@@ -23,28 +23,35 @@ import com.mycila.plugin.annotation.From;
 import com.mycila.plugin.annotation.Import;
 import com.mycila.plugin.annotation.OnStart;
 import com.mycila.plugin.annotation.OnStop;
-import com.mycila.plugin.annotation.Param;
 import com.mycila.plugin.annotation.Plugin;
-import com.mycila.plugin.annotation.Scope;
 import com.mycila.plugin.metadata.model.PluginImport;
 import com.mycila.plugin.metadata.model.PluginMetadata;
-import com.mycila.plugin.scope.defaults.None;
+import com.mycila.plugin.scope.DefaultScopeResolver;
+import com.mycila.plugin.scope.ScopeResolver;
 import com.mycila.plugin.util.AopUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class AnnotationMetadataBuilder implements MetadataBuilder {
+
+    private ScopeResolver scopeResolver = new DefaultScopeResolver();
+
+    public ScopeResolver getScopeResolver() {
+        return scopeResolver;
+    }
+
+    public void setScopeResolver(ScopeResolver scopeResolver) {
+        this.scopeResolver = scopeResolver;
+    }
 
     @Override
     public final PluginMetadata getMetadata(Object plugin) {
@@ -66,18 +73,9 @@ public final class AnnotationMetadataBuilder implements MetadataBuilder {
             if (method.isAnnotationPresent(OnStop.class))
                 builder.addOnStop(method.getName());
 
-            if (method.isAnnotationPresent(Export.class)) {
-                Scope scope = method.getAnnotation(Scope.class);
-                Map<String, String> parameters = new HashMap<String, String>();
-                if (scope != null)
-                    for (Param param : scope.params())
-                        parameters.put(param.name(), param.value());
-                builder.addExport(
-                        method.getName(),
-                        scope == null ? None.class : scope.value(),
-                        parameters);
-            }
-
+            if (method.isAnnotationPresent(Export.class))
+                builder.addExport(method.getName(), scopeResolver.getScopeBinding(method));
+            
             if (method.isAnnotationPresent(Import.class)) {
                 Class<?>[] params = method.getParameterTypes();
                 Annotation[][] annots = method.getParameterAnnotations();

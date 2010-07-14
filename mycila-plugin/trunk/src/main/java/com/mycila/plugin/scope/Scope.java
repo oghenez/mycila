@@ -18,15 +18,13 @@ package com.mycila.plugin.scope;
 
 import com.mycila.plugin.Provider;
 
+import java.lang.annotation.Annotation;
+
 /**
  * Implemented by scopes to provide an export.
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface ScopeProvider<T> extends Provider<T> {
-
-    /**
-     * @param context The scope context, form which you can invoke the exporting method and get scope parameters
-     */
-    void init(ScopeContext context);
+public interface Scope {
+    <T> Provider<T> getProvider(Annotation annotation, Provider<T> unscoped);
 }

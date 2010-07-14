@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.annotation;
+package com.mycila.plugin.scope.annotation;
 
-import com.mycila.plugin.scope.ScopeProvider;
-import com.mycila.plugin.scope.defaults.None;
+import com.mycila.plugin.annotation.ScopeAnnotation;
+import com.mycila.plugin.scope.Scopes;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -25,18 +25,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Place a scope on an exporting method annotated by @export.
- * <br>
- * The scope can be a custom scope implementing {@link com.mycila.plugin.Provider}.
- * <br>
- * Several scopes are provided, like the famous singleton one.
+ * No scope
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-public @interface Scope {
-    Class<? extends ScopeProvider> value() default None.class;
-
-    Param[] params() default {};
+@ScopeAnnotation(Scopes.ExpiringSingleton.class)
+public @interface ExpiringSingleton {
+    long value();
 }

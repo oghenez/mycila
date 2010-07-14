@@ -19,7 +19,7 @@ package com.mycila.plugin.metadata.model;
 import com.mycila.plugin.invoke.Invokable;
 import com.mycila.plugin.invoke.InvokableComposite;
 import com.mycila.plugin.invoke.Invokables;
-import com.mycila.plugin.scope.ScopeProvider;
+import com.mycila.plugin.scope.ScopeBinding;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -88,7 +88,7 @@ public final class PluginMetadata {
         return exports.values();
     }
 
-    public <T> PluginExport<T> getExport(Class<T> type) throws InexistingExportException, TooManyExportException {
+    public <T> PluginExport<T> getExport(Class<T> type) throws InexistingExportException, NoUniqueExportException {
         Class<?> unPerfectMatched = null;
         for (Class<?> key : exports.keySet()) {
             if (key.equals(type))
@@ -97,7 +97,7 @@ public final class PluginMetadata {
                 if (unPerfectMatched == null)
                     unPerfectMatched = key;
                 else
-                    throw new TooManyExportException(pluginClass, type);
+                    throw new NoUniqueExportException(pluginClass, type);
             }
         }
         if (unPerfectMatched == null)
@@ -117,7 +117,7 @@ public final class PluginMetadata {
         return onStop;
     }
 
-    private void addExport(String methodName, Class<? extends ScopeProvider> scopeClass, Map<String, String> parameters) {
+    private void addExport(String methodName, ScopeBinding scope) {
         Method method = getMethod(methodName);
         Class<?> ret = method.getReturnType();
         if (exports.containsKey(ret))
@@ -125,8 +125,7 @@ public final class PluginMetadata {
         exports.put(ret, new PluginExport<Object>(
                 this,
                 Invokables.get(method, plugin),
-                scopeClass,
-                parameters));
+                scope));
     }
 
     private void addInjectionPoint(String methodName, List<PluginImport> dependencies) {
@@ -197,9 +196,9 @@ public final class PluginMetadata {
             return this;
         }
 
-        public Builder addExport(String methodName, Class<? extends ScopeProvider> scopeClass, Map<String, String> parameters) {
+        public Builder addExport(String methodName, ScopeBinding scope) {
             check();
-            metadata.addExport(methodName, scopeClass, parameters);
+            metadata.addExport(methodName, scope);
             return this;
         }
 

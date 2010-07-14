@@ -31,7 +31,7 @@ public final class JdkServicePluginDiscoveryTest {
 
     @Test
     public void test() throws Exception {
-        JdkServicePluginDiscovery discovery = new JdkServicePluginDiscovery(Serv.class);
+        JdkServicePluginDiscovery discovery = new JdkServicePluginDiscovery(Serv.class, getClass().getClassLoader());
         assertEquals(2, Iterables.size(discovery.scan()));
     }
 

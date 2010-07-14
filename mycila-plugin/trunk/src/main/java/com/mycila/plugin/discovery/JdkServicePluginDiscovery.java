@@ -27,10 +27,6 @@ public final class JdkServicePluginDiscovery implements PluginDiscovery {
     private final Class<?> markerClass;
     private final ClassLoader classLoader;
 
-    public JdkServicePluginDiscovery(Class<?> markerClass) {
-        this(markerClass, ClassUtils.getDefaultClassLoader());
-    }
-
     public JdkServicePluginDiscovery(Class<?> markerClass, ClassLoader classLoader) {
         this.markerClass = markerClass;
         this.classLoader = classLoader;

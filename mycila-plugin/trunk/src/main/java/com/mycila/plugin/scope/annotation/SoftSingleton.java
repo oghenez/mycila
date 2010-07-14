@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.scope;
+package com.mycila.plugin.scope.annotation;
+
+import com.mycila.plugin.annotation.ScopeAnnotation;
+import com.mycila.plugin.scope.Scopes;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * No scope
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class ScopeProviderSkeleton implements ScopeProvider {
-
-    protected volatile ScopeContext context;
-
-    @Override
-    public void init(ScopeContext context) {
-        this.context = context;
-    }
-
-    @Override
-    public String toString() {
-        return "Scope " + getClass().getSimpleName() + " for " + context;
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
+@ScopeAnnotation(Scopes.SoftSingleton.class)
+public @interface SoftSingleton {
 }

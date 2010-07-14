@@ -22,7 +22,7 @@ package com.mycila.plugin.scope;
 public final class ScopeInstanciationException extends PluginScopeException {
     private static final long serialVersionUID = 1;
 
-    public ScopeInstanciationException(Class<? extends ScopeProvider> scope, Throwable cause) {
+    public ScopeInstanciationException(Class<? extends Scope> scope, Throwable cause) {
         super("Unable to instanciate scope " + scope.getName() + ": " + cause.getMessage(), cause);
     }
 }

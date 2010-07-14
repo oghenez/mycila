@@ -20,12 +20,12 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.mycila.plugin.metadata.model.InexistingExportException;
 import com.mycila.plugin.metadata.model.InjectionPoint;
+import com.mycila.plugin.metadata.model.NoUniqueExportException;
 import com.mycila.plugin.metadata.model.PluginExport;
 import com.mycila.plugin.metadata.model.PluginImport;
 import com.mycila.plugin.metadata.model.PluginMetadata;
-import com.mycila.plugin.metadata.model.TooManyExportException;
-import com.mycila.plugin.scope.defaults.ExpiringSingleton;
-import com.mycila.plugin.scope.defaults.Singleton;
+import com.mycila.plugin.scope.annotation.ExpiringSingleton;
+import com.mycila.plugin.scope.annotation.Singleton;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -64,19 +64,22 @@ public final class AnnotationMetadataBuilderTest {
         AnnotationMetadataBuilder builder = new AnnotationMetadataBuilder();
         PluginMetadata metadata = builder.getMetadata(new MyPlugin());
 
+        for (PluginExport<?> export : metadata.getExports())
+            System.out.println(export);
+
         assertEquals(2, Iterables.size(metadata.getExports()));
 
         assertTrue(Iterables.indexOf(metadata.getExports(), new Predicate<PluginExport<?>>() {
             @Override
             public boolean apply(PluginExport<?> input) {
-                return JButton.class.equals(input.getType()) && Singleton.class.equals(input.getScope());
+                return JButton.class.equals(input.getType()) && Singleton.class.isInstance(input.getScope());
             }
         }) != -1);
 
         assertTrue(Iterables.indexOf(metadata.getExports(), new Predicate<PluginExport<?>>() {
             @Override
             public boolean apply(PluginExport<?> input) {
-                return JLabel.class.equals(input.getType()) && ExpiringSingleton.class.equals(input.getScope());
+                return JLabel.class.equals(input.getType()) && ExpiringSingleton.class.isInstance(input.getScope());
             }
         }) != -1);
 
@@ -87,7 +90,7 @@ public final class AnnotationMetadataBuilderTest {
         try {
             metadata.getExport(JComponent.class);
             fail();
-        } catch (TooManyExportException e) {
+        } catch (NoUniqueExportException e) {
             //ok
         }
 
@@ -118,6 +121,11 @@ public final class AnnotationMetadataBuilderTest {
         assertEquals(2, Iterables.size(metadata.getInjectionPoints()));
 
         for (InjectionPoint point : metadata.getInjectionPoints()) {
+
+            System.out.println(point);
+            for (PluginImport pluginImport : point.getImports())
+                System.out.println(" - " + pluginImport);
+
             if (point.getImports().size() == 1) {
                 assertEquals(Byte.class, point.getImports().get(0).getType());
                 assertEquals(PluginImport.FROM_ANY_PLUGIN, point.getImports().get(0).getPlugin());

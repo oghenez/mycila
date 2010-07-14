@@ -17,75 +17,51 @@
 package com.mycila.plugin.metadata.model;
 
 import com.mycila.plugin.Provider;
-import com.mycila.plugin.invoke.Invokable;
 import com.mycila.plugin.invoke.InvokableMember;
-import com.mycila.plugin.scope.MissingScopeParameterException;
-import com.mycila.plugin.scope.ScopeContext;
-import com.mycila.plugin.scope.ScopeProvider;
-import com.mycila.plugin.scope.ScopeProviders;
+import com.mycila.plugin.scope.ScopeBinding;
 
-import java.util.Map;
+import java.lang.annotation.Annotation;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class PluginExport<T> {
 
-    private final InvokableMember<T> invokable;
+    private final Class<T> type;
     private final PluginMetadata plugin;
-    private final Class<? extends ScopeProvider> scopeClass;
-    private final Provider<? extends T> provider;
+    private final Provider<T> provider;
+    private final ScopeBinding scopeBinding;
 
-    PluginExport(final PluginMetadata metadata, final InvokableMember<T> invokable, final Class<? extends ScopeProvider> scopeClass, final Map<String, String> parameters) {
+    PluginExport(final PluginMetadata metadata, final InvokableMember<T> invokable, ScopeBinding scopeBinding) {
         this.plugin = metadata;
-        this.invokable = invokable;
-        this.scopeClass = scopeClass;
-        this.provider = ScopeProviders.build(scopeClass, new ScopeContext() {
-
+        this.type = invokable.getType();
+        this.scopeBinding = scopeBinding;
+        this.provider = scopeBinding.getScope().getProvider(scopeBinding.getAnnotation(), new Provider<T>() {
             @Override
-            public Invokable<?> getInvokable() {
-                return invokable;
-            }
-
-            @Override
-            public boolean hasParameter(String name) {
-                return parameters.containsKey(name);
-            }
-
-            @Override
-            public String getParameter(String name) throws MissingScopeParameterException {
-                String val = parameters.get(name);
-                if (val == null)
-                    throw new MissingScopeParameterException(invokable.getMember(), scopeClass, name);
-                return val;
-            }
-
-            @Override
-            public String toString() {
-                return getType().getName();
+            public T get() {
+                return invokable.invoke();
             }
         });
     }
 
     public Class<T> getType() {
-        return invokable.getType();
-    }
-
-    public Class<?> getScope() {
-        return scopeClass;
+        return type;
     }
 
     public PluginMetadata getPluginMetadata() {
         return plugin;
     }
 
-    public Provider<? extends T> getProvider() {
+    public Provider<T> getProvider() {
         return provider;
     }
 
     @Override
     public String toString() {
-        return "Export " + getType().getName() + " with scope " + getScope().getSimpleName();
+        return scopeBinding + " " + getType().getName();
     }
 
+    public Annotation getScope() {
+        return scopeBinding.getAnnotation();
+    }
 }

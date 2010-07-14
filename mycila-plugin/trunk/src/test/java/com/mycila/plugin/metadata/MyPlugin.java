@@ -23,11 +23,9 @@ import com.mycila.plugin.annotation.From;
 import com.mycila.plugin.annotation.Import;
 import com.mycila.plugin.annotation.OnStart;
 import com.mycila.plugin.annotation.OnStop;
-import com.mycila.plugin.annotation.Param;
 import com.mycila.plugin.annotation.Plugin;
-import com.mycila.plugin.annotation.Scope;
-import com.mycila.plugin.scope.defaults.ExpiringSingleton;
-import com.mycila.plugin.scope.defaults.Singleton;
+import com.mycila.plugin.scope.annotation.ExpiringSingleton;
+import com.mycila.plugin.scope.annotation.Singleton;
 
 import javax.swing.*;
 
@@ -50,13 +48,13 @@ public final class MyPlugin {
     }
 
     @Export
-    @Scope(Singleton.class)
+    @Singleton
     public JButton button() {
         return new JButton("button");
     }
 
     @Export
-    @Scope(value = ExpiringSingleton.class, params = @Param(name = "duration", value = "500"))
+    @ExpiringSingleton(500)
     public JLabel label() {
         return new JLabel("a label at " + System.currentTimeMillis());
     }

@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.scope.defaults;
+package com.mycila.plugin.scope.annotation;
 
-import com.mycila.plugin.scope.ScopeProviderSkeleton;
+import com.mycila.plugin.annotation.ScopeAnnotation;
+import com.mycila.plugin.scope.Scopes;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * No scope, this is the default scope. Each time teh export is needed, the method will be called.
+ * No scope
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class None extends ScopeProviderSkeleton {
-    @Override
-    public Object get() {
-        return  context.getInvokable().invoke();
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
+@ScopeAnnotation(Scopes.WeakSingleton.class)
+public @interface WeakSingleton {
 }

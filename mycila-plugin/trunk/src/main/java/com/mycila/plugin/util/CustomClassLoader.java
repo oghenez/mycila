@@ -53,7 +53,6 @@ public final class CustomClassLoader extends URLClassLoader {
         return this;
     }
 
-    @SuppressWarnings({"unchecked"})
     public <T> Class<T> load(String className) {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(this);

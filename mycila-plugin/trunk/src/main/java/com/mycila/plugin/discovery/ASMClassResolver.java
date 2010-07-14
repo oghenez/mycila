@@ -47,6 +47,11 @@ public final class ASMClassResolver implements ClassResolver {
     }
 
     @Override
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+
+    @Override
     public Class<?> resolve(URL url) throws ClassResolverException {
         InputStream is = null;
         try {
