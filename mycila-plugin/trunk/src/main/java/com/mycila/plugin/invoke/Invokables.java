@@ -19,6 +19,7 @@ package com.mycila.plugin.invoke;
 import com.mycila.plugin.util.ClassUtils;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
@@ -45,6 +46,10 @@ public final class Invokables {
 
     public static <T> InvokableMember<T> get(Method method, Object target) {
         return useCglib ? new InvokableFastMethod<T>(target, method) : new InvokableMethod<T>(target, method);
+    }
+
+    public static <T> InvokableMember<T> get(Field field, Object target) {
+        return new InvokableField<T>(target, field);
     }
 
     public static <T> InvokableComposite<T> composite() {
