@@ -113,9 +113,7 @@ public final class AopUtils {
                     if ("net.sf.cglib.proxy.Factory".equals(itf.getName()))
                         return true;
                 return false;
-            }},
-
-        ;
+            }},;
 
         boolean isProxy(Object o) {
             return isProxyClass(o.getClass());

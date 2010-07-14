@@ -23,5 +23,6 @@ import java.net.URL;
  */
 public interface ClassResolver {
     Class<?> resolve(URL url) throws ClassResolverException;
+
     ClassLoader getClassLoader();
 }

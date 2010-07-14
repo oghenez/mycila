@@ -17,7 +17,6 @@
 package com.mycila.plugin.discovery;
 
 import com.mycila.plugin.discovery.support.ServiceClassLoader;
-import com.mycila.plugin.util.ClassUtils;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

@@ -75,7 +75,7 @@ public final class AnnotationMetadataBuilder implements MetadataBuilder {
 
             if (method.isAnnotationPresent(Export.class))
                 builder.addExport(method.getName(), scopeResolver.getScopeBinding(method));
-            
+
             if (method.isAnnotationPresent(Import.class)) {
                 Class<?>[] params = method.getParameterTypes();
                 Annotation[][] annots = method.getParameterAnnotations();

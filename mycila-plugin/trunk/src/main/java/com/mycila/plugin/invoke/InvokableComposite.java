@@ -21,5 +21,6 @@ package com.mycila.plugin.invoke;
  */
 public interface InvokableComposite<T> extends Invokable<T>, Iterable<Invokable<T>> {
     void add(Invokable<T> invokable);
+
     void addAll(Iterable<Invokable<T>> invokables);
 }
