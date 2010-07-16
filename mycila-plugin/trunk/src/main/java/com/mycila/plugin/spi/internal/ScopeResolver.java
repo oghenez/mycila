@@ -18,7 +18,6 @@ package com.mycila.plugin.spi.internal;
 
 import com.mycila.plugin.Scope;
 import com.mycila.plugin.annotation.ScopeAnnotation;
-import com.mycila.plugin.spi.ScopeBinding;
 import com.mycila.plugin.spi.invoke.Invokables;
 import com.mycila.plugin.spi.invoke.InvokeException;
 
@@ -34,10 +33,6 @@ public final class ScopeResolver {
 
     private final ConcurrentMap<Class<?>, Scope> cache = new ConcurrentHashMap<Class<?>, Scope>();
     private final Annotation defaultScope;
-
-    public Annotation getDefaultScope() {
-        return defaultScope;
-    }
 
     public ScopeResolver(Annotation defaultScope) {
         this.defaultScope = defaultScope;

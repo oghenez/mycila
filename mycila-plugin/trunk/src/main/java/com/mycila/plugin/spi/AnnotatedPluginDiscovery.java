@@ -20,11 +20,7 @@ import com.mycila.plugin.Loader;
 import com.mycila.plugin.PluginDiscovery;
 import com.mycila.plugin.PluginDiscoveryException;
 import com.mycila.plugin.annotation.Plugin;
-import com.mycila.plugin.spi.internal.ASMClassResolver;
-import com.mycila.plugin.spi.internal.ClassResolver;
-import com.mycila.plugin.spi.internal.ClassUtils;
-import com.mycila.plugin.spi.internal.ResourcePatternResolver;
-import com.mycila.plugin.spi.internal.StringUtils;
+import com.mycila.plugin.spi.internal.*;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -33,11 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

@@ -16,7 +16,7 @@
 
 package com.mycila.plugin.spi.invoke;
 
-import com.mycila.plugin.spi.TypeLiteral;
+import com.mycila.plugin.TypeLiteral;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

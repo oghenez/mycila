@@ -16,6 +16,8 @@
 
 package com.mycila.plugin.spi;
 
+import com.mycila.plugin.Binding;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
@@ -38,7 +40,7 @@ public final class PluginImport<T> {
         return fromPlugin;
     }
 
-    public boolean acceptPlugin(Class<?> plugin) {
+    public boolean fromPlugin(Class<?> plugin) {
         return plugin == FROM_ANY_PLUGIN || this.fromPlugin.equals(plugin);
     }
 
@@ -47,11 +49,11 @@ public final class PluginImport<T> {
         return "Import " + binding + " from " + (fromPlugin == FROM_ANY_PLUGIN ? "any plugin" : "plugin " + fromPlugin.getName());
     }
 
-    public static <T> PluginImport<T> from(Binding<T> binding) {
+    static <T> PluginImport<T> from(Binding<T> binding) {
         return new PluginImport<T>(FROM_ANY_PLUGIN, binding);
     }
 
-    public static <T> PluginImport<T> from(Class<?> fromPlugin, Binding<T> binding) {
+    static <T> PluginImport<T> from(Class<?> fromPlugin, Binding<T> binding) {
         return new PluginImport<T>(fromPlugin == null ? FROM_ANY_PLUGIN : fromPlugin, binding);
     }
 }

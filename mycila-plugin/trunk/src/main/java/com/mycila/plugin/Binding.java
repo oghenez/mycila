@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi;
+package com.mycila.plugin;
 
-import com.mycila.plugin.Provider;
 import com.mycila.plugin.annotation.BindingAnnotation;
+import com.mycila.plugin.spi.internal.AnnotationUtils;
 import com.mycila.plugin.spi.internal.Assert;
 import com.mycila.plugin.spi.invoke.InvokableMember;
 
@@ -25,12 +25,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -38,7 +33,7 @@ import java.util.List;
 public final class Binding<T> {
 
     private final TypeLiteral<T> type;
-    private final Collection<Annotation> annotations;
+    private final List<Annotation> annotations;
 
     private Binding(TypeLiteral<T> type) {
         this(type, Collections.<Annotation>emptyList());
@@ -46,10 +41,10 @@ public final class Binding<T> {
 
     private Binding(TypeLiteral<T> type, Collection<Annotation> annotations) {
         this.type = type;
-        this.annotations = Collections.unmodifiableCollection(annotations);
+        this.annotations = Collections.unmodifiableList(new ArrayList<Annotation>(annotations));
     }
 
-    public Collection<Annotation> getAnnotations() {
+    public List<Annotation> getAnnotations() {
         return annotations;
     }
 
@@ -99,12 +94,14 @@ public final class Binding<T> {
                 if (annotation.annotationType().isAnnotationPresent(BindingAnnotation.class))
                     annotations.add(annotation);
             // type
-            if (types.get(i).getRawType() == Provider.class) {
+            TypeLiteral<?> type = types.get(i);
+            if (type.getRawType() == Provider.class) {
                 Type[] args = ((ParameterizedType) types.get(i)).getActualTypeArguments();
                 if (args.length == 0)
                     throw new IllegalStateException("Missing type argument for provider at ");
-                bindings.add(binding(types.get(i), annotations));
+                type = TypeLiteral.get(args[0]);
             }
+            bindings.add(binding(type, annotations));
         }
         return Collections.unmodifiableList(bindings);
     }
@@ -132,11 +129,12 @@ public final class Binding<T> {
     }
 
     public static <T> Binding<T> get(TypeLiteral<T> type, Class<? extends Annotation>... annotations) {
-        for (Class<? extends Annotation> annotation : annotations)
-            Assert.state(annotation.isAnnotationPresent(BindingAnnotation.class));
         Annotation[] annots = new Annotation[annotations.length];
-        //TODO
-        return new Binding<T>(type, Arrays.asList(annots));
+        for (int i = 0; i < annotations.length; i++) {
+            Assert.state(annotations[i].isAnnotationPresent(BindingAnnotation.class));
+            annots[i] = AnnotationUtils.buildRandomAnnotation(annotations[i]);
+        }
+        return get(type, annots);
     }
 
     private static <T> Binding<T> binding(TypeLiteral<T> type, Collection<Annotation> annotations) {

@@ -16,7 +16,9 @@
 
 package com.mycila.plugin.spi;
 
+import com.mycila.plugin.Binding;
 import com.mycila.plugin.Provider;
+import com.mycila.plugin.spi.internal.ScopeBinding;
 import com.mycila.plugin.spi.invoke.InvokableMember;
 
 import java.lang.annotation.Annotation;
@@ -54,7 +56,7 @@ public final class PluginExport<T> {
         return scopeAnnotation + " ( " + binding + " )";
     }
 
-    public static <T> PluginExport<T> export(InvokableMember<T> invokable, ScopeBinding scopeBinding) {
+    static <T> PluginExport<T> export(InvokableMember<T> invokable, ScopeBinding scopeBinding) {
         return new PluginExport<T>(invokable, scopeBinding);
     }
 

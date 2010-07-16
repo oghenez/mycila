@@ -16,7 +16,7 @@
 
 package com.mycila.plugin.spi.invoke;
 
-import com.mycila.plugin.spi.TypeLiteral;
+import com.mycila.plugin.TypeLiteral;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

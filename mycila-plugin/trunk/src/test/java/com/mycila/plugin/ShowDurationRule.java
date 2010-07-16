@@ -34,7 +34,7 @@ public final class ShowDurationRule implements MethodRule {
                     base.evaluate();
                 } finally {
                     time = System.currentTimeMillis() - time;
-                    System.out.println(method.getName() + ": " + time + "ms");
+                    System.out.println(" ==> " + method.getMethod().getDeclaringClass().getSimpleName() + "." + method.getName() + ": " + time + "ms");
                 }
             }
         };

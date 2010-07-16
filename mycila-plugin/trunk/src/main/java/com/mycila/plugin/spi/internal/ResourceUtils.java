@@ -20,7 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-public final class ResourceUtils {
+final class ResourceUtils {
 
     private ResourceUtils() {
     }

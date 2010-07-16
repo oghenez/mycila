@@ -16,7 +16,9 @@
 
 package com.mycila.plugin.spi;
 
+import com.mycila.plugin.Binding;
 import com.mycila.plugin.annotation.From;
+import com.mycila.plugin.spi.internal.AnnotationUtils;
 import com.mycila.plugin.spi.invoke.InvokableMember;
 import com.mycila.plugin.spi.invoke.Invokables;
 
@@ -49,7 +51,7 @@ public final class InjectionPoint {
         return "Injection Point " + invokable.getMember();
     }
 
-    public static InjectionPoint from(Method method, Object plugin) {
+    static InjectionPoint from(Method method, Object plugin) {
         List<Binding<?>> parameters = Binding.fromParameters(method);
         Annotation[][] allAnnotations = method.getParameterAnnotations();
         List<PluginImport<?>> imports = new ArrayList<PluginImport<?>>(parameters.size());
@@ -58,17 +60,15 @@ public final class InjectionPoint {
         return new InjectionPoint(Invokables.get(method, plugin), imports);
     }
 
-    public static InjectionPoint from(Field field, Object plugin) {
+    static InjectionPoint from(Field field, Object plugin) {
         InvokableMember<?> invokable = Invokables.get(field, plugin);
         List<PluginImport<?>> imports = new ArrayList<PluginImport<?>>(1);
         imports.add(PluginImport.from(findFrom(field.getAnnotations()), Binding.fromInvokable(invokable)));
         return new InjectionPoint(invokable, imports);
     }
 
-    private static Class<?> findFrom(Annotation[] annotations) {
-        for (Annotation annotation : annotations)
-            if (From.class.isInstance(annotation))
-                return ((From) annotation).value();
-        return null;
+    private static Class<?> findFrom(Annotation... annotations) {
+        From from = AnnotationUtils.findAnnotation(From.class, annotations);
+        return from == null ? null : from.value();
     }
 }

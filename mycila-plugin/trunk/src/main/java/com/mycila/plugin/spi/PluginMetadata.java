@@ -16,14 +16,11 @@
 
 package com.mycila.plugin.spi;
 
-import com.mycila.plugin.annotation.ActivateAfter;
-import com.mycila.plugin.annotation.ActivateBefore;
-import com.mycila.plugin.annotation.Export;
-import com.mycila.plugin.annotation.Import;
-import com.mycila.plugin.annotation.OnStart;
-import com.mycila.plugin.annotation.OnStop;
-import com.mycila.plugin.annotation.Plugin;
+import com.mycila.plugin.Binding;
+import com.mycila.plugin.Scopes;
+import com.mycila.plugin.annotation.*;
 import com.mycila.plugin.spi.internal.AopUtils;
+import com.mycila.plugin.spi.internal.ScopeBinding;
 import com.mycila.plugin.spi.internal.ScopeResolver;
 import com.mycila.plugin.spi.invoke.Invokable;
 import com.mycila.plugin.spi.invoke.InvokableComposite;
@@ -32,15 +29,7 @@ import com.mycila.plugin.spi.invoke.Invokables;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

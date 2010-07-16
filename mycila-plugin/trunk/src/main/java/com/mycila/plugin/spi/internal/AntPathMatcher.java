@@ -40,7 +40,7 @@ import java.util.Map;
  * @author Arjen Poutsma
  * @since 16.07.2003
  */
-public final class AntPathMatcher {
+final class AntPathMatcher {
 
     private static final String DEFAULT_PATH_SEPARATOR = "/";
 
