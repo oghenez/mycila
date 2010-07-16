@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package test;
+package com.mycila.plugin.annotation;
 
-import com.google.inject.TypeLiteral;
-
-import java.util.Collection;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * Mark an annotation to be a binding annotation. A binding annotation is part of
+ * the export, with the exported type.
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-
-final class Main {
-
-    public static Collection<String> col;
-
-    public static void main(String[] args) throws Exception {
-        System.out.println(TypeLiteral.get(Main.class.getDeclaredField("col").getGenericType()));
-    }
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.ANNOTATION_TYPE})
+public @interface BindingAnnotation {
 }

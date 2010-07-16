@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package test;
+package com.mycila.plugin;
 
-import com.google.inject.TypeLiteral;
-
-import java.util.Collection;
+import java.lang.annotation.Annotation;
 
 /**
+ * Implemented by scopes to provide an export.
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-
-final class Main {
-
-    public static Collection<String> col;
-
-    public static void main(String[] args) throws Exception {
-        System.out.println(TypeLiteral.get(Main.class.getDeclaredField("col").getGenericType()));
-    }
-
+public interface Scope {
+    <T> Provider<T> getProvider(Annotation annotation, Provider<T> unscoped);
 }

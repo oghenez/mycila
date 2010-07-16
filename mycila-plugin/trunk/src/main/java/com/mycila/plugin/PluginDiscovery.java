@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-package test;
-
-import com.google.inject.TypeLiteral;
-
-import java.util.Collection;
+package com.mycila.plugin;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-
-final class Main {
-
-    public static Collection<String> col;
-
-    public static void main(String[] args) throws Exception {
-        System.out.println(TypeLiteral.get(Main.class.getDeclaredField("col").getGenericType()));
-    }
-
+public interface PluginDiscovery {
+    Iterable<? extends Class<?>> scan() throws PluginDiscoveryException;
 }

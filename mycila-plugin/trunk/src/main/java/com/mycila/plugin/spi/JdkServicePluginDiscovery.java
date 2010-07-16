@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 
-package test;
+package com.mycila.plugin.spi;
 
-import com.google.inject.TypeLiteral;
-
-import java.util.Collection;
+import com.mycila.plugin.Loader;
+import com.mycila.plugin.PluginDiscovery;
+import com.mycila.plugin.spi.internal.ServiceClassLoader;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
+public final class JdkServicePluginDiscovery implements PluginDiscovery {
 
-final class Main {
+    private final Class<?> markerClass;
+    private final Loader loader;
 
-    public static Collection<String> col;
-
-    public static void main(String[] args) throws Exception {
-        System.out.println(TypeLiteral.get(Main.class.getDeclaredField("col").getGenericType()));
+    public JdkServicePluginDiscovery(Class<?> markerClass, Loader loader) {
+        this.markerClass = markerClass;
+        this.loader = loader;
     }
 
+    @Override
+    public Iterable<? extends Class<?>> scan() {
+        return ServiceClassLoader.load(markerClass, loader);
+    }
 }

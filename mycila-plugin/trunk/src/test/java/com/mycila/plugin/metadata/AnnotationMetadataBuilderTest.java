@@ -16,11 +16,12 @@
 
 package com.mycila.plugin.metadata;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.mycila.plugin.metadata.model.*;
-import com.mycila.plugin.scope.annotation.ExpiringSingleton;
-import com.mycila.plugin.scope.annotation.Singleton;
+import com.mycila.plugin.spi.model.InexistingBindingException;
+import com.mycila.plugin.spi.model.InjectionPoint;
+import com.mycila.plugin.spi.model.PluginExport;
+import com.mycila.plugin.spi.model.PluginImport;
+import com.mycila.plugin.spi.model.PluginMetadata;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -64,20 +65,6 @@ public final class AnnotationMetadataBuilderTest {
 
         assertEquals(2, Iterables.size(metadata.getExports()));
 
-        assertTrue(Iterables.indexOf(metadata.getExports(), new Predicate<PluginExport<?>>() {
-            @Override
-            public boolean apply(PluginExport<?> input) {
-                return JButton.class.equals(input.getType()) && Singleton.class.isInstance(input.getScope());
-            }
-        }) != -1);
-
-        assertTrue(Iterables.indexOf(metadata.getExports(), new Predicate<PluginExport<?>>() {
-            @Override
-            public boolean apply(PluginExport<?> input) {
-                return JLabel.class.equals(input.getType()) && ExpiringSingleton.class.isInstance(input.getScope());
-            }
-        }) != -1);
-
         assertNotNull(metadata.getExport(JButton.class));
         assertNotNull(metadata.getExport(AbstractButton.class));
         assertNotNull(metadata.getExport(JLabel.class));
@@ -92,7 +79,7 @@ public final class AnnotationMetadataBuilderTest {
         try {
             metadata.getExport(Void.class);
             fail();
-        } catch (InexistingExportException e) {
+        } catch (InexistingBindingException e) {
             //ok
         }
 

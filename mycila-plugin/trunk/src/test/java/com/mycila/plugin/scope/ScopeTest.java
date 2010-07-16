@@ -17,7 +17,8 @@
 package com.mycila.plugin.scope;
 
 import com.mycila.plugin.Provider;
-import com.mycila.plugin.scope.annotation.ExpiringSingleton;
+import com.mycila.plugin.annotation.scope.ExpiringSingleton;
+import com.mycila.plugin.spi.Scopes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

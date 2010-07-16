@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package test;
+package com.mycila.plugin.annotation.scope;
 
-import com.google.inject.TypeLiteral;
+import com.mycila.plugin.annotation.ScopeAnnotation;
+import com.mycila.plugin.spi.Scopes;
 
-import java.util.Collection;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * No scope
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-
-final class Main {
-
-    public static Collection<String> col;
-
-    public static void main(String[] args) throws Exception {
-        System.out.println(TypeLiteral.get(Main.class.getDeclaredField("col").getGenericType()));
-    }
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
+@ScopeAnnotation(Scopes.None.class)
+public @interface None {
 }

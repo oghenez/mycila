@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 
-package test;
-
-import com.google.inject.TypeLiteral;
-
-import java.util.Collection;
+package com.mycila.plugin.spi.invoke;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
+public interface InvokableComposite<T> extends Invokable<T>, Iterable<Invokable<T>> {
+    void add(Invokable<T> invokable);
 
-final class Main {
-
-    public static Collection<String> col;
-
-    public static void main(String[] args) throws Exception {
-        System.out.println(TypeLiteral.get(Main.class.getDeclaredField("col").getGenericType()));
-    }
-
+    void addAll(Iterable<Invokable<T>> invokables);
 }
