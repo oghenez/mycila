@@ -16,8 +16,8 @@
 
 package com.mycila.plugin.annotation.scope;
 
+import com.mycila.plugin.Scopes;
 import com.mycila.plugin.annotation.ScopeAnnotation;
-import com.mycila.plugin.spi.Scopes;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

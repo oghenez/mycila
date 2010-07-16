@@ -16,10 +16,9 @@
 
 package com.mycila.plugin.spi.internal;
 
+import com.mycila.plugin.Scopes;
 import com.mycila.plugin.annotation.scope.None;
 import com.mycila.plugin.annotation.scope.Singleton;
-import com.mycila.plugin.spi.ScopeBinding;
-import com.mycila.plugin.spi.Scopes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

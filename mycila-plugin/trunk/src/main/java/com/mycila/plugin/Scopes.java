@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi;
+package com.mycila.plugin;
 
-import com.mycila.plugin.Provider;
-import com.mycila.plugin.Scope;
+import com.mycila.plugin.spi.internal.AnnotationUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.ref.Reference;
@@ -28,12 +27,7 @@ import java.lang.ref.WeakReference;
  */
 public final class Scopes {
 
-    public static final com.mycila.plugin.annotation.scope.None DEFAULT = new com.mycila.plugin.annotation.scope.None() {
-        @Override
-        public Class<? extends Annotation> annotationType() {
-            return com.mycila.plugin.annotation.scope.None.class;
-        }
-    };
+    public static final com.mycila.plugin.annotation.scope.None DEFAULT = AnnotationUtils.buildRandomAnnotation(com.mycila.plugin.annotation.scope.None.class);
 
     private static final Object NULL = new Object();
 

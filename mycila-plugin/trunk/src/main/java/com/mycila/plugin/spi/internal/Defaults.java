@@ -55,4 +55,5 @@ public final class Defaults {
     public static <T> T defaultValue(Class<T> type) {
         return (T) DEFAULTS.get(type);
     }
+
 }

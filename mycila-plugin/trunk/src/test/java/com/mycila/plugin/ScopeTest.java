@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi;
+package com.mycila.plugin;
 
 import com.mycila.plugin.Provider;
+import com.mycila.plugin.Scopes;
 import com.mycila.plugin.annotation.scope.ExpiringSingleton;
 import org.junit.Test;
 import org.junit.runner.RunWith;

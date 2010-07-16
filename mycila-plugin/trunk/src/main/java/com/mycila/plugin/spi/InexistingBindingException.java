@@ -16,6 +16,8 @@
 
 package com.mycila.plugin.spi;
 
+import com.mycila.plugin.Binding;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
