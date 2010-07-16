@@ -51,7 +51,7 @@ final class InvokableField<T> implements InvokableMember<T> {
     @Override
     public T invoke(Object... args) throws InvokeException {
         try {
-            if(!field.isAccessible())
+            if (!field.isAccessible())
                 field.setAccessible(true);
             return (T) field.get(target);
         } catch (Exception e) {

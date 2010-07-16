@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal;
-
-import com.mycila.plugin.Loader;
-
-import java.net.URL;
+package com.mycila.plugin.spi;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface ClassResolver {
-    Class<?> resolve(URL url) throws ClassResolverException;
+public final class DuplicateExportException extends PluginMetadataException {
+    private static final long serialVersionUID = 1;
 
-    Loader getLoader();
+    public DuplicateExportException(Class pluginClass, Binding<?> binding) {
+        super("Two exports found for same binding " + binding + " in plugin class " + pluginClass.getName());
+    }
 }

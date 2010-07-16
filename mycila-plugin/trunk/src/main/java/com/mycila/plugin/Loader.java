@@ -24,6 +24,8 @@ import java.util.List;
  */
 public interface Loader {
     Class<?> loadClass(String className) throws LoaderException;
+
     URL getResource(String path);
+
     List<URL> getResources(String path);
 }

@@ -22,9 +22,9 @@ import com.mycila.plugin.PluginDiscoveryException;
 import com.mycila.plugin.annotation.Plugin;
 import com.mycila.plugin.spi.internal.ASMClassResolver;
 import com.mycila.plugin.spi.internal.ClassResolver;
+import com.mycila.plugin.spi.internal.ClassUtils;
 import com.mycila.plugin.spi.internal.ResourcePatternResolver;
-import com.mycila.plugin.spi.internal.util.ClassUtils;
-import com.mycila.plugin.spi.internal.util.StringUtils;
+import com.mycila.plugin.spi.internal.StringUtils;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -59,7 +59,7 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
         this(Plugin.class, loader);
     }
 
-    public AnnotatedPluginDiscovery(Class<? extends Annotation> annotationClass, Loader loader) {
+    AnnotatedPluginDiscovery(Class<? extends Annotation> annotationClass, Loader loader) {
         this.annotationClass = annotationClass;
         this.pathResolver = new ResourcePatternResolver(loader);
         this.classResolver = new ASMClassResolver(annotationClass, loader);

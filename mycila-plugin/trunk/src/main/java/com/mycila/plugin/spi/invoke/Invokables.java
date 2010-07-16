@@ -16,7 +16,7 @@
 
 package com.mycila.plugin.spi.invoke;
 
-import com.mycila.plugin.spi.internal.util.AopUtils;
+import com.mycila.plugin.spi.internal.AopUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

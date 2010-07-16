@@ -38,8 +38,8 @@ import java.util.ServiceConfigurationError;
 public final class ServiceClassLoader<S> implements Iterable<Class<S>> {
 
     private static final String PREFIX = "META-INF/services/";
-    private final  Class<S> service;
-    private final  Loader loader;
+    private final Class<S> service;
+    private final Loader loader;
     private LinkedHashMap<String, Class<S>> providers = new LinkedHashMap<String, Class<S>>();
     private LazyIterator lookupIterator;
 

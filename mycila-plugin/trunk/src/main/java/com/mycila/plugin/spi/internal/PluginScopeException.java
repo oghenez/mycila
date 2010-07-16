@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
+package com.mycila.plugin.spi.internal;
 
-import com.mycila.plugin.spi.internal.StringUtils;
-
-import java.lang.annotation.Annotation;
+import com.mycila.plugin.PluginException;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class PluginDiscoveryException extends PluginException {
+public class PluginScopeException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public PluginDiscoveryException(Throwable cause, Class<? extends Annotation> pluginAnnotation, String... packages) {
-        super("Error when scanning for plugin annotated by @" + pluginAnnotation.getName() + " in packages " + StringUtils.arrayToCommaDelimitedString(packages) + " : " + cause.getMessage(), cause);
+    public PluginScopeException(String message) {
+        super(message);
     }
 
-    public PluginDiscoveryException(String msg, Throwable cause) {
-        super(msg, cause);
+    public PluginScopeException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

@@ -23,5 +23,6 @@ import com.mycila.plugin.spi.TypeLiteral;
  */
 public interface InvokableMember<T> extends Invokable<T> {
     TypeLiteral<T> getType();
+
     AnnotatedMember getMember();
 }

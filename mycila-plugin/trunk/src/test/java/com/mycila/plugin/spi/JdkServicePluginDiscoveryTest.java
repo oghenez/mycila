@@ -14,17 +14,26 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal;
+package com.mycila.plugin.spi;
 
-import com.mycila.plugin.Loader;
+import com.google.common.collect.Iterables;
+import com.mycila.plugin.spi.internal.ClassUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
-import java.net.URL;
+import static org.junit.Assert.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface ClassResolver {
-    Class<?> resolve(URL url) throws ClassResolverException;
+@RunWith(JUnit4.class)
+public final class JdkServicePluginDiscoveryTest {
 
-    Loader getLoader();
+    @Test
+    public void test() throws Exception {
+        JdkServicePluginDiscovery discovery = new JdkServicePluginDiscovery(Serv.class, new DefaultLoader(ClassUtils.getDefaultClassLoader()));
+        assertEquals(2, Iterables.size(discovery.scan()));
+    }
+
 }

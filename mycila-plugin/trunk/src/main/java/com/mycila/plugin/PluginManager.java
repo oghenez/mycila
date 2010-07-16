@@ -16,27 +16,19 @@
 
 package com.mycila.plugin;
 
-import com.mycila.plugin.annotation.Plugin;
-import com.mycila.plugin.metadata.AnnotationMetadataBuilder;
-import com.mycila.plugin.metadata.MetadataBuilder;
-import com.mycila.plugin.spi.AnnotatedPluginDiscovery;
-import com.mycila.plugin.spi.JdkServicePluginDiscovery;
-import com.mycila.plugin.spi.internal.util.AopUtils;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class PluginManager {
 
-    private final PluginDiscovery pluginDiscovery;
-    private final MetadataBuilder metadataBuilder;
+    //private final PluginDiscovery pluginDiscovery;
 
     public PluginManager(Loader loader) {
-        pluginDiscovery = AopUtils.asmAvailable() ?
+        /*pluginDiscovery = AopUtils.asmAvailable() ?
                 new AnnotatedPluginDiscovery(Plugin.class, loader) :
                 new JdkServicePluginDiscovery(Plugin.class, loader);
-        metadataBuilder = new AnnotationMetadataBuilder();
-        
+        metadataBuilder = new AnnotationMetadataBuilder();*/
+
     }
 
     public void start() {
