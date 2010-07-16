@@ -17,10 +17,6 @@
 package com.mycila.plugin.spi.internal;
 
 import com.mycila.plugin.Loader;
-import com.mycila.plugin.spi.internal.util.AntPathMatcher;
-import com.mycila.plugin.spi.internal.util.Assert;
-import com.mycila.plugin.spi.internal.util.ResourceUtils;
-import com.mycila.plugin.spi.internal.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;

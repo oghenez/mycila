@@ -17,9 +17,8 @@
 package com.mycila.plugin.spi.internal;
 
 import com.mycila.plugin.Scope;
-import com.mycila.plugin.ScopeInstanciationException;
-import com.mycila.plugin.TooManyScopeException;
 import com.mycila.plugin.annotation.ScopeAnnotation;
+import com.mycila.plugin.spi.ScopeBinding;
 import com.mycila.plugin.spi.invoke.Invokables;
 import com.mycila.plugin.spi.invoke.InvokeException;
 
@@ -31,7 +30,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class ScopeResolver {
+public final class ScopeResolver {
 
     private final ConcurrentMap<Class<?>, Scope> cache = new ConcurrentHashMap<Class<?>, Scope>();
     private final Annotation defaultScope;
@@ -59,7 +58,7 @@ final class ScopeResolver {
         }
     }
 
-    public ScopeBinding getScopeBinding(AnnotatedElement member) {
+    public ScopeBinding getScopeBinding(AnnotatedElement member) throws TooManyScopeException {
         Annotation found = null;
         for (Annotation annotation : member.getAnnotations())
             if (annotation.annotationType().isAnnotationPresent(ScopeAnnotation.class))

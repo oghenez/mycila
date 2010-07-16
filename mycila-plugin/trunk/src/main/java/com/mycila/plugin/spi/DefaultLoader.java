@@ -18,6 +18,7 @@ package com.mycila.plugin.spi;
 
 import com.mycila.plugin.Loader;
 import com.mycila.plugin.LoaderException;
+import com.mycila.plugin.spi.internal.ClassUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -31,6 +32,10 @@ import java.util.List;
 public class DefaultLoader implements Loader {
 
     private final ClassLoader classLoader;
+
+    public DefaultLoader() {
+        this(ClassUtils.getDefaultClassLoader());
+    }
 
     public DefaultLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;

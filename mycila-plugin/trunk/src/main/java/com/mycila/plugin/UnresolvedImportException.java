@@ -16,8 +16,8 @@
 
 package com.mycila.plugin;
 
-import com.mycila.plugin.spi.internal.util.StringUtils;
-import com.mycila.plugin.spi.model.PluginExport;
+import com.mycila.plugin.spi.PluginExport;
+import com.mycila.plugin.spi.internal.StringUtils;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

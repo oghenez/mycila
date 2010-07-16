@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal;
+package com.mycila.plugin.spi;
 
-import com.mycila.plugin.Loader;
+import com.mycila.plugin.Scope;
 
-import java.net.URL;
+import java.lang.annotation.Annotation;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface ClassResolver {
-    Class<?> resolve(URL url) throws ClassResolverException;
+public interface ScopeBinding {
+    Scope getScope();
 
-    Loader getLoader();
+    Annotation getAnnotation();
 }

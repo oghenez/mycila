@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal;
-
-import com.mycila.plugin.Loader;
-
-import java.net.URL;
+package com.mycila.plugin.spi;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface ClassResolver {
-    Class<?> resolve(URL url) throws ClassResolverException;
-
-    Loader getLoader();
+public interface Serv {
 }

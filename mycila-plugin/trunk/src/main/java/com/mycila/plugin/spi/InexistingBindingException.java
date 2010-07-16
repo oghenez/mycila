@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
-
-import com.mycila.plugin.spi.internal.StringUtils;
-
-import java.lang.annotation.Annotation;
+package com.mycila.plugin.spi;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class PluginDiscoveryException extends PluginException {
+public final class InexistingBindingException extends PluginMetadataException {
     private static final long serialVersionUID = 1;
 
-    public PluginDiscoveryException(Throwable cause, Class<? extends Annotation> pluginAnnotation, String... packages) {
-        super("Error when scanning for plugin annotated by @" + pluginAnnotation.getName() + " in packages " + StringUtils.arrayToCommaDelimitedString(packages) + " : " + cause.getMessage(), cause);
-    }
-
-    public PluginDiscoveryException(String msg, Throwable cause) {
-        super(msg, cause);
+    public InexistingBindingException(Class pluginClass, Binding<?> binding) {
+        super("Unable to find export with binding " + binding + " in plugin class " + pluginClass.getName());
     }
 }
