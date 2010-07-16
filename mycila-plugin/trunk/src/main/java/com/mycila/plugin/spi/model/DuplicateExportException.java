@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package test;
-
-import com.google.inject.TypeLiteral;
-
-import java.util.Collection;
+package com.mycila.plugin.spi.model;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
+public final class DuplicateExportException extends PluginMetadataException {
+    private static final long serialVersionUID = 1;
 
-final class Main {
-
-    public static Collection<String> col;
-
-    public static void main(String[] args) throws Exception {
-        System.out.println(TypeLiteral.get(Main.class.getDeclaredField("col").getGenericType()));
+    public DuplicateExportException(Class pluginClass, Class exportType) {
+        super("Two exports found for same type " + exportType.getName() + " in plugin class " + pluginClass.getName());
     }
-
 }

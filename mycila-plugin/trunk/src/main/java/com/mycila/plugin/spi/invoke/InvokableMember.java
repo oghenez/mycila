@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package test;
+package com.mycila.plugin.spi.invoke;
 
-import com.google.inject.TypeLiteral;
-
-import java.util.Collection;
+import com.mycila.plugin.spi.TypeLiteral;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-
-final class Main {
-
-    public static Collection<String> col;
-
-    public static void main(String[] args) throws Exception {
-        System.out.println(TypeLiteral.get(Main.class.getDeclaredField("col").getGenericType()));
-    }
-
+public interface InvokableMember<T> extends Invokable<T> {
+    TypeLiteral<T> getType();
+    AnnotatedMember getMember();
 }

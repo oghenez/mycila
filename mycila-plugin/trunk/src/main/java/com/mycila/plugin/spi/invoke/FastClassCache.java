@@ -14,22 +14,30 @@
  * limitations under the License.
  */
 
-package test;
+package com.mycila.plugin.spi.invoke;
 
-import com.google.inject.TypeLiteral;
+import net.sf.cglib.reflect.FastClass;
 
-import java.util.Collection;
+import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-
-final class Main {
-
-    public static Collection<String> col;
-
-    public static void main(String[] args) throws Exception {
-        System.out.println(TypeLiteral.get(Main.class.getDeclaredField("col").getGenericType()));
+final class FastClassCache {
+    private FastClassCache() {
     }
 
+    static final Map<Class<?>, WeakReference<FastClass>> CLASSES = new WeakHashMap<Class<?>, WeakReference<FastClass>>();
+
+    public static FastClass getFastClass(Class<?> c) {
+        WeakReference<FastClass> ref = CLASSES.get(c);
+        FastClass fast = null;
+        if (ref != null)
+            fast = ref.get();
+        if (fast == null)
+            CLASSES.put(c, new WeakReference<FastClass>(fast = FastClass.create(c)));
+        return fast;
+    }
 }

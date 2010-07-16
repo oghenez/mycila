@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package test;
+package com.mycila.plugin.spi.internal;
 
-import com.google.inject.TypeLiteral;
+import com.mycila.plugin.Loader;
 
-import java.util.Collection;
+import java.net.URL;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-
-final class Main {
-
-    public static Collection<String> col;
-
-    public static void main(String[] args) throws Exception {
-        System.out.println(TypeLiteral.get(Main.class.getDeclaredField("col").getGenericType()));
-    }
-
+public interface ClassResolver {
+    Class<?> resolve(URL url) throws ClassResolverException;
+    Loader getLoader();
 }
