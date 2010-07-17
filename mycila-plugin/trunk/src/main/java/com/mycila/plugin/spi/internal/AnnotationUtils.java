@@ -20,21 +20,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 public final class AnnotationUtils {
 
     private AnnotationUtils() {
-    }
-
-    public static <T extends Annotation> T getAnnotation(Class<T> annotationClass, Annotation... annotations) {
-        T t = findAnnotation(annotationClass, annotations);
-        if (t == null)
-            throw new NoSuchElementException(annotationClass.getName() + " in " + Arrays.toString(annotations));
-        return t;
     }
 
     public static <T extends Annotation> T findAnnotation(Class<T> annotationClass, Annotation... annotations) {
@@ -59,7 +50,7 @@ public final class AnnotationUtils {
         if (type == String.class) return "";
         if (type == Class.class) return Void.class;
         try {
-            if (type.isEnum()) return Enum.valueOf((Class<? extends Enum>) type, type.getFields()[0].getName());
+            if (type.isEnum()) return Enum.valueOf((Class<? extends Enum>) type, type.getDeclaredFields()[0].getName());
         } catch (Exception e) {
             throw new UnsupportedOperationException("Unable to randomize annotation: cannot get an enum for " + type);
         }

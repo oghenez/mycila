@@ -26,9 +26,21 @@ public final class AnnotationTest {
     @Test
     public void test_simple_annot() throws Exception {
         Test test = AnnotationUtils.buildRandomAnnotation(Test.class);
+        Test test2 = AnnotationUtils.buildRandomAnnotation(Test.class);
+        assertTrue(test.equals(test2));
         assertTrue(currentMethod.get().getAnnotation(Test.class).equals(test));
         assertTrue(test.equals(currentMethod.get().getAnnotation(Test.class)));
         assertTrue(currentMethod.get().getAnnotation(Test.class).hashCode() == test.hashCode());
+    }
+
+    @Test
+    public void test_fail() throws Exception {
+        try {
+            AnnotationUtils.buildRandomAnnotation(Failing.class);
+            fail();
+        } catch (Exception e) {
+            assertEquals(UnsupportedOperationException.class, e.getClass());
+        }
     }
 
     @Test
@@ -53,4 +65,11 @@ public final class AnnotationTest {
         TimeUnit unit();
     }
 
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.METHOD, ElementType.PARAMETER})
+    static public @interface Failing {
+        Zero ZERO();
+    }
+
+    private static enum Zero{}
 }

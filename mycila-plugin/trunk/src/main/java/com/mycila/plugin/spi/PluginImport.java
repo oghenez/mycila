@@ -36,12 +36,12 @@ public final class PluginImport<T> {
         return binding;
     }
 
-    public Class<?> getPlugin() {
+    public Class<?> getFromPlugin() {
         return fromPlugin;
     }
 
     public boolean fromPlugin(Class<?> plugin) {
-        return plugin == FROM_ANY_PLUGIN || this.fromPlugin.equals(plugin);
+        return plugin == FROM_ANY_PLUGIN || this.fromPlugin == plugin;
     }
 
     @Override
