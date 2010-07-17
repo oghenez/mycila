@@ -49,7 +49,7 @@ public final class PluginMetadataTest {
         assertEquals("start", metadata.onStart().invoke());
         assertEquals("stop", metadata.onStop().invoke());
     }
-
+    
     @Test
     public void test_exports() throws Exception {
         PluginMetadata metadata = PluginMetadata.from(new MyPlugin());
@@ -60,7 +60,7 @@ public final class PluginMetadataTest {
         assertEquals(2, Iterables.size(metadata.getExports()));
 
         assertNotNull(metadata.getExport(Binding.get(JButton.class, MyPlugin.Red.class)));
-        assertNotNull(metadata.getExport(Binding.get(JLabel.class, MyPlugin.Level.class)));
+        assertNotNull(metadata.getExport(Binding.get(JLabel.class, MyPlugin.Level.class, MyPlugin.Red.class)));
 
         try {
             metadata.getExport(Binding.get(JLabel.class));
@@ -72,11 +72,11 @@ public final class PluginMetadataTest {
         assertEquals("button", metadata.getExport(Binding.get(JButton.class, MyPlugin.Red.class)).getProvider().get().getText());
         assertEquals("button", metadata.getExport(Binding.get(JButton.class, MyPlugin.Red.class)).getProvider().get().getText());
 
-        String txt = metadata.getExport(Binding.get(JLabel.class, MyPlugin.Level.class)).getProvider().get().getText();
-        assertEquals(txt, metadata.getExport(Binding.get(JLabel.class, MyPlugin.Level.class)).getProvider().get().getText());
+        String txt = metadata.getExport(Binding.get(JLabel.class, MyPlugin.Level.class, MyPlugin.Red.class)).getProvider().get().getText();
+        assertEquals(txt, metadata.getExport(Binding.get(JLabel.class, MyPlugin.Level.class, MyPlugin.Red.class)).getProvider().get().getText());
         System.out.println(txt);
         Thread.sleep(600);
-        String txt2 = metadata.getExport(Binding.get(JLabel.class, MyPlugin.Level.class)).getProvider().get().getText();
+        String txt2 = metadata.getExport(Binding.get(JLabel.class, MyPlugin.Level.class, MyPlugin.Red.class)).getProvider().get().getText();
         System.out.println(txt2);
         assertFalse(txt.equals(txt2));
     }
@@ -98,8 +98,8 @@ public final class PluginMetadataTest {
 
         for (InjectionPoint point : metadata.getInjectionPoints()) {
             System.out.println(point);
-            for (PluginImport pluginImport : point.getImports())
-                System.out.println(" - " + pluginImport);
+            for (Binding<?> binding : point.getBindings())
+                System.out.println(" - " + binding);
         }
     }
 }

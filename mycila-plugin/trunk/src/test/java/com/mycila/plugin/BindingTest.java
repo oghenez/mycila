@@ -45,7 +45,7 @@ public final class BindingTest {
         Binding binding = Binding.get(JButton.class, Personal.class);
         System.out.println(binding);
         System.out.println(m2.getAnnotation(Personal.class));
-        assertEquals(m2.getAnnotation(Personal.class), binding.getAnnotations().get(0));
+        assertEquals(m2.getAnnotation(Personal.class), binding.getAnnotations().iterator().next());
     }
 
     @Test
@@ -54,8 +54,8 @@ public final class BindingTest {
         Binding binding = Binding.get(JButton.class, Internal.class);
         System.out.println(binding);
         System.out.println(m1.getAnnotation(Internal.class));
-        assertEquals(binding.getAnnotations().get(0), m1.getAnnotation(Internal.class));
-        assertEquals(m1.getAnnotation(Internal.class), binding.getAnnotations().get(0));
+        assertEquals(binding.getAnnotations().iterator().next(), m1.getAnnotation(Internal.class));
+        assertEquals(m1.getAnnotation(Internal.class), binding.getAnnotations().iterator().next());
     }
 
     @Test
@@ -74,6 +74,13 @@ public final class BindingTest {
         assertEquals(2, bindings.size());
     }
 
+    @Test
+    public void test_equals() throws Exception {
+        Binding<?> binding1 = Binding.get(String.class, Internal.class, Personal.class);
+        Binding<?> binding2 = Binding.get(String.class, Personal.class, Internal.class);
+        assertTrue(binding1.equals(binding2));
+    }
+
     @Personal
     @Internal(test = "", value = 5)
     public void annotated(@Personal String param, @Internal(test = "456") Integer count) {
@@ -86,16 +93,17 @@ public final class BindingTest {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.METHOD, ElementType.PARAMETER})
+    @Target({ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
     @BindingAnnotation
     static public @interface Personal {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.METHOD, ElementType.PARAMETER})
+    @Target({ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
     @BindingAnnotation
     static public @interface Internal {
         int value() default 5;
+
         String test();
     }
 
@@ -104,7 +112,9 @@ public final class BindingTest {
     @BindingAnnotation
     static public @interface Internal2 {
         Class value();
+
         String test();
+
         TimeUnit unit();
     }
 

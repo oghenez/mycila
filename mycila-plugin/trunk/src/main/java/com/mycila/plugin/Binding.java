@@ -39,7 +39,7 @@ import java.util.List;
 public final class Binding<T> {
 
     private final TypeLiteral<T> type;
-    private final List<Annotation> annotations;
+    private final Collection<Annotation> annotations;
 
     private Binding(TypeLiteral<T> type) {
         this(type, Collections.<Annotation>emptyList());
@@ -47,10 +47,10 @@ public final class Binding<T> {
 
     private Binding(TypeLiteral<T> type, Collection<Annotation> annotations) {
         this.type = type;
-        this.annotations = Collections.unmodifiableList(new ArrayList<Annotation>(annotations));
+        this.annotations = Collections.unmodifiableCollection(new LinkedHashSet<Annotation>(annotations));
     }
 
-    public List<Annotation> getAnnotations() {
+    public Collection<Annotation> getAnnotations() {
         return annotations;
     }
 
@@ -61,7 +61,7 @@ public final class Binding<T> {
     @Override
     public String toString() {
         return annotations.isEmpty() ? type.toString() :
-                StringUtils.arrayToCommaDelimitedString(annotations.toArray(new Object[annotations.size()])) + " " + type;
+                type + " with bindings " + StringUtils.arrayToCommaDelimitedString(annotations.toArray(new Object[annotations.size()]));
     }
 
     @Override
@@ -69,13 +69,17 @@ public final class Binding<T> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Binding binding = (Binding) o;
-        return annotations.equals(binding.annotations) && type.equals(binding.type);
+        return type.equals(binding.type)
+                && annotations.size() == binding.annotations.size()
+                && annotations.containsAll(binding.annotations)
+                && binding.annotations.containsAll(annotations);
     }
 
     @Override
     public int hashCode() {
-        int result = type.hashCode();
-        result = 31 * result + annotations.hashCode();
+        int result = 31 * type.hashCode();
+        for (Annotation annotation : annotations)
+            result += annotation.hashCode();
         return result;
     }
 
@@ -100,7 +104,7 @@ public final class Binding<T> {
             // type
             TypeLiteral<?> type = types.get(i);
             if (type.getRawType() == Provider.class) {
-                if(type.getType() instanceof Class)
+                if (type.getType() instanceof Class)
                     type = TypeLiteral.get(Object.class);
                 else {
                     Type[] args = ((ParameterizedType) type.getType()).getActualTypeArguments();

@@ -57,7 +57,7 @@ public final class AnnotatedPluginDiscoveryPerfTest {
         discovery.includePackages("com.mycila.plugin.annotation");
         Iterable<Class<?>> it = discovery.scan();
         System.out.println(Iterables.toString(it));
-        assertEquals(15, Iterables.size(it));
+        assertEquals(14, Iterables.size(it));
     }
 
     @Test

@@ -25,6 +25,6 @@ public final class InexistingBindingException extends PluginMetadataException {
     private static final long serialVersionUID = 1;
 
     public InexistingBindingException(Class pluginClass, Binding<?> binding) {
-        super("Unable to find export with binding " + binding + " in plugin class " + pluginClass.getName());
+        super("Unable to find export " + binding + " in plugin class " + pluginClass.getName());
     }
 }
