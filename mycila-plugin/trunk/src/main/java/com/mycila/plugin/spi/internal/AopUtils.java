@@ -23,31 +23,25 @@ import java.lang.reflect.Proxy;
  */
 public final class AopUtils {
 
-    private static boolean cglibAvailable = false;
-    private static boolean asmAvailable = false;
-
-    static {
-        try {
-            ClassUtils.getDefaultClassLoader().loadClass("net.sf.cglib.proxy.Callback");
-            cglibAvailable = true;
-        } catch (ClassNotFoundException ignored) {
-        }
-        try {
-            ClassUtils.getDefaultClassLoader().loadClass("org.objectweb.asm.Type");
-            asmAvailable = true;
-        } catch (ClassNotFoundException ignored) {
-        }
-    }
-
     private AopUtils() {
     }
 
     public static boolean cglibAvailable() {
-        return cglibAvailable;
+        try {
+            ClassUtils.getDefaultClassLoader().loadClass("net.sf.cglib.proxy.Callback");
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
     }
 
     public static boolean asmAvailable() {
-        return asmAvailable;
+        try {
+            ClassUtils.getDefaultClassLoader().loadClass("org.objectweb.asm.Type");
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
     }
 
     /**

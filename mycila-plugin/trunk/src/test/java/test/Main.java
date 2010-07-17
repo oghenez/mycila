@@ -15,14 +15,6 @@
  */
 
 package test;
-
-import com.mycila.plugin.annotation.scope.ExpiringSingleton;
-import com.mycila.plugin.spi.internal.Defaults;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
@@ -30,28 +22,7 @@ import java.lang.reflect.Proxy;
 final class Main {
 
     public static void main(String[] args) throws Exception {
-        ExpiringSingleton e = (ExpiringSingleton) Proxy.newProxyInstance(Main.class.getClassLoader(), new Class[]{ExpiringSingleton.class}, new InvocationHandler() {
-            @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                System.out.println(method);
-                return Defaults.defaultValue(method.getReturnType());
-            }
-        });
 
-        ExpiringSingleton e2 = Main.class.getMethod("test1").getAnnotation(ExpiringSingleton.class);
-        ExpiringSingleton e3 = Main.class.getMethod("test2").getAnnotation(ExpiringSingleton.class);
-        System.out.println(e);
-        System.out.println(e2);
-        System.out.println(e3);
-        System.out.println(e2.equals(e3));
-        System.out.println(e.equals(e2));
     }
 
-    @ExpiringSingleton(0l)
-    public static void test1() {
-    }
-
-    @ExpiringSingleton(0l)
-    public static void test2() {
-    }
 }

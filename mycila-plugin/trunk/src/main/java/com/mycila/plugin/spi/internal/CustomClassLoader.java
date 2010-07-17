@@ -22,7 +22,12 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -54,7 +59,9 @@ public final class CustomClassLoader extends URLClassLoader {
         try {
             return (Class<T>) loadClass(className);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e.getMessage(), e);
+            RuntimeException re = new RuntimeException(e.getClass().getName() + ": " + e.getMessage(), e);
+            re.setStackTrace(e.getStackTrace());
+            throw re;
         } finally {
             Thread.currentThread().setContextClassLoader(cl);
         }

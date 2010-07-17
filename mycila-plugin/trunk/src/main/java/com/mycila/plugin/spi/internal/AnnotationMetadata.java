@@ -18,7 +18,12 @@ package com.mycila.plugin.spi.internal;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.IncompleteAnnotationException;
-import java.lang.reflect.*;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -203,7 +208,9 @@ class AnnotationMetadata<T extends Annotation> {
     static <T extends Annotation> AnnotationMetadata<T> randomAnnotation(Class<T> annotationClass) {
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
         Map<String, Object> defaults = AnnotationUtils.getDefaults(annotationClass);
-        for (Method method : annotationClass.getDeclaredMethods()) {
+        Method[] mm = annotationClass.getDeclaredMethods();
+        AccessibleObject.setAccessible(mm, true);
+        for (Method method : mm) {
             String name = method.getName();
             Object o = defaults.get(name);
             if (o == null) o = AnnotationUtils.getRandomDefault(method.getReturnType());

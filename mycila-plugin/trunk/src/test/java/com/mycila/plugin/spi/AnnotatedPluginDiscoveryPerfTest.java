@@ -17,8 +17,8 @@
 package com.mycila.plugin.spi;
 
 import com.google.common.collect.Iterables;
-import com.mycila.plugin.ShowDurationRule;
 import com.mycila.plugin.spi.internal.ClassUtils;
+import com.mycila.plugin.test.ShowDuration;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -49,7 +49,7 @@ public final class AnnotatedPluginDiscoveryPerfTest {
     }
 
     @Rule
-    public ShowDurationRule showDurationRule = new ShowDurationRule();
+    public ShowDuration showDurationRule = new ShowDuration();
 
     @Test
     public void test_local() throws Exception {

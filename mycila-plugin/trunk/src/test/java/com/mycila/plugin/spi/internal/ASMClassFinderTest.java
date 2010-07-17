@@ -30,20 +30,20 @@ import static org.junit.Assert.*;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @RunWith(JUnit4.class)
-public final class ASMClassResolverTest {
+public final class ASMClassFinderTest {
 
     @Test
     public void test_got_on() throws Exception {
-        URL res = getClass().getResource("com/mycila/plugin/spi/internal/ASMClassResolverTest.class");
-        ASMClassResolver resolver = new ASMClassResolver(RunWith.class, new DefaultLoader());
+        URL res = getClass().getResource("/com/mycila/plugin/spi/internal/ASMClassFinderTest.class");
+        ASMClassFinder resolver = new ASMClassFinder(RunWith.class, new DefaultLoader());
         Class<?> c = resolver.resolve(res);
-        assertEquals(ASMClassResolverTest.class, c);
+        assertEquals(ASMClassFinderTest.class, c);
     }
 
     @Test
     public void test_got_none() throws Exception {
-        URL res = getClass().getResource("com/mycila/plugin/spi/internal/ASMClassResolverTest.class");
-        ASMClassResolver resolver = new ASMClassResolver(Ignore.class, new DefaultLoader());
+        URL res = getClass().getResource("/com/mycila/plugin/spi/internal/ASMClassFinderTest.class");
+        ASMClassFinder resolver = new ASMClassFinder(Ignore.class, new DefaultLoader());
         Class<?> c = resolver.resolve(res);
         assertNull(c);
     }

@@ -20,7 +20,9 @@ import com.mycila.plugin.Loader;
 import com.mycila.plugin.PluginDiscovery;
 import com.mycila.plugin.PluginDiscoveryException;
 import com.mycila.plugin.annotation.Plugin;
-import com.mycila.plugin.spi.internal.*;
+import com.mycila.plugin.spi.internal.ASMClassFinder;
+import com.mycila.plugin.spi.internal.ClassUtils;
+import com.mycila.plugin.spi.internal.ResourcePatternResolver;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -29,24 +31,26 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.concurrent.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class AnnotatedPluginDiscovery implements PluginDiscovery {
 
-    private static final Logger LOGGER = Logger.getLogger(AnnotatedPluginDiscovery.class.getName());
+    public static final String[] DEFAULT_EXCLUDED_PACKAGES = {"java", "javax"};
+    public static final String[] DEFAULT_INCLUDED_PACKAGES = {};
 
     private final Class<? extends Annotation> annotationClass;
     private final ResourcePatternResolver pathResolver;
-
-    private ClassResolver classResolver;
-    private String[] includedPackages = new String[0];
-    private String[] excludedPackages = {"java", "javax"};
-
+    private final ASMClassFinder classfinder;
+    private String[] includedPackages = DEFAULT_INCLUDED_PACKAGES;
+    private String[] excludedPackages = DEFAULT_EXCLUDED_PACKAGES;
+    
     public AnnotatedPluginDiscovery(Loader loader) {
         this(Plugin.class, loader);
     }
@@ -54,11 +58,7 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
     AnnotatedPluginDiscovery(Class<? extends Annotation> annotationClass, Loader loader) {
         this.annotationClass = annotationClass;
         this.pathResolver = new ResourcePatternResolver(loader);
-        this.classResolver = new ASMClassResolver(annotationClass, loader);
-    }
-
-    public void setClassResolver(ClassResolver classResolver) {
-        this.classResolver = classResolver;
+        this.classfinder = new ASMClassFinder(annotationClass, loader);
     }
 
     public void includePackages(String... packages) {
@@ -69,10 +69,6 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
         this.excludedPackages = packages;
     }
 
-    public Class<? extends Annotation> getAnnotationClass() {
-        return annotationClass;
-    }
-
     @Override
     public Iterable<Class<?>> scan() throws PluginDiscoveryException {
         setExclusions();
@@ -81,8 +77,6 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
         try {
             long count = submitTasks(completionService);
             SortedSet<Class<?>> plugins = collectResults(completionService, count);
-            if (LOGGER.isLoggable(Level.CONFIG))
-                LOGGER.config("Found " + plugins.size() + " plugins.");
             return Collections.unmodifiableSortedSet(plugins);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -113,27 +107,23 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
     private long submitTasks(ExecutorCompletionService<Class<?>> completionService) throws IOException {
         long count = 0;
         if (includedPackages == null || includedPackages.length == 0) {
-            if (LOGGER.isLoggable(Level.CONFIG))
-                LOGGER.config("Scanning for classes annotated by @" + annotationClass.getSimpleName() + " in all packages, excluding packages " + StringUtils.arrayToCommaDelimitedString(excludedPackages) + "...");
             for (final URL url : pathResolver.getResources("classpath*:**/*.class")) {
                 count++;
                 completionService.submit(new Callable<Class<?>>() {
                     @Override
                     public Class<?> call() throws Exception {
-                        return classResolver.resolve(url);
+                        return classfinder.resolve(url);
                     }
                 });
             }
         } else {
-            if (LOGGER.isLoggable(Level.CONFIG))
-                LOGGER.config("Scanning for classes annotated by @" + annotationClass.getSimpleName() + " in packages " + StringUtils.arrayToCommaDelimitedString(includedPackages) + " excluding packages " + StringUtils.arrayToCommaDelimitedString(excludedPackages) + "...");
             for (String p : includedPackages) {
                 for (final URL url : pathResolver.getResources("classpath*:" + ClassUtils.convertClassNameToResourcePath(p) + "/**/*.class")) {
                     count++;
                     completionService.submit(new Callable<Class<?>>() {
                         @Override
                         public Class<?> call() throws Exception {
-                            return classResolver.resolve(url);
+                            return classfinder.resolve(url);
                         }
                     });
                 }

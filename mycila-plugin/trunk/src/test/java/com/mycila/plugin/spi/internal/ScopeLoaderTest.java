@@ -19,6 +19,7 @@ package com.mycila.plugin.spi.internal;
 import com.mycila.plugin.Scopes;
 import com.mycila.plugin.annotation.scope.None;
 import com.mycila.plugin.annotation.scope.Singleton;
+import com.mycila.plugin.spi.DuplicateScopeException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -29,25 +30,25 @@ import static org.junit.Assert.*;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @RunWith(JUnit4.class)
-public final class ScopeResolverTest {
+public final class ScopeLoaderTest {
 
     @Test
     public void test() throws Exception {
-        ScopeResolver resolver = new ScopeResolver(Scopes.DEFAULT);
+        ScopeLoader resolver = new ScopeLoader(Scopes.DEFAULT);
 
-        ScopeBinding scopeBinding = resolver.getScopeBinding(getClass().getMethod("method1"));
+        ScopeBinding scopeBinding = resolver.loadScopeBinding(getClass().getMethod("method1"));
         assertEquals(Scopes.DEFAULT, scopeBinding.getAnnotation());
         assertTrue(Scopes.None.class.isInstance(scopeBinding.getScope()));
 
-        scopeBinding = resolver.getScopeBinding(getClass().getMethod("method2"));
+        scopeBinding = resolver.loadScopeBinding(getClass().getMethod("method2"));
         assertTrue(Singleton.class.isInstance(scopeBinding.getAnnotation()));
         assertTrue(Scopes.Singleton.class.isInstance(scopeBinding.getScope()));
 
         try {
-            resolver.getScopeBinding(getClass().getMethod("method3"));
+            resolver.loadScopeBinding(getClass().getMethod("method3"));
             fail();
         } catch (Exception e) {
-            assertTrue(TooManyScopeException.class.isInstance(e));
+            assertTrue(DuplicateScopeException.class.isInstance(e));
         }
     }
 

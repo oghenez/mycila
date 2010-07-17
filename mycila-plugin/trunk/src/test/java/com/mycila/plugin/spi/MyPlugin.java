@@ -74,13 +74,13 @@ public final class MyPlugin<T> {
 
     @Export
     @ExpiringSingleton(500)
-    @Level(2)
+    @Level(0)
     public JLabel label() {
         return new JLabel("a label at " + System.currentTimeMillis());
     }
 
     @Import
-    public void inject1(Provider<T> p1, Provider<? extends T> p2, Provider<Collection<Integer>> p3) {
+    public void inject1(Provider<T> p1, Provider p2, Provider<Collection<Integer>> p3) {
 
     }
 
