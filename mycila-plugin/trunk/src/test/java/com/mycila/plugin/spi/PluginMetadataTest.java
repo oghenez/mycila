@@ -82,6 +82,15 @@ public final class PluginMetadataTest {
     }
 
     @Test
+    public void test_duplicate_exports() throws Exception {
+        try {
+            PluginMetadata.from(new DuplicatePlugin());
+        } catch (Exception e) {
+            assertEquals(DuplicateExportException.class, e.getClass());
+        }
+    }
+
+    @Test
     public void test_imports() throws Exception {
         PluginMetadata metadata = PluginMetadata.from(new MyPlugin());
 

@@ -35,15 +35,6 @@ public final class AopUtils {
         }
     }
 
-    public static boolean asmAvailable() {
-        try {
-            ClassUtils.getDefaultClassLoader().loadClass("org.objectweb.asm.Type");
-            return true;
-        } catch (ClassNotFoundException ignored) {
-            return false;
-        }
-    }
-
     /**
      * Determine the target class of the given bean instance,
      * which might be an AOP proxy.

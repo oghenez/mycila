@@ -16,15 +16,35 @@
 
 package com.mycila.plugin.spi;
 
-import com.mycila.plugin.Binding;
+import com.mycila.plugin.annotation.ActivateAfter;
+import com.mycila.plugin.annotation.ActivateBefore;
+import com.mycila.plugin.annotation.Export;
+import com.mycila.plugin.annotation.Plugin;
+import com.mycila.plugin.annotation.scope.ExpiringSingleton;
+import com.mycila.plugin.annotation.scope.Singleton;
+
+import javax.swing.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class DuplicateExportException extends PluginMetadataException {
-    private static final long serialVersionUID = 1;
+@Plugin(name = "my plugin", description = "a test plugin")
+@ActivateAfter(String.class)
+@ActivateBefore(Integer.class)
+public final class DuplicatePlugin<T> {
 
-    public DuplicateExportException(Class pluginClass, Binding<?> binding) {
-        super("Duplicate exports found for same binding " + binding + " in plugin class " + pluginClass.getName());
+    @Export
+    @MyPlugin.Red
+    @Singleton
+    public JButton button() {
+        return null;
     }
+
+    @Export
+    @MyPlugin.Red
+    @ExpiringSingleton(500)
+    public JButton label() {
+        return null;
+    }
+
 }
