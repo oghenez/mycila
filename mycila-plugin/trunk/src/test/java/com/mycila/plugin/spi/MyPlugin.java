@@ -21,7 +21,6 @@ import com.mycila.plugin.annotation.ActivateAfter;
 import com.mycila.plugin.annotation.ActivateBefore;
 import com.mycila.plugin.annotation.BindingAnnotation;
 import com.mycila.plugin.annotation.Export;
-import com.mycila.plugin.annotation.From;
 import com.mycila.plugin.annotation.Import;
 import com.mycila.plugin.annotation.OnStart;
 import com.mycila.plugin.annotation.OnStop;
@@ -74,6 +73,7 @@ public final class MyPlugin<T> {
 
     @Export
     @ExpiringSingleton(500)
+    @Red
     @Level(0)
     public JLabel label() {
         return new JLabel("a label at " + System.currentTimeMillis());
@@ -85,7 +85,7 @@ public final class MyPlugin<T> {
     }
 
     @Import
-    public void inject1(@From(JButton.class) @Red String a, @Red @Level(2) Provider<Integer> b) {
+    public void inject1(@Red String a, @Red @Level(2) Provider<Integer> b) {
 
     }
 

@@ -53,7 +53,7 @@ public final class PluginExport<T> {
 
     @Override
     public String toString() {
-        return scopeAnnotation + " ( " + binding + " )";
+        return "Export " + binding + " in scope " +  scopeAnnotation;
     }
 
     static <T> PluginExport<T> export(InvokableMember<T> invokable, ScopeBinding scopeBinding) {

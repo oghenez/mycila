@@ -17,12 +17,9 @@
 package com.mycila.plugin.spi;
 
 import com.mycila.plugin.Binding;
-import com.mycila.plugin.annotation.From;
-import com.mycila.plugin.spi.internal.AnnotationUtils;
 import com.mycila.plugin.spi.invoke.InvokableMember;
 import com.mycila.plugin.spi.invoke.Invokables;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -35,15 +32,15 @@ import java.util.List;
 public final class InjectionPoint {
 
     private final InvokableMember<?> invokable; // TODO
-    private final List<PluginImport<?>> imports;
+    private final List<Binding<?>> bindings;
 
-    private InjectionPoint(InvokableMember<?> invokable, List<PluginImport<?>> imports) {
+    private InjectionPoint(InvokableMember<?> invokable, List<? extends Binding<?>> bindings) {
         this.invokable = invokable;
-        this.imports = Collections.unmodifiableList(new ArrayList<PluginImport<?>>(imports));
+        this.bindings = Collections.unmodifiableList(new ArrayList<Binding<?>>(bindings));
     }
 
-    public List<PluginImport<?>> getImports() {
-        return imports;
+    public List<Binding<?>> getBindings() {
+        return bindings;
     }
 
     @Override
@@ -52,23 +49,16 @@ public final class InjectionPoint {
     }
 
     static InjectionPoint from(Method method, Object plugin) {
-        List<Binding<?>> parameters = Binding.fromParameters(method);
-        Annotation[][] allAnnotations = method.getParameterAnnotations();
-        List<PluginImport<?>> imports = new ArrayList<PluginImport<?>>(parameters.size());
-        for (int i = 0; i < allAnnotations.length; i++)
-            imports.add(PluginImport.from(findFrom(allAnnotations[i]), parameters.get(i)));
-        return new InjectionPoint(Invokables.get(method, plugin), imports);
+        return new InjectionPoint(Invokables.get(method, plugin), Binding.fromParameters(method));
     }
 
     static InjectionPoint from(Field field, Object plugin) {
         InvokableMember<?> invokable = Invokables.get(field, plugin);
-        List<PluginImport<?>> imports = new ArrayList<PluginImport<?>>(1);
-        imports.add(PluginImport.from(findFrom(field.getAnnotations()), Binding.fromInvokable(invokable)));
-        return new InjectionPoint(invokable, imports);
+        return new InjectionPoint(invokable, asList(Binding.fromInvokable(invokable)));
     }
 
-    private static Class<?> findFrom(Annotation... annotations) {
-        From from = AnnotationUtils.findAnnotation(From.class, annotations);
-        return from == null ? null : from.value();
+    private static List<? extends Binding<?>> asList(Binding<?> b) {
+        return Collections.singletonList(b);
     }
+
 }
