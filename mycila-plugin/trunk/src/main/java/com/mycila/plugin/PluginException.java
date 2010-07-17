@@ -19,17 +19,17 @@ package com.mycila.plugin;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public abstract class PluginException extends RuntimeException {
+public class PluginException extends RuntimeException {
 
-    protected PluginException(String message) {
+    public PluginException(String message) {
         super(message);
     }
 
-    protected PluginException(String message, Throwable cause) {
+    public PluginException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    protected PluginException(Throwable cause) {
+    public PluginException(Throwable cause) {
         super(cause.getMessage(), cause);
     }
 }

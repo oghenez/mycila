@@ -21,6 +21,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
+import java.io.File;
+
 import static org.junit.Assert.*;
 
 /**
@@ -29,17 +31,26 @@ import static org.junit.Assert.*;
 @RunWith(JUnit4.class)
 public final class InvokablesTest {
     public String test;
+
     @Test
     public void test() throws Exception {
         assertTrue(InvokableFastCtor.class.isInstance(Invokables.get(getClass().getConstructor())));
         assertTrue(InvokableFastMethod.class.isInstance(Invokables.get(getClass().getMethod("test"), this)));
         assertTrue(InvokableField.class.isInstance(Invokables.get(getClass().getField("test"), this)));
 
-        CustomClassLoader loader = CustomClassLoader.isolated();
-        Object dummy = loader.load("com.mycila.plugin.spi.invoke.InvokablesTest.Funny").newInstance();
-        assertTrue(InvokableCtor.class.isInstance(Invokables.get(dummy.getClass().getConstructor())));
-        assertTrue(InvokableMethod.class.isInstance(Invokables.get(dummy.getClass().getMethod("bear"), dummy)));
+        CustomClassLoader loader = CustomClassLoader.create(null, true, true)
+                .add(new File("target/classes"))
+                .add(new File("target/test-classes"));
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        Thread.currentThread().setContextClassLoader(loader);
 
+        try {
+            Object dummy = loader.load("com.mycila.plugin.spi.invoke.InvokablesTest$Funny").newInstance();
+            assertTrue(InvokableCtor.class.isInstance(Invokables.get(dummy.getClass().getConstructor())));
+            assertTrue(InvokableMethod.class.isInstance(Invokables.get(dummy.getClass().getMethod("bear"), dummy)));
+        } finally {
+            Thread.currentThread().setContextClassLoader(cl);
+        }
     }
 
     public static class Funny {

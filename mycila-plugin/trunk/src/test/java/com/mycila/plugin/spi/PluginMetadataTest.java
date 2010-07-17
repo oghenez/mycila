@@ -85,7 +85,7 @@ public final class PluginMetadataTest {
     public void test_imports() throws Exception {
         PluginMetadata metadata = PluginMetadata.from(new MyPlugin());
 
-        assertEquals(3, Iterables.size(metadata.getInjectionPoints()));
+        assertEquals(7, Iterables.size(metadata.getInjectionPoints()));
 
         for (InjectionPoint point : metadata.getInjectionPoints()) {
             System.out.println(point);

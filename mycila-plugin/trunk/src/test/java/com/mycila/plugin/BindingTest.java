@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -52,9 +52,6 @@ public final class BindingTest {
     public void test_get_annot_complex() throws Exception {
         Method m1 = getClass().getMethod("annotated", String.class, Integer.class);
         Binding binding = Binding.get(JButton.class, Internal.class);
-
-        System.out.println(Binding.get(JButton.class, Internal2.class));
-
         System.out.println(binding);
         System.out.println(m1.getAnnotation(Internal.class));
         assertEquals(binding.getAnnotations().get(0), m1.getAnnotation(Internal.class));
@@ -78,7 +75,7 @@ public final class BindingTest {
     }
 
     @Personal
-    @Internal(test = "", value = 0)
+    @Internal(test = "", value = 5)
     public void annotated(@Personal String param, @Internal(test = "456") Integer count) {
 
     }

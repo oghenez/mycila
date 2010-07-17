@@ -14,29 +14,36 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
+package com.mycila.plugin.test;
 
 import org.junit.rules.MethodRule;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 
+import java.lang.reflect.Method;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ShowDurationRule implements MethodRule {
+public final class CurrentMethod implements MethodRule {
+    private final ThreadLocal<Method> currentMethod = new ThreadLocal<Method>();
+
     @Override
     public Statement apply(final Statement base, final FrameworkMethod method, Object target) {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                long time = System.currentTimeMillis();
                 try {
+                    currentMethod.set(method.getMethod());
                     base.evaluate();
                 } finally {
-                    time = System.currentTimeMillis() - time;
-                    System.out.println(" ==> " + method.getMethod().getDeclaringClass().getSimpleName() + "." + method.getName() + ": " + time + "ms");
+                    currentMethod.remove();
                 }
             }
         };
+    }
+
+    public Method get() {
+        return currentMethod.get();
     }
 }

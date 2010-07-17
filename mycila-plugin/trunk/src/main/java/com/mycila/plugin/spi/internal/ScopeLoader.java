@@ -18,6 +18,8 @@ package com.mycila.plugin.spi.internal;
 
 import com.mycila.plugin.Scope;
 import com.mycila.plugin.annotation.ScopeAnnotation;
+import com.mycila.plugin.spi.DuplicateScopeException;
+import com.mycila.plugin.spi.PluginMetadataException;
 import com.mycila.plugin.spi.invoke.Invokables;
 import com.mycila.plugin.spi.invoke.InvokeException;
 
@@ -29,41 +31,35 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ScopeResolver {
+public final class ScopeLoader {
 
     private final ConcurrentMap<Class<?>, Scope> cache = new ConcurrentHashMap<Class<?>, Scope>();
     private final Annotation defaultScope;
 
-    public ScopeResolver(Annotation defaultScope) {
+    public ScopeLoader(Annotation defaultScope) {
         this.defaultScope = defaultScope;
         if (!defaultScope.annotationType().isAnnotationPresent(ScopeAnnotation.class))
             throw new IllegalArgumentException("Invalid scope annotation " + defaultScope.annotationType().getName() + " : annotation must be annotated by @ScopeAnnotation");
     }
 
-    private Scope load(Class<? extends Scope> scopeClass) throws ScopeInstanciationException {
-        try {
-            Scope scope = cache.get(scopeClass);
-            if (scope == null)
-                cache.putIfAbsent(scopeClass, scope = Invokables.get(scopeClass.getConstructor()).invoke());
-            return scope;
-        } catch (InvokeException e) {
-            throw new ScopeInstanciationException(scopeClass, e.getCause());
-        } catch (NoSuchMethodException e) {
-            throw new ScopeInstanciationException(scopeClass, e);
-        }
-    }
-
-    public ScopeBinding getScopeBinding(AnnotatedElement member) throws TooManyScopeException {
+    public ScopeBinding loadScopeBinding(AnnotatedElement member) throws DuplicateScopeException {
         Annotation found = null;
         for (Annotation annotation : member.getAnnotations())
             if (annotation.annotationType().isAnnotationPresent(ScopeAnnotation.class))
                 if (found == null) found = annotation;
-                else throw new TooManyScopeException(member);
+                else throw new DuplicateScopeException(member);
         final Annotation finalFound = found == null ? defaultScope : found;
+        Class<? extends Scope> c = finalFound.annotationType().getAnnotation(ScopeAnnotation.class).value();
+        final Scope scope;
+        try {
+            scope = load(c);
+        } catch (NoSuchMethodException e) {
+            throw new PluginMetadataException("Unable to load scope class " + c.getName() + " : no default public constructor found.");
+        }
         return new ScopeBinding() {
             @Override
             public Scope getScope() {
-                return load(finalFound.annotationType().getAnnotation(ScopeAnnotation.class).value());
+                return scope;
             }
 
             @Override
@@ -76,6 +72,13 @@ public final class ScopeResolver {
                 return finalFound.toString();
             }
         };
+    }
+
+    private Scope load(Class<? extends Scope> scopeClass) throws InvokeException, NoSuchMethodException {
+        Scope scope = cache.get(scopeClass);
+        if (scope == null)
+            cache.putIfAbsent(scopeClass, scope = Invokables.get(scopeClass.getConstructor()).invoke());
+        return scope;
     }
 
 }

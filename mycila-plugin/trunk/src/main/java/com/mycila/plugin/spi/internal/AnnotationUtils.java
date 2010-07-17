@@ -52,12 +52,12 @@ public final class AnnotationUtils {
     }
 
     public static Object getRandomDefault(Class<?> type) {
-        Object o = Defaults.defaultValue(type);
+        Object o = ObjectUtils.defaultValue(type);
         if (o != null) return o;
         // this is a class, enum, String or array
         if (type.isArray()) return Array.newInstance(type, 0);
         if (type == String.class) return "";
-        if (type == Class.class) return Void.TYPE;
+        if (type == Class.class) return Void.class;
         try {
             if (type.isEnum()) return Enum.valueOf((Class<? extends Enum>) type, type.getFields()[0].getName());
         } catch (Exception e) {
@@ -69,7 +69,7 @@ public final class AnnotationUtils {
     public static Map<String, Object> getDefaults(Class<? extends Annotation> annotationClass) {
         Map<String, Object> defaults = new LinkedHashMap<String, Object>();
         try {
-            Field field = annotationClass.getDeclaredField("annotationType");
+            Field field = Class.class.getDeclaredField("annotationType");
             field.setAccessible(true);
             sun.reflect.annotation.AnnotationType type = (sun.reflect.annotation.AnnotationType) field.get(annotationClass);
             defaults.putAll(type.memberDefaults());

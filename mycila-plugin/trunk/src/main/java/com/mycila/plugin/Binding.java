@@ -19,13 +19,19 @@ package com.mycila.plugin;
 import com.mycila.plugin.annotation.BindingAnnotation;
 import com.mycila.plugin.spi.internal.AnnotationUtils;
 import com.mycila.plugin.spi.internal.Assert;
+import com.mycila.plugin.spi.internal.StringUtils;
 import com.mycila.plugin.spi.invoke.InvokableMember;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -54,10 +60,8 @@ public final class Binding<T> {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (Annotation annotation : annotations)
-            sb.append(annotation).append(" ");
-        return sb.append(type).toString();
+        return annotations.isEmpty() ? type.toString() :
+                StringUtils.arrayToCommaDelimitedString(annotations.toArray(new Object[annotations.size()])) + " " + type;
     }
 
     @Override
@@ -96,10 +100,18 @@ public final class Binding<T> {
             // type
             TypeLiteral<?> type = types.get(i);
             if (type.getRawType() == Provider.class) {
-                Type[] args = ((ParameterizedType) types.get(i)).getActualTypeArguments();
-                if (args.length == 0)
-                    throw new IllegalStateException("Missing type argument for provider at ");
-                type = TypeLiteral.get(args[0]);
+                if(type.getType() instanceof Class)
+                    type = TypeLiteral.get(Object.class);
+                else {
+                    Type[] args = ((ParameterizedType) type.getType()).getActualTypeArguments();
+                    if (args.length == 0)
+                        throw new PluginException("Missing type argument for provider at ");
+                    try {
+                        type = TypeLiteral.get(args[0]);
+                    } catch (Exception e) {
+                        throw new PluginException("Illegal binding found for parameter " + type + " on method " + method + " : " + e.getMessage());
+                    }
+                }
             }
             bindings.add(binding(type, annotations));
         }

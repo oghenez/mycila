@@ -17,7 +17,14 @@
 package com.mycila.plugin.spi.internal;
 
 import com.mycila.plugin.Loader;
-import org.objectweb.asm.*;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.Attribute;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,23 +36,18 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ASMClassResolver implements ClassResolver {
+public final class ASMClassFinder {
 
     private final String annotationClassDesc;
     private final Loader loader;
 
-    public ASMClassResolver(Class<? extends Annotation> annotationClass, Loader loader) {
+    public ASMClassFinder(Class<? extends Annotation> annotationClass, Loader loader) {
         this.annotationClassDesc = Type.getDescriptor(annotationClass);
         this.loader = loader;
     }
 
-    @Override
-    public Loader getLoader() {
-        return loader;
-    }
-
-    @Override
-    public Class<?> resolve(URL url) throws ClassResolverException {
+    public Class<?> resolve(URL url) throws IOException {
+        Assert.checkNotNull(url, "URL cannot be null");
         InputStream is = null;
         try {
             is = url.openStream();
@@ -54,8 +56,6 @@ public final class ASMClassResolver implements ClassResolver {
             classReader.accept(visitor, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
             if ((visitor.access & Opcodes.ACC_PUBLIC) != 0 && visitor.annotations.contains(annotationClassDesc))
                 return loader.loadClass(ClassUtils.convertResourcePathToClassName(visitor.name));
-        } catch (IOException e) {
-            throw new ClassResolverException(url, e);
         } finally {
             if (is != null)
                 try {

@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal;
+package com.mycila.plugin.spi;
 
-import com.mycila.plugin.Scope;
+import java.lang.reflect.AnnotatedElement;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ScopeInstanciationException extends PluginScopeException {
+public final class DuplicateScopeException extends PluginMetadataException {
     private static final long serialVersionUID = 1;
 
-    public ScopeInstanciationException(Class<? extends Scope> scope, Throwable cause) {
-        super("Unable to instanciate scope " + scope.getName() + ": " + cause.getMessage(), cause);
+    public DuplicateScopeException(AnnotatedElement element) {
+        super("Too many scopes found at " + element);
     }
 }
