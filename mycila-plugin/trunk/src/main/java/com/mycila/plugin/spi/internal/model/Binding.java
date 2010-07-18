@@ -18,7 +18,6 @@ package com.mycila.plugin.spi.internal.model;
 
 import com.mycila.plugin.annotation.BindingAnnotation;
 import com.mycila.plugin.err.PluginException;
-import com.mycila.plugin.spi.internal.AnnotationUtils;
 import com.mycila.plugin.spi.internal.Assert;
 import com.mycila.plugin.spi.internal.MoreTypes;
 import com.mycila.plugin.spi.internal.StringUtils;
@@ -145,7 +144,7 @@ public final class Binding<T> {
         Annotation[] annots = new Annotation[annotations.length];
         for (int i = 0; i < annotations.length; i++) {
             Assert.state(annotations[i].isAnnotationPresent(BindingAnnotation.class));
-            annots[i] = AnnotationUtils.buildRandomAnnotation(annotations[i]);
+            annots[i] = AnnotationMetadata.buildRandomAnnotation(annotations[i]);
         }
         return get(type, annots);
     }

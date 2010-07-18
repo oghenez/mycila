@@ -19,7 +19,7 @@ package com.mycila.plugin.spi.internal;
 import java.util.HashMap;
 import java.util.Map;
 
-final class ObjectUtils {
+public final class ObjectUtils {
     private ObjectUtils() {
     }
 

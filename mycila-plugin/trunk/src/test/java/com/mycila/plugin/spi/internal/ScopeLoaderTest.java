@@ -34,10 +34,10 @@ public final class ScopeLoaderTest {
 
     @Test
     public void test() throws Exception {
-        ScopeLoader resolver = new ScopeLoader(Scopes.DEFAULT);
+        ScopeLoader resolver = new ScopeLoader();
 
         ScopeBinding scopeBinding = resolver.loadScopeBinding(getClass().getMethod("method1"));
-        assertEquals(Scopes.DEFAULT, scopeBinding.getAnnotation());
+        assertTrue(None.class.isInstance(scopeBinding.getAnnotation()));
         assertTrue(Scopes.None.class.isInstance(scopeBinding.getScope()));
 
         scopeBinding = resolver.loadScopeBinding(getClass().getMethod("method2"));

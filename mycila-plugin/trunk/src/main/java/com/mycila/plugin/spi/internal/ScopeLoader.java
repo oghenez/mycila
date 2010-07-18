@@ -18,10 +18,12 @@ package com.mycila.plugin.spi.internal;
 
 import com.mycila.plugin.Scope;
 import com.mycila.plugin.annotation.ScopeAnnotation;
+import com.mycila.plugin.annotation.scope.None;
 import com.mycila.plugin.err.DuplicateScopeException;
 import com.mycila.plugin.err.InvokeException;
 import com.mycila.plugin.err.PluginException;
 import com.mycila.plugin.spi.internal.invoke.Invokables;
+import com.mycila.plugin.spi.internal.model.AnnotationMetadata;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -33,10 +35,16 @@ import java.util.concurrent.ConcurrentMap;
  */
 public final class ScopeLoader {
 
+    public static final None DEFAULT = AnnotationMetadata.buildRandomAnnotation(None.class);
+
     private final ConcurrentMap<Class<?>, Scope> cache = new ConcurrentHashMap<Class<?>, Scope>();
     private final Annotation defaultScope;
 
-    public ScopeLoader(Annotation defaultScope) {
+    public ScopeLoader() {
+        this(DEFAULT);
+    }
+
+    ScopeLoader(Annotation defaultScope) {
         this.defaultScope = defaultScope;
         if (!defaultScope.annotationType().isAnnotationPresent(ScopeAnnotation.class))
             throw new IllegalArgumentException("Invalid scope annotation " + defaultScope.annotationType().getName() + " : annotation must be annotated by @ScopeAnnotation");

@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal;
+package com.mycila.plugin.spi.internal.aop;
 
 import com.mycila.plugin.Loader;
+import com.mycila.plugin.spi.internal.Assert;
+import com.mycila.plugin.spi.internal.ClassUtils;
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassReader;

@@ -16,7 +16,6 @@
 
 package com.mycila.plugin.spi.internal.model;
 
-import com.mycila.plugin.Scopes;
 import com.mycila.plugin.annotation.ActivateAfter;
 import com.mycila.plugin.annotation.ActivateBefore;
 import com.mycila.plugin.annotation.Export;
@@ -192,7 +191,7 @@ public final class PluginMetadata {
     }
 
     public static PluginMetadata from(Object plugin) {
-        ScopeLoader scopeResolver = new ScopeLoader(Scopes.DEFAULT);
+        ScopeLoader scopeResolver = new ScopeLoader();
         Class<?> pluginClass = AopUtilsTOREFAC.getTargetClass(plugin);
         Plugin pluginAnnot = pluginClass.getAnnotation(Plugin.class);
         PluginMetadata metadata = new PluginMetadata(
