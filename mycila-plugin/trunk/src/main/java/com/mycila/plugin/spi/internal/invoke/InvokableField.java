@@ -14,48 +14,47 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.invoke;
+package com.mycila.plugin.spi.internal.invoke;
 
-import com.mycila.plugin.TypeLiteral;
 import com.mycila.plugin.err.InvokeException;
+import com.mycila.plugin.spi.internal.model.TypeLiteral;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class InvokableMethod<T> implements InvokableMember<T> {
+final class InvokableField<T> implements InvokableMember<T> {
 
-    private final Method method;
+    private final Field field;
     private final Object target;
 
-    InvokableMethod(Object target, Method method) {
+    InvokableField(Object target, Field field) {
         this.target = target;
-        this.method = method;
+        this.field = field;
     }
 
     @Override
     public AnnotatedMember getMember() {
-        return new AnnotatedMember<Method>(method);
+        return new AnnotatedMember<Field>(field);
     }
 
     @Override
     public TypeLiteral<T> getType() {
-        return (TypeLiteral<T>) method.getGenericReturnType();
+        return (TypeLiteral<T>) TypeLiteral.get(field.getGenericType());
     }
 
     @Override
     public String toString() {
-        return method.toString();
+        return field.toString();
     }
 
     @Override
     public T invoke(Object... args) throws InvokeException {
         try {
-            return (T) method.invoke(target, args);
-        } catch (InvocationTargetException e) {
-            throw new InvokeException(this, e.getTargetException());
+            if (!field.isAccessible())
+                field.setAccessible(true);
+            return (T) field.get(target);
         } catch (Exception e) {
             throw new InvokeException(this, e);
         }

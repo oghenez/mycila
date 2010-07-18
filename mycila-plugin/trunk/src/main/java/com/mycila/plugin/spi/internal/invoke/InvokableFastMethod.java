@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.invoke;
+package com.mycila.plugin.spi.internal.invoke;
 
-import com.mycila.plugin.TypeLiteral;
 import com.mycila.plugin.err.InvokeException;
+import com.mycila.plugin.spi.internal.model.TypeLiteral;
 import net.sf.cglib.reflect.FastMethod;
 
 import java.lang.reflect.InvocationTargetException;

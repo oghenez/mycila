@@ -16,8 +16,8 @@
 
 package com.mycila.plugin.err;
 
-import com.mycila.plugin.Binding;
 import com.mycila.plugin.spi.internal.ClassUtils;
+import com.mycila.plugin.spi.internal.model.Binding;
 
 import java.util.Arrays;
 

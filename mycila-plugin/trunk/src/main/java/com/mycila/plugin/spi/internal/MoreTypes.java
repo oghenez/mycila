@@ -16,7 +16,7 @@
 
 package com.mycila.plugin.spi.internal;
 
-import com.mycila.plugin.TypeLiteral;
+import com.mycila.plugin.spi.internal.model.TypeLiteral;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;

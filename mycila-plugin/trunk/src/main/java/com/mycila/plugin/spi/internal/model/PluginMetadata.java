@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi;
+package com.mycila.plugin.spi.internal.model;
 
-import com.mycila.plugin.Binding;
 import com.mycila.plugin.Scopes;
 import com.mycila.plugin.annotation.ActivateAfter;
 import com.mycila.plugin.annotation.ActivateBefore;
@@ -28,12 +27,12 @@ import com.mycila.plugin.annotation.Plugin;
 import com.mycila.plugin.err.DuplicateExportException;
 import com.mycila.plugin.err.InexistingBindingException;
 import com.mycila.plugin.err.InvokeException;
-import com.mycila.plugin.spi.internal.AopUtils;
 import com.mycila.plugin.spi.internal.ScopeBinding;
 import com.mycila.plugin.spi.internal.ScopeLoader;
-import com.mycila.plugin.spi.invoke.Invokable;
-import com.mycila.plugin.spi.invoke.InvokableComposite;
-import com.mycila.plugin.spi.invoke.Invokables;
+import com.mycila.plugin.spi.internal.aop.AopUtilsTOREFAC;
+import com.mycila.plugin.spi.internal.invoke.Invokable;
+import com.mycila.plugin.spi.internal.invoke.InvokableComposite;
+import com.mycila.plugin.spi.internal.invoke.Invokables;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -194,7 +193,7 @@ public final class PluginMetadata {
 
     public static PluginMetadata from(Object plugin) {
         ScopeLoader scopeResolver = new ScopeLoader(Scopes.DEFAULT);
-        Class<?> pluginClass = AopUtils.getTargetClass(plugin);
+        Class<?> pluginClass = AopUtilsTOREFAC.getTargetClass(plugin);
         Plugin pluginAnnot = pluginClass.getAnnotation(Plugin.class);
         PluginMetadata metadata = new PluginMetadata(
                 plugin,

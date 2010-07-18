@@ -17,9 +17,12 @@
 package com.mycila.plugin.spi;
 
 import com.google.common.collect.Iterables;
-import com.mycila.plugin.Binding;
 import com.mycila.plugin.err.DuplicateExportException;
 import com.mycila.plugin.err.InexistingBindingException;
+import com.mycila.plugin.spi.internal.model.Binding;
+import com.mycila.plugin.spi.internal.model.InjectionPoint;
+import com.mycila.plugin.spi.internal.model.PluginExport;
+import com.mycila.plugin.spi.internal.model.PluginMetadata;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -51,7 +54,7 @@ public final class PluginMetadataTest {
         assertEquals("start", metadata.onStart().invoke());
         assertEquals("stop", metadata.onStop().invoke());
     }
-    
+
     @Test
     public void test_exports() throws Exception {
         PluginMetadata metadata = PluginMetadata.from(new MyPlugin());

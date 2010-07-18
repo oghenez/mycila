@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal;
+package com.mycila.plugin.spi.internal.aop;
 
 import java.lang.reflect.Proxy;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class AopUtils {
+public final class AopUtilsTOREFAC {
+
+    //TODO
 
     /**
      * Determine the target class of the given bean instance,

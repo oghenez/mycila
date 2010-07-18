@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi;
+package com.mycila.plugin.spi.internal.model;
 
-import com.mycila.plugin.Binding;
-import com.mycila.plugin.Provider;
-import com.mycila.plugin.err.InactivePluginException;
-import com.mycila.plugin.err.InjectionInProgressException;
-import com.mycila.plugin.spi.invoke.InvokableMember;
-import com.mycila.plugin.spi.invoke.Invokables;
+import com.mycila.plugin.spi.internal.aop.ProviderProxy;
+import com.mycila.plugin.spi.internal.invoke.InvokableMember;
+import com.mycila.plugin.spi.internal.invoke.Invokables;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -84,32 +81,11 @@ public final class InjectionPoint {
             Binding<?> binding = bindings.get(i);
             if (!binding.equals(export.getBinding()))
                 throw new IllegalArgumentException("Requires " + binding + " but got " + export.getBinding());
-            Provider<?> provider = ExportReadyProvider.ensureExportReady(export);
-            oo[i] = binding.isProvided() ? provider : null;//TODO
+            ProviderProxy proxy = ProviderProxy.create(binding, export);
+            oo[i] = proxy.build();
         }
         invokable.invoke(oo);
         injected = true;
-    }
-
-    private static final class ExportReadyProvider<T> implements Provider<T> {
-        private final PluginExport<T> export;
-
-        private ExportReadyProvider(PluginExport<T> export) {
-            this.export = export;
-        }
-
-        @Override
-        public T get() {
-            if (!export.getPluginMetadata().isResolved())
-                throw new InjectionInProgressException(export.getPluginMetadata());
-            if (!export.getPluginMetadata().isStarted())
-                throw new InactivePluginException(export);
-            return export.getProvider().get();
-        }
-
-        public static <T> Provider<T> ensureExportReady(PluginExport<T> export) {
-            return new ExportReadyProvider<T>(export);
-        }
     }
 
 }

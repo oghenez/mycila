@@ -16,7 +16,7 @@
 
 package com.mycila.plugin.err;
 
-import com.mycila.plugin.spi.PluginExport;
+import com.mycila.plugin.spi.internal.model.PluginExport;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

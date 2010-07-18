@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.invoke;
-
-import com.mycila.plugin.TypeLiteral;
+package com.mycila.plugin.spi.internal.invoke;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface InvokableMember<T> extends Invokable<T> {
-    TypeLiteral<T> getType();
+public interface InvokableComposite<T> extends Invokable<T>, Iterable<Invokable<T>> {
+    void add(Invokable<T> invokable);
 
-    AnnotatedMember getMember();
+    void addAll(Iterable<Invokable<T>> invokables);
 }

@@ -16,7 +16,6 @@
 
 package com.mycila.plugin.spi;
 
-import com.mycila.plugin.Binding;
 import com.mycila.plugin.PluginManager;
 import com.mycila.plugin.err.CyclicPluginDependencyException;
 import com.mycila.plugin.err.DuplicateExportException;
@@ -25,7 +24,11 @@ import com.mycila.plugin.err.InvokeException;
 import com.mycila.plugin.err.UnresolvedBindingException;
 import com.mycila.plugin.err.WrappedException;
 import com.mycila.plugin.spi.internal.ClassUtils;
-import com.mycila.plugin.spi.invoke.Invokable;
+import com.mycila.plugin.spi.internal.invoke.Invokable;
+import com.mycila.plugin.spi.internal.model.Binding;
+import com.mycila.plugin.spi.internal.model.InjectionPoint;
+import com.mycila.plugin.spi.internal.model.PluginExport;
+import com.mycila.plugin.spi.internal.model.PluginMetadata;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;

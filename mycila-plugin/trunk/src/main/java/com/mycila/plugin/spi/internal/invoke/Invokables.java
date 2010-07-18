@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.invoke;
+package com.mycila.plugin.spi.internal.invoke;
 
 import com.mycila.plugin.spi.internal.ClassUtils;
 

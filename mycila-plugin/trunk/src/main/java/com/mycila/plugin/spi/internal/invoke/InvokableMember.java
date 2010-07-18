@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.invoke;
+package com.mycila.plugin.spi.internal.invoke;
 
-import com.mycila.plugin.err.InvokeException;
+import com.mycila.plugin.spi.internal.model.TypeLiteral;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Invokable<T> {
-    T invoke(Object... args) throws InvokeException;
+public interface InvokableMember<T> extends Invokable<T> {
+    TypeLiteral<T> getType();
+
+    AnnotatedMember getMember();
 }

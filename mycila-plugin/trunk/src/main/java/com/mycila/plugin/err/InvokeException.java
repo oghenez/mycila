@@ -16,7 +16,7 @@
 
 package com.mycila.plugin.err;
 
-import com.mycila.plugin.spi.invoke.InvokableMember;
+import com.mycila.plugin.spi.internal.invoke.InvokableMember;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

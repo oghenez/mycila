@@ -16,7 +16,7 @@
 
 package com.mycila.plugin.err;
 
-import com.mycila.plugin.spi.PluginMetadata;
+import com.mycila.plugin.spi.internal.model.PluginMetadata;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
+package com.mycila.plugin.spi.internal.model;
 
 import com.mycila.plugin.spi.internal.Assert;
 import com.mycila.plugin.spi.internal.MoreTypes;
 import com.mycila.plugin.spi.internal.Types;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,7 +48,7 @@ import java.util.List;
  * parameters, such as {@code Class<?>} or {@code List<? extends CharSequence>}.
  * Such type literals must be constructed programatically, either by {@link
  * Method#getGenericReturnType extracting types from members} or by using the
- * {@link Types} factory class.
+ * {@link com.mycila.plugin.spi.internal.Types} factory class.
  * <p/>
  * <p>Along with modeling generic types, this class can resolve type parameters.
  * For example, to figure out what type {@code keySet()} returns on a {@code
