@@ -43,8 +43,10 @@ public final class ProviderProxy {
         Provider<?> provider = ExportReadyProvider.ensureExportReady(export);
         if (binding.isProvided()) return provider;
         Class<?> type = binding.getType().getRawType();
-        if (type.isInterface())
-            return ProxyTOREFAC.createJDKProxy()
+        /*if (type.isInterface())
+            return ProxyTOREFAC.createJDKProxy();*/
+        //TODO
+        return null;
     }
 
     private static final class ExportReadyProvider<T> implements Provider<T> {

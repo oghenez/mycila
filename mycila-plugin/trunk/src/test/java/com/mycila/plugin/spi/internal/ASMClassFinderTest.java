@@ -17,6 +17,7 @@
 package com.mycila.plugin.spi.internal;
 
 import com.mycila.plugin.spi.DefaultLoader;
+import com.mycila.plugin.spi.internal.aop.ASMClassFinder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;

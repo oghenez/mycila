@@ -16,8 +16,6 @@
 
 package com.mycila.plugin;
 
-import com.mycila.plugin.spi.internal.AnnotationUtils;
-
 import java.lang.annotation.Annotation;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
@@ -26,8 +24,6 @@ import java.lang.ref.WeakReference;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class Scopes {
-
-    public static final com.mycila.plugin.annotation.scope.None DEFAULT = AnnotationUtils.buildRandomAnnotation(com.mycila.plugin.annotation.scope.None.class);
 
     private static final Object NULL = new Object();
 

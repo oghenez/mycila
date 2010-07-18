@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal;
+package com.mycila.plugin.spi.internal.model;
 
+import com.mycila.plugin.spi.internal.ClassUtils;
+import com.mycila.plugin.spi.internal.ObjectUtils;
+
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.IncompleteAnnotationException;
 import java.lang.reflect.AccessibleObject;
@@ -33,7 +37,7 @@ import java.util.Map;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-class AnnotationMetadata<T extends Annotation> {
+public class AnnotationMetadata<T extends Annotation> {
     private final Class<T> type;
     private final Map<String, Object> properties;
     private transient volatile Method[] memberMethods;
@@ -175,6 +179,14 @@ class AnnotationMetadata<T extends Annotation> {
         return memberMethods;
     }
 
+    @SuppressWarnings({"unchecked"})
+    public static <T extends Annotation> T buildRandomAnnotation(Class<T> annotationClass) {
+        return (T) Proxy.newProxyInstance(
+                annotationClass.getClassLoader(),
+                new Class<?>[]{annotationClass},
+                new AnnotationHandler(AnnotationMetadata.randomAnnotation(annotationClass)));
+    }
+
     private static boolean memberValueEquals(Object v1, Object v2) {
         Class type = v1.getClass();
         // Check for primitive, string, class, enum const, annotation,
@@ -207,7 +219,7 @@ class AnnotationMetadata<T extends Annotation> {
         return Arrays.equals((boolean[]) v1, (boolean[]) v2);
     }
 
-    static <T extends Annotation> AnnotationMetadata<T> randomAnnotation(Class<T> annotationClass) {
+    private static <T extends Annotation> AnnotationMetadata<T> randomAnnotation(Class<T> annotationClass) {
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
         Map<String, Object> defaults = ClassUtils.hasAnnotationType() ?
                 getDefaults(annotationClass) :
@@ -249,4 +261,31 @@ class AnnotationMetadata<T extends Annotation> {
         }
         return defaults;
     }
+
+    private static class AnnotationHandler implements InvocationHandler, Serializable {
+        final AnnotationMetadata metadata;
+
+        public AnnotationHandler(AnnotationMetadata metadata) {
+            this.metadata = metadata;
+        }
+
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) {
+            String member = method.getName();
+            Class[] paramTypes = method.getParameterTypes();
+            // Handle Object and Annotation methods
+            if (member.equals("equals") && paramTypes.length == 1 && paramTypes[0] == Object.class)
+                return metadata.isSameAnnotation(args[0]);
+            if (member.equals("toString"))
+                return metadata.toString();
+            if (member.equals("hashCode"))
+                return metadata.hashCode();
+            if (member.equals("annotationType"))
+                return metadata.getType();
+            // Handle annotation member accessors
+            return metadata.get(member);
+        }
+
+    }
+
 }

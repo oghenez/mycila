@@ -20,10 +20,10 @@ import com.mycila.plugin.Loader;
 import com.mycila.plugin.PluginDiscovery;
 import com.mycila.plugin.annotation.Plugin;
 import com.mycila.plugin.err.PluginDiscoveryException;
-import com.mycila.plugin.spi.internal.ASMClassFinder;
 import com.mycila.plugin.spi.internal.Assert;
 import com.mycila.plugin.spi.internal.ClassUtils;
 import com.mycila.plugin.spi.internal.ResourcePatternResolver;
+import com.mycila.plugin.spi.internal.aop.ASMClassFinder;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
