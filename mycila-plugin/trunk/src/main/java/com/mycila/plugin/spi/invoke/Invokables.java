@@ -16,7 +16,7 @@
 
 package com.mycila.plugin.spi.invoke;
 
-import com.mycila.plugin.spi.internal.AopUtils;
+import com.mycila.plugin.spi.internal.ClassUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -31,13 +31,13 @@ public final class Invokables {
     }
 
     public static <T> InvokableMember<T> get(Constructor<T> ctor) {
-        return AopUtils.hasCGLIB(ctor.getDeclaringClass().getClassLoader()) ?
+        return ClassUtils.hasCGLIB(ctor.getDeclaringClass().getClassLoader()) ?
                 new InvokableFastCtor<T>(ctor) :
                 new InvokableCtor<T>(ctor);
     }
 
     public static <T> InvokableMember<T> get(Method method, Object target) {
-        return AopUtils.hasCGLIB(method.getDeclaringClass().getClassLoader()) ?
+        return ClassUtils.hasCGLIB(method.getDeclaringClass().getClassLoader()) ?
                 new InvokableFastMethod<T>(target, method) :
                 new InvokableMethod<T>(target, method);
     }

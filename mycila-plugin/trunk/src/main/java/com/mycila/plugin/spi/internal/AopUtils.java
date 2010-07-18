@@ -23,58 +23,6 @@ import java.lang.reflect.Proxy;
  */
 public final class AopUtils {
 
-    private static final boolean hasCGLIB;
-    private static final boolean hasASM;
-    private static final boolean hasAOP;
-
-    static {
-        hasCGLIB = hasCGLIB(ClassUtils.getDefaultClassLoader());
-        hasASM = hasASM(ClassUtils.getDefaultClassLoader());
-        hasAOP = hasAOP(ClassUtils.getDefaultClassLoader());
-    }
-
-    private AopUtils() {
-    }
-
-    public static boolean hasCGLIB() {
-        return hasCGLIB;
-    }
-
-    public static boolean hasCGLIB(ClassLoader classLoader) {
-        try {
-            classLoader.loadClass("net.sf.cglib.proxy.Callback");
-            return true;
-        } catch (ClassNotFoundException ignored) {
-            return false;
-        }
-    }
-
-    public static boolean hasASM() {
-        return hasASM;
-    }
-
-    public static boolean hasASM(ClassLoader classLoader) {
-        try {
-            classLoader.loadClass("org.objectweb.asm.Type");
-            return true;
-        } catch (ClassNotFoundException ignored) {
-            return false;
-        }
-    }
-
-    public static boolean hasAOP() {
-        return hasAOP;
-    }
-
-    public static boolean hasAOP(ClassLoader classLoader) {
-        try {
-            classLoader.loadClass("org.aopalliance.aop.Advice");
-            return true;
-        } catch (ClassNotFoundException ignored) {
-            return false;
-        }
-    }
-
     /**
      * Determine the target class of the given bean instance,
      * which might be an AOP proxy.

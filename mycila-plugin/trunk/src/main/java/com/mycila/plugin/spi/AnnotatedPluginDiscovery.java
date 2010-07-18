@@ -21,7 +21,6 @@ import com.mycila.plugin.PluginDiscovery;
 import com.mycila.plugin.annotation.Plugin;
 import com.mycila.plugin.err.PluginDiscoveryException;
 import com.mycila.plugin.spi.internal.ASMClassFinder;
-import com.mycila.plugin.spi.internal.AopUtils;
 import com.mycila.plugin.spi.internal.Assert;
 import com.mycila.plugin.spi.internal.ClassUtils;
 import com.mycila.plugin.spi.internal.ResourcePatternResolver;
@@ -58,7 +57,7 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
     }
 
     AnnotatedPluginDiscovery(Class<? extends Annotation> annotationClass, Loader loader) {
-        Assert.state(AopUtils.hasASM(), "ASM 3.2 is required to use the classpath search feature of Mycila Plugin. Please add asm-3.2.jar or asm:asm:3.2 in your Maven pom.xml file.");
+        Assert.state(ClassUtils.hasASM(), "ASM 3.2 is required to use the classpath search feature of Mycila Plugin. Please add asm-3.2.jar or asm:asm:3.2 in your Maven pom.xml file.");
         this.annotationClass = annotationClass;
         this.loader = loader;
     }

@@ -17,11 +17,7 @@
 package com.mycila.plugin.spi.internal;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public final class AnnotationUtils {
 
@@ -43,30 +39,4 @@ public final class AnnotationUtils {
                 new AnnotationHandler(AnnotationMetadata.randomAnnotation(annotationClass)));
     }
 
-    public static Object getRandomDefault(Class<?> type) {
-        Object o = ObjectUtils.defaultValue(type);
-        if (o != null) return o;
-        // this is a class, enum, String or array
-        if (type.isArray()) return Array.newInstance(type, 0);
-        if (type == String.class) return "";
-        if (type == Class.class) return Void.class;
-        try {
-            if (type.isEnum()) return Enum.valueOf((Class<? extends Enum>) type, type.getDeclaredFields()[0].getName());
-        } catch (Exception e) {
-            throw new UnsupportedOperationException("Unable to randomize annotation: cannot get an enum for " + type);
-        }
-        throw new UnsupportedOperationException("Type: " + type.getName());
-    }
-
-    public static Map<String, Object> getDefaults(Class<? extends Annotation> annotationClass) {
-        Map<String, Object> defaults = new LinkedHashMap<String, Object>();
-        try {
-            Field field = Class.class.getDeclaredField("annotationType");
-            field.setAccessible(true);
-            sun.reflect.annotation.AnnotationType type = (sun.reflect.annotation.AnnotationType) field.get(annotationClass);
-            defaults.putAll(type.memberDefaults());
-        } catch (Exception ignored) {
-        }
-        return defaults;
-    }
 }

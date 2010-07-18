@@ -20,11 +20,13 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.IncompleteAnnotationException;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -207,16 +209,44 @@ class AnnotationMetadata<T extends Annotation> {
 
     static <T extends Annotation> AnnotationMetadata<T> randomAnnotation(Class<T> annotationClass) {
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
-        Map<String, Object> defaults = AnnotationUtils.getDefaults(annotationClass);
+        Map<String, Object> defaults = ClassUtils.hasAnnotationType() ?
+                getDefaults(annotationClass) :
+                new HashMap<String, Object>();
         Method[] mm = annotationClass.getDeclaredMethods();
         AccessibleObject.setAccessible(mm, true);
         for (Method method : mm) {
             String name = method.getName();
             Object o = defaults.get(name);
-            if (o == null) o = AnnotationUtils.getRandomDefault(method.getReturnType());
+            if (o == null) o = getRandomDefault(method.getReturnType());
             properties.put(name, o);
         }
         return new AnnotationMetadata<T>(annotationClass, properties);
     }
 
+    private static Object getRandomDefault(Class<?> type) {
+        Object o = ObjectUtils.defaultValue(type);
+        if (o != null) return o;
+        // this is a class, enum, String or array
+        if (type.isArray()) return Array.newInstance(type, 0);
+        if (type == String.class) return "";
+        if (type == Class.class) return Void.class;
+        try {
+            if (type.isEnum()) return Enum.valueOf((Class<? extends Enum>) type, type.getDeclaredFields()[0].getName());
+        } catch (Exception e) {
+            throw new UnsupportedOperationException("Unable to randomize annotation: cannot get an enum for " + type);
+        }
+        throw new UnsupportedOperationException("Type: " + type.getName());
+    }
+
+    private static Map<String, Object> getDefaults(Class<? extends Annotation> annotationClass) {
+        Map<String, Object> defaults = new LinkedHashMap<String, Object>();
+        try {
+            Field field = Class.class.getDeclaredField("annotationType");
+            field.setAccessible(true);
+            sun.reflect.annotation.AnnotationType type = (sun.reflect.annotation.AnnotationType) field.get(annotationClass);
+            defaults.putAll(type.memberDefaults());
+        } catch (Exception ignored) {
+        }
+        return defaults;
+    }
 }
