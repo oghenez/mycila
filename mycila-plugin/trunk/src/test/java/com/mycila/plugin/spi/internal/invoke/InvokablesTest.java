@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.invoke;
+package com.mycila.plugin.spi.internal.invoke;
 
 import com.mycila.plugin.spi.internal.CustomClassLoader;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public final class InvokablesTest {
         Thread.currentThread().setContextClassLoader(loader);
 
         try {
-            Object dummy = loader.load("com.mycila.plugin.spi.invoke.InvokablesTest$Funny").newInstance();
+            Object dummy = loader.load(Funny.class.getName()).newInstance();
             assertTrue(InvokableCtor.class.isInstance(Invokables.get(dummy.getClass().getConstructor())));
             assertTrue(InvokableMethod.class.isInstance(Invokables.get(dummy.getClass().getMethod("bear"), dummy)));
         } finally {
@@ -54,6 +54,7 @@ public final class InvokablesTest {
     }
 
     public static class Funny {
-        public void bear(){}
+        public void bear() {
+        }
     }
 }

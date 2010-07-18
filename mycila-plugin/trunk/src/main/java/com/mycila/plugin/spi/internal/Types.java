@@ -17,7 +17,7 @@
 package com.mycila.plugin.spi.internal;
 
 import com.mycila.plugin.Provider;
-import com.mycila.plugin.TypeLiteral;
+import com.mycila.plugin.spi.internal.model.TypeLiteral;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;

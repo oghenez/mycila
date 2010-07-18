@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal;
+package com.mycila.plugin.spi.internal.aop;
 
 import net.sf.cglib.core.DefaultGeneratorStrategy;
 import net.sf.cglib.core.NamingPolicy;
@@ -34,9 +34,9 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class Proxy {
+final class ProxyTOREFAC {
 
-    private Proxy() {
+    private ProxyTOREFAC() {
     }
 
     private static final NamingPolicy NAMING_POLICY = new NamingPolicy() {

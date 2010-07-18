@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.invoke;
+package com.mycila.plugin.spi.internal.invoke;
 
-import com.mycila.plugin.TypeLiteral;
 import com.mycila.plugin.err.InvokeException;
-import net.sf.cglib.reflect.FastConstructor;
+import com.mycila.plugin.spi.internal.model.TypeLiteral;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -26,33 +25,33 @@ import java.lang.reflect.InvocationTargetException;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class InvokableFastCtor<T> implements InvokableMember<T> {
+final class InvokableCtor<T> implements InvokableMember<T> {
 
-    private final FastConstructor ctor;
+    private final Constructor<T> ctor;
 
-    InvokableFastCtor(Constructor<T> ctor) {
-        this.ctor = FastClassCache.getFastClass(ctor.getDeclaringClass()).getConstructor(ctor);
+    InvokableCtor(Constructor<T> ctor) {
+        this.ctor = ctor;
     }
 
     @Override
     public AnnotatedMember getMember() {
-        return new AnnotatedMember<Constructor<T>>(ctor.getJavaConstructor());
+        return new AnnotatedMember<Constructor<T>>(ctor);
     }
 
     @Override
     public TypeLiteral<T> getType() {
-        return TypeLiteral.<T>get(ctor.getJavaConstructor().getDeclaringClass());
+        return TypeLiteral.get(ctor.getDeclaringClass());
     }
 
     @Override
     public String toString() {
-        return ctor.getJavaConstructor().toString();
+        return ctor.toString();
     }
 
     @Override
     public T invoke(Object... args) throws InvokeException {
         try {
-            return (T) ctor.newInstance(args);
+            return ctor.newInstance(args);
         } catch (InvocationTargetException e) {
             throw new InvokeException(this, e.getTargetException());
         } catch (Exception e) {

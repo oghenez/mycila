@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.invoke;
+package com.mycila.plugin.spi.internal.invoke;
+
+import com.mycila.plugin.err.InvokeException;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface InvokableComposite<T> extends Invokable<T>, Iterable<Invokable<T>> {
-    void add(Invokable<T> invokable);
-
-    void addAll(Iterable<Invokable<T>> invokables);
+public interface Invokable<T> {
+    T invoke(Object... args) throws InvokeException;
 }

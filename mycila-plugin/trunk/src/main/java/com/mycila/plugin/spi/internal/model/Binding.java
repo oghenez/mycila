@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
+package com.mycila.plugin.spi.internal.model;
 
 import com.mycila.plugin.annotation.BindingAnnotation;
 import com.mycila.plugin.err.PluginException;
@@ -23,7 +23,7 @@ import com.mycila.plugin.spi.internal.Assert;
 import com.mycila.plugin.spi.internal.MoreTypes;
 import com.mycila.plugin.spi.internal.StringUtils;
 import com.mycila.plugin.spi.internal.Types;
-import com.mycila.plugin.spi.invoke.InvokableMember;
+import com.mycila.plugin.spi.internal.invoke.InvokableMember;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -88,7 +88,7 @@ public final class Binding<T> {
         return this.hashCode;
     }
 
-    public static <T> Binding<T> fromInvokable(InvokableMember<T> invokable) {
+    static <T> Binding<T> fromInvokable(InvokableMember<T> invokable) {
         Collection<Annotation> annotations = new LinkedHashSet<Annotation>();
         for (Annotation annotation : invokable.getMember().getAnnotations())
             if (annotation.annotationType().isAnnotationPresent(BindingAnnotation.class))
@@ -100,7 +100,7 @@ public final class Binding<T> {
         }
     }
 
-    public static List<Binding<?>> fromParameters(Method method) {
+    static List<Binding<?>> fromParameters(Method method) {
         List<Binding<?>> bindings = new ArrayList<Binding<?>>(5);
         List<TypeLiteral<?>> types = TypeLiteral.get(method.getDeclaringClass()).getParameterTypes(method);
         Annotation[][] annots = method.getParameterAnnotations();

@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi;
+package com.mycila.plugin.spi.internal.model;
 
-import com.mycila.plugin.Binding;
 import com.mycila.plugin.Provider;
 import com.mycila.plugin.spi.internal.ScopeBinding;
-import com.mycila.plugin.spi.invoke.InvokableMember;
+import com.mycila.plugin.spi.internal.invoke.InvokableMember;
 
 import java.lang.annotation.Annotation;
 
