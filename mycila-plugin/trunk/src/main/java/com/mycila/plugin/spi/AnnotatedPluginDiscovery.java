@@ -18,8 +18,8 @@ package com.mycila.plugin.spi;
 
 import com.mycila.plugin.Loader;
 import com.mycila.plugin.PluginDiscovery;
-import com.mycila.plugin.PluginDiscoveryException;
 import com.mycila.plugin.annotation.Plugin;
+import com.mycila.plugin.err.PluginDiscoveryException;
 import com.mycila.plugin.spi.internal.ASMClassFinder;
 import com.mycila.plugin.spi.internal.ClassUtils;
 import com.mycila.plugin.spi.internal.ResourcePatternResolver;
@@ -42,12 +42,12 @@ import java.util.concurrent.Executors;
  */
 public final class AnnotatedPluginDiscovery implements PluginDiscovery {
 
-    public static final String[] DEFAULT_EXCLUDED_PACKAGES = {"java", "javax"};
+    public static final String[] DEFAULT_EXCLUDED_PACKAGES = {"java", "javax", "sun", "sunw"};
     public static final String[] DEFAULT_INCLUDED_PACKAGES = {};
 
     private final Class<? extends Annotation> annotationClass;
-    private final ResourcePatternResolver pathResolver;
-    private final ASMClassFinder classfinder;
+    private final Loader loader;
+
     private String[] includedPackages = DEFAULT_INCLUDED_PACKAGES;
     private String[] excludedPackages = DEFAULT_EXCLUDED_PACKAGES;
     
@@ -57,8 +57,7 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
 
     AnnotatedPluginDiscovery(Class<? extends Annotation> annotationClass, Loader loader) {
         this.annotationClass = annotationClass;
-        this.pathResolver = new ResourcePatternResolver(loader);
-        this.classfinder = new ASMClassFinder(annotationClass, loader);
+        this.loader = loader;
     }
 
     public void includePackages(String... packages) {
@@ -71,7 +70,6 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
 
     @Override
     public Iterable<Class<?>> scan() throws PluginDiscoveryException {
-        setExclusions();
         ExecutorService executorService = Executors.newFixedThreadPool((int) (Runtime.getRuntime().availableProcessors() * 1.5));
         ExecutorCompletionService<Class<?>> completionService = new ExecutorCompletionService<Class<?>>(executorService);
         try {
@@ -105,6 +103,14 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
     }
 
     private long submitTasks(ExecutorCompletionService<Class<?>> completionService) throws IOException {
+        final ASMClassFinder classfinder = new ASMClassFinder(annotationClass, loader);
+
+        final ResourcePatternResolver pathResolver = new ResourcePatternResolver(loader);
+        String[] prefixes = new String[excludedPackages.length];
+        for (int i = 0; i < prefixes.length; i++)
+            prefixes[i] = ClassUtils.convertClassNameToResourcePath(excludedPackages[i]) + "/";
+        pathResolver.setExcludePrefixes(prefixes);
+
         long count = 0;
         if (includedPackages == null || includedPackages.length == 0) {
             for (final URL url : pathResolver.getResources("classpath*:**/*.class")) {
@@ -130,13 +136,6 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
             }
         }
         return count;
-    }
-
-    private void setExclusions() {
-        String[] prefixes = new String[excludedPackages.length];
-        for (int i = 0; i < prefixes.length; i++)
-            prefixes[i] = ClassUtils.convertClassNameToResourcePath(excludedPackages[i]) + "/";
-        this.pathResolver.setExcludePrefixes(prefixes);
     }
 
 }

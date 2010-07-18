@@ -14,28 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.old;
+package com.mycila.plugin.err;
 
-import java.util.List;
+import com.mycila.plugin.Binding;
 
 /**
- * Defines a plugin and its dependencies / order of execution
- *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Plugin {
+public final class InexistingBindingException extends PluginException {
+    private static final long serialVersionUID = 1;
 
-    /**
-     * Get the list of plugins that should be executed before this one
-     *
-     * @return empty list, or a list of plugin names
-     */
-    List<String> getBefore();
-
-    /**
-     * Get the list of plugins that should be executed after this one
-     *
-     * @return empty list, or a list of plugin names
-     */
-    List<String> getAfter();
+    public InexistingBindingException(Class pluginClass, Binding<?> binding) {
+        super("Unable to find export " + binding + " in plugin class " + pluginClass.getName());
+    }
 }

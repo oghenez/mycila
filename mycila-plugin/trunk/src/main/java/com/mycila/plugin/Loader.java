@@ -16,6 +16,8 @@
 
 package com.mycila.plugin;
 
+import com.mycila.plugin.err.LoaderException;
+
 import java.net.URL;
 import java.util.List;
 

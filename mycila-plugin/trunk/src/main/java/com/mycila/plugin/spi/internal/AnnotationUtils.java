@@ -35,6 +35,7 @@ public final class AnnotationUtils {
         return null;
     }
 
+    @SuppressWarnings({"unchecked"})
     public static <T extends Annotation> T buildRandomAnnotation(Class<T> annotationClass) {
         return (T) Proxy.newProxyInstance(
                 annotationClass.getClassLoader(),

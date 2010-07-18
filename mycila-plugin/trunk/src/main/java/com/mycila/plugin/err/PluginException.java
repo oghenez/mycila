@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.old;
+package com.mycila.plugin.err;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface PluginBinding<T extends Plugin> {
-    T getPlugin();
-    String getName();
+public class PluginException extends RuntimeException {
+
+    public PluginException(String message) {
+        super(message);
+    }
+
+    public PluginException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public PluginException(Throwable cause) {
+        super(cause.getMessage(), cause);
+    }
 }

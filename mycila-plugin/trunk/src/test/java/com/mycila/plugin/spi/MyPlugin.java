@@ -47,10 +47,13 @@ public final class MyPlugin<T> {
     private String val;
 
     @Import
-    private Provider<? extends T> val2;
+    private Provider<? extends String> val2;
+
+    /*@Import
+    private Provider<? extends T> val21;
 
     @Import
-    private Provider<T> val3;
+    private Provider<T> val3;*/
 
     @Import
     private Provider<Collection<Integer>> val4;
@@ -80,7 +83,7 @@ public final class MyPlugin<T> {
     }
 
     @Import
-    public void inject1(Provider<T> p1, Provider p2, Provider<Collection<Integer>> p3) {
+    public void inject1(Provider<String> p1, Provider p2, Provider<Collection<Integer>> p3) {
 
     }
 

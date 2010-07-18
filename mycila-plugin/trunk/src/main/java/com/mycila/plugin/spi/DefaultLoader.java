@@ -17,7 +17,7 @@
 package com.mycila.plugin.spi;
 
 import com.mycila.plugin.Loader;
-import com.mycila.plugin.LoaderException;
+import com.mycila.plugin.err.LoaderException;
 import com.mycila.plugin.spi.internal.ClassUtils;
 
 import java.io.IOException;

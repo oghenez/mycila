@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin;
+package com.mycila.plugin.err;
+
+import com.mycila.plugin.Binding;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class PluginException extends RuntimeException {
+public final class UnresolvedBindingException extends PluginException {
+    private static final long serialVersionUID = 1;
 
-    public PluginException(String message) {
-        super(message);
-    }
-
-    public PluginException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public PluginException(Throwable cause) {
-        super(cause.getMessage(), cause);
+    public UnresolvedBindingException(Class<?> pluginClass, Binding<?> binding) {
+        super("No export found for binding " + binding + " required in plugin " + pluginClass.getName());
     }
 }

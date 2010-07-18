@@ -18,6 +18,8 @@ package com.mycila.plugin.spi;
 
 import com.google.common.collect.Iterables;
 import com.mycila.plugin.Binding;
+import com.mycila.plugin.err.DuplicateExportException;
+import com.mycila.plugin.err.InexistingBindingException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -40,11 +42,11 @@ public final class PluginMetadataTest {
         assertEquals("a test plugin", metadata.getDescription());
         assertEquals(MyPlugin.class, metadata.getType());
 
-        assertEquals(1, Iterables.size(metadata.getActivateBefore()));
-        assertEquals(Integer.class, Iterables.getOnlyElement(metadata.getActivateBefore()));
+        assertEquals(1, Iterables.size(metadata.getBefores()));
+        assertEquals(Integer.class, Iterables.getOnlyElement(metadata.getBefores()));
 
-        assertEquals(1, Iterables.size(metadata.getActivateAfter()));
-        assertEquals(String.class, Iterables.getOnlyElement(metadata.getActivateAfter()));
+        assertEquals(1, Iterables.size(metadata.getAfters()));
+        assertEquals(String.class, Iterables.getOnlyElement(metadata.getAfters()));
 
         assertEquals("start", metadata.onStart().invoke());
         assertEquals("stop", metadata.onStop().invoke());
@@ -94,7 +96,7 @@ public final class PluginMetadataTest {
     public void test_imports() throws Exception {
         PluginMetadata metadata = PluginMetadata.from(new MyPlugin());
 
-        assertEquals(7, Iterables.size(metadata.getInjectionPoints()));
+        assertEquals(6, Iterables.size(metadata.getInjectionPoints()));
 
         for (InjectionPoint point : metadata.getInjectionPoints()) {
             System.out.println(point);

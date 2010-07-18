@@ -42,7 +42,7 @@ import java.lang.annotation.Target;
  * and Plugin1 exports Child1 and Plugin2 exports Child2,
  * and your plugin depends on both plugins
  * <br>
- * If the method parameter is Parent, you'll get an {@link com.mycila.plugin.UnresolvedImportException}.
+ * If the method parameter is Parent, you'll get an {@link com.mycila.plugin.err.UnresolvedBindingException}.
  * You must use Child1 or Child2 to specify which import must be used since both are available by your plugin.
  * <p/>
  * Otherwise, you can also precise from which plugin the import comes from by adding annotation

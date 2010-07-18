@@ -18,8 +18,8 @@ package com.mycila.plugin.spi.internal;
 
 import com.mycila.plugin.Scope;
 import com.mycila.plugin.annotation.ScopeAnnotation;
-import com.mycila.plugin.spi.DuplicateScopeException;
-import com.mycila.plugin.spi.PluginMetadataException;
+import com.mycila.plugin.err.DuplicateScopeException;
+import com.mycila.plugin.err.PluginException;
 import com.mycila.plugin.spi.invoke.Invokables;
 import com.mycila.plugin.spi.invoke.InvokeException;
 
@@ -54,7 +54,7 @@ public final class ScopeLoader {
         try {
             scope = load(c);
         } catch (NoSuchMethodException e) {
-            throw new PluginMetadataException("Unable to load scope class " + c.getName() + " : no default public constructor found.");
+            throw new PluginException("Unable to load scope class " + c.getName() + " : no default public constructor found.");
         }
         return new ScopeBinding() {
             @Override
