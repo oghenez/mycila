@@ -26,6 +26,70 @@ public final class ClassUtils {
     private ClassUtils() {
     }
 
+    private static final boolean hasCGLIB;
+    private static final boolean hasASM;
+    private static final boolean hasAOP;
+    private static final boolean hasAnnotationType;
+
+    static {
+        hasCGLIB = hasCGLIB(ClassUtils.getDefaultClassLoader());
+        hasASM = hasASM(ClassUtils.getDefaultClassLoader());
+        hasAOP = hasAOP(ClassUtils.getDefaultClassLoader());
+        hasAnnotationType = hasAnnotationType(ClassUtils.getDefaultClassLoader());
+    }
+
+    public static boolean hasCGLIB() {
+        return hasCGLIB;
+    }
+
+    public static boolean hasCGLIB(ClassLoader classLoader) {
+        try {
+            classLoader.loadClass("net.sf.cglib.proxy.Callback");
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
+    }
+
+    public static boolean hasASM() {
+        return hasASM;
+    }
+
+    public static boolean hasASM(ClassLoader classLoader) {
+        try {
+            classLoader.loadClass("org.objectweb.asm.Type");
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
+    }
+
+    public static boolean hasAOP() {
+        return hasAOP;
+    }
+
+    public static boolean hasAOP(ClassLoader classLoader) {
+        try {
+            classLoader.loadClass("org.aopalliance.aop.Advice");
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
+    }
+
+    public static boolean hasAnnotationType() {
+        return hasAOP;
+    }
+
+    public static boolean hasAnnotationType(ClassLoader classLoader) {
+        try {
+            classLoader.loadClass("sun.reflect.annotation.AnnotationType");
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
+    }
+
     public static ClassLoader getDefaultClassLoader() {
         ClassLoader cl = null;
         try {

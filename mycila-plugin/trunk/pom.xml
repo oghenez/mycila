@@ -150,7 +150,7 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.jgrapht</pattern>
-                                    <shadedPattern>com.mycila.plugin.internal.jgrapht</shadedPattern>
+                                    <shadedPattern>com.mycila.plugin.spi.internal.jgrapht</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
