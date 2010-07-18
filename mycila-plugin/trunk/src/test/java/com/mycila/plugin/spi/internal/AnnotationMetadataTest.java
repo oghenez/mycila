@@ -16,6 +16,7 @@
 
 package com.mycila.plugin.spi.internal;
 
+import com.mycila.plugin.spi.internal.model.AnnotationMetadata;
 import com.mycila.plugin.test.CurrentMethod;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,15 +35,15 @@ import static org.junit.Assert.*;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @RunWith(JUnit4.class)
-public final class AnnotationTest {
+public final class AnnotationMetadataTest {
 
     @Rule
     public final CurrentMethod currentMethod = new CurrentMethod();
 
     @Test
     public void test_simple_annot() throws Exception {
-        Test test = AnnotationUtils.buildRandomAnnotation(Test.class);
-        Test test2 = AnnotationUtils.buildRandomAnnotation(Test.class);
+        Test test = AnnotationMetadata.buildRandomAnnotation(Test.class);
+        Test test2 = AnnotationMetadata.buildRandomAnnotation(Test.class);
         assertTrue(test.equals(test2));
         assertTrue(currentMethod.get().getAnnotation(Test.class).equals(test));
         assertTrue(test.equals(currentMethod.get().getAnnotation(Test.class)));
@@ -52,7 +53,7 @@ public final class AnnotationTest {
     @Test
     public void test_fail() throws Exception {
         try {
-            AnnotationUtils.buildRandomAnnotation(Failing.class);
+            AnnotationMetadata.buildRandomAnnotation(Failing.class);
             fail();
         } catch (Exception e) {
             assertEquals(UnsupportedOperationException.class, e.getClass());
@@ -62,7 +63,7 @@ public final class AnnotationTest {
     @Test
     @Annot(value = Void.class, test = "", unit = TimeUnit.NANOSECONDS)
     public void test_complex() throws Exception {
-        Annot test = AnnotationUtils.buildRandomAnnotation(Annot.class);
+        Annot test = AnnotationMetadata.buildRandomAnnotation(Annot.class);
         assertEquals(Void.class, test.value());
         assertTrue(currentMethod.get().getAnnotation(Annot.class).equals(test));
         assertTrue(test.equals(currentMethod.get().getAnnotation(Annot.class)));
@@ -87,5 +88,6 @@ public final class AnnotationTest {
         Zero ZERO();
     }
 
-    private static enum Zero{}
+    private static enum Zero {
+    }
 }
