@@ -31,11 +31,15 @@ public final class Invokables {
     }
 
     public static <T> InvokableMember<T> get(Constructor<T> ctor) {
-        return AopUtils.cglibAvailable() ? new InvokableFastCtor<T>(ctor) : new InvokableCtor<T>(ctor);
+        return AopUtils.hasCGLIB(ctor.getDeclaringClass().getClassLoader()) ?
+                new InvokableFastCtor<T>(ctor) :
+                new InvokableCtor<T>(ctor);
     }
 
     public static <T> InvokableMember<T> get(Method method, Object target) {
-        return AopUtils.cglibAvailable() ? new InvokableFastMethod<T>(target, method) : new InvokableMethod<T>(target, method);
+        return AopUtils.hasCGLIB(method.getDeclaringClass().getClassLoader()) ?
+                new InvokableFastMethod<T>(target, method) :
+                new InvokableMethod<T>(target, method);
     }
 
     public static <T> InvokableMember<T> get(Field field, Object target) {

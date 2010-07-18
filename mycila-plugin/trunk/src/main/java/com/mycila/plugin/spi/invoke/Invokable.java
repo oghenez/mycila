@@ -16,6 +16,8 @@
 
 package com.mycila.plugin.spi.invoke;
 
+import com.mycila.plugin.err.InvokeException;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */

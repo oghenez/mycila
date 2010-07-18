@@ -29,7 +29,7 @@ final class FastClassCache {
     private FastClassCache() {
     }
 
-    static final Map<Class<?>, WeakReference<FastClass>> CLASSES = new WeakHashMap<Class<?>, WeakReference<FastClass>>();
+    private static final Map<Class<?>, WeakReference<FastClass>> CLASSES = new WeakHashMap<Class<?>, WeakReference<FastClass>>();
 
     public static FastClass getFastClass(Class<?> c) {
         WeakReference<FastClass> ref = CLASSES.get(c);

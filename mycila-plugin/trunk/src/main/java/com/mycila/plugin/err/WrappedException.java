@@ -16,15 +16,13 @@
 
 package com.mycila.plugin.err;
 
-import com.mycila.plugin.Binding;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class UnresolvedBindingException extends PluginException {
+public final class WrappedException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public UnresolvedBindingException(Class<?> pluginClass, Binding<?> binding) {
-        super("No export found for " + binding + " required by plugin class " + pluginClass.getName());
+    public WrappedException(Throwable cause) {
+        super(cause);
     }
 }

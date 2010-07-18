@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.invoke;
+package com.mycila.plugin.err;
 
-import com.mycila.plugin.err.PluginException;
+import com.mycila.plugin.spi.PluginMetadata;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class InvokeException extends PluginException {
+public final class InjectionInProgressException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public InvokeException(InvokableMember<?> invokable, Throwable t) {
-        super("Error invoking " + invokable.getMember() + " : " + t.getMessage(), t);
+    public InjectionInProgressException(PluginMetadata metadata) {
+        super("Injection is in progress for plugin " + metadata.getType() + " : you cannot use injected dependencies until you plugin has been started.");
     }
 }

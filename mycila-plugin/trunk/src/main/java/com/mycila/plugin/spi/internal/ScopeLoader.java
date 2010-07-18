@@ -19,9 +19,9 @@ package com.mycila.plugin.spi.internal;
 import com.mycila.plugin.Scope;
 import com.mycila.plugin.annotation.ScopeAnnotation;
 import com.mycila.plugin.err.DuplicateScopeException;
+import com.mycila.plugin.err.InvokeException;
 import com.mycila.plugin.err.PluginException;
 import com.mycila.plugin.spi.invoke.Invokables;
-import com.mycila.plugin.spi.invoke.InvokeException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;

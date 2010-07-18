@@ -27,12 +27,12 @@ import com.mycila.plugin.annotation.OnStop;
 import com.mycila.plugin.annotation.Plugin;
 import com.mycila.plugin.err.DuplicateExportException;
 import com.mycila.plugin.err.InexistingBindingException;
+import com.mycila.plugin.err.InvokeException;
 import com.mycila.plugin.spi.internal.AopUtils;
 import com.mycila.plugin.spi.internal.ScopeBinding;
 import com.mycila.plugin.spi.internal.ScopeLoader;
 import com.mycila.plugin.spi.invoke.Invokable;
 import com.mycila.plugin.spi.invoke.InvokableComposite;
-import com.mycila.plugin.spi.invoke.InvokableMember;
 import com.mycila.plugin.spi.invoke.Invokables;
 
 import java.lang.reflect.Field;
@@ -62,6 +62,8 @@ public final class PluginMetadata {
     private final InvokableComposite<?> onStop = Invokables.composite();
     private final Map<Binding<?>, PluginExport<?>> exports = new LinkedHashMap<Binding<?>, PluginExport<?>>();
     private final List<InjectionPoint> injectionPoints = new LinkedList<InjectionPoint>();
+    private volatile boolean running;
+    private volatile boolean resolved;
 
     private PluginMetadata(Object plugin, Class<?> c, String name, String description) {
         this.pluginClass = c;
@@ -115,11 +117,42 @@ public final class PluginMetadata {
     }
 
     public Invokable<?> onStart() {
-        return onStart;
+        return new Invokable<Object>() {
+            @Override
+            public Object invoke(Object... args) throws InvokeException {
+                running = false;
+                Object ret = onStart.invoke();
+                running = true;
+                return ret;
+            }
+        };
     }
 
     public Invokable<?> onStop() {
-        return onStop;
+        return new Invokable<Object>() {
+            @Override
+            public Object invoke(Object... args) throws InvokeException {
+                running = false;
+                Object ret = onStop.invoke();
+                running = true;
+                return ret;
+            }
+        };
+    }
+
+    public boolean isStarted() {
+        return running;
+    }
+
+    public boolean isStopped() {
+        return !running;
+    }
+
+    public boolean isResolved() {
+        if (resolved) return true;
+        for (InjectionPoint injectionPoint : injectionPoints)
+            if (!injectionPoint.isInjected()) return false;
+        return resolved = true;
     }
 
     private PluginMetadata addActivateBefore() {
@@ -142,21 +175,20 @@ public final class PluginMetadata {
     }
 
     private PluginMetadata addExport(Method method, ScopeBinding scope) {
-        InvokableMember<?> invokable = Invokables.get(method, plugin);
-        Binding<?> binding = Binding.fromInvokable(invokable);
-        if (exports.containsKey(binding))
-            throw new DuplicateExportException(pluginClass, binding);
-        exports.put(binding, PluginExport.export(invokable, scope));
+        PluginExport export = PluginExport.export(this, Invokables.get(method, plugin), scope);
+        if (exports.containsKey(export.getBinding()))
+            throw new DuplicateExportException(pluginClass, export.getBinding());
+        exports.put(export.getBinding(), export);
         return this;
     }
 
     private PluginMetadata addInjectionPoint(Method method) {
-        injectionPoints.add(InjectionPoint.from(method, plugin));
+        injectionPoints.add(InjectionPoint.from(this, method, plugin));
         return this;
     }
 
     private PluginMetadata addInjectionPoint(Field field) {
-        injectionPoints.add(InjectionPoint.from(field, plugin));
+        injectionPoints.add(InjectionPoint.from(this, field, plugin));
         return this;
     }
 

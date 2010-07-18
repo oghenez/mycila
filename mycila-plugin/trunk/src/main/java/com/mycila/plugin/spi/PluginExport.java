@@ -28,11 +28,13 @@ import java.lang.annotation.Annotation;
  */
 public final class PluginExport<T> {
 
+    private final PluginMetadata metadata;
     private final Provider<T> provider;
     private final Annotation scopeAnnotation;
     private final Binding<T> binding;
 
-    private PluginExport(final InvokableMember<T> invokable, ScopeBinding scopeBinding) {
+    private PluginExport(final PluginMetadata metadata, final InvokableMember<T> invokable, ScopeBinding scopeBinding) {
+        this.metadata = metadata;
         this.scopeAnnotation = scopeBinding.getAnnotation();
         this.binding = Binding.fromInvokable(invokable);
         this.provider = scopeBinding.getScope().getProvider(scopeBinding.getAnnotation(), new Provider<T>() {
@@ -41,6 +43,10 @@ public final class PluginExport<T> {
                 return invokable.invoke();
             }
         });
+    }
+
+    public PluginMetadata getPluginMetadata() {
+        return metadata;
     }
 
     public Binding<T> getBinding() {
@@ -53,11 +59,11 @@ public final class PluginExport<T> {
 
     @Override
     public String toString() {
-        return "Export " + binding + " in scope " +  scopeAnnotation;
+        return "Export " + binding + " in scope " + scopeAnnotation;
     }
 
-    static <T> PluginExport<T> export(InvokableMember<T> invokable, ScopeBinding scopeBinding) {
-        return new PluginExport<T>(invokable, scopeBinding);
+    static <T> PluginExport<T> export(PluginMetadata metadata, InvokableMember<T> invokable, ScopeBinding scopeBinding) {
+        return new PluginExport<T>(metadata, invokable, scopeBinding);
     }
 
 }

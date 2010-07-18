@@ -67,9 +67,9 @@ public final class Types {
 
     /**
      * @return Returns a type that represents an unknown type that extends {@code bound}.
-     * For example, if {@code bound} is {@code CharSequence.class}, this returns
-     * {@code ? extends CharSequence}. If {@code bound} is {@code Object.class},
-     * this returns {@code ?}, which is shorthand for {@code ? extends Object}.
+     *         For example, if {@code bound} is {@code CharSequence.class}, this returns
+     *         {@code ? extends CharSequence}. If {@code bound} is {@code Object.class},
+     *         this returns {@code ?}, which is shorthand for {@code ? extends Object}.
      */
     public static WildcardType subtypeOf(Type bound) {
         return new MoreTypes.WildcardTypeImpl(new Type[]{bound}, MoreTypes.EMPTY_TYPE_ARRAY);
@@ -77,8 +77,8 @@ public final class Types {
 
     /**
      * @return Returns a type that represents an unknown supertype of {@code bound}. For
-     * example, if {@code bound} is {@code String.class}, this returns {@code ?
-     * super String}.
+     *         example, if {@code bound} is {@code String.class}, this returns {@code ?
+     *         super String}.
      */
     public static WildcardType supertypeOf(Type bound) {
         return new MoreTypes.WildcardTypeImpl(new Type[]{Object.class}, new Type[]{bound});
@@ -97,18 +97,17 @@ public final class Types {
     }
 
     public static <T> TypeLiteral<T> withoutProvider(TypeLiteral<?> type) {
-        if (type.getRawType() == Provider.class) {
-            if (type.getType() instanceof Class)
-                return (TypeLiteral<T>) TypeLiteral.get(Object.class);
-            else {
-                Type[] args = ((ParameterizedType) type.getType()).getActualTypeArguments();
-                if (args.length == 0)
-                    throw new AssertionError("Missing type argument for provider at " + type);
-                if(args[0] instanceof WildcardType)
-                    return (TypeLiteral<T>) TypeLiteral.get(((WildcardType)args[0]).getUpperBounds()[0]);
-                return (TypeLiteral<T>) TypeLiteral.get(args[0]);
-            }
-        }
-        return (TypeLiteral<T>) type;
+        if (!isProvided(type)) return (TypeLiteral<T>) type;
+        if (type.getType() instanceof Class) return (TypeLiteral<T>) TypeLiteral.get(Object.class);
+        Type[] args = ((ParameterizedType) type.getType()).getActualTypeArguments();
+        if (args.length == 0)
+            throw new AssertionError("Missing type argument for provider at " + type);
+        if (args[0] instanceof WildcardType)
+            return (TypeLiteral<T>) TypeLiteral.get(((WildcardType) args[0]).getUpperBounds()[0]);
+        return (TypeLiteral<T>) TypeLiteral.get(args[0]);
+    }
+
+    public static boolean isProvided(TypeLiteral<?> type) {
+        return type.getRawType() == Provider.class;
     }
 }

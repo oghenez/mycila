@@ -16,6 +16,8 @@
 
 package com.mycila.plugin.spi.invoke;
 
+import com.mycila.plugin.err.InvokeException;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;

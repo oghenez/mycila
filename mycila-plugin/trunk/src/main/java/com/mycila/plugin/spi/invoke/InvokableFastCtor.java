@@ -17,6 +17,7 @@
 package com.mycila.plugin.spi.invoke;
 
 import com.mycila.plugin.TypeLiteral;
+import com.mycila.plugin.err.InvokeException;
 import net.sf.cglib.reflect.FastConstructor;
 
 import java.lang.reflect.Constructor;
