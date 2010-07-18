@@ -17,14 +17,12 @@
 package com.mycila.plugin.spi.internal;
 
 import com.mycila.plugin.Provider;
+import com.mycila.plugin.TypeLiteral;
 
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Static methods for working with types.
@@ -68,7 +66,7 @@ public final class Types {
     }
 
     /**
-     * Returns a type that represents an unknown type that extends {@code bound}.
+     * @return Returns a type that represents an unknown type that extends {@code bound}.
      * For example, if {@code bound} is {@code CharSequence.class}, this returns
      * {@code ? extends CharSequence}. If {@code bound} is {@code Object.class},
      * this returns {@code ?}, which is shorthand for {@code ? extends Object}.
@@ -78,42 +76,12 @@ public final class Types {
     }
 
     /**
-     * Returns a type that represents an unknown supertype of {@code bound}. For
+     * @return Returns a type that represents an unknown supertype of {@code bound}. For
      * example, if {@code bound} is {@code String.class}, this returns {@code ?
      * super String}.
      */
     public static WildcardType supertypeOf(Type bound) {
         return new MoreTypes.WildcardTypeImpl(new Type[]{Object.class}, new Type[]{bound});
-    }
-
-    /**
-     * Returns a type modelling a {@link List} whose elements are of type
-     * {@code elementType}.
-     *
-     * @return a {@link java.io.Serializable serializable} parameterized type.
-     */
-    public static ParameterizedType listOf(Type elementType) {
-        return newParameterizedType(List.class, elementType);
-    }
-
-    /**
-     * Returns a type modelling a {@link Set} whose elements are of type
-     * {@code elementType}.
-     *
-     * @return a {@link java.io.Serializable serializable} parameterized type.
-     */
-    public static ParameterizedType setOf(Type elementType) {
-        return newParameterizedType(Set.class, elementType);
-    }
-
-    /**
-     * Returns a type modelling a {@link Map} whose keys are of type
-     * {@code keyType} and whose values are of type {@code valueType}.
-     *
-     * @return a {@link java.io.Serializable serializable} parameterized type.
-     */
-    public static ParameterizedType mapOf(Type keyType, Type valueType) {
-        return newParameterizedType(Map.class, keyType, valueType);
     }
 
     // for other custom collections types, use newParameterizedType()
@@ -126,5 +94,21 @@ public final class Types {
      */
     public static ParameterizedType providerOf(Type providedType) {
         return newParameterizedType(Provider.class, providedType);
+    }
+
+    public static <T> TypeLiteral<T> withoutProvider(TypeLiteral<?> type) {
+        if (type.getRawType() == Provider.class) {
+            if (type.getType() instanceof Class)
+                return (TypeLiteral<T>) TypeLiteral.get(Object.class);
+            else {
+                Type[] args = ((ParameterizedType) type.getType()).getActualTypeArguments();
+                if (args.length == 0)
+                    throw new AssertionError("Missing type argument for provider at " + type);
+                if(args[0] instanceof WildcardType)
+                    return (TypeLiteral<T>) TypeLiteral.get(((WildcardType)args[0]).getUpperBounds()[0]);
+                return (TypeLiteral<T>) TypeLiteral.get(args[0]);
+            }
+        }
+        return (TypeLiteral<T>) type;
     }
 }

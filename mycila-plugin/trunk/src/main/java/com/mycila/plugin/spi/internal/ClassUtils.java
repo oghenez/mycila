@@ -58,4 +58,10 @@ public final class ClassUtils {
         return className.replace('.', '/');
     }
 
+    public static String[] toNames(Class<?>[] classes) {
+        String[] names = new String[classes.length];
+        for (int i = 0; i < names.length; i++)
+            names[i] = classes[i].getName();
+        return names;
+    }
 }

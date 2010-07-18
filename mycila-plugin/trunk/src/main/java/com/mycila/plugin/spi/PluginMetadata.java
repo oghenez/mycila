@@ -25,6 +25,8 @@ import com.mycila.plugin.annotation.Import;
 import com.mycila.plugin.annotation.OnStart;
 import com.mycila.plugin.annotation.OnStop;
 import com.mycila.plugin.annotation.Plugin;
+import com.mycila.plugin.err.DuplicateExportException;
+import com.mycila.plugin.err.InexistingBindingException;
 import com.mycila.plugin.spi.internal.AopUtils;
 import com.mycila.plugin.spi.internal.ScopeBinding;
 import com.mycila.plugin.spi.internal.ScopeLoader;
@@ -89,11 +91,11 @@ public final class PluginMetadata {
         return description;
     }
 
-    public Collection<Class<?>> getActivateAfter() {
+    public Collection<Class<?>> getAfters() {
         return Collections.unmodifiableCollection(activateAfter);
     }
 
-    public Collection<Class<?>> getActivateBefore() {
+    public Collection<Class<?>> getBefores() {
         return Collections.unmodifiableCollection(activateBefore);
     }
 

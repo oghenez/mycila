@@ -47,6 +47,7 @@ package com.mycila.plugin.spi.internal;
  * @author Rob Harrop
  * @since 1.1.2
  */
+@SuppressWarnings({"UnusedDeclaration"})
 public final class Assert {
 
     private Assert() {
@@ -223,8 +224,8 @@ public final class Assert {
      */
     public static void noNullElements(Object[] array, String message) {
         if (array != null) {
-            for (int i = 0; i < array.length; i++) {
-                if (array[i] == null) {
+            for (Object anArray : array) {
+                if (anArray == null) {
                     throw new IllegalArgumentException(message);
                 }
             }
@@ -676,7 +677,7 @@ public final class Assert {
     }
 
     /**
-     * Substitutes each {@code %s} in {@code template} with an argument. These
+     * @return Substitutes each {@code %s} in {@code template} with an argument. These
      * are matched by position - the first {@code %s} gets {@code args[0]}, etc.
      * If there are more arguments than placeholders, the unmatched arguments will
      * be appended to the end of the formatted message in square braces.

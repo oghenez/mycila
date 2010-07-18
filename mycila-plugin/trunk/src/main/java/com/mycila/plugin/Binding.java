@@ -17,15 +17,16 @@
 package com.mycila.plugin;
 
 import com.mycila.plugin.annotation.BindingAnnotation;
+import com.mycila.plugin.err.PluginException;
 import com.mycila.plugin.spi.internal.AnnotationUtils;
 import com.mycila.plugin.spi.internal.Assert;
+import com.mycila.plugin.spi.internal.MoreTypes;
 import com.mycila.plugin.spi.internal.StringUtils;
+import com.mycila.plugin.spi.internal.Types;
 import com.mycila.plugin.spi.invoke.InvokableMember;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -46,7 +47,7 @@ public final class Binding<T> {
     }
 
     private Binding(TypeLiteral<T> type, Collection<Annotation> annotations) {
-        this.type = type;
+        this.type = MoreTypes.canonicalizeForKey(type);
         this.annotations = Collections.unmodifiableCollection(new LinkedHashSet<Annotation>(annotations));
     }
 
@@ -88,7 +89,11 @@ public final class Binding<T> {
         for (Annotation annotation : invokable.getMember().getAnnotations())
             if (annotation.annotationType().isAnnotationPresent(BindingAnnotation.class))
                 annotations.add(annotation);
-        return new Binding<T>(invokable.getType(), annotations);
+        try {
+            return binding(Types.<T>withoutProvider(invokable.getType()), annotations);
+        } catch (Exception e) {
+            throw new PluginException("Unable to resolve binding type " + invokable.getType() + " for " + invokable + " : " + e.getMessage(), e);
+        }
     }
 
     public static List<Binding<?>> fromParameters(Method method) {
@@ -101,29 +106,17 @@ public final class Binding<T> {
             for (Annotation annotation : annots[i])
                 if (annotation.annotationType().isAnnotationPresent(BindingAnnotation.class))
                     annotations.add(annotation);
-            // type
-            TypeLiteral<?> type = types.get(i);
-            if (type.getRawType() == Provider.class) {
-                if (type.getType() instanceof Class)
-                    type = TypeLiteral.get(Object.class);
-                else {
-                    Type[] args = ((ParameterizedType) type.getType()).getActualTypeArguments();
-                    if (args.length == 0)
-                        throw new PluginException("Missing type argument for provider at ");
-                    try {
-                        type = TypeLiteral.get(args[0]);
-                    } catch (Exception e) {
-                        throw new PluginException("Illegal binding found for parameter " + type + " on method " + method + " : " + e.getMessage());
-                    }
-                }
+            try {
+                bindings.add(binding(Types.withoutProvider(types.get(i)), annotations));
+            } catch (Exception e) {
+                throw new PluginException("Unable to resolve binding type " + types.get(i) + " for " + method + " : " + e.getMessage(), e);
             }
-            bindings.add(binding(type, annotations));
         }
         return Collections.unmodifiableList(bindings);
     }
 
     public static <T> Binding<T> get(Class<T> type) {
-        return new Binding<T>(TypeLiteral.get(type));
+        return get(TypeLiteral.get(type));
     }
 
     public static <T> Binding<T> get(Class<T> type, Annotation... annotations) {
@@ -135,13 +128,13 @@ public final class Binding<T> {
     }
 
     public static <T> Binding<T> get(TypeLiteral<T> type) {
-        return new Binding<T>(type);
+        return binding(type, Collections.<Annotation>emptyList());
     }
 
     public static <T> Binding<T> get(TypeLiteral<T> type, Annotation... annotations) {
         for (Annotation annotation : annotations)
             Assert.state(annotation.annotationType().isAnnotationPresent(BindingAnnotation.class));
-        return new Binding<T>(type, Arrays.asList(annotations));
+        return binding(type, Arrays.asList(annotations));
     }
 
     public static <T> Binding<T> get(TypeLiteral<T> type, Class<? extends Annotation>... annotations) {
@@ -156,6 +149,7 @@ public final class Binding<T> {
     private static <T> Binding<T> binding(TypeLiteral<T> type, Collection<Annotation> annotations) {
         return new Binding<T>(type, annotations);
     }
+
 }
 
 

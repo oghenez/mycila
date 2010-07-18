@@ -142,18 +142,15 @@
                         </goals>
                         <configuration>
                             <createSourcesJar>true</createSourcesJar>
+                            <artifactSet>
+                                <includes>
+                                    <include>org.jgrapht:jgrapht</include>
+                                </includes>
+                            </artifactSet>
                             <relocations>
                                 <relocation>
                                     <pattern>org.jgrapht</pattern>
                                     <shadedPattern>com.mycila.plugin.internal.jgrapht</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.objectweb.asm</pattern>
-                                    <shadedPattern>com.mycila.plugin.internal.asm</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>net.sf.cglib</pattern>
-                                    <shadedPattern>com.mycila.plugin.internal.cglib</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -190,6 +187,12 @@
     </build>
 
     <dependencies>
+        <!-- embedded -->
+        <dependency>
+            <groupId>org.jgrapht</groupId>
+            <artifactId>jgrapht</artifactId>
+            <version>0.8.1</version>
+        </dependency>
         <!-- optional features -->
         <dependency>
             <groupId>asm</groupId>
@@ -229,12 +232,6 @@
             <scope>test</scope>
         </dependency>
         <!-- temporary -->
-        <dependency>
-            <groupId>org.jgrapht</groupId>
-            <artifactId>jgrapht</artifactId>
-            <version>0.8.1</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>aopalliance</groupId>
             <artifactId>aopalliance</artifactId>

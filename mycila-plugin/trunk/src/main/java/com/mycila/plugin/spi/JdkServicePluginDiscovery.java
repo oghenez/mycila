@@ -17,6 +17,7 @@
 package com.mycila.plugin.spi;
 
 import com.mycila.plugin.Loader;
+import com.mycila.plugin.Plugin;
 import com.mycila.plugin.PluginDiscovery;
 import com.mycila.plugin.spi.internal.ServiceClassLoader;
 
@@ -28,7 +29,11 @@ public final class JdkServicePluginDiscovery implements PluginDiscovery {
     private final Class<?> markerClass;
     private final Loader loader;
 
-    public JdkServicePluginDiscovery(Class<?> markerClass, Loader loader) {
+    public JdkServicePluginDiscovery(Loader loader) {
+        this(Plugin.class, loader);
+    }
+
+    JdkServicePluginDiscovery(Class<?> markerClass, Loader loader) {
         this.markerClass = markerClass;
         this.loader = loader;
     }

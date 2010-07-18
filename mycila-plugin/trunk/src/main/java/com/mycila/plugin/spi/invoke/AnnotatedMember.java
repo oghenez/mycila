@@ -88,4 +88,5 @@ public final class AnnotatedMember<T extends Member & AnnotatedElement> implemen
     public int hashCode() {
         return member.hashCode();
     }
+    
 }

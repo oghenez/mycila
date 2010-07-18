@@ -19,7 +19,7 @@ package com.mycila.plugin.spi.internal;
 import com.mycila.plugin.Scopes;
 import com.mycila.plugin.annotation.scope.None;
 import com.mycila.plugin.annotation.scope.Singleton;
-import com.mycila.plugin.spi.DuplicateScopeException;
+import com.mycila.plugin.err.DuplicateScopeException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

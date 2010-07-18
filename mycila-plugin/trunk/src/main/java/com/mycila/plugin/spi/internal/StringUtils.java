@@ -16,11 +16,12 @@
 
 package com.mycila.plugin.spi.internal;
 
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.lang.reflect.WildcardType;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 public final class StringUtils {
 
@@ -30,57 +31,6 @@ public final class StringUtils {
     private static final String CURRENT_PATH = ".";
 
     private StringUtils() {
-    }
-
-    public static String toString(Type type) {
-        if (type instanceof Class<?>) {
-            return ((Class) type).getName();
-
-        } else if (type instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) type;
-            Type[] arguments = parameterizedType.getActualTypeArguments();
-            Type ownerType = parameterizedType.getOwnerType();
-            StringBuilder stringBuilder = new StringBuilder();
-            if (ownerType != null) {
-                stringBuilder.append(toString(ownerType)).append(".");
-            }
-            stringBuilder.append(toString(parameterizedType.getRawType()));
-            if (arguments.length > 0) {
-                stringBuilder
-                        .append("<")
-                        .append(toString(arguments[0]));
-                for (int i = 1; i < arguments.length; i++) {
-                    stringBuilder.append(", ").append(toString(arguments[i]));
-                }
-            }
-            return stringBuilder.append(">").toString();
-
-        } else if (type instanceof GenericArrayType) {
-            return toString(((GenericArrayType) type).getGenericComponentType()) + "[]";
-
-        } else if (type instanceof WildcardType) {
-            WildcardType wildcardType = (WildcardType) type;
-            Type[] lowerBounds = wildcardType.getLowerBounds();
-            Type[] upperBounds = wildcardType.getUpperBounds();
-
-            if (upperBounds.length != 1 || lowerBounds.length > 1) {
-                throw new UnsupportedOperationException("Unsupported wildcard type " + type);
-            }
-
-            if (lowerBounds.length == 1) {
-                if (upperBounds[0] != Object.class) {
-                    throw new UnsupportedOperationException("Unsupported wildcard type " + type);
-                }
-                return "? super " + toString(lowerBounds[0]);
-            } else if (upperBounds[0] == Object.class) {
-                return "?";
-            } else {
-                return "? extends " + toString(upperBounds[0]);
-            }
-
-        } else {
-            return type.toString();
-        }
     }
 
     /**
@@ -425,27 +375,6 @@ public final class StringUtils {
             }
         }
         return false;
-    }
-
-    /**
-     * Count the occurrences of the substring in string s.
-     *
-     * @param str string to search in. Return 0 if this is null.
-     * @param sub string to search for. Return 0 if this is null.
-     * @return number of occurences
-     */
-    public static int countOccurrencesOf(String str, String sub) {
-        if (str == null || sub == null || str.length() == 0 || sub.length() == 0) {
-            return 0;
-        }
-        int count = 0;
-        int pos = 0;
-        int idx;
-        while ((idx = str.indexOf(sub, pos)) != -1) {
-            ++count;
-            pos = idx + sub.length();
-        }
-        return count;
     }
 
     /**

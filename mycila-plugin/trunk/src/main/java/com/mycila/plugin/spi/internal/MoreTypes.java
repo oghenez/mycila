@@ -19,7 +19,17 @@ package com.mycila.plugin.spi.internal;
 import com.mycila.plugin.TypeLiteral;
 
 import java.io.Serializable;
-import java.lang.reflect.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.GenericDeclaration;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,10 +65,6 @@ public class MoreTypes {
 
     /**
      * Returns an type that's appropriate for use in a key.
-     * <p/>
-     * <p>If the raw type of {@code typeLiteral} is a {@code javax.inject.Provider}, this returns a
-     * {@code com.google.inject.Provider} with the same type parameters.
-     * <p/>
      * <p>If the type is a primitive, the corresponding wrapper type will be returned.
      *
      * @throws IllegalArgumentException if {@code type} contains a type variable
@@ -81,16 +87,9 @@ public class MoreTypes {
     private static boolean isFullySpecified(Type type) {
         if (type instanceof Class) {
             return true;
-
         } else if (type instanceof CompositeType) {
             return ((CompositeType) type).isFullySpecified();
-
-        } else if (type instanceof TypeVariable) {
-            return false;
-
-        } else {
-            return ((CompositeType) canonicalize(type)).isFullySpecified();
-        }
+        } else return !(type instanceof TypeVariable) && ((CompositeType) canonicalize(type)).isFullySpecified();
     }
 
     /**

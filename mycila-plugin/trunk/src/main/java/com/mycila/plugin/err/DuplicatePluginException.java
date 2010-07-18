@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi;
-
-import com.mycila.plugin.Binding;
+package com.mycila.plugin.err;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class DuplicateExportException extends PluginMetadataException {
+public final class DuplicatePluginException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public DuplicateExportException(Class pluginClass, Binding<?> binding) {
-        super("Duplicate exports found for same binding " + binding + " in plugin class " + pluginClass.getName());
+    public DuplicatePluginException(Class pluginClass) {
+        super("Duplicate plugin class found: " + pluginClass.getName());
     }
 }

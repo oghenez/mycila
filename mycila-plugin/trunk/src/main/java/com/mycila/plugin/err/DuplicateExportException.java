@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.old;
+package com.mycila.plugin.err;
 
-import org.junit.Before;
+import com.mycila.plugin.Binding;
+import com.mycila.plugin.spi.internal.ClassUtils;
 
-import java.util.logging.LogManager;
+import java.util.Arrays;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class SetupLoggerTest {
-    @Before
-    public void test() throws Exception {
-        LogManager.getLogManager().readConfiguration(getClass().getResourceAsStream("/logging.properties"));
+public final class DuplicateExportException extends PluginException {
+    private static final long serialVersionUID = 1;
+
+    public DuplicateExportException(Class pluginClass, Binding<?> binding) {
+        super("Duplicate exports found for same binding " + binding + " in plugin class " + pluginClass.getName());
+    }
+
+    public DuplicateExportException(Binding<?> binding, Class<?>... pluginClass) {
+        super("Duplicate exports found for same binding " + binding + " in several plugin classes " + Arrays.toString(ClassUtils.toNames(pluginClass)));
     }
 }

@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.old;
+package com.mycila.plugin.err;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class PrivatePlugin extends MyAbstractPlugin {
-    private PrivatePlugin() {
-    }
+public class CyclicPluginDependencyException extends PluginException {
+    private static final long serialVersionUID = 1;
 
-    public List<String> getBefore() {
-        return Arrays.asList();
-    }
-
-    public List<String> getAfter() {
-        return Arrays.asList("");
+    public CyclicPluginDependencyException(Collection<Class<?>> cycle) {
+        super("Cyclic dependency found in activation order bewteen plugins " + cycle);
     }
 }
