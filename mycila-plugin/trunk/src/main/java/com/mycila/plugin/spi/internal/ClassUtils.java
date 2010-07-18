@@ -16,6 +16,8 @@
 
 package com.mycila.plugin.spi.internal;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
@@ -64,4 +66,13 @@ public final class ClassUtils {
             names[i] = classes[i].getName();
         return names;
     }
+
+    public static <T> T instanciate(Class<T> pluginClass) throws Throwable {
+        try {
+            return pluginClass.getConstructor().newInstance();
+        } catch (InvocationTargetException e) {
+            throw e.getTargetException();
+        }
+    }
+
 }

@@ -41,14 +41,17 @@ public final class Binding<T> {
 
     private final TypeLiteral<T> type;
     private final Collection<Annotation> annotations;
-
-    private Binding(TypeLiteral<T> type) {
-        this(type, Collections.<Annotation>emptyList());
-    }
+    private final int hashCode;
+    private final boolean provided;
 
     private Binding(TypeLiteral<T> type, Collection<Annotation> annotations) {
-        this.type = MoreTypes.canonicalizeForKey(type);
+        this.provided = Types.isProvided(type);
+        this.type = MoreTypes.canonicalizeForKey(provided ? Types.<T>withoutProvider(type) : type);
         this.annotations = Collections.unmodifiableCollection(new LinkedHashSet<Annotation>(annotations));
+        int result = 31 * type.hashCode();
+        for (Annotation annotation : annotations)
+            result += annotation.hashCode();
+        this.hashCode = result;
     }
 
     public Collection<Annotation> getAnnotations() {
@@ -59,10 +62,14 @@ public final class Binding<T> {
         return type;
     }
 
+    public boolean isProvided() {
+        return provided;
+    }
+
     @Override
     public String toString() {
-        return annotations.isEmpty() ? type.toString() :
-                type + " with bindings " + StringUtils.arrayToCommaDelimitedString(annotations.toArray(new Object[annotations.size()]));
+        return "Binding of " + (annotations.isEmpty() ? type.toString() :
+                type + " with annotations " + StringUtils.arrayToCommaDelimitedString(annotations.toArray(new Object[annotations.size()])));
     }
 
     @Override
@@ -78,10 +85,7 @@ public final class Binding<T> {
 
     @Override
     public int hashCode() {
-        int result = 31 * type.hashCode();
-        for (Annotation annotation : annotations)
-            result += annotation.hashCode();
-        return result;
+        return this.hashCode;
     }
 
     public static <T> Binding<T> fromInvokable(InvokableMember<T> invokable) {
@@ -90,7 +94,7 @@ public final class Binding<T> {
             if (annotation.annotationType().isAnnotationPresent(BindingAnnotation.class))
                 annotations.add(annotation);
         try {
-            return binding(Types.<T>withoutProvider(invokable.getType()), annotations);
+            return binding(invokable.getType(), annotations);
         } catch (Exception e) {
             throw new PluginException("Unable to resolve binding type " + invokable.getType() + " for " + invokable + " : " + e.getMessage(), e);
         }
@@ -107,7 +111,7 @@ public final class Binding<T> {
                 if (annotation.annotationType().isAnnotationPresent(BindingAnnotation.class))
                     annotations.add(annotation);
             try {
-                bindings.add(binding(Types.withoutProvider(types.get(i)), annotations));
+                bindings.add(binding(types.get(i), annotations));
             } catch (Exception e) {
                 throw new PluginException("Unable to resolve binding type " + types.get(i) + " for " + method + " : " + e.getMessage(), e);
             }
@@ -151,5 +155,4 @@ public final class Binding<T> {
     }
 
 }
-
 

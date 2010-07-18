@@ -17,6 +17,9 @@
 package com.mycila.plugin.spi;
 
 import com.mycila.plugin.Binding;
+import com.mycila.plugin.Provider;
+import com.mycila.plugin.err.InactivePluginException;
+import com.mycila.plugin.err.InjectionInProgressException;
 import com.mycila.plugin.spi.invoke.InvokableMember;
 import com.mycila.plugin.spi.invoke.Invokables;
 
@@ -31,16 +34,27 @@ import java.util.List;
  */
 public final class InjectionPoint {
 
-    private final InvokableMember<?> invokable; // TODO
+    private final PluginMetadata metadata;
+    private final InvokableMember<?> invokable;
     private final List<Binding<?>> bindings;
+    private volatile boolean injected;
 
-    private InjectionPoint(InvokableMember<?> invokable, List<? extends Binding<?>> bindings) {
+    private InjectionPoint(PluginMetadata metadata, InvokableMember<?> invokable, List<? extends Binding<?>> bindings) {
+        this.metadata = metadata;
         this.invokable = invokable;
         this.bindings = Collections.unmodifiableList(new ArrayList<Binding<?>>(bindings));
     }
 
+    public PluginMetadata getPluginMetadata() {
+        return metadata;
+    }
+
     public List<Binding<?>> getBindings() {
         return bindings;
+    }
+
+    public boolean isInjected() {
+        return injected;
     }
 
     @Override
@@ -48,17 +62,54 @@ public final class InjectionPoint {
         return "InjectionPoint " + invokable.getMember().getName() + " at " + invokable.getMember().getDeclaringClass().getName();
     }
 
-    static InjectionPoint from(Method method, Object plugin) {
-        return new InjectionPoint(Invokables.get(method, plugin), Binding.fromParameters(method));
+    static InjectionPoint from(PluginMetadata metadata, Method method, Object plugin) {
+        return new InjectionPoint(metadata, Invokables.get(method, plugin), Binding.fromParameters(method));
     }
 
-    static InjectionPoint from(Field field, Object plugin) {
+    static InjectionPoint from(PluginMetadata metadata, Field field, Object plugin) {
         InvokableMember<?> invokable = Invokables.get(field, plugin);
-        return new InjectionPoint(invokable, asList(Binding.fromInvokable(invokable)));
+        return new InjectionPoint(metadata, invokable, asList(Binding.fromInvokable(invokable)));
     }
 
     private static List<? extends Binding<?>> asList(Binding<?> b) {
         return Collections.singletonList(b);
+    }
+
+    public void inject(List<PluginExport<?>> dependencies) {
+        if (dependencies.size() != bindings.size())
+            throw new IllegalArgumentException("Requires " + bindings.size() + " dependencies but " + dependencies.size() + " were injected");
+        Object[] oo = new Object[bindings.size()];
+        for (int i = 0; i < oo.length; i++) {
+            PluginExport<?> export = dependencies.get(i);
+            Binding<?> binding = bindings.get(i);
+            if (!binding.equals(export.getBinding()))
+                throw new IllegalArgumentException("Requires " + binding + " but got " + export.getBinding());
+            Provider<?> provider = ExportReadyProvider.ensureExportReady(export);
+            oo[i] = binding.isProvided() ? provider : null;//TODO
+        }
+        invokable.invoke(oo);
+        injected = true;
+    }
+
+    private static final class ExportReadyProvider<T> implements Provider<T> {
+        private final PluginExport<T> export;
+
+        private ExportReadyProvider(PluginExport<T> export) {
+            this.export = export;
+        }
+
+        @Override
+        public T get() {
+            if (!export.getPluginMetadata().isResolved())
+                throw new InjectionInProgressException(export.getPluginMetadata());
+            if (!export.getPluginMetadata().isStarted())
+                throw new InactivePluginException(export);
+            return export.getProvider().get();
+        }
+
+        public static <T> Provider<T> ensureExportReady(PluginExport<T> export) {
+            return new ExportReadyProvider<T>(export);
+        }
     }
 
 }

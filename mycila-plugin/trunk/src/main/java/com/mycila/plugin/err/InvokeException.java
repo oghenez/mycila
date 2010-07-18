@@ -16,15 +16,15 @@
 
 package com.mycila.plugin.err;
 
-import com.mycila.plugin.Binding;
+import com.mycila.plugin.spi.invoke.InvokableMember;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class UnresolvedBindingException extends PluginException {
+public final class InvokeException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public UnresolvedBindingException(Class<?> pluginClass, Binding<?> binding) {
-        super("No export found for " + binding + " required by plugin class " + pluginClass.getName());
+    public InvokeException(InvokableMember<?> invokable, Throwable t) {
+        super("Error invoking " + invokable.getMember() + " : " + t.getMessage(), t);
     }
 }
