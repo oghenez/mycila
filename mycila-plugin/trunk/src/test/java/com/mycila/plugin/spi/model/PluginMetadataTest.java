@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal.model;
+package com.mycila.plugin.spi.model;
 
 import com.google.common.collect.Iterables;
 import com.mycila.plugin.DuplicateExportException;

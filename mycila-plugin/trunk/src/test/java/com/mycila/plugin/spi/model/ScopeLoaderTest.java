@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal;
+package com.mycila.plugin.spi.model;
 
 import com.mycila.plugin.DuplicateScopeException;
 import com.mycila.plugin.Scopes;
