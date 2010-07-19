@@ -16,31 +16,70 @@
 
 package com.mycila.plugin.spi.internal.aop;
 
-import com.mycila.plugin.Plugin;
-
-import java.lang.ref.WeakReference;
-import java.util.Map;
-import java.util.WeakHashMap;
+import com.mycila.plugin.spi.internal.Assert;
+import com.mycila.plugin.spi.internal.ClassUtils;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class CglibUtils {
+
+    static {
+        Assert.state(ClassUtils.hasCGLIB(), "CGLIB must be in your classpath");
+    }
+
     private CglibUtils() {
     }
 
-    private static final String MYCILA_PACKAGE = Plugin.class.getPackage().getName();
+    private static final ClassLoader CGLIB_CLASS_LOADER = net.sf.cglib.proxy.Enhancer.class.getClassLoader();
     private static final String CGLIB_PACKAGE = net.sf.cglib.proxy.Enhancer.class.getName().replaceFirst("\\.cglib\\..*$", ".cglib");
 
-    private static final Map<Class<?>, WeakReference<net.sf.cglib.reflect.FastClass>> CLASSES = new WeakHashMap<Class<?>, WeakReference<net.sf.cglib.reflect.FastClass>>();
+    private static final WeakCache<ClassLoader, ClassLoader> CLASS_LOADER_CACHE = new WeakCache<ClassLoader, ClassLoader>(new WeakCache.Provider<ClassLoader, ClassLoader>() {
+        @Override
+        public ClassLoader get(ClassLoader key) {
+            return new BridgeClassLoader(key, CGLIB_CLASS_LOADER, CGLIB_PACKAGE);
+        }
+    });
+
+    private static final net.sf.cglib.core.NamingPolicy NAMING_POLICY = new net.sf.cglib.core.DefaultNamingPolicy() {
+        @Override
+        protected String getTag() {
+            return "ByMycilaPlugin";
+        }
+    };
+
+    private static final WeakCache<Class<?>, net.sf.cglib.reflect.FastClass> FAST_CLASS_CACHE
+            = new WeakCache<Class<?>, net.sf.cglib.reflect.FastClass>(
+            new WeakCache.Provider<Class<?>, net.sf.cglib.reflect.FastClass>() {
+                @Override
+                public net.sf.cglib.reflect.FastClass get(Class<?> type) {
+                    net.sf.cglib.reflect.FastClass.Generator generator = new net.sf.cglib.reflect.FastClass.Generator();
+                    generator.setType(type);
+                    generator.setClassLoader(getClassLoader(type));
+                    generator.setNamingPolicy(NAMING_POLICY);
+                    return generator.create();
+                }
+            });
+
+    private static ClassLoader getClassLoader(Class<?> type) {
+        ClassLoader delegate = ClassUtils.canonicalize(type.getClassLoader());
+        if (delegate == ClassUtils.getSystemClassLoader())
+            return delegate;
+        if (delegate instanceof BridgeClassLoader)
+            return delegate;
+        return CLASS_LOADER_CACHE.get(delegate);
+    }
 
     public static net.sf.cglib.reflect.FastClass getFastClass(Class<?> c) {
-        WeakReference<net.sf.cglib.reflect.FastClass> ref = CLASSES.get(c);
-        net.sf.cglib.reflect.FastClass fast = null;
-        if (ref != null)
-            fast = ref.get();
-        if (fast == null)
-            CLASSES.put(c, new WeakReference<net.sf.cglib.reflect.FastClass>(fast = net.sf.cglib.reflect.FastClass.create(c)));
-        return fast;
+        return FAST_CLASS_CACHE.get(c);
+    }
+
+    public static net.sf.cglib.proxy.Enhancer newEnhancer(Class<?> type) {
+        net.sf.cglib.proxy.Enhancer enhancer = new net.sf.cglib.proxy.Enhancer();
+        enhancer.setSuperclass(type);
+        enhancer.setUseFactory(false);
+        enhancer.setClassLoader(getClassLoader(type));
+        enhancer.setNamingPolicy(NAMING_POLICY);
+        return enhancer;
     }
 }
