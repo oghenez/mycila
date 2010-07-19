@@ -102,6 +102,24 @@ public final class ClassUtils {
         return cl;
     }
 
+    public static ClassLoader canonicalize(ClassLoader classLoader) {
+        return classLoader != null
+                ? classLoader
+                : Assert.checkNotNull(getSystemClassLoader(), "Couldn't get the System ClassLoader !");
+    }
+
+    /**
+     * Returns the system classloader, or {@code null} if we don't have
+     * permission.
+     */
+    public static ClassLoader getSystemClassLoader() {
+        try {
+            return ClassLoader.getSystemClassLoader();
+        } catch (SecurityException e) {
+            return null;
+        }
+    }
+
     /**
      * Convert a "/"-based resource path to a "."-based fully qualified class name.
      *
