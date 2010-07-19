@@ -17,7 +17,8 @@
 package com.mycila.plugin.spi.internal.model;
 
 import com.mycila.plugin.annotation.BindingAnnotation;
-import com.mycila.plugin.spi.internal.invoke.Invokables;
+import com.mycila.plugin.spi.invoke.Invokables;
+import com.mycila.plugin.spi.model.Binding;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

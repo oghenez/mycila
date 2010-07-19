@@ -14,31 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi;
-
-import com.mycila.plugin.Loader;
-import com.mycila.plugin.Plugin;
-import com.mycila.plugin.PluginDiscovery;
+package com.mycila.plugin.spi.invoke;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class JdkServicePluginDiscovery implements PluginDiscovery {
+public interface InvokableComposite<T> extends Invokable<T>, Iterable<Invokable<T>> {
+    void add(Invokable<T> invokable);
 
-    private final Class<?> markerClass;
-    private final Loader loader;
-
-    public JdkServicePluginDiscovery(Loader loader) {
-        this(Plugin.class, loader);
-    }
-
-    JdkServicePluginDiscovery(Class<?> markerClass, Loader loader) {
-        this.markerClass = markerClass;
-        this.loader = loader;
-    }
-
-    @Override
-    public Iterable<? extends Class<?>> scan() {
-        return ServiceClassLoader.load(markerClass, loader);
-    }
+    void addAll(Iterable<Invokable<T>> invokables);
 }

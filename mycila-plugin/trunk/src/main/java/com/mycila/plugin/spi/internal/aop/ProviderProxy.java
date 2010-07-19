@@ -19,8 +19,8 @@ package com.mycila.plugin.spi.internal.aop;
 import com.mycila.plugin.InactivePluginException;
 import com.mycila.plugin.InjectionInProgressException;
 import com.mycila.plugin.Provider;
-import com.mycila.plugin.spi.internal.model.Binding;
-import com.mycila.plugin.spi.internal.model.PluginExport;
+import com.mycila.plugin.spi.model.Binding;
+import com.mycila.plugin.spi.model.PluginExport;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

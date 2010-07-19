@@ -17,7 +17,7 @@
 package com.mycila.plugin;
 
 import com.mycila.plugin.spi.internal.ClassUtils;
-import com.mycila.plugin.spi.internal.model.Binding;
+import com.mycila.plugin.spi.model.Binding;
 
 import java.util.Arrays;
 

@@ -16,6 +16,7 @@
 
 package com.mycila.plugin.spi.internal.model;
 
+import com.mycila.plugin.spi.model.AnnotationMetadata;
 import com.mycila.plugin.test.CurrentMethod;
 import org.junit.Rule;
 import org.junit.Test;

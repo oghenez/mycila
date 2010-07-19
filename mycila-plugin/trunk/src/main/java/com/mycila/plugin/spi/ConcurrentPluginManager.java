@@ -16,10 +16,7 @@
 
 package com.mycila.plugin.spi;
 
-import com.mycila.plugin.InvokeException;
-import com.mycila.plugin.PluginDiscovery;
-import com.mycila.plugin.PluginException;
-import com.mycila.plugin.PluginManager;
+import com.mycila.plugin.*;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -59,12 +56,12 @@ public final class ConcurrentPluginManager implements PluginManager {
             return pluginManager.get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new PluginException(e);
+            throw new WrappedException(e);
         } catch (ExecutionException e) {
             Throwable cause = e.getCause();
             if (cause instanceof Error) throw (Error) cause;
             if (cause instanceof RuntimeException) throw (RuntimeException) cause;
-            throw new PluginException(cause);
+            throw new WrappedException(cause);
         }
     }
 }
