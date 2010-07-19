@@ -15,6 +15,11 @@
  */
 
 package test;
+
+import com.mycila.plugin.Plugin;
+import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.aop.interceptor.SimpleTraceInterceptor;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
@@ -22,7 +27,11 @@ package test;
 final class Main {
 
     public static void main(String[] args) throws Exception {
-
+        ProxyFactory proxyFactory = new ProxyFactory();
+        proxyFactory.setTargetClass(Plugin.class);
+        proxyFactory.setInterfaces(new Class[]{Plugin.class});
+        proxyFactory.addAdvice(new SimpleTraceInterceptor());
+        System.out.println(proxyFactory.getProxy());
     }
 
 }

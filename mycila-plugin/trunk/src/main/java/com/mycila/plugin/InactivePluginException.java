@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.err;
+package com.mycila.plugin;
 
-import com.mycila.plugin.spi.internal.StringUtils;
-
-import java.lang.annotation.Annotation;
+import com.mycila.plugin.spi.internal.model.PluginExport;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class PluginDiscoveryException extends PluginException {
+public final class InactivePluginException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public PluginDiscoveryException(Throwable cause, Class<? extends Annotation> pluginAnnotation, String... packages) {
-        super("Error when scanning for plugin annotated by @" + pluginAnnotation.getName() + " in packages " + StringUtils.arrayToCommaDelimitedString(packages) + " : " + cause.getMessage(), cause);
-    }
-
-    public PluginDiscoveryException(String msg, Throwable cause) {
-        super(msg, cause);
+    public InactivePluginException(PluginExport export) {
+        super("Plugin " + export.getPluginMetadata().getType().getName() + " exporting " + export.getBinding() + " has not been started !");
     }
 }

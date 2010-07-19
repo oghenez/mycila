@@ -16,6 +16,9 @@
 
 package com.mycila.plugin.spi.internal.model;
 
+import com.mycila.plugin.DuplicateExportException;
+import com.mycila.plugin.InexistingBindingException;
+import com.mycila.plugin.InvokeException;
 import com.mycila.plugin.annotation.ActivateAfter;
 import com.mycila.plugin.annotation.ActivateBefore;
 import com.mycila.plugin.annotation.Export;
@@ -23,12 +26,9 @@ import com.mycila.plugin.annotation.Import;
 import com.mycila.plugin.annotation.OnStart;
 import com.mycila.plugin.annotation.OnStop;
 import com.mycila.plugin.annotation.Plugin;
-import com.mycila.plugin.err.DuplicateExportException;
-import com.mycila.plugin.err.InexistingBindingException;
-import com.mycila.plugin.err.InvokeException;
 import com.mycila.plugin.spi.internal.ScopeBinding;
 import com.mycila.plugin.spi.internal.ScopeLoader;
-import com.mycila.plugin.spi.internal.aop.AopUtilsTOREFAC;
+import com.mycila.plugin.spi.internal.aop.AopUtils;
 import com.mycila.plugin.spi.internal.invoke.Invokable;
 import com.mycila.plugin.spi.internal.invoke.InvokableComposite;
 import com.mycila.plugin.spi.internal.invoke.Invokables;
@@ -192,7 +192,7 @@ public final class PluginMetadata {
 
     public static PluginMetadata from(Object plugin) {
         ScopeLoader scopeResolver = new ScopeLoader();
-        Class<?> pluginClass = AopUtilsTOREFAC.getTargetClass(plugin);
+        Class<?> pluginClass = AopUtils.getTargetClassFromProxy(plugin);
         Plugin pluginAnnot = pluginClass.getAnnotation(Plugin.class);
         PluginMetadata metadata = new PluginMetadata(
                 plugin,

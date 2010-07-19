@@ -16,10 +16,10 @@
 
 package com.mycila.plugin.spi;
 
+import com.mycila.plugin.InvokeException;
 import com.mycila.plugin.PluginDiscovery;
+import com.mycila.plugin.PluginException;
 import com.mycila.plugin.PluginManager;
-import com.mycila.plugin.err.InvokeException;
-import com.mycila.plugin.err.PluginException;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;

@@ -16,8 +16,8 @@
 
 package com.mycila.plugin.spi.internal.model;
 
+import com.mycila.plugin.PluginException;
 import com.mycila.plugin.annotation.BindingAnnotation;
-import com.mycila.plugin.err.PluginException;
 import com.mycila.plugin.spi.internal.Assert;
 import com.mycila.plugin.spi.internal.MoreTypes;
 import com.mycila.plugin.spi.internal.StringUtils;

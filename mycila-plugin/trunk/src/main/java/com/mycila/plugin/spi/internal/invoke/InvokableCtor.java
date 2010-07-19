@@ -16,7 +16,7 @@
 
 package com.mycila.plugin.spi.internal.invoke;
 
-import com.mycila.plugin.err.InvokeException;
+import com.mycila.plugin.InvokeException;
 import com.mycila.plugin.spi.internal.model.TypeLiteral;
 
 import java.lang.reflect.Constructor;

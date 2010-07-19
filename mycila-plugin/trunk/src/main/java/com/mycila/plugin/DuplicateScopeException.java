@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.err;
+package com.mycila.plugin;
 
-import com.mycila.plugin.spi.internal.model.PluginExport;
+import java.lang.reflect.AnnotatedElement;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class InactivePluginException extends PluginException {
+public final class DuplicateScopeException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public InactivePluginException(PluginExport export) {
-        super("Plugin " + export.getPluginMetadata().getType().getName() + " exporting " + export.getBinding() + " has not been started !");
+    public DuplicateScopeException(AnnotatedElement element) {
+        super("Too many scopes found at " + element);
     }
 }

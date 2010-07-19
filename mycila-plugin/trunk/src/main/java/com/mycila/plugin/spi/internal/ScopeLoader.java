@@ -16,12 +16,12 @@
 
 package com.mycila.plugin.spi.internal;
 
+import com.mycila.plugin.DuplicateScopeException;
+import com.mycila.plugin.InvokeException;
+import com.mycila.plugin.PluginException;
 import com.mycila.plugin.Scope;
 import com.mycila.plugin.annotation.ScopeAnnotation;
 import com.mycila.plugin.annotation.scope.None;
-import com.mycila.plugin.err.DuplicateScopeException;
-import com.mycila.plugin.err.InvokeException;
-import com.mycila.plugin.err.PluginException;
 import com.mycila.plugin.spi.internal.invoke.Invokables;
 import com.mycila.plugin.spi.internal.model.AnnotationMetadata;
 

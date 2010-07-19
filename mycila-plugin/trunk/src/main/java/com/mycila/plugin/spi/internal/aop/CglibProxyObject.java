@@ -14,13 +14,25 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal.invoke;
-
-import com.mycila.plugin.InvokeException;
+package com.mycila.plugin.spi.internal.aop;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Invokable<T> {
-    T invoke(Object... args) throws InvokeException;
+final class CglibProxyObject implements ProxyMarker {
+
+    @Override
+    public Class<?>[] getProxyInterfaces() {
+        return new Class<?>[0];
+    }
+
+    @Override
+    public Class<?> getTargetClass() {
+        return null;
+    }
+
+    @Override
+    public Object getTarget() {
+        return null;
+    }
 }

@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi;
+package com.mycila.plugin.spi.internal.model;
 
 import com.google.common.collect.Iterables;
-import com.mycila.plugin.err.DuplicateExportException;
-import com.mycila.plugin.err.InexistingBindingException;
-import com.mycila.plugin.spi.internal.model.Binding;
-import com.mycila.plugin.spi.internal.model.InjectionPoint;
-import com.mycila.plugin.spi.internal.model.PluginExport;
-import com.mycila.plugin.spi.internal.model.PluginMetadata;
+import com.mycila.plugin.DuplicateExportException;
+import com.mycila.plugin.InexistingBindingException;
+import com.mycila.plugin.spi.DuplicatePlugin;
+import com.mycila.plugin.spi.MyPlugin;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

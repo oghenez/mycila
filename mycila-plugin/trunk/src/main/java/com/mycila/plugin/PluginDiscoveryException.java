@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.err;
+package com.mycila.plugin;
 
-import java.util.Collection;
+import com.mycila.plugin.spi.internal.StringUtils;
+
+import java.lang.annotation.Annotation;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class CyclicPluginDependencyException extends PluginException {
+public class PluginDiscoveryException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public CyclicPluginDependencyException(Collection<Class<?>> cycle) {
-        super("Cyclic dependency found in activation order bewteen plugins " + cycle);
+    public PluginDiscoveryException(Throwable cause, Class<? extends Annotation> pluginAnnotation, String... packages) {
+        super("Error when scanning for plugin annotated by @" + pluginAnnotation.getName() + " in packages " + StringUtils.arrayToCommaDelimitedString(packages) + " : " + cause.getMessage(), cause);
+    }
+
+    public PluginDiscoveryException(String msg, Throwable cause) {
+        super(msg, cause);
     }
 }

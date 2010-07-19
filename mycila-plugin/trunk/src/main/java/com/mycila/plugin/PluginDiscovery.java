@@ -16,8 +16,6 @@
 
 package com.mycila.plugin;
 
-import com.mycila.plugin.err.PluginDiscoveryException;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */

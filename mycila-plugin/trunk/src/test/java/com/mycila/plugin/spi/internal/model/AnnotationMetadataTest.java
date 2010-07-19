@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal;
+package com.mycila.plugin.spi.internal.model;
 
-import com.mycila.plugin.spi.internal.model.AnnotationMetadata;
 import com.mycila.plugin.test.CurrentMethod;
 import org.junit.Rule;
 import org.junit.Test;

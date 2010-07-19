@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal.invoke;
-
-import com.mycila.plugin.InvokeException;
+package com.mycila.plugin.spi.internal.aop;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Invokable<T> {
-    T invoke(Object... args) throws InvokeException;
+public interface ProxyMarker {
+    Class<?>[] getProxyInterfaces();
+
+    Class<?> getTargetClass();
+
+    Object getTarget();
 }

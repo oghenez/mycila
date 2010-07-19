@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.err;
+package com.mycila.plugin;
 
-import java.lang.reflect.AnnotatedElement;
+import com.mycila.plugin.spi.internal.model.Binding;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class DuplicateScopeException extends PluginException {
+public final class InexistingBindingException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public DuplicateScopeException(AnnotatedElement element) {
-        super("Too many scopes found at " + element);
+    public InexistingBindingException(Class pluginClass, Binding<?> binding) {
+        super("Unable to find export " + binding + " in plugin class " + pluginClass.getName());
     }
 }

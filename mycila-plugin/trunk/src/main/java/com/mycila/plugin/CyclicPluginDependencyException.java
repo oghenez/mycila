@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.err;
+package com.mycila.plugin;
 
-import com.mycila.plugin.spi.internal.invoke.InvokableMember;
+import java.util.Collection;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class InvokeException extends PluginException {
+public class CyclicPluginDependencyException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public InvokeException(InvokableMember<?> invokable, Throwable t) {
-        super("Error invoking " + invokable.getMember() + " : " + t.getMessage(), t);
+    public CyclicPluginDependencyException(Collection<Class<?>> cycle) {
+        super("Cyclic dependency found in activation order bewteen plugins " + cycle);
     }
 }
