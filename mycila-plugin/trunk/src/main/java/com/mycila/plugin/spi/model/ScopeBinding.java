@@ -14,31 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi;
+package com.mycila.plugin.spi.model;
 
-import com.mycila.plugin.Loader;
-import com.mycila.plugin.Plugin;
-import com.mycila.plugin.PluginDiscovery;
+import com.mycila.plugin.Scope;
+
+import java.lang.annotation.Annotation;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class JdkServicePluginDiscovery implements PluginDiscovery {
+interface ScopeBinding {
+    Scope getScope();
 
-    private final Class<?> markerClass;
-    private final Loader loader;
-
-    public JdkServicePluginDiscovery(Loader loader) {
-        this(Plugin.class, loader);
-    }
-
-    JdkServicePluginDiscovery(Class<?> markerClass, Loader loader) {
-        this.markerClass = markerClass;
-        this.loader = loader;
-    }
-
-    @Override
-    public Iterable<? extends Class<?>> scan() {
-        return ServiceClassLoader.load(markerClass, loader);
-    }
+    Annotation getAnnotation();
 }

@@ -16,7 +16,7 @@
 
 package com.mycila.plugin;
 
-import com.mycila.plugin.spi.internal.model.Binding;
+import com.mycila.plugin.spi.model.Binding;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

@@ -36,4 +36,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 public @interface Export {
+    Class<?> value() default Void.class;
 }

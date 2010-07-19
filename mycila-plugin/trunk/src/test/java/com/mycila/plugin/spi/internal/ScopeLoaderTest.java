@@ -20,6 +20,8 @@ import com.mycila.plugin.DuplicateScopeException;
 import com.mycila.plugin.Scopes;
 import com.mycila.plugin.annotation.scope.None;
 import com.mycila.plugin.annotation.scope.Singleton;
+import com.mycila.plugin.spi.internal.model.ScopeBinding;
+import com.mycila.plugin.spi.internal.model.ScopeLoader;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

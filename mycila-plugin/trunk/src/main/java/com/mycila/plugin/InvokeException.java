@@ -16,7 +16,7 @@
 
 package com.mycila.plugin;
 
-import com.mycila.plugin.spi.internal.invoke.InvokableMember;
+import com.mycila.plugin.spi.invoke.InvokableMember;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

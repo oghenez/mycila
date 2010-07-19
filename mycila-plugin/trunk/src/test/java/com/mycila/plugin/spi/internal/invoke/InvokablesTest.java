@@ -16,7 +16,8 @@
 
 package com.mycila.plugin.spi.internal.invoke;
 
-import com.mycila.plugin.spi.internal.CustomClassLoader;
+import com.mycila.plugin.spi.internal.aop.CustomClassLoader;
+import com.mycila.plugin.spi.invoke.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

@@ -42,7 +42,7 @@ public final class ClassUtils {
         return hasCGLIB;
     }
 
-    public static boolean hasCGLIB(ClassLoader classLoader) {
+    private static boolean hasCGLIB(ClassLoader classLoader) {
         try {
             classLoader.loadClass("net.sf.cglib.proxy.Callback");
             return true;
@@ -55,7 +55,7 @@ public final class ClassUtils {
         return hasASM;
     }
 
-    public static boolean hasASM(ClassLoader classLoader) {
+    private static boolean hasASM(ClassLoader classLoader) {
         try {
             classLoader.loadClass("org.objectweb.asm.Type");
             return true;
@@ -68,7 +68,7 @@ public final class ClassUtils {
         return hasAOP;
     }
 
-    public static boolean hasAOP(ClassLoader classLoader) {
+    private static boolean hasAOP(ClassLoader classLoader) {
         try {
             classLoader.loadClass("org.aopalliance.aop.Advice");
             return true;
@@ -78,7 +78,7 @@ public final class ClassUtils {
     }
 
     public static boolean hasAnnotationType() {
-        return hasAOP;
+        return hasAnnotationType;
     }
 
     public static boolean hasAnnotationType(ClassLoader classLoader) {

@@ -16,7 +16,7 @@
 
 package com.mycila.plugin;
 
-import com.mycila.plugin.spi.internal.model.PluginExport;
+import com.mycila.plugin.spi.model.PluginExport;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
