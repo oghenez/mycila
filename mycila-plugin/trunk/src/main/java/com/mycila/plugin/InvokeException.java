@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.err;
+package com.mycila.plugin;
 
-import com.mycila.plugin.spi.internal.model.Binding;
+import com.mycila.plugin.spi.internal.invoke.InvokableMember;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class UnresolvedBindingException extends PluginException {
+public final class InvokeException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public UnresolvedBindingException(Class<?> pluginClass, Binding<?> binding) {
-        super("No export found for " + binding + " required by plugin class " + pluginClass.getName());
+    public InvokeException(InvokableMember<?> invokable, Throwable t) {
+        super("Error invoking " + invokable.getMember() + " : " + t.getMessage(), t);
     }
 }

@@ -14,13 +14,33 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal.invoke;
+package com.mycila.plugin.spi.internal.aop;
 
-import com.mycila.plugin.InvokeException;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Invokable<T> {
-    T invoke(Object... args) throws InvokeException;
+final class JdkProxyObject implements ProxyMarker, InvocationHandler {
+
+    @Override
+    public Class<?>[] getProxyInterfaces() {
+        return new Class<?>[0];
+    }
+
+    @Override
+    public Class<?> getTargetClass() {
+        return null;
+    }
+
+    @Override
+    public Object getTarget() {
+        return null;
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        return null;
+    }
 }

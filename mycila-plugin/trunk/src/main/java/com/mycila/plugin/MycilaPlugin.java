@@ -16,7 +16,6 @@
 
 package com.mycila.plugin;
 
-import com.mycila.plugin.err.PluginDiscoveryException;
 import com.mycila.plugin.spi.AnnotatedPluginDiscovery;
 import com.mycila.plugin.spi.ConcurrentPluginManager;
 import com.mycila.plugin.spi.CustomPluginDiscovery;

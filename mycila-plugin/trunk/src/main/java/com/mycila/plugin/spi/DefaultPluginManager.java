@@ -16,13 +16,16 @@
 
 package com.mycila.plugin.spi;
 
+import com.mycila.plugin.CyclicPluginDependencyException;
+import com.mycila.plugin.DuplicateExportException;
+import com.mycila.plugin.DuplicatePluginException;
+import com.mycila.plugin.InvokeException;
 import com.mycila.plugin.PluginManager;
-import com.mycila.plugin.err.CyclicPluginDependencyException;
-import com.mycila.plugin.err.DuplicateExportException;
-import com.mycila.plugin.err.DuplicatePluginException;
-import com.mycila.plugin.err.InvokeException;
-import com.mycila.plugin.err.UnresolvedBindingException;
-import com.mycila.plugin.err.WrappedException;
+import com.mycila.plugin.UnresolvedBindingException;
+import com.mycila.plugin.WrappedException;
+import com.mycila.plugin.annotation.Export;
+import com.mycila.plugin.annotation.Plugin;
+import com.mycila.plugin.annotation.scope.Singleton;
 import com.mycila.plugin.spi.internal.ClassUtils;
 import com.mycila.plugin.spi.internal.invoke.Invokable;
 import com.mycila.plugin.spi.internal.model.Binding;
@@ -47,14 +50,13 @@ import java.util.TreeSet;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
+@Plugin
 public final class DefaultPluginManager implements PluginManager {
 
-    private final List<Invokable<?>> starts;
-    private final List<Invokable<?>> stops;
+    private final List<Invokable<?>> starts = new LinkedList<Invokable<?>>();
+    private final List<Invokable<?>> stops = new LinkedList<Invokable<?>>();
 
-    private DefaultPluginManager(List<Invokable<?>> starts, List<Invokable<?>> stops) {
-        this.starts = starts;
-        this.stops = stops;
+    private DefaultPluginManager() {
     }
 
     @Override
@@ -69,11 +71,21 @@ public final class DefaultPluginManager implements PluginManager {
             invokable.invoke();
     }
 
-    public static DefaultPluginManager build(Iterable<? extends Class<?>> pluginClasses)
+    @Export
+    @Singleton
+    public PluginManager get() {
+        return this;
+    }
+
+    public static PluginManager build(Iterable<? extends Class<?>> pluginClasses)
             throws CyclicPluginDependencyException, UnresolvedBindingException, DuplicateExportException, DuplicatePluginException {
 
         final Map<Class<?>, PluginMetadata> metadatas = new LinkedHashMap<Class<?>, PluginMetadata>();
         final Map<Binding<?>, PluginExport<?>> exports = new LinkedHashMap<Binding<?>, PluginExport<?>>();
+
+        // add this plugin, which is the PluginManager to be able to inject it
+        PluginManager pluginManager = new DefaultPluginManager();
+        metadatas.put(PluginManager.class, PluginMetadata.from(pluginManager));
 
         // load plugins and detect duplicate ones and also duplicate exports
         try {
@@ -148,7 +160,7 @@ public final class DefaultPluginManager implements PluginManager {
         }
 
         // injector ready to be started and stopped
-        return new DefaultPluginManager(starts, stops);
+        return pluginManager;
     }
 
 }

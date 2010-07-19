@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.err;
+package com.mycila.plugin;
 
 import com.mycila.plugin.spi.internal.ClassUtils;
 import com.mycila.plugin.spi.internal.model.Binding;
