@@ -196,6 +196,43 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>it/noaop/target</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>it/withaop/target</directory>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-invoker-plugin</artifactId>
+                <configuration>
+                    <projectsDirectory>it</projectsDirectory>
+                    <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+                    <showErrors>true</showErrors>
+                    <streamLogs>true</streamLogs>
+                    <goals>
+                        <goal>test</goal>
+                    </goals>
+                    <pomIncludes>
+                        <pomInclude>**/pom.xml</pomInclude>
+                    </pomIncludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>install</goal>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
