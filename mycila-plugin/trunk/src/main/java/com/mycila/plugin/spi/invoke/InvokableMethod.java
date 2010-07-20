@@ -53,6 +53,8 @@ final class InvokableMethod<T> implements InvokableMember<T> {
     @Override
     public T invoke(Object... args) throws InvokeException {
         try {
+            if (!method.isAccessible())
+                method.setAccessible(true);
             return (T) method.invoke(target, args);
         } catch (InvocationTargetException e) {
             throw new InvokeException(this, e.getTargetException());

@@ -22,6 +22,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 import static org.junit.Assert.*;
 
@@ -41,7 +43,7 @@ public final class InvokablesTest {
 
     @Test
     public void test_bridge() throws Exception {
-        CustomClassLoader loader = CustomClassLoader.create(null, true, true)
+        CustomClassLoader loader = CustomClassLoader.isolated()
                 .add(new File("target/classes"))
                 .add(new File("target/test-classes"));
 
@@ -51,8 +53,27 @@ public final class InvokablesTest {
         assertTrue(InvokableFastMethod.class.isInstance(Invokables.get(dummy.getClass().getMethod("bear"), dummy)));
     }
 
+    @Test
+    public void test_without_aop() throws Exception {
+        CustomClassLoader loader = CustomClassLoader.isolated()
+                .add(new File("target/classes"))
+                .add(new File("target/test-classes"));
+        Class<?> invokablesClass = loader.load(Invokables.class.getName());
+        Method get = invokablesClass.getMethod("get", Constructor.class);
+        Object invokable = get.invoke(null, loader.load(Funny.class.getName()).getConstructor());
+        Class<?> invokableClass = loader.load(Invokable.class.getName());
+        assertTrue(invokableClass.isInstance(invokable));
+        Object funny = invokableClass.getMethod("invoke", Object[].class).invoke(invokable, new Object[]{new Object[0]});
+        assertEquals("abcd", funny.toString());
+    }
+
     public static class Funny {
         public void bear() {
+        }
+
+        @Override
+        public String toString() {
+            return "abcd";
         }
     }
 }
