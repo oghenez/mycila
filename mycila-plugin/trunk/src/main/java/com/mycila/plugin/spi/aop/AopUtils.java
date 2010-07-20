@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal.aop;
-
-import com.mycila.plugin.spi.internal.Assert;
+package com.mycila.plugin.spi.aop;
 
 import java.lang.reflect.Proxy;
 
@@ -34,11 +32,11 @@ public final class AopUtils {
      * @see #isJdkDynamicProxy
      * @see #isCglibProxy
      */
-    public static boolean isAopProxy(Object object) {
+    static boolean isAopProxy(Object object) {
         return isJdkDynamicProxy(object) || isCglibProxy(object);
     }
 
-    public static boolean isAopProxy(Class<?> c) {
+    static boolean isAopProxy(Class<?> c) {
         return isJdkDynamicProxyClass(c) || isCglibProxyClass(c);
     }
 
@@ -48,11 +46,11 @@ public final class AopUtils {
      * @param object the object to check
      * @see java.lang.reflect.Proxy#isProxyClass
      */
-    public static boolean isJdkDynamicProxy(Object object) {
+    static boolean isJdkDynamicProxy(Object object) {
         return isJdkDynamicProxyClass(object.getClass());
     }
 
-    public static boolean isJdkDynamicProxyClass(Class<?> c) {
+    static boolean isJdkDynamicProxyClass(Class<?> c) {
         return Proxy.isProxyClass(c);
     }
 
@@ -61,7 +59,7 @@ public final class AopUtils {
      *
      * @param object the object to check
      */
-    public static boolean isCglibProxy(Object object) {
+    static boolean isCglibProxy(Object object) {
         return isCglibProxyClass(object.getClass());
     }
 
@@ -70,7 +68,7 @@ public final class AopUtils {
      *
      * @param clazz the class to check
      */
-    public static boolean isCglibProxyClass(Class<?> clazz) {
+    static boolean isCglibProxyClass(Class<?> clazz) {
         return (clazz != null && isCglibProxyClassName(clazz.getName()));
     }
 
@@ -79,7 +77,7 @@ public final class AopUtils {
      *
      * @param className the class name to check
      */
-    public static boolean isCglibProxyClassName(String className) {
+    static boolean isCglibProxyClassName(String className) {
         return (className != null && className.contains(CGLIB_CLASS_SEPARATOR));
     }
 
@@ -93,9 +91,7 @@ public final class AopUtils {
      * @return the merged interface as Class
      * @see java.lang.reflect.Proxy#getProxyClass
      */
-    public static Class<?> createCompositeInterface(ClassLoader classLoader, Class<?>... interfaces) {
-        Assert.notEmpty(interfaces, "Interfaces must not be empty");
-        Assert.notNull(classLoader, "ClassLoader must not be null");
+    static Class<?> createCompositeInterface(ClassLoader classLoader, Class<?>... interfaces) {
         return Proxy.getProxyClass(classLoader, interfaces);
     }
 
@@ -108,13 +104,12 @@ public final class AopUtils {
      *         never <code>null</code>)
      */
     public static Class<?> getTargetClassFromProxy(Object candidate) {
-        Assert.notNull(candidate, "Candidate object must not be null");
         if (candidate instanceof ProxyMarker)
             return ((ProxyMarker) candidate).getTargetClass();
         return getTargetClassFromProxyClass(candidate.getClass());
     }
 
-    public static Class<?> getTargetClassFromProxyClass(Class<?> candidate) {
+    static Class<?> getTargetClassFromProxyClass(Class<?> candidate) {
         return isCglibProxyClass(candidate) ? candidate.getSuperclass() : candidate;
     }
 

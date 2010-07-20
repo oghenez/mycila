@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal.aop;
-
-import com.mycila.plugin.spi.internal.Assert;
-import com.mycila.plugin.spi.internal.ClassUtils;
+package com.mycila.plugin.spi.aop;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -25,7 +22,11 @@ import com.mycila.plugin.spi.internal.ClassUtils;
 public final class CglibUtils {
 
     static {
-        Assert.state(ClassUtils.hasCGLIB(), "CGLIB must be in your classpath");
+        try {
+            CglibUtils.class.getClassLoader().loadClass("net.sf.cglib.reflect.FastClass");
+        } catch (ClassNotFoundException ignored) {
+            throw new AssertionError("CGLIB is missing in your classpath");
+        }
     }
 
     private CglibUtils() {
@@ -62,8 +63,8 @@ public final class CglibUtils {
             });
 
     private static ClassLoader getClassLoader(Class<?> type) {
-        ClassLoader delegate = ClassUtils.canonicalize(type.getClassLoader());
-        if (delegate == ClassUtils.getSystemClassLoader())
+        ClassLoader delegate = canonicalize(type.getClassLoader());
+        if (delegate == getSystemClassLoader())
             return delegate;
         if (delegate instanceof BridgeClassLoader)
             return delegate;
@@ -82,4 +83,23 @@ public final class CglibUtils {
         enhancer.setNamingPolicy(NAMING_POLICY);
         return enhancer;
     }
+
+    private static ClassLoader canonicalize(ClassLoader classLoader) {
+        return classLoader != null
+                ? classLoader
+                : getSystemClassLoader();
+    }
+
+    /**
+     * Returns the system classloader, or {@code null} if we don't have
+     * permission.
+     */
+    private static ClassLoader getSystemClassLoader() {
+        try {
+            return ClassLoader.getSystemClassLoader();
+        } catch (SecurityException e) {
+            throw new AssertionError("Cannot get System Classloader !");
+        }
+    }
+
 }

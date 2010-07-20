@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal.aop;
+package com.mycila.plugin.spi;
 
-import com.mycila.plugin.spi.DefaultLoader;
-import com.mycila.plugin.spi.internal.ClassUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +33,7 @@ public final class ASMClassFinderTest {
 
     @Test
     public void test_got_on() throws Exception {
-        URL res = getClass().getResource("/" + ClassUtils.convertClassNameToResourcePath(ASMClassFinderTest.class.getName()) + ".class");
+        URL res = getClass().getResource("/" + ASMClassFinderTest.class.getName().replace('.', '/') + ".class");
         ASMClassFinder resolver = new ASMClassFinder(RunWith.class, new DefaultLoader());
         Class<?> c = resolver.resolve(res);
         assertEquals(ASMClassFinderTest.class, c);
@@ -43,7 +41,7 @@ public final class ASMClassFinderTest {
 
     @Test
     public void test_got_none() throws Exception {
-        URL res = getClass().getResource("/" + ClassUtils.convertClassNameToResourcePath(ASMClassFinderTest.class.getName()) + ".class");
+        URL res = getClass().getResource("/" + ASMClassFinderTest.class.getName().replace('.', '/') + ".class");
         ASMClassFinder resolver = new ASMClassFinder(Ignore.class, new DefaultLoader());
         Class<?> c = resolver.resolve(res);
         assertNull(c);

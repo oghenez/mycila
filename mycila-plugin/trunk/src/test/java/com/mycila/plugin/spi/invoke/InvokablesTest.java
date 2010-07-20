@@ -16,8 +16,7 @@
 
 package com.mycila.plugin.spi.invoke;
 
-import com.mycila.plugin.spi.internal.aop.CustomClassLoader;
-import com.mycila.plugin.spi.invoke.*;
+import com.mycila.plugin.spi.aop.CustomClassLoader;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -38,20 +37,18 @@ public final class InvokablesTest {
         assertTrue(InvokableFastCtor.class.isInstance(Invokables.get(getClass().getConstructor())));
         assertTrue(InvokableFastMethod.class.isInstance(Invokables.get(getClass().getMethod("test"), this)));
         assertTrue(InvokableField.class.isInstance(Invokables.get(getClass().getField("test"), this)));
+    }
 
+    @Test
+    public void test_bridge() throws Exception {
         CustomClassLoader loader = CustomClassLoader.create(null, true, true)
                 .add(new File("target/classes"))
                 .add(new File("target/test-classes"));
-        ClassLoader cl = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(loader);
 
-        try {
-            Object dummy = loader.load(Funny.class.getName()).newInstance();
-            assertTrue(InvokableCtor.class.isInstance(Invokables.get(dummy.getClass().getConstructor())));
-            assertTrue(InvokableMethod.class.isInstance(Invokables.get(dummy.getClass().getMethod("bear"), dummy)));
-        } finally {
-            Thread.currentThread().setContextClassLoader(cl);
-        }
+        Object dummy = loader.load(Funny.class.getName()).newInstance();
+        Invokable invokable = Invokables.get(dummy.getClass().getConstructor());
+        assertTrue(InvokableFastCtor.class.isInstance(invokable));
+        assertTrue(InvokableFastMethod.class.isInstance(Invokables.get(dummy.getClass().getMethod("bear"), dummy)));
     }
 
     public static class Funny {

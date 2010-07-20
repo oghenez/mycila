@@ -16,6 +16,7 @@
 
 package com.mycila.plugin;
 
+import com.mycila.plugin.spi.aop.AopUtils;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.ProxyMethodInvocation;
@@ -179,7 +180,7 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
      * @throws Throwable if invoking the joinpoint resulted in an exception
      */
     protected Object invokeJoinpoint() throws Throwable {
-        return com.mycila.plugin.spi.internal.aop.AopUtils.invokeJoinpointUsingReflection(this.target, this.method, this.arguments);
+        return AopUtils.invokeJoinpointUsingReflection(this.target, this.method, this.arguments);
     }
 
 
@@ -272,9 +273,9 @@ public class ReflectiveMethodInvocation implements ProxyMethodInvocation, Clonea
         if (this.target == null) {
             sb.append("target is null");
         } else {
-			sb.append("target is of class [").append(this.target.getClass().getName()).append(']');
-		}
-		return sb.toString();
-	}
+            sb.append("target is of class [").append(this.target.getClass().getName()).append(']');
+        }
+        return sb.toString();
+    }
 
 }

@@ -16,8 +16,6 @@
 
 package com.mycila.plugin.spi.invoke;
 
-import com.mycila.plugin.spi.internal.ClassUtils;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -27,19 +25,21 @@ import java.lang.reflect.Method;
  */
 public final class Invokables {
 
+    private static final boolean hasCGLIB;
+
+    static {
+        hasCGLIB = hasCGLIB(Invokables.class.getClassLoader());
+    }
+
     private Invokables() {
     }
 
     public static <T> InvokableMember<T> get(Constructor<T> ctor) {
-        return ClassUtils.hasCGLIB() ?
-                new InvokableFastCtor<T>(ctor) :
-                new InvokableCtor<T>(ctor);
+        return hasCGLIB ? new InvokableFastCtor<T>(ctor) : new InvokableCtor<T>(ctor);
     }
 
     public static <T> InvokableMember<T> get(Method method, Object target) {
-        return ClassUtils.hasCGLIB() ?
-                new InvokableFastMethod<T>(target, method) :
-                new InvokableMethod<T>(target, method);
+        return hasCGLIB ? new InvokableFastMethod<T>(target, method) : new InvokableMethod<T>(target, method);
     }
 
     public static <T> InvokableMember<T> get(Field field, Object target) {
@@ -48,6 +48,15 @@ public final class Invokables {
 
     public static <T> InvokableComposite<T> composite() {
         return new InvokableCompositeImpl<T>();
+    }
+
+    private static boolean hasCGLIB(ClassLoader classLoader) {
+        try {
+            classLoader.loadClass("net.sf.cglib.proxy.Callback");
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
     }
 
 }

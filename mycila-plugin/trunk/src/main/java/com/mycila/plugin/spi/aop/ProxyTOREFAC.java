@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal.aop;
+package com.mycila.plugin.spi.aop;
 
 import net.sf.cglib.core.DefaultGeneratorStrategy;
 import net.sf.cglib.core.NamingPolicy;

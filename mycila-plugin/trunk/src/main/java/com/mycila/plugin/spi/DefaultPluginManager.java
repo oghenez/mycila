@@ -26,7 +26,6 @@ import com.mycila.plugin.WrappedException;
 import com.mycila.plugin.annotation.Export;
 import com.mycila.plugin.annotation.Plugin;
 import com.mycila.plugin.annotation.scope.Singleton;
-import com.mycila.plugin.spi.internal.ClassUtils;
 import com.mycila.plugin.spi.invoke.Invokable;
 import com.mycila.plugin.spi.model.Binding;
 import com.mycila.plugin.spi.model.InjectionPoint;
@@ -38,6 +37,7 @@ import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -84,13 +84,19 @@ public final class DefaultPluginManager implements PluginManager {
         final Map<Binding<?>, PluginExport<?>> exports = new LinkedHashMap<Binding<?>, PluginExport<?>>();
 
         // add this plugin, which is the PluginManager to be able to inject it
-        PluginManager pluginManager = new DefaultPluginManager();
+        DefaultPluginManager pluginManager = new DefaultPluginManager();
         metadatas.put(PluginManager.class, PluginMetadata.from(pluginManager));
 
         // load plugins and detect duplicate ones and also duplicate exports
         try {
             for (Class<?> pluginClass : pluginClasses) {
-                PluginMetadata metadata = PluginMetadata.from(ClassUtils.instanciate(pluginClass));
+                Object plugin;
+                try {
+                    plugin = pluginClass.getConstructor().newInstance();
+                } catch (InvocationTargetException e) {
+                    throw e.getTargetException();
+                }
+                PluginMetadata metadata = PluginMetadata.from(plugin);
                 if (metadatas.put(metadata.getType(), metadata) != null)
                     throw new DuplicatePluginException(metadata.getType());
                 for (PluginExport<?> export : metadata.getExports()) {
@@ -151,12 +157,10 @@ public final class DefaultPluginManager implements PluginManager {
         }
 
         // prepare invokables to start and stop plugins
-        final List<Invokable<?>> starts = new ArrayList<Invokable<?>>(order.size());
-        final List<Invokable<?>> stops = new ArrayList<Invokable<?>>(order.size());
         for (Class<?> pluginClass : order) {
             PluginMetadata metadata = metadatas.get(pluginClass);
-            starts.add(metadata.onStart());
-            stops.add(0, metadata.onStop());
+            pluginManager.starts.add(metadata.onStart());
+            pluginManager.stops.add(0, metadata.onStop());
         }
 
         // injector ready to be started and stopped

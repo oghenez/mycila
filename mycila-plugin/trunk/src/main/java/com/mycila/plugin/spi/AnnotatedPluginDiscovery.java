@@ -20,9 +20,6 @@ import com.mycila.plugin.Loader;
 import com.mycila.plugin.PluginDiscovery;
 import com.mycila.plugin.PluginDiscoveryException;
 import com.mycila.plugin.annotation.Plugin;
-import com.mycila.plugin.spi.internal.Assert;
-import com.mycila.plugin.spi.internal.ClassUtils;
-import com.mycila.plugin.spi.internal.aop.ASMClassFinder;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -56,7 +53,6 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
     }
 
     AnnotatedPluginDiscovery(Class<? extends Annotation> annotationClass, Loader loader) {
-        Assert.state(ClassUtils.hasASM(), "ASM 3.2 is required to use the classpath search feature of Mycila Plugin. Please add asm-3.2.jar or asm:asm:3.2 in your Maven pom.xml file.");
         this.annotationClass = annotationClass;
         this.loader = loader;
     }
@@ -109,7 +105,7 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
         final ResourcePatternResolver pathResolver = new ResourcePatternResolver(loader);
         String[] prefixes = new String[excludedPackages.length];
         for (int i = 0; i < prefixes.length; i++)
-            prefixes[i] = ClassUtils.convertClassNameToResourcePath(excludedPackages[i]) + "/";
+            prefixes[i] = excludedPackages[i].replace('.', '/') + "/";
         pathResolver.setExcludePrefixes(prefixes);
 
         long count = 0;
@@ -125,7 +121,7 @@ public final class AnnotatedPluginDiscovery implements PluginDiscovery {
             }
         } else {
             for (String p : includedPackages) {
-                for (final URL url : pathResolver.getResources("classpath*:" + ClassUtils.convertClassNameToResourcePath(p) + "/**/*.class")) {
+                for (final URL url : pathResolver.getResources("classpath*:" + p.replace('.', '/') + "/**/*.class")) {
                     count++;
                     completionService.submit(new Callable<Class<?>>() {
                         @Override

@@ -16,7 +16,7 @@
 
 package com.mycila.plugin.spi.model;
 
-import com.mycila.plugin.spi.internal.aop.ProviderProxy;
+import com.mycila.plugin.spi.aop.ProviderProxy;
 import com.mycila.plugin.spi.invoke.InvokableMember;
 import com.mycila.plugin.spi.invoke.Invokables;
 
