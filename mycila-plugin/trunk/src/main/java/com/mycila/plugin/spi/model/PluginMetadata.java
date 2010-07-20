@@ -183,9 +183,7 @@ public final class PluginMetadata {
     }
 
     private <T> InvokableMember<T> withExportedType(final InvokableMember<T> member) {
-        Export export = member.getMember().getAnnotation(Export.class);
-        if (export == null) return member;
-        Class<?> c = export.value();
+        Class<?> c = member.getMember().getAnnotation(Export.class).value();
         if (c == Void.class) return member;
         if (!c.isAssignableFrom(member.getType().getRawType()))
             throw new IllegalExportException("Member " + member.getMember() + " cannot be used to export " + c.getName());

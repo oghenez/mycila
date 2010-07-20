@@ -37,9 +37,30 @@ import java.util.Map;
 class AnnotationMetadata<T extends Annotation> {
 
     private static final boolean hasAnnotationType;
+    private static final Map<Class<?>, Object> DEFAULTS = new HashMap<Class<?>, Object>(16) {
+        {
+            put(boolean.class, false);
+            put(char.class, '\0');
+            put(byte.class, (byte) 0);
+            put(short.class, (short) 0);
+            put(int.class, 0);
+            put(long.class, 0L);
+            put(float.class, 0f);
+            put(double.class, 0d);
+        }
+    };
 
     static {
         hasAnnotationType = hasAnnotationType(AnnotationMetadata.class.getClassLoader());
+    }
+
+    private static boolean hasAnnotationType(ClassLoader classLoader) {
+        try {
+            classLoader.loadClass("sun.reflect.annotation.AnnotationType");
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
     }
 
     private final Class<T> type;
@@ -51,6 +72,8 @@ class AnnotationMetadata<T extends Annotation> {
         this.properties = properties;
     }
 
+    /* public */
+
     public Class<T> getType() {
         return type;
     }
@@ -60,7 +83,7 @@ class AnnotationMetadata<T extends Annotation> {
         if (result == null)
             throw new IncompleteAnnotationException(type, property);
         return result.getClass().isArray() && Array.getLength(result) != 0 ?
-                ObjectUtils.cloneArray(result) :
+                cloneArray(result) :
                 result;
     }
 
@@ -90,6 +113,136 @@ class AnnotationMetadata<T extends Annotation> {
         for (Map.Entry<String, Object> e : properties.entrySet())
             result += (127 * e.getKey().hashCode()) ^ memberValueHashCode(e.getValue());
         return result;
+    }
+
+    /* private */
+
+    private boolean isEqual(Object o) {
+        if (!type.isInstance(o))
+            return false;
+        if (AnnotationHandler.class.isInstance(o) && ((AnnotationHandler) o).metadata == this)
+            return true;
+        for (Method memberMethod : getMemberMethods()) {
+            String member = memberMethod.getName();
+            Object ourValue = get(member);
+            Object hisValue;
+            AnnotationHandler hisHandler = asOneOfUs(o);
+            if (hisHandler != null) {
+                hisValue = hisHandler.metadata.get(member);
+            } else {
+                try {
+                    hisValue = memberMethod.invoke(o);
+                } catch (InvocationTargetException e) {
+                    return false;
+                } catch (IllegalAccessException e) {
+                    throw new AssertionError(e);
+                }
+            }
+            if (!memberValueEquals(ourValue, hisValue))
+                return false;
+        }
+        return true;
+    }
+
+    private AnnotationHandler asOneOfUs(Object o) {
+        if (Proxy.isProxyClass(o.getClass())) {
+            InvocationHandler handler = Proxy.getInvocationHandler(o);
+            if (handler instanceof AnnotationHandler)
+                return (AnnotationHandler) handler;
+        }
+        return null;
+    }
+
+    private Method[] getMemberMethods() {
+        if (memberMethods == null) {
+            Method[] mm = type.getDeclaredMethods();
+            AccessibleObject.setAccessible(mm, true);
+            memberMethods = mm;
+        }
+        return memberMethods;
+    }
+
+    /* constructors */
+
+    @SuppressWarnings({"unchecked"})
+    public static <T extends Annotation> T buildRandomAnnotation(Class<T> annotationClass) {
+        return (T) Proxy.newProxyInstance(
+                annotationClass.getClassLoader(),
+                new Class<?>[]{annotationClass},
+                new AnnotationHandler(AnnotationMetadata.randomAnnotation(annotationClass)));
+    }
+
+    /* utilities - copied from Sun internal class */
+
+    @SuppressWarnings({"ConstantConditions"})
+    private static boolean memberValueEquals(Object v1, Object v2) {
+        Class type = v1.getClass();
+        // Check for primitive, string, class, enum const, annotation,
+        // or ExceptionProxy
+        if (!type.isArray())
+            return v1.equals(v2);
+        // Check for array of string, class, enum const, annotation,
+        // or ExceptionProxy
+        if (v1 instanceof Object[] && v2 instanceof Object[])
+            return Arrays.equals((Object[]) v1, (Object[]) v2);
+        // Check for ill formed annotation(s)
+        if (v2.getClass() != type)
+            return false;
+        // Deal with array of primitives
+        if (type == byte[].class)
+            return Arrays.equals((byte[]) v1, (byte[]) v2);
+        if (type == char[].class)
+            return Arrays.equals((char[]) v1, (char[]) v2);
+        if (type == double[].class)
+            return Arrays.equals((double[]) v1, (double[]) v2);
+        if (type == float[].class)
+            return Arrays.equals((float[]) v1, (float[]) v2);
+        if (type == int[].class)
+            return Arrays.equals((int[]) v1, (int[]) v2);
+        if (type == long[].class)
+            return Arrays.equals((long[]) v1, (long[]) v2);
+        if (type == short[].class)
+            return Arrays.equals((short[]) v1, (short[]) v2);
+        assert type == boolean[].class;
+        return Arrays.equals((boolean[]) v1, (boolean[]) v2);
+    }
+
+    private static Object cloneArray(Object array) {
+        Class type = array.getClass();
+        if (type == byte[].class) {
+            byte[] byteArray = (byte[]) array;
+            return byteArray.clone();
+        }
+        if (type == char[].class) {
+            char[] charArray = (char[]) array;
+            return charArray.clone();
+        }
+        if (type == double[].class) {
+            double[] doubleArray = (double[]) array;
+            return doubleArray.clone();
+        }
+        if (type == float[].class) {
+            float[] floatArray = (float[]) array;
+            return floatArray.clone();
+        }
+        if (type == int[].class) {
+            int[] intArray = (int[]) array;
+            return intArray.clone();
+        }
+        if (type == long[].class) {
+            long[] longArray = (long[]) array;
+            return longArray.clone();
+        }
+        if (type == short[].class) {
+            short[] shortArray = (short[]) array;
+            return shortArray.clone();
+        }
+        if (type == boolean[].class) {
+            boolean[] booleanArray = (boolean[]) array;
+            return booleanArray.clone();
+        }
+        Object[] objectArray = (Object[]) array;
+        return objectArray.clone();
     }
 
     private static int memberValueHashCode(Object value) {
@@ -138,122 +291,36 @@ class AnnotationMetadata<T extends Annotation> {
         return Arrays.toString((Object[]) value);
     }
 
-    public boolean isSameAnnotation(Object o) {
-        if (!type.isInstance(o))
-            return false;
-        if (AnnotationHandler.class.isInstance(o) && ((AnnotationHandler) o).metadata == this)
-            return true;
-        for (Method memberMethod : getMemberMethods()) {
-            String member = memberMethod.getName();
-            Object ourValue = get(member);
-            Object hisValue;
-            AnnotationHandler hisHandler = asOneOfUs(o);
-            if (hisHandler != null) {
-                hisValue = hisHandler.metadata.get(member);
-            } else {
-                try {
-                    hisValue = memberMethod.invoke(o);
-                } catch (InvocationTargetException e) {
-                    return false;
-                } catch (IllegalAccessException e) {
-                    throw new AssertionError(e);
-                }
-            }
-            if (!memberValueEquals(ourValue, hisValue))
-                return false;
-        }
-        return true;
-    }
-
-    private AnnotationHandler asOneOfUs(Object o) {
-        if (Proxy.isProxyClass(o.getClass())) {
-            InvocationHandler handler = Proxy.getInvocationHandler(o);
-            if (handler instanceof AnnotationHandler)
-                return (AnnotationHandler) handler;
-        }
-        return null;
-    }
-
-    private Method[] getMemberMethods() {
-        if (memberMethods == null) {
-            Method[] mm = type.getDeclaredMethods();
-            AccessibleObject.setAccessible(mm, true);
-            memberMethods = mm;
-        }
-        return memberMethods;
-    }
-
-    @SuppressWarnings({"unchecked"})
-    public static <T extends Annotation> T buildRandomAnnotation(Class<T> annotationClass) {
-        return (T) Proxy.newProxyInstance(
-                annotationClass.getClassLoader(),
-                new Class<?>[]{annotationClass},
-                new AnnotationHandler(AnnotationMetadata.randomAnnotation(annotationClass)));
-    }
-
-    @SuppressWarnings({"ConstantConditions"})
-    private static boolean memberValueEquals(Object v1, Object v2) {
-        Class type = v1.getClass();
-        // Check for primitive, string, class, enum const, annotation,
-        // or ExceptionProxy
-        if (!type.isArray())
-            return v1.equals(v2);
-        // Check for array of string, class, enum const, annotation,
-        // or ExceptionProxy
-        if (v1 instanceof Object[] && v2 instanceof Object[])
-            return Arrays.equals((Object[]) v1, (Object[]) v2);
-        // Check for ill formed annotation(s)
-        if (v2.getClass() != type)
-            return false;
-        // Deal with array of primitives
-        if (type == byte[].class)
-            return Arrays.equals((byte[]) v1, (byte[]) v2);
-        if (type == char[].class)
-            return Arrays.equals((char[]) v1, (char[]) v2);
-        if (type == double[].class)
-            return Arrays.equals((double[]) v1, (double[]) v2);
-        if (type == float[].class)
-            return Arrays.equals((float[]) v1, (float[]) v2);
-        if (type == int[].class)
-            return Arrays.equals((int[]) v1, (int[]) v2);
-        if (type == long[].class)
-            return Arrays.equals((long[]) v1, (long[]) v2);
-        if (type == short[].class)
-            return Arrays.equals((short[]) v1, (short[]) v2);
-        assert type == boolean[].class;
-        return Arrays.equals((boolean[]) v1, (boolean[]) v2);
-    }
-
     private static <T extends Annotation> AnnotationMetadata<T> randomAnnotation(Class<T> annotationClass) {
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
-        Map<String, Object> defaults = hasAnnotationType ? getDefaults(annotationClass) : new HashMap<String, Object>();
+        Map<String, Object> defaults = hasAnnotationType ? getAnnotationDefaults(annotationClass) : new HashMap<String, Object>();
         Method[] mm = annotationClass.getDeclaredMethods();
         AccessibleObject.setAccessible(mm, true);
         for (Method method : mm) {
             String name = method.getName();
             Object o = defaults.get(name);
-            if (o == null) o = getRandomDefault(method.getReturnType());
+            if (o == null) o = getTypeDefaults(method.getReturnType());
             properties.put(name, o);
         }
         return new AnnotationMetadata<T>(annotationClass, properties);
     }
 
-    private static Object getRandomDefault(Class<?> type) {
-        Object o = ObjectUtils.defaultValue(type);
+    private static Object getTypeDefaults(Class<?> type) {
+        Object o = DEFAULTS.get(type);
         if (o != null) return o;
         // this is a class, enum, String or array
-        if (type.isArray()) return Array.newInstance(type, 0);
+        if (type.isArray()) return Array.newInstance(type.getComponentType(), 0);
         if (type == String.class) return "";
         if (type == Class.class) return Void.class;
         try {
             if (type.isEnum()) return Enum.valueOf((Class<? extends Enum>) type, type.getDeclaredFields()[0].getName());
         } catch (Exception e) {
-            throw new UnsupportedOperationException("Unable to randomize annotation: cannot get an enum for " + type);
+            throw new UnsupportedOperationException("Unable to randomize annotation: cannot get first enum of " + type);
         }
         throw new UnsupportedOperationException("Type: " + type.getName());
     }
 
-    private static Map<String, Object> getDefaults(Class<? extends Annotation> annotationClass) {
+    private static Map<String, Object> getAnnotationDefaults(Class<? extends Annotation> annotationClass) {
         Map<String, Object> defaults = new LinkedHashMap<String, Object>();
         try {
             Field field = Class.class.getDeclaredField("annotationType");
@@ -264,6 +331,8 @@ class AnnotationMetadata<T extends Annotation> {
         }
         return defaults;
     }
+
+    /* Inner class, JDK proxy interceptor */
 
     private static class AnnotationHandler implements InvocationHandler, Serializable {
         final AnnotationMetadata metadata;
@@ -278,7 +347,7 @@ class AnnotationMetadata<T extends Annotation> {
             Class[] paramTypes = method.getParameterTypes();
             // Handle Object and Annotation methods
             if (member.equals("equals") && paramTypes.length == 1 && paramTypes[0] == Object.class)
-                return metadata.isSameAnnotation(args[0]);
+                return metadata.isEqual(args[0]);
             if (member.equals("toString"))
                 return metadata.toString();
             if (member.equals("hashCode"))
@@ -287,16 +356,6 @@ class AnnotationMetadata<T extends Annotation> {
                 return metadata.getType();
             // Handle annotation member accessors
             return metadata.get(member);
-        }
-
-    }
-
-    private static boolean hasAnnotationType(ClassLoader classLoader) {
-        try {
-            classLoader.loadClass("sun.reflect.annotation.AnnotationType");
-            return true;
-        } catch (ClassNotFoundException ignored) {
-            return false;
         }
     }
 

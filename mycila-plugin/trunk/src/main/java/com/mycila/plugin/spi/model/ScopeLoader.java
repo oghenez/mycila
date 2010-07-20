@@ -37,16 +37,8 @@ final class ScopeLoader {
     public static final None DEFAULT = AnnotationMetadata.buildRandomAnnotation(None.class);
 
     private final ConcurrentMap<Class<?>, Scope> cache = new ConcurrentHashMap<Class<?>, Scope>();
-    private final Annotation defaultScope;
 
-    public ScopeLoader() {
-        this(DEFAULT);
-    }
-
-    ScopeLoader(Annotation defaultScope) {
-        this.defaultScope = defaultScope;
-        if (!defaultScope.annotationType().isAnnotationPresent(ScopeAnnotation.class))
-            throw new IllegalArgumentException("Invalid scope annotation " + defaultScope.annotationType().getName() + " : annotation must be annotated by @ScopeAnnotation");
+    ScopeLoader() {
     }
 
     public ScopeBinding loadScopeBinding(AnnotatedElement member) throws DuplicateScopeException {
@@ -55,13 +47,13 @@ final class ScopeLoader {
             if (annotation.annotationType().isAnnotationPresent(ScopeAnnotation.class))
                 if (found == null) found = annotation;
                 else throw new DuplicateScopeException(member);
-        final Annotation finalFound = found == null ? defaultScope : found;
+        final Annotation finalFound = found == null ? DEFAULT : found;
         Class<? extends Scope> c = finalFound.annotationType().getAnnotation(ScopeAnnotation.class).value();
         final Scope scope;
         try {
             scope = load(c);
         } catch (NoSuchMethodException e) {
-            throw new PluginException("Unable to load scope class " + c.getName() + " : no default public constructor found.");
+            throw new PluginException("Unable to load scope class " + c.getName() + " : " + e.getMessage(), e);
         }
         return new ScopeBinding() {
             @Override

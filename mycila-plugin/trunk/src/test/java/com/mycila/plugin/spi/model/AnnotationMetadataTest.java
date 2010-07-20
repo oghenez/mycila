@@ -16,7 +16,6 @@
 
 package com.mycila.plugin.spi.model;
 
-import com.mycila.plugin.spi.model.AnnotationMetadata;
 import com.mycila.plugin.test.CurrentMethod;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,10 +60,11 @@ public final class AnnotationMetadataTest {
     }
 
     @Test
-    @Annot(value = Void.class, test = "", unit = TimeUnit.NANOSECONDS)
+    @Annot(value = Void.class, test = "", unit = TimeUnit.NANOSECONDS, arr = {})
     public void test_complex() throws Exception {
         Annot test = AnnotationMetadata.buildRandomAnnotation(Annot.class);
         assertEquals(Void.class, test.value());
+        assertArrayEquals(new Object[0], test.arr());
         assertTrue(currentMethod.get().getAnnotation(Annot.class).equals(test));
         assertTrue(test.equals(currentMethod.get().getAnnotation(Annot.class)));
         assertTrue(currentMethod.get().getAnnotation(Annot.class).hashCode() == test.hashCode());
@@ -80,6 +80,8 @@ public final class AnnotationMetadataTest {
         String test();
 
         TimeUnit unit();
+
+        Class[] arr();
     }
 
     @Retention(RetentionPolicy.RUNTIME)
