@@ -24,7 +24,7 @@ public class ConcurrentJunitRunner extends BlockJUnit4ClassRunner {
             ExecutorService executorService = Executors.newFixedThreadPool(
                     klass.isAnnotationPresent(Concurrent.class) ?
                             klass.getAnnotation(Concurrent.class).threads() :
-                            5,
+                            (int) (Runtime.getRuntime().availableProcessors() * 1.5),
                     new NamedThreadFactory(klass.getSimpleName()));
             CompletionService<Void> completionService = new ExecutorCompletionService<Void>(executorService);
             Queue<Future<Void>> tasks = new LinkedList<Future<Void>>();
