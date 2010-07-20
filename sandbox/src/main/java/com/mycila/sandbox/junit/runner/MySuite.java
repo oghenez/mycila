@@ -8,5 +8,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(ConcurrentSuite.class)
 @Suite.SuiteClasses({ATest.class, ATest2.class, ATest3.class, ATest4.class})
+@Concurrent
 public class MySuite {
 }
