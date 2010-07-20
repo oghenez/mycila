@@ -216,6 +216,9 @@
                     <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
                     <showErrors>true</showErrors>
                     <streamLogs>true</streamLogs>
+                    <properties>
+                        <mycila.version>${project.version}</mycila.version>
+                    </properties>
                     <goals>
                         <goal>test</goal>
                     </goals>
@@ -260,6 +263,7 @@
             <groupId>aopalliance</groupId>
             <artifactId>aopalliance</artifactId>
             <version>1.0</version>
+            <optional>true</optional>
         </dependency>
         <!-- testing -->
         <dependency>

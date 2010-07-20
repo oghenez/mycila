@@ -11,6 +11,7 @@
 
     <properties>
         <jdk.version>1.6</jdk.version>
+        <mycila.version>2.0-SNAPSHOT</mycila.version>
     </properties>
 
     <build>
@@ -29,20 +30,18 @@
         <dependency>
             <groupId>com.mycila</groupId>
             <artifactId>mycila-plugin</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <version>${mycila.version}</version>
         </dependency>
         <!-- optional features -->
         <dependency>
             <groupId>asm</groupId>
             <artifactId>asm</artifactId>
             <version>3.2</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <version>2.2</version>
-            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>aopalliance</groupId>
@@ -54,38 +53,6 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>1.8.5</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google</groupId>
-            <artifactId>guava</artifactId>
-            <version>r05</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- temporary -->
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>2.1-20091117</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-            <version>3.0.3.RELEASE</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>3.0.3.RELEASE</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
