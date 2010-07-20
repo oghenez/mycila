@@ -17,7 +17,7 @@
 package com.mycila.plugin.spi.invoke;
 
 import com.mycila.plugin.InvokeException;
-import com.mycila.plugin.spi.internal.aop.CglibUtils;
+import com.mycila.plugin.spi.aop.CglibUtils;
 import com.mycila.plugin.spi.model.TypeLiteral;
 import net.sf.cglib.reflect.FastMethod;
 

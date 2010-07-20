@@ -1,4 +1,4 @@
-package com.mycila.plugin.spi.internal.aop;
+package com.mycila.plugin.spi.aop;
 
 import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;

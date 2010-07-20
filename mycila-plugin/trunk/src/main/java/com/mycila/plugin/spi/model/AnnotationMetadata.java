@@ -16,8 +16,6 @@
 
 package com.mycila.plugin.spi.model;
 
-import com.mycila.plugin.spi.internal.ClassUtils;
-
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.IncompleteAnnotationException;
@@ -37,6 +35,13 @@ import java.util.Map;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 class AnnotationMetadata<T extends Annotation> {
+
+    private static final boolean hasAnnotationType;
+
+    static {
+        hasAnnotationType = hasAnnotationType(AnnotationMetadata.class.getClassLoader());
+    }
+
     private final Class<T> type;
     private final Map<String, Object> properties;
     private transient volatile Method[] memberMethods;
@@ -186,6 +191,7 @@ class AnnotationMetadata<T extends Annotation> {
                 new AnnotationHandler(AnnotationMetadata.randomAnnotation(annotationClass)));
     }
 
+    @SuppressWarnings({"ConstantConditions"})
     private static boolean memberValueEquals(Object v1, Object v2) {
         Class type = v1.getClass();
         // Check for primitive, string, class, enum const, annotation,
@@ -220,9 +226,7 @@ class AnnotationMetadata<T extends Annotation> {
 
     private static <T extends Annotation> AnnotationMetadata<T> randomAnnotation(Class<T> annotationClass) {
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
-        Map<String, Object> defaults = ClassUtils.hasAnnotationType() ?
-                getDefaults(annotationClass) :
-                new HashMap<String, Object>();
+        Map<String, Object> defaults = hasAnnotationType ? getDefaults(annotationClass) : new HashMap<String, Object>();
         Method[] mm = annotationClass.getDeclaredMethods();
         AccessibleObject.setAccessible(mm, true);
         for (Method method : mm) {
@@ -285,6 +289,15 @@ class AnnotationMetadata<T extends Annotation> {
             return metadata.get(member);
         }
 
+    }
+
+    private static boolean hasAnnotationType(ClassLoader classLoader) {
+        try {
+            classLoader.loadClass("sun.reflect.annotation.AnnotationType");
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
     }
 
 }

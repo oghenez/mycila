@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal;
+package com.mycila.plugin.spi;
 
 import java.util.ArrayList;
 import java.util.Collection;

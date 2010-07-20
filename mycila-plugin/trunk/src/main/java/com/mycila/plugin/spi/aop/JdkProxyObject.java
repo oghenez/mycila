@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal.aop;
+package com.mycila.plugin.spi.aop;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;

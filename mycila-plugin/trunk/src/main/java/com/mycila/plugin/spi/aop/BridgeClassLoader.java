@@ -1,4 +1,4 @@
-package com.mycila.plugin.spi.internal.aop;
+package com.mycila.plugin.spi.aop;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

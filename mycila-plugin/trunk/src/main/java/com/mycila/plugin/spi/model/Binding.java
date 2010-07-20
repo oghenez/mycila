@@ -18,8 +18,6 @@ package com.mycila.plugin.spi.model;
 
 import com.mycila.plugin.PluginException;
 import com.mycila.plugin.annotation.BindingAnnotation;
-import com.mycila.plugin.spi.internal.Assert;
-import com.mycila.plugin.spi.internal.StringUtils;
 import com.mycila.plugin.spi.invoke.InvokableMember;
 
 import java.lang.annotation.Annotation;
@@ -65,8 +63,7 @@ public final class Binding<T> {
 
     @Override
     public String toString() {
-        return "Binding of " + (annotations.isEmpty() ? type.toString() :
-                type + " with annotations " + StringUtils.arrayToCommaDelimitedString(annotations.toArray(new Object[annotations.size()])));
+        return "Binding of " + (annotations.isEmpty() ? type.toString() : type + " with annotations " + annotations);
     }
 
     @Override
@@ -134,14 +131,15 @@ public final class Binding<T> {
 
     public static <T> Binding<T> get(TypeLiteral<T> type, Annotation... annotations) {
         for (Annotation annotation : annotations)
-            Assert.state(annotation.annotationType().isAnnotationPresent(BindingAnnotation.class));
+            checkBindingAnnotations(annotation.annotationType());
         return binding(type, Arrays.asList(annotations));
     }
 
     public static <T> Binding<T> get(TypeLiteral<T> type, Class<? extends Annotation>... annotations) {
+        for (Class<? extends Annotation> annotation : annotations)
+            checkBindingAnnotations(annotation);
         Annotation[] annots = new Annotation[annotations.length];
         for (int i = 0; i < annotations.length; i++) {
-            Assert.state(annotations[i].isAnnotationPresent(BindingAnnotation.class));
             annots[i] = AnnotationMetadata.buildRandomAnnotation(annotations[i]);
         }
         return get(type, annots);
@@ -149,6 +147,11 @@ public final class Binding<T> {
 
     private static <T> Binding<T> binding(TypeLiteral<T> type, Collection<Annotation> annotations) {
         return new Binding<T>(type, annotations);
+    }
+
+    private static void checkBindingAnnotations(Class<? extends Annotation> annotation) {
+        if (!annotation.isAnnotationPresent(BindingAnnotation.class))
+            throw new IllegalArgumentException("Annotation @" + annotation.getName() + " is not a binding annotation. Binding annotations are annotated with @BindingAnnotation");
     }
 
 }

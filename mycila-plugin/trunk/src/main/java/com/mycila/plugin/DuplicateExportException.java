@@ -16,7 +16,6 @@
 
 package com.mycila.plugin;
 
-import com.mycila.plugin.spi.internal.ClassUtils;
 import com.mycila.plugin.spi.model.Binding;
 
 import java.util.Arrays;
@@ -32,6 +31,14 @@ public final class DuplicateExportException extends PluginException {
     }
 
     public DuplicateExportException(Binding<?> binding, Class<?>... pluginClass) {
-        super("Duplicate exports found for same binding " + binding + " in several plugin classes " + Arrays.toString(ClassUtils.toNames(pluginClass)));
+        super("Duplicate exports found for same binding " + binding + " in several plugin classes " + Arrays.toString(toNames(pluginClass)));
     }
+
+    private static String[] toNames(Class<?>[] classes) {
+        String[] names = new String[classes.length];
+        for (int i = 0; i < names.length; i++)
+            names[i] = classes[i].getName();
+        return names;
+    }
+
 }

@@ -17,7 +17,6 @@
 package com.mycila.plugin.spi;
 
 import com.google.common.collect.Iterables;
-import com.mycila.plugin.spi.internal.ClassUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -32,7 +31,7 @@ public final class JdkServicePluginDiscoveryTest {
 
     @Test
     public void test() throws Exception {
-        JdkServicePluginDiscovery discovery = new JdkServicePluginDiscovery(Serv.class, new DefaultLoader(ClassUtils.getDefaultClassLoader()));
+        JdkServicePluginDiscovery discovery = new JdkServicePluginDiscovery(Serv.class, new DefaultLoader());
         assertEquals(2, Iterables.size(discovery.scan()));
     }
 

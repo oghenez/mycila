@@ -17,8 +17,6 @@
 package com.mycila.plugin.spi;
 
 import com.mycila.plugin.Loader;
-import com.mycila.plugin.spi.internal.Assert;
-import com.mycila.plugin.spi.internal.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,7 +51,6 @@ final class ResourcePatternResolver {
     }
 
     public URL[] getResources(String locationPattern) throws IOException {
-        Assert.notNull(locationPattern, "Location pattern must not be null");
         if (locationPattern.startsWith(CLASSPATH_ALL_URL_PREFIX)) {
             // a class path resource (multiple resources for same name possible)
             if (pathMatcher.isPattern(locationPattern.substring(CLASSPATH_ALL_URL_PREFIX.length()))) {

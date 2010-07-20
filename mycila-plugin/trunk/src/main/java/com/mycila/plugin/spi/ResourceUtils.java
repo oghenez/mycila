@@ -16,8 +16,6 @@
 
 package com.mycila.plugin.spi;
 
-import com.mycila.plugin.spi.internal.StringUtils;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;

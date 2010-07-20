@@ -16,6 +16,7 @@
 
 package com.mycila.plugin;
 
+import com.mycila.plugin.spi.aop.AopUtils;
 import net.sf.cglib.core.CodeGenerationException;
 import net.sf.cglib.proxy.Callback;
 import net.sf.cglib.proxy.CallbackFilter;
@@ -163,7 +164,7 @@ final class Cglib2AopProxy implements AopProxy, Serializable {
             Assert.state(rootClass != null, "Target class must be available for creating a CGLIB proxy");
 
             Class proxySuperClass = rootClass;
-            if (com.mycila.plugin.spi.internal.aop.AopUtils.isCglibProxyClass(rootClass)) {
+            if (AopUtils.isCglibProxyClass(rootClass)) {
                 proxySuperClass = rootClass.getSuperclass();
                 Class[] additionalInterfaces = rootClass.getInterfaces();
                 for (Class additionalInterface : additionalInterfaces) {
@@ -746,7 +747,7 @@ final class Cglib2AopProxy implements AopProxy, Serializable {
          * </dl>
          */
         public int accept(Method method) {
-            if (com.mycila.plugin.spi.internal.aop.AopUtils.isFinalizeMethod(method)) {
+            if (AopUtils.isFinalizeMethod(method)) {
                 logger.debug("Found finalize() method - using NO_OVERRIDE");
                 return NO_OVERRIDE;
             }
@@ -758,12 +759,12 @@ final class Cglib2AopProxy implements AopProxy, Serializable {
                 return DISPATCH_ADVISED;
             }
             // We must always proxy equals, to direct calls to this.
-            if (com.mycila.plugin.spi.internal.aop.AopUtils.isEqualsMethod(method)) {
+            if (AopUtils.isEqualsMethod(method)) {
                 logger.debug("Found 'equals' method: " + method);
                 return INVOKE_EQUALS;
             }
             // We must always calculate hashCode based on the proxy.
-            if (com.mycila.plugin.spi.internal.aop.AopUtils.isHashCodeMethod(method)) {
+            if (AopUtils.isHashCodeMethod(method)) {
                 logger.debug("Found 'hashCode' method: " + method);
                 return INVOKE_HASHCODE;
             }
@@ -909,8 +910,8 @@ final class Cglib2AopProxy implements AopProxy, Serializable {
             hashCode = 13 * hashCode + (this.advised.isExposeProxy() ? 1 : 0);
             hashCode = 13 * hashCode + (this.advised.isOptimize() ? 1 : 0);
             hashCode = 13 * hashCode + (this.advised.isOpaque() ? 1 : 0);
-			return hashCode;
-		}
-	}
+            return hashCode;
+        }
+    }
 
 }

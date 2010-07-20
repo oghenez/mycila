@@ -14,19 +14,9 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.internal.aop;
+package com.mycila.plugin.spi;
 
 import com.mycila.plugin.Loader;
-import com.mycila.plugin.spi.internal.Assert;
-import com.mycila.plugin.spi.internal.ClassUtils;
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.Attribute;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,26 +28,36 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ASMClassFinder {
+final class ASMClassFinder {
+
+    static {
+        try {
+            ASMClassFinder.class.getClassLoader().loadClass("org.objectweb.asm.Type");
+        } catch (ClassNotFoundException ignored) {
+            throw new AssertionError("ASM is missing in your classpath");
+        }
+    }
 
     private final String annotationClassDesc;
     private final Loader loader;
 
     public ASMClassFinder(Class<? extends Annotation> annotationClass, Loader loader) {
-        this.annotationClassDesc = Type.getDescriptor(annotationClass);
+        this.annotationClassDesc = org.objectweb.asm.Type.getDescriptor(annotationClass);
         this.loader = loader;
     }
 
     public Class<?> resolve(URL url) throws IOException {
-        Assert.checkNotNull(url, "URL cannot be null");
         InputStream is = null;
         try {
             is = url.openStream();
-            ClassReader classReader = new ClassReader(is);
+            org.objectweb.asm.ClassReader classReader = new org.objectweb.asm.ClassReader(is);
             ClassAnnotationVisitor visitor = new ClassAnnotationVisitor();
-            classReader.accept(visitor, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
-            if ((visitor.access & Opcodes.ACC_PUBLIC) != 0 && visitor.annotations.contains(annotationClassDesc))
-                return loader.loadClass(ClassUtils.convertResourcePathToClassName(visitor.name));
+            classReader.accept(visitor,
+                    org.objectweb.asm.ClassReader.SKIP_CODE
+                            | org.objectweb.asm.ClassReader.SKIP_DEBUG
+                            | org.objectweb.asm.ClassReader.SKIP_FRAMES);
+            if ((visitor.access & org.objectweb.asm.Opcodes.ACC_PUBLIC) != 0 && visitor.annotations.contains(annotationClassDesc))
+                return loader.loadClass(visitor.name.replace('/', '.'));
         } finally {
             if (is != null)
                 try {
@@ -68,7 +68,7 @@ public final class ASMClassFinder {
         return null;
     }
 
-    private static final class ClassAnnotationVisitor implements ClassVisitor {
+    private static final class ClassAnnotationVisitor implements org.objectweb.asm.ClassVisitor {
 
         String name;
         int access;
@@ -89,13 +89,13 @@ public final class ASMClassFinder {
         }
 
         @Override
-        public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+        public org.objectweb.asm.AnnotationVisitor visitAnnotation(String desc, boolean visible) {
             annotations.add(desc);
             return null;
         }
 
         @Override
-        public void visitAttribute(Attribute attr) {
+        public void visitAttribute(org.objectweb.asm.Attribute attr) {
         }
 
         @Override
@@ -103,12 +103,12 @@ public final class ASMClassFinder {
         }
 
         @Override
-        public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
+        public org.objectweb.asm.FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
             return null;
         }
 
         @Override
-        public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+        public org.objectweb.asm.MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
             return null;
         }
 

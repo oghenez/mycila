@@ -16,8 +16,6 @@
 
 package com.mycila.plugin.spi.model;
 
-import com.mycila.plugin.spi.internal.Assert;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;

@@ -16,6 +16,7 @@
 
 package com.mycila.plugin;
 
+import com.mycila.plugin.spi.aop.AopUtils;
 import org.aopalliance.intercept.MethodInvocation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -53,7 +54,7 @@ import java.util.List;
  * @author Rob Harrop
  * @see java.lang.reflect.Proxy
  * @see AdvisedSupport
- * @see com.mycila.plugin.spi.internal.aop.ProxyFactory
+ * @see com.mycila.plugin.spi.aop.ProxyFactory
  */
 final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializable {
 
@@ -132,10 +133,10 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
         for (Class proxiedInterface : proxiedInterfaces) {
             Method[] methods = proxiedInterface.getDeclaredMethods();
             for (Method method : methods) {
-                if (com.mycila.plugin.spi.internal.aop.AopUtils.isEqualsMethod(method)) {
+                if (AopUtils.isEqualsMethod(method)) {
                     this.equalsDefined = true;
                 }
-                if (com.mycila.plugin.spi.internal.aop.AopUtils.isHashCodeMethod(method)) {
+                if (AopUtils.isHashCodeMethod(method)) {
                     this.hashCodeDefined = true;
                 }
                 if (this.equalsDefined && this.hashCodeDefined) {
@@ -161,18 +162,18 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
         Object target = null;
 
         try {
-            if (!this.equalsDefined && com.mycila.plugin.spi.internal.aop.AopUtils.isEqualsMethod(method)) {
+            if (!this.equalsDefined && AopUtils.isEqualsMethod(method)) {
                 // The target does not implement the equals(Object) method itself.
                 return equals(args[0]);
             }
-            if (!this.hashCodeDefined && com.mycila.plugin.spi.internal.aop.AopUtils.isHashCodeMethod(method)) {
+            if (!this.hashCodeDefined && AopUtils.isHashCodeMethod(method)) {
                 // The target does not implement the hashCode() method itself.
                 return hashCode();
             }
             if (!this.advised.opaque && method.getDeclaringClass().isInterface() &&
                     method.getDeclaringClass().isAssignableFrom(Advised.class)) {
                 // Service invocations on ProxyConfig with the proxy config...
-                return com.mycila.plugin.spi.internal.aop.AopUtils.invokeJoinpointUsingReflection(this.advised, method, args);
+                return AopUtils.invokeJoinpointUsingReflection(this.advised, method, args);
             }
 
             Object retVal;
@@ -199,7 +200,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
                 // We can skip creating a MethodInvocation: just invoke the target directly
                 // Note that the final invoker must be an InvokerInterceptor so we know it does
                 // nothing but a reflective operation on the target, and no hot swapping or fancy proxying.
-                retVal = com.mycila.plugin.spi.internal.aop.AopUtils.invokeJoinpointUsingReflection(target, method, args);
+                retVal = AopUtils.invokeJoinpointUsingReflection(target, method, args);
             } else {
                 // We need to create a method invocation...
                 invocation = new ReflectiveMethodInvocation(proxy, target, method, args, targetClass, chain);
@@ -268,6 +269,6 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
     @Override
     public int hashCode() {
         return JdkDynamicAopProxy.class.hashCode() * 13 + this.advised.getTargetSource().hashCode();
-	}
+    }
 
 }

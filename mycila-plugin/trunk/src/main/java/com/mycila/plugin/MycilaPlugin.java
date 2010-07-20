@@ -16,19 +16,13 @@
 
 package com.mycila.plugin;
 
-import com.mycila.plugin.spi.AnnotatedPluginDiscovery;
-import com.mycila.plugin.spi.ConcurrentPluginManager;
-import com.mycila.plugin.spi.CustomPluginDiscovery;
-import com.mycila.plugin.spi.DefaultLoader;
-import com.mycila.plugin.spi.JdkServicePluginDiscovery;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class MycilaPlugin {
 
-    private Loader loader = new DefaultLoader();
-    private PluginDiscovery discovery = new CustomPluginDiscovery();
+    private Loader loader = new com.mycila.plugin.spi.DefaultLoader();
+    private PluginDiscovery discovery = new com.mycila.plugin.spi.CustomPluginDiscovery();
 
     public MycilaPlugin withLoader(Loader loader) {
         this.loader = loader;
@@ -44,7 +38,7 @@ public final class MycilaPlugin {
         return withDiscovery(new PluginDiscovery() {
             @Override
             public Iterable<? extends Class<?>> scan() throws PluginDiscoveryException {
-                return new AnnotatedPluginDiscovery(loader).scan();
+                return new com.mycila.plugin.spi.AnnotatedPluginDiscovery(loader).scan();
             }
         });
     }
@@ -53,13 +47,13 @@ public final class MycilaPlugin {
         return withDiscovery(new PluginDiscovery() {
             @Override
             public Iterable<? extends Class<?>> scan() throws PluginDiscoveryException {
-                return new JdkServicePluginDiscovery(loader).scan();
+                return new com.mycila.plugin.spi.JdkServicePluginDiscovery(loader).scan();
             }
         });
     }
 
     public PluginManager build() {
-        return new ConcurrentPluginManager(discovery);
+        return new com.mycila.plugin.spi.ConcurrentPluginManager(discovery);
     }
 
 }
