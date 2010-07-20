@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi;
+package com.mycila.plugin.spi.model;
 
 import com.mycila.plugin.Provider;
 import com.mycila.plugin.annotation.ActivateAfter;
@@ -68,8 +68,9 @@ public final class MyPlugin<T> {
         return "stop";
     }
 
-    @Export
-    @Red @Singleton
+    @Export(AbstractButton.class)
+    @Red
+    @Singleton
     public JButton button() {
         return new JButton("button");
     }

@@ -33,6 +33,14 @@ import static org.junit.Assert.*;
 public final class ScopeLoaderTest {
 
     @Test
+    public void test_NONE_by_default() throws Exception {
+        ScopeLoader resolver = new ScopeLoader();
+        ScopeBinding scopeBinding = resolver.loadScopeBinding(getClass().getMethod("test"));
+        assertTrue(None.class.isInstance(scopeBinding.getAnnotation()));
+        assertTrue(Scopes.None.class.isInstance(scopeBinding.getScope()));
+    }
+
+    @Test
     public void test() throws Exception {
         ScopeLoader resolver = new ScopeLoader();
 
@@ -43,9 +51,12 @@ public final class ScopeLoaderTest {
         scopeBinding = resolver.loadScopeBinding(getClass().getMethod("method2"));
         assertTrue(Singleton.class.isInstance(scopeBinding.getAnnotation()));
         assertTrue(Scopes.Singleton.class.isInstance(scopeBinding.getScope()));
+    }
 
+    @Test
+    public void test_duplicate() throws Exception {
         try {
-            resolver.loadScopeBinding(getClass().getMethod("method3"));
+            new ScopeLoader().loadScopeBinding(getClass().getMethod("method3"));
             fail();
         } catch (Exception e) {
             assertTrue(DuplicateScopeException.class.isInstance(e));

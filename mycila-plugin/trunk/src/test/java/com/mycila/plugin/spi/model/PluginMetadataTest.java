@@ -19,12 +19,6 @@ package com.mycila.plugin.spi.model;
 import com.google.common.collect.Iterables;
 import com.mycila.plugin.DuplicateExportException;
 import com.mycila.plugin.InexistingBindingException;
-import com.mycila.plugin.spi.DuplicatePlugin;
-import com.mycila.plugin.spi.MyPlugin;
-import com.mycila.plugin.spi.model.Binding;
-import com.mycila.plugin.spi.model.InjectionPoint;
-import com.mycila.plugin.spi.model.PluginExport;
-import com.mycila.plugin.spi.model.PluginMetadata;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -66,7 +60,7 @@ public final class PluginMetadataTest {
 
         assertEquals(2, Iterables.size(metadata.getExports()));
 
-        assertNotNull(metadata.getExport(Binding.get(JButton.class, MyPlugin.Red.class)));
+        assertNotNull(metadata.getExport(Binding.get(AbstractButton.class, MyPlugin.Red.class)));
         assertNotNull(metadata.getExport(Binding.get(JLabel.class, MyPlugin.Level.class, MyPlugin.Red.class)));
 
         try {
@@ -76,8 +70,8 @@ public final class PluginMetadataTest {
             //ok
         }
 
-        assertEquals("button", metadata.getExport(Binding.get(JButton.class, MyPlugin.Red.class)).getProvider().get().getText());
-        assertEquals("button", metadata.getExport(Binding.get(JButton.class, MyPlugin.Red.class)).getProvider().get().getText());
+        assertEquals("button", metadata.getExport(Binding.get(AbstractButton.class, MyPlugin.Red.class)).getProvider().get().getText());
+        assertEquals("button", metadata.getExport(Binding.get(AbstractButton.class, MyPlugin.Red.class)).getProvider().get().getText());
 
         String txt = metadata.getExport(Binding.get(JLabel.class, MyPlugin.Level.class, MyPlugin.Red.class)).getProvider().get().getText();
         assertEquals(txt, metadata.getExport(Binding.get(JLabel.class, MyPlugin.Level.class, MyPlugin.Red.class)).getProvider().get().getText());
