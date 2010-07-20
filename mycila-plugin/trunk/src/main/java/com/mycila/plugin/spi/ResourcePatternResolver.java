@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -34,6 +35,13 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 final class ResourcePatternResolver {
+
+    private static final String FILE_URL_PREFIX = "file:";
+    private static final String URL_PROTOCOL_JAR = "jar";
+    private static final String URL_PROTOCOL_ZIP = "zip";
+    private static final String URL_PROTOCOL_WSJAR = "wsjar";
+    private static final String URL_PROTOCOL_CODE_SOURCE = "code-source";
+    private static final String JAR_URL_SEPARATOR = "!/";
 
     private static final String CLASSPATH_ALL_URL_PREFIX = "classpath*:";
     private static final String CLASSPATH_URL_PREFIX = "classpath:";
@@ -134,13 +142,31 @@ final class ResourcePatternResolver {
         URL[] rootDirResources = getResources(rootDirPath);
         Set<URL> result = new LinkedHashSet<URL>(16);
         for (URL rootDirResource : rootDirResources) {
-            if (ResourceUtils.isJarURL(rootDirResource)) {
+            if (isJarURL(rootDirResource)) {
                 result.addAll(doFindPathMatchingJarResources(rootDirResource, subPattern));
             } else {
                 result.addAll(doFindPathMatchingFileResources(rootDirResource, subPattern));
             }
         }
         return result.toArray(new URL[result.size()]);
+    }
+
+    /**
+     * Determine whether the given URL points to a resource in a jar file,
+     * that is, has protocol "jar", "zip", "wsjar" or "code-source".
+     * <p>"zip" and "wsjar" are used by BEA WebLogic Server and IBM WebSphere, respectively,
+     * but can be treated like jar files. The same applies to "code-source" URLs on Oracle
+     * OC4J, provided that the path contains a jar separator.
+     *
+     * @param url the URL to check
+     * @return whether the URL has been identified as a JAR URL
+     */
+    private static boolean isJarURL(URL url) {
+        String protocol = url.getProtocol();
+        return (URL_PROTOCOL_JAR.equals(protocol) ||
+                URL_PROTOCOL_ZIP.equals(protocol) ||
+                URL_PROTOCOL_WSJAR.equals(protocol) ||
+                (URL_PROTOCOL_CODE_SOURCE.equals(protocol) && url.getPath().contains(JAR_URL_SEPARATOR)));
     }
 
     /**
@@ -197,10 +223,10 @@ final class ResourcePatternResolver {
             // being arbitrary as long as following the entry format.
             // We'll also handle paths with and without leading "file:" prefix.
             String urlFile = rootDirResource.getFile();
-            int separatorIndex = urlFile.indexOf(ResourceUtils.JAR_URL_SEPARATOR);
+            int separatorIndex = urlFile.indexOf(JAR_URL_SEPARATOR);
             if (separatorIndex != -1) {
                 String jarFileUrl = urlFile.substring(0, separatorIndex);
-                rootEntryPath = urlFile.substring(separatorIndex + ResourceUtils.JAR_URL_SEPARATOR.length());
+                rootEntryPath = urlFile.substring(separatorIndex + JAR_URL_SEPARATOR.length());
                 jarFile = getJarFile(jarFileUrl);
             } else {
                 jarFile = new JarFile(urlFile);
@@ -247,17 +273,29 @@ final class ResourcePatternResolver {
     }
 
     private JarFile getJarFile(String jarFileUrl) throws IOException {
-        if (jarFileUrl.startsWith(ResourceUtils.FILE_URL_PREFIX)) {
+        if (jarFileUrl.startsWith(FILE_URL_PREFIX)) {
             try {
-                return new JarFile(ResourceUtils.toURI(jarFileUrl).getSchemeSpecificPart());
+                return new JarFile(toURI(jarFileUrl).getSchemeSpecificPart());
             }
             catch (URISyntaxException ex) {
                 // Fallback for URLs that are not valid URIs (should hardly ever happen).
-                return new JarFile(jarFileUrl.substring(ResourceUtils.FILE_URL_PREFIX.length()));
+                return new JarFile(jarFileUrl.substring(FILE_URL_PREFIX.length()));
             }
         } else {
             return new JarFile(jarFileUrl);
         }
+    }
+
+    /**
+     * Create a URI instance for the given location String,
+     * replacing spaces with "%20" quotes first.
+     *
+     * @param location the location String to convert into a URI instance
+     * @return the URI instance
+     * @throws URISyntaxException if the location wasn't a valid URI
+     */
+    private static URI toURI(String location) throws URISyntaxException {
+        return new URI(StringUtils.replace(location, " ", "%20"));
     }
 
     /**
