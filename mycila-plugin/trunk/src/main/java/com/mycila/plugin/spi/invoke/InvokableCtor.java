@@ -51,6 +51,8 @@ final class InvokableCtor<T> implements InvokableMember<T> {
     @Override
     public T invoke(Object... args) throws InvokeException {
         try {
+            if (!ctor.isAccessible())
+                ctor.setAccessible(true);
             return ctor.newInstance(args);
         } catch (InvocationTargetException e) {
             throw new InvokeException(this, e.getTargetException());
