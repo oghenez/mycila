@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.aop;
+package com.mycila.plugin.spi.model;
+
+import com.mycila.plugin.Provider;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ProxyFactory<T> {
-
-
-    T getProxy() {
-        return null;
-    }
+interface ProviderInterceptor {
+    <T> T get(PluginExport<T> export, Provider<T> next);
 }
