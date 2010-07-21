@@ -21,7 +21,7 @@ import java.lang.reflect.Proxy;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class AopUtils {
+final class AopUtils {
 
     private static final String CGLIB_CLASS_SEPARATOR = "$$";
 
@@ -103,7 +103,7 @@ public final class AopUtils {
      * @return the target class (or the plain class of the given object as fallback;
      *         never <code>null</code>)
      */
-    public static Class<?> getTargetClassFromProxy(Object candidate) {
+    static Class<?> getTargetClassFromProxy(Object candidate) {
         Class<?> c = null;
         if (candidate instanceof ProxyElement)
             c = ((ProxyElement) candidate).getProxyConfig().getTargetClass();

@@ -20,31 +20,12 @@ import com.mycila.plugin.DuplicateExportException;
 import com.mycila.plugin.IllegalExportException;
 import com.mycila.plugin.InexistingBindingException;
 import com.mycila.plugin.InvokeException;
-import com.mycila.plugin.annotation.ActivateAfter;
-import com.mycila.plugin.annotation.ActivateBefore;
-import com.mycila.plugin.annotation.Export;
-import com.mycila.plugin.annotation.Import;
-import com.mycila.plugin.annotation.OnStart;
-import com.mycila.plugin.annotation.OnStop;
-import com.mycila.plugin.annotation.Plugin;
-import com.mycila.plugin.spi.aop.AopUtils;
-import com.mycila.plugin.spi.invoke.AnnotatedMember;
-import com.mycila.plugin.spi.invoke.Invokable;
-import com.mycila.plugin.spi.invoke.InvokableComposite;
-import com.mycila.plugin.spi.invoke.InvokableMember;
-import com.mycila.plugin.spi.invoke.Invokables;
+import com.mycila.plugin.annotation.*;
+import com.mycila.plugin.spi.invoke.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -219,7 +200,7 @@ public final class PluginMetadata {
 
     public static PluginMetadata from(Object plugin) {
         ScopeLoader scopeResolver = new ScopeLoader();
-        Class<?> pluginClass = AopUtils.getTargetClassFromProxy(plugin);
+        Class<?> pluginClass = plugin.getClass();
         Plugin pluginAnnot = pluginClass.getAnnotation(Plugin.class);
         PluginMetadata metadata = new PluginMetadata(
                 plugin,

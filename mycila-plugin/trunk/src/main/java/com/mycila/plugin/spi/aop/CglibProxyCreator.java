@@ -16,23 +16,14 @@
 
 package com.mycila.plugin.spi.aop;
 
-import java.lang.reflect.InvocationHandler;
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class JdkProxyObject {
-
-    public static <T> T createJDKProxy(Class<T> c, InvocationHandler handler) {
-        List<Class<?>> interfaces = new LinkedList<Class<?>>();
-        interfaces.add(ProxyElement.class);
-        interfaces.add(c);
-        return (T) java.lang.reflect.Proxy.newProxyInstance(
-                c.getClassLoader(),
-                interfaces.toArray(new Class[interfaces.size()]),
-                handler);
+final class CglibProxyCreator  {
+    public CglibProxyCreator(ProxyConfig proxyConfig) {
     }
 
+    public Object buildProxy() {
+        return null;
+    }
 }

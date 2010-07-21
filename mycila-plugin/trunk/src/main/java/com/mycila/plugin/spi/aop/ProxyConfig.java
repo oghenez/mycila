@@ -16,9 +16,10 @@
 
 package com.mycila.plugin.spi.aop;
 
-import org.aopalliance.intercept.ConstructorInterceptor;
 import org.aopalliance.intercept.MethodInterceptor;
 
+import java.lang.reflect.Proxy;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,37 +31,53 @@ public final class ProxyConfig {
     private final List<Class<?>> ifs = new LinkedList<Class<?>>();
     private Class<?> targetClass;
     private Object target;
-    private boolean exposeConfig;
+    private Object proxy;
+    private boolean configExposed;
     private MethodInterceptor methodInterceptor;
-    private ConstructorInterceptor constructorInterceptor;
+    private ClassLoader classLoader;
 
-    public Object buildProxy() {
-        if (exposeConfig)
+    /* build proxy here */
+
+    public Object getProxy() {
+        if (proxy != null)
+            return proxy;
+        if (targetClass.isInterface()) {
+            ifs.add(0, targetClass);
+            targetClass = null;
+        }
+        if (configExposed)
             addInterface(ProxyElement.class);
-        return null;
+        if(targetClass == null)
+            targetClass = Proxy.getProxyClass(classLoader, ifs.toArray(new Class<?>[ifs.size()]));
+        
+        return proxy = targetClass.isInterface() ?
+                new JdkProxyCreator(this).buildProxy() :
+                new CglibProxyCreator(this).buildProxy();
     }
 
-    public ProxyConfig setTargetClass(Class<?> type) {
+    /* builders */
+
+    public ProxyConfig withTargetClass(Class<?> type) {
         this.targetClass = type;
         return this;
     }
 
-    public ProxyConfig setTarget(Object target) {
+    public ProxyConfig withTarget(Object target) {
         this.target = target;
         return this;
     }
 
-    public ProxyConfig setExposeConfig(boolean b) {
-        this.exposeConfig = b;
+    public ProxyConfig withClassLoader(ClassLoader classLoader) {
+        this.classLoader = classLoader;
         return this;
     }
 
-    public ProxyConfig setConstructorInterceptor(ConstructorInterceptor constructorInterceptor) {
-        this.constructorInterceptor = constructorInterceptor;
+    public ProxyConfig withConfigExposed() {
+        this.configExposed = true;
         return this;
     }
 
-    public ProxyConfig setMethodInterceptor(MethodInterceptor methodInterceptor) {
+    public ProxyConfig withInterceptor(MethodInterceptor methodInterceptor) {
         this.methodInterceptor = methodInterceptor;
         return this;
     }
@@ -72,20 +89,30 @@ public final class ProxyConfig {
         return this;
     }
 
-    public ConstructorInterceptor getConstructorInterceptor() {
-        return constructorInterceptor;
+    public ProxyConfig addInterfaces(Class<?>... interfaces) {
+        for (Class<?> ife : interfaces)
+            addInterface(ife);
+        return this;
     }
 
-    public boolean isExposeConfig() {
-        return exposeConfig;
+    public ProxyConfig addInterfaces(Iterable<Class<?>> interfaces) {
+        for (Class<?> ife : interfaces)
+            addInterface(ife);
+        return this;
     }
 
-    public List<Class<?>> getInterfaces() {
-        return ifs;
-    }
+    /* getters */
 
     public MethodInterceptor getMethodInterceptor() {
         return methodInterceptor;
+    }
+
+    public boolean isConfigExposed() {
+        return configExposed;
+    }
+
+    public List<Class<?>> getInterfaces() {
+        return Collections.unmodifiableList(ifs);
     }
 
     public Class<?> getTargetClass() {
@@ -96,4 +123,7 @@ public final class ProxyConfig {
         return target;
     }
 
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
 }
