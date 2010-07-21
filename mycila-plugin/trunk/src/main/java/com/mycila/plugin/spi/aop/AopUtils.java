@@ -104,9 +104,10 @@ public final class AopUtils {
      *         never <code>null</code>)
      */
     public static Class<?> getTargetClassFromProxy(Object candidate) {
-        if (candidate instanceof ProxyMarker)
-            return ((ProxyMarker) candidate).getTargetClass();
-        return getTargetClassFromProxyClass(candidate.getClass());
+        Class<?> c = null;
+        if (candidate instanceof ProxyElement)
+            c = ((ProxyElement) candidate).getProxyConfig().getTargetClass();
+        return c != null ? c : getTargetClassFromProxyClass(candidate.getClass());
     }
 
     static Class<?> getTargetClassFromProxyClass(Class<?> candidate) {

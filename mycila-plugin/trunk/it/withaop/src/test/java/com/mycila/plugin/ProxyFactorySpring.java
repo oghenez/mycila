@@ -16,7 +16,7 @@
 
 package com.mycila.plugin;
 
-import com.mycila.plugin.spi.aop.ProxyFactory;
+import com.mycila.plugin.spi.model.ProviderProxyFactory;
 import org.aopalliance.intercept.Interceptor;
 import org.springframework.aop.TargetSource;
 import org.springframework.util.Assert;
@@ -132,7 +132,7 @@ public class ProxyFactorySpring extends ProxyCreatorSupport {
      */
     @SuppressWarnings("unchecked")
     public static <T> T getProxy(Class<T> proxyInterface, Interceptor interceptor) {
-        return (T) new ProxyFactory(proxyInterface, interceptor).getProxy();
+        return (T) new ProviderProxyFactory(proxyInterface, interceptor).getProxy();
     }
 
     /**
@@ -146,7 +146,7 @@ public class ProxyFactorySpring extends ProxyCreatorSupport {
      */
     @SuppressWarnings("unchecked")
     public static <T> T getProxy(Class<T> proxyInterface, TargetSource targetSource) {
-        return (T) new ProxyFactory(proxyInterface, targetSource).getProxy();
+        return (T) new ProviderProxyFactory(proxyInterface, targetSource).getProxy();
     }
 
     /**
@@ -160,7 +160,7 @@ public class ProxyFactorySpring extends ProxyCreatorSupport {
         if (targetSource.getTargetClass() == null) {
             throw new IllegalArgumentException("Cannot create class proxy for TargetSource with null target class");
         }
-        ProxyFactory proxyFactory = new ProxyFactory();
+        ProviderProxyFactory proxyFactory = new ProviderProxyFactory();
         proxyFactory.setTargetSource(targetSource);
         proxyFactory.setProxyTargetClass(true);
         return proxyFactory.getProxy();

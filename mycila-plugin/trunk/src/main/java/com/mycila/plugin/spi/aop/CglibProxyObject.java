@@ -19,7 +19,7 @@ package com.mycila.plugin.spi.aop;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class CglibProxyObject implements ProxyMarker {
+final class CglibProxyObject implements ProxyElement {
 
     @Override
     public Class<?>[] getProxyInterfaces() {

@@ -31,6 +31,15 @@ public final class Invokables {
         hasCGLIB = hasCGLIB(Invokables.class.getClassLoader());
     }
 
+    private static boolean hasCGLIB(ClassLoader classLoader) {
+        try {
+            classLoader.loadClass("net.sf.cglib.proxy.Callback");
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
+    }
+
     private Invokables() {
     }
 
@@ -48,15 +57,6 @@ public final class Invokables {
 
     public static <T> InvokableComposite<T> composite() {
         return new InvokableCompositeImpl<T>();
-    }
-
-    private static boolean hasCGLIB(ClassLoader classLoader) {
-        try {
-            classLoader.loadClass("net.sf.cglib.proxy.Callback");
-            return true;
-        } catch (ClassNotFoundException ignored) {
-            return false;
-        }
     }
 
 }

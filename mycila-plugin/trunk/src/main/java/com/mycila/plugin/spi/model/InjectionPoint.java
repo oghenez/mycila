@@ -16,7 +16,9 @@
 
 package com.mycila.plugin.spi.model;
 
-import com.mycila.plugin.spi.aop.ProviderProxy;
+import com.mycila.plugin.InactivePluginException;
+import com.mycila.plugin.InjectionInProgressException;
+import com.mycila.plugin.Provider;
 import com.mycila.plugin.spi.invoke.InvokableMember;
 import com.mycila.plugin.spi.invoke.Invokables;
 
@@ -81,11 +83,24 @@ public final class InjectionPoint {
             Binding<?> binding = bindings.get(i);
             if (!binding.equals(export.getBinding()))
                 throw new IllegalArgumentException("Requires " + binding + " but got " + export.getBinding());
-            ProviderProxy proxy = ProviderProxy.create(binding, export);
-            oo[i] = proxy.build();
+            Provider<?> advisor = ProviderAdvisor.create(export)
+                    .addInterceptor(injectedAndStartedInterceptor);
+            ProviderProxyFactory factory = ProviderProxyFactory.create(binding, advisor);
+            oo[i] = factory.build();
         }
         invokable.invoke(oo);
         injected = true;
     }
+
+    private static final ProviderInterceptor injectedAndStartedInterceptor = new ProviderInterceptor() {
+        @Override
+        public <T> T get(PluginExport<T> export, Provider<T> next) {
+            if (!export.getPluginMetadata().isResolved())
+                throw new InjectionInProgressException(export.getPluginMetadata());
+            if (!export.getPluginMetadata().isStarted())
+                throw new InactivePluginException(export);
+            return next.get();
+        }
+    };
 
 }

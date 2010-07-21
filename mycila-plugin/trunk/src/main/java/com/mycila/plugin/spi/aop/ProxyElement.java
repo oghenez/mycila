@@ -19,10 +19,6 @@ package com.mycila.plugin.spi.aop;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface ProxyMarker {
-    Class<?>[] getProxyInterfaces();
-
-    Class<?> getTargetClass();
-
-    Object getTarget();
+public interface ProxyElement {
+    ProxyConfig getProxyConfig();
 }

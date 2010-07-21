@@ -17,30 +17,22 @@
 package com.mycila.plugin.spi.aop;
 
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class JdkProxyObject implements ProxyMarker, InvocationHandler {
+final class JdkProxyObject {
 
-    @Override
-    public Class<?>[] getProxyInterfaces() {
-        return new Class<?>[0];
+    public static <T> T createJDKProxy(Class<T> c, InvocationHandler handler) {
+        List<Class<?>> interfaces = new LinkedList<Class<?>>();
+        interfaces.add(ProxyElement.class);
+        interfaces.add(c);
+        return (T) java.lang.reflect.Proxy.newProxyInstance(
+                c.getClassLoader(),
+                interfaces.toArray(new Class[interfaces.size()]),
+                handler);
     }
 
-    @Override
-    public Class<?> getTargetClass() {
-        return null;
-    }
-
-    @Override
-    public Object getTarget() {
-        return null;
-    }
-
-    @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return null;
-    }
 }

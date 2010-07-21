@@ -54,7 +54,7 @@ import java.util.List;
  * @author Rob Harrop
  * @see java.lang.reflect.Proxy
  * @see AdvisedSupport
- * @see com.mycila.plugin.spi.aop.ProxyFactory
+ * @see com.mycila.plugin.spi.model.ProviderProxyFactory
  */
 final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializable {
 
