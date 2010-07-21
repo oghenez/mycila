@@ -94,7 +94,6 @@ public final class AnnotationProcessors {
             delegate = !c.isInterface() ? null : new Object() {
                 @Override
                 public String toString() {
-                    // com.mycila.event.spi.ComTest$DU$$EnhancerByMycilaEvent$$acd8e1af@1971afc
                     return c.getName() + "$$EnhancerByMycilaEvent@" + Integer.toHexString(hashCode());
                 }
             };
