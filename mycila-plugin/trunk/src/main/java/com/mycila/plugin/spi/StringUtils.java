@@ -23,7 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public final class StringUtils {
+final class StringUtils {
 
     private static final String FOLDER_SEPARATOR = "/";
     private static final String WINDOWS_FOLDER_SEPARATOR = "\\";
