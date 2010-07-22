@@ -1,11 +1,11 @@
 /**
- * Copyright (C) 2010 Mathieu Carbou <mathieu.carbou@gmail.com>
+ * Copyright (C) 2006 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,18 +14,27 @@
  * limitations under the License.
  */
 
-package old;
+package com.mycila.guice.annotation;
 
-import com.google.inject.ScopeAnnotation;
+import com.google.inject.BindingAnnotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.RetentionPolicy.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Target({ElementType.TYPE, ElementType.METHOD})
+/**
+ * Annotates named things.
+ *
+ * @author crazybob@google.com (Bob Lee)
+ */
 @Retention(RUNTIME)
-@ScopeAnnotation
-public @interface OnStartSingleton {
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+@BindingAnnotation
+public @interface Expirity {
+    /**
+     * Expiring time of the singleton, in milliseconds
+     */
+    long value();
 }

@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package old;
+package com.mycila.guice.annotation;
 
-import com.google.inject.Key;
-import com.google.inject.Provider;
+import com.google.inject.ScopeAnnotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * No scope
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface ReloadStrategy<T> {
-    T reload(Key<T> key, Provider<T> creator, T current);
-
-    T load(Key<T> key, Provider<T> creator);
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
+@ScopeAnnotation
+public @interface WeakSingleton {
 }
