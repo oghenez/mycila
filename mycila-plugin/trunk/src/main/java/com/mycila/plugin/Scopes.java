@@ -52,10 +52,13 @@ public final class Scopes {
                 public T get() {
                     if (instance == null)
                         synchronized (this) {
-                            if (instance == null)
+                            if (instance == null) {
                                 instance = unscoped.get();
+                                if(instance == null)
+                                    instance = nullT();
+                            }
                         }
-                    return instance;
+                    return instance == NULL ? null : instance;
                 }
             };
         }
