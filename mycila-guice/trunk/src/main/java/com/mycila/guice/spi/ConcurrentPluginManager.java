@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 Mathieu Carbou <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,13 +46,13 @@ public final class ConcurrentPluginManager implements PluginManager {
     }
 
     @Override
-    public void start() throws InvokeException {
-        delegate().start();
+    public void activate() throws InvokeException {
+        delegate().activate();
     }
 
     @Override
-    public void stop() throws InvokeException {
-        delegate().stop();
+    public void close() throws InvokeException {
+        delegate().close();
     }
 
     @Override

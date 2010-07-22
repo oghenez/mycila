@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 Mathieu Carbou <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,17 +20,14 @@ import com.google.inject.*;
 import com.mycila.guice.CyclicPluginDependencyException;
 import com.mycila.guice.InvokeException;
 import com.mycila.guice.PluginManager;
-import com.mycila.guice.annotation.ActivateAfter;
-import com.mycila.guice.annotation.ActivateBefore;
-import com.mycila.guice.annotation.OnActivate;
-import com.mycila.guice.annotation.Plugin;
-import com.mycila.guice.spi.invoke.Invokables;
+import com.mycila.guice.annotation.*;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -43,22 +40,22 @@ import java.util.TreeSet;
 public final class DefaultPluginManager implements PluginManager {
 
     private final Injector injector;
-    private final List<Invokable<?>> starts = new LinkedList<Invokable<?>>();
-    private final List<Invokable<?>> stops = new LinkedList<Invokable<?>>();
+    private final List<Invokable<?>> activates = new LinkedList<Invokable<?>>();
+    private final List<Invokable<?>> closes = new LinkedList<Invokable<?>>();
 
     private DefaultPluginManager(Injector injector) {
         this.injector = injector;
     }
 
     @Override
-    public void start() throws InvokeException {
-        for (Invokable<?> invokable : starts)
+    public void activate() throws InvokeException {
+        for (Invokable<?> invokable : activates)
             invokable.invoke();
     }
 
     @Override
-    public void stop() throws InvokeException {
-        for (Invokable<?> invokable : stops)
+    public void close() throws InvokeException {
+        for (Invokable<?> invokable : closes)
             invokable.invoke();
     }
 
@@ -69,26 +66,16 @@ public final class DefaultPluginManager implements PluginManager {
 
     public static PluginManager build(Iterable<? extends Class<?>> pluginClasses) throws CyclicPluginDependencyException {
         List<Key<?>> plugins = new LinkedList<Key<?>>();
-        Injector injector = load(pluginClasses, plugins);
-        plugins = sort(plugins);
+        final Injector injector = load(pluginClasses, plugins);
         DefaultPluginManager pluginManager = new DefaultPluginManager(injector);
-        for (Key<?> key : plugins) {
-            for (Method method : key.getTypeLiteral().getRawType().getMethods())
+        for (final Key<?> key : sort(plugins)) {
+            for (final Method method : key.getTypeLiteral().getRawType().getMethods()) {
                 if (method.isAnnotationPresent(OnActivate.class))
-                    pluginManager.starts.add(new Invokable<Object>() {
-                        @Override
-                        public Object invoke(Object... args) throws InvokeException {
-
-
-                            Invokables.get(method, )
-                        }
-                    });
-
-
-            pluginManager.stops.add(0, metadata.onStop());
+                    pluginManager.activates.add(new InvokableMethod(injector, key, method));
+                if (method.isAnnotationPresent(OnClose.class))
+                    pluginManager.closes.add(0, new InvokableMethod(injector, key, method));
+            }
         }
-
-        // injector ready to be started and stopped
         return pluginManager;
     }
 
@@ -101,7 +88,7 @@ public final class DefaultPluginManager implements PluginManager {
         return Guice.createInjector(Stage.PRODUCTION, new Module() {
             @Override
             public void configure(Binder binder) {
-                for (Class<?> pluginClass : pluginClasses) {
+                for (Class pluginClass : pluginClasses) {
                     Key<?> key = getKey(pluginClass);
                     plugins.add(key);
                     binder.bind(key).to(pluginClass).in(Singleton.class);
@@ -142,5 +129,28 @@ public final class DefaultPluginManager implements PluginManager {
                 order.add(c.next());
         }
         return order;
+    }
+
+    private static final class InvokableMethod implements Invokable {
+        private final Injector injector;
+        private final Key<?> key;
+        private final Method method;
+
+        private InvokableMethod(Injector injector, Key<?> key, Method method) {
+            this.injector = injector;
+            this.key = key;
+            this.method = method;
+        }
+
+        @Override
+        public Object invoke(Object... args) throws InvokeException {
+            try {
+                return method.invoke(injector.getInstance(key), args);
+            } catch (IllegalAccessException e) {
+                throw new InvokeException(e);
+            } catch (InvocationTargetException e) {
+                throw new InvokeException(e.getTargetException());
+            }
+        }
     }
 }

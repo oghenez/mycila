@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 Mathieu Carbou <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,13 @@
 
 package com.mycila.guice;
 
-import com.mycila.guice.spi.invoke.InvokableMember;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class InvokeException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public InvokeException(InvokableMember<?> invokable, Throwable t) {
-        super("Error invoking " + invokable.getMember() + " : " + t.getMessage(), t);
+    public InvokeException(Throwable t) {
+        super(t);
     }
 }
