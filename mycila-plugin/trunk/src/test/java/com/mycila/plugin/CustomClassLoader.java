@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.plugin.spi.aop;
+package com.mycila.plugin;
 
 import java.io.File;
 import java.io.IOException;

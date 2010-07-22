@@ -16,14 +16,49 @@
 
 package com.mycila.plugin.spi.aop;
 
+import net.sf.cglib.proxy.Enhancer;
+
+import java.lang.reflect.Method;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class CglibProxyCreator  {
-    public CglibProxyCreator(ProxyConfig proxyConfig) {
+final class CglibProxyCreator implements ProxyCreator, ProxyElement {
+    private final ProxyConfig proxyConfig;
+
+    CglibProxyCreator(ProxyConfig proxyConfig) {
+        this.proxyConfig = proxyConfig;
     }
 
-    public Object buildProxy() {
-        return null;
+    @Override
+    public ProxyConfig getProxyConfig() {
+        return proxyConfig;
     }
+
+    @Override
+    public ProxyConstructor getProxyConstructor(final Class<?>... parameterTypes) {
+        return new ProxyConstructor() {
+            @Override
+            public Object newProxyInstance(Object... arguments) {
+                Enhancer enhancer = CglibUtils.newEnhancer(proxyConfig.getTargetClass());
+                enhancer.setInterfaces(proxyConfig.getInterfaces());
+                return enhancer.create(parameterTypes, arguments);
+            }
+        };
+    }
+
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        // method call on proxy to request proxy info
+        if (proxyConfig.isConfigExposed()
+                && method.getDeclaringClass().isInterface()
+                && method.getDeclaringClass().isAssignableFrom(ProxyElement.class))
+            return method.invoke(this, args);
+        // go through interceptors
+        Object ret = new ReflectiveMethodInvocation(proxy, proxyConfig.getTarget(), method, args, proxyConfig.getMethodInterceptors()).proceed();
+        // Special case: it returned "this" and the return type of the method
+        // is type-compatible. Note that we can't help if the target sets
+        // a reference to itself in another returned object.
+        return ret != null && ret == proxyConfig.getTarget() && method.getReturnType().isInstance(proxy) ? proxy : ret;
+    }
+
 }

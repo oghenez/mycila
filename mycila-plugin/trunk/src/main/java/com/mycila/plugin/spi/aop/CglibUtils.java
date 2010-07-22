@@ -16,6 +16,8 @@
 
 package com.mycila.plugin.spi.aop;
 
+import java.lang.reflect.UndeclaredThrowableException;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
@@ -75,12 +77,14 @@ public final class CglibUtils {
         return FAST_CLASS_CACHE.get(c);
     }
 
-    public static net.sf.cglib.proxy.Enhancer newEnhancer(Class<?> type) {
+    static net.sf.cglib.proxy.Enhancer newEnhancer(Class<?> type) {
         net.sf.cglib.proxy.Enhancer enhancer = new net.sf.cglib.proxy.Enhancer();
         enhancer.setSuperclass(type);
         enhancer.setUseFactory(false);
         enhancer.setClassLoader(getClassLoader(type));
         enhancer.setNamingPolicy(NAMING_POLICY);
+        enhancer.setStrategy(new net.sf.cglib.transform.impl.UndeclaredThrowableStrategy(UndeclaredThrowableException.class));
+        enhancer.setInterceptDuringConstruction(false);
         return enhancer;
     }
 

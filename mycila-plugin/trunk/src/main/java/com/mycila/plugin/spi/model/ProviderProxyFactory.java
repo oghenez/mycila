@@ -37,15 +37,16 @@ final class ProviderProxyFactory {
     public Object build() {
         if (binding.isProvided()) return provider;
         Class<?> type = binding.getType().getRawType();
-        return new ProxyConfig()
+        return ProxyConfig.create()
                 .withTargetClass(type)
-                .withConfigExposed(false)
-                .withInterceptor(new MethodInterceptor() {
+                .withConfigExposed()
+                .preferCglib()
+                .addInterceptor(new MethodInterceptor() {
                     @Override
                     public Object invoke(MethodInvocation invocation) throws Throwable {
                         return invocation.getMethod().invoke(provider.get(), invocation.getArguments());
                     }
-                }).getProxy();
+                }).buildProxy();
     }
 
     public static ProviderProxyFactory create(Binding<?> binding, Provider<?> provider) {
