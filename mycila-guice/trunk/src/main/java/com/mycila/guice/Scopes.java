@@ -1,10 +1,24 @@
+/**
+ * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mycila.guice;
 
 import com.google.inject.Binder;
 import com.google.inject.Key;
 import com.google.inject.Provider;
-import com.google.inject.internal.CircularDependencyProxy;
-import com.google.inject.internal.InjectorBuilder;
 import com.mycila.guice.annotation.scope.Expirity;
 
 import java.lang.annotation.Annotation;
@@ -64,12 +78,10 @@ public class Scopes {
 
                 public T get() {
                     if (expirationTime < System.currentTimeMillis()) {
-                        synchronized (InjectorBuilder.class) {
+                        synchronized (this) {
                             if (expirationTime < System.currentTimeMillis()) {
                                 instance = creator.get();
-                                // don't remember proxies; these exist only to serve circular dependencies
-                                if (!(instance instanceof CircularDependencyProxy))
-                                    expirationTime = System.currentTimeMillis() + expirationDelay;
+                                expirationTime = System.currentTimeMillis() + expirationDelay;
                             }
                         }
                     }
