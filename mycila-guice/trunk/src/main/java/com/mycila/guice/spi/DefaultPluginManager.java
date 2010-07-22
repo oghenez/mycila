@@ -16,33 +16,38 @@
 
 package com.mycila.guice.spi;
 
-import com.mycila.guice.*;
-import com.mycila.guice.annotation.Export;
+import com.google.inject.*;
+import com.mycila.guice.CyclicPluginDependencyException;
+import com.mycila.guice.InvokeException;
+import com.mycila.guice.PluginManager;
+import com.mycila.guice.annotation.ActivateAfter;
+import com.mycila.guice.annotation.ActivateBefore;
+import com.mycila.guice.annotation.OnActivate;
 import com.mycila.guice.annotation.Plugin;
-import com.mycila.guice.annotation.scope.Singleton;
-import com.mycila.guice.spi.invoke.Invokable;
-import com.mycila.guice.spi.model.Binding;
-import com.mycila.guice.spi.model.InjectionPoint;
-import com.mycila.guice.spi.model.PluginExport;
-import com.mycila.guice.spi.model.PluginMetadata;
+import com.mycila.guice.spi.invoke.Invokables;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.lang.reflect.Method;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.TreeSet;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class DefaultPluginManager implements PluginManager {
 
+    private final Injector injector;
     private final List<Invokable<?>> starts = new LinkedList<Invokable<?>>();
     private final List<Invokable<?>> stops = new LinkedList<Invokable<?>>();
 
-    private DefaultPluginManager() {
+    private DefaultPluginManager(Injector injector) {
+        this.injector = injector;
     }
 
     @Override
@@ -57,89 +62,29 @@ public final class DefaultPluginManager implements PluginManager {
             invokable.invoke();
     }
 
-    public static PluginManager build(Iterable<? extends Class<?>> pluginClasses)
-            throws CyclicPluginDependencyException, UnresolvedBindingException, DuplicateExportException, DuplicatePluginException {
+    @Override
+    public Injector getInjector() {
+        return injector;
+    }
 
-        final Map<Class<?>, PluginMetadata> metadatas = new LinkedHashMap<Class<?>, PluginMetadata>();
-        final Map<Binding<?>, PluginExport<?>> exports = new LinkedHashMap<Binding<?>, PluginExport<?>>();
+    public static PluginManager build(Iterable<? extends Class<?>> pluginClasses) throws CyclicPluginDependencyException {
+        List<Key<?>> plugins = new LinkedList<Key<?>>();
+        Injector injector = load(pluginClasses, plugins);
+        plugins = sort(plugins);
+        DefaultPluginManager pluginManager = new DefaultPluginManager(injector);
+        for (Key<?> key : plugins) {
+            for (Method method : key.getTypeLiteral().getRawType().getMethods())
+                if (method.isAnnotationPresent(OnActivate.class))
+                    pluginManager.starts.add(new Invokable<Object>() {
+                        @Override
+                        public Object invoke(Object... args) throws InvokeException {
 
-        // add this plugin, which is the PluginManager to be able to inject it
-        DefaultPluginManager pluginManager = new DefaultPluginManager();
-        metadatas.put(PluginManager.class, PluginMetadata.from(pluginManager));
 
-        // load plugins and detect duplicate ones and also duplicate exports
-        try {
-            for (Class<?> pluginClass : pluginClasses) {
-                Object plugin;
-                try {
-                    plugin = pluginClass.getConstructor().newInstance();
-                } catch (InvocationTargetException e) {
-                    throw e.getTargetException();
-                }
-                PluginMetadata metadata = PluginMetadata.from(plugin);
-                if (metadatas.put(metadata.getType(), metadata) != null)
-                    throw new DuplicatePluginException(metadata.getType());
-                for (PluginExport<?> export : metadata.getExports()) {
-                    PluginExport old = exports.put(export.getBinding(), export);
-                    if (old != null)
-                        throw new DuplicateExportException(
-                                export.getBinding(),
-                                old.getPluginMetadata().getType(),
-                                export.getPluginMetadata().getType());
-                }
-            }
-        } catch (Throwable throwable) {
-            throw new WrappedException(throwable);
-        }
+                            Invokables.get(method, )
+                        }
+                    });
 
-        // find unresolved bindings
-        for (PluginMetadata metadata : metadatas.values()) {
-            for (InjectionPoint injectionPoint : metadata.getInjectionPoints()) {
-                for (Binding<?> binding : injectionPoint.getBindings()) {
-                    if (!exports.containsKey(binding))
-                        throw new UnresolvedBindingException(metadata.getType(), binding);
-                }
-            }
-        }
 
-        // determine activation order and cyclic dependencies
-        final List<Class<?>> order = new LinkedList<Class<?>>();
-        DirectedGraph<Class<?>, DefaultEdge> graph = new DefaultDirectedWeightedGraph<Class<?>, DefaultEdge>(DefaultEdge.class);
-        for (PluginMetadata metadata : metadatas.values()) {
-            graph.addVertex(metadata.getType());
-            for (Class<?> before : metadata.getBefores()) {
-                graph.addVertex(before);
-                graph.addEdge(before, metadata.getType());
-            }
-            for (Class<?> after : metadata.getAfters()) {
-                graph.addVertex(after);
-                graph.addEdge(metadata.getType(), after);
-            }
-        }
-        if (!graph.vertexSet().isEmpty()) {
-            CycleDetector<Class<?>, DefaultEdge> detector = new CycleDetector<Class<?>, DefaultEdge>(graph);
-            if (detector.detectCycles())
-                throw new CyclicPluginDependencyException(new TreeSet<Class<?>>(detector.findCycles()));
-            for (Iterator<Class<?>> c = new TopologicalOrderIterator<Class<?>, DefaultEdge>(graph); c.hasNext();)
-                order.add(c.next());
-        }
-
-        // for each plugins inject their dependencies (lazily).
-        for (Class<?> pluginClass : order) {
-            PluginMetadata metadata = metadatas.get(pluginClass);
-            Collection<InjectionPoint> injectionPoints = metadata.getInjectionPoints();
-            for (InjectionPoint injectionPoint : injectionPoints) {
-                List<PluginExport<?>> dependencies = new ArrayList<PluginExport<?>>(injectionPoints.size());
-                for (Binding<?> binding : injectionPoint.getBindings())
-                    dependencies.add(exports.get(binding));
-                injectionPoint.inject(dependencies);
-            }
-        }
-
-        // prepare invokables to start and stop plugins
-        for (Class<?> pluginClass : order) {
-            PluginMetadata metadata = metadatas.get(pluginClass);
-            pluginManager.starts.add(metadata.onStart());
             pluginManager.stops.add(0, metadata.onStop());
         }
 
@@ -147,4 +92,55 @@ public final class DefaultPluginManager implements PluginManager {
         return pluginManager;
     }
 
+    private static Key<?> getKey(Class<?> pluginClass) {
+        Plugin plugin = pluginClass.getAnnotation(Plugin.class);
+        return plugin == null ? Key.get(pluginClass, Plugin.class) : Key.get(pluginClass, plugin);
+    }
+
+    private static Injector load(final Iterable<? extends Class<?>> pluginClasses, final List<Key<?>> plugins) {
+        return Guice.createInjector(Stage.PRODUCTION, new Module() {
+            @Override
+            public void configure(Binder binder) {
+                for (Class<?> pluginClass : pluginClasses) {
+                    Key<?> key = getKey(pluginClass);
+                    plugins.add(key);
+                    binder.bind(key).to(pluginClass).in(Singleton.class);
+                }
+            }
+        });
+    }
+
+    private static List<Key<?>> sort(List<Key<?>> plugins) {
+        final List<Key<?>> order = new LinkedList<Key<?>>();
+        final DirectedGraph<Key<?>, DefaultEdge> graph = new DefaultDirectedWeightedGraph<Key<?>, DefaultEdge>(DefaultEdge.class);
+        for (Key<?> pluginKey : plugins) {
+            graph.addVertex(pluginKey);
+            {
+                ActivateAfter activateAfter = pluginKey.getTypeLiteral().getRawType().getAnnotation(ActivateAfter.class);
+                if (activateAfter != null)
+                    for (Class<?> pluginToBeActivatedBefore : activateAfter.value()) {
+                        Key<?> key = getKey(pluginToBeActivatedBefore);
+                        graph.addVertex(key);
+                        graph.addEdge(key, pluginKey);
+                    }
+            }
+            {
+                ActivateBefore activateBefore = pluginKey.getTypeLiteral().getRawType().getAnnotation(ActivateBefore.class);
+                if (activateBefore != null)
+                    for (Class<?> pluginToBeActivatedAfter : activateBefore.value()) {
+                        Key<?> key = getKey(pluginToBeActivatedAfter);
+                        graph.addVertex(key);
+                        graph.addEdge(pluginKey, key);
+                    }
+            }
+        }
+        if (!graph.vertexSet().isEmpty()) {
+            CycleDetector<Key<?>, DefaultEdge> detector = new CycleDetector<Key<?>, DefaultEdge>(graph);
+            if (detector.detectCycles())
+                throw new CyclicPluginDependencyException(new TreeSet<Key<?>>(detector.findCycles()));
+            for (Iterator<Key<?>> c = new TopologicalOrderIterator<Key<?>, DefaultEdge>(graph); c.hasNext();)
+                order.add(c.next());
+        }
+        return order;
+    }
 }

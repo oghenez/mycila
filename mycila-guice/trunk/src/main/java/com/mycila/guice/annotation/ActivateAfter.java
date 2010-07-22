@@ -19,7 +19,7 @@ package com.mycila.guice.annotation;
 import java.lang.annotation.*;
 
 /**
- * Specify the plugins that should be activated before this one
+ * Specify that this plugin must be activated after all plugins listed here.
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
