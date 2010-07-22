@@ -2,13 +2,9 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <!--
-         POM settings
-     -->
-
     <groupId>com.mycila</groupId>
     <artifactId>mycila-guice</artifactId>
-    <version>1.5-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>mycila-guice</name>
@@ -16,27 +12,19 @@
     <url>http://code.mycila.com/</url>
     <inceptionYear>2010</inceptionYear>
 
-    <!--
-        Properties
-    -->
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
 
     <properties>
         <jdk.version>1.6</jdk.version>
     </properties>
-
-    <!--
-        Versionning system
-    -->
 
     <scm>
         <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-guice/trunk</connection>
         <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-guice/trunk</developerConnection>
         <url>http://mycila.googlecode.com/svn/mycila-guice/trunk</url>
     </scm>
-
-    <!--
-         Project settings
-     -->
 
     <organization>
         <name>Mathieu Carbou</name>
@@ -82,10 +70,6 @@
         </mailingList>
     </mailingLists>
 
-    <!--
-        Distributions
-    -->
-
     <distributionManagement>
         <repository>
             <id>mc-release</id>
@@ -105,14 +89,6 @@
         </site>
     </distributionManagement>
 
-    <!--
-        BUILD
-    -->
-
-    <prerequisites>
-        <maven>2.0.9</maven>
-    </prerequisites>
-
     <build>
         <extensions>
             <extension>
@@ -122,64 +98,11 @@
             </extension>
         </extensions>
         <plugins>
-            <!-- for maven plugins -->
-            <plugin>
-                <artifactId>maven-plugin-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>.clover</directory>
-                        </fileset>
-                        <fileset>
-                            <directory>test-output</directory>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
-            <!-- IDE descriptors -->
-            <plugin>
-                <artifactId>maven-eclipse-plugin</artifactId>
-                <configuration>
-                    <downloadSources>true</downloadSources>
-                    <downloadJavadocs>false</downloadJavadocs>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-idea-plugin</artifactId>
-                <configuration>
-                    <downloadSources>true</downloadSources>
-                    <downloadJavadocs>false</downloadJavadocs>
-                </configuration>
-            </plugin>
-            <!-- compilation -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
-                </configuration>
-            </plugin>
-            <!-- testing -->
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <parallel>true</parallel>
-                    <threadCount>5</threadCount>
-                </configuration>
-            </plugin>
-            <!-- packaging -->
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                        </manifest>
-                    </archive>
                 </configuration>
             </plugin>
             <plugin>
@@ -209,43 +132,36 @@
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <descriptors>
-                        <descriptor>${basedir}/src/main/assembly/project.xml</descriptor>
-                    </descriptors>
-                </configuration>
+                <artifactId>maven-shade-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>make-assembly</id>
+                        <id>standard</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>attached</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <createSourcesJar>true</createSourcesJar>
+                            <artifactSet>
+                                <includes>
+                                    <include>asm:asm</include>
+                                </includes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.objectweb.asm</pattern>
+                                    <shadedPattern>com.mycila.guice.asm</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <!-- releasing -->
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <updateReleaseInfo>true</updateReleaseInfo>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-            </plugin>
-            <!-- documentation -->
-            <plugin>
-                <artifactId>maven-site-plugin</artifactId>
-                <configuration>
-                    <locales>en</locales>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
-                <version>1.5.0</version>
+                <version>1.6.1</version>
                 <configuration>
                     <header>${basedir}/src/main/etc/header.txt</header>
                     <failIfMissing>true</failIfMissing>
@@ -257,6 +173,7 @@
                     <excludes>
                         <exclude>LICENSE.txt</exclude>
                         <exclude>src/test/resources/**</exclude>
+                        <exclude>dependency-reduced-pom.xml</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -270,129 +187,25 @@
         </plugins>
     </build>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <configuration>
-                    <linkJavadoc>true</linkJavadoc>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <quiet>true</quiet>
-                </configuration>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>javadoc</report>
-                        </reports>
-                        <configuration>
-                            <links>
-                                <link>http://java.sun.com/javase/6/docs/api/</link>
-                            </links>
-                        </configuration>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <artifactId>maven-changelog-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <configuration>
-                    <targetJdk>${jdk.version}</targetJdk>
-                    <minimumTokens>100</minimumTokens>
-                    <rulesets>
-                        <!-- Rule sets that come bundled with PMD -->
-                        <ruleset>/rulesets/basic.xml</ruleset>
-                        <ruleset>/rulesets/braces.xml</ruleset>
-                        <ruleset>/rulesets/finalizers.xml</ruleset>
-                        <ruleset>/rulesets/imports.xml</ruleset>
-                        <ruleset>/rulesets/migrating.xml</ruleset>
-                        <ruleset>/rulesets/strings.xml</ruleset>
-                        <ruleset>/rulesets/unusedcode.xml</ruleset>
-                    </rulesets>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jdepend-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>javancss-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>taglist-maven-plugin</artifactId>
-                <configuration>
-                    <tags>
-                        <tag>TODO</tag>
-                        <tag>FIXME</tag>
-                        <tag>@todo</tag>
-                        <tag>@fixme</tag>
-                        <tag>@deprecated</tag>
-                    </tags>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-changes-plugin</artifactId>
-                <configuration>
-                    <issueLinkTemplate>%URL%/detail?id=%ISSUE%&amp;can=1</issueLinkTemplate>
-                </configuration>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>changes-report</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
-            <plugin>
-                <artifactId>maven-changelog-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </reporting>
-
-    <!--
-         LIBS
-    -->
-
     <dependencies>
+        <!-- deps -->
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>2.0</version>
         </dependency>
-        <!--<dependency>
-            <groupId>com.google.inject.extensions</groupId>
-            <artifactId>guice-multibindings</artifactId>
-            <version>2.0</version>
-        </dependency>-->
-        <!--<dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-            <version>1</version>
-            <scope>provided</scope>
-        </dependency>-->
+        <!-- embedded-->
         <dependency>
-            <groupId>org.guiceyfruit</groupId>
-            <artifactId>guiceyfruit-core</artifactId>
-            <version>2.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/guiceyfruit-core-2.0.jar</systemPath>
+            <groupId>asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>3.2</version>
             <optional>true</optional>
         </dependency>
+        <!-- testing -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.7</version>
+            <version>4.8.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

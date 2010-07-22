@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-package com.mycila.guice.scope;
+package old;
 
-/**
- * @author Mathieu Carbou (mathieu.carbou@gmail.com)
- */
-public interface ExpirationStrategy<T> {
-    boolean hasExpired(T val);
+import com.google.inject.ScopeAnnotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.RetentionPolicy.*;
+
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RUNTIME)
+@ScopeAnnotation
+public @interface LazySingleton {
 }

@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.mycila.guice.scope;
+package old;
 
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
-import com.mycila.guice.annotation.LazySingleton;
 import org.guiceyfruit.support.HasScopeAnnotation;
 
 import java.lang.annotation.Annotation;
@@ -27,11 +26,11 @@ import java.lang.annotation.Annotation;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class LazySingletonScope implements Scope, HasScopeAnnotation {
+public final class OnStartSingletonScope implements Scope, HasScopeAnnotation {
 
     @Override
     public Class<? extends Annotation> getScopeAnnotation() {
-        return LazySingleton.class;
+        return OnStartSingleton.class;
     }
 
     public <T> Provider<T> scope(Key<T> key, final Provider<T> creator) {
@@ -49,7 +48,7 @@ public final class LazySingletonScope implements Scope, HasScopeAnnotation {
                     * Maybe one of these days we will identify independent graphs of
                     * objects and offer to load them in parallel.
                     */
-                    synchronized (LazySingletonScope.class) {
+                    synchronized (OnStartSingletonScope.class) {
                         if (instance == null)
                             instance = creator.get();
                     }
@@ -58,7 +57,7 @@ public final class LazySingletonScope implements Scope, HasScopeAnnotation {
             }
 
             public String toString() {
-                return String.format("%s[%s]", creator, LazySingletonScope.this);
+                return String.format("%s[%s]", creator, OnStartSingletonScope.this);
             }
         };
     }

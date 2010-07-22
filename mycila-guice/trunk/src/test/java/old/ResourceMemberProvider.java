@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.guice;
+package old;
 
 import com.google.inject.Binding;
 import com.google.inject.Inject;
