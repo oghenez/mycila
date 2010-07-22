@@ -16,6 +16,8 @@
 
 package com.mycila.guice.annotation;
 
+import com.google.inject.BindingAnnotation;
+
 import java.lang.annotation.*;
 
 /**
@@ -27,9 +29,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 @Inherited
+@BindingAnnotation
 public @interface Plugin {
     /**
-     * Specify the plugin name or description.
+     * Specify the plugin name
      */
     String value() default "";
 }

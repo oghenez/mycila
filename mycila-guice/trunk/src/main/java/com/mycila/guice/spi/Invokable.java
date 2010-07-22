@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.guice.spi.invoke;
+package com.mycila.guice.spi;
 
-import com.mycila.plugin.spi.model.TypeLiteral;
+import com.mycila.guice.InvokeException;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface InvokableMember<T> extends Invokable<T> {
-    TypeLiteral<T> getType();
-
-    AnnotatedMember<?> getMember();
+interface Invokable<T> {
+    T invoke(Object... args) throws InvokeException;
 }
