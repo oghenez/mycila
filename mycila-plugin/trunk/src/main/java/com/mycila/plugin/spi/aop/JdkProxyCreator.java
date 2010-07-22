@@ -17,27 +17,50 @@
 package com.mycila.plugin.spi.aop;
 
 import java.lang.reflect.InvocationHandler;
-import java.util.LinkedList;
-import java.util.List;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class JdkProxyCreator {
+final class JdkProxyCreator implements ProxyCreator, ProxyElement, InvocationHandler, ProxyConstructor {
+    private final ProxyConfig proxyConfig;
+
     JdkProxyCreator(ProxyConfig proxyConfig) {
+        this.proxyConfig = proxyConfig;
     }
 
-    public static <T> T createJDKProxy(Class<T> c, InvocationHandler handler) {
-        List<Class<?>> interfaces = new LinkedList<Class<?>>();
-        interfaces.add(ProxyElement.class);
-        interfaces.add(c);
-        return (T) java.lang.reflect.Proxy.newProxyInstance(
-                c.getClassLoader(),
-                interfaces.toArray(new Class[interfaces.size()]),
-                handler);
+    @Override
+    public ProxyConfig getProxyConfig() {
+        return proxyConfig;
     }
 
-    public Object buildProxy() {
-        return null;
+    @Override
+    public ProxyConstructor getProxyConstructor(Class<?>... parameterTypes) {
+        return this;
     }
+
+    @Override
+    public Object newProxyInstance(Object... arguments) {
+        return Proxy.newProxyInstance(
+                proxyConfig.getClassLoader(),
+                proxyConfig.getInterfaces(),
+                this);
+    }
+
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        // method call on proxy to request proxy info
+        if (proxyConfig.isConfigExposed()
+                && method.getDeclaringClass().isInterface()
+                && method.getDeclaringClass().isAssignableFrom(ProxyElement.class))
+            return method.invoke(this, args);
+        // go through interceptors
+        Object ret = new ReflectiveMethodInvocation(proxy, proxyConfig.getTarget(), method, args, proxyConfig.getMethodInterceptors()).proceed();
+        // Special case: it returned "this" and the return type of the method
+        // is type-compatible. Note that we can't help if the target sets
+        // a reference to itself in another returned object.
+        return ret != null && ret == proxyConfig.getTarget() && method.getReturnType().isInstance(proxy) ? proxy : ret;
+    }
+
 }

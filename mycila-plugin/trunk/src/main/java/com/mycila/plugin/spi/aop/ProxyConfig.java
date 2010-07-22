@@ -19,8 +19,11 @@ package com.mycila.plugin.spi.aop;
 import org.aopalliance.intercept.MethodInterceptor;
 
 import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -28,91 +31,53 @@ import java.util.List;
  */
 public final class ProxyConfig {
 
-    private final List<Class<?>> ifs = new LinkedList<Class<?>>();
+    private static final boolean cglibAvailable;
+
+    static {
+        cglibAvailable = hasCGLIB(ProxyConfig.class.getClassLoader());
+    }
+
+    private static boolean hasCGLIB(ClassLoader classLoader) {
+        try {
+            classLoader.loadClass("net.sf.cglib.proxy.Callback");
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
+    }
+
+    private static final String CGLIB_CLASS_SEPARATOR = "$$";
+
+    private final Collection<Class<?>> ifs = new LinkedHashSet<Class<?>>(2);
+    private final List<MethodInterceptor> methodInterceptors = new ArrayList<MethodInterceptor>(1);
     private Class<?> targetClass;
     private Object target;
     private Object proxy;
     private boolean configExposed;
-    private MethodInterceptor methodInterceptor;
     private ClassLoader classLoader;
+    private boolean cglibPrefered;
+    private Class<?>[] constructionParameterTypes = new Class<?>[0];
+    private Object[] constructionArguments = new Object[0];
 
-    /* build proxy here */
-
-    public Object getProxy() {
-        if (proxy != null)
-            return proxy;
-        if (targetClass.isInterface()) {
-            ifs.add(0, targetClass);
-            targetClass = null;
-        }
-        if (configExposed)
-            addInterface(ProxyElement.class);
-        if(targetClass == null)
-            targetClass = Proxy.getProxyClass(classLoader, ifs.toArray(new Class<?>[ifs.size()]));
-        
-        return proxy = targetClass.isInterface() ?
-                new JdkProxyCreator(this).buildProxy() :
-                new CglibProxyCreator(this).buildProxy();
-    }
-
-    /* builders */
-
-    public ProxyConfig withTargetClass(Class<?> type) {
-        this.targetClass = type;
-        return this;
-    }
-
-    public ProxyConfig withTarget(Object target) {
-        this.target = target;
-        return this;
-    }
-
-    public ProxyConfig withClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
-        return this;
-    }
-
-    public ProxyConfig withConfigExposed() {
-        this.configExposed = true;
-        return this;
-    }
-
-    public ProxyConfig withInterceptor(MethodInterceptor methodInterceptor) {
-        this.methodInterceptor = methodInterceptor;
-        return this;
-    }
-
-    public ProxyConfig addInterface(Class<?> c) {
-        if (!c.isInterface())
-            throw new IllegalArgumentException(c.getName() + " is not an interface");
-        ifs.add(c);
-        return this;
-    }
-
-    public ProxyConfig addInterfaces(Class<?>... interfaces) {
-        for (Class<?> ife : interfaces)
-            addInterface(ife);
-        return this;
-    }
-
-    public ProxyConfig addInterfaces(Iterable<Class<?>> interfaces) {
-        for (Class<?> ife : interfaces)
-            addInterface(ife);
-        return this;
+    private ProxyConfig() {
     }
 
     /* getters */
 
-    public MethodInterceptor getMethodInterceptor() {
-        return methodInterceptor;
+    public List<MethodInterceptor> getMethodInterceptors() {
+        return Collections.unmodifiableList(methodInterceptors);
     }
 
     public boolean isConfigExposed() {
         return configExposed;
     }
 
-    public List<Class<?>> getInterfaces() {
-        return Collections.unmodifiableList(ifs);
+    public boolean isCglibPrefered() {
+        return cglibPrefered;
+    }
+
+    public Class<?>[] getInterfaces() {
+        return ifs.toArray(new Class<?>[ifs.size()]);
     }
 
     public Class<?> getTargetClass() {
@@ -125,5 +90,151 @@ public final class ProxyConfig {
 
     public ClassLoader getClassLoader() {
         return classLoader;
+    }
+
+    public Object getProxy() {
+        return proxy;
+    }
+
+    public Object[] getConstructionArguments() {
+        return constructionArguments;
+    }
+
+    public Class<?>[] getConstructionParameterTypes() {
+        return constructionParameterTypes;
+    }
+
+    /* static method ctor */
+
+    public static Builder create() {
+        return new Builder();
+    }
+
+    /* build proxy here */
+
+    private void buildProxy() {
+        // normalize targetClass
+        if (targetClass != null && targetClass.isInterface()) {
+            ifs.add(targetClass);
+            if (classLoader == null)
+                classLoader = targetClass.getClassLoader();
+            targetClass = null;
+        }
+        if (targetClass == null && target != null)
+            targetClass = target.getClass();
+        if (targetClass != null && targetClass.getName().contains(CGLIB_CLASS_SEPARATOR))
+            targetClass = targetClass.getSuperclass();
+        // complete interfaces
+        if (target != null)
+            ifs.addAll(Arrays.asList(target.getClass().getInterfaces()));
+        if (configExposed)
+            ifs.add(ProxyElement.class);
+        // determine classloader
+        if (classLoader == null && targetClass != null)
+            classLoader = targetClass.getClassLoader();
+        if (classLoader == null) {
+            classLoader = Thread.currentThread().getContextClassLoader();
+            if (classLoader == null) {
+                classLoader = getClass().getClassLoader();
+                if (classLoader == null)
+                    classLoader = ClassLoader.getSystemClassLoader();
+            }
+        }
+        // if target class still null, create one composite interface
+        if (targetClass == null)
+            targetClass = Proxy.getProxyClass(classLoader, ifs.toArray(new Class<?>[ifs.size()]));
+        // set target
+        if (target == null)
+            target = new Object() {
+                @Override
+                public String toString() {
+                    return "Proxy of " + targetClass.getName();
+                }
+            };
+        // build proxy
+        ProxyCreator creator = determineCreator();
+        proxy = creator.getProxyConstructor(constructionParameterTypes).newProxyInstance(constructionArguments);
+    }
+
+    private ProxyCreator determineCreator() {
+        if (targetClass.isInterface())
+            return cglibPrefered && cglibAvailable ? new CglibProxyCreator(this) : new JdkProxyCreator(this);
+        if (!cglibAvailable)
+            throw new AssertionError("CGLIB required but not found on your classpath");
+        return new CglibProxyCreator(this);
+    }
+
+    /* builder */
+
+    public static class Builder {
+
+        ProxyConfig config = new ProxyConfig();
+
+        private Builder() {
+        }
+
+        public Builder withTargetClass(Class<?> type) {
+            config.targetClass = type;
+            return this;
+        }
+
+        public Builder withTarget(Object target) {
+            config.target = target;
+            return this;
+        }
+
+        public Builder withConstructionParameterTypes(Class<?>... parameterTypes) {
+            config.constructionParameterTypes = parameterTypes;
+            return this;
+        }
+
+        public Builder withConstructionArguments(Object... args) {
+            config.constructionArguments = args;
+            return this;
+        }
+
+        public Builder withClassLoader(ClassLoader classLoader) {
+            config.classLoader = classLoader;
+            return this;
+        }
+
+        public Builder withConfigExposed() {
+            config.configExposed = true;
+            return this;
+        }
+
+        public Builder preferCglib() {
+            config.cglibPrefered = true;
+            return this;
+        }
+
+        public Builder addInterceptor(MethodInterceptor methodInterceptor) {
+            config.methodInterceptors.add(methodInterceptor);
+            return this;
+        }
+
+        public Builder addInterface(Class<?> c) {
+            if (!c.isInterface())
+                throw new IllegalArgumentException(c.getName() + " is not an interface");
+            config.ifs.add(c);
+            return this;
+        }
+
+        public Builder addInterfaces(Class<?>... interfaces) {
+            for (Class<?> ife : interfaces)
+                addInterface(ife);
+            return this;
+        }
+
+        public Builder addInterfaces(Iterable<Class<?>> interfaces) {
+            for (Class<?> ife : interfaces)
+                addInterface(ife);
+            return this;
+        }
+
+        public Object buildProxy() {
+            config.buildProxy();
+            return config.getProxy();
+        }
     }
 }
