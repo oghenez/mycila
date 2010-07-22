@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package service;
+package com.mycila.guice.annotation;
 
-import com.google.inject.Inject;
+import com.google.inject.ScopeAnnotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * No scope
+ *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class Service2 implements Service {
-    @Inject
-    Dao dao;
-
-    @Override
-    public Dao get() {
-        return dao;
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
+@ScopeAnnotation
+public @interface ExpiringSingleton {
 }
