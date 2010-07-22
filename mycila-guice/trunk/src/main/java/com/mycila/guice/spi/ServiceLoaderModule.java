@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package old;
+package com.mycila.guice.spi;
 
-import com.google.inject.Binder;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.Module;
-import com.google.inject.Provider;
-import com.google.inject.TypeLiteral;
+import com.google.inject.*;
 import com.google.inject.util.Types;
-import com.mycila.util.ServiceClassLoader;
+import com.mycila.guice.Loader;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -41,7 +35,7 @@ public final class ServiceLoaderModule {
     }
 
     public static <T> Module of(TypeLiteral<T> serviceType, Annotation annotation) {
-        return of(serviceType, Key.get(setOf(serviceType), annotation));
+        return of(serviceType, Key.get(listOf(serviceType), annotation));
     }
 
     public static <T> Module of(Class<T> serviceClass, Class<? extends Annotation> annotationType) {
@@ -49,7 +43,7 @@ public final class ServiceLoaderModule {
     }
 
     public static <T> Module of(TypeLiteral<T> serviceType, Class<? extends Annotation> annotationType) {
-        return of(serviceType, Key.get(setOf(serviceType), annotationType));
+        return of(serviceType, Key.get(listOf(serviceType), annotationType));
     }
 
     public static <T> Module of(Class<T> serviceClass) {
@@ -57,27 +51,27 @@ public final class ServiceLoaderModule {
     }
 
     public static <T> Module of(TypeLiteral<T> serviceType) {
-        return of(serviceType, Key.get(setOf(serviceType)));
+        return of(serviceType, Key.get(listOf(serviceType)));
     }
 
-    private static <T> Module of(TypeLiteral<T> serviceType, Key<Set<T>> key) {
+    public static <T> Module of(TypeLiteral<T> serviceType, Key<List<T>> key) {
         return new ServiceLoaderModuleImpl<T>(serviceType, key, null);
     }
 
-    public static ServiceLoaderModuleWithCL withClassLoader(Class<? extends ClassLoader> classLoaderType) {
-        return withClassLoader(Key.get(classLoaderType));
+    public static WithLoader withLoader(Class<? extends Loader> loaderType) {
+        return withClassLoader(Key.get(loaderType));
     }
 
-    public static ServiceLoaderModuleWithCL withClassLoader(Class<? extends ClassLoader> classLoaderType, Class<? extends Annotation> annot) {
-        return withClassLoader(Key.get(classLoaderType, annot));
+    public static WithLoader withLoader(Class<? extends Loader> loaderType, Class<? extends Annotation> annot) {
+        return withClassLoader(Key.get(loaderType, annot));
     }
 
-    public static ServiceLoaderModuleWithCL withClassLoader(Class<? extends ClassLoader> classLoaderType, Annotation annot) {
-        return withClassLoader(Key.get(classLoaderType, annot));
+    public static WithLoader withLoader(Class<? extends Loader> loaderType, Annotation annot) {
+        return withClassLoader(Key.get(loaderType, annot));
     }
 
-    public static ServiceLoaderModuleWithCL withClassLoader(final Key<? extends ClassLoader> classLoaderKey) {
-        return new ServiceLoaderModuleWithCL() {
+    public static WithLoader withClassLoader(final Key<? extends Loader> loaderType) {
+        return new WithLoader() {
             @Override
             public <T> Module of(Class<T> serviceClass) {
                 return of(TypeLiteral.get(serviceClass));
@@ -85,7 +79,7 @@ public final class ServiceLoaderModule {
 
             @Override
             public <T> Module of(TypeLiteral<T> serviceType) {
-                return of(serviceType, Key.get(setOf(serviceType)));
+                return of(serviceType, Key.get(listOf(serviceType)));
             }
 
             @Override
@@ -95,7 +89,7 @@ public final class ServiceLoaderModule {
 
             @Override
             public <T> Module of(TypeLiteral<T> serviceType, Annotation annotation) {
-                return of(serviceType, Key.get(setOf(serviceType), annotation));
+                return of(serviceType, Key.get(listOf(serviceType), annotation));
             }
 
             @Override
@@ -105,23 +99,23 @@ public final class ServiceLoaderModule {
 
             @Override
             public <T> Module of(TypeLiteral<T> serviceType, Class<? extends Annotation> annotationType) {
-                return of(serviceType, Key.get(setOf(serviceType), annotationType));
+                return of(serviceType, Key.get(listOf(serviceType), annotationType));
             }
 
-            private <T> Module of(TypeLiteral<T> serviceType, Key<Set<T>> key) {
-                return new ServiceLoaderModuleImpl<T>(serviceType, key, classLoaderKey);
+            public <T> Module of(TypeLiteral<T> serviceType, Key<List<T>> key) {
+                return new ServiceLoaderModuleImpl<T>(serviceType, key, loaderType);
             }
 
         };
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> TypeLiteral<Set<T>> setOf(TypeLiteral<T> elementType) {
-        Type type = Types.setOf(elementType.getType());
-        return (TypeLiteral<Set<T>>) TypeLiteral.get(type);
+    private static <T> TypeLiteral<List<T>> listOf(TypeLiteral<T> elementType) {
+        Type type = Types.listOf(elementType.getType());
+        return (TypeLiteral<List<T>>) TypeLiteral.get(type);
     }
 
-    public static interface ServiceLoaderModuleWithCL {
+    public static interface WithLoader {
         <T> Module of(Class<T> serviceClass);
 
         <T> Module of(TypeLiteral<T> serviceType);
@@ -138,33 +132,38 @@ public final class ServiceLoaderModule {
     private static final class ServiceLoaderModuleImpl<T> implements Module {
 
         private final TypeLiteral<T> serviceType;
-        private final Key<Set<T>> setKey;
-        private final Key<? extends ClassLoader> classLoaderKey;
+        private final Key<List<T>> listKey;
+        private final Key<? extends Loader> loaderKey;
 
-        private ServiceLoaderModuleImpl(TypeLiteral<T> serviceType, Key<Set<T>> setKey, Key<? extends ClassLoader> classLoaderKey) {
+        private ServiceLoaderModuleImpl(TypeLiteral<T> serviceType, Key<List<T>> listKey, Key<? extends Loader> loaderKey) {
             this.serviceType = serviceType;
-            this.setKey = setKey;
-            this.classLoaderKey = classLoaderKey;
+            this.listKey = listKey;
+            this.loaderKey = loaderKey;
         }
 
         @Override
         public void configure(Binder binder) {
-            binder.bind(setKey).toProvider(new Provider<Set<T>>() {
+            binder.bind(listKey).toProvider(new Provider<List<T>>() {
 
                 @Inject
                 Injector injector;
 
                 @Override
-                public Set<T> get() {
-                    Set<T> instances = new HashSet<T>();
-                    ServiceClassLoader<T> loader = classLoaderKey == null ?
-                            ServiceClassLoader.<T>load(serviceType.getRawType(), Thread.currentThread().getContextClassLoader()) :
-                            ServiceClassLoader.<T>load(serviceType.getRawType(), injector.getInstance(classLoaderKey));
+                public List<T> get() {
+                    List<T> instances = new LinkedList<T>();
+                    ServiceClassLoader<T> loader = loaderKey == null ?
+                            ServiceClassLoader.<T>load(getType(), new DefaultLoader()) :
+                            ServiceClassLoader.<T>load(getType(), injector.getInstance(loaderKey));
                     for (Class<T> clazz : loader)
                         instances.add(injector.getInstance(clazz));
                     return instances;
                 }
             });
+        }
+
+        @SuppressWarnings({"unchecked"})
+        private Class<T> getType() {
+            return (Class<T>) serviceType.getRawType();
         }
     }
 

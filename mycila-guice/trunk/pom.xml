@@ -146,14 +146,30 @@
                             <artifactSet>
                                 <includes>
                                     <include>asm:asm</include>
+                                    <include>org.jgrapht:jgrapht</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
                                 <relocation>
                                     <pattern>org.objectweb.asm</pattern>
-                                    <shadedPattern>com.mycila.guice.asm</shadedPattern>
+                                    <shadedPattern>com.mycila.guice.internal.asm</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.jgrapht</pattern>
+                                    <shadedPattern>com.mycila.guice.internal.jgrapht</shadedPattern>
                                 </relocation>
                             </relocations>
+                            <filters>
+                                <filter>
+                                    <artifact>org.jgrapht:jgrapht</artifact>
+                                    <excludes>
+                                        <exclude>org/jgrapht/demo/**</exclude>
+                                        <exclude>org/jgrapht/experimental/**</exclude>
+                                        <exclude>org/jgrapht/ext/**</exclude>
+                                        <exclude>org/jgrapht/generate/**</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
@@ -166,7 +182,7 @@
                     <header>${basedir}/src/main/etc/header.txt</header>
                     <failIfMissing>true</failIfMissing>
                     <properties>
-                        <owner>Mathieu Carbou</owner>
+                        <owner>mycila.com</owner>
                         <year>${project.inceptionYear}</year>
                         <email>mathieu.carbou@gmail.com</email>
                     </properties>
@@ -199,7 +215,11 @@
             <groupId>asm</groupId>
             <artifactId>asm</artifactId>
             <version>3.2</version>
-            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.jgrapht</groupId>
+            <artifactId>jgrapht</artifactId>
+            <version>0.8.1</version>
         </dependency>
         <!-- testing -->
         <dependency>
