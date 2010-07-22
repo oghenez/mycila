@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.guice;
+package old;
 
 import com.google.inject.Binding;
 import com.google.inject.Guice;
@@ -31,8 +31,6 @@ import com.google.inject.internal.Scoping;
 import com.google.inject.internal.Sets;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.name.Names;
-import com.mycila.guice.annotation.LazySingleton;
-import com.mycila.guice.annotation.OnStartSingleton;
 import org.guiceyfruit.support.CloseErrors;
 import org.guiceyfruit.support.CloseFailedException;
 import org.guiceyfruit.support.Closer;

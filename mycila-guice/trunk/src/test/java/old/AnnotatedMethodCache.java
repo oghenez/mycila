@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.guice;
+package old;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

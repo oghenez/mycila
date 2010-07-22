@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.guice.scope;
+package old;
 
 import com.google.inject.Key;
 import com.google.inject.Provider;

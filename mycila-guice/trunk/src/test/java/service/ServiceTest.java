@@ -20,8 +20,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.mycila.guice.loader.ServiceLoaderModule;
-import com.mycila.guice.loader.ServiceLoaderProvider;
+import old.ServiceLoaderModule;
+import old.ServiceLoaderProvider;
 import org.junit.Test;
 
 import java.util.ArrayList;

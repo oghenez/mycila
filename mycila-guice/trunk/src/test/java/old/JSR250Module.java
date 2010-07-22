@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.guice;
+package old;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
@@ -31,10 +31,6 @@ import com.google.inject.name.Names;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
-import com.mycila.guice.annotation.LazySingleton;
-import com.mycila.guice.annotation.OnStartSingleton;
-import com.mycila.guice.scope.LazySingletonScope;
-import com.mycila.guice.scope.OnStartSingletonScope;
 import org.guiceyfruit.Configures;
 import org.guiceyfruit.support.AnnotationMemberProvider;
 import org.guiceyfruit.support.EncounterProvider;

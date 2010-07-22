@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.guice;
+package old;
 
 import org.guiceyfruit.support.Closer;
 

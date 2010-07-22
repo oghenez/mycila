@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.guice.annotation;
+package old;
 
 import com.google.inject.ScopeAnnotation;
 
