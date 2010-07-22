@@ -42,6 +42,7 @@ final class CglibProxyCreator implements ProxyCreator, ProxyElement {
             public Object newProxyInstance(Object... arguments) {
                 Enhancer enhancer = CglibUtils.newEnhancer(proxyConfig.getTargetClass());
                 enhancer.setInterfaces(proxyConfig.getInterfaces());
+                
                 return enhancer.create(parameterTypes, arguments);
             }
         };
