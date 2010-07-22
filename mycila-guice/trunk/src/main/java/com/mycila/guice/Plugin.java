@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package com.mycila.guice.annotation;
-
-import com.google.inject.ScopeAnnotation;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package com.mycila.guice;
 
 /**
- * No scope
+ * Marker interface when using JDK service loader
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
-@ScopeAnnotation
-public @interface SoftSingleton {
+public interface Plugin {
 }

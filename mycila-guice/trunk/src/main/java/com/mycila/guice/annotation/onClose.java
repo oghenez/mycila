@@ -16,20 +16,18 @@
 
 package com.mycila.guice.annotation;
 
-import com.google.inject.ScopeAnnotation;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * No scope
+ * Mark a method to be called when the plugin is stopped.
+ * The method must be public and have no parameter.
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
-@ScopeAnnotation
-public @interface WeakSingleton {
+public @interface onClose {
 }

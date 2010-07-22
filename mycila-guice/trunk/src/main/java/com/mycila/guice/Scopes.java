@@ -5,7 +5,7 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.internal.CircularDependencyProxy;
 import com.google.inject.internal.InjectorBuilder;
-import com.mycila.guice.annotation.Expirity;
+import com.mycila.guice.annotation.scope.Expirity;
 
 import java.lang.annotation.Annotation;
 import java.lang.ref.Reference;
@@ -22,17 +22,17 @@ public class Scopes {
      */
     private static final Object NULL = new Object();
 
-    public static final ScopeWithAnnotation EXPIRING_SINGLETON = expiringSingleton(com.mycila.guice.annotation.ExpiringSingleton.class);
-    public static final ScopeWithAnnotation WEAK_SINGLETON = weakSingleton(com.mycila.guice.annotation.WeakSingleton.class);
-    public static final ScopeWithAnnotation SOFT_SINGLETON = softSingleton(com.mycila.guice.annotation.SoftSingleton.class);
+    public static final ScopeWithAnnotation EXPIRING_SINGLETON = expiringSingleton(com.mycila.guice.annotation.scope.ExpiringSingleton.class);
+    public static final ScopeWithAnnotation WEAK_SINGLETON = weakSingleton(com.mycila.guice.annotation.scope.WeakSingleton.class);
+    public static final ScopeWithAnnotation SOFT_SINGLETON = softSingleton(com.mycila.guice.annotation.scope.SoftSingleton.class);
 
     private Scopes() {
     }
 
     public static void bind(Binder binder) {
-        binder.bindScope(com.mycila.guice.annotation.ExpiringSingleton.class, EXPIRING_SINGLETON);
-        binder.bindScope(com.mycila.guice.annotation.WeakSingleton.class, WEAK_SINGLETON);
-        binder.bindScope(com.mycila.guice.annotation.SoftSingleton.class, SOFT_SINGLETON);
+        binder.bindScope(com.mycila.guice.annotation.scope.ExpiringSingleton.class, EXPIRING_SINGLETON);
+        binder.bindScope(com.mycila.guice.annotation.scope.WeakSingleton.class, WEAK_SINGLETON);
+        binder.bindScope(com.mycila.guice.annotation.scope.SoftSingleton.class, SOFT_SINGLETON);
     }
 
     public static ScopeWithAnnotation expiringSingleton(Class<? extends Annotation> scopeAnnotation) {
