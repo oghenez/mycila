@@ -16,8 +16,16 @@
 
 package com.mycila.guice.spi;
 
+import com.mycila.guice.annotation.ActivateAfter;
+import com.mycila.guice.annotation.OnActivate;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ServB implements Serv {
+@ActivateAfter(PluginA.class)
+final class PluginC {
+    @OnActivate
+    void start(int a) {
+        Collector.add("C");
+    }
 }

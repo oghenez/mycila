@@ -16,8 +16,30 @@
 
 package com.mycila.guice.spi;
 
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ServB implements Serv {
+final class Collector {
+
+    private static final ThreadLocal<List<String>> collector = new ThreadLocal<List<String>>() {
+        @Override
+        protected List<String> initialValue() {
+            return new LinkedList<String>();
+        }
+    };
+
+    public static void clear() {
+        collector.get().clear();
+    }
+
+    public static void add(String s) {
+        collector.get().add(s);
+    }
+
+    public static String[] get() {
+        return collector.get().toArray(new String[collector.get().size()]);
+    }
 }

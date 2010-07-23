@@ -32,12 +32,10 @@ import java.util.List;
  */
 public final class ServiceLoaderProvider<T> implements Provider<T[]> {
 
-    private final Class<T> type;
-
     @Inject
-    Injector injector;
-
-    Key<? extends Loader> loaderKey;
+    private Injector injector;
+    private Key<? extends Loader> loaderKey;
+    private final Class<T> type;
 
     private ServiceLoaderProvider(Class<T> type) {
         this.type = type;
@@ -67,12 +65,15 @@ public final class ServiceLoaderProvider<T> implements Provider<T[]> {
         ServiceClassLoader<T> loader = loaderKey == null ?
                 ServiceClassLoader.<T>load(type, new DefaultLoader()) :
                 ServiceClassLoader.<T>load(type, injector.getInstance(loaderKey));
-        for (Class<T> clazz : loader)
+        for (Class<T> clazz : loader) {
+            if (!type.isAssignableFrom(clazz))
+                throw new ClassCastException(clazz + " cannot be assigned to binded type " + type);
             instances.add(injector.getInstance(clazz));
+        }
         return instances.toArray((T[]) Array.newInstance(type, instances.size()));
     }
 
-    public static <T> Provider<T[]> of(Class<T> type) {
+    public static <T> ServiceLoaderProvider<T> of(Class<T> type) {
         return new ServiceLoaderProvider<T>(type);
     }
 }
