@@ -16,8 +16,6 @@
 
 package com.mycila.guice;
 
-import com.google.inject.Key;
-
 import java.util.Collection;
 
 /**
@@ -26,7 +24,8 @@ import java.util.Collection;
 public class CyclicPluginDependencyException extends PluginException {
     private static final long serialVersionUID = 1;
 
-    public CyclicPluginDependencyException(Collection<Key<?>> cycle) {
-        super("Cyclic dependency found in activation order bewteen plugins " + cycle);
+    public CyclicPluginDependencyException(Collection<String
+            > cycle) {
+        super("Cyclic dependency found in activation order between plugins " + cycle);
     }
 }

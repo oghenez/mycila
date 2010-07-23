@@ -208,7 +208,7 @@
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
-            <version>2.0</version>
+            <version>3.0-20100723</version>
         </dependency>
         <!-- embedded-->
         <dependency>

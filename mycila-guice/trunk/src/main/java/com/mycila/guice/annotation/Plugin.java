@@ -18,7 +18,11 @@ package com.mycila.guice.annotation;
 
 import com.google.inject.BindingAnnotation;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * A class annotated by @Plugin will be treated as a plugin.
@@ -35,4 +39,9 @@ public @interface Plugin {
      * Specify the plugin name
      */
     String value() default "";
+
+    /**
+     * Plugin description
+     */
+    String description() default "";
 }
