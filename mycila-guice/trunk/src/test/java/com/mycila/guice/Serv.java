@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-package com.mycila.guice.spi;
-
-import com.mycila.guice.annotation.ActivateAfter;
-import com.mycila.guice.annotation.OnActivate;
+package com.mycila.guice;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@ActivateAfter(PluginA.class)
-final class PluginD {
-    @OnActivate
-    void start() {
-        Collector.add("D");
-    }
+public interface Serv {
 }

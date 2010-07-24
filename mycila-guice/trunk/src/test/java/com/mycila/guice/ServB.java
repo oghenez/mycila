@@ -14,18 +14,10 @@
  * limitations under the License.
  */
 
-package com.mycila.guice.annotation;
-
-import java.lang.annotation.*;
+package com.mycila.guice;
 
 /**
- * Specify that this plugin must be activated before all plugins listed here.
- *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-@Inherited
-public @interface ActivateBefore {
-    Class<?>[] value() default {};
+public final class ServB implements Serv {
 }

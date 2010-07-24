@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package com.mycila.guice.spi;
+package com.mycila.guice;
 
 import com.google.inject.Binder;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.util.Types;
-import com.mycila.guice.Loader;
 
 import java.lang.annotation.Annotation;
 

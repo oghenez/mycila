@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.mycila.guice.spi;
+package com.mycila.guice;
 
-import com.mycila.guice.Loader;
 import com.mycila.guice.LoaderException;
 
 import java.io.IOException;

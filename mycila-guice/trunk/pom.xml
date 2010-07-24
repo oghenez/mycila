@@ -132,49 +132,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-shade-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>standard</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <shadedArtifactAttached>false</shadedArtifactAttached>
-                            <createSourcesJar>true</createSourcesJar>
-                            <artifactSet>
-                                <includes>
-                                    <include>asm:asm</include>
-                                    <include>org.jgrapht:jgrapht</include>
-                                </includes>
-                            </artifactSet>
-                            <relocations>
-                                <relocation>
-                                    <pattern>org.objectweb.asm</pattern>
-                                    <shadedPattern>com.mycila.guice.internal.asm</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.jgrapht</pattern>
-                                    <shadedPattern>com.mycila.guice.internal.jgrapht</shadedPattern>
-                                </relocation>
-                            </relocations>
-                            <filters>
-                                <filter>
-                                    <artifact>org.jgrapht:jgrapht</artifact>
-                                    <excludes>
-                                        <exclude>org/jgrapht/demo/**</exclude>
-                                        <exclude>org/jgrapht/experimental/**</exclude>
-                                        <exclude>org/jgrapht/ext/**</exclude>
-                                        <exclude>org/jgrapht/generate/**</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
                 <version>1.6.1</version>
@@ -209,17 +166,6 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>3.0-20100723</version>
-        </dependency>
-        <!-- embedded-->
-        <dependency>
-            <groupId>asm</groupId>
-            <artifactId>asm</artifactId>
-            <version>3.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jgrapht</groupId>
-            <artifactId>jgrapht</artifactId>
-            <version>0.8.1</version>
         </dependency>
         <!-- testing -->
         <dependency>

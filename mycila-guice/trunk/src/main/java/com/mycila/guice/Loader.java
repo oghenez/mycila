@@ -23,7 +23,7 @@ import java.util.List;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface Loader {
-    Class<?> loadClass(String className) throws LoaderException;
+    Class<?> loadClass(String className);
 
     URL getResource(String path);
 
