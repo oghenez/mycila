@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.guice.annotation.scope;
+package com.mycila.guice.annotation;
 
 import com.google.inject.ScopeAnnotation;
 
@@ -31,5 +31,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 @ScopeAnnotation
-public @interface SoftSingleton {
+public @interface WeakSingleton {
 }

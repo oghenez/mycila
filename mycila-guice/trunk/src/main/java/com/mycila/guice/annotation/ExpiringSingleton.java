@@ -14,27 +14,22 @@
  * limitations under the License.
  */
 
-package com.mycila.guice.annotation.scope;
+package com.mycila.guice.annotation;
 
-import com.google.inject.BindingAnnotation;
+import com.google.inject.ScopeAnnotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
 /**
- * Annotates named things.
+ * No scope
  *
- * @author crazybob@google.com (Bob Lee)
+ * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@Retention(RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
-@BindingAnnotation
-public @interface Expirity {
-    /**
-     * Expiring time of the singleton, in milliseconds
-     */
-    long value();
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
+@ScopeAnnotation
+public @interface ExpiringSingleton {
 }

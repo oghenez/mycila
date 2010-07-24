@@ -16,9 +16,13 @@
 
 package com.mycila.guice;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
-import com.mycila.guice.annotation.scope.Expirity;
+import com.mycila.guice.annotation.ExpiringSingleton;
+import com.mycila.guice.annotation.Expirity;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -83,6 +87,35 @@ public final class ScopeTest {
         Thread.sleep(600);
 
         assertNotSame(o, provider.get());
+    }
+
+    @Test
+    public void test_with_injector() throws Exception {
+        Expirity expirity1 = Scopes.expirity(1);
+        Expirity expirity2 = Scopes.expirity(1);
+        assertEquals(expirity1, expirity2);
+        assertEquals(expirity1.hashCode(), expirity2.hashCode());
+
+        Injector injector = Guice.createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                MycilaGuice.bindScopes(binder());
+                bind(Object.class).annotatedWith(Scopes.expirity(500)).toProvider(new Provider<Object>() {
+                    @Override
+                    public Object get() {
+                        return new Object();
+                    }
+                }).in(ExpiringSingleton.class);
+            }
+        });
+
+        Object o1 = injector.getInstance(Key.get(Object.class, Scopes.expirity(500)));
+        assertNotNull(o1);
+        Object o2 = injector.getInstance(Key.get(Object.class, Scopes.expirity(500)));
+        assertNotNull(o2);
+        assertSame(o1, o2);
+        Thread.sleep(600);
+        assertNotSame(o1, injector.getInstance(Key.get(Object.class, Scopes.expirity(500))));
     }
 
 }
