@@ -19,6 +19,7 @@ package com.mycila.guice.annotation;
 import com.google.inject.BindingAnnotation;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -30,7 +31,8 @@ import static java.lang.annotation.RetentionPolicy.*;
  * @author crazybob@google.com (Bob Lee)
  */
 @Retention(RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD})
+@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE})
+@Inherited
 @BindingAnnotation
 public @interface Expirity {
     /**

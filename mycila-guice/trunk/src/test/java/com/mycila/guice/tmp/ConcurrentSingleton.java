@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package com.mycila.guice.annotation;
+package com.mycila.guice.tmp;
+
+import com.google.inject.ScopeAnnotation;
 
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.RetentionPolicy.*;
+
 /**
- * No scope
- *
- * @author Mathieu Carbou (mathieu.carbou@gmail.com)
+ * Apply this to implementation classes when you want only one instance
+ * (per {@link com.google.inject.Injector}) to be reused for all injections for that binding,
+ * and you want to eagerly create the instance concurrently in the background
+ * with other singletons in this scope.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Inherited
-@Target({ElementType.METHOD})
-public @interface PostInject {
-}
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Retention(RUNTIME)
+@ScopeAnnotation
+public @interface ConcurrentSingleton {}
