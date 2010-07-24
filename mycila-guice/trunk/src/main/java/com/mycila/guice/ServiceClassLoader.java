@@ -188,8 +188,12 @@ final class ServiceClassLoader<S> implements Iterable<Class<S>> {
         return new ServiceClassLoader<S>(service, loader);
     }
 
+    public static <S> ServiceClassLoader<S> load(Class<S> service) {
+        return new ServiceClassLoader<S>(service, new DefaultLoader());
+    }
+
     public String toString() {
-        return "com.mycila.util.ServiceClassLoader[" + service.getName() + "]";
+        return "ServiceClassLoader[" + service.getName() + "]";
     }
 
 }

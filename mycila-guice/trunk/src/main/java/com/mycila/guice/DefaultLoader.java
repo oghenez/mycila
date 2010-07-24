@@ -16,8 +16,6 @@
 
 package com.mycila.guice;
 
-import com.mycila.guice.LoaderException;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
@@ -40,11 +38,11 @@ public class DefaultLoader implements Loader {
     }
 
     @Override
-    public Class<?> loadClass(String className) throws LoaderException {
+    public Class<?> loadClass(String className) {
         try {
             return classLoader.loadClass(className);
         } catch (ClassNotFoundException e) {
-            throw new LoaderException("Unable to load class " + className, e);
+            throw new IllegalArgumentException("Unable to load class " + className, e);
         }
     }
 
