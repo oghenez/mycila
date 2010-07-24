@@ -24,7 +24,7 @@ import com.google.inject.Injector;
 public interface PluginManager {
     void activate() throws InvokeException;
 
-    void close() throws InvokeException;
+    void deactivate() throws InvokeException;
 
     Injector getInjector();
 }

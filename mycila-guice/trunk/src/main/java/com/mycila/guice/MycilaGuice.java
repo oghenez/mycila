@@ -16,6 +16,11 @@
 
 package com.mycila.guice;
 
+import com.google.inject.Module;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
@@ -23,6 +28,7 @@ public final class MycilaGuice {
 
     private Loader loader = new com.mycila.guice.spi.DefaultLoader();
     private PluginDiscovery discovery = new com.mycila.guice.spi.CustomPluginDiscovery();
+    private final LinkedList<Module> modules = new LinkedList<Module>();
 
     public MycilaGuice withLoader(Loader loader) {
         this.loader = loader;
@@ -52,8 +58,24 @@ public final class MycilaGuice {
         });
     }
 
+    public MycilaGuice addModule(Module module) {
+        modules.add(module);
+        return this;
+    }
+
+    public MycilaGuice addModules(Module... modules) {
+        this.modules.addAll(Arrays.asList(modules));
+        return this;
+    }
+
+    public MycilaGuice addModules(Iterable<? extends Module> modules) {
+        for (Module module : modules)
+            this.modules.add(module);
+        return this;
+    }
+
     public PluginManager build() {
-        return new com.mycila.guice.spi.ConcurrentPluginManager(discovery);
+        return com.mycila.guice.spi.ConcurrentPluginManager.build(discovery, modules);
     }
 
 }
