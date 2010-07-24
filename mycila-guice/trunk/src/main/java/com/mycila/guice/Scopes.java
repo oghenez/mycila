@@ -16,15 +16,16 @@
 
 package com.mycila.guice;
 
-import com.google.inject.Binder;
 import com.google.inject.Key;
 import com.google.inject.Provider;
-import com.mycila.guice.annotation.scope.Expirity;
+import com.mycila.guice.annotation.Expirity;
 
 import java.lang.annotation.Annotation;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -36,17 +37,11 @@ public class Scopes {
      */
     private static final Object NULL = new Object();
 
-    public static final ScopeWithAnnotation EXPIRING_SINGLETON = expiringSingleton(com.mycila.guice.annotation.scope.ExpiringSingleton.class);
-    public static final ScopeWithAnnotation WEAK_SINGLETON = weakSingleton(com.mycila.guice.annotation.scope.WeakSingleton.class);
-    public static final ScopeWithAnnotation SOFT_SINGLETON = softSingleton(com.mycila.guice.annotation.scope.SoftSingleton.class);
+    public static final ScopeWithAnnotation EXPIRING_SINGLETON = expiringSingleton(com.mycila.guice.annotation.ExpiringSingleton.class);
+    public static final ScopeWithAnnotation WEAK_SINGLETON = weakSingleton(com.mycila.guice.annotation.WeakSingleton.class);
+    public static final ScopeWithAnnotation SOFT_SINGLETON = softSingleton(com.mycila.guice.annotation.SoftSingleton.class);
 
     private Scopes() {
-    }
-
-    public static void bind(Binder binder) {
-        binder.bindScope(com.mycila.guice.annotation.scope.ExpiringSingleton.class, EXPIRING_SINGLETON);
-        binder.bindScope(com.mycila.guice.annotation.scope.WeakSingleton.class, WEAK_SINGLETON);
-        binder.bindScope(com.mycila.guice.annotation.scope.SoftSingleton.class, SOFT_SINGLETON);
     }
 
     public static ScopeWithAnnotation expiringSingleton(Class<? extends Annotation> scopeAnnotation) {
@@ -59,6 +54,12 @@ public class Scopes {
 
     public static ScopeWithAnnotation softSingleton(Class<? extends Annotation> scopeAnnotation) {
         return new SoftSingleton(scopeAnnotation);
+    }
+
+    public static Expirity expirity(long value) {
+        Map<String, Object> properties = new LinkedHashMap<String, Object>();
+        properties.put("value", value);
+        return AnnotationMetadata.buildAnnotation(Expirity.class, properties);
     }
 
     private static final class ExpiringSingleton extends AbstractScopeWithAnnotation {
