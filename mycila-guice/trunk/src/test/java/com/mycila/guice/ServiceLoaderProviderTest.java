@@ -14,18 +14,32 @@
  * limitations under the License.
  */
 
-package com.mycila.guice.spi;
+package com.mycila.guice;
 
-import com.mycila.guice.annotation.ActivateAfter;
-import com.mycila.guice.annotation.OnClose;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
+
+import static org.junit.Assert.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@ActivateAfter(PluginA.class)
-final class PluginE {
-    @OnClose
-    void start(int a) {
-        Collector.add("E");
+@RunWith(JUnit4.class)
+public final class ServiceLoaderProviderTest {
+
+    @Test
+    public void test() throws Exception {
+        Injector injector = Guice.createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(Serv[].class).toProvider(ServiceLoaderProvider.of(Serv.class));
+            }
+        });
+        assertEquals(2, injector.getInstance(Serv[].class).length);
     }
+
 }
