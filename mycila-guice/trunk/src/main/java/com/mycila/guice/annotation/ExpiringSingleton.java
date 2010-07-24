@@ -19,17 +19,20 @@ package com.mycila.guice.annotation;
 import com.google.inject.ScopeAnnotation;
 
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * No scope
  *
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Retention(RUNTIME)
+@Inherited
 @ScopeAnnotation
 public @interface ExpiringSingleton {
 }

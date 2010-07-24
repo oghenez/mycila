@@ -39,6 +39,11 @@ import static org.mockito.Mockito.*;
 public final class ScopeTest {
 
     @Test
+    public void test_concurrent() throws Exception {
+        //FutureTask f;f.run();
+    }
+
+    @Test
     public void test_weak() throws Exception {
         Provider<Object> unscoped = mock(Provider.class);
         when(unscoped.get()).thenAnswer(new Answer<Object>() {
