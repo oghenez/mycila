@@ -39,6 +39,8 @@ import org.jgrapht.traverse.TopologicalOrderIterator;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,7 +54,7 @@ public final class DefaultPluginManager implements PluginManager {
 
     private final Injector injector;
     private final List<Invokable<?>> activates = new LinkedList<Invokable<?>>();
-    private final List<Invokable<?>> closes = new LinkedList<Invokable<?>>();
+    private final List<Invokable<?>> deactivates = new LinkedList<Invokable<?>>();
 
     private DefaultPluginManager(Injector injector) {
         this.injector = injector;
@@ -65,8 +67,8 @@ public final class DefaultPluginManager implements PluginManager {
     }
 
     @Override
-    public void close() throws InvokeException {
-        for (Invokable<?> invokable : closes)
+    public void deactivate() throws InvokeException {
+        for (Invokable<?> invokable : deactivates)
             invokable.invoke();
     }
 
@@ -75,29 +77,31 @@ public final class DefaultPluginManager implements PluginManager {
         return injector;
     }
 
-    public static PluginManager build(Iterable<? extends Class<?>> pluginClasses) throws CyclicPluginDependencyException {
+    public static PluginManager build(Iterable<? extends Class<?>> pluginClasses, Module... modules) throws CyclicPluginDependencyException {
+        return build(pluginClasses, Arrays.asList(modules));
+    }
+
+    public static PluginManager build(Iterable<? extends Class<?>> pluginClasses, Iterable<? extends Module> modules) throws CyclicPluginDependencyException {
         final List<Key<?>> plugins = new LinkedList<Key<?>>();
-        final Injector injector = load(pluginClasses, plugins);
+        final Injector injector = load(pluginClasses, plugins, modules);
         final DefaultPluginManager pluginManager = new DefaultPluginManager(injector);
         final List<Key<?>> order = sort(plugins);
         for (final Key<?> key : order) {
-            if (plugins.contains(key)) {
-                Class<?> base = key.getTypeLiteral().getRawType();
-                while (base != null && base != Object.class) {
-                    for (final Method method : base.getDeclaredMethods()) {
-                        if (method.isAnnotationPresent(OnActivate.class)) {
-                            if (method.getParameterTypes().length != 0)
-                                throw new UnsupportedOperationException("@OnActivate must be put on a method without parameters : " + method);
-                            pluginManager.activates.add(new InvokableMethod(injector, key, method));
-                        }
-                        if (method.isAnnotationPresent(OnClose.class)) {
-                            if (method.getParameterTypes().length != 0)
-                                throw new UnsupportedOperationException("@OnClose must be put on a method without parameters : " + method);
-                            pluginManager.closes.add(0, new InvokableMethod(injector, key, method));
-                        }
+            Class<?> base = key.getTypeLiteral().getRawType();
+            while (base != null && base != Object.class) {
+                for (final Method method : base.getDeclaredMethods()) {
+                    if (method.isAnnotationPresent(OnActivate.class)) {
+                        if (method.getParameterTypes().length != 0)
+                            throw new UnsupportedOperationException("@OnActivate must be put on a method without parameters : " + method);
+                        pluginManager.activates.add(new InvokableMethod(injector, key, method));
                     }
-                    base = base.getSuperclass();
+                    if (method.isAnnotationPresent(OnClose.class)) {
+                        if (method.getParameterTypes().length != 0)
+                            throw new UnsupportedOperationException("@OnClose must be put on a method without parameters : " + method);
+                        pluginManager.deactivates.add(0, new InvokableMethod(injector, key, method));
+                    }
                 }
+                base = base.getSuperclass();
             }
         }
         return pluginManager;
@@ -107,8 +111,11 @@ public final class DefaultPluginManager implements PluginManager {
         return Key.get(pluginClass, Plugin.class);
     }
 
-    private static Injector load(final Iterable<? extends Class<?>> pluginClasses, final List<Key<?>> plugins) {
-        return Guice.createInjector(Stage.PRODUCTION, new Module() {
+    private static Injector load(final Iterable<? extends Class<?>> pluginClasses, final List<Key<?>> plugins, Iterable<? extends Module> modules) {
+        List<Module> mm = new ArrayList<Module>();
+        for (Module module : modules)
+            mm.add(module);
+        mm.add(new Module() {
             @Override
             public void configure(Binder binder) {
                 for (Class pluginClass : pluginClasses) {
@@ -118,6 +125,7 @@ public final class DefaultPluginManager implements PluginManager {
                 }
             }
         });
+        return Guice.createInjector(Stage.PRODUCTION, mm);
     }
 
     private static List<Key<?>> sort(List<Key<?>> plugins) {
@@ -127,21 +135,27 @@ public final class DefaultPluginManager implements PluginManager {
             graph.addVertex(pluginKey);
             {
                 ActivateAfter activateAfter = pluginKey.getTypeLiteral().getRawType().getAnnotation(ActivateAfter.class);
-                if (activateAfter != null)
+                if (activateAfter != null) {
                     for (Class<?> pluginToBeActivatedBefore : activateAfter.value()) {
                         Key<?> key = getKey(pluginToBeActivatedBefore);
-                        graph.addVertex(key);
-                        graph.addEdge(key, pluginKey);
+                        if (plugins.contains(key)) {
+                            graph.addVertex(key);
+                            graph.addEdge(key, pluginKey);
+                        }
                     }
+                }
             }
             {
                 ActivateBefore activateBefore = pluginKey.getTypeLiteral().getRawType().getAnnotation(ActivateBefore.class);
-                if (activateBefore != null)
+                if (activateBefore != null) {
                     for (Class<?> pluginToBeActivatedAfter : activateBefore.value()) {
                         Key<?> key = getKey(pluginToBeActivatedAfter);
-                        graph.addVertex(key);
-                        graph.addEdge(pluginKey, key);
+                        if (plugins.contains(key)) {
+                            graph.addVertex(key);
+                            graph.addEdge(pluginKey, key);
+                        }
                     }
+                }
             }
         }
         if (!graph.vertexSet().isEmpty()) {

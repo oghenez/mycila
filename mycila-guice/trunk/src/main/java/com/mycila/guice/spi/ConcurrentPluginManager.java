@@ -17,11 +17,13 @@
 package com.mycila.guice.spi;
 
 import com.google.inject.Injector;
+import com.google.inject.Module;
 import com.mycila.guice.InvokeException;
 import com.mycila.guice.PluginDiscovery;
 import com.mycila.guice.PluginManager;
 import com.mycila.guice.WrappedException;
 
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -34,15 +36,8 @@ public final class ConcurrentPluginManager implements PluginManager {
 
     private final Future<PluginManager> pluginManager;
 
-    public ConcurrentPluginManager(final PluginDiscovery discovery) {
-        FutureTask<PluginManager> delegate = new FutureTask<PluginManager>(new Callable<PluginManager>() {
-            @Override
-            public PluginManager call() throws Exception {
-                return DefaultPluginManager.build(discovery.scan());
-            }
-        });
-        new Thread(delegate, ConcurrentPluginManager.class.getName()).start();
-        this.pluginManager = delegate;
+    private ConcurrentPluginManager(Future<PluginManager> pluginManager) {
+        this.pluginManager = pluginManager;
     }
 
     @Override
@@ -51,8 +46,8 @@ public final class ConcurrentPluginManager implements PluginManager {
     }
 
     @Override
-    public void close() throws InvokeException {
-        delegate().close();
+    public void deactivate() throws InvokeException {
+        delegate().deactivate();
     }
 
     @Override
@@ -72,5 +67,20 @@ public final class ConcurrentPluginManager implements PluginManager {
             if (cause instanceof RuntimeException) throw (RuntimeException) cause;
             throw new WrappedException(cause);
         }
+    }
+
+    public static PluginManager build(final PluginDiscovery discovery, Module... modules) {
+        return build(discovery, Arrays.asList(modules));
+    }
+
+    public static PluginManager build(final PluginDiscovery discovery, final Iterable<? extends Module> modules) {
+        FutureTask<PluginManager> delegate = new FutureTask<PluginManager>(new Callable<PluginManager>() {
+            @Override
+            public PluginManager call() throws Exception {
+                return DefaultPluginManager.build(discovery.scan(), modules);
+            }
+        });
+        new Thread(delegate, ConcurrentPluginManager.class.getName()).start();
+        return new ConcurrentPluginManager(delegate);
     }
 }
