@@ -92,4 +92,28 @@ final class Methods {
         return lastDotIndex != -1 ? className.substring(0, lastDotIndex) : "";
     }
 
+    public static Matcher<Method> withParameterTypes(final Class<?>... classes) {
+        return new AbstractMatcher<Method>() {
+            @Override
+            public boolean matches(Method m) {
+                Class<?>[] thisParams = m.getParameterTypes();
+                if (thisParams.length != classes.length)
+                    return false;
+                int c = 0;
+                for (Class<?> thisParam : thisParams)
+                    if (thisParam != classes[c++])
+                        return false;
+                return true;
+            }
+        };
+    }
+
+    public static Matcher<Method> named(final String methodName) {
+        return new AbstractMatcher<Method>() {
+            @Override
+            public boolean matches(Method method) {
+                return method.getName().equals(methodName);
+            }
+        };
+    }
 }
