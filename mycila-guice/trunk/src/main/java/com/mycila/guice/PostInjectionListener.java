@@ -26,6 +26,7 @@ import com.mycila.guice.annotation.PostInject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -36,9 +37,10 @@ final class PostInjectionListener implements TypeListener {
         encounter.register(new InjectionListener<I>() {
             @Override
             public void afterInjection(I injectee) {
-                for (Method method : Methods.listAll(
+                List<Method> methods = Methods.listAll(
                         type.getRawType(),
-                        Methods.METHOD_WITHOUT_PARAMETER.and(Matchers.annotatedWith(PostInject.class)))) {
+                        Methods.METHOD_WITHOUT_PARAMETER.and(Matchers.annotatedWith(PostInject.class)));
+                for (Method method : methods) {
                     if (!method.isAccessible())
                         method.setAccessible(true);
                     try {

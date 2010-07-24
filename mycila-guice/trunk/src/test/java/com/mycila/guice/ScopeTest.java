@@ -99,7 +99,8 @@ public final class ScopeTest {
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
-                MycilaGuice.bindScopes(binder());
+                MycilaBinder mycilaGuice = MycilaBinder.on(binder());
+                mycilaGuice.bindScopes();
                 bind(Object.class).annotatedWith(Scopes.expirity(500)).toProvider(new Provider<Object>() {
                     @Override
                     public Object get() {
