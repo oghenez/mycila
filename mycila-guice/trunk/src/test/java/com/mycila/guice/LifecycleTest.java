@@ -18,17 +18,20 @@ package com.mycila.guice;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import com.google.inject.Stage;
 import com.google.inject.matcher.Matchers;
-import com.mycila.guice.annotation.PostInject;
+import com.mycila.guice.annotation.SoftSingleton;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -42,6 +45,7 @@ public final class LifecycleTest {
 
     @Test
     public void test_inject_in_interceptor() throws Exception {
+        B.calls.clear();
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
@@ -62,38 +66,65 @@ public final class LifecycleTest {
         });
         B b = injector.getInstance(B.class);
         assertSame(b, injector.getInstance(B.class));
-        assertEquals("[1, 2]", b.calls.toString());
+        assertEquals("[1, 2]", B.calls.toString());
         b.intercept();
     }
 
     @Test
     public void test() throws Exception {
-        Injector injector = Guice.createInjector(new AbstractModule() {
+        B.calls.clear();
+        Injector injector = Guice.createInjector(Stage.PRODUCTION, new AbstractModule() {
             @Override
             protected void configure() {
                 LifeCycle.install(binder());
+                bindScope(SoftSingleton.class, ExtraScope.SOFT_SINGLETON.get());
             }
         });
-        assertEquals("[1, 2]", injector.getInstance(B.class).calls.toString());
+        injector.getInstance(C.class);
+        injector.getInstance(B.class);
+        assertEquals("[4, 1, 2]", B.calls.toString());
+        Closer closer = LifeCycle.getCloser(injector);
+        closer.register(Singleton.class);
+        closer.register(ExtraScope.SOFT_SINGLETON.get());
+        closer.close();
+        assertEquals("[4, 1, 2, 5, 3]", B.calls.toString());
     }
 
     static class A {
-        List<Integer> calls = new LinkedList<Integer>();
+        static List<Integer> calls = new LinkedList<Integer>();
 
         @Inject
         void method(B b) {
             calls.add(1);
         }
 
-        @PostInject
+        @PostConstruct
         void init() {
             calls.add(2);
+        }
+
+        @PreDestroy
+        void close() {
+            calls.add(3);
         }
     }
 
     @Singleton
     static class B extends A {
         void intercept() {
+        }
+    }
+
+    @SoftSingleton
+    static class C {
+        @PostConstruct
+        void init() {
+            A.calls.add(4);
+        }
+
+        @PreDestroy
+        void close() {
+            A.calls.add(5);
         }
     }
 }

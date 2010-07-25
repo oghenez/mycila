@@ -47,12 +47,12 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public enum ExtraScope implements Provider<Scope> {
+public enum ExtraScope implements Provider<ScopeWithAnnotation> {
 
     EXPIRING_SINGLETON(ExpiringSingleton.class) {
         @Override
-        public Scope get() {
-            return new Scope() {
+        public ScopeWithAnnotation get(Class<? extends Annotation> scopeAnnotation) {
+            return new MycilaScope(scopeAnnotation) {
                 @Override
                 public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
                     Annotation annotation = key.getAnnotation();
@@ -82,19 +82,14 @@ public enum ExtraScope implements Provider<Scope> {
                         }
                     };
                 }
-
-                @Override
-                public String toString() {
-                    return ExtraScope.class.getSimpleName() + ".EXPIRING_SINGLETON";
-                }
             };
         }
     },
 
     RENEWABLE_SINGLETON(RenewableSingleton.class) {
         @Override
-        public Scope get() {
-            return new Scope() {
+        public ScopeWithAnnotation get(Class<? extends Annotation> scopeAnnotation) {
+            return new MycilaScope(scopeAnnotation) {
                 @Override
                 public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
                     Annotation annotation = key.getAnnotation();
@@ -122,19 +117,14 @@ public enum ExtraScope implements Provider<Scope> {
                         }
                     };
                 }
-
-                @Override
-                public String toString() {
-                    return ExtraScope.class.getSimpleName() + ".RENEWABLE_SINGLETON";
-                }
             };
         }
     },
 
     WEAK_SINGLETON(WeakSingleton.class) {
         @Override
-        public Scope get() {
-            return new RefScope("WEAK_SINGLETON") {
+        public ScopeWithAnnotation get(Class<? extends Annotation> scopeAnnotation) {
+            return new RefScope(scopeAnnotation) {
                 @Override
                 protected <T> Reference<T> build(T instance) {
                     return new WeakReference<T>(instance);
@@ -145,8 +135,8 @@ public enum ExtraScope implements Provider<Scope> {
 
     SOFT_SINGLETON(SoftSingleton.class) {
         @Override
-        public Scope get() {
-            return new RefScope("SOFT_SINGLETON") {
+        public ScopeWithAnnotation get(Class<? extends Annotation> scopeAnnotation) {
+            return new RefScope(scopeAnnotation) {
                 @Override
                 protected <T> Reference<T> build(T instance) {
                     return new WeakReference<T>(instance);
@@ -157,8 +147,8 @@ public enum ExtraScope implements Provider<Scope> {
 
     CONCURRENT_SINGLETON(ConcurrentSingleton.class) {
         @Override
-        public Scope get() {
-            return new Scope() {
+        public ScopeWithAnnotation get(Class<? extends Annotation> scopeAnnotation) {
+            return new MycilaScope(scopeAnnotation) {
                 private final BlockingQueue<Key<?>> executionQueue = new LinkedBlockingQueue<Key<?>>();
 
                 @Inject
@@ -210,15 +200,39 @@ public enum ExtraScope implements Provider<Scope> {
                 @Override
                 public <T> Provider<T> scope(final Key<T> key, final Provider<T> unscoped) {
                     return new FutureProvider<T>(key, unscoped, executionQueue);
-                }
-
-                @Override
-                public String toString() {
-                    return ExtraScope.class.getSimpleName() + ".CONCURRENT_SINGLETON";
+                    /*return new Provider<T>() {
+                        @Override
+                        public T get() {
+                            Future<T> f = (Future<T>) futures.get(key);
+                            if (f == null) {
+                                FutureTask<T> creator = new FutureTask<T>(new Callable<T>() {
+                                    public T call() {
+                                        return unscoped.get();
+                                    }
+                                });
+                                f = (Future<T>) futures.putIfAbsent(key, creator);
+                                if (f == null) {
+                                    f = creator;
+                                    //EXECUTOR.execute(creator);
+                                    creator.run();
+                                }
+                            }
+                            try {
+                                return f.get();
+                            } catch (ExecutionException e) {
+                                throw (RuntimeException) e.getCause();
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                                throw new ProvisionException("interrupted during provision");
+                            }
+                        }
+                    };*/
                 }
             };
         }
     };
+
+    /* scope class */
 
     private final Class<? extends Annotation> defaultAnnotation;
 
@@ -226,14 +240,23 @@ public enum ExtraScope implements Provider<Scope> {
         this.defaultAnnotation = defaultAnnotation;
     }
 
-    public Class<? extends Annotation> defaultAnnotation() {
+    public final Class<? extends Annotation> defaultAnnotation() {
         return defaultAnnotation;
     }
 
     @Override
-    public String toString() {
+    public final ScopeWithAnnotation get() {
+        return get(defaultAnnotation);
+    }
+
+    public abstract ScopeWithAnnotation get(Class<? extends Annotation> scopeAnnotation);
+
+    @Override
+    public final String toString() {
         return ExtraScope.class.getSimpleName() + '.' + name();
     }
+
+    /* static */
 
     public static Expirity expirity(long value) {
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
@@ -248,6 +271,8 @@ public enum ExtraScope implements Provider<Scope> {
             binder.bindScope(mycilaScope.defaultAnnotation(), scope);
         }
     }
+
+    /* private */
 
     private static final Object NULL = new Object();
 
@@ -280,11 +305,9 @@ public enum ExtraScope implements Provider<Scope> {
         }
     }
 
-    private static abstract class RefScope implements Scope {
-        private final String name;
-
-        RefScope(String name) {
-            this.name = name;
+    private static abstract class RefScope extends MycilaScope {
+        RefScope(Class<? extends Annotation> scopeAnnotation) {
+            super(scopeAnnotation);
         }
 
         @Override
@@ -316,11 +339,37 @@ public enum ExtraScope implements Provider<Scope> {
         }
 
         protected abstract <T> Reference<T> build(T instance);
-
-        @Override
-        public String toString() {
-            return ExtraScope.class.getSimpleName() + '.' + name;
-        }
     }
 
+    private static abstract class MycilaScope implements ScopeWithAnnotation {
+        private final Class<? extends Annotation> annotationScope;
+
+        private MycilaScope(Class<? extends Annotation> annotationScope) {
+            this.annotationScope = annotationScope;
+        }
+
+        @Override
+        public final Class<? extends Annotation> getScopeAnnotation() {
+            return annotationScope;
+        }
+
+        @Override
+        public final String toString() {
+            return ExtraScope.class.getSimpleName() + "." + annotationScope.getSimpleName();
+        }
+
+        @Override
+        public final boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            MycilaScope that = (MycilaScope) o;
+            return annotationScope.equals(that.annotationScope)
+                    && getClass().equals(that.getClass());
+        }
+
+        @Override
+        public final int hashCode() {
+            return annotationScope.hashCode() + 31 * getClass().hashCode();
+        }
+    }
 }
