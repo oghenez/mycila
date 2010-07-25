@@ -26,6 +26,7 @@ import com.google.inject.Stage;
 import com.mycila.guice.annotation.ConcurrentSingleton;
 import com.mycila.guice.annotation.Expirity;
 import com.mycila.guice.annotation.RenewableSingleton;
+import com.mycila.guice.annotation.SoftSingleton;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -73,6 +74,15 @@ public final class ScopeTest {
         long elapsed = System.nanoTime() - start;
         System.out.printf("Completed in %d seconds%n", TimeUnit.NANOSECONDS.toMillis(elapsed));
         assertTrue(TimeUnit.NANOSECONDS.toMillis(elapsed) < 5000);
+    }
+
+    @Test
+    public void test_eq() throws Exception {
+        assertEquals(ExtraScope.EXPIRING_SINGLETON.get(), ExtraScope.EXPIRING_SINGLETON.get());
+        assertEquals(ExtraScope.EXPIRING_SINGLETON.get().hashCode(), ExtraScope.EXPIRING_SINGLETON.get().hashCode());
+
+        assertEquals(ExtraScope.EXPIRING_SINGLETON.get(SoftSingleton.class), ExtraScope.EXPIRING_SINGLETON.get(SoftSingleton.class));
+        assertEquals(ExtraScope.EXPIRING_SINGLETON.get(SoftSingleton.class).hashCode(), ExtraScope.EXPIRING_SINGLETON.get(SoftSingleton.class).hashCode());
     }
 
     @Test

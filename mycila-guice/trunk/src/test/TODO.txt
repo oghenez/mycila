@@ -44,6 +44,4 @@ You could just as easily support:
 /////////////////
 
 
-PRE DESTROY
-
 INJECTION THREAD CONCURRENCY
