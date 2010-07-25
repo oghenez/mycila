@@ -38,16 +38,16 @@ import static org.junit.Assert.*;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @RunWith(JUnit4.class)
-public final class PostInjectionListenerTest {
+public final class LifecycleTest {
 
     @Test
     public void test_inject_in_interceptor() throws Exception {
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
-                MycilaBinder mycilaGuice = MycilaBinder.on(binder());
-                mycilaGuice.bindPostInjectListener();
-                mycilaGuice.bindInterceptor(Matchers.subclassesOf(A.class), Matchers.any(), new MethodInterceptor() {
+                LifeCycle.install(binder());
+                BinderHelper helper = BinderHelper.on(binder());
+                helper.bindInterceptor(Matchers.subclassesOf(A.class), Matchers.any(), new MethodInterceptor() {
                     @Inject
                     Injector injector;
 
@@ -71,8 +71,7 @@ public final class PostInjectionListenerTest {
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
-                MycilaBinder mycilaGuice = MycilaBinder.on(binder());
-                mycilaGuice.bindPostInjectListener();
+                LifeCycle.install(binder());
             }
         });
         assertEquals("[1, 2]", injector.getInstance(B.class).calls.toString());
@@ -94,6 +93,7 @@ public final class PostInjectionListenerTest {
 
     @Singleton
     static class B extends A {
-        void intercept() {}
+        void intercept() {
+        }
     }
 }

@@ -18,16 +18,21 @@ package com.mycila.guice;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
-import com.mycila.guice.annotation.ExpiringSingleton;
+import com.google.inject.Stage;
+import com.mycila.guice.annotation.ConcurrentSingleton;
 import com.mycila.guice.annotation.Expirity;
+import com.mycila.guice.annotation.RenewableSingleton;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -38,9 +43,59 @@ import static org.mockito.Mockito.*;
 @RunWith(JUnit4.class)
 public final class ScopeTest {
 
+    public static void main(String... args) {
+        long start = System.nanoTime();
+        Injector injector = Guice.createInjector(Stage.PRODUCTION, new AbstractModule() {
+            public void configure() {
+                ExtraScope.install(binder());
+                bind(C.class);
+                bind(D.class);
+            }
+        });
+        injector.getInstance(A.class);
+        long elapsed = System.nanoTime() - start;
+        System.out.printf("Completed in %d seconds%n", TimeUnit.NANOSECONDS.toMillis(elapsed));
+        assertTrue(TimeUnit.NANOSECONDS.toMillis(elapsed) < 5000);
+        ExtraScope.EXECUTOR.shutdownNow();
+    }
+
     @Test
     public void test_concurrent() throws Exception {
-        //FutureTask f;f.run();
+        long start = System.nanoTime();
+        Injector injector = Guice.createInjector(Stage.DEVELOPMENT, new AbstractModule() {
+            public void configure() {
+                ExtraScope.install(binder());
+                bind(C.class);
+                bind(D.class);
+            }
+        });
+        injector.getInstance(A.class);
+        long elapsed = System.nanoTime() - start;
+        System.out.printf("Completed in %d seconds%n", TimeUnit.NANOSECONDS.toMillis(elapsed));
+        assertTrue(TimeUnit.NANOSECONDS.toMillis(elapsed) < 5000);
+    }
+
+    @Test
+    public void test_expire() throws Exception {
+        Provider<Object> unscoped = mock(Provider.class);
+        when(unscoped.get()).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                return new Object();
+            }
+        });
+        Expirity annot = mock(Expirity.class);
+        when(annot.value()).thenReturn(500l);
+        doReturn(Expirity.class).when(annot).annotationType();
+        Provider<Object> provider = ExtraScope.EXPIRING_SINGLETON.get().scope(Key.get(Object.class, annot), unscoped);
+
+        Object o = provider.get();
+        assertNotNull(o);
+        assertSame(o, provider.get());
+
+        Thread.sleep(600);
+
+        assertNull(provider.get());
     }
 
     @Test
@@ -53,7 +108,7 @@ public final class ScopeTest {
             }
         });
 
-        Provider<Object> provider = Scopes.WEAK_SINGLETON.scope(null, unscoped);
+        Provider<Object> provider = ExtraScope.WEAK_SINGLETON.get().scope(null, unscoped);
 
         Object o = provider.get();
         int hash = o.hashCode();
@@ -72,7 +127,7 @@ public final class ScopeTest {
     }
 
     @Test
-    public void test_expire() throws Exception {
+    public void test_renewable() throws Exception {
         Provider<Object> unscoped = mock(Provider.class);
         when(unscoped.get()).thenAnswer(new Answer<Object>() {
             @Override
@@ -83,7 +138,7 @@ public final class ScopeTest {
         Expirity annot = mock(Expirity.class);
         when(annot.value()).thenReturn(500l);
         doReturn(Expirity.class).when(annot).annotationType();
-        Provider<Object> provider = Scopes.EXPIRING_SINGLETON.scope(Key.get(Object.class, annot), unscoped);
+        Provider<Object> provider = ExtraScope.RENEWABLE_SINGLETON.get().scope(Key.get(Object.class, annot), unscoped);
 
         Object o = provider.get();
         assertNotNull(o);
@@ -96,32 +151,96 @@ public final class ScopeTest {
 
     @Test
     public void test_with_injector() throws Exception {
-        Expirity expirity1 = Scopes.expirity(1);
-        Expirity expirity2 = Scopes.expirity(1);
+        Expirity expirity1 = ExtraScope.expirity(1);
+        Expirity expirity2 = ExtraScope.expirity(1);
         assertEquals(expirity1, expirity2);
         assertEquals(expirity1.hashCode(), expirity2.hashCode());
 
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
-                MycilaBinder mycilaGuice = MycilaBinder.on(binder());
-                mycilaGuice.bindScopes();
-                bind(Object.class).annotatedWith(Scopes.expirity(500)).toProvider(new Provider<Object>() {
+                ExtraScope.install(binder());
+                bind(Object.class).annotatedWith(ExtraScope.expirity(500)).toProvider(new Provider<Object>() {
                     @Override
                     public Object get() {
                         return new Object();
                     }
-                }).in(ExpiringSingleton.class);
+                }).in(RenewableSingleton.class);
             }
         });
 
-        Object o1 = injector.getInstance(Key.get(Object.class, Scopes.expirity(500)));
+        Object o1 = injector.getInstance(Key.get(Object.class, ExtraScope.expirity(500)));
         assertNotNull(o1);
-        Object o2 = injector.getInstance(Key.get(Object.class, Scopes.expirity(500)));
+        Object o2 = injector.getInstance(Key.get(Object.class, ExtraScope.expirity(500)));
         assertNotNull(o2);
         assertSame(o1, o2);
         Thread.sleep(600);
-        assertNotSame(o1, injector.getInstance(Key.get(Object.class, Scopes.expirity(500))));
+        assertNotSame(o1, injector.getInstance(Key.get(Object.class, ExtraScope.expirity(500))));
+    }
+
+    @ConcurrentSingleton
+    static class A {
+        @Inject
+        public A(Provider<B> b, Provider<C> c) {
+            try {
+                System.out.printf("Starting A on thread %s%n", Thread.currentThread().getName());
+                TimeUnit.SECONDS.sleep(1);
+                System.out.printf("A getting B and C instances on thread %s%n", Thread.currentThread().getName());
+                b.get();
+                c.get();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } finally {
+                System.out.println("Started A");
+            }
+        }
+    }
+
+    @ConcurrentSingleton
+    static class B {
+        @Inject
+        public B() {
+            try {
+                System.out.printf("Starting B on thread %s%n", Thread.currentThread().getName());
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } finally {
+                System.out.println("Started B");
+            }
+        }
+    }
+
+    @ConcurrentSingleton
+    static class C {
+        @Inject
+        public C(Provider<D> d) {
+            try {
+                System.out.printf("Starting C on thread %s%n", Thread.currentThread().getName());
+                TimeUnit.SECONDS.sleep(3);
+                System.out.printf("C getting D instance on thread %s%n", Thread.currentThread().getName());
+                d.get();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } finally {
+                System.out.println("Started C");
+            }
+        }
+    }
+
+    @ConcurrentSingleton
+    static class D {
+        @Inject
+        public D() {
+            try {
+                System.out.printf("Starting D on thread %s%n", Thread.currentThread().getName());
+                TimeUnit.SECONDS.sleep(4);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } finally {
+                System.out.println("Started D");
+            }
+        }
     }
 
 }

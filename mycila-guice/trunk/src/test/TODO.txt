@@ -1,0 +1,49 @@
+Sam,
+
+Would having code like this in your modules be acceptable?
+
+  install(service(MyService.class));
+
+If so, you could implement something like this:
+
+  /**
+   * Installs a service given its type.
+   */
+  static <T> Module install(Class<T extends Service> serviceType) {
+    return new Module() {
+      public void configure(Binder binder) {
+        final Provider<T> serviceProvider = binder.getProvider(serviceType);
+        binder.requestInjection(new Object() {
+          @Inject
+          void registerService(ServiceRegistry registry) {
+            registry.register(serviceProvider);
+          }
+        });
+      }
+    };
+  }
+
+Then, you'd have something like this:
+
+  interface ServiceRegistry {
+    void register(Provider<? extends Service> serviceProvider);
+    void start();
+    void stop();
+  }
+
+You could just as easily support:
+
+  install(services(
+    ServiceA.class,
+    ServiceB.class,
+    ...
+  ));
+
+
+
+/////////////////
+
+
+PRE DESTROY
+
+INJECTION THREAD CONCURRENCY
