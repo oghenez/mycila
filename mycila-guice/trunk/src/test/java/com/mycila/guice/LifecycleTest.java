@@ -57,7 +57,7 @@ public final class LifecycleTest {
 
                     @Override
                     public Object invoke(MethodInvocation invocation) throws Throwable {
-                        System.out.println(invocation.getMethod());
+                        System.out.println("intercept: " + invocation.getMethod());
                         assertNotNull(injector);
                         return invocation.proceed();
                     }
@@ -66,8 +66,9 @@ public final class LifecycleTest {
         });
         B b = injector.getInstance(B.class);
         assertSame(b, injector.getInstance(B.class));
-        assertEquals("[1, 2]", B.calls.toString());
         b.intercept();
+        LifeCycle.getCloser(injector).close();
+        assertEquals("[1, 2, 3]", B.calls.toString());
     }
 
     @Test
@@ -78,13 +79,13 @@ public final class LifecycleTest {
             protected void configure() {
                 LifeCycle.install(binder());
                 bindScope(SoftSingleton.class, ExtraScope.SOFT_SINGLETON.get());
+                bind(C.class);
             }
         });
         injector.getInstance(C.class);
         injector.getInstance(B.class);
         assertEquals("[4, 1, 2]", B.calls.toString());
         Closer closer = LifeCycle.getCloser(injector);
-        closer.register(Singleton.class);
         closer.register(ExtraScope.SOFT_SINGLETON.get());
         closer.close();
         assertEquals("[4, 1, 2, 5, 3]", B.calls.toString());

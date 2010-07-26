@@ -22,7 +22,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
-import com.google.inject.Scope;
+import com.google.inject.ProvisionException;
 import com.mycila.guice.annotation.ConcurrentSingleton;
 import com.mycila.guice.annotation.ExpiringSingleton;
 import com.mycila.guice.annotation.Expirity;
@@ -35,9 +35,11 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -149,84 +151,66 @@ public enum ExtraScope implements Provider<ScopeWithAnnotation> {
         @Override
         public ScopeWithAnnotation get(Class<? extends Annotation> scopeAnnotation) {
             return new MycilaScope(scopeAnnotation) {
-                private final BlockingQueue<Key<?>> executionQueue = new LinkedBlockingQueue<Key<?>>();
+                private final FutureInjector futureInjector = new FutureInjector();
+                private final Executor executor = new ThreadPoolExecutor(
+                        0, Integer.MAX_VALUE,
+                        5, TimeUnit.SECONDS,
+                        new SynchronousQueue<Runnable>(),
+                        new DefaultThreadFactory("@ConcurrentSingleton-Thread-"),
+                        new ThreadPoolExecutor.CallerRunsPolicy());
+
+                // thread expiration is by default 10 seconds
+                @Inject(optional = true)
+                @ConcurrentSingleton.Timeout
+                private long timeout = TimeUnit.SECONDS.toNanos(10);
 
                 @Inject
                 void init(final Injector injector) {
-                    EXECUTOR.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            while (!Thread.currentThread().isInterrupted()) {
-                                try {
-                                    Key<?> key = executionQueue.take();
-                                    final Binding<?> binding = injector.getExistingBinding(key);
-                                    if (binding == null) {
-                                        System.out.println("=> take " + key + "\n=> b : " + binding);
-                                        Thread.sleep(100);
-                                        executionQueue.add(key);
-                                    } else {
-                                        EXECUTOR.execute(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                binding.getProvider().get();
-                                            }
-                                        });
-                                    }
-                                } catch (InterruptedException e) {
-                                    Thread.currentThread().interrupt();
-                                }
-                            }
-                        }
-                    });
-
-                    /*final Scope thisScope = this;
-                    for (final Binding<?> binding : injector.getBindings().values()) {
-                        binding.acceptScopingVisitor(new DefaultBindingScopingVisitor<Void>() {
-                            @Override
-                            public Void visitScope(Scope scope) {
-                                if (scope == thisScope)
-                                    EXECUTOR.execute(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            binding.getProvider().get();
-                                        }
-                                    });
-                                return null;
-                            }
-                        });
-                    }*/
+                    futureInjector.setInjector(injector);
                 }
 
                 @Override
                 public <T> Provider<T> scope(final Key<T> key, final Provider<T> unscoped) {
-                    return new FutureProvider<T>(key, unscoped, executionQueue);
-                    /*return new Provider<T>() {
+                    // Create a monitoring thread for this singleton.
+                    // This thread will wait for the key to be available and call the provider to get the singleton.
+                    // This thread must also be non bloquant so that it can be interrupted if the program finishes
+                    executor.execute(new Runnable() {
                         @Override
-                        public T get() {
-                            Future<T> f = (Future<T>) futures.get(key);
-                            if (f == null) {
-                                FutureTask<T> creator = new FutureTask<T>(new Callable<T>() {
-                                    public T call() {
-                                        return unscoped.get();
-                                    }
-                                });
-                                f = (Future<T>) futures.putIfAbsent(key, creator);
-                                if (f == null) {
-                                    f = creator;
-                                    //EXECUTOR.execute(creator);
-                                    creator.run();
-                                }
-                            }
+                        public void run() {
                             try {
-                                return f.get();
-                            } catch (ExecutionException e) {
-                                throw (RuntimeException) e.getCause();
+                                // this thread will expire if not ended within the given timeout
+                                final long expirationTime = System.nanoTime() + timeout;
+                                while (!Thread.currentThread().isInterrupted() && System.nanoTime() < expirationTime) {
+                                    final Injector injector = futureInjector.waitAndGet(500, TimeUnit.MILLISECONDS).get();
+                                    if (injector == null) {
+                                        // May not be ready now. Retry later.
+                                        Thread.sleep(500);
+                                    } else {
+                                        final Binding<?> binding = injector.getExistingBinding(key);
+                                        if (binding == null) {
+                                            // wait: perhaps it is not yet available to be constructed
+                                            Thread.sleep(500);
+                                        } else {
+                                            try {
+                                                // call the provider it load the singleton in this thread
+                                                binding.getProvider().get();
+                                            } catch (Throwable ignored) {
+                                                // completely ignore the exception: since this provider calls the FutureProvider,
+                                                // the FutureTask will memoize the exception and rethrow it for subsequent calls
+                                                // not within this loader thread
+                                            }
+                                            return;
+                                        }
+                                    }
+                                }
                             } catch (InterruptedException e) {
                                 Thread.currentThread().interrupt();
-                                throw new ProvisionException("interrupted during provision");
                             }
                         }
-                    };*/
+                    });
+                    // Future task that will memoize the provided singleton.
+                    // The task will be run either in the caller thread, or by the monitoring thread
+                    return new FutureProvider<T>(unscoped);
                 }
             };
         }
@@ -249,12 +233,18 @@ public enum ExtraScope implements Provider<ScopeWithAnnotation> {
         return get(defaultAnnotation);
     }
 
-    public abstract ScopeWithAnnotation get(Class<? extends Annotation> scopeAnnotation);
-
     @Override
     public final String toString() {
         return ExtraScope.class.getSimpleName() + '.' + name();
     }
+
+    public void install(Binder binder) {
+        ScopeWithAnnotation scope = get();
+        binder.bindScope(defaultAnnotation, scope);
+        binder.requestInjection(scope);
+    }
+
+    public abstract ScopeWithAnnotation get(Class<? extends Annotation> scopeAnnotation);
 
     /* static */
 
@@ -264,24 +254,14 @@ public enum ExtraScope implements Provider<ScopeWithAnnotation> {
         return AnnotationMetadata.buildAnnotation(Expirity.class, properties);
     }
 
-    public static void install(Binder binder) {
-        for (ExtraScope mycilaScope : ExtraScope.values()) {
-            Scope scope = mycilaScope.get();
-            binder.requestInjection(scope);
-            binder.bindScope(mycilaScope.defaultAnnotation(), scope);
-        }
+    public static void installAll(Binder binder) {
+        for (ExtraScope mycilaScope : ExtraScope.values())
+            mycilaScope.install(binder);
     }
 
     /* private */
 
     private static final Object NULL = new Object();
-
-    static final ExecutorService EXECUTOR = new ThreadPoolExecutor(
-            0, Runtime.getRuntime().availableProcessors() * 2,
-            10, TimeUnit.SECONDS,
-            new SynchronousQueue<Runnable>(),
-            new DefaultThreadFactory("@ConcurrentSingleton-Thread-"),
-            new ThreadPoolExecutor.CallerRunsPolicy());
 
     private static class DefaultThreadFactory implements ThreadFactory {
         private final ThreadGroup group;
@@ -363,13 +343,54 @@ public enum ExtraScope implements Provider<ScopeWithAnnotation> {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             MycilaScope that = (MycilaScope) o;
-            return annotationScope.equals(that.annotationScope)
-                    && getClass().equals(that.getClass());
+            return annotationScope.equals(that.annotationScope);
         }
 
         @Override
         public final int hashCode() {
             return annotationScope.hashCode() + 31 * getClass().hashCode();
+        }
+    }
+
+    private static final class FutureInjector {
+        private volatile WeakReference<Injector> injector = new WeakReference<Injector>(null);
+        private final CountDownLatch injectorAvailable = new CountDownLatch(1);
+
+        public void setInjector(Injector injector) {
+            if (this.injector.get() != null) return;
+            this.injector = new WeakReference<Injector>(injector);
+            injectorAvailable.countDown();
+        }
+
+        public Reference<Injector> waitAndGet(long timeout, TimeUnit unit) throws InterruptedException {
+            // We need to apply a timeout in case the user forgot to request injection on the scope to not block the threads.
+            // If the injector is not ready within this timeout, we consider it as inexisting
+            injectorAvailable.await(timeout, unit);
+            return injector;
+        }
+    }
+
+    private static final class FutureProvider<T> extends FutureTask<T> implements Provider<T> {
+        private FutureProvider(final Provider<T> unscoped) {
+            super(new Callable<T>() {
+                @Override
+                public T call() throws Exception {
+                    return unscoped.get();
+                }
+            });
+        }
+
+        @Override
+        public T get() {
+            try {
+                if (!isDone()) run();
+                return super.get();
+            } catch (ExecutionException e) {
+                throw (RuntimeException) e.getCause();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new ProvisionException("Interrupted during provision");
+            }
         }
     }
 }

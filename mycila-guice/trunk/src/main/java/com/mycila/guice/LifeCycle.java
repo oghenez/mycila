@@ -22,12 +22,14 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.ProvisionException;
 import com.google.inject.Scope;
+import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.BindingScopingVisitor;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
+import com.mycila.guice.annotation.ConcurrentSingleton;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -47,6 +49,8 @@ public final class LifeCycle {
     public static void install(Binder binder) {
         TypeListener listener = createPostInjector(javax.annotation.PostConstruct.class);
         Closer closer = createCloser(javax.annotation.PreDestroy.class);
+        closer.register(Singleton.class);
+        closer.register(ConcurrentSingleton.class);
         binder.bindListener(Matchers.any(), listener);
         binder.bind(Closer.class).toInstance(closer);
         binder.requestInjection(listener);
@@ -109,11 +113,13 @@ public final class LifeCycle {
 
         @Override
         public synchronized void close() {
+            final Set<Scope> scopesToCloseLocal = new HashSet<Scope>(this.scopesToClose);
+            final Set<Class<? extends Annotation>> scopeAnnotationToCloseLocal = new HashSet<Class<? extends Annotation>>(this.scopeAnnotationToClose);
             for (Map.Entry<Class<? extends Annotation>, Scope> entry : injector.getScopeBindings().entrySet()) {
-                if (scopeAnnotationToClose.contains(entry.getKey()))
-                    scopesToClose.add(entry.getValue());
-                if (scopesToClose.contains(entry.getValue()))
-                    scopeAnnotationToClose.add(entry.getKey());
+                if (scopeAnnotationToCloseLocal.contains(entry.getKey()))
+                    scopesToCloseLocal.add(entry.getValue());
+                if (scopesToCloseLocal.contains(entry.getValue()))
+                    scopeAnnotationToCloseLocal.add(entry.getKey());
             }
             for (Binding<?> binding : injector.getAllBindings().values()) {
                 Boolean res = binding.acceptScopingVisitor(new BindingScopingVisitor<Boolean>() {
@@ -124,12 +130,12 @@ public final class LifeCycle {
 
                     @Override
                     public Boolean visitScope(Scope scope) {
-                        return scopesToClose.contains(scope) ? true : null;
+                        return scopesToCloseLocal.contains(scope) ? true : null;
                     }
 
                     @Override
                     public Boolean visitScopeAnnotation(Class<? extends Annotation> scopeAnnotation) {
-                        return scopeAnnotationToClose.contains(scopeAnnotation) ? true : null;
+                        return scopeAnnotationToCloseLocal.contains(scopeAnnotation) ? true : null;
                     }
 
                     @Override
@@ -147,9 +153,10 @@ public final class LifeCycle {
     }
 
     private static void invoke(Object injectee, Class<? extends Annotation> annotationClass) {
-        List<Method> methods = Methods.listAll(
-                injectee.getClass(),
-                Methods.METHOD_WITHOUT_PARAMETER.and(Matchers.annotatedWith(annotationClass)));
+        Class<?> c = injectee.getClass();
+        if (c.getName().contains("$$"))
+            c = c.getSuperclass();
+        List<Method> methods = Methods.listAll(c, Methods.METHOD_WITHOUT_PARAMETER.and(Matchers.annotatedWith(annotationClass)));
         for (Method method : methods) {
             if (!method.isAccessible())
                 method.setAccessible(true);
