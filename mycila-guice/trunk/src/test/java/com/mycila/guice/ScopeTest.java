@@ -48,7 +48,7 @@ public final class ScopeTest {
         long start = System.nanoTime();
         Injector injector = Guice.createInjector(Stage.PRODUCTION, new AbstractModule() {
             public void configure() {
-                ExtraScope.install(binder());
+                ExtraScope.installAll(binder());
                 bind(C.class);
                 bind(D.class);
             }
@@ -57,7 +57,25 @@ public final class ScopeTest {
         long elapsed = System.nanoTime() - start;
         System.out.printf("Completed in %d seconds%n", TimeUnit.NANOSECONDS.toMillis(elapsed));
         assertTrue(TimeUnit.NANOSECONDS.toMillis(elapsed) < 5000);
-        ExtraScope.EXECUTOR.shutdownNow();
+    }
+
+    @Test
+    public void test_threads_stopping_if_injector_garbadgedcollected() throws Exception {
+        System.out.println("create inj.");
+        Injector injector = Guice.createInjector(Stage.PRODUCTION, new AbstractModule() {
+            public void configure() {
+                ExtraScope.installAll(binder());
+                bind(Solo.class);
+            }
+        });
+        System.out.println("get Solo");
+        injector.getInstance(Solo.class);
+        injector = null;
+        System.out.println("gc");
+        System.gc();
+        System.gc();
+        System.out.println("wait...");
+        Thread.sleep(5000);
     }
 
     @Test
@@ -65,7 +83,7 @@ public final class ScopeTest {
         long start = System.nanoTime();
         Injector injector = Guice.createInjector(Stage.DEVELOPMENT, new AbstractModule() {
             public void configure() {
-                ExtraScope.install(binder());
+                ExtraScope.installAll(binder());
                 bind(C.class);
                 bind(D.class);
             }
@@ -169,7 +187,7 @@ public final class ScopeTest {
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
-                ExtraScope.install(binder());
+                ExtraScope.installAll(binder());
                 bind(Object.class).annotatedWith(ExtraScope.expirity(500)).toProvider(new Provider<Object>() {
                     @Override
                     public Object get() {
@@ -249,6 +267,21 @@ public final class ScopeTest {
                 Thread.currentThread().interrupt();
             } finally {
                 System.out.println("Started D");
+            }
+        }
+    }
+
+    @ConcurrentSingleton
+    static class Solo {
+        @Inject
+        public Solo() {
+            try {
+                System.out.printf("Starting Solo on thread %s%n", Thread.currentThread().getName());
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } finally {
+                System.out.println("Started Solo");
             }
         }
     }
