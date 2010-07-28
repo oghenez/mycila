@@ -153,11 +153,11 @@ public enum ExtraScope implements Provider<ScopeWithAnnotation> {
             return new MycilaScope(scopeAnnotation) {
                 private final FutureInjector futureInjector = new FutureInjector();
                 private final Executor executor = new ThreadPoolExecutor(
-                        0, Integer.MAX_VALUE,
+                        0, Runtime.getRuntime().availableProcessors() * 10,
                         5, TimeUnit.SECONDS,
                         new SynchronousQueue<Runnable>(),
                         new DefaultThreadFactory("@ConcurrentSingleton-Thread-"),
-                        new ThreadPoolExecutor.CallerRunsPolicy());
+                        new ThreadPoolExecutor.DiscardOldestPolicy());
 
                 // thread expiration is by default 10 seconds
                 @Inject(optional = true)
@@ -198,6 +198,8 @@ public enum ExtraScope implements Provider<ScopeWithAnnotation> {
                                                 // completely ignore the exception: since this provider calls the FutureProvider,
                                                 // the FutureTask will memoize the exception and rethrow it for subsequent calls
                                                 // not within this loader thread
+                                                if (ignored instanceof InterruptedException)
+                                                    Thread.currentThread().interrupt();
                                             }
                                             return;
                                         }
