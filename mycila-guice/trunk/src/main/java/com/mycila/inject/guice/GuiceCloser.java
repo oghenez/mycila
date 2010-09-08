@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.annotation;
+package com.mycila.inject.guice;
 
-import javax.inject.Scope;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import static java.lang.annotation.RetentionPolicy.*;
+import com.google.inject.Scope;
+import com.mycila.inject.Closer;
 
 /**
- * Apply this to implementation classes when you want only one instance
- * (per {@link com.google.inject.Injector}) to be reused for all injections for that binding,
- * and you want to eagerly create the instance concurrently in the background
- * with other singletons in this scope.
+ * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Retention(RUNTIME)
-@Scope
-public @interface ConcurrentSingleton {
+public interface GuiceCloser extends Closer {
+    void register(Scope scope);
 }

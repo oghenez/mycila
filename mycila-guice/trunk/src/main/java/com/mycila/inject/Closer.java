@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.guice;
-
-import com.google.inject.Scope;
+package com.mycila.inject;
 
 import java.lang.annotation.Annotation;
 
@@ -25,8 +23,5 @@ import java.lang.annotation.Annotation;
  */
 public interface Closer {
     void register(Class<? extends Annotation> annotationClass);
-
-    void register(Scope scope);
-
     void close();
 }

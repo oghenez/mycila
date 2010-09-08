@@ -16,7 +16,12 @@
 
 package com.mycila.inject.guice;
 
-import com.google.inject.*;
+import com.google.inject.Binder;
+import com.google.inject.Binding;
+import com.google.inject.Injector;
+import com.google.inject.ProvisionException;
+import com.google.inject.Scope;
+import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.BindingScopingVisitor;
 import com.google.inject.spi.InjectionListener;
@@ -25,6 +30,7 @@ import com.google.inject.spi.TypeListener;
 import com.mycila.inject.annotation.ConcurrentSingleton;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -42,11 +48,11 @@ public final class LifeCycle {
 
     public static void install(Binder binder) {
         TypeListener listener = createPostInjector(javax.annotation.PostConstruct.class);
-        Closer closer = createCloser(javax.annotation.PreDestroy.class);
+        GuiceCloser closer = createCloser(javax.annotation.PreDestroy.class);
         closer.register(Singleton.class);
         closer.register(ConcurrentSingleton.class);
         binder.bindListener(Matchers.any(), listener);
-        binder.bind(Closer.class).toInstance(closer);
+        binder.bind(GuiceCloser.class).toInstance(closer);
         binder.requestInjection(listener);
         binder.requestInjection(closer);
     }
@@ -55,12 +61,12 @@ public final class LifeCycle {
         return new PostInjectListener(annotationClass);
     }
 
-    public static Closer createCloser(Class<? extends Annotation> annotationClass) {
-        return new CloserImpl(annotationClass);
+    public static GuiceCloser createCloser(Class<? extends Annotation> annotationClass) {
+        return new GuiceCloserImpl(annotationClass);
     }
 
-    public static Closer getCloser(Injector injector) {
-        return injector.getInstance(Closer.class);
+    public static GuiceCloser getCloser(Injector injector) {
+        return injector.getInstance(GuiceCloser.class);
     }
 
     private static final class PostInjectListener implements TypeListener {
@@ -81,7 +87,7 @@ public final class LifeCycle {
         }
     }
 
-    private static final class CloserImpl implements Closer {
+    private static final class GuiceCloserImpl implements GuiceCloser {
         private final Set<Scope> scopesToClose = new HashSet<Scope>();
         private final Set<Class<? extends Annotation>> scopeAnnotationToClose = new HashSet<Class<? extends Annotation>>();
 
@@ -89,7 +95,7 @@ public final class LifeCycle {
         @Inject
         Injector injector;
 
-        private CloserImpl(Class<? extends Annotation> annotationClass) {
+        private GuiceCloserImpl(Class<? extends Annotation> annotationClass) {
             this.annotationClass = annotationClass;
         }
 

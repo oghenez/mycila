@@ -34,7 +34,7 @@ public abstract class LegacyProvider<T> implements Provider<T> {
     final Key<?>[] parametersTypes;
     final Class<T> providedType;
 
-    LegacyProvider(Class<T> providedType, Key<?>... parametersTypes) {
+    private LegacyProvider(Class<T> providedType, Key<?>... parametersTypes) {
         this.parametersTypes = parametersTypes;
         this.providedType = providedType;
     }

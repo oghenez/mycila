@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.guice;
+package com.mycila.inject;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.IncompleteAnnotationException;
-import java.lang.reflect.*;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -28,7 +34,7 @@ import java.util.Map;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-class AnnotationMetadata<T extends Annotation> {
+public class AnnotationMetadata<T extends Annotation> {
 
     private static final boolean hasAnnotationType;
     private static final Map<Class<?>, Object> DEFAULTS = new HashMap<Class<?>, Object>(16) {

@@ -20,6 +20,7 @@ import com.google.inject.Binder;
 import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.util.Types;
+import com.mycila.inject.Loader;
 
 import java.lang.annotation.Annotation;
 
