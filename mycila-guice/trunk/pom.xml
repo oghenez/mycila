@@ -161,11 +161,24 @@
     </build>
 
     <dependencies>
-        <!-- deps -->
+        <!-- guice -->
+        <dependency>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
-            <version>3.0-20100723</version>
+            <version>3.0-20100907</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/guice-3.0-20100907.jar</systemPath>
+            <optional>true</optional>
         </dependency>
         <!-- testing -->
         <dependency>
