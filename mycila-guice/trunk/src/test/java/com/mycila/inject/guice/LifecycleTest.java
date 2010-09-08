@@ -16,7 +16,11 @@
 
 package com.mycila.inject.guice;
 
-import com.google.inject.*;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Singleton;
+import com.google.inject.Stage;
 import com.google.inject.matcher.Matchers;
 import com.mycila.inject.annotation.SoftSingleton;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -74,15 +78,15 @@ public final class LifecycleTest {
             @Override
             protected void configure() {
                 LifeCycle.install(binder());
-                bindScope(SoftSingleton.class, ExtraScope.SOFT_SINGLETON.get());
+                bindScope(SoftSingleton.class, ExtraScopes.SOFT_SINGLETON);
                 bind(C.class);
             }
         });
         injector.getInstance(C.class);
         injector.getInstance(B.class);
         assertEquals("[4, 1, 2]", B.calls.toString());
-        Closer closer = LifeCycle.getCloser(injector);
-        closer.register(ExtraScope.SOFT_SINGLETON.get());
+        GuiceCloser closer = LifeCycle.getCloser(injector);
+        closer.register(ExtraScopes.SOFT_SINGLETON);
         closer.close();
         assertEquals("[4, 1, 2, 5, 3]", B.calls.toString());
     }

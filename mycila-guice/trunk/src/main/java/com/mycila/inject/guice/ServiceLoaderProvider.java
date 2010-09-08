@@ -19,6 +19,9 @@ package com.mycila.inject.guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
+import com.mycila.inject.DefaultLoader;
+import com.mycila.inject.Loader;
+import com.mycila.inject.ServiceClassLoader;
 
 import javax.inject.Inject;
 import java.lang.annotation.Annotation;

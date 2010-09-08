@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.guice;
+package com.mycila.inject;
 
 import java.io.IOException;
 import java.net.URL;

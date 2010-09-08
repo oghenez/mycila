@@ -16,13 +16,17 @@
 
 package com.mycila.inject.guice;
 
-import com.google.inject.*;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Stage;
 import com.mycila.inject.annotation.ConcurrentSingleton;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -38,7 +42,7 @@ public final class ConcurrentScopeTest {
         long start = System.nanoTime();
         Injector injector = Guice.createInjector(Stage.DEVELOPMENT, new AbstractModule() {
             public void configure() {
-                ExtraScope.installAll(binder());
+                ExtraScopes.installAll(binder());
                 bind(C.class);
                 bind(D.class);
             }
