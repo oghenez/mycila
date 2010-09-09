@@ -39,11 +39,11 @@
             <id>mathieu.carbou</id>
             <name>Mathieu Carbou</name>
             <email>mathieu.carbou@gmail.com</email>
-            <organization>Mathieu Carbou</organization>
-            <organizationUrl>http://mathieu.carbou.free.fr/</organizationUrl>
+            <organization>Mycila</organization>
+            <organizationUrl>http://www.mycila.com/</organizationUrl>
             <timezone>-5</timezone>
             <roles>
-                <role>project administrator</role>
+                <role>admin</role>
                 <role>developer</role>
             </roles>
         </developer>
