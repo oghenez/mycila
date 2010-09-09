@@ -29,7 +29,8 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
+import static com.mycila.inject.guice.BinderHelper.on;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -42,11 +43,14 @@ public final class ConcurrentScopeTest {
         long start = System.nanoTime();
         Injector injector = Guice.createInjector(Stage.DEVELOPMENT, new AbstractModule() {
             public void configure() {
-                ExtraScopes.installAll(binder());
+                on(binder()).bindScopes();
+                bindConstant().annotatedWith(ConcurrentSingleton.ThreadExpiration.class).to(20000l); // 20 seconds
                 bind(C.class);
                 bind(D.class);
             }
         });
+        //TODO: debug
+        -
         injector.getInstance(A.class);
         long elapsed = System.nanoTime() - start;
         System.out.printf("Completed in %d seconds%n", TimeUnit.NANOSECONDS.toMillis(elapsed));

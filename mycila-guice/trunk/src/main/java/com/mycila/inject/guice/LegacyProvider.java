@@ -30,7 +30,8 @@ import java.util.List;
 
 public abstract class LegacyProvider<T> implements Provider<T> {
 
-    private @Inject Injector fromGuice;
+    @Inject
+    Injector fromGuice;
     final Key<?>[] parametersTypes;
     final Class<T> providedType;
 
@@ -189,7 +190,7 @@ public abstract class LegacyProvider<T> implements Provider<T> {
         public T get(Injector injector) {
             T target = instance.get(injector);
             try {
-                if(!method.isAccessible())
+                if (!method.isAccessible())
                     method.setAccessible(true);
                 method.invoke(target, getParameterValues(injector));
                 return target;

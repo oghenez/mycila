@@ -26,7 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -39,12 +39,14 @@ public final class ServiceClassLoaderTest {
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
-                bind(new TypeLiteral<Iterable<Class<Serv>>>(){}).toInstance(ServiceClassLoader.load(Serv.class));
+                bind(new TypeLiteral<Iterable<Class<Serv>>>() {
+                }).toInstance(ServiceClassLoader.load(Serv.class));
             }
         });
         int count = 0;
         for (Class<Serv> s : injector.getInstance(Key.get(new TypeLiteral<Iterable<Class<Serv>>>() {
-        }))) count++;
+        })))
+            count++;
         assertEquals(2, count);
     }
 

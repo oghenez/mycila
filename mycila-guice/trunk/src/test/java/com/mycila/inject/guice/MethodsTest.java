@@ -22,7 +22,7 @@ import org.junit.runners.JUnit4;
 
 import java.lang.reflect.Method;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -57,14 +57,24 @@ public final class MethodsTest {
     }
 
     private static class AA {
-        private void test1(){}
-        void test2(){}
-        void test3(){}
+        private void test1() {
+        }
+
+        void test2() {
+        }
+
+        void test3() {
+        }
     }
 
-    private static class BB extends AA{
-        private void test1(){}
-        void test2(){}
-        void test4(){}
+    private static class BB extends AA {
+        private void test1() {
+        }
+
+        void test2() {
+        }
+
+        void test4() {
+        }
     }
 }

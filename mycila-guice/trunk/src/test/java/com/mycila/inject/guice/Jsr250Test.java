@@ -35,13 +35,14 @@ import javax.inject.Inject;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.mycila.inject.guice.BinderHelper.on;
 import static org.junit.Assert.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @RunWith(JUnit4.class)
-public final class LifecycleTest {
+public final class Jsr250Test {
 
     @Test
     public void test_inject_in_interceptor() throws Exception {
@@ -49,9 +50,8 @@ public final class LifecycleTest {
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
-                LifeCycle.install(binder());
-                BinderHelper helper = BinderHelper.on(binder());
-                helper.bindInterceptor(Matchers.subclassesOf(A.class), Matchers.any(), new MethodInterceptor() {
+                Jsr250.install(binder());
+                on(binder()).bindInterceptor(Matchers.subclassesOf(A.class), Matchers.any(), new MethodInterceptor() {
                     @Inject
                     Injector injector;
 
@@ -67,7 +67,7 @@ public final class LifecycleTest {
         B b = injector.getInstance(B.class);
         assertSame(b, injector.getInstance(B.class));
         b.intercept();
-        LifeCycle.getCloser(injector).close();
+        Jsr250.getCloser(injector).close();
         assertEquals("[1, 2, 3]", B.calls.toString());
     }
 
@@ -77,16 +77,16 @@ public final class LifecycleTest {
         Injector injector = Guice.createInjector(Stage.PRODUCTION, new AbstractModule() {
             @Override
             protected void configure() {
-                LifeCycle.install(binder());
-                bindScope(SoftSingleton.class, ExtraScopes.SOFT_SINGLETON);
+                Jsr250.install(binder());
+                bindScope(SoftSingleton.class, ExtraScope.SOFT_SINGLETON.get());
                 bind(C.class);
             }
         });
         injector.getInstance(C.class);
         injector.getInstance(B.class);
         assertEquals("[4, 1, 2]", B.calls.toString());
-        GuiceCloser closer = LifeCycle.getCloser(injector);
-        closer.register(ExtraScopes.SOFT_SINGLETON);
+        GuiceCloser closer = Jsr250.getCloser(injector);
+        closer.register(ExtraScope.SOFT_SINGLETON);
         closer.close();
         assertEquals("[4, 1, 2, 5, 3]", B.calls.toString());
     }

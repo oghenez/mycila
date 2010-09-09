@@ -310,7 +310,7 @@ public class AnnotationMetadata<T extends Annotation> {
         AccessibleObject.setAccessible(mm, true);
         for (Method method : mm) {
             String name = method.getName();
-            if(properties.containsKey(name))
+            if (properties.containsKey(name))
                 allProps.put(name, properties.get(name));
             else {
                 Object o = defaults.get(name);

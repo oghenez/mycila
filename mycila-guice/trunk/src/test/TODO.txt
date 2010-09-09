@@ -66,3 +66,8 @@ You could just as easily support:
  - asm CP scanner
 
  - OSGI
+
+ - jndi mocks
+
+ - cloaseable scope
+ 
