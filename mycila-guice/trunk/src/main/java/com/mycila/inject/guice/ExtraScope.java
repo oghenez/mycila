@@ -21,12 +21,15 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
+import com.google.inject.internal.CircularDependencyProxy;
+import com.google.inject.internal.InternalInjectorCreator;
 import com.mycila.inject.AnnotationMetadata;
+import com.mycila.inject.annotation.CloseableSingleton;
 import com.mycila.inject.annotation.ConcurrentSingleton;
 import com.mycila.inject.annotation.ExpiringSingleton;
 import com.mycila.inject.annotation.Expirity;
+import com.mycila.inject.annotation.Jsr250Destroyable;
 import com.mycila.inject.annotation.RenewableSingleton;
-import com.mycila.inject.annotation.SingletonMarker;
 import com.mycila.inject.annotation.SoftSingleton;
 import com.mycila.inject.annotation.WeakSingleton;
 
@@ -88,7 +91,7 @@ enum ExtraScope implements Provider<MappedScope> {
                         }
 
                         public String toString() {
-                            return String.format("%s[%s]", creator, SINGLETON);
+                            return String.format("%s[%s]", creator, CLOSEABLE_SINGLETON);
                         }
                     };
                 }
@@ -348,7 +351,7 @@ enum ExtraScope implements Provider<MappedScope> {
 
         private MycilaScope(Class<? extends Annotation> annotationScope) {
             this.annotationScope = annotationScope;
-            isSingleton = annotationScope.isAnnotationPresent(SingletonMarker.class);
+            isSingleton = annotationScope.isAnnotationPresent(Jsr250Destroyable.class);
         }
 
         @Override

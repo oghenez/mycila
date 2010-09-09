@@ -22,7 +22,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.Stage;
 import com.google.inject.matcher.Matchers;
-import com.mycila.inject.Closer;
+import com.mycila.inject.Jsr250Destroyer;
 import com.mycila.inject.annotation.SoftSingleton;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -68,7 +68,7 @@ public final class Jsr250Test {
         B b = injector.getInstance(B.class);
         assertSame(b, injector.getInstance(B.class));
         b.intercept();
-        injector.getInstance(Closer.class).close();
+        injector.getInstance(Jsr250Destroyer.class).preDestroy();
         assertEquals("[1, 2, 3]", B.calls.toString());
     }
 
@@ -86,7 +86,7 @@ public final class Jsr250Test {
         injector.getInstance(C.class);
         injector.getInstance(B.class);
         assertEquals("[4, 1, 2]", B.calls.toString());
-        injector.getInstance(Closer.class).close();
+        injector.getInstance(Jsr250Destroyer.class).preDestroy();
         assertEquals("[4, 1, 2, 5, 3]", B.calls.toString());
     }
 

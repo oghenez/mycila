@@ -70,4 +70,8 @@ You could just as easily support:
  - jndi mocks
 
  - cloaseable scope
+
+ - predestroy dans les scopes
+
+ - @Resource
  

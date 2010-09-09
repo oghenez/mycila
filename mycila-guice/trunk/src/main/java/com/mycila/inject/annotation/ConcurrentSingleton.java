@@ -34,7 +34,7 @@ import static java.lang.annotation.RetentionPolicy.*;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RUNTIME)
 @Scope
-@SingletonMarker
+@Jsr250Destroyable
 public @interface ConcurrentSingleton {
 
     @Retention(RUNTIME)

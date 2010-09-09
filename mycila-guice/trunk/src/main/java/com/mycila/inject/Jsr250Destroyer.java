@@ -19,6 +19,6 @@ package com.mycila.inject;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Closer {
-    void close();
+public interface Jsr250Destroyer {
+    void preDestroy();
 }

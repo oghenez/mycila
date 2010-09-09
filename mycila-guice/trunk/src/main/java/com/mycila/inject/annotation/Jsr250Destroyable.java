@@ -28,5 +28,5 @@ import static java.lang.annotation.RetentionPolicy.*;
 @Retention(RUNTIME)
 @Documented
 @Inherited
-public @interface SingletonMarker {
+public @interface Jsr250Destroyable {
 }
