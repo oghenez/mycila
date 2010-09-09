@@ -2,23 +2,21 @@
 
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>com.mycila</groupId>
+        <artifactId>parent-pom</artifactId>
+        <version>2</version>
+    </parent>
+
     <groupId>com.mycila</groupId>
     <artifactId>mycila-guice</artifactId>
     <version>2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>mycila-guice</name>
-    <description>Guice Contributions</description>
+    <name>Mycila Guice Extensions</name>
+    <description>Contributions to Guice Framework</description>
     <url>http://code.mycila.com/</url>
     <inceptionYear>2010</inceptionYear>
-
-    <prerequisites>
-        <maven>2.2.1</maven>
-    </prerequisites>
-
-    <properties>
-        <jdk.version>1.6</jdk.version>
-    </properties>
 
     <scm>
         <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-guice/trunk</connection>
@@ -26,145 +24,8 @@
         <url>http://mycila.googlecode.com/svn/mycila-guice/trunk</url>
     </scm>
 
-    <organization>
-        <name>Mathieu Carbou</name>
-        <url>http://mathieu.carbou.free.fr/</url>
-    </organization>
-
-    <licenses>
-        <license>
-            <name>The Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-
-    <developers>
-        <developer>
-            <id>mathieu.carbou</id>
-            <name>Mathieu Carbou</name>
-            <email>mathieu.carbou@gmail.com</email>
-            <organization>Mathieu Carbou</organization>
-            <organizationUrl>http://mathieu.carbou.free.fr/</organizationUrl>
-            <timezone>-5</timezone>
-            <roles>
-                <role>project administrator</role>
-                <role>developer</role>
-            </roles>
-        </developer>
-    </developers>
-
-    <issueManagement>
-        <system>Google Code</system>
-        <url>http://code.google.com/p/mycila/issues/list</url>
-    </issueManagement>
-
-    <ciManagement/>
-
-    <mailingLists>
-        <mailingList>
-            <name>mycila</name>
-            <subscribe>mycila-subscribe@googlegroups.com</subscribe>
-            <unsubscribe>mycila-unsubscribe@googlegroups.com</unsubscribe>
-            <archive>http://groups.google.com/group/mycila/</archive>
-        </mailingList>
-    </mailingLists>
-
-    <distributionManagement>
-        <repository>
-            <id>mc-release</id>
-            <name>Alternate Maven repository of releases</name>
-            <url>dav:https://mc-repo.googlecode.com/svn/maven2/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>mc-snapshot</id>
-            <name>Alternate Maven repository of snapshots</name>
-            <url>dav:https://mc-repo.googlecode.com/svn/maven2/snapshots</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-        <site>
-            <id>xmltool-website</id>
-            <name>xmltool website</name>
-            <url>file://${basedir}/target/dist/site</url>
-        </site>
-    </distributionManagement>
-
     <build>
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-webdav</artifactId>
-                <version>1.0-beta-2</version>
-            </extension>
-        </extensions>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.3.1</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.0</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>2.1.2</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.3.1</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.7</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.5</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-clean-plugin</artifactId>
-                    <version>2.4.1</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-invoker-plugin</artifactId>
-                    <version>1.5</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-shade-plugin</artifactId>
-                    <version>1.3.3</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.2-beta-5</version>
-                </plugin>
-                <plugin>
-                    <groupId>com.mycila.maven-license-plugin</groupId>
-                    <artifactId>maven-license-plugin</artifactId>
-                    <version>1.8.0</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>${jdk.version}</source>
-                    <target>${jdk.version}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>

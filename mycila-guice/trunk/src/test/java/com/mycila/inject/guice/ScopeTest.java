@@ -23,6 +23,7 @@ import com.google.inject.Key;
 import com.google.inject.util.Jsr330;
 import com.mycila.inject.annotation.Expirity;
 import com.mycila.inject.annotation.RenewableSingleton;
+import com.mycila.inject.annotation.SoftSingleton;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -31,6 +32,7 @@ import org.mockito.stubbing.Answer;
 
 import javax.inject.Provider;
 
+import static com.mycila.inject.guice.BinderHelper.on;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -39,6 +41,15 @@ import static org.mockito.Mockito.*;
  */
 @RunWith(JUnit4.class)
 public final class ScopeTest {
+
+    @Test
+    public void test_eq() throws Exception {
+        assertEquals(ExtraScope.EXPIRING_SINGLETON.get(), ExtraScope.EXPIRING_SINGLETON.get());
+        assertEquals(ExtraScope.EXPIRING_SINGLETON.get().hashCode(), ExtraScope.EXPIRING_SINGLETON.get().hashCode());
+
+        assertEquals(ExtraScope.EXPIRING_SINGLETON.get(SoftSingleton.class), ExtraScope.EXPIRING_SINGLETON.get(SoftSingleton.class));
+        assertEquals(ExtraScope.EXPIRING_SINGLETON.get(SoftSingleton.class).hashCode(), ExtraScope.EXPIRING_SINGLETON.get(SoftSingleton.class).hashCode());
+    }
 
     @Test
     public void test_expire() throws Exception {
@@ -52,7 +63,7 @@ public final class ScopeTest {
         Expirity annot = mock(Expirity.class);
         when(annot.value()).thenReturn(500l);
         doReturn(Expirity.class).when(annot).annotationType();
-        Provider<Object> provider = ExtraScopes.EXPIRING_SINGLETON.scope(Key.get(Object.class, annot), Jsr330.guicify(unscoped));
+        Provider<Object> provider = ExtraScope.EXPIRING_SINGLETON.get().scope(Key.get(Object.class, annot), Jsr330.guicify(unscoped));
 
         Object o = provider.get();
         assertNotNull(o);
@@ -73,7 +84,7 @@ public final class ScopeTest {
             }
         });
 
-        Provider<Object> provider = ExtraScopes.WEAK_SINGLETON.scope(null, Jsr330.guicify(unscoped));
+        Provider<Object> provider = ExtraScope.WEAK_SINGLETON.get().scope(null, Jsr330.guicify(unscoped));
 
         Object o = provider.get();
         int hash = o.hashCode();
@@ -103,7 +114,7 @@ public final class ScopeTest {
         Expirity annot = mock(Expirity.class);
         when(annot.value()).thenReturn(500l);
         doReturn(Expirity.class).when(annot).annotationType();
-        Provider<Object> provider = ExtraScopes.RENEWABLE_SINGLETON.scope(Key.get(Object.class, annot), Jsr330.guicify(unscoped));
+        Provider<Object> provider = ExtraScope.RENEWABLE_SINGLETON.get().scope(Key.get(Object.class, annot), Jsr330.guicify(unscoped));
 
         Object o = provider.get();
         assertNotNull(o);
@@ -116,16 +127,16 @@ public final class ScopeTest {
 
     @Test
     public void test_with_injector() throws Exception {
-        Expirity expirity1 = ExtraScopes.expirity(1);
-        Expirity expirity2 = ExtraScopes.expirity(1);
+        Expirity expirity1 = ExtraScope.expirity(1);
+        Expirity expirity2 = ExtraScope.expirity(1);
         assertEquals(expirity1, expirity2);
         assertEquals(expirity1.hashCode(), expirity2.hashCode());
 
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
-                ExtraScopes.installAll(binder());
-                bind(Object.class).annotatedWith(ExtraScopes.expirity(500)).toProvider(Jsr330.guicify(new Provider<Object>() {
+                on(binder()).bindScopes();
+                bind(Object.class).annotatedWith(ExtraScope.expirity(500)).toProvider(Jsr330.guicify(new Provider<Object>() {
                     @Override
                     public Object get() {
                         return new Object();
@@ -134,13 +145,13 @@ public final class ScopeTest {
             }
         });
 
-        Object o1 = injector.getInstance(Key.get(Object.class, ExtraScopes.expirity(500)));
+        Object o1 = injector.getInstance(Key.get(Object.class, ExtraScope.expirity(500)));
         assertNotNull(o1);
-        Object o2 = injector.getInstance(Key.get(Object.class, ExtraScopes.expirity(500)));
+        Object o2 = injector.getInstance(Key.get(Object.class, ExtraScope.expirity(500)));
         assertNotNull(o2);
         assertSame(o1, o2);
         Thread.sleep(600);
-        assertNotSame(o1, injector.getInstance(Key.get(Object.class, ExtraScopes.expirity(500))));
+        assertNotSame(o1, injector.getInstance(Key.get(Object.class, ExtraScope.expirity(500))));
     }
 
 }

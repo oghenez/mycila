@@ -17,7 +17,11 @@
 package com.mycila.inject.annotation;
 
 import javax.inject.Scope;
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * No scope
@@ -25,7 +29,7 @@ import java.lang.annotation.*;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Inherited
 @Scope
 public @interface WeakSingleton {

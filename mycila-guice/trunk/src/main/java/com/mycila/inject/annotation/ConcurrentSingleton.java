@@ -16,12 +16,14 @@
 
 package com.mycila.inject.annotation;
 
+import javax.inject.Qualifier;
 import javax.inject.Scope;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.RetentionPolicy.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Apply this to implementation classes when you want only one instance
@@ -33,4 +35,12 @@ import static java.lang.annotation.RetentionPolicy.*;
 @Retention(RUNTIME)
 @Scope
 public @interface ConcurrentSingleton {
+
+    @Retention(RUNTIME)
+    @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE})
+    @Inherited
+    @Qualifier
+    static @interface ThreadExpiration {
+    }
+
 }
