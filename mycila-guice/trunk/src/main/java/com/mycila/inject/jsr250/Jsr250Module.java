@@ -22,6 +22,7 @@ import com.google.inject.Module;
 import com.google.inject.Scope;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
+import com.google.inject.spi.BindingScopingVisitor;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
@@ -39,6 +40,7 @@ public final class Jsr250Module implements Module {
 
     private final Set<Scope> scopes = new HashSet<Scope>();
     private final Set<Class<? extends Annotation>> scopeAnnotations = new HashSet<Class<? extends Annotation>>();
+    private final BindingScopingVisitor<Boolean> visitor = Jsr250.destroyableVisitor(scopes, scopeAnnotations);
 
     @Override
     public void configure(Binder binder) {
@@ -59,7 +61,7 @@ public final class Jsr250Module implements Module {
 
             @Override
             public void preDestroy() {
-                for (Jsr250Element element : Jsr250.destroyables(injector, Jsr250.destroyableVisitor(scopes, scopeAnnotations))) {
+                for (Jsr250Element element : Jsr250.destroyables(injector, visitor)) {
                     element.preDestroy();
                 }
             }
