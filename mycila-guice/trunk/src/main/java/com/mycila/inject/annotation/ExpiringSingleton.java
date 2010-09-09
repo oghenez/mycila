@@ -31,5 +31,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 @Inherited
 @Scope
+@Jsr250Destroyable
 public @interface ExpiringSingleton {
 }
