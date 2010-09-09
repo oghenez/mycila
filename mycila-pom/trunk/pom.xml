@@ -4,7 +4,7 @@
 
     <groupId>com.mycila</groupId>
     <artifactId>parent-pom</artifactId>
-    <version>2</version>
+    <version>3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Parent POM</name>
@@ -16,9 +16,9 @@
     </properties>
 
     <scm>
-        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-pom/tags/parent-pom-2</connection>
-        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-pom/tags/parent-pom-2</developerConnection>
-        <url>http://mycila.googlecode.com/svn/mycila-pom/tags/parent-pom-2</url>
+        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-pom/trunk</connection>
+        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-pom/trunk</developerConnection>
+        <url>http://mycila.googlecode.com/svn/mycila-pom/trunk</url>
     </scm>
 
     <organization>
