@@ -21,20 +21,17 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
-import com.mycila.inject.annotation.ConcurrentSingleton;
-import com.mycila.inject.annotation.ExpiringSingleton;
-import com.mycila.inject.annotation.Expirity;
-import com.mycila.inject.annotation.Jsr250Destroyable;
-import com.mycila.inject.annotation.RenewableSingleton;
-import com.mycila.inject.annotation.SoftSingleton;
-import com.mycila.inject.annotation.WeakSingleton;
 import com.mycila.inject.jsr250.Jsr250;
+import com.mycila.inject.jsr250.Jsr250Destroyable;
+import com.mycila.inject.util.AnnotationMetadata;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -99,8 +96,12 @@ public enum ExtraScope implements Provider<MappedScope> {
         @Override
         public MappedScope get() {
             return new MycilaScope(ExpiringSingleton.class) {
+                boolean hasJSR250Module;
+
                 @Inject
-                Injector injector;
+                void init(final Injector injector) {
+                    hasJSR250Module = Jsr250.hasJSR250Module(injector);
+                }
 
                 @Override
                 public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
@@ -124,7 +125,8 @@ public enum ExtraScope implements Provider<MappedScope> {
                             if (instance != NULL && expirationTime < System.currentTimeMillis()) {
                                 T old = instance;
                                 instance = (T) NULL;
-                                Jsr250.preDestroy(old);
+                                if (hasJSR250Module)
+                                    Jsr250.preDestroy(old);
                             }
                             return instance == NULL ? null : instance;
                         }
@@ -142,6 +144,13 @@ public enum ExtraScope implements Provider<MappedScope> {
         @Override
         public MappedScope get() {
             return new MycilaScope(RenewableSingleton.class) {
+                boolean hasJSR250Module;
+
+                @Inject
+                void init(final Injector injector) {
+                    hasJSR250Module = Jsr250.hasJSR250Module(injector);
+                }
+
                 @Override
                 public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
                     Annotation annotation = key.getAnnotation();
@@ -157,7 +166,8 @@ public enum ExtraScope implements Provider<MappedScope> {
                                 synchronized (this) {
                                     if (expirationTime < System.currentTimeMillis()) {
                                         T old = instance;
-                                        Jsr250.preDestroy(old);
+                                        if (hasJSR250Module)
+                                            Jsr250.preDestroy(old);
                                         instance = creator.get();
                                         expirationTime = System.currentTimeMillis() + expirationDelay;
                                     }
@@ -282,6 +292,15 @@ public enum ExtraScope implements Provider<MappedScope> {
     }
 
     /* static */
+
+    /**
+     * Expiration time, in milliseconds
+     */
+    public static Expirity expirity(long value) {
+        Map<String, Object> properties = new LinkedHashMap<String, Object>();
+        properties.put("value", value);
+        return AnnotationMetadata.buildAnnotation(Expirity.class, properties);
+    }
 
     /* private */
 

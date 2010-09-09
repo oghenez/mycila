@@ -2,12 +2,12 @@ package com.mycila.inject.jsr250;
 
 import com.google.inject.Binding;
 import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.google.inject.ProvisionException;
 import com.google.inject.Scope;
 import com.google.inject.Scopes;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.BindingScopingVisitor;
-import com.mycila.inject.annotation.Jsr250Destroyable;
 import com.mycila.inject.scope.MappedScope;
 import com.mycila.inject.util.Methods;
 
@@ -95,6 +95,10 @@ public final class Jsr250 {
                     Jsr250.invoke(scope, javax.annotation.PreDestroy.class);
             }
         };
+    }
+
+    public static boolean hasJSR250Module(Injector injector) {
+        return injector.getBindings().containsKey(Key.get(Jsr250Destroyer.class));
     }
 
     public static void preDestroy(Object injectee) {

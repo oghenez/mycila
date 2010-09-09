@@ -168,6 +168,8 @@ public abstract class LegacyProvider<T> implements Provider<T> {
         public T get(Injector injector) {
             Object factory = Modifier.isStatic(method.getModifiers()) ? null : injector.getInstance(factoryKey);
             try {
+                if (!method.isAccessible())
+                    method.setAccessible(true);
                 return providedType.cast(method.invoke(factory, getParameterValues(injector)));
             } catch (IllegalAccessException e) {
                 throw new ProvisionException(e.getMessage(), e);
