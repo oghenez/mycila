@@ -54,6 +54,15 @@
         <url>http://code.mycila.com/issues/list</url>
     </issueManagement>
 
+    <mailingLists>
+        <mailingList>
+            <name>mycila</name>
+            <subscribe>mycila-subscribe@googlegroups.com</subscribe>
+            <unsubscribe>mycila-unsubscribe@googlegroups.com</unsubscribe>
+            <archive>http://groups.google.com/group/mycila/</archive>
+        </mailingList>
+    </mailingLists>
+
     <distributionManagement>
         <repository>
             <id>mc-release</id>
