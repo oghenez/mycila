@@ -16,7 +16,6 @@
 
 package com.mycila.inject.annotation;
 
-import javax.inject.Qualifier;
 import javax.inject.Scope;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -26,22 +25,11 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Apply this to implementation classes when you want only one instance
- * (per {@link com.google.inject.Injector}) to be reused for all injections for that binding,
- * and you want to eagerly create the instance concurrently in the background
- * with other singletons in this scope.
+ * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RUNTIME)
+@Inherited
 @Scope
-@SingletonMarker
-public @interface ConcurrentSingleton {
-
-    @Retention(RUNTIME)
-    @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE})
-    @Inherited
-    @Qualifier
-    static @interface ThreadExpiration {
-    }
-
+public @interface CloseableSingleton {
 }

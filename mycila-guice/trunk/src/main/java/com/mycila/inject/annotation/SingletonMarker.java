@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.guice;
+package com.mycila.inject.annotation;
 
-import com.google.inject.Scope;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
-import java.lang.annotation.Annotation;
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.*;
 
-/**
- * @author Mathieu Carbou (mathieu.carbou@gmail.com)
- */
-public interface ScopeWithAnnotation extends Scope {
-    Class<? extends Annotation> getScopeAnnotation();
+@Target({ANNOTATION_TYPE, TYPE})
+@Retention(RUNTIME)
+@Documented
+@Inherited
+public @interface SingletonMarker {
 }

@@ -17,7 +17,6 @@
 package com.mycila.inject.guice;
 
 import com.google.inject.Binder;
-import com.google.inject.Scope;
 import com.google.inject.matcher.Matcher;
 import org.aopalliance.intercept.MethodInterceptor;
 
@@ -42,26 +41,7 @@ public final class BinderHelper {
         return this;
     }
 
-    public BinderHelper bindScopes() {
-        return bindScopes(ExtraScope.values());
-    }
-
-    public BinderHelper bindScopes(ExtraScope... scopes) {
-        for (ExtraScope scope : scopes) {
-            Scope s = scope.get();
-            binder.requestInjection(s);
-            binder.bindScope(scope.annotationClass(), s);
-        }
-        return this;
-    }
-
-    public BinderHelper addJSR250() {
-        Jsr250.install(binder);
-        return this;
-    }
-
     public static BinderHelper on(Binder binder) {
         return new BinderHelper(binder);
     }
-
 }

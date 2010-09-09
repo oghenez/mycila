@@ -19,8 +19,10 @@ package com.mycila.inject.guice;
 import com.google.inject.Binder;
 import com.google.inject.Binding;
 import com.google.inject.Injector;
+import com.google.inject.Module;
 import com.google.inject.ProvisionException;
 import com.google.inject.Scope;
+import com.google.inject.Scopes;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.BindingScopingVisitor;
@@ -28,26 +30,28 @@ import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 import com.mycila.inject.Closer;
-import com.mycila.inject.annotation.ConcurrentSingleton;
+import com.mycila.inject.annotation.SingletonMarker;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class Jsr250 {
-    private Jsr250() {
-    }
+public final class Jsr250Module implements Module {
 
-    static void install(Binder binder) {
+    private final Set<Scope> scopes = new HashSet<Scope>();
+    private final Set<Class<? extends Annotation>> scopeAnnotations = new HashSet<Class<? extends Annotation>>();
+
+    @Override
+    public void configure(Binder binder) {
         binder.bindListener(Matchers.any(), new TypeListener() {
             @Override
             public <I> void hear(TypeLiteral<I> iTypeLiteral, TypeEncounter<I> encounter) {
@@ -65,15 +69,7 @@ final class Jsr250 {
 
             @Override
             public void close() {
-                final Set<Scope> scopesToCloseLocal = new HashSet<Scope>(this.scopesToClose);
-                final Set<Class<? extends Annotation>> scopeAnnotationToCloseLocal = new HashSet<Class<? extends Annotation>>(this.scopeAnnotationToClose);
-                for (Map.Entry<Class<? extends Annotation>, Scope> entry : injector.getScopeBindings().entrySet()) {
-                    if (scopeAnnotationToCloseLocal.contains(entry.getKey()))
-                        scopesToCloseLocal.add(entry.getValue());
-                    if (scopesToCloseLocal.contains(entry.getValue()))
-                        scopeAnnotationToCloseLocal.add(entry.getKey());
-                }
-                for (Binding<?> binding : injector.getAllBindings().values()) {
+                for (final Binding<?> binding : injector.getAllBindings().values()) {
                     Boolean res = binding.acceptScopingVisitor(new BindingScopingVisitor<Boolean>() {
                         @Override
                         public Boolean visitEagerSingleton() {
@@ -82,12 +78,17 @@ final class Jsr250 {
 
                         @Override
                         public Boolean visitScope(Scope scope) {
-                            return scopesToCloseLocal.contains(scope) ? true : null;
+                            return scope.equals(Scopes.SINGLETON)
+                                    || scope.getClass().isAnnotationPresent(SingletonMarker.class)
+                                    || scopes.contains(scope)
+                                    || scope instanceof MappedScope && ((MappedScope) scope).isSingleton();
                         }
 
                         @Override
                         public Boolean visitScopeAnnotation(Class<? extends Annotation> scopeAnnotation) {
-                            return scopeAnnotationToCloseLocal.contains(scopeAnnotation) ? true : null;
+                            return scopeAnnotation.equals(Singleton.class)
+                                    || scopeAnnotation.isAnnotationPresent(SingletonMarker.class)
+                                    || scopeAnnotations.contains(scopeAnnotation);
                         }
 
                         @Override
@@ -96,22 +97,25 @@ final class Jsr250 {
                         }
                     });
                     if (res != null && res)
-                        invoke(binding.getProvider().get(), annotationClass);
+                        invoke(binding.getProvider().get(), javax.annotation.PreDestroy.class);
                     for (Scope scope : injector.getScopeBindings().values()) {
-                        invoke(scope, annotationClass);
+                        invoke(scope, javax.annotation.PreDestroy.class);
                     }
                 }
             }
         };
         binder.bind(Closer.class).toInstance(closer);
         binder.requestInjection(closer);
+    }
 
-        GuiceCloser closer = createCloser(javax.annotation.PreDestroy.class);
-        closer.register(Singleton.class);
-        closer.register(ConcurrentSingleton.class);
+    public Jsr250Module addCloseableScopes(Scope... scopes) {
+        this.scopes.addAll(Arrays.asList(scopes));
+        return this;
+    }
 
-        binder.requestInjection(listener);
-
+    public Jsr250Module addCloseableScopes(Class<? extends Annotation>... scopeAnnotations) {
+        this.scopeAnnotations.addAll(Arrays.asList(scopeAnnotations));
+        return this;
     }
 
     private static void invoke(Object injectee, Class<? extends Annotation> annotationClass) {
