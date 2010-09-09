@@ -26,6 +26,7 @@ import com.mycila.inject.annotation.ConcurrentSingleton;
 import com.mycila.inject.annotation.ExpiringSingleton;
 import com.mycila.inject.annotation.Expirity;
 import com.mycila.inject.annotation.RenewableSingleton;
+import com.mycila.inject.annotation.SingletonMarker;
 import com.mycila.inject.annotation.SoftSingleton;
 import com.mycila.inject.annotation.WeakSingleton;
 
@@ -49,12 +50,56 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public enum ExtraScope implements Provider<ScopeWithAnnotation> {
+enum ExtraScope implements Provider<MappedScope> {
 
-    EXPIRING_SINGLETON(ExpiringSingleton.class) {
+    /*CLOSEABLE_SINGLETON {
         @Override
-        public ScopeWithAnnotation get(Class<? extends Annotation> scopeAnnotation) {
-            return new MycilaScope(scopeAnnotation) {
+        public MappedScope get() {
+            return new MycilaScope(CloseableSingleton.class) {
+                @Override
+                public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
+                    return new Provider<T>() {
+                        private volatile Object instance;
+                        public T get() {
+                            if (instance == null) {
+                                synchronized (InternalInjectorCreator.class) {
+                                    if (instance == null) {
+                                        T provided = creator.get();
+                                        if (provided instanceof CircularDependencyProxy) {
+                                            return provided;
+                                        }
+
+                                        Object providedOrSentinel = (provided == null) ? NULL : provided;
+                                        if (instance != null && instance != providedOrSentinel) {
+                                            throw new ProvisionException(
+                                                    "Provider was reentrant while creating a singleton");
+                                        }
+
+                                        instance = providedOrSentinel;
+                                    }
+                                }
+                            }
+
+                            Object localInstance = instance;
+                            // This is safe because instance has type T or is equal to NULL
+                            @SuppressWarnings("unchecked")
+                            T returnedInstance = (localInstance != NULL) ? (T) localInstance : null;
+                            return returnedInstance;
+                        }
+
+                        public String toString() {
+                            return String.format("%s[%s]", creator, SINGLETON);
+                        }
+                    };
+                }
+            };
+        }
+    },*/
+
+    EXPIRING_SINGLETON {
+        @Override
+        public MappedScope get() {
+            return new MycilaScope(ExpiringSingleton.class) {
                 @Override
                 public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
                     Annotation annotation = key.getAnnotation();
@@ -88,10 +133,10 @@ public enum ExtraScope implements Provider<ScopeWithAnnotation> {
         }
     },
 
-    RENEWABLE_SINGLETON(RenewableSingleton.class) {
+    RENEWABLE_SINGLETON {
         @Override
-        public ScopeWithAnnotation get(Class<? extends Annotation> scopeAnnotation) {
-            return new MycilaScope(scopeAnnotation) {
+        public MappedScope get() {
+            return new MycilaScope(RenewableSingleton.class) {
                 @Override
                 public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
                     Annotation annotation = key.getAnnotation();
@@ -123,10 +168,10 @@ public enum ExtraScope implements Provider<ScopeWithAnnotation> {
         }
     },
 
-    WEAK_SINGLETON(WeakSingleton.class) {
+    WEAK_SINGLETON {
         @Override
-        public ScopeWithAnnotation get(Class<? extends Annotation> scopeAnnotation) {
-            return new RefScope(scopeAnnotation) {
+        public MappedScope get() {
+            return new RefScope(WeakSingleton.class) {
                 @Override
                 protected <T> Reference<T> build(T instance) {
                     return new WeakReference<T>(instance);
@@ -135,10 +180,10 @@ public enum ExtraScope implements Provider<ScopeWithAnnotation> {
         }
     },
 
-    SOFT_SINGLETON(SoftSingleton.class) {
+    SOFT_SINGLETON {
         @Override
-        public ScopeWithAnnotation get(Class<? extends Annotation> scopeAnnotation) {
-            return new RefScope(scopeAnnotation) {
+        public MappedScope get() {
+            return new RefScope(SoftSingleton.class) {
                 @Override
                 protected <T> Reference<T> build(T instance) {
                     return new WeakReference<T>(instance);
@@ -147,10 +192,10 @@ public enum ExtraScope implements Provider<ScopeWithAnnotation> {
         }
     },
 
-    CONCURRENT_SINGLETON(ConcurrentSingleton.class) {
+    CONCURRENT_SINGLETON {
         @Override
-        public ScopeWithAnnotation get(Class<? extends Annotation> scopeAnnotation) {
-            return new MycilaScope(scopeAnnotation) {
+        public MappedScope get() {
+            return new MycilaScope(ConcurrentSingleton.class) {
                 private final FutureInjector futureInjector = new FutureInjector();
                 private final Executor executor = new ThreadPoolExecutor(
                         0, Runtime.getRuntime().availableProcessors() * 10,
@@ -219,27 +264,10 @@ public enum ExtraScope implements Provider<ScopeWithAnnotation> {
 
     /* scope class */
 
-    private final Class<? extends Annotation> defaultAnnotation;
-
-    private ExtraScope(Class<? extends Annotation> defaultAnnotation) {
-        this.defaultAnnotation = defaultAnnotation;
-    }
-
-    public final Class<? extends Annotation> annotationClass() {
-        return defaultAnnotation;
-    }
-
-    @Override
-    public final ScopeWithAnnotation get() {
-        return get(annotationClass());
-    }
-
     @Override
     public final String toString() {
         return ExtraScope.class.getSimpleName() + '.' + name();
     }
-
-    abstract ScopeWithAnnotation get(Class<? extends Annotation> scopeAnnotation);
 
     /* static */
 
@@ -314,11 +342,13 @@ public enum ExtraScope implements Provider<ScopeWithAnnotation> {
         protected abstract <T> Reference<T> build(T instance);
     }
 
-    private static abstract class MycilaScope implements ScopeWithAnnotation {
+    private static abstract class MycilaScope implements MappedScope {
         private final Class<? extends Annotation> annotationScope;
+        private final boolean isSingleton;
 
         private MycilaScope(Class<? extends Annotation> annotationScope) {
             this.annotationScope = annotationScope;
+            isSingleton = annotationScope.isAnnotationPresent(SingletonMarker.class);
         }
 
         @Override
@@ -342,6 +372,11 @@ public enum ExtraScope implements Provider<ScopeWithAnnotation> {
         @Override
         public final int hashCode() {
             return annotationScope.hashCode() + 31 * getClass().hashCode();
+        }
+
+        @Override
+        public final boolean isSingleton() {
+            return isSingleton;
         }
     }
 

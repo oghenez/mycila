@@ -22,6 +22,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.Stage;
 import com.google.inject.matcher.Matchers;
+import com.mycila.inject.Closer;
 import com.mycila.inject.annotation.SoftSingleton;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -35,7 +36,7 @@ import javax.inject.Inject;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.mycila.inject.guice.BinderHelper.on;
+import static com.mycila.inject.guice.BinderHelper.*;
 import static org.junit.Assert.*;
 
 /**
@@ -50,7 +51,7 @@ public final class Jsr250Test {
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
-                Jsr250.install(binder());
+                install(new Jsr250Module());
                 on(binder()).bindInterceptor(Matchers.subclassesOf(A.class), Matchers.any(), new MethodInterceptor() {
                     @Inject
                     Injector injector;
@@ -67,7 +68,7 @@ public final class Jsr250Test {
         B b = injector.getInstance(B.class);
         assertSame(b, injector.getInstance(B.class));
         b.intercept();
-        Jsr250.getCloser(injector).close();
+        injector.getInstance(Closer.class).close();
         assertEquals("[1, 2, 3]", B.calls.toString());
     }
 
@@ -77,7 +78,7 @@ public final class Jsr250Test {
         Injector injector = Guice.createInjector(Stage.PRODUCTION, new AbstractModule() {
             @Override
             protected void configure() {
-                Jsr250.install(binder());
+                install(new Jsr250Module().addCloseableScopes(ExtraScope.SOFT_SINGLETON.get()));
                 bindScope(SoftSingleton.class, ExtraScope.SOFT_SINGLETON.get());
                 bind(C.class);
             }
@@ -85,9 +86,7 @@ public final class Jsr250Test {
         injector.getInstance(C.class);
         injector.getInstance(B.class);
         assertEquals("[4, 1, 2]", B.calls.toString());
-        GuiceCloser closer = Jsr250.getCloser(injector);
-        closer.register(ExtraScope.SOFT_SINGLETON);
-        closer.close();
+        injector.getInstance(Closer.class).close();
         assertEquals("[4, 1, 2, 5, 3]", B.calls.toString());
     }
 
