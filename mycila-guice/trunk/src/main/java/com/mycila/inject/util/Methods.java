@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.guice;
+package com.mycila.inject.util;
 
 import com.google.inject.internal.cglib.core.ReflectUtils;
 import com.google.inject.internal.cglib.core.Signature;
@@ -31,7 +31,7 @@ import java.util.Map;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class Methods {
+public final class Methods {
 
     public static final Matcher<Method> METHOD_WITHOUT_PARAMETER = new AbstractMatcher<Method>() {
         @Override

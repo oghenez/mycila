@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.guice;
+package com.mycila.inject.service;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
-import com.mycila.inject.DefaultLoader;
-import com.mycila.inject.Loader;
-import com.mycila.inject.ServiceClassLoader;
+import com.mycila.inject.util.DefaultLoader;
+import com.mycila.inject.util.Loader;
 
 import javax.inject.Inject;
 import java.lang.annotation.Annotation;

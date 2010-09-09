@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.guice;
+package com.mycila.inject.reflect;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
+import com.mycila.inject.util.Methods;
 
 import javax.inject.Inject;
 import java.lang.reflect.Constructor;

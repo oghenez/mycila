@@ -22,8 +22,10 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.Stage;
 import com.google.inject.matcher.Matchers;
-import com.mycila.inject.Jsr250Destroyer;
 import com.mycila.inject.annotation.SoftSingleton;
+import com.mycila.inject.jsr250.Jsr250Destroyer;
+import com.mycila.inject.jsr250.Jsr250Module;
+import com.mycila.inject.scope.ExtraScope;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Test;
@@ -36,7 +38,7 @@ import javax.inject.Inject;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.mycila.inject.guice.BinderHelper.*;
+import static com.mycila.inject.util.BinderHelper.*;
 import static org.junit.Assert.*;
 
 /**

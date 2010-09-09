@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package com.mycila.inject;
+package com.mycila.inject.service;
+
+import com.mycila.inject.util.DefaultLoader;
+import com.mycila.inject.util.Loader;
 
 import java.io.BufferedReader;
 import java.io.IOException;

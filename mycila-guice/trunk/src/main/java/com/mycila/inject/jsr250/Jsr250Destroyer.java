@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.inject;
+package com.mycila.inject.jsr250;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

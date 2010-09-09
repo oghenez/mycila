@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.guice;
+package com.mycila.inject;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
+import com.mycila.inject.jsr250.Jsr250Module;
+import com.mycila.inject.scope.ExtraScopeModule;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

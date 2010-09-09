@@ -21,8 +21,11 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.util.Jsr330;
+import com.mycila.inject.annotation.Annotations;
 import com.mycila.inject.annotation.Expirity;
 import com.mycila.inject.annotation.RenewableSingleton;
+import com.mycila.inject.scope.ExtraScope;
+import com.mycila.inject.scope.ExtraScopeModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -116,8 +119,8 @@ public final class ScopeTest {
 
     @Test
     public void test_with_injector() throws Exception {
-        Expirity expirity1 = ExtraScope.expirity(1);
-        Expirity expirity2 = ExtraScope.expirity(1);
+        Expirity expirity1 = Annotations.expirity(1);
+        Expirity expirity2 = Annotations.expirity(1);
         assertEquals(expirity1, expirity2);
         assertEquals(expirity1.hashCode(), expirity2.hashCode());
 
@@ -125,7 +128,7 @@ public final class ScopeTest {
             @Override
             protected void configure() {
                 install(new ExtraScopeModule());
-                bind(Object.class).annotatedWith(ExtraScope.expirity(500)).toProvider(Jsr330.guicify(new Provider<Object>() {
+                bind(Object.class).annotatedWith(Annotations.expirity(500)).toProvider(Jsr330.guicify(new Provider<Object>() {
                     @Override
                     public Object get() {
                         return new Object();
@@ -134,13 +137,13 @@ public final class ScopeTest {
             }
         });
 
-        Object o1 = injector.getInstance(Key.get(Object.class, ExtraScope.expirity(500)));
+        Object o1 = injector.getInstance(Key.get(Object.class, Annotations.expirity(500)));
         assertNotNull(o1);
-        Object o2 = injector.getInstance(Key.get(Object.class, ExtraScope.expirity(500)));
+        Object o2 = injector.getInstance(Key.get(Object.class, Annotations.expirity(500)));
         assertNotNull(o2);
         assertSame(o1, o2);
         Thread.sleep(600);
-        assertNotSame(o1, injector.getInstance(Key.get(Object.class, ExtraScope.expirity(500))));
+        assertNotSame(o1, injector.getInstance(Key.get(Object.class, Annotations.expirity(500))));
     }
 
 }

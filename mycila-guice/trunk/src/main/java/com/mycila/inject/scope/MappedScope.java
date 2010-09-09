@@ -14,27 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.guice;
+package com.mycila.inject.scope;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.mycila.inject.service.ServiceLoaderModule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+import com.google.inject.Scope;
 
-import static org.junit.Assert.*;
+import java.lang.annotation.Annotation;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@RunWith(JUnit4.class)
-public final class ServiceLoaderModuleTest {
+public interface MappedScope extends Scope {
+    Class<? extends Annotation> getScopeAnnotation();
 
-    @Test
-    public void test() throws Exception {
-        Injector injector = Guice.createInjector(ServiceLoaderModule.of(Serv.class));
-        assertEquals(2, injector.getInstance(Serv[].class).length);
-    }
-
+    boolean isSingleton();
 }

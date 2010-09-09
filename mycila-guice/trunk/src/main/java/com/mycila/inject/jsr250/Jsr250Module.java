@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.guice;
+package com.mycila.inject.jsr250;
 
 import com.google.inject.Binder;
 import com.google.inject.Injector;
@@ -25,7 +25,6 @@ import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
-import com.mycila.inject.Jsr250Destroyer;
 
 import javax.inject.Inject;
 import java.lang.annotation.Annotation;
@@ -60,7 +59,7 @@ public final class Jsr250Module implements Module {
 
             @Override
             public void preDestroy() {
-                for (Jsr250DestroyableElement element : Jsr250.destroyables(injector, Jsr250.destroyableVisitor(scopes, scopeAnnotations))) {
+                for (Jsr250Element element : Jsr250.destroyables(injector, Jsr250.destroyableVisitor(scopes, scopeAnnotations))) {
                     element.preDestroy();
                 }
             }

@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.guice;
+package com.mycila.inject.scope;
 
-import com.google.inject.Scope;
-
-import java.lang.annotation.Annotation;
+import com.google.inject.Binder;
+import com.google.inject.Module;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-interface MappedScope extends Scope {
-    Class<? extends Annotation> getScopeAnnotation();
-
-    boolean isSingleton();
+public final class ExtraScopeModule implements Module {
+    @Override
+    public void configure(Binder binder) {
+        for (ExtraScope scope : ExtraScope.values()) {
+            MappedScope s = scope.get();
+            binder.requestInjection(s);
+            binder.bindScope(s.getScopeAnnotation(), s);
+        }
+    }
 }
