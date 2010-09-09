@@ -1,4 +1,4 @@
-package com.mycila.inject.guice;
+package com.mycila.inject.jsr250;
 
 import com.google.inject.Binding;
 import com.google.inject.Injector;
@@ -8,6 +8,8 @@ import com.google.inject.Scopes;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.BindingScopingVisitor;
 import com.mycila.inject.annotation.Jsr250Destroyable;
+import com.mycila.inject.scope.MappedScope;
+import com.mycila.inject.util.Methods;
 
 import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
@@ -21,7 +23,7 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class Jsr250 {
+public final class Jsr250 {
     private Jsr250() {
     }
 
@@ -56,8 +58,8 @@ final class Jsr250 {
         };
     }
 
-    static Iterable<Jsr250DestroyableElement> destroyables(Injector injector, BindingScopingVisitor<Boolean> visitor) {
-        List<Jsr250DestroyableElement> elements = new LinkedList<Jsr250DestroyableElement>();
+    static Iterable<Jsr250Element> destroyables(Injector injector, BindingScopingVisitor<Boolean> visitor) {
+        List<Jsr250Element> elements = new LinkedList<Jsr250Element>();
         for (Binding<?> binding : injector.getAllBindings().values()) {
             elements.add(destroyable(binding, visitor));
         }
@@ -67,12 +69,12 @@ final class Jsr250 {
         return elements;
     }
 
-    static Jsr250DestroyableElement destroyable(final Binding<?> binding) {
+    static Jsr250Element destroyable(final Binding<?> binding) {
         return destroyable(binding, DEFAULT_VISITOR);
     }
 
-    static Jsr250DestroyableElement destroyable(final Binding<?> binding, final BindingScopingVisitor<Boolean> visitor) {
-        return new Jsr250DestroyableElement() {
+    static Jsr250Element destroyable(final Binding<?> binding, final BindingScopingVisitor<Boolean> visitor) {
+        return new Jsr250Element() {
             @Override
             public void preDestroy() {
                 Boolean res = binding.acceptScopingVisitor(visitor);
@@ -85,14 +87,18 @@ final class Jsr250 {
         };
     }
 
-    static Jsr250DestroyableElement destroyable(final Scope scope) {
-        return new Jsr250DestroyableElement() {
+    static Jsr250Element destroyable(final Scope scope) {
+        return new Jsr250Element() {
             @Override
             public void preDestroy() {
                 if (scope != null)
                     Jsr250.invoke(scope, javax.annotation.PreDestroy.class);
             }
         };
+    }
+
+    public static void preDestroy(Object injectee) {
+        invoke(injectee, javax.annotation.PreDestroy.class);
     }
 
     static void invoke(Object injectee, Class<? extends Annotation> annotationClass) {

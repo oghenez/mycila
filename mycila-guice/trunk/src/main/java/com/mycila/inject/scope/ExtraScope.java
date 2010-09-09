@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.guice;
+package com.mycila.inject.scope;
 
 import com.google.inject.Binding;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
-import com.google.inject.internal.CircularDependencyProxy;
-import com.google.inject.internal.InternalInjectorCreator;
-import com.mycila.inject.AnnotationMetadata;
-import com.mycila.inject.annotation.CloseableSingleton;
 import com.mycila.inject.annotation.ConcurrentSingleton;
 import com.mycila.inject.annotation.ExpiringSingleton;
 import com.mycila.inject.annotation.Expirity;
@@ -32,17 +28,17 @@ import com.mycila.inject.annotation.Jsr250Destroyable;
 import com.mycila.inject.annotation.RenewableSingleton;
 import com.mycila.inject.annotation.SoftSingleton;
 import com.mycila.inject.annotation.WeakSingleton;
+import com.mycila.inject.jsr250.Jsr250;
 
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
@@ -53,7 +49,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-enum ExtraScope implements Provider<MappedScope> {
+public enum ExtraScope implements Provider<MappedScope> {
 
     /*CLOSEABLE_SINGLETON {
         @Override
@@ -103,6 +99,9 @@ enum ExtraScope implements Provider<MappedScope> {
         @Override
         public MappedScope get() {
             return new MycilaScope(ExpiringSingleton.class) {
+                @Inject
+                Injector injector;
+
                 @Override
                 public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
                     Annotation annotation = key.getAnnotation();
@@ -122,8 +121,11 @@ enum ExtraScope implements Provider<MappedScope> {
                                     }
                                 }
                             }
-                            if (instance != NULL && expirationTime < System.currentTimeMillis())
+                            if (instance != NULL && expirationTime < System.currentTimeMillis()) {
+                                T old = instance;
                                 instance = (T) NULL;
+                                Jsr250.preDestroy(old);
+                            }
                             return instance == NULL ? null : instance;
                         }
 
@@ -154,6 +156,8 @@ enum ExtraScope implements Provider<MappedScope> {
                             if (expirationTime < System.currentTimeMillis()) {
                                 synchronized (this) {
                                     if (expirationTime < System.currentTimeMillis()) {
+                                        T old = instance;
+                                        Jsr250.preDestroy(old);
                                         instance = creator.get();
                                         expirationTime = System.currentTimeMillis() + expirationDelay;
                                     }
@@ -200,7 +204,7 @@ enum ExtraScope implements Provider<MappedScope> {
         public MappedScope get() {
             return new MycilaScope(ConcurrentSingleton.class) {
                 private final FutureInjector futureInjector = new FutureInjector();
-                private final Executor executor = new ThreadPoolExecutor(
+                private final ExecutorService executor = new ThreadPoolExecutor(
                         0, Runtime.getRuntime().availableProcessors() * 10,
                         5, TimeUnit.SECONDS,
                         new SynchronousQueue<Runnable>(),
@@ -216,6 +220,11 @@ enum ExtraScope implements Provider<MappedScope> {
                     Binding<Long> b = (Binding<Long>) injector.getBindings().get(Key.get(long.class, ConcurrentSingleton.ThreadExpiration.class));
                     if (b != null)
                         expirity = TimeUnit.MILLISECONDS.toNanos(b.getProvider().get());
+                }
+
+                @PreDestroy
+                public void shutdown() {
+                    executor.shutdown();
                 }
 
                 @Override
@@ -273,15 +282,6 @@ enum ExtraScope implements Provider<MappedScope> {
     }
 
     /* static */
-
-    /**
-     * Expiration time, in milliseconds
-     */
-    public static Expirity expirity(long value) {
-        Map<String, Object> properties = new LinkedHashMap<String, Object>();
-        properties.put("value", value);
-        return AnnotationMetadata.buildAnnotation(Expirity.class, properties);
-    }
 
     /* private */
 

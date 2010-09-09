@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.inject;
+package com.mycila.inject.util;
 
 import java.net.URL;
 import java.util.List;

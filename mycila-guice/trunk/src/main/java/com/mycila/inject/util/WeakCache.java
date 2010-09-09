@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.guice;
+package com.mycila.inject.util;
 
 import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;

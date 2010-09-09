@@ -1,11 +1,11 @@
 /**
- * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mathieu Carbou <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.guice;
+package com.mycila.inject.annotation;
 
-import com.google.inject.Binder;
-import com.google.inject.Module;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ExtraScopeModule implements Module {
-    @Override
-    public void configure(Binder binder) {
-        for (ExtraScope scope : ExtraScope.values()) {
-            MappedScope s = scope.get();
-            binder.requestInjection(s);
-            binder.bindScope(s.getScopeAnnotation(), s);
-        }
+public class Annotations {
+
+    private Annotations() {
     }
+
+    /**
+     * Expiration time, in milliseconds
+     */
+    public static Expirity expirity(long value) {
+        Map<String, Object> properties = new LinkedHashMap<String, Object>();
+        properties.put("value", value);
+        return AnnotationMetadata.buildAnnotation(Expirity.class, properties);
+    }
+
 }

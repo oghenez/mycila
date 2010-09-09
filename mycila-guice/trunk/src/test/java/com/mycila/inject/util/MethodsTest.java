@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.guice;
+package com.mycila.inject.util;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,7 +22,7 @@ import org.junit.runners.JUnit4;
 
 import java.lang.reflect.Method;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
