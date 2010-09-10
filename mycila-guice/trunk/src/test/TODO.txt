@@ -53,9 +53,7 @@ You could just as easily support:
 
  - jndi mocks
 
- - cloaseable scope
-
- - predestroy dans les scopes
+ - cloaseable scope A TESTER
 
  - @Resource
  

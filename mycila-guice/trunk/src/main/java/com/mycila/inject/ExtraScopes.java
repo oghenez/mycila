@@ -24,12 +24,17 @@ import com.google.inject.ProvisionException;
 import com.google.inject.Scope;
 import com.mycila.inject.jsr250.Jsr250;
 import com.mycila.inject.jsr250.Jsr250Singleton;
+import com.mycila.inject.scope.ResetScope;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -40,6 +45,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -52,50 +59,6 @@ final class ExtraScopes {
     public static Scope[] values() {
         return new Scope[]{concurrentSingleton(), softSingleton(), weakSingleton()};
     }
-
-    /*CLOSEABLE_SINGLETON {
-        @Override
-        public MappedScope get() {
-            return new MycilaScope(CloseableSingleton.class) {
-                @Override
-                public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
-                    return new Provider<T>() {
-                        private volatile Object instance;
-                        public T get() {
-                            if (instance == null) {
-                                synchronized (InternalInjectorCreator.class) {
-                                    if (instance == null) {
-                                        T provided = creator.get();
-                                        if (provided instanceof CircularDependencyProxy) {
-                                            return provided;
-                                        }
-
-                                        Object providedOrSentinel = (provided == null) ? NULL : provided;
-                                        if (instance != null && instance != providedOrSentinel) {
-                                            throw new ProvisionException(
-                                                    "Provider was reentrant while creating a singleton");
-                                        }
-
-                                        instance = providedOrSentinel;
-                                    }
-                                }
-                            }
-
-                            Object localInstance = instance;
-                            // This is safe because instance has type T or is equal to NULL
-                            @SuppressWarnings("unchecked")
-                            T returnedInstance = (localInstance != NULL) ? (T) localInstance : null;
-                            return returnedInstance;
-                        }
-
-                        public String toString() {
-                            return String.format("%s[%s]", creator, CLOSEABLE_SINGLETON);
-                        }
-                    };
-                }
-            };
-        }
-    },*/
 
     public static Scope expiringSingleton(final long expirity, final TimeUnit unit) {
         return new ExpiringSingleton(unit.toMillis(expirity));
@@ -119,6 +82,10 @@ final class ExtraScopes {
 
     public static Scope concurrentSingleton(final long expirity, final TimeUnit unit) {
         return new ConcurrentSingleton(unit.toMillis(expirity));
+    }
+
+    public static ResetScope resetSingleton() {
+        return new ResetSingleton();
     }
 
     /* private */
@@ -226,6 +193,7 @@ final class ExtraScopes {
                 private volatile T instance;
                 private volatile long expirationTime;
 
+                @Override
                 public T get() {
                     if (expirationTime < System.currentTimeMillis()) {
                         synchronized (this) {
@@ -241,6 +209,7 @@ final class ExtraScopes {
                     return instance;
                 }
 
+                @Override
                 public String toString() {
                     return String.format("%s[%s]", creator, RenewableSingleton.this);
                 }
@@ -259,9 +228,10 @@ final class ExtraScopes {
         @Override
         public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
             return new Provider<T>() {
-                private volatile T instance;
+                private volatile Object instance;
                 private volatile long expirationTime;
 
+                @Override
                 public T get() {
                     if (instance == null) {
                         synchronized (this) {
@@ -272,16 +242,78 @@ final class ExtraScopes {
                         }
                     }
                     if (instance != NULL && expirationTime < System.currentTimeMillis()) {
-                        T old = instance;
-                        instance = (T) NULL;
+                        Object old = instance;
+                        instance = NULL;
                         if (hasJSR250Module)
                             Jsr250.preDestroy(old);
                     }
-                    return instance == NULL ? null : instance;
+                    return instance == NULL ? null : (T) instance;
                 }
 
+                @Override
                 public String toString() {
                     return String.format("%s[%s]", creator, ExpiringSingleton.this);
+                }
+            };
+        }
+    }
+
+    @Jsr250Singleton
+    private static final class ResetSingleton extends MycilaScope implements ResetScope {
+        private final Map<Key<?>, Object> map = new HashMap<Key<?>, Object>();
+        private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+        private final Lock r = lock.readLock();
+        private final Lock w = lock.writeLock();
+
+        @Override
+        public void reset() {
+            List<?> singletons = new ArrayList<Object>();
+            try {
+                w.lock();
+                if (hasJSR250Module) {
+                    singletons.addAll(map.values());
+                }
+                map.clear();
+            } finally {
+                w.unlock();
+            }
+            for (Object singleton : singletons) {
+                Jsr250.preDestroy(singleton);
+            }
+        }
+
+        @PreDestroy
+        public void shutdown() {
+            map.clear();
+        }
+
+        @Override
+        public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
+            return new Provider<T>() {
+                public T get() {
+                    Object t;
+                    try {
+                        r.lock();
+                        t = map.get(key);
+                    } finally {
+                        r.unlock();
+                    }
+                    if (t == null) {
+                        try {
+                            w.lock();
+                            t = creator.get();
+                            t = t == null ? NULL : t;
+                            map.put(key, t);
+                        } finally {
+                            w.unlock();
+                        }
+                    }
+                    return t == NULL ? null : (T) t;
+                }
+
+                @Override
+                public String toString() {
+                    return String.format("%s[%s]", creator, ResetSingleton.this);
                 }
             };
         }
@@ -293,6 +325,7 @@ final class ExtraScopes {
             return new Provider<T>() {
                 private volatile Reference<T> ref;
 
+                @Override
                 public T get() {
                     return ref == null ? newRef(creator) : fromRef(creator);
                 }
@@ -310,6 +343,7 @@ final class ExtraScopes {
                     return instance;
                 }
 
+                @Override
                 public String toString() {
                     return String.format("%s[%s]", creator, RefScope.this);
                 }

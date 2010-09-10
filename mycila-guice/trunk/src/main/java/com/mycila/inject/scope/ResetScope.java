@@ -16,22 +16,11 @@
 
 package com.mycila.inject.scope;
 
-import com.google.inject.Binder;
-import com.google.inject.Module;
-
-import java.util.concurrent.TimeUnit;
-
-import static com.mycila.inject.BinderHelper.*;
+import com.google.inject.Scope;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ExtraScopeModule implements Module {
-    @Override
-    public void configure(Binder binder) {
-        binder.bindScope(ConcurrentSingleton.class, in(binder).concurrentSingleton(20, TimeUnit.SECONDS));
-        binder.bindScope(WeakSingleton.class, in(binder).weakSingleton());
-        binder.bindScope(SoftSingleton.class, in(binder).softSingleton());
-        binder.bindScope(ResetSingleton.class, in(binder).resetSingleton());
-    }
+public interface ResetScope extends Scope {
+    void reset();
 }

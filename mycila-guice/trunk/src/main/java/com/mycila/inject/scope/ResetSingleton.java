@@ -34,5 +34,5 @@ import static java.lang.annotation.RetentionPolicy.*;
 @Inherited
 @Scope
 @Jsr250Singleton
-public @interface CloseableSingleton {
+public @interface ResetSingleton {
 }
