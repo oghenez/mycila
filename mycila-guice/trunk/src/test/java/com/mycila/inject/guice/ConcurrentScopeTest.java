@@ -17,11 +17,9 @@
 package com.mycila.inject.guice;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import com.google.inject.Stage;
-import com.mycila.inject.jsr250.Jsr250Destroyer;
-import com.mycila.inject.jsr250.Jsr250Module;
+import com.mycila.inject.jsr250.Jsr250;
+import com.mycila.inject.jsr250.Jsr250Injector;
 import com.mycila.inject.scope.ConcurrentSingleton;
 import com.mycila.inject.scope.ExtraScopeModule;
 import org.junit.Test;
@@ -43,7 +41,7 @@ public final class ConcurrentScopeTest {
     @Test
     public void test_concurrent() throws Exception {
         long start = System.currentTimeMillis();
-        Injector injector = Guice.createInjector(Stage.DEVELOPMENT, new ExtraScopeModule(), new Jsr250Module(), new AbstractModule() {
+        Jsr250Injector injector = Jsr250.createInjector(Stage.DEVELOPMENT, new ExtraScopeModule(), new AbstractModule() {
             public void configure() {
                 bind(C.class);
                 bind(D.class);
@@ -51,7 +49,7 @@ public final class ConcurrentScopeTest {
         });
         injector.getInstance(A.class);
         long elapsed = System.currentTimeMillis() - start;
-        injector.getInstance(Jsr250Destroyer.class).preDestroy();
+        injector.destroy();
         System.out.printf("Completed in %d ms%n", elapsed);
         assertTrue(elapsed < 5000);
     }

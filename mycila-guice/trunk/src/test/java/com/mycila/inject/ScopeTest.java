@@ -22,6 +22,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.util.Jsr330;
 import com.mycila.inject.scope.RenewableSingleton;
+import com.mycila.inject.scope.ResetScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -30,6 +31,7 @@ import org.mockito.stubbing.Answer;
 
 import javax.inject.Provider;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.mycila.inject.BinderHelper.*;
 import static org.junit.Assert.*;
@@ -43,7 +45,27 @@ public final class ScopeTest {
 
     @Test
     public void test_reset_singleton() throws Exception {
-        //TODO
+        final AtomicInteger counter = new AtomicInteger();
+        Provider<Object> unscoped = mock(Provider.class);
+        when(unscoped.get()).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                counter.incrementAndGet();
+                return new Object();
+            }
+        });
+        ResetScope scope = ExtraScopes.resetSingleton();
+        Provider<Object> provider = scope.scope(Key.get(Object.class), Jsr330.guicify(unscoped));
+        assertEquals(0, counter.get());
+        provider.get();
+        assertEquals(1, counter.get());
+        provider.get();
+        assertEquals(1, counter.get());
+        scope.reset();
+        provider.get();
+        assertEquals(2, counter.get());
+        provider.get();
+        assertEquals(2, counter.get());
     }
 
     @Test

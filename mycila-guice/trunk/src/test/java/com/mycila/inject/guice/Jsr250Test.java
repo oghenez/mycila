@@ -17,19 +17,23 @@
 package com.mycila.inject.guice;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Scope;
 import com.google.inject.Singleton;
 import com.google.inject.Stage;
 import com.google.inject.matcher.Matchers;
-import com.mycila.inject.jsr250.Jsr250Destroyer;
+import com.mycila.inject.jsr250.Jsr250;
+import com.mycila.inject.jsr250.Jsr250Injector;
 import com.mycila.inject.jsr250.Jsr250Module;
 import com.mycila.inject.scope.ConcurrentSingleton;
 import com.mycila.inject.scope.ExpiringSingleton;
 import com.mycila.inject.scope.ExtraScopeModule;
 import com.mycila.inject.scope.RenewableSingleton;
+import com.mycila.inject.scope.ResetScope;
+import com.mycila.inject.scope.ResetSingleton;
 import com.mycila.inject.scope.SoftSingleton;
 import com.mycila.inject.scope.WeakSingleton;
+import com.mycila.inject.util.Aop;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Test;
@@ -39,10 +43,11 @@ import org.junit.runners.JUnit4;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static com.mycila.inject.BinderHelper.*;
@@ -56,8 +61,8 @@ public final class Jsr250Test {
 
     @Test
     public void test_destroy() throws Exception {
-        final Class[] cc = {AA.class, BB.class, CC.class, DD.class, EE.class, FF.class};
-        Injector injector = Guice.createInjector(Stage.PRODUCTION, new Jsr250Module(), new ExtraScopeModule(), new AbstractModule() {
+        final Class[] cc = {AA.class, BB.class, CC.class, DD.class, EE.class, FF.class, GG.class};
+        Jsr250Injector injector = Jsr250.createInjector(Stage.PRODUCTION, new Jsr250Module(), new ExtraScopeModule(), new AbstractModule() {
             @Override
             protected void configure() {
                 bindScope(ExpiringSingleton.class, in(binder()).expiringSingleton(10, TimeUnit.SECONDS));
@@ -65,24 +70,45 @@ public final class Jsr250Test {
                 for (Class c : cc) {
                     bind(c);
                 }
-
+                // just for fun
+                in(binder()).bindInterceptor(Matchers.subclassesOf(Base.class), Matchers.any(), new MethodInterceptor() {
+                    @Override
+                    public Object invoke(MethodInvocation invocation) throws Throwable {
+                        System.out.println("intercept: " + Aop.getTargetClass(invocation.getThis().getClass()).getSimpleName() + "." + invocation.getMethod().getName());
+                        return invocation.proceed();
+                    }
+                });
             }
         });
         for (Class c : cc) {
             injector.getInstance(c);
             injector.getInstance(c);
         }
-        injector.getInstance(Jsr250Destroyer.class).preDestroy();
-        System.out.println(Base.calls);
-        assertEquals("[AA, BB, CC, DD, EE, FF]", Base.calls.toString());
+
+        for (Scope scope : injector.getScopeBindings().values()) {
+            if (scope instanceof ResetScope)
+                ((ResetScope) scope).reset();
+        }
+
+        Collections.sort(Base.calls);
+        assertEquals("[GG]", Base.calls.toString());
+
+        for (Class c : cc) {
+            injector.getInstance(c);
+        }
+
+        injector.destroy();
+        
+        Collections.sort(Base.calls);
+        assertEquals("[AA, BB, CC, DD, EE, FF, GG, GG]", Base.calls.toString());
     }
 
     static class Base {
-        static final Set<String> calls = new CopyOnWriteArraySet<String>();
+        static final List<String> calls = new ArrayList<String>();
 
         @PreDestroy
         void close() {
-            calls.add(getClass().getSimpleName());
+            calls.add(Aop.getTargetClass(getClass()).getSimpleName());
         }
     }
 
@@ -110,13 +136,16 @@ public final class Jsr250Test {
     static class FF extends Base {
     }
 
+    @ResetSingleton
+    static class GG extends Base {
+    }
+
     @Test
     public void test_inject_in_interceptor() throws Exception {
         B.calls.clear();
-        Injector injector = Guice.createInjector(new AbstractModule() {
+        Jsr250Injector injector = Jsr250.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
-                install(new Jsr250Module());
                 in(binder()).bindInterceptor(Matchers.subclassesOf(A.class), Matchers.any(), new MethodInterceptor() {
                     @Inject
                     Injector injector;
@@ -133,14 +162,14 @@ public final class Jsr250Test {
         B b = injector.getInstance(B.class);
         assertSame(b, injector.getInstance(B.class));
         b.intercept();
-        injector.getInstance(Jsr250Destroyer.class).preDestroy();
+        injector.destroy();
         assertEquals("[1, 2, 3]", B.calls.toString());
     }
 
     @Test
     public void test() throws Exception {
         B.calls.clear();
-        Injector injector = Guice.createInjector(Stage.PRODUCTION, new Jsr250Module(), new ExtraScopeModule(), new AbstractModule() {
+        Jsr250Injector injector = Jsr250.createInjector(Stage.PRODUCTION, new Jsr250Module(), new ExtraScopeModule(), new AbstractModule() {
             @Override
             protected void configure() {
                 bind(C.class);
@@ -149,7 +178,7 @@ public final class Jsr250Test {
         injector.getInstance(C.class);
         injector.getInstance(B.class);
         assertEquals("[4, 1, 2]", B.calls.toString());
-        injector.getInstance(Jsr250Destroyer.class).preDestroy();
+        injector.destroy();
         assertEquals("[4, 1, 2, 5, 3]", B.calls.toString());
     }
 
