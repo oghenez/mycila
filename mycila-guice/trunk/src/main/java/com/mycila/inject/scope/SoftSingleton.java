@@ -16,7 +16,7 @@
 
 package com.mycila.inject.scope;
 
-import com.mycila.inject.jsr250.Jsr250Destroyable;
+import com.mycila.inject.jsr250.Jsr250Singleton;
 
 import javax.inject.Scope;
 import java.lang.annotation.ElementType;
@@ -34,6 +34,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Inherited
 @Scope
-@Jsr250Destroyable
+@Jsr250Singleton
 public @interface SoftSingleton {
 }

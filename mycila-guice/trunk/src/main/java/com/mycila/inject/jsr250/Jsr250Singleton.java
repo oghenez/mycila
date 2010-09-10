@@ -14,28 +14,19 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.scope;
+package com.mycila.inject.jsr250;
 
-import javax.inject.Qualifier;
-import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
-/**
- * Annotates named things.
- *
- * @author crazybob@google.com (Bob Lee)
- */
+@Target({ANNOTATION_TYPE, TYPE})
 @Retention(RUNTIME)
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE})
+@Documented
 @Inherited
-@Qualifier
-public @interface Expirity {
-    /**
-     * Expiring time of the singleton, in milliseconds
-     */
-    long value();
+public @interface Jsr250Singleton {
 }

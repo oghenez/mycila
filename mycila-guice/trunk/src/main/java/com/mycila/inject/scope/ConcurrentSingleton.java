@@ -16,12 +16,10 @@
 
 package com.mycila.inject.scope;
 
-import com.mycila.inject.jsr250.Jsr250Destroyable;
+import com.mycila.inject.jsr250.Jsr250Singleton;
 
-import javax.inject.Qualifier;
 import javax.inject.Scope;
 import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
@@ -36,14 +34,7 @@ import static java.lang.annotation.RetentionPolicy.*;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RUNTIME)
 @Scope
-@Jsr250Destroyable
+@Jsr250Singleton
 public @interface ConcurrentSingleton {
-
-    @Retention(RUNTIME)
-    @Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD, ElementType.TYPE})
-    @Inherited
-    @Qualifier
-    static @interface ThreadExpiration {
-    }
 
 }

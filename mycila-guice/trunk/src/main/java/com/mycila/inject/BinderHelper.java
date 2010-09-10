@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.util;
+package com.mycila.inject;
 
 import com.google.inject.Binder;
+import com.google.inject.Scope;
 import com.google.inject.matcher.Matcher;
 import org.aopalliance.intercept.MethodInterceptor;
 
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -36,12 +38,42 @@ public final class BinderHelper {
                                         Matcher<? super Method> methodMatcher,
                                         MethodInterceptor... interceptors) {
         for (MethodInterceptor interceptor : interceptors)
-            binder.requestInjection(interceptor);
+            inject(interceptor);
         binder.bindInterceptor(classMatcher, methodMatcher, interceptors);
         return this;
     }
 
-    public static BinderHelper on(Binder binder) {
+    public Scope expiringSingleton(long expirity, TimeUnit unit) {
+        return inject(ExtraScopes.expiringSingleton(expirity, unit));
+    }
+
+    public Scope renewableSingleton(long expirity, TimeUnit unit) {
+        return inject(ExtraScopes.renewableSingleton(expirity, unit));
+    }
+
+    public Scope weakSingleton() {
+        return inject(ExtraScopes.weakSingleton());
+    }
+
+    public Scope softSingleton() {
+        return inject(ExtraScopes.softSingleton());
+    }
+
+    public Scope concurrentSingleton() {
+        return inject(ExtraScopes.concurrentSingleton());
+    }
+
+    public Scope concurrentSingleton(long expirity, TimeUnit unit) {
+        return inject(ExtraScopes.concurrentSingleton(expirity, unit));
+    }
+
+    public static BinderHelper in(Binder binder) {
         return new BinderHelper(binder);
     }
+
+    private <T> T inject(T object) {
+        binder.requestInjection(object);
+        return object;
+    }
+
 }

@@ -16,7 +16,7 @@
 
 package com.mycila.inject.scope;
 
-import com.mycila.inject.jsr250.Jsr250Destroyable;
+import com.mycila.inject.jsr250.Jsr250Singleton;
 
 import javax.inject.Scope;
 import java.lang.annotation.ElementType;
@@ -33,6 +33,6 @@ import static java.lang.annotation.RetentionPolicy.*;
 @Retention(RUNTIME)
 @Inherited
 @Scope
-@Jsr250Destroyable
+@Jsr250Singleton
 public @interface ExpiringSingleton {
 }
