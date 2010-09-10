@@ -31,6 +31,7 @@ import org.mockito.stubbing.Answer;
 import javax.inject.Provider;
 import java.util.concurrent.TimeUnit;
 
+import static com.mycila.inject.BinderHelper.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -118,6 +119,7 @@ public final class ScopeTest {
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
+                bindScope(RenewableSingleton.class, in(binder()).renewableSingleton(500, TimeUnit.MILLISECONDS));
                 bind(Object.class).toProvider(Jsr330.guicify(new Provider<Object>() {
                     @Override
                     public Object get() {
