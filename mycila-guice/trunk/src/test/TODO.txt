@@ -53,7 +53,5 @@ You could just as easily support:
 
  - jndi mocks
 
- - cloaseable scope A TESTER
-
  - @Resource
  

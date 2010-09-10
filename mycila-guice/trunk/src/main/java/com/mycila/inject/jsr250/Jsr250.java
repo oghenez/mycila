@@ -17,19 +17,28 @@
 package com.mycila.inject.jsr250;
 
 import com.google.inject.Binding;
+import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
+import com.google.inject.Module;
 import com.google.inject.ProvisionException;
 import com.google.inject.Scope;
 import com.google.inject.Scopes;
+import com.google.inject.Stage;
+import com.google.inject.internal.util.Iterables;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.BindingScopingVisitor;
+import com.google.inject.spi.DefaultElementVisitor;
+import com.google.inject.spi.Element;
+import com.google.inject.spi.Elements;
+import com.mycila.inject.util.Aop;
 import com.mycila.inject.util.Methods;
 
 import javax.inject.Singleton;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -43,6 +52,81 @@ public final class Jsr250 {
     }
 
     private static final BindingScopingVisitor<Boolean> DEFAULT_VISITOR = destroyableVisitor(Collections.<Scope>emptySet(), Collections.<Class<? extends Annotation>>emptySet());
+
+    public static boolean hasJSR250Module(Injector injector) {
+        return injector.getBindings().containsKey(Key.get(Jsr250Destroyer.class));
+    }
+
+    public static void preDestroy(Object injectee) {
+        invoke(injectee, javax.annotation.PreDestroy.class);
+    }
+
+    /**
+     * Creates an injector for the given set of modules. To create an injector
+     * with a {@link com.google.inject.Stage} or other options, see {@link com.google.inject.InjectorBuilder}.
+     *
+     * @throws com.google.inject.CreationException
+     *          if one or more errors occur during injector
+     *          construction
+     */
+    public static Jsr250Injector createInjector(Module... modules) {
+        return createInjector(Arrays.asList(modules));
+    }
+
+    /**
+     * Creates an injector for the given set of modules. To create an injector
+     * with a {@link com.google.inject.Stage} or other options, see {@link com.google.inject.InjectorBuilder}.
+     *
+     * @throws com.google.inject.CreationException
+     *          if one or more errors occur during injector
+     *          creation
+     */
+    public static Jsr250Injector createInjector(Iterable<? extends Module> modules) {
+        return createInjector(Stage.DEVELOPMENT, modules);
+    }
+
+    /**
+     * Creates an injector for the given set of modules, in a given development
+     * stage. Use {@link com.google.inject.InjectorBuilder} for advanced injector creation.
+     *
+     * @throws com.google.inject.CreationException
+     *          if one or more errors occur during injector
+     *          creation.
+     */
+    public static Jsr250Injector createInjector(Stage stage, Module... modules) {
+        return createInjector(stage, Arrays.asList(modules));
+    }
+
+    /**
+     * Creates an injector for the given set of modules, in a given development
+     * stage. Use {@link com.google.inject.InjectorBuilder} for advanced injector creation.
+     *
+     * @throws com.google.inject.CreationException
+     *          if one or more errors occur during injector
+     *          construction
+     */
+    public static Jsr250Injector createInjector(Stage stage, Iterable<? extends Module> modules) {
+
+        return Guice.createInjector(
+                stage,
+                hasJSR250Module(stage, modules) ? modules : Iterables.concat(modules, Arrays.asList(new Jsr250Module())))
+                .getInstance(Jsr250Injector.class);
+    }
+
+    private static boolean hasJSR250Module(Stage stage, Iterable<? extends Module> modules) {
+        final Key key = Key.get(Jsr250Destroyer.class);
+        for (Element element : Elements.getElements(stage, modules)) {
+            Boolean res = element.acceptVisitor(new DefaultElementVisitor<Boolean>() {
+                @Override
+                public <T> Boolean visit(Binding<T> binding) {
+                    return key.equals(binding.getKey());
+                }
+            });
+            if (res != null && res)
+                return true;
+        }
+        return false;
+    }
 
     static BindingScopingVisitor<Boolean> destroyableVisitor(final Collection<Scope> additionalScopes, final Collection<Class<? extends Annotation>> additionalScopeAnnotations) {
         return new BindingScopingVisitor<Boolean>() {
@@ -125,18 +209,8 @@ public final class Jsr250 {
         return annotationScope.isAnnotationPresent(Jsr250Singleton.class);
     }
 
-    public static boolean hasJSR250Module(Injector injector) {
-        return injector.getBindings().containsKey(Key.get(Jsr250Destroyer.class));
-    }
-
-    public static void preDestroy(Object injectee) {
-        invoke(injectee, javax.annotation.PreDestroy.class);
-    }
-
     static void invoke(Object injectee, Class<? extends Annotation> annotationClass) {
-        Class<?> c = injectee.getClass();
-        if (c.getName().contains("$$"))
-            c = c.getSuperclass();
+        Class<?> c = Aop.getTargetClass(injectee.getClass());
         List<Method> methods = Methods.listAll(c, Methods.METHOD_WITHOUT_PARAMETER.and(Matchers.annotatedWith(annotationClass)));
         for (Method method : methods) {
             if (!method.isAccessible())

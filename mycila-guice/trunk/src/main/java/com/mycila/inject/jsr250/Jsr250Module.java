@@ -20,6 +20,7 @@ import com.google.inject.Binder;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Scope;
+import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.BindingScopingVisitor;
@@ -44,6 +45,7 @@ public final class Jsr250Module implements Module {
 
     @Override
     public void configure(Binder binder) {
+        binder.bind(Jsr250Injector.class).to(Jsr250InjectorImpl.class).in(Singleton.class);
         binder.bindListener(Matchers.any(), new TypeListener() {
             @Override
             public <I> void hear(TypeLiteral<I> iTypeLiteral, TypeEncounter<I> encounter) {
