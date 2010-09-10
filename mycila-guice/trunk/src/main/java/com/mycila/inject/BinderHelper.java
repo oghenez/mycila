@@ -19,6 +19,7 @@ package com.mycila.inject;
 import com.google.inject.Binder;
 import com.google.inject.Scope;
 import com.google.inject.matcher.Matcher;
+import com.mycila.inject.scope.ResetScope;
 import org.aopalliance.intercept.MethodInterceptor;
 
 import java.lang.reflect.Method;
@@ -65,6 +66,10 @@ public final class BinderHelper {
 
     public Scope concurrentSingleton(long expirity, TimeUnit unit) {
         return inject(ExtraScopes.concurrentSingleton(expirity, unit));
+    }
+
+    public ResetScope resetSingleton() {
+        return inject(ExtraScopes.resetSingleton());
     }
 
     public static BinderHelper in(Binder binder) {

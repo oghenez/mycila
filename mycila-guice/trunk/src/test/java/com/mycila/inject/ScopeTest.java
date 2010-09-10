@@ -41,6 +41,11 @@ import static org.mockito.Mockito.*;
 public final class ScopeTest {
 
     @Test
+    public void test_reset_singleton() throws Exception {
+        //TODO
+    }
+
+    @Test
     public void test_expire() throws Exception {
         Provider<Object> unscoped = mock(Provider.class);
         when(unscoped.get()).thenAnswer(new Answer<Object>() {
