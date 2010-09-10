@@ -267,7 +267,7 @@ final class ExtraScopes {
 
         @Override
         public void reset() {
-            List<?> singletons = new ArrayList<Object>();
+            List<Object> singletons = new ArrayList<Object>();
             try {
                 w.lock();
                 if (hasJSR250Module) {
