@@ -8,7 +8,6 @@ import com.google.inject.Scope;
 import com.google.inject.Scopes;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.BindingScopingVisitor;
-import com.mycila.inject.scope.MappedScope;
 import com.mycila.inject.util.Methods;
 
 import javax.inject.Singleton;
@@ -39,15 +38,14 @@ public final class Jsr250 {
             @Override
             public Boolean visitScope(Scope scope) {
                 return scope.equals(Scopes.SINGLETON)
-                        || scope.getClass().isAnnotationPresent(Jsr250Destroyable.class)
-                        || additionalScopes.contains(scope)
-                        || scope instanceof MappedScope && ((MappedScope) scope).isSingleton();
+                        || scope.getClass().isAnnotationPresent(Jsr250Singleton.class)
+                        || additionalScopes.contains(scope);
             }
 
             @Override
             public Boolean visitScopeAnnotation(Class<? extends Annotation> scopeAnnotation) {
                 return scopeAnnotation.equals(Singleton.class)
-                        || scopeAnnotation.isAnnotationPresent(Jsr250Destroyable.class)
+                        || scopeAnnotation.isAnnotationPresent(Jsr250Singleton.class)
                         || additionalScopeAnnotations.contains(scopeAnnotation);
             }
 
@@ -84,6 +82,11 @@ public final class Jsr250 {
                         Jsr250.invoke(o, javax.annotation.PreDestroy.class);
                 }
             }
+
+            @Override
+            public String toString() {
+                return binding.toString();
+            }
         };
     }
 
@@ -94,7 +97,16 @@ public final class Jsr250 {
                 if (scope != null)
                     Jsr250.invoke(scope, javax.annotation.PreDestroy.class);
             }
+
+            @Override
+            public String toString() {
+                return scope.toString();
+            }
         };
+    }
+
+    static boolean isSingleton(Class<? extends Annotation> annotationScope) {
+        return annotationScope.isAnnotationPresent(Jsr250Singleton.class);
     }
 
     public static boolean hasJSR250Module(Injector injector) {

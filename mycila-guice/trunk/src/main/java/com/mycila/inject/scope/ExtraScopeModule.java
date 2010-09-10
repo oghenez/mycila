@@ -19,16 +19,18 @@ package com.mycila.inject.scope;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 
+import java.util.concurrent.TimeUnit;
+
+import static com.mycila.inject.BinderHelper.*;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class ExtraScopeModule implements Module {
     @Override
     public void configure(Binder binder) {
-        for (ExtraScope scope : ExtraScope.values()) {
-            MappedScope s = scope.get();
-            binder.requestInjection(s);
-            binder.bindScope(s.getScopeAnnotation(), s);
-        }
+        binder.bindScope(ConcurrentSingleton.class, in(binder).concurrentSingleton(20, TimeUnit.SECONDS));
+        binder.bindScope(WeakSingleton.class, in(binder).weakSingleton());
+        binder.bindScope(SoftSingleton.class, in(binder).softSingleton());
     }
 }

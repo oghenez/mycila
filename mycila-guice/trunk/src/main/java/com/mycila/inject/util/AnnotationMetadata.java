@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.util;
+package com.mycila.inject.annotation;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;

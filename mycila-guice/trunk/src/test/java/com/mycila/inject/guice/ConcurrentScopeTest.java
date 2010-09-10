@@ -20,6 +20,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Stage;
+import com.mycila.inject.jsr250.Jsr250Destroyer;
+import com.mycila.inject.jsr250.Jsr250Module;
 import com.mycila.inject.scope.ConcurrentSingleton;
 import com.mycila.inject.scope.ExtraScopeModule;
 import org.junit.Test;
@@ -40,19 +42,18 @@ public final class ConcurrentScopeTest {
 
     @Test
     public void test_concurrent() throws Exception {
-        long start = System.nanoTime();
-        Injector injector = Guice.createInjector(Stage.DEVELOPMENT, new AbstractModule() {
+        long start = System.currentTimeMillis();
+        Injector injector = Guice.createInjector(Stage.DEVELOPMENT, new ExtraScopeModule(), new Jsr250Module(), new AbstractModule() {
             public void configure() {
-                install(new ExtraScopeModule());
-                bindConstant().annotatedWith(ConcurrentSingleton.ThreadExpiration.class).to(20000l); // 20 seconds
                 bind(C.class);
                 bind(D.class);
             }
         });
         injector.getInstance(A.class);
-        long elapsed = System.nanoTime() - start;
-        System.out.printf("Completed in %d seconds%n", TimeUnit.NANOSECONDS.toMillis(elapsed));
-        assertTrue(TimeUnit.NANOSECONDS.toMillis(elapsed) < 5000);
+        long elapsed = System.currentTimeMillis() - start;
+        injector.getInstance(Jsr250Destroyer.class).preDestroy();
+        System.out.printf("Completed in %d ms%n", elapsed);
+        assertTrue(elapsed < 5000);
     }
 
     @ConcurrentSingleton
