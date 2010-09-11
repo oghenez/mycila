@@ -153,7 +153,7 @@ final class ExtraScopes {
             });
             // Future task that will memoize the provided singleton.
             // The task will be run either in the caller thread, or by the monitoring thread
-            return new FutureProvider<T>(unscoped);
+            return new FutureProvider<T>(key, unscoped);
         }
     }
 
@@ -380,13 +380,16 @@ final class ExtraScopes {
     }
 
     private static final class FutureProvider<T> extends FutureTask<T> implements Provider<T> {
-        private FutureProvider(final Provider<T> unscoped) {
+        private final Key<T> key;
+
+        private FutureProvider(Key<T> key, final Provider<T> unscoped) {
             super(new Callable<T>() {
                 @Override
                 public T call() throws Exception {
                     return unscoped.get();
                 }
             });
+            this.key = key;
         }
 
         @Override
@@ -400,6 +403,11 @@ final class ExtraScopes {
                 Thread.currentThread().interrupt();
                 throw new ProvisionException("Interrupted during provision");
             }
+        }
+
+        @Override
+        public String toString() {
+            return "FutureProvider[" + key + "]";
         }
     }
 

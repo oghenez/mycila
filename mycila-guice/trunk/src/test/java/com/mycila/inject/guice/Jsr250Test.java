@@ -61,25 +61,35 @@ import static org.junit.Assert.*;
 public final class Jsr250Test {
 
     @Test
-    public void test_resource_fields() throws Exception {
-        Jsr250.createInjector(Stage.PRODUCTION).getInstance(ResClass.class);
-        assertTrue(ResClass.verified);
+    public void test_resource() throws Exception {
+        Jsr250.createInjector(Stage.PRODUCTION, new ExtraScopeModule()).getInstance(ResClass.class);
+        assertEquals(2, ResClass.verified);
     }
 
     static class ResClass {
-        static boolean verified;
+        static int verified;
         @Resource
         Injector injector;
 
         @Resource
         Provider<Injector> provider;
 
+        @Resource
+        void init(AA aa, CC cc) {
+            // field injection is done before method injection
+            assertNotNull(injector);
+            assertNotNull(provider);
+            assertNotNull(aa);
+            assertNotNull(cc);
+            verified++;
+        }
+
         @PostConstruct
         void init() {
             assertNotNull(injector);
             assertNotNull(provider);
             assertSame(injector, provider.get());
-            verified = true;
+            verified++;
         }
     }
 

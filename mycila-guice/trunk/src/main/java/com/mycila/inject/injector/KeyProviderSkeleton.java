@@ -29,12 +29,12 @@ import java.util.List;
 public abstract class KeyProviderSkeleton<A extends Annotation> implements KeyProvider<A> {
     @Override
     public Key<?> getKey(AnnotatedMember<?, A> annotatedMember) {
-        return Key.get(annotatedMember.getType());
+        return Key.get(annotatedMember.getMemberType());
     }
 
     @Override
     public List<Key<?>> getParameterKeys(AnnotatedMember<?, A> annotatedMember) {
-        List<TypeLiteral<?>> types = annotatedMember.getType().getParameterTypes(annotatedMember.getMember());
+        List<TypeLiteral<?>> types = annotatedMember.getBoundType().getParameterTypes(annotatedMember.getMember());
         List<Key<?>> keys = new ArrayList<Key<?>>();
         for (TypeLiteral<?> type : types)
             keys.add(Key.get(type));

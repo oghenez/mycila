@@ -64,6 +64,11 @@ public abstract class LegacyProvider<T> implements Provider<T> {
 
     abstract T get(Injector injector);
 
+    @Override
+    public String toString() {
+        return "LegacyProvider[" + providedType.getName() + "]";
+    }
+
     /* static ctors */
 
     public static <T> ConstructBuilder<T> of(Class<T> type) {
