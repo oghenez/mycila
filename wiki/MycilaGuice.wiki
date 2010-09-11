@@ -66,7 +66,9 @@ public interface Jsr250Injector extends Injector {
 
 === Injecting using `@Resource` ===
 
-You can inject fields and methods as usual.
+You can inject fields and methods as usual, and also benefits of Guice's binding annotations and providers.
+
+Fields are always injected before methods.
 
 {{{
 public class Account {
@@ -77,11 +79,17 @@ public class Account {
     String number;
 
     @Resource
-    void init(Client client, @Named("RNG") Provider<Long> rng) {
-        number = bank.id() + "" + client.id() + "" + rng.get();
+    void init(Client client, @Named("RNG") Provider<Id> rng) {
+        number = bank.id() + "" + client.id() + "" + rng.get().id();
+    }
+
+    public String getNumber() {
+        return number;
     }
 }
 }}}
+
+=== Controlling lifecycle with `@PostConstruct` and `@PreDestroy` ===
 
 == Additional scopes ==
 
