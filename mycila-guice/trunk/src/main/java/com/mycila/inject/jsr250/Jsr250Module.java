@@ -22,22 +22,18 @@ import com.google.inject.Module;
 import com.google.inject.Scope;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
-import com.google.inject.internal.util.Maps;
-import com.google.inject.internal.util.Sets;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.BindingScopingVisitor;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
+import com.mycila.inject.BinderHelper;
 
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -52,46 +48,14 @@ public final class Jsr250Module implements Module {
     @Override
     public void configure(Binder binder) {
         binder.bind(Jsr250Injector.class).to(Jsr250InjectorImpl.class).in(Singleton.class);
+        BinderHelper.in(binder).bindAnnotationInjector(Resource.class, Jsr250KeyProvider.class);
         binder.bindListener(Matchers.any(), new TypeListener() {
             @Override
             public <I> void hear(final TypeLiteral<I> injectableType, final TypeEncounter<I> encounter) {
                 encounter.register(new InjectionListener<I>() {
                     @Override
                     public void afterInjection(I injectee) {
-                        Set<Field> processedFields = Sets.newLinkedHashSet();
-                        Map<MethodKey, Method> processedMethods = Maps.newLinkedHashMap();
-                        Class<?> type = injectableType.getRawType();
-                        while (type != Object.class && type != null) {
-                            Field[] fields = type.getDeclaredFields();
-                            for (Field field : fields) {
-                                if (processedFields.add(field) && field.isAnnotationPresent(Resource.class)) {
-                                    encounter.register(new InjectionListener<I>() {
-                                        @Override
-                                        public void afterInjection(I injectee) {
-                                            
-                                        }
-                                    });
-                                }
-                            }
-
-                            Method[] methods = type.getDeclaredMethods();
-                            for (final Method method : methods) {
-                                MethodKey key = new MethodKey(method);
-                                if (processedMethods.get(key) == null) {
-                                    processedMethods.put(key, method);
-                                    bindAnnotationInjectionToMember(encounter, startType, method);
-                                }
-                            }
-
-                            Class<?> supertype = type.getSuperclass();
-                            if (supertype == Object.class) {
-                                break;
-                            }
-                            startType = startType.getSupertype(supertype);
-                        }
-
-                        //Post construction
-                        Jsr250.invoke(injectee, javax.annotation.PostConstruct.class);
+                        Jsr250.postConstruct(injectee);
                     }
                 });
             }

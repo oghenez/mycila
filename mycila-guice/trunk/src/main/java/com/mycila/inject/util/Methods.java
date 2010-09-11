@@ -71,7 +71,7 @@ public final class Methods {
         return METHOD_CACHE.get(clazz);
     }
 
-    public static List<Method> listAll(Class<?> clazz, Matcher<Method> matcher) {
+    public static List<Method> listAll(Class<?> clazz, Matcher<? super Method> matcher) {
         List<Method> methods = new LinkedList<Method>();
         for (Method method : METHOD_CACHE.get(clazz))
             if (matcher.matches(method))

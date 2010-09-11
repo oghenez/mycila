@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.jsr250;
+package com.mycila.inject.injector;
 
 import java.util.Arrays;
 
