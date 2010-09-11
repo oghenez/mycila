@@ -25,9 +25,11 @@ import java.lang.reflect.Member;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface AnnotatedMember<M extends Member, A extends Annotation> {
-    TypeLiteral<?> getType();
+    TypeLiteral<?> getMemberType();
 
     M getMember();
 
     A getAnnotation();
+
+    TypeLiteral<?> getBoundType();
 }

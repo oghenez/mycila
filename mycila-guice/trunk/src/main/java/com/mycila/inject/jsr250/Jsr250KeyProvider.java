@@ -30,6 +30,6 @@ final class Jsr250KeyProvider extends KeyProviderSkeleton<Resource> {
     @Override
     public Key<?> getKey(AnnotatedMember<?, Resource> member) {
         String name = member.getAnnotation().name();
-        return name.length() == 0 ? super.getKey(member) : Key.get(member.getType(), Names.named(name));
+        return name.length() == 0 ? super.getKey(member) : Key.get(member.getMemberType(), Names.named(name));
     }
 }

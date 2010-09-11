@@ -38,13 +38,13 @@ public final class AnnotatedMembers {
     }
 
     public static <A extends Annotation> Iterable<AnnotatedMember<Method, A>> getAnnotatedMethods(final TypeLiteral<?> type, final Class<A> annotationType) {
-        Iterable<Method> it = Methods.listAll(type.getRawType(), Methods.METHOD_WITHOUT_PARAMETER.and(Matchers.annotatedWith(annotationType)));
+        Iterable<Method> it = Methods.listAll(type.getRawType(), Matchers.annotatedWith(annotationType));
         return Iterables.transform(it, new Function<Method, AnnotatedMember<Method, A>>() {
             @Override
             public AnnotatedMember<Method, A> apply(@Nullable final Method from) {
                 return new AnnotatedMember<Method, A>() {
                     @Override
-                    public TypeLiteral<?> getType() {
+                    public TypeLiteral<?> getMemberType() {
                         return type.getReturnType(from);
                     }
 
@@ -56,6 +56,11 @@ public final class AnnotatedMembers {
                     @Override
                     public A getAnnotation() {
                         return from.getAnnotation(annotationType);
+                    }
+
+                    @Override
+                    public TypeLiteral<?> getBoundType() {
+                        return type;
                     }
                 };
             }
@@ -70,7 +75,7 @@ public final class AnnotatedMembers {
                 if (field.isAnnotationPresent(annotationType)) {
                     fields.add(new AnnotatedMember<Field, A>() {
                         @Override
-                        public TypeLiteral<?> getType() {
+                        public TypeLiteral<?> getMemberType() {
                             return type.getFieldType(field);
                         }
 
@@ -82,6 +87,11 @@ public final class AnnotatedMembers {
                         @Override
                         public A getAnnotation() {
                             return field.getAnnotation(annotationType);
+                        }
+
+                        @Override
+                        public TypeLiteral<?> getBoundType() {
+                            return type;
                         }
                     });
                 }

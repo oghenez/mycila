@@ -71,7 +71,7 @@ public final class AnnotatedMemberTypeListener<A extends Annotation> implements 
                     List<Key<?>> parameterKeys = keyProvider.getParameterKeys(member);
                     Object[] parameters = new Object[parameterKeys.size()];
                     for (int i = 0; i < parameters.length; i++)
-                        parameters[i] = injector.getProvider(parameterKeys.get(i));
+                        parameters[i] = injector.getProvider(parameterKeys.get(i)).get();
                     if (!method.isAccessible()) {
                         method.setAccessible(true);
                     }

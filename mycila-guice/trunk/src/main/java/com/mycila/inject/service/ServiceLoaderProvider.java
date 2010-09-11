@@ -74,6 +74,11 @@ public final class ServiceLoaderProvider<T> implements Provider<T[]> {
         return instances.toArray((T[]) Array.newInstance(type, instances.size()));
     }
 
+    @Override
+    public String toString() {
+        return "ServiceLoaderProvider[" + type.getName() + "]";
+    }
+
     public static <T> ServiceLoaderProvider<T> of(Class<T> type) {
         return new ServiceLoaderProvider<T>(type);
     }
