@@ -15,7 +15,7 @@ MycilaGuice is an extension library to [http://code.google.com/p/google-guice/ G
  * Binding helpers
  * Support of legacy classes (classes you cannot modify to add @Inject)
 
-The project is aimed to be used with Guice 2 or 3 and supports JSR330 (javax.inject)
+The project can be used with Guice 2 or 3 and supports JSR330 (javax.inject)
 
 = Download =
 
