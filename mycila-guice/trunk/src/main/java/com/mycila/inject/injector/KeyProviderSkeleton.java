@@ -17,8 +17,11 @@
 package com.mycila.inject.injector;
 
 import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -27,5 +30,14 @@ public abstract class KeyProviderSkeleton<A extends Annotation> implements KeyPr
     @Override
     public Key<?> getKey(AnnotatedMember<?, A> annotatedMember) {
         return Key.get(annotatedMember.getType());
+    }
+
+    @Override
+    public List<Key<?>> getParameterKeys(AnnotatedMember<?, A> annotatedMember) {
+        List<TypeLiteral<?>> types = annotatedMember.getType().getParameterTypes(annotatedMember.getMember());
+        List<Key<?>> keys = new ArrayList<Key<?>>();
+        for (TypeLiteral<?> type : types)
+            keys.add(Key.get(type));
+        return keys;
     }
 }
