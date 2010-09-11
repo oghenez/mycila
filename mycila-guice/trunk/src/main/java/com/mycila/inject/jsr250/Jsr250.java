@@ -61,6 +61,10 @@ public final class Jsr250 {
         invoke(injectee, javax.annotation.PreDestroy.class);
     }
 
+    public static void postConstruct(Object injectee) {
+        invoke(injectee, javax.annotation.PreDestroy.class);
+    }
+
     /**
      * Creates an injector for the given set of modules. To create an injector
      * with a {@link com.google.inject.Stage} or other options, see {@link com.google.inject.InjectorBuilder}.
@@ -205,11 +209,7 @@ public final class Jsr250 {
         };
     }
 
-    static boolean isSingleton(Class<? extends Annotation> annotationScope) {
-        return annotationScope.isAnnotationPresent(Jsr250Singleton.class);
-    }
-
-    static void invoke(Object injectee, Class<? extends Annotation> annotationClass) {
+    private static void invoke(Object injectee, Class<? extends Annotation> annotationClass) {
         Class<?> c = Aop.getTargetClass(injectee.getClass());
         List<Method> methods = Methods.listAll(c, Methods.METHOD_WITHOUT_PARAMETER.and(Matchers.annotatedWith(annotationClass)));
         for (Method method : methods) {
@@ -224,4 +224,5 @@ public final class Jsr250 {
             }
         }
     }
+
 }

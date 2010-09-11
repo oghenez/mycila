@@ -19,9 +19,13 @@ package com.mycila.inject;
 import com.google.inject.Binder;
 import com.google.inject.Scope;
 import com.google.inject.matcher.Matcher;
+import com.google.inject.matcher.Matchers;
+import com.mycila.inject.injector.AnnotatedMemberTypeListener;
+import com.mycila.inject.injector.KeyProvider;
 import com.mycila.inject.scope.ResetScope;
 import org.aopalliance.intercept.MethodInterceptor;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
@@ -72,13 +76,20 @@ public final class BinderHelper {
         return inject(ExtraScopes.resetSingleton());
     }
 
-    public static BinderHelper in(Binder binder) {
-        return new BinderHelper(binder);
+    public <A extends Annotation> BinderHelper bindAnnotationInjector(Class<A> annotationType, Class<? extends KeyProvider<A>> providerClass) {
+        binder.bindListener(Matchers.any(), inject(new AnnotatedMemberTypeListener<A>(annotationType, providerClass)));
+        return this;
     }
 
-    private <T> T inject(T object) {
+    public <T> T inject(T object) {
         binder.requestInjection(object);
         return object;
+    }
+
+    /* static */
+
+    public static BinderHelper in(Binder binder) {
+        return new BinderHelper(binder);
     }
 
 }
