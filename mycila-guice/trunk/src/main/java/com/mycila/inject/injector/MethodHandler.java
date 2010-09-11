@@ -1,11 +1,11 @@
 /**
- * Copyright (C) 2010 Mathieu Carbou <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.jsr250;
+package com.mycila.inject.injector;
 
-import com.mycila.inject.injector.AnnotatedMember;
+import com.google.inject.TypeLiteral;
 
-/**
- * @author Mathieu Carbou (mathieu.carbou@gmail.com)
- */
-interface MemberResourceInjector {
-    void inject(AnnotatedMember member);
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+
+public interface MethodHandler<A extends Annotation> {
+    <T> void handle(TypeLiteral<? extends T> type, T instance, AnnotatedMember<Method, A> member);
 }

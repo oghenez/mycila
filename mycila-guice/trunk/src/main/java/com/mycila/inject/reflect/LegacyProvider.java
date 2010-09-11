@@ -16,18 +16,18 @@
 
 package com.mycila.inject.reflect;
 
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
 import com.mycila.inject.util.Methods;
 
-import javax.inject.Inject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.List;
+import java.util.Iterator;
 
 public abstract class LegacyProvider<T> implements Provider<T> {
 
@@ -90,10 +90,10 @@ public abstract class LegacyProvider<T> implements Provider<T> {
         try {
             return declaring.getMethod(methodName, toClasses(paramTypes));
         } catch (NoSuchMethodException e) {
-            List<Method> methods = Methods.listAll(declaring, Methods.named(methodName).and(Methods.withParameterTypes(toClasses(paramTypes))));
-            if (methods.isEmpty())
+            Iterator<Method> methods = Methods.listAll(declaring, Methods.named(methodName).and(Methods.withParameterTypes(toClasses(paramTypes)))).iterator();
+            if (!methods.hasNext())
                 throw new ProvisionException("Unable to find method " + methodName + " in class " + declaring.getName() + " matching given parameter types");
-            return methods.get(0);
+            return methods.next();
         }
     }
 

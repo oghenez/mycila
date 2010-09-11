@@ -1,11 +1,11 @@
 /**
- * Copyright (C) 2010 Mathieu Carbou <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,7 @@
 
 package com.mycila.inject.injector;
 
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.MembersInjector;
 import com.google.inject.Provider;
@@ -24,10 +25,9 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
-import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.List;
+import java.lang.reflect.Method;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -44,32 +44,34 @@ public final class AnnotatedMemberTypeListener<A extends Annotation> implements 
     }
 
     @Override
-    public <I> void hear(TypeLiteral<I> injectableType, TypeEncounter<I> encounter) {
-        // find injectable fields
-        final List<AnnotatedMember<Field, A>> fields = Members.getAnnotatedFields(injectableType, annotationType);
+    public <I> void hear(final TypeLiteral<I> injectableType, TypeEncounter<I> encounter) {
+        final Provider<? extends KeyProvider<A>> provider = encounter.getProvider(providerClass);
+        encounter.register(new MembersInjector<I>() {
+            @Override
+            public void injectMembers(I instance) {
+                KeyProvider<A> keyProvider = provider.get();
+                // inject fields
+                for (AnnotatedMember<Field, A> member : AnnotatedMembers.getAnnotatedFields(injectableType, annotationType)) {
+                    Field field = member.getMember();
+                    if (!field.isAccessible())
+                        field.setAccessible(true);
+                    try {
+                        Provider<?> provider = injector.getProvider(keyProvider.getKey(member));
+                        field.set(instance, provider.get());
+                    } catch (IllegalAccessException e) {
+                        throw new ProvisionException("Unable to inject field " + field + ". Reason: " + e.getMessage(), e);
+                    }
+                }
+                // inject methods
+                for (AnnotatedMember<Method, A> member : AnnotatedMembers.getAnnotatedMethods(injectableType, annotationType)) {
+
+                }
+            }
+        });
+
         // find injectable members
         //TODO: final List<Method> methods = Methods.listAll(type, Matchers.annotatedWith(Resource.class));
 
-        if (!fields.isEmpty() /*|| !methods.isEmpty()*/) {
-            final Provider<? extends KeyProvider<A>> provider = encounter.getProvider(providerClass);
-            encounter.register(new MembersInjector<I>() {
-                @Override
-                public void injectMembers(I instance) {
-                    KeyProvider<A> keyProvider = provider.get();
-                    for (AnnotatedMember<Field, A> member : fields) {
-                        Field field = member.getMember();
-                        if (!field.isAccessible())
-                            field.setAccessible(true);
-                        try {
-                            field.set(instance, injector.getProvider(keyProvider.getKey(member)));
-                        } catch (IllegalAccessException e) {
-                            throw new ProvisionException("Unable to inject field " + field + ". Reason: " + e.getMessage(), e);
-                        }
-                    }
-
-                }
-            });
-        }
 
         /*Class<?> type = injectableType.getRawType();
         while (type != Object.class && type != null) {

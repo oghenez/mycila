@@ -16,13 +16,13 @@
 
 package com.mycila.inject.service;
 
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.mycila.inject.util.DefaultLoader;
 import com.mycila.inject.util.Loader;
 
-import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
