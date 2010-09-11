@@ -19,13 +19,15 @@ package com.mycila.inject.injector;
 import com.google.inject.Key;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Member;
 import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface KeyProvider<A extends Annotation> {
-    Key<?> getKey(AnnotatedMember<?, A> annotatedMember);
+    <M extends Member & AnnotatedElement> Key<?> getKey(AnnotatedMember<M, A> annotatedMember);
 
-    List<Key<?>> getParameterKeys(AnnotatedMember<?, A> annotatedMember);
+    <M extends Member & AnnotatedElement> List<Key<?>> getParameterKeys(AnnotatedMember<M, A> annotatedMember);
 }

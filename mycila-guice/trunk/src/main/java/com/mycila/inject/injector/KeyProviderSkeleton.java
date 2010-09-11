@@ -18,8 +18,13 @@ package com.mycila.inject.injector;
 
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
+import com.google.inject.internal.Annotations;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,16 +33,33 @@ import java.util.List;
  */
 public abstract class KeyProviderSkeleton<A extends Annotation> implements KeyProvider<A> {
     @Override
-    public Key<?> getKey(AnnotatedMember<?, A> annotatedMember) {
-        return Key.get(annotatedMember.getMemberType());
+    public <M extends Member & AnnotatedElement> Key<?> getKey(AnnotatedMember<M, A> member) {
+        for (Annotation annotation : member.getMember().getAnnotations())
+            if (Annotations.isBindingAnnotation(annotation.annotationType()))
+                return Key.get(member.getMemberType(), annotation);
+        return Key.get(member.getMemberType());
     }
 
     @Override
-    public List<Key<?>> getParameterKeys(AnnotatedMember<?, A> annotatedMember) {
-        List<TypeLiteral<?>> types = annotatedMember.getBoundType().getParameterTypes(annotatedMember.getMember());
+    public <M extends Member & AnnotatedElement> List<Key<?>> getParameterKeys(AnnotatedMember<M, A> member) {
+        Annotation[][] parameterAnnotations;
+        if (member.getMember() instanceof Method)
+            parameterAnnotations = ((Method) member.getMember()).getParameterAnnotations();
+        else if (member.getMember() instanceof Constructor)
+            parameterAnnotations = ((Constructor) member.getMember()).getParameterAnnotations();
+        else
+            throw new IllegalStateException("Unsupported member: " + member.getMember());
+        List<TypeLiteral<?>> types = member.getBoundType().getParameterTypes(member.getMember());
         List<Key<?>> keys = new ArrayList<Key<?>>();
-        for (TypeLiteral<?> type : types)
-            keys.add(Key.get(type));
+        for (int i = 0; i < types.size(); i++)
+            keys.add(buildKey(types.get(i), parameterAnnotations[i]));
         return keys;
+    }
+
+    private Key<?> buildKey(TypeLiteral<?> type, Annotation[] annotations) {
+        for (Annotation annotation : annotations)
+            if (Annotations.isBindingAnnotation(annotation.annotationType()))
+                return Key.get(type, annotation);
+        return Key.get(type);
     }
 }

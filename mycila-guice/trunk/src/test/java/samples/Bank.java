@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.jsr250;
-
-import com.google.inject.Key;
-import com.google.inject.name.Names;
-import com.mycila.inject.injector.AnnotatedMember;
-import com.mycila.inject.injector.KeyProviderSkeleton;
-
-import javax.annotation.Resource;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Member;
+package samples;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class Jsr250KeyProvider extends KeyProviderSkeleton<Resource> {
-    @Override
-    public <M extends Member & AnnotatedElement> Key<?> getKey(AnnotatedMember<M, Resource> member) {
-        String name = member.getAnnotation().name();
-        return name.length() == 0 ? super.getKey(member) : Key.get(member.getMemberType(), Names.named(name));
+public class Bank {
+    public int id() {
+        return 2;
     }
 }
