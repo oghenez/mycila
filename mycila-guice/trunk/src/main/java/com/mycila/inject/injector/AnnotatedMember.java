@@ -19,12 +19,13 @@ package com.mycila.inject.injector;
 import com.google.inject.TypeLiteral;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface AnnotatedMember<M extends Member, A extends Annotation> {
+public interface AnnotatedMember<M extends Member & AnnotatedElement, A extends Annotation> {
     TypeLiteral<?> getMemberType();
 
     M getMember();
