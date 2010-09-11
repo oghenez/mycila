@@ -16,20 +16,12 @@
 
 package com.mycila.inject.jsr250;
 
-import com.google.inject.Key;
-import com.google.inject.name.Names;
-import com.mycila.inject.injector.AnnotatedMember;
-import com.mycila.inject.injector.KeyProviderSkeleton;
+import com.mycila.inject.injector.MethodHandlerSkeleton;
 
-import javax.annotation.Resource;
+import javax.annotation.PreDestroy;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class Jsr250KeyProvider extends KeyProviderSkeleton<Resource> {
-    @Override
-    public Key<?> getKey(AnnotatedMember<?, Resource> member) {
-        String name = member.getAnnotation().name();
-        return name.length() == 0 ? super.getKey(member) : Key.get(member.getType(), Names.named(name));
-    }
+final class Jsr250PreDestroyHandler extends MethodHandlerSkeleton<PreDestroy> {
 }

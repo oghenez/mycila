@@ -42,12 +42,13 @@ import org.junit.runners.JUnit4;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static com.mycila.inject.BinderHelper.*;
@@ -58,6 +59,29 @@ import static org.junit.Assert.*;
  */
 @RunWith(JUnit4.class)
 public final class Jsr250Test {
+
+    @Test
+    public void test_resource_fields() throws Exception {
+        Jsr250.createInjector(Stage.PRODUCTION).getInstance(ResClass.class);
+        assertTrue(ResClass.verified);
+    }
+
+    static class ResClass {
+        static boolean verified;
+        @Resource
+        Injector injector;
+
+        @Resource
+        Provider<Injector> provider;
+
+        @PostConstruct
+        void init() {
+            assertNotNull(injector);
+            assertNotNull(provider);
+            assertSame(injector, provider.get());
+            verified = true;
+        }
+    }
 
     @Test
     public void test_destroy() throws Exception {
@@ -98,7 +122,7 @@ public final class Jsr250Test {
         }
 
         injector.destroy();
-        
+
         Collections.sort(Base.calls);
         assertEquals("[AA, BB, CC, DD, EE, FF, GG, GG]", Base.calls.toString());
     }
@@ -147,7 +171,7 @@ public final class Jsr250Test {
             @Override
             protected void configure() {
                 in(binder()).bindInterceptor(Matchers.subclassesOf(A.class), Matchers.any(), new MethodInterceptor() {
-                    @Inject
+                    @Resource
                     Injector injector;
 
                     @Override

@@ -18,11 +18,13 @@ package com.mycila.inject.util;
 
 import com.google.inject.internal.cglib.core.ReflectUtils;
 import com.google.inject.internal.cglib.core.Signature;
+import com.google.inject.internal.util.AbstractIterator;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,58 +41,6 @@ public final class Methods {
             return o.getParameterTypes().length == 0;
         }
     };
-
-    private static final WeakCache<Class<?>, List<Method>> METHOD_CACHE = new WeakCache<Class<?>, List<Method>>(new WeakCache.Provider<Class<?>, List<Method>>() {
-        @Override
-        public List<Method> get(Class<?> clazz) {
-            List<Method> methods = new LinkedList<Method>();
-            Map<Signature, Method> signatureMethod = new LinkedHashMap<Signature, Method>();
-            while (clazz != null && clazz != Object.class) {
-                for (Method method : clazz.isInterface() ? clazz.getMethods() : clazz.getDeclaredMethods()) {
-                    if (method.isSynthetic() || method.isBridge())
-                        continue;
-                    Signature thisSignature = ReflectUtils.getSignature(method);
-                    Method existing = signatureMethod.get(thisSignature);
-                    if (existing == null) {
-                        signatureMethod.put(thisSignature, method);
-                        methods.add(method);
-                    } else if (!isOverridable(existing, clazz)) {
-                        methods.add(method);
-                    }
-                }
-                clazz = clazz.getSuperclass();
-            }
-            return methods;
-        }
-    });
-
-    private Methods() {
-    }
-
-    public static List<Method> listAll(Class<?> clazz) {
-        return METHOD_CACHE.get(clazz);
-    }
-
-    public static List<Method> listAll(Class<?> clazz, Matcher<? super Method> matcher) {
-        List<Method> methods = new LinkedList<Method>();
-        for (Method method : METHOD_CACHE.get(clazz))
-            if (matcher.matches(method))
-                methods.add(method);
-        return methods;
-    }
-
-    private static boolean isOverridable(Method method, Class targetClass) {
-        return !Modifier.isPrivate(method.getModifiers())
-                && (Modifier.isPublic(method.getModifiers())
-                || Modifier.isProtected(method.getModifiers())
-                || getPackageName(method.getDeclaringClass()).equals(getPackageName(targetClass)));
-    }
-
-    private static String getPackageName(Class<?> clazz) {
-        String className = clazz.getName();
-        int lastDotIndex = className.lastIndexOf('.');
-        return lastDotIndex != -1 ? className.substring(0, lastDotIndex) : "";
-    }
 
     public static Matcher<Method> withParameterTypes(final Class<?>... classes) {
         return new AbstractMatcher<Method>() {
@@ -116,4 +66,66 @@ public final class Methods {
             }
         };
     }
+
+    public static Iterable<Method> listAll(final Class<?> clazz, final Matcher<? super Method> matcher) {
+        return new Iterable<Method>() {
+            @Override
+            public Iterator<Method> iterator() {
+                final Iterator<Method> unfiltered = METHOD_CACHE.get(clazz).iterator();
+                return new AbstractIterator<Method>() {
+                    @Override
+                    protected Method computeNext() {
+                        while (unfiltered.hasNext()) {
+                            Method element = unfiltered.next();
+                            if (matcher.matches(element)) {
+                                return element;
+                            }
+                        }
+                        return endOfData();
+                    }
+                };
+            }
+        };
+    }
+
+    private Methods() {
+    }
+
+    private static final WeakCache<Class<?>, List<Method>> METHOD_CACHE = new WeakCache<Class<?>, List<Method>>(new WeakCache.Provider<Class<?>, List<Method>>() {
+        @Override
+        public List<Method> get(Class<?> clazz) {
+            List<Method> methods = new LinkedList<Method>();
+            Map<Signature, Method> signatureMethod = new LinkedHashMap<Signature, Method>();
+            while (clazz != null && clazz != Object.class) {
+                for (Method method : clazz.isInterface() ? clazz.getMethods() : clazz.getDeclaredMethods()) {
+                    if (method.isSynthetic() || method.isBridge())
+                        continue;
+                    Signature thisSignature = ReflectUtils.getSignature(method);
+                    Method existing = signatureMethod.get(thisSignature);
+                    if (existing == null) {
+                        signatureMethod.put(thisSignature, method);
+                        methods.add(method);
+                    } else if (!isOverridable(existing, clazz)) {
+                        methods.add(method);
+                    }
+                }
+                clazz = clazz.getSuperclass();
+            }
+            return methods;
+        }
+    });
+
+    private static boolean isOverridable(Method method, Class targetClass) {
+        return !Modifier.isPrivate(method.getModifiers())
+                && (Modifier.isPublic(method.getModifiers())
+                || Modifier.isProtected(method.getModifiers())
+                || getPackageName(method.getDeclaringClass()).equals(getPackageName(targetClass)));
+    }
+
+    private static String getPackageName(Class<?> clazz) {
+        String className = clazz.getName();
+        int lastDotIndex = className.lastIndexOf('.');
+        return lastDotIndex != -1 ? className.substring(0, lastDotIndex) : "";
+    }
+
 }

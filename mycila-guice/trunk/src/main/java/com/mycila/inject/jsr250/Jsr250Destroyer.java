@@ -19,6 +19,6 @@ package com.mycila.inject.jsr250;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-interface Jsr250Destroyer {
+public interface Jsr250Destroyer {
     void preDestroy();
 }

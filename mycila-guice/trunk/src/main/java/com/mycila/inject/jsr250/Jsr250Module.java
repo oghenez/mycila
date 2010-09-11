@@ -17,24 +17,24 @@
 package com.mycila.inject.jsr250;
 
 import com.google.inject.Binder;
+import com.google.inject.Binding;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Scope;
+import com.google.inject.Scopes;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
-import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.BindingScopingVisitor;
-import com.google.inject.spi.InjectionListener;
-import com.google.inject.spi.TypeEncounter;
-import com.google.inject.spi.TypeListener;
-import com.mycila.inject.BinderHelper;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.mycila.inject.BinderHelper.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -43,36 +43,49 @@ public final class Jsr250Module implements Module {
 
     private final Set<Scope> scopes = new HashSet<Scope>();
     private final Set<Class<? extends Annotation>> scopeAnnotations = new HashSet<Class<? extends Annotation>>();
-    private final BindingScopingVisitor<Boolean> visitor = Jsr250.destroyableVisitor(scopes, scopeAnnotations);
 
     @Override
     public void configure(Binder binder) {
         binder.bind(Jsr250Injector.class).to(Jsr250InjectorImpl.class).in(Singleton.class);
-        BinderHelper.in(binder).bindAnnotationInjector(Resource.class, Jsr250KeyProvider.class);
-        binder.bindListener(Matchers.any(), new TypeListener() {
-            @Override
-            public <I> void hear(final TypeLiteral<I> injectableType, final TypeEncounter<I> encounter) {
-                encounter.register(new InjectionListener<I>() {
+        in(binder)
+                .bindAnnotationInjector(Resource.class, Jsr250KeyProvider.class)
+                .bindAfterInjection(PostConstruct.class, Jsr250PostConstructHandler.class)
+                .bind(Jsr250Destroyer.class, new Jsr250Destroyer() {
+                    @Inject
+                    Injector injector;
+
                     @Override
-                    public void afterInjection(I injectee) {
-                        Jsr250.postConstruct(injectee);
+                    public void preDestroy() {
+                        BindingScopingVisitor<Boolean> visitor = new BindingScopingVisitor<Boolean>() {
+                            @Override
+                            public Boolean visitEagerSingleton() {
+                                return true;
+                            }
+
+                            @Override
+                            public Boolean visitScope(Scope scope) {
+                                return scope.getClass().isAnnotationPresent(Jsr250Singleton.class)
+                                        || scopes.contains(scope);
+                            }
+
+                            @Override
+                            public Boolean visitScopeAnnotation(Class<? extends Annotation> scopeAnnotation) {
+                                return scopeAnnotation.isAnnotationPresent(Jsr250Singleton.class)
+                                        || scopeAnnotations.contains(scopeAnnotation);
+                            }
+
+                            @Override
+                            public Boolean visitNoScoping() {
+                                return false;
+                            }
+                        };
+                        for (Binding<?> binding : injector.getAllBindings().values())
+                            if (Scopes.isSingleton(binding) || binding.acceptScopingVisitor(visitor))
+                                Jsr250.preDestroy(binding.getKey().getTypeLiteral(), binding.getProvider().get());
+                        for (Scope scope : injector.getScopeBindings().values())
+                            Jsr250.preDestroy(TypeLiteral.get(scope.getClass()), scope);
                     }
                 });
-            }
-        });
-        Jsr250Destroyer closer = new Jsr250Destroyer() {
-            @Inject
-            Injector injector;
-
-            @Override
-            public void preDestroy() {
-                for (Jsr250Element element : Jsr250.destroyables(injector, visitor)) {
-                    element.preDestroy();
-                }
-            }
-        };
-        binder.bind(Jsr250Destroyer.class).toInstance(closer);
-        binder.requestInjection(closer);
     }
 
     public Jsr250Module addCloseableScopes(Scope... scopes) {

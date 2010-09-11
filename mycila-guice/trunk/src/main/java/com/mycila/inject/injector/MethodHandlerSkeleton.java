@@ -16,18 +16,27 @@
 
 package com.mycila.inject.injector;
 
+import com.google.inject.ProvisionException;
 import com.google.inject.TypeLiteral;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Member;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface AnnotatedMember<M extends Member, A extends Annotation> {
-    TypeLiteral<?> getType();
-
-    M getMember();
-
-    A getAnnotation();
+public abstract class MethodHandlerSkeleton<A extends Annotation> implements MethodHandler<A> {
+    @Override
+    public <T> void handle(TypeLiteral<? extends T> type, T instance, AnnotatedMember<Method, A> member) {
+        if (!member.getMember().isAccessible())
+            member.getMember().setAccessible(true);
+        try {
+            member.getMember().invoke(instance);
+        } catch (IllegalAccessException e) {
+            throw new ProvisionException(e.getMessage(), e);
+        } catch (InvocationTargetException e) {
+            throw new ProvisionException(e.getTargetException().getMessage(), e.getTargetException());
+        }
+    }
 }

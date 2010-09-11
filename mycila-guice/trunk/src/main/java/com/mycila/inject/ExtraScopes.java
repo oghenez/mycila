@@ -17,6 +17,7 @@
 package com.mycila.inject;
 
 import com.google.inject.Binding;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
@@ -27,13 +28,10 @@ import com.mycila.inject.jsr250.Jsr250Singleton;
 import com.mycila.inject.scope.ResetScope;
 
 import javax.annotation.PreDestroy;
-import javax.inject.Inject;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -54,10 +52,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 final class ExtraScopes {
 
     private ExtraScopes() {
-    }
-
-    public static Scope[] values() {
-        return new Scope[]{concurrentSingleton(), softSingleton(), weakSingleton()};
     }
 
     public static Scope expiringSingleton(final long expirity, final TimeUnit unit) {
@@ -200,7 +194,7 @@ final class ExtraScopes {
                             if (expirationTime < System.currentTimeMillis()) {
                                 T old = instance;
                                 if (hasJSR250Module)
-                                    Jsr250.preDestroy(old);
+                                    Jsr250.preDestroy(key.getTypeLiteral(), old);
                                 instance = creator.get();
                                 expirationTime = System.currentTimeMillis() + expirationDelay;
                             }
@@ -228,7 +222,7 @@ final class ExtraScopes {
         @Override
         public <T> Provider<T> scope(final Key<T> key, final Provider<T> creator) {
             return new Provider<T>() {
-                private volatile Object instance;
+                private volatile T instance;
                 private volatile long expirationTime;
 
                 @Override
@@ -242,12 +236,12 @@ final class ExtraScopes {
                         }
                     }
                     if (instance != NULL && expirationTime < System.currentTimeMillis()) {
-                        Object old = instance;
-                        instance = NULL;
+                        T old = instance;
+                        instance = (T) NULL;
                         if (hasJSR250Module)
-                            Jsr250.preDestroy(old);
+                            Jsr250.preDestroy(key.getTypeLiteral(), old);
                     }
-                    return instance == NULL ? null : (T) instance;
+                    return instance == NULL ? null : instance;
                 }
 
                 @Override
@@ -260,31 +254,31 @@ final class ExtraScopes {
 
     @Jsr250Singleton
     private static final class ResetSingleton extends MycilaScope implements ResetScope {
-        private final Map<Key<?>, Object> map = new HashMap<Key<?>, Object>();
+        private final Map<Key<?>, Object> singletons = new HashMap<Key<?>, Object>();
         private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
         private final Lock r = lock.readLock();
         private final Lock w = lock.writeLock();
 
         @Override
         public void reset() {
-            List<Object> singletons = new ArrayList<Object>();
+            Map<Key<?>, Object> map = new HashMap<Key<?>, Object>();
             try {
                 w.lock();
                 if (hasJSR250Module) {
-                    singletons.addAll(map.values());
+                    map.putAll(singletons);
                 }
-                map.clear();
+                singletons.clear();
             } finally {
                 w.unlock();
             }
-            for (Object singleton : singletons) {
-                Jsr250.preDestroy(singleton);
+            for (Map.Entry<Key<?>, Object> entry : map.entrySet()) {
+                Jsr250.preDestroy(entry.getKey().getTypeLiteral(), entry.getValue());
             }
         }
 
         @PreDestroy
         public void shutdown() {
-            map.clear();
+            singletons.clear();
         }
 
         @Override
@@ -294,7 +288,7 @@ final class ExtraScopes {
                     Object t;
                     try {
                         r.lock();
-                        t = map.get(key);
+                        t = singletons.get(key);
                     } finally {
                         r.unlock();
                     }
@@ -303,7 +297,7 @@ final class ExtraScopes {
                             w.lock();
                             t = creator.get();
                             t = t == null ? NULL : t;
-                            map.put(key, t);
+                            singletons.put(key, t);
                         } finally {
                             w.unlock();
                         }
