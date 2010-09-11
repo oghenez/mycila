@@ -1,19 +1,27 @@
 #summary Mycila Guice
 #labels Featured
 
+<wiki:toc max_depth="5" /> 
+
 = Introduction =
 
-[http://code.google.com/p/google-guice/ Google Guice] contributions:
- * *ServiceLoader* plugin (enables injection into loaded services)
- * *JSR250* supports improved from [http://code.google.com/p/guiceyfruit/ GuicyFruit]
- * *Custom Injector* with more useful methods which consider the whole Injector hierarchy
- * *CachedScope* to cache your binding for a specific duration
+MycilaGuice is an extension library to [http://code.google.com/p/google-guice/ Google Guice 3] which adds many features such as:
+
+ contributions:
+ * JSR250 (@Resource, @PreDestroy, @PostConstruct)
+ * Additional scopes
+ * Testing integration
+ * Service loader facilities
+ * Binding helpers
+ * Support of legacy classes (classes you cannot modify to add @Inject)
+
+The project is aimed to be used with Guice 2 or 3 and supports JSR330 (javax.inject)
 
 = Download =
 
-Mycila event is deployed in maven 2 Central Repository:
+Mycila Guice is deployed in maven 2 Central Repository:
 
-http://repo2.maven.org/maven2/com/mycila/mycila-event/
+http://repo2.maven.org/maven2/com/mycila/mycila-guice/
 
 {{{
 <dependency>
@@ -26,47 +34,19 @@ http://repo2.maven.org/maven2/com/mycila/mycila-event/
  * [http://code.google.com/p/mycila/source/browse/#svn/mycila-guice/trunk Browse source code]
  * [http://mycila.googlecode.com/svn/mycila-guice/trunk/ Checkout URL]
 
-Snapshots are available at https://mc-repo.googlecode.com/svn/maven2/snapshots/com/mycila/mycila-guice/
+Snapshots and releases are also availables at
+ * https://mc-repo.googlecode.com/svn/maven2/snapshots/com/mycila/mycila-guice/
+ * https://mc-repo.googlecode.com/svn/maven2/releases/com/mycila/mycila-guice/
 
-= CachedScope =
+= Mycila Guice Features =
 
-You can optionally define your own annotation. In example, for most cases i want to cache my bindings only for 20 seconds. So I've created this annotation in my client program:
+== JSR250 ==
 
-{{{
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Retention(RUNTIME)
-@ScopeAnnotation
-public @interface Cached20Seconds {}
-}}}
+== Additional scopes ==
 
-Then in my Guice module, i use the CachedScope like this:
+== Legacy support ==
 
-{{{
-final class MyModule extends AbstractModule {
-
-    @Override
-    protected void configure() {
-        // bind cache annotation
-        bindScope(Cached20Seconds.class, cachedScope(20, SECONDS));
-
-        // configs, cached for 20 seconds and reloaded is rerquested after
-        bind(UserConfig.class).to(UserConfigImpl.class).in(Cached20Seconds.class);
-        bind(InternalConfig.class).to(InternalConfigImpl.class).in(Cached20Seconds.class);
-    }
-
-    @Provides
-    @Cached20Seconds
-    FileClassPath agentClassPath(Provider<FileScanner> selector,
-                                 Provider<UserConfig> userConfig) {
-        List<File> jars = new LinkedList<File>(selector.get().scan(userConfig.get().libDirectory()));
-        jars.add(0, userConfig.get().libDirectory());
-        jars.add(0, userConfig.get().dataDirectory());
-        return FileClassPathClassLoader.create(Thread.currentThread().getContextClassLoader(), false, true).add(jars);
-    }
-}
-}}}
-
-= ServiceLoader =
+== Service Loader ==
 
 {{{
 binder.bind(AgentPlugin[].class)
@@ -85,3 +65,7 @@ install(ServiceLoaderModule.withClassLoader(ClassLoader.class).of(AgentPlugin.cl
 In this case. the module creates a binding of key `Set<AgentPlugin>` containing all loaded and injected instances from the META-INF/services definitions.
 
 `withClassLoader` is optional and takes as parameter the KEY of the binding where to get the classloader. In my case, i have a binding of type ClassLoader which points to the ClassLaoder instance i want to use to discover the services.
+
+== Binding helpers ==
+
+== Testing integration ==
