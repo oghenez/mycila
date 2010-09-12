@@ -139,6 +139,8 @@ injector.getInstance(Jsr250Destroyer.class).preDestroy();
 
 == Binding helpers ==
 
+=== Overview ===
+
 `BinderHelper` is a class which help you deal more easily with Mycila Guice features. To use is, you can do a static import of this class:
 
 {{{
@@ -178,7 +180,7 @@ in(binder)
     .bind(Jsr250Destroyer.class, new Jsr250Destroyer());
 }}}
 
-*Customizing injection annotation*
+=== Customizing injection annotation ===
 
 In example, suppose you have your own annotation called `@Autowire` to inject dependencies. You could automatically support `@Resource`, `@Inject` and `@Autowire` at the same time. Supposing you'd like to use this annotation:
 
