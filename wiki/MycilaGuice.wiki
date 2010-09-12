@@ -91,6 +91,52 @@ public class Account {
 
 === Controlling lifecycle with `@PostConstruct` and `@PreDestroy` ===
 
+You can annotate no argument methods with these annotation. 
+ * Methods annotated by `@PostConstruct` will be executed after injection is completed.
+ * Methods annotated by `@PreDestroy` will be executed when closing the injector
+
+{{{
+@Singleton
+public class Bank {
+
+    List<Account> accounts = new ArrayList<Account>();
+
+    @Resource
+    Provider<Account> provider;
+
+    @PostConstruct
+    void openBank() {
+        // create two account initially
+        accounts.add(provider.get());
+        accounts.add(provider.get());
+    }
+
+    @PreDestroy
+    void closeBank() {
+        accounts.clear();
+    }
+
+    int id() { return 2; }
+    List<Account> accounts() { return accounts; }
+}
+}}}
+
+Post construction methods are handled automatically. But `@PreDestroy` methods can only be called on singleton instances or scoped instances, when closing the `Jsr250Injector`.
+
+If you don't use the `Jsr250Injector`, you need to retreive the `Jsr250Destroyer` to destroy singletons before closing the application.
+
+Here is the two ways. When using the `Jsr250Injector`:
+
+{{{
+jsr250Injector.destroy();
+}}}
+
+Or when using Guice's default injector:
+
+{{{
+injector.getInstance(Jsr250Destroyer.class).preDestroy();
+}}}
+
 == Additional scopes ==
 
 == Legacy support ==
