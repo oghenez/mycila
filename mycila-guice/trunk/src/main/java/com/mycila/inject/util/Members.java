@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mycila <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,19 @@
 
 package com.mycila.inject.util;
 
-import com.google.inject.internal.cglib.core.ReflectUtils;
-import com.google.inject.internal.cglib.core.Signature;
-import com.google.inject.internal.util.AbstractIterator;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
+import com.google.inject.matcher.Matchers;
+import com.mycila.inject.internal.WeakCache;
+import net.sf.cglib.core.ReflectUtils;
+import net.sf.cglib.core.Signature;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,14 +37,7 @@ import java.util.Map;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Methods {
-
-    public static final Matcher<Method> METHOD_WITHOUT_PARAMETER = new AbstractMatcher<Method>() {
-        @Override
-        public boolean matches(Method o) {
-            return o.getParameterTypes().length == 0;
-        }
-    };
+public final class Members {
 
     public static Matcher<Method> withParameterTypes(final Class<?>... classes) {
         return new AbstractMatcher<Method>() {
@@ -67,30 +64,34 @@ public final class Methods {
         };
     }
 
-    public static Iterable<Method> listAll(final Class<?> clazz, final Matcher<? super Method> matcher) {
-        return new Iterable<Method>() {
+    public static Iterable<Method> findAnnotatedMethods(Class<?> type, Class<? extends Annotation> annotationType) {
+        return findMethods(type, Matchers.annotatedWith(annotationType));
+    }
+
+    public static Iterable<Method> findMethods(final Class<?> clazz, final Matcher<? super Method> matcher) {
+        return Iterables.filter(METHOD_CACHE.get(clazz), new Predicate<Method>() {
             @Override
-            public Iterator<Method> iterator() {
-                final Iterator<Method> unfiltered = METHOD_CACHE.get(clazz).iterator();
-                return new AbstractIterator<Method>() {
-                    @Override
-                    protected Method computeNext() {
-                        while (unfiltered.hasNext()) {
-                            Method element = unfiltered.next();
-                            if (matcher.matches(element)) {
-                                return element;
-                            }
-                        }
-                        return endOfData();
-                    }
-                };
+            public boolean apply(Method input) {
+                return matcher.matches(input);
             }
-        };
+        });
     }
 
-    private Methods() {
+    public static Iterable<Field> findAnnotatedFields(Class<?> type, Class<? extends Annotation> annotationType) {
+        List<Field> fields = new LinkedList<Field>();
+        while (type != null && type != Object.class) {
+            for (Field field : type.getDeclaredFields())
+                if (field.isAnnotationPresent(annotationType))
+                    fields.add(field);
+            type = type.getSuperclass();
+        }
+        return fields;
     }
 
+    private Members() {
+    }
+
+    //TODO: optimize - memoize
     private static final WeakCache<Class<?>, List<Method>> METHOD_CACHE = new WeakCache<Class<?>, List<Method>>(new WeakCache.Provider<Class<?>, List<Method>>() {
         @Override
         public List<Method> get(Class<?> clazz) {

@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.mycila</groupId>
         <artifactId>parent-pom</artifactId>
-        <version>2</version>
+        <version>4</version>
     </parent>
 
     <groupId>com.mycila</groupId>
@@ -35,7 +35,7 @@
                     <failIfMissing>true</failIfMissing>
                     <strictCheck>true</strictCheck>
                     <properties>
-                        <owner>mycila.com</owner>
+                        <owner>${project.organization.name}</owner>
                         <year>${project.inceptionYear}</year>
                         <email>mathieu.carbou@gmail.com</email>
                     </properties>
@@ -45,6 +45,7 @@
                         <exclude>dependency-reduced-pom.xml</exclude>
                         <exclude>tmp/**</exclude>
                         <exclude>src/test/TODO.txt</exclude>
+                        <exclude>src/main/java/com/mycila/inject/internal/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -54,6 +55,55 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <silent>true</silent>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <configuration>
+                            <tasks>
+                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"/>
+                                <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar"
+                                        update="true">
+                                    <zipfileset src="${project.build.directory}/dependency/guava-r06.jar"/>
+                                    <zipfileset src="${project.build.directory}/dependency/asm-3.2.jar"/>
+                                    <zipfileset src="${project.build.directory}/dependency/cglib-2.2.jar"/>
+                                    <rule pattern="net.sf.cglib.**" result="com.mycila.inject.internal.cglib.@1"/>
+                                    <rule pattern="org.objectweb.asm.**" result="com.mycila.inject.internal.asm.@1"/>
+                                    <rule pattern="com.google.common.**" result="com.mycila.inject.internal.guava.@1"/>
+                                    <keep pattern="com.mycila.inject.**"/>
+                                </jarjar>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>jarjar</groupId>
+                        <artifactId>jarjar</artifactId>
+                        <version>1.0</version>
+                        <scope>system</scope>
+                        <systemPath>${basedir}/lib/jarjar-1.0.jar</systemPath>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -116,6 +166,25 @@
             <groupId>com.mycila.com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>3.0-20100907</version>
+        </dependency>
+        <!-- internal dependencies, jarjar-ed -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>r06</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>2.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>asm</groupId>
+            <artifactId>asm-all</artifactId>
+            <version>3.2</version>
+            <scope>provided</scope>
         </dependency>
         <!-- testing -->
         <dependency>

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mycila <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,22 @@
 package com.mycila.inject.jsr250;
 
 import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
-import com.mycila.inject.injector.AnnotatedMember;
 import com.mycila.inject.injector.KeyProviderSkeleton;
 
 import javax.annotation.Resource;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Member;
+import java.lang.reflect.Field;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 final class Jsr250KeyProvider extends KeyProviderSkeleton<Resource> {
     @Override
-    public <M extends Member & AnnotatedElement> Key<?> getKey(AnnotatedMember<M, Resource> member) {
-        String name = member.getAnnotation().name();
-        return name.length() == 0 ? super.getKey(member) : Key.get(member.getMemberType(), Names.named(name));
+    public Key<?> getKey(TypeLiteral<?> injectedType, Field injectedMember, Resource resourceAnnotation) {
+        String name = resourceAnnotation.name();
+        return name.length() == 0 ?
+                super.getKey(injectedType, injectedMember, resourceAnnotation) :
+                Key.get(injectedType.getFieldType(injectedMember), Names.named(name));
     }
 }

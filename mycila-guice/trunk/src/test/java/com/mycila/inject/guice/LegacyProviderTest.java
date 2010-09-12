@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mycila <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
-import com.mycila.inject.reflect.LegacyProvider;
+import com.mycila.inject.legacy.LegacyProvider;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

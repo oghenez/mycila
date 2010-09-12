@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mycila <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package samples;
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
 import com.google.inject.name.Names;
-import com.mycila.inject.injector.AnnotatedMember;
 import com.mycila.inject.injector.KeyProviderSkeleton;
 import com.mycila.inject.jsr250.Jsr250;
 import com.mycila.inject.jsr250.Jsr250Injector;
@@ -68,7 +67,7 @@ public final class BinderHelperTest {
 
     static final class AutowireKeyProvider extends KeyProviderSkeleton<Autowire> {
         @Override
-        public <M extends Member & AnnotatedElement> Key<?> getKey(AnnotatedMember<M, Autowire> member) {
+        public <M extends Member & AnnotatedElement> Key<?> getKey(ResourceMember<M, Autowire> member) {
             String name = member.getAnnotation().value();
             return name.length() == 0 ? super.getKey(member) : Key.get(member.getMemberType(), Names.named(name));
         }

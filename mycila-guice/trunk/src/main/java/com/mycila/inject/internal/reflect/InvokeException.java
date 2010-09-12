@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 Mycila <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mathieu Carbou <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.util;
-
-import java.net.URL;
-import java.util.List;
+package com.mycila.inject.internal.reflect;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Loader {
-    Class<?> loadClass(String className);
+public final class InvokeException extends RuntimeException {
+    private static final long serialVersionUID = 1;
 
-    URL getResource(String path);
-
-    List<URL> getResources(String path);
+    public InvokeException(InvokableMember<?> invokable, Throwable t) {
+        super("Error invoking " + invokable.getMember() + " : " + t.getMessage(), t);
+    }
 }

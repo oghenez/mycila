@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mathieu Carbou <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,11 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.injector;
-
-import com.google.inject.TypeLiteral;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Member;
+package com.mycila.inject.internal.reflect;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface AnnotatedMember<M extends Member & AnnotatedElement, A extends Annotation> {
-    TypeLiteral<?> getMemberType();
-
-    M getMember();
-
-    A getAnnotation();
-
-    TypeLiteral<?> getBoundType();
+public interface InvokableMember<T> extends Invokable<T> {
+    AnnotatedMemberImpl<?> getMember();
 }

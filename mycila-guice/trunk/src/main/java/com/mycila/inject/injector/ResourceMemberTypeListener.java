@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mycila <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import com.google.inject.ProvisionException;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
+import com.mycila.inject.util.Members;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -35,13 +36,13 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class AnnotatedMemberTypeListener<A extends Annotation> implements TypeListener {
+public final class ResourceMemberTypeListener<A extends Annotation> implements TypeListener {
     @Inject
     Injector injector;
     private final Class<A> annotationType;
     private final Class<? extends KeyProvider<A>> providerClass;
 
-    public AnnotatedMemberTypeListener(Class<A> annotationType, Class<? extends KeyProvider<A>> providerClass) {
+    public ResourceMemberTypeListener(Class<A> annotationType, Class<? extends KeyProvider<A>> providerClass) {
         this.annotationType = annotationType;
         this.providerClass = providerClass;
     }
@@ -54,9 +55,8 @@ public final class AnnotatedMemberTypeListener<A extends Annotation> implements 
             public void injectMembers(I instance) {
                 KeyProvider<A> keyProvider = provider.get();
                 // inject fields
-                for (AnnotatedMember<Field, A> member : AnnotatedMembers.getAnnotatedFields(injectableType, annotationType)) {
-                    Field field = member.getMember();
-                    Object value = injector.getProvider(keyProvider.getKey(member)).get();
+                for (Field field : Members.findAnnotatedFields(injectableType.getRawType(), annotationType)) {
+                    Object value = injector.getProvider(keyProvider.getKey(injectableType, field, field.getAnnotation(annotationType))).get();
                     if (!field.isAccessible())
                         field.setAccessible(true);
                     try {
@@ -66,9 +66,8 @@ public final class AnnotatedMemberTypeListener<A extends Annotation> implements 
                     }
                 }
                 // inject methods
-                for (AnnotatedMember<Method, A> member : AnnotatedMembers.getAnnotatedMethods(injectableType, annotationType)) {
-                    Method method = member.getMember();
-                    List<Key<?>> parameterKeys = keyProvider.getParameterKeys(member);
+                for (Method method : Members.findAnnotatedMethods(injectableType.getRawType(), annotationType)) {
+                    List<Key<?>> parameterKeys = keyProvider.getParameterKeys(injectableType, method, method.getAnnotation(annotationType));
                     Object[] parameters = new Object[parameterKeys.size()];
                     for (int i = 0; i < parameters.length; i++)
                         parameters[i] = injector.getProvider(parameterKeys.get(i)).get();
@@ -76,6 +75,7 @@ public final class AnnotatedMemberTypeListener<A extends Annotation> implements 
                         method.setAccessible(true);
                     }
                     try {
+                        //TODO: fastClass
                         method.invoke(instance, parameters);
                     }
                     catch (IllegalAccessException e) {

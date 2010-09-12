@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.util;
+package com.mycila.inject.internal;
 
 import java.lang.ref.WeakReference;
 import java.util.WeakHashMap;
@@ -22,7 +22,7 @@ import java.util.WeakHashMap;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-class WeakCache<K, V> {
+public class WeakCache<K, V> {
 
     private static final Object NULL = new Object();
 
