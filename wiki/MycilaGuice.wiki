@@ -137,7 +137,99 @@ Or when using Guice's default injector:
 injector.getInstance(Jsr250Destroyer.class).preDestroy();
 }}}
 
+== Binding helpers ==
+
+`BinderHelper` is a class which help you deal more easily with Mycila Guice features. To use is, you can do a static import of this class:
+
+{{{
+import static com.mycila.inject.BinderHelper.in;
+}}}
+
+Then in your module you can use:
+
+{{{
+// Bind an instance to a class and also request injection on that instance
+in(binder()).bind(MyClass, myInstance);
+
+// Bind several interceptors at once, and also request injection on them
+in(binder()).bindInterceptor(classMatcher, methodMatcher, interceptor1, interceptor2)
+
+// Add support for an external annotation to be used for post injection handlers
+in(binder()).bindAfterInjection(PostConstruct.class, Jsr250MethodHandler.class);
+
+// Add support for an external annotation to be used to inject members besides the usual @Inject
+in(binder()).bindAnnotationInjector(Resource.class, ResourceKeyProvider.class)
+
+// Manually bind some additional scopes
+bindScope(RenewableSingleton.class, in(binder()).renewableSingleton(1, TimeUnit.DAYS));
+bindScope(ExpiringSingleton.class, in(binder()).expiringSingleton(1, TimeUnit.DAYS));
+bindScope(ConcurrentSingleton.class, in(binder()).concurrentSingleton(20, TimeUnit.SECONDS));
+bindScope(ResetSingleton.class, in(binder()).resetSingleton());
+bindScope(WeakSingleton.class, in(binder()).weakSingleton());
+bindScope(SoftSingleton.class, in(binder()).softSingleton());
+}}}
+
+Most of the calls are chainable (fluent api). In example:
+
+{{{
+in(binder)
+    .bindAnnotationInjector(Resource.class, Jsr250KeyProvider.class)
+    .bindAfterInjection(PostConstruct.class, Jsr250PostConstructHandler.class)
+    .bind(Jsr250Destroyer.class, new Jsr250Destroyer());
+}}}
+
+*Customizing injection annotation*
+
+In example, suppose you have your own annotation called `@Autowire` to inject dependencies. You could automatically support `@Resource`, `@Inject` and `@Autowire` at the same time. Supposing you'd like to use this annotation:
+
+{{{
+@Target({METHOD, CONSTRUCTOR, FIELD})
+@Retention(RUNTIME)
+public @interface Autowire {
+    String value() default "";
+}
+}}}
+
+You have to define a `KeyProvider` which help creating the Guice key used to recover a dependency from the annotation information plus the injected member.
+
+{{{
+final class AutowireKeyProvider extends KeyProviderSkeleton<Autowire> {
+    @Override
+    public <M extends Member & AnnotatedElement> Key<?> getKey(AnnotatedMember<M, Autowire> member) {
+        String name = member.getAnnotation().value();
+        return name.length() == 0 ? super.getKey(member) : Key.get(member.getMemberType(), Names.named(name));
+    }
+}
+}}}
+
+{{{
+Jsr250Injector jsr250Injector = Jsr250.createInjector(new MyModule(), new AbstractModule() {
+    @Override
+    protected void configure() {
+        in(binder()).bindAnnotationInjector(Autowire.class, AutowireKeyProvider.class);
+    }
+});
+}}}
+
 == Additional scopes ==
+
+You can install additional scopes in one way by running one of these two lines:
+
+{{{
+Jsr250Injector jsr250Injector = Jsr250.createInjector(new ExtraScopeModule(), new MyModule());
+
+Injector injector = Guice.createInjector(new ExtraScopeModule(), new MyModule());
+}}}
+
+This module installs these additional scopes:
+ * `@ConcurrentSingleton` (with a thread timeout of 20 seconds)
+ * `@WeakSingleton`
+ * `@SoftSingleton`
+ * `@ResetSingleton`
+
+Two other scopes are available to be bound manually:
+ * `@ExpiringSingleton`
+ * `@RenewableSingleton`
 
 == Legacy support ==
 
@@ -160,7 +252,5 @@ install(ServiceLoaderModule.withClassLoader(ClassLoader.class).of(AgentPlugin.cl
 In this case. the module creates a binding of key `Set<AgentPlugin>` containing all loaded and injected instances from the META-INF/services definitions.
 
 `withClassLoader` is optional and takes as parameter the KEY of the binding where to get the classloader. In my case, i have a binding of type ClassLoader which points to the ClassLaoder instance i want to use to discover the services.
-
-== Binding helpers ==
 
 == Testing integration ==
