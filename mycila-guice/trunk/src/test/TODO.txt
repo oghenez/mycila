@@ -43,13 +43,15 @@ You could just as easily support:
 
 /////////////////
 
+ - OSGI manifest: repackager cglib + asm + verifs + tests IT
+
  - testing
 
  - lifecycle
 
  - asm CP scanner
 
- - OSGI
+ - OSGI plugin
 
  - jndi mocks
 
