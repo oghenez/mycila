@@ -193,11 +193,13 @@ public @interface Autowire {
 You have to define a `KeyProvider` which help creating the Guice key used to recover a dependency from the annotation information plus the injected member.
 
 {{{
-final class AutowireKeyProvider extends KeyProviderSkeleton<Autowire> {
+static final class AutowireKeyProvider extends KeyProviderSkeleton<Autowire> {
     @Override
-    public <M extends Member & AnnotatedElement> Key<?> getKey(AnnotatedMember<M, Autowire> member) {
-        String name = member.getAnnotation().value();
-        return name.length() == 0 ? super.getKey(member) : Key.get(member.getMemberType(), Names.named(name));
+    public Key<?> getKey(TypeLiteral<?> injectedType, Field injectedMember, Autowire resourceAnnotation) {
+        String name = resourceAnnotation.value();
+        return name.length() == 0 ?
+                super.getKey(injectedType, injectedMember, resourceAnnotation) :
+                Key.get(injectedType.getFieldType(injectedMember), Names.named(name));
     }
 }
 }}}
