@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mycila <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -194,7 +194,7 @@ final class ExtraScopes {
                             if (expirationTime < System.currentTimeMillis()) {
                                 T old = instance;
                                 if (hasJSR250Module)
-                                    Jsr250.preDestroy(key.getTypeLiteral(), old);
+                                    Jsr250.preDestroy(old);
                                 instance = creator.get();
                                 expirationTime = System.currentTimeMillis() + expirationDelay;
                             }
@@ -239,7 +239,7 @@ final class ExtraScopes {
                         T old = instance;
                         instance = (T) NULL;
                         if (hasJSR250Module)
-                            Jsr250.preDestroy(key.getTypeLiteral(), old);
+                            Jsr250.preDestroy(old);
                     }
                     return instance == NULL ? null : instance;
                 }
@@ -271,9 +271,8 @@ final class ExtraScopes {
             } finally {
                 w.unlock();
             }
-            for (Map.Entry<Key<?>, Object> entry : map.entrySet()) {
-                Jsr250.preDestroy(entry.getKey().getTypeLiteral(), entry.getValue());
-            }
+            for (Map.Entry<Key<?>, Object> entry : map.entrySet())
+                Jsr250.preDestroy(entry.getValue());
         }
 
         @PreDestroy

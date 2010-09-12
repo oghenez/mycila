@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mycila <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package com.mycila.inject.jsr250;
 
+import com.google.common.collect.Iterables;
 import com.google.inject.Binding;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -23,13 +24,12 @@ import com.google.inject.Key;
 import com.google.inject.Module;
 import com.google.inject.Stage;
 import com.google.inject.TypeLiteral;
-import com.google.inject.internal.util.Iterables;
 import com.google.inject.spi.DefaultElementVisitor;
 import com.google.inject.spi.Element;
 import com.google.inject.spi.Elements;
-import com.mycila.inject.injector.AnnotatedMember;
-import com.mycila.inject.injector.AnnotatedMembers;
 import com.mycila.inject.injector.MethodHandler;
+import com.mycila.inject.util.Aop;
+import com.mycila.inject.util.Members;
 
 import javax.annotation.PreDestroy;
 import java.lang.reflect.Method;
@@ -113,10 +113,11 @@ public final class Jsr250 {
         return injector.getBindings().containsKey(Key.get(Jsr250Destroyer.class));
     }
 
-    public static <T> void preDestroy(TypeLiteral<? extends T> type, T instance) {
+    public static <T> void preDestroy(T instance) {
+        TypeLiteral<T> type = (TypeLiteral<T>) TypeLiteral.get(Aop.getTargetClass(instance));
         MethodHandler<PreDestroy> handler = new Jsr250PreDestroyHandler();
-        for (AnnotatedMember<Method, PreDestroy> member : AnnotatedMembers.getAnnotatedMethods(type, PreDestroy.class)) {
-            handler.handle(type, instance, member);
+        for (Method method : Members.findAnnotatedMethods(type.getRawType(), PreDestroy.class)) {
+            handler.handle(type, instance, method);
         }
     }
 

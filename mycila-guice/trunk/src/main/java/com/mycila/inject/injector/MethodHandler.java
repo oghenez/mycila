@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mycila <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,5 +22,5 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 public interface MethodHandler<A extends Annotation> {
-    <T> void handle(TypeLiteral<? extends T> type, T instance, AnnotatedMember<Method, A> member);
+    <T> void handle(TypeLiteral<? extends T> type, T instance, Method method);
 }

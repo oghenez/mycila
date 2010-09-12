@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.annotation;
+package com.mycila.inject.internal;
 
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
@@ -34,7 +34,7 @@ import java.util.Map;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class AnnotationMetadata<T extends Annotation> {
+final class AnnotationMetadata<T extends Annotation> {
 
     private static final boolean hasAnnotationType;
     private static final Map<Class<?>, Object> DEFAULTS = new HashMap<Class<?>, Object>(16) {

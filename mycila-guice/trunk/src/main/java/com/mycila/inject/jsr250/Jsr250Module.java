@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mycila <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import com.google.inject.Module;
 import com.google.inject.Scope;
 import com.google.inject.Scopes;
 import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
 import com.google.inject.spi.BindingScopingVisitor;
 
 import javax.annotation.PostConstruct;
@@ -81,9 +80,9 @@ public final class Jsr250Module implements Module {
                         };
                         for (Binding<?> binding : injector.getAllBindings().values())
                             if (Scopes.isSingleton(binding) || binding.acceptScopingVisitor(visitor))
-                                Jsr250.preDestroy(binding.getKey().getTypeLiteral(), binding.getProvider().get());
+                                Jsr250.preDestroy(binding.getProvider().get());
                         for (Scope scope : injector.getScopeBindings().values())
-                            Jsr250.preDestroy(TypeLiteral.get(scope.getClass()), scope);
+                            Jsr250.preDestroy(scope);
                     }
                 });
     }

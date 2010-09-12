@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mycila <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,11 +28,12 @@ import java.lang.reflect.Method;
  */
 public abstract class MethodHandlerSkeleton<A extends Annotation> implements MethodHandler<A> {
     @Override
-    public <T> void handle(TypeLiteral<? extends T> type, T instance, AnnotatedMember<Method, A> member) {
-        if (!member.getMember().isAccessible())
-            member.getMember().setAccessible(true);
+    public <T> void handle(TypeLiteral<? extends T> type, T instance, Method method) {
+        if (!method.isAccessible())
+            method.setAccessible(true);
         try {
-            member.getMember().invoke(instance);
+            //TODO: fastClass
+            method.invoke(instance);
         } catch (IllegalAccessException e) {
             throw new ProvisionException(e.getMessage(), e);
         } catch (InvocationTargetException e) {

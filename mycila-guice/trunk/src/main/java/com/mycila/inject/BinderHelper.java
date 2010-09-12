@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mycila <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,18 @@
 package com.mycila.inject;
 
 import com.google.inject.Binder;
+import com.google.inject.BindingAnnotation;
 import com.google.inject.Scope;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.matcher.Matchers;
-import com.mycila.inject.injector.AnnotatedMemberTypeListener;
 import com.mycila.inject.injector.KeyProvider;
 import com.mycila.inject.injector.MethodHandler;
 import com.mycila.inject.injector.MethodHandlerTypeListener;
+import com.mycila.inject.injector.ResourceMemberTypeListener;
 import com.mycila.inject.scope.ResetScope;
 import org.aopalliance.intercept.MethodInterceptor;
 
+import javax.inject.Qualifier;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
@@ -79,7 +81,7 @@ public final class BinderHelper {
     }
 
     public <A extends Annotation> BinderHelper bindAnnotationInjector(Class<A> annotationType, Class<? extends KeyProvider<A>> providerClass) {
-        binder.bindListener(Matchers.any(), inject(new AnnotatedMemberTypeListener<A>(annotationType, providerClass)));
+        binder.bindListener(Matchers.any(), inject(new ResourceMemberTypeListener<A>(annotationType, providerClass)));
         return this;
     }
 
@@ -102,6 +104,14 @@ public final class BinderHelper {
 
     public static BinderHelper in(Binder binder) {
         return new BinderHelper(binder);
+    }
+
+    /**
+     * Returns true if annotations of the specified type are binding annotations.
+     */
+    public static boolean isBindingAnnotation(Class<? extends Annotation> annotationType) {
+        return annotationType.isAnnotationPresent(BindingAnnotation.class)
+                || annotationType.isAnnotationPresent(Qualifier.class);
     }
 
 }

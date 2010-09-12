@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mycila <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,18 @@
 package com.mycila.inject.injector;
 
 import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Member;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface KeyProvider<A extends Annotation> {
-    <M extends Member & AnnotatedElement> Key<?> getKey(AnnotatedMember<M, A> annotatedMember);
+    Key<?> getKey(TypeLiteral<?> injectedType, Field injectedMember, A resourceAnnotation);
 
-    <M extends Member & AnnotatedElement> List<Key<?>> getParameterKeys(AnnotatedMember<M, A> annotatedMember);
+    List<Key<?>> getParameterKeys(TypeLiteral<?> injectedType, Method injectedMember, A resourceAnnotation);
 }

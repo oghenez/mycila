@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mycila <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
+import com.mycila.inject.util.Members;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -44,9 +45,8 @@ public final class MethodHandlerTypeListener<A extends Annotation> implements Ty
             @Override
             public void afterInjection(I injectee) {
                 MethodHandler<A> handler = provider.get();
-                for (AnnotatedMember<Method, A> member : AnnotatedMembers.getAnnotatedMethods(type, annotationType)) {
-                    handler.handle(type, injectee, member);
-                }
+                for (Method method : Members.findAnnotatedMethods(type.getRawType(), annotationType))
+                    handler.handle(type, injectee, method);
             }
         });
     }

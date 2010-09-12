@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2010 mycila.com <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mycila <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.reflect;
+package com.mycila.inject.legacy;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
-import com.mycila.inject.util.Methods;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
+
+import static com.mycila.inject.util.Members.*;
 
 public abstract class LegacyProvider<T> implements Provider<T> {
 
@@ -95,7 +96,7 @@ public abstract class LegacyProvider<T> implements Provider<T> {
         try {
             return declaring.getMethod(methodName, toClasses(paramTypes));
         } catch (NoSuchMethodException e) {
-            Iterator<Method> methods = Methods.listAll(declaring, Methods.named(methodName).and(Methods.withParameterTypes(toClasses(paramTypes)))).iterator();
+            Iterator<Method> methods = findMethods(declaring, named(methodName).and(withParameterTypes(toClasses(paramTypes)))).iterator();
             if (!methods.hasNext())
                 throw new ProvisionException("Unable to find method " + methodName + " in class " + declaring.getName() + " matching given parameter types");
             return methods.next();
@@ -175,6 +176,7 @@ public abstract class LegacyProvider<T> implements Provider<T> {
             try {
                 if (!method.isAccessible())
                     method.setAccessible(true);
+                //TODO: fastClass
                 return providedType.cast(method.invoke(factory, getParameterValues(injector)));
             } catch (IllegalAccessException e) {
                 throw new ProvisionException(e.getMessage(), e);
@@ -200,6 +202,7 @@ public abstract class LegacyProvider<T> implements Provider<T> {
             try {
                 if (!method.isAccessible())
                     method.setAccessible(true);
+                //TODO: fastClass
                 method.invoke(target, getParameterValues(injector));
                 return target;
             } catch (IllegalAccessException e) {
