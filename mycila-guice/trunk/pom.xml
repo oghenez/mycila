@@ -59,11 +59,15 @@
     </build>
 
     <dependencies>
-        <!-- jsr 330 -->
         <dependency>
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
             <version>1</version>
+        </dependency>
+        <dependency>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+            <version>1.0</version>
         </dependency>
         <!-- guice -->
         <dependency>
@@ -72,12 +76,6 @@
             <version>3.0-20100907</version>
             <scope>system</scope>
             <systemPath>${basedir}/lib/guice-3.0-20100907.jar</systemPath>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>aopalliance</groupId>
-            <artifactId>aopalliance</artifactId>
-            <version>1.0</version>
             <optional>true</optional>
         </dependency>
         <!-- testing -->

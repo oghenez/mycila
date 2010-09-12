@@ -16,11 +16,42 @@
 
 package samples;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
+import javax.inject.Provider;
+import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
+@Singleton
 public class Bank {
-    public int id() {
+
+    List<Account> accounts = new ArrayList<Account>();
+
+    @Resource
+    Provider<Account> provider;
+
+    @PostConstruct
+    void openBank() {
+        // create two account initially
+        accounts.add(provider.get());
+        accounts.add(provider.get());
+    }
+
+    @PreDestroy
+    void closeBank() {
+        accounts.clear();
+    }
+
+    int id() {
         return 2;
+    }
+
+    List<Account> accounts() {
+        return accounts;
     }
 }

@@ -22,6 +22,7 @@ import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.google.inject.Stage;
 import com.mycila.inject.jsr250.Jsr250;
+import com.mycila.inject.jsr250.Jsr250Destroyer;
 import com.mycila.inject.jsr250.Jsr250Injector;
 import com.mycila.inject.jsr250.Jsr250Module;
 import org.junit.Test;
@@ -43,6 +44,18 @@ public final class Jsr250Test {
         Injector injector = Guice.createInjector(Stage.PRODUCTION, new MyModule(), new Jsr250Module());
 
         assertEquals("234", injector.getInstance(Account.class).getNumber());
+
+        Bank bank1 = injector.getInstance(Bank.class);
+        assertEquals(2, bank1.accounts().size());
+
+        Bank bank2 = jsr250Injector.getInstance(Bank.class);
+        assertEquals(2, bank2.accounts().size());
+
+        injector.getInstance(Jsr250Destroyer.class).preDestroy();
+        assertEquals(0, bank1.accounts().size());
+
+        jsr250Injector.destroy();
+        assertEquals(0, bank2.accounts().size());
     }
 
     static final class MyModule extends AbstractModule {

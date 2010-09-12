@@ -38,4 +38,7 @@ public class Account {
     public String getNumber() {
         return number;
     }
+
+    void close() {
+    }
 }
