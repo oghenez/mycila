@@ -21,6 +21,8 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
+import com.mycila.inject.internal.MethodInvokers;
+import com.mycila.inject.util.Reflect;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -28,7 +30,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 
-import static com.mycila.inject.util.Members.*;
+import static com.google.common.base.Predicates.*;
+import static com.google.common.collect.Iterators.*;
+import static com.mycila.inject.util.Reflect.*;
 
 public abstract class LegacyProvider<T> implements Provider<T> {
 
@@ -96,7 +100,7 @@ public abstract class LegacyProvider<T> implements Provider<T> {
         try {
             return declaring.getMethod(methodName, toClasses(paramTypes));
         } catch (NoSuchMethodException e) {
-            Iterator<Method> methods = findMethods(declaring, named(methodName).and(withParameterTypes(toClasses(paramTypes)))).iterator();
+            Iterator<Method> methods = filter(findMethods(declaring).iterator(), and(Reflect.<Method>named(methodName), withParameterTypes(toClasses(paramTypes))));
             if (!methods.hasNext())
                 throw new ProvisionException("Unable to find method " + methodName + " in class " + declaring.getName() + " matching given parameter types");
             return methods.next();
@@ -174,10 +178,7 @@ public abstract class LegacyProvider<T> implements Provider<T> {
         public T get(Injector injector) {
             Object factory = Modifier.isStatic(method.getModifiers()) ? null : injector.getInstance(factoryKey);
             try {
-                if (!method.isAccessible())
-                    method.setAccessible(true);
-                //TODO: fastClass
-                return providedType.cast(method.invoke(factory, getParameterValues(injector)));
+                return providedType.cast(MethodInvokers.invoker(method).invoke(factory, getParameterValues(injector)));
             } catch (IllegalAccessException e) {
                 throw new ProvisionException(e.getMessage(), e);
             } catch (InvocationTargetException e) {
@@ -200,10 +201,7 @@ public abstract class LegacyProvider<T> implements Provider<T> {
         public T get(Injector injector) {
             T target = instance.get(injector);
             try {
-                if (!method.isAccessible())
-                    method.setAccessible(true);
-                //TODO: fastClass
-                method.invoke(target, getParameterValues(injector));
+                MethodInvokers.invoker(method).invoke(target, getParameterValues(injector));
                 return target;
             } catch (IllegalAccessException e) {
                 throw new ProvisionException(e.getMessage(), e);

@@ -54,6 +54,3 @@ You could just as easily support:
  - OSGI plugin
 
  - jndi mocks
-
- - @Resource
- 

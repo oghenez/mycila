@@ -25,7 +25,7 @@ import com.google.inject.ProvisionException;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
-import com.mycila.inject.util.Members;
+import com.mycila.inject.internal.MethodInvokers;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -33,16 +33,19 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import static com.google.common.collect.Iterables.*;
+import static com.mycila.inject.util.Reflect.*;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ResourceMemberTypeListener<A extends Annotation> implements TypeListener {
+public final class MemberInjectorTypeListener<A extends Annotation> implements TypeListener {
     @Inject
     Injector injector;
     private final Class<A> annotationType;
     private final Class<? extends KeyProvider<A>> providerClass;
 
-    public ResourceMemberTypeListener(Class<A> annotationType, Class<? extends KeyProvider<A>> providerClass) {
+    public MemberInjectorTypeListener(Class<A> annotationType, Class<? extends KeyProvider<A>> providerClass) {
         this.annotationType = annotationType;
         this.providerClass = providerClass;
     }
@@ -55,7 +58,7 @@ public final class ResourceMemberTypeListener<A extends Annotation> implements T
             public void injectMembers(I instance) {
                 KeyProvider<A> keyProvider = provider.get();
                 // inject fields
-                for (Field field : Members.findAnnotatedFields(injectableType.getRawType(), annotationType)) {
+                for (Field field : findFields(injectableType.getRawType(), annotatedBy(annotationType))) {
                     Object value = injector.getProvider(keyProvider.getKey(injectableType, field, field.getAnnotation(annotationType))).get();
                     if (!field.isAccessible())
                         field.setAccessible(true);
@@ -66,17 +69,13 @@ public final class ResourceMemberTypeListener<A extends Annotation> implements T
                     }
                 }
                 // inject methods
-                for (Method method : Members.findAnnotatedMethods(injectableType.getRawType(), annotationType)) {
+                for (Method method : filter(findMethods(injectableType.getRawType()), annotatedBy(annotationType))) {
                     List<Key<?>> parameterKeys = keyProvider.getParameterKeys(injectableType, method, method.getAnnotation(annotationType));
                     Object[] parameters = new Object[parameterKeys.size()];
                     for (int i = 0; i < parameters.length; i++)
                         parameters[i] = injector.getProvider(parameterKeys.get(i)).get();
-                    if (!method.isAccessible()) {
-                        method.setAccessible(true);
-                    }
                     try {
-                        //TODO: fastClass
-                        method.invoke(instance, parameters);
+                        MethodInvokers.invoker(method).invoke(instance, parameters);
                     }
                     catch (IllegalAccessException e) {
                         throw new ProvisionException("Failed to inject method " + method + ". Reason: " + e.getMessage(), e);

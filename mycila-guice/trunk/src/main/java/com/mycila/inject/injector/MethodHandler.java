@@ -22,5 +22,5 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 public interface MethodHandler<A extends Annotation> {
-    <T> void handle(TypeLiteral<? extends T> type, T instance, Method method);
+    <T> void handle(TypeLiteral<? extends T> type, T instance, Method method, A annotation);
 }

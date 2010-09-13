@@ -21,10 +21,12 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
-import com.mycila.inject.util.Members;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+
+import static com.google.common.collect.Iterables.*;
+import static com.mycila.inject.util.Reflect.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -45,8 +47,8 @@ public final class MethodHandlerTypeListener<A extends Annotation> implements Ty
             @Override
             public void afterInjection(I injectee) {
                 MethodHandler<A> handler = provider.get();
-                for (Method method : Members.findAnnotatedMethods(type.getRawType(), annotationType))
-                    handler.handle(type, injectee, method);
+                for (Method method : filter(findMethods(type.getRawType()), annotatedBy(annotationType)))
+                    handler.handle(type, injectee, method, method.getAnnotation(annotationType));
             }
         });
     }
