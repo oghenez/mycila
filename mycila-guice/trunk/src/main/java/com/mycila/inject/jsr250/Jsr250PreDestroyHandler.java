@@ -16,12 +16,20 @@
 
 package com.mycila.inject.jsr250;
 
+import com.google.inject.TypeLiteral;
 import com.mycila.inject.injector.MethodHandlerSkeleton;
 
 import javax.annotation.PreDestroy;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 final class Jsr250PreDestroyHandler extends MethodHandlerSkeleton<PreDestroy> {
+    @Override
+    public <T> void handle(TypeLiteral<? extends T> type, T instance, Method method, PreDestroy annotation) {
+        if (!Modifier.isStatic(method.getModifiers()))
+            super.handle(type, instance, method, annotation);
+    }
 }

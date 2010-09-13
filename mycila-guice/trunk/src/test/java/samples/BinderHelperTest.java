@@ -18,6 +18,7 @@ package samples;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 import com.mycila.inject.injector.KeyProviderSkeleton;
 import com.mycila.inject.jsr250.Jsr250;
@@ -34,8 +35,7 @@ import org.junit.runners.JUnit4;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Member;
+import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 
 import static com.mycila.inject.BinderHelper.*;
@@ -67,9 +67,11 @@ public final class BinderHelperTest {
 
     static final class AutowireKeyProvider extends KeyProviderSkeleton<Autowire> {
         @Override
-        public <M extends Member & AnnotatedElement> Key<?> getKey(ResourceMember<M, Autowire> member) {
-            String name = member.getAnnotation().value();
-            return name.length() == 0 ? super.getKey(member) : Key.get(member.getMemberType(), Names.named(name));
+        public Key<?> getKey(TypeLiteral<?> injectedType, Field injectedMember, Autowire resourceAnnotation) {
+            String name = resourceAnnotation.value();
+            return name.length() == 0 ?
+                    super.getKey(injectedType, injectedMember, resourceAnnotation) :
+                    Key.get(injectedType.getFieldType(injectedMember), Names.named(name));
         }
     }
 

@@ -22,9 +22,9 @@ import com.google.inject.Scope;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.matcher.Matchers;
 import com.mycila.inject.injector.KeyProvider;
+import com.mycila.inject.injector.MemberInjectorTypeListener;
 import com.mycila.inject.injector.MethodHandler;
 import com.mycila.inject.injector.MethodHandlerTypeListener;
-import com.mycila.inject.injector.ResourceMemberTypeListener;
 import com.mycila.inject.scope.ResetScope;
 import org.aopalliance.intercept.MethodInterceptor;
 
@@ -81,7 +81,7 @@ public final class BinderHelper {
     }
 
     public <A extends Annotation> BinderHelper bindAnnotationInjector(Class<A> annotationType, Class<? extends KeyProvider<A>> providerClass) {
-        binder.bindListener(Matchers.any(), inject(new ResourceMemberTypeListener<A>(annotationType, providerClass)));
+        binder.bindListener(Matchers.any(), inject(new MemberInjectorTypeListener<A>(annotationType, providerClass)));
         return this;
     }
 

@@ -33,7 +33,7 @@ import com.mycila.inject.scope.ResetScope;
 import com.mycila.inject.scope.ResetSingleton;
 import com.mycila.inject.scope.SoftSingleton;
 import com.mycila.inject.scope.WeakSingleton;
-import com.mycila.inject.util.Aop;
+import com.mycila.inject.util.Reflect;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Test;
@@ -108,7 +108,7 @@ public final class Jsr250Test {
                 in(binder()).bindInterceptor(Matchers.subclassesOf(Base.class), Matchers.any(), new MethodInterceptor() {
                     @Override
                     public Object invoke(MethodInvocation invocation) throws Throwable {
-                        System.out.println("intercept: " + Aop.getTargetClass(invocation.getThis().getClass()).getSimpleName() + "." + invocation.getMethod().getName());
+                        System.out.println("intercept: " + Reflect.getTargetClass(invocation.getThis().getClass()).getSimpleName() + "." + invocation.getMethod().getName());
                         return invocation.proceed();
                     }
                 });
@@ -142,7 +142,7 @@ public final class Jsr250Test {
 
         @PreDestroy
         void close() {
-            calls.add(Aop.getTargetClass(getClass()).getSimpleName());
+            calls.add(Reflect.getTargetClass(getClass()).getSimpleName());
         }
     }
 

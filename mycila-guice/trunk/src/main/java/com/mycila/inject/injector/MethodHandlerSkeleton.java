@@ -18,6 +18,7 @@ package com.mycila.inject.injector;
 
 import com.google.inject.ProvisionException;
 import com.google.inject.TypeLiteral;
+import com.mycila.inject.internal.MethodInvokers;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -28,12 +29,9 @@ import java.lang.reflect.Method;
  */
 public abstract class MethodHandlerSkeleton<A extends Annotation> implements MethodHandler<A> {
     @Override
-    public <T> void handle(TypeLiteral<? extends T> type, T instance, Method method) {
-        if (!method.isAccessible())
-            method.setAccessible(true);
+    public <T> void handle(TypeLiteral<? extends T> type, T instance, Method method, A annotation) {
         try {
-            //TODO: fastClass
-            method.invoke(instance);
+            MethodInvokers.invoker(method).invoke(instance);
         } catch (IllegalAccessException e) {
             throw new ProvisionException(e.getMessage(), e);
         } catch (InvocationTargetException e) {

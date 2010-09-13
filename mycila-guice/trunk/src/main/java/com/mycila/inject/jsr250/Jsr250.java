@@ -28,12 +28,14 @@ import com.google.inject.spi.DefaultElementVisitor;
 import com.google.inject.spi.Element;
 import com.google.inject.spi.Elements;
 import com.mycila.inject.injector.MethodHandler;
-import com.mycila.inject.util.Aop;
-import com.mycila.inject.util.Members;
+import com.mycila.inject.util.Reflect;
 
 import javax.annotation.PreDestroy;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+
+import static com.google.common.collect.Iterables.*;
+import static com.mycila.inject.util.Reflect.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -114,10 +116,10 @@ public final class Jsr250 {
     }
 
     public static <T> void preDestroy(T instance) {
-        TypeLiteral<T> type = (TypeLiteral<T>) TypeLiteral.get(Aop.getTargetClass(instance));
+        TypeLiteral<T> type = (TypeLiteral<T>) TypeLiteral.get(Reflect.getTargetClass(instance));
         MethodHandler<PreDestroy> handler = new Jsr250PreDestroyHandler();
-        for (Method method : Members.findAnnotatedMethods(type.getRawType(), PreDestroy.class)) {
-            handler.handle(type, instance, method);
+        for (Method method : filter(findMethods(type.getRawType()), annotatedBy(PreDestroy.class))) {
+            handler.handle(type, instance, method, method.getAnnotation(PreDestroy.class));
         }
     }
 

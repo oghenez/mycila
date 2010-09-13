@@ -14,49 +14,49 @@
  * limitations under the License.
  */
 
-import com.google.inject.Binder;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.TypeLiteral;
-import com.google.inject.matcher.Matchers;
-import com.google.inject.spi.TypeEncounter;
-import com.google.inject.spi.TypeListener;
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
+import com.google.common.collect.Iterables;
+import com.mycila.inject.util.Reflect;
 
-import javax.inject.Inject;
+import java.io.File;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public class Tester {
-    public static void main(String[] args) {
-        Guice.createInjector(new Module() {
-            @Override
-            public void configure(Binder binder) {
-                binder.bind(A.class).to(B.class);
-                binder.bindListener(Matchers.any(), new TypeListener() {
-                    @Override
-                    public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-                        System.out.println(type);
-                    }
-                });
-                binder.bindInterceptor(Matchers.any(), Matchers.any(), new MethodInterceptor() {
-                    @Override
-                    public Object invoke(MethodInvocation invocation) throws Throwable {
-                        return invocation.proceed();
-                    }
-                });
+    public static void main(String[] args) throws Exception {
+        perfTestMembers();
+    }
+
+    private static void perfTestMembers() throws Exception {
+        List<Class<?>> classes = new LinkedList<Class<?>>();
+        JarFile jarFile = new JarFile(new File("/usr/lib/jvm/java-6-sun-1.6.0.20/jre/lib/rt.jar"));
+        Enumeration<JarEntry> enums = jarFile.entries();
+        while (enums.hasMoreElements()) {
+            JarEntry entry = enums.nextElement();
+            if (entry.getName().endsWith(".class")) {
+                if (entry.getName().startsWith("javax/swing")
+                        || entry.getName().startsWith("java/awt")
+                        || entry.getName().startsWith("java/awt"))
+                    classes.add(Class.forName(entry.getName().replace('/', '.').substring(0, entry.getName().length() - 6)));
             }
-        }).getInstance(A.class);
-    }
+        }
+        System.out.println("classes: " + classes.size());
 
-    static interface A {
-    }
+        long time = System.nanoTime();
 
-    static class B implements A {
-        @Inject
-        Injector injector;
+        for (int i = 0; i < 1000; i++) {
+            for (Class<?> c : classes) {
+                Iterables.filter(Reflect.findMethods(c), Reflect.annotatedBy(Deprecated.class));
+            }
+        }
+
+        long end = System.nanoTime();
+
+        System.out.println((end - time) + "ns = " + ((end - time) / 1000000) + "ms");
     }
 }
