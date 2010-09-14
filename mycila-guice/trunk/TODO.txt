@@ -49,7 +49,7 @@ You could just as easily support:
 
  - lifecycle
 
- - asm CP scanner
+ - asm CP scanner + service loader to scan modules
 
  - OSGI plugin
 
