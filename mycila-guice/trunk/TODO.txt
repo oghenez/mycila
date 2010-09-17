@@ -47,8 +47,6 @@ You could just as easily support:
 
  - testing
 
- - lifecycle
-
  - asm CP scanner + service loader to scan modules
 
  - OSGI plugin

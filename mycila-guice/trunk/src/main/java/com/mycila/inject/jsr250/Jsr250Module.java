@@ -25,6 +25,7 @@ import com.google.inject.Scope;
 import com.google.inject.Scopes;
 import com.google.inject.Singleton;
 import com.google.inject.spi.BindingScopingVisitor;
+import com.mycila.inject.annotation.Jsr250Singleton;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;

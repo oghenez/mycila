@@ -23,8 +23,8 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
 import com.google.inject.Scope;
+import com.mycila.inject.annotation.Jsr250Singleton;
 import com.mycila.inject.jsr250.Jsr250;
-import com.mycila.inject.jsr250.Jsr250Singleton;
 import com.mycila.inject.scope.ResetScope;
 
 import javax.annotation.PreDestroy;

@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.scope;
-
-import com.mycila.inject.jsr250.Jsr250Singleton;
+package com.mycila.inject.annotation;
 
 import javax.inject.Scope;
 import java.lang.annotation.ElementType;
@@ -34,5 +32,5 @@ import static java.lang.annotation.RetentionPolicy.*;
 @Inherited
 @Scope
 @Jsr250Singleton
-public @interface ExpiringSingleton {
+public @interface RenewableSingleton {
 }

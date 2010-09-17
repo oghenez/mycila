@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.scope;
+package com.mycila.inject.annotation;
 
-import com.mycila.inject.jsr250.Jsr250Singleton;
-
-import javax.inject.Scope;
-import java.lang.annotation.ElementType;
+import java.lang.annotation.Documented;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
-/**
- * @author Mathieu Carbou (mathieu.carbou@gmail.com)
- */
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ANNOTATION_TYPE, TYPE})
 @Retention(RUNTIME)
+@Documented
 @Inherited
-@Scope
-@Jsr250Singleton
-public @interface RenewableSingleton {
+public @interface Jsr250Singleton {
 }
