@@ -16,7 +16,6 @@
 
 package com.mycila.inject.injector;
 
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.MembersInjector;
@@ -40,8 +39,7 @@ import static com.mycila.inject.util.Reflect.*;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class MemberInjectorTypeListener<A extends Annotation> implements TypeListener {
-    @Inject
-    Injector injector;
+
     private final Class<A> annotationType;
     private final Class<? extends KeyProvider<A>> providerClass;
 
@@ -53,17 +51,18 @@ public final class MemberInjectorTypeListener<A extends Annotation> implements T
     @Override
     public <I> void hear(final TypeLiteral<I> injectableType, TypeEncounter<I> encounter) {
         final Provider<? extends KeyProvider<A>> provider = encounter.getProvider(providerClass);
+        final Provider<Injector> injectorProvider = encounter.getProvider(Injector.class);
         encounter.register(new MembersInjector<I>() {
             @Override
-            public void injectMembers(I instance) {
+            public void injectMembers(I injectee) {
                 KeyProvider<A> keyProvider = provider.get();
                 // inject fields
                 for (Field field : findFields(injectableType.getRawType(), annotatedBy(annotationType))) {
-                    Object value = injector.getProvider(keyProvider.getKey(injectableType, field, field.getAnnotation(annotationType))).get();
+                    Object value = injectorProvider.get().getProvider(keyProvider.getKey(injectableType, field, field.getAnnotation(annotationType))).get();
                     if (!field.isAccessible())
                         field.setAccessible(true);
                     try {
-                        field.set(instance, value);
+                        field.set(injectee, value);
                     } catch (IllegalAccessException e) {
                         throw new ProvisionException("Failed to inject field " + field + ". Reason: " + e.getMessage(), e);
                     }
@@ -73,9 +72,9 @@ public final class MemberInjectorTypeListener<A extends Annotation> implements T
                     List<Key<?>> parameterKeys = keyProvider.getParameterKeys(injectableType, method, method.getAnnotation(annotationType));
                     Object[] parameters = new Object[parameterKeys.size()];
                     for (int i = 0; i < parameters.length; i++)
-                        parameters[i] = injector.getProvider(parameterKeys.get(i)).get();
+                        parameters[i] = injectorProvider.get().getProvider(parameterKeys.get(i)).get();
                     try {
-                        MethodInvokers.invoker(method).invoke(instance, parameters);
+                        MethodInvokers.invoker(method).invoke(injectee, parameters);
                     }
                     catch (IllegalAccessException e) {
                         throw new ProvisionException("Failed to inject method " + method + ". Reason: " + e.getMessage(), e);
