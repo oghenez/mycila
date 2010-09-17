@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.scope;
-
-import com.mycila.inject.jsr250.Jsr250Singleton;
+package com.mycila.inject.annotation;
 
 import javax.inject.Scope;
 import java.lang.annotation.ElementType;

@@ -21,7 +21,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.util.Jsr330;
-import com.mycila.inject.scope.RenewableSingleton;
+import com.mycila.inject.annotation.RenewableSingleton;
 import com.mycila.inject.scope.ResetScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -18,6 +18,10 @@ package com.mycila.inject.scope;
 
 import com.google.inject.Binder;
 import com.google.inject.Module;
+import com.mycila.inject.annotation.ConcurrentSingleton;
+import com.mycila.inject.annotation.ResetSingleton;
+import com.mycila.inject.annotation.SoftSingleton;
+import com.mycila.inject.annotation.WeakSingleton;
 
 import java.util.concurrent.TimeUnit;
 
