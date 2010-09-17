@@ -127,14 +127,15 @@
                         <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
                         <Bundle-DocURL>${project.url}</Bundle-DocURL>
                         <Bundle-Copyright>Copyright (C) ${project.inceptionYear} ${project.organization.name}</Bundle-Copyright>
-                        <!--<Private-Package>
-                            org.acidmelon.plugin.jms.impl
-                        </Private-Package>-->
+                        <Private-Package>
+                            com.mycila.inject.internal
+                        </Private-Package>
                         <!--<Export-Package>
                             !org.acidmelon.plugin.jms.impl,
                             org.acidmelon.plugin*;version="${project.version}"
                         </Export-Package>-->
                         <Export-Package>
+                            !com.mycila.inject.internal*,
                             com.mycila.inject*;version="${project.version}"
                         </Export-Package>
                         <!--<Import-Package>
@@ -150,7 +151,7 @@
                         </Import-Package>
                         <_versionpolicy>[${version;===;${@}},${version;+;${@}})</_versionpolicy>
                         <_removeheaders>
-                            Built-By,Tool,Created-By,Build-Jdk,
+                            Built-By,Tool,Created-By,
                             Include-Resource,Private-Package,
                             Ignore-Package,Bnd-LastModified
                         </_removeheaders>
