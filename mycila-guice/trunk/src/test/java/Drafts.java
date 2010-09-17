@@ -27,7 +27,7 @@ import java.util.jar.JarFile;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class Tester {
+class Drafts {
     public static void main(String[] args) throws Exception {
         perfTestMembers();
     }
