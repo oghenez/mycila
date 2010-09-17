@@ -122,7 +122,7 @@ def inConsole(proc) {
     }
 }
 
-basedir = new File(getClass().classLoader.resourceLoader.loadGroovySource(getClass().name).toURI()).parentFile.absolutePath
+basedir = new File(getClass().protectionDomain.codeSource.location.path).parent
 frame = new JFrame(title: 'Wireless AP', preferredSize: new Dimension(600, 400))
 startable = new CountDownLatch(1)
 stoppable = new CountDownLatch(1)
