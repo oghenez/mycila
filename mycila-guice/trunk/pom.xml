@@ -71,7 +71,7 @@
                 <configuration>
                     <instructions>
                         <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
-                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.name}</Bundle-Name>
                         <Bundle-Description>${project.description}</Bundle-Description>
                         <Bundle-Version>${project.version}</Bundle-Version>
@@ -87,7 +87,7 @@
                         </Export-Package>-->
                         <Export-Package>
                             !com.mycila.inject.internal*,
-                            com.mycila.inject*;version="${project.version}"
+                            com.mycila.inject*;version="${project.version}";-noimport:=true
                         </Export-Package>
                         <!--<Import-Package>
                             !org.acidmelon.plugin.jms*,
@@ -97,7 +97,10 @@
                             *
                         </Import-Package>-->
                         <Import-Package>
-                            sun.reflect.annotation;resolution:=optional,
+                            !com.google.common*,
+                            !net.sf.cglib*,
+                            !org.objectweb.asm*,
+                            !sun.reflect.annotation*,
                             *
                         </Import-Package>
                         <_versionpolicy>[${version;===;${@}},${version;+;${@}})</_versionpolicy>
