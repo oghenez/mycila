@@ -23,9 +23,9 @@ import java.lang.reflect.Modifier;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class MethodInvokers {
+public class Proxy {
 
-    private MethodInvokers() {
+    private Proxy() {
     }
 
     private static final WeakCache<Method, MethodInvoker> INVOKER_CACHE = new WeakCache<Method, MethodInvoker>(new WeakCache.Provider<Method, MethodInvoker>() {

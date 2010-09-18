@@ -24,7 +24,7 @@ import com.google.inject.ProvisionException;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
-import com.mycila.inject.internal.MethodInvokers;
+import com.mycila.inject.internal.Proxy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -74,7 +74,7 @@ public final class MemberInjectorTypeListener<A extends Annotation> implements T
                     for (int i = 0; i < parameters.length; i++)
                         parameters[i] = injectorProvider.get().getProvider(parameterKeys.get(i)).get();
                     try {
-                        MethodInvokers.invoker(method).invoke(injectee, parameters);
+                        Proxy.invoker(method).invoke(injectee, parameters);
                     }
                     catch (IllegalAccessException e) {
                         throw new ProvisionException("Failed to inject method " + method + ". Reason: " + e.getMessage(), e);

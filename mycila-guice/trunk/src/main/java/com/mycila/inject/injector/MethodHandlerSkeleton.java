@@ -18,7 +18,7 @@ package com.mycila.inject.injector;
 
 import com.google.inject.ProvisionException;
 import com.google.inject.TypeLiteral;
-import com.mycila.inject.internal.MethodInvokers;
+import com.mycila.inject.internal.Proxy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -31,7 +31,7 @@ public abstract class MethodHandlerSkeleton<A extends Annotation> implements Met
     @Override
     public <T> void handle(TypeLiteral<? extends T> type, T instance, Method method, A annotation) {
         try {
-            MethodInvokers.invoker(method).invoke(instance);
+            Proxy.invoker(method).invoke(instance);
         } catch (IllegalAccessException e) {
             throw new ProvisionException(e.getMessage(), e);
         } catch (InvocationTargetException e) {
