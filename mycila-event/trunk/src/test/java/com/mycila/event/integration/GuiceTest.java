@@ -27,7 +27,6 @@ import com.mycila.event.annotation.Multiple;
 import com.mycila.event.annotation.Publish;
 import com.mycila.event.annotation.Reference;
 import com.mycila.event.annotation.Subscribe;
-import com.mycila.event.integration.guice.MycilaEventGuiceModule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -51,7 +50,7 @@ public final class GuiceTest implements Module {
 
     @Test
     public void test() throws Exception {
-        Module m = new MycilaEventGuiceModule();
+        Module m = new MycilaEventModule();
         Injector injector = Guice.createInjector(this, m);
         injector.getInstance(MyCustomPublisher.class).send("A", "cut", "message", "containing", "bad words");
         injector.getInstance(MyCustomPublisher2.class).send(1, "A", "cut", "message", "containing", "bad words", "in varg");

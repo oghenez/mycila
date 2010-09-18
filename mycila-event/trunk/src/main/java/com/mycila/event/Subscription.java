@@ -24,10 +24,10 @@ import static com.mycila.event.internal.Ensure.*;
 public final class Subscription<E> implements Referencable {
 
     private final Topics matcher;
-    private final Class<? extends E> eventType;
-    private final Subscriber<? extends E> subscriber;
+    private final Class<?> eventType;
+    private final Subscriber<E> subscriber;
 
-    private Subscription(Topics matcher, Class<? extends E> eventType, Subscriber<? extends E> subscriber) {
+    private Subscription(Topics matcher, Class<?> eventType, Subscriber<E> subscriber) {
         this.matcher = matcher;
         this.eventType = eventType;
         this.subscriber = subscriber;
@@ -37,11 +37,11 @@ public final class Subscription<E> implements Referencable {
         return matcher;
     }
 
-    public Class<? extends E> getEventType() {
+    public Class<?> getEventType() {
         return eventType;
     }
 
-    public Subscriber<? extends E> getSubscriber() {
+    public Subscriber<E> getSubscriber() {
         return subscriber;
     }
 
@@ -57,7 +57,7 @@ public final class Subscription<E> implements Referencable {
         return "Event " + eventType + " on " + matcher;
     }
 
-    public static <E> Subscription<E> create(Topics matcher, Class<? extends E> eventType, Subscriber<? extends E> subscriber) {
+    public static <E> Subscription<E> create(Topics matcher, Class<?> eventType, Subscriber<E> subscriber) {
         notNull(matcher, "TopicMatcher");
         notNull(eventType, "Event type");
         notNull(subscriber, "Subscriber");

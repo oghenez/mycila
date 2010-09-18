@@ -17,18 +17,17 @@
 package com.mycila.event.spi;
 
 import com.mycila.event.Dispatcher;
+import com.mycila.event.Dispatchers;
+import com.mycila.event.ErrorHandlers;
 import com.mycila.event.Event;
-import com.mycila.event.EventMessage;
+import com.mycila.event.EventRequest;
 import com.mycila.event.FutureListener;
-import com.mycila.event.ListenableFuture;
+import com.mycila.event.FutureResponse;
 import com.mycila.event.Subscriber;
+import com.mycila.event.SubscriberExecutionException;
 import com.mycila.event.annotation.Answers;
 import com.mycila.event.annotation.Request;
 import com.mycila.event.annotation.Subscribe;
-import com.mycila.event.internal.Dispatchers;
-import com.mycila.event.internal.ErrorHandlers;
-import com.mycila.event.internal.Messages;
-import com.mycila.event.internal.SubscriberExecutionException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -55,7 +54,7 @@ public final class ComTest {
         processor.proxy(DU.class);
 
         final CountDownLatch finished = new CountDownLatch(2);
-        ListenableFuture req = Messages.<Integer>createRequest("my sum", new int[]{1, 2, 3, 4, 5}).addListener(new FutureListener<Integer>() {
+        FutureResponse req = Messages.<Integer>createRequest("my sum", new int[]{1, 2, 3, 4, 5}).addListener(new FutureListener<Integer>() {
             public void onResponse(Integer value) {
                 assertEquals(15, value.intValue());
                 finished.countDown();
@@ -69,7 +68,7 @@ public final class ComTest {
         System.out.println(req);
         dispatcher.publish(topic("system/add"), req);
 
-        ListenableFuture<Integer> req2 = Messages.createRequest("err");
+        FutureResponse<Integer> req2 = Messages.createRequest("err");
         req2.addListener(new FutureListener<Integer>() {
             public void onResponse(Integer value) {
                 fail();
@@ -103,8 +102,8 @@ public final class ComTest {
     public void test() throws Exception {
         Dispatcher dispatcher = Dispatchers.synchronousSafe(ErrorHandlers.rethrow());
 
-        dispatcher.subscribe(only("system/df"), EventMessage.class, new Subscriber<EventMessage<Integer>>() {
-            public void onEvent(Event<EventMessage<Integer>> event) throws Exception {
+        dispatcher.subscribe(only("system/df"), EventRequest.class, new Subscriber<EventRequest<Integer>>() {
+            public void onEvent(Event<EventRequest<Integer>> event) throws Exception {
                 String folder = (String) event.getSource().getParameters().get(0);
                 System.out.println("df request on folder " + folder);
                 // call df -h <folder>
@@ -163,8 +162,8 @@ public final class ComTest {
         }
 
         // manually
-        ListenableFuture<Integer> req1 = Messages.createRequest("home");
-        ListenableFuture<Integer> req2 = Messages.createRequest("inexisting");
+        FutureResponse<Integer> req1 = Messages.createRequest("home");
+        FutureResponse<Integer> req2 = Messages.createRequest("inexisting");
         dispatcher.publish(topic("system/df"), req1);
         dispatcher.publish(topic("system/df"), req2);
 
@@ -181,8 +180,8 @@ public final class ComTest {
         @Request(topic = "system/du", timeout = 5, unit = TimeUnit.SECONDS)
         abstract Integer getSize(String folder);
 
-        @Subscribe(topics = "system/du", eventType = EventMessage.class)
-        void duRequest(Event<EventMessage<Integer>> event) {
+        @Subscribe(topics = "system/du", eventType = EventRequest.class)
+        void duRequest(Event<EventRequest<Integer>> event) {
             String folder = (String) event.getSource().getParameters().get(0);
             System.out.println("du request on folder " + folder);
             // call du -h <folder>

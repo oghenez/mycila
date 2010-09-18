@@ -1,6 +1,8 @@
 package com.mycila.event.internal;
 
-import com.mycila.event.Dispatcher;
+import com.mycila.event.MycilaEvent;
+import com.mycila.event.Publisher;
+import com.mycila.event.Requestor;
 import com.mycila.event.Topic;
 import com.mycila.event.annotation.Multiple;
 import com.mycila.event.annotation.Publish;
@@ -11,31 +13,33 @@ import org.aopalliance.intercept.MethodInvocation;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
+import static com.google.common.collect.Iterables.*;
 import static com.mycila.event.internal.Ensure.*;
+import static com.mycila.event.internal.Reflect.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class PublisherInterceptor implements MethodInterceptor {
-    private final Map<Signature, Publisher<Object>> publisherCache = new HashMap<Signature, Publisher<Object>>();
-    private final Map<Signature, Requestor<Object[], Object>> requestorCache = new HashMap<Signature, Requestor<Object[], Object>>();
+    private final Map<Signature, Publisher> publisherCache = new HashMap<Signature, Publisher>();
+    private final Map<Signature, TimedRequestor> requestorCache = new HashMap<Signature, TimedRequestor>();
     private final Object delegate;
 
-    public PublisherInterceptor(Dispatcher dispatcher, final Class<?> c) {
-        Iterable<Method> allMethods = ClassUtils.getAllDeclaredMethods(c, false);
+    public PublisherInterceptor(MycilaEvent mycilaEvent, final Class<?> c) {
+        Iterable<Method> allMethods = findMethods(getTargetClass(c));
         // find publishers
-        for (Method method : ClassUtils.filterAnnotatedMethods(allMethods, Publish.class)) {
+        for (Method method : filter(allMethods, annotatedBy(Publish.class))) {
             hasSomeArgs(method);
             Publish annotation = method.getAnnotation(Publish.class);
-            Publisher<Object> publisher = Publishers.createPublisher(dispatcher, Topic.topics(annotation.topics()));
+            Publisher publisher = mycilaEvent.createPublisher(Topic.topics(annotation.topics()));
             publisherCache.put(new Signature(method), publisher);
         }
         // find requestors
-        for (Method method : ClassUtils.filterAnnotatedMethods(allMethods, Request.class)) {
+        for (Method method : filter(allMethods, annotatedBy(Request.class))) {
             Request annotation = method.getAnnotation(Request.class);
-            Requestor<Object[], Object> requestor = Publishers.createRequestor(dispatcher, Topic.topic(annotation.topic()), annotation.timeout(), annotation.unit());
-            requestorCache.put(new Signature(method), requestor);
+            requestorCache.put(new Signature(method), new TimedRequestor(mycilaEvent.createRequestor(Topic.topic(annotation.topic())), annotation));
         }
         delegate = !c.isInterface() ? null : new Object() {
             @Override
@@ -47,19 +51,26 @@ public final class PublisherInterceptor implements MethodInterceptor {
 
     @SuppressWarnings({"unchecked"})
     public Object invoke(MethodInvocation invocation) throws Throwable {
-        MethodSignature methodSignature = MethodSignature.of(invocation.getMethod());
-        Publisher<Object> publisher = publisherCache.get(methodSignature);
+        Signature methodSignature = new Signature(invocation.getMethod());
+        Publisher publisher = publisherCache.get(methodSignature);
         if (publisher != null)
             return handlePublishing(publisher, invocation);
-        Requestor<Object[], Object> requestor = requestorCache.get(methodSignature);
-        if (requestor != null)
-            return requestor.request(invocation.getArguments());
+        TimedRequestor r = requestorCache.get(methodSignature);
+        if (r != null) {
+            try {
+                return r.request.timeout() <= Request.INFINITE ?
+                        r.requestor.createRequest(invocation.getArguments()).send().get() :
+                        r.requestor.createRequest(invocation.getArguments()).send().get(r.request.timeout(), r.request.unit());
+            } catch (ExecutionException e) {
+                throw e.getCause();
+            }
+        }
         return delegate == null ?
                 invocation.proceed() :
                 invocation.getMethod().invoke(delegate, invocation.getArguments());
     }
 
-    private static Object handlePublishing(Publisher<Object> publisher, MethodInvocation invocation) {
+    private static Object handlePublishing(Publisher publisher, MethodInvocation invocation) {
         boolean requiresSplit = invocation.getMethod().isAnnotationPresent(Multiple.class);
         for (Object arg : invocation.getArguments()) {
             if (!requiresSplit)
@@ -74,5 +85,15 @@ public final class PublisherInterceptor implements MethodInterceptor {
                 publisher.publish(arg);
         }
         return null;
+    }
+
+    private static final class TimedRequestor {
+        private final Requestor requestor;
+        private final Request request;
+
+        private TimedRequestor(Requestor requestor, Request request) {
+            this.requestor = requestor;
+            this.request = request;
+        }
     }
 }

@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Signature {
+final class Signature {
     public final Class[] parameterTypes;
     private final int hash;
     public final Method method;

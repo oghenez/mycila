@@ -32,9 +32,13 @@ import java.util.concurrent.TimeUnit;
 @Documented
 @Inherited
 public @interface Request {
+
+    final int INFINITE = -1;
+
     String topic();
 
-    long timeout() default -1;
+    long timeout() default INFINITE;
 
     TimeUnit unit() default TimeUnit.MILLISECONDS;
+
 }
