@@ -14,19 +14,26 @@
  * limitations under the License.
  */
 
-package com.mycila.event.internal;
+package com.mycila.event;
 
-import com.mycila.event.Dispatcher;
-import com.mycila.event.ErrorHandler;
+import com.mycila.event.internal.DefaultDispatcher;
 
+import javax.annotation.PreDestroy;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import static com.mycila.event.internal.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -59,6 +66,7 @@ public final class Dispatchers {
                                     final ExecutorService subscriberExecutor) {
         return new DefaultDispatcher(errorHandler, publishExecutor, subscriberExecutor) {
             @Override
+            @PreDestroy
             public void close() {
                 publishExecutor.shutdown();
                 subscriberExecutor.shutdown();
@@ -113,6 +121,7 @@ public final class Dispatchers {
                 });
         return new DefaultDispatcher(errorHandler, executor, Executors.immediate()) {
             @Override
+            @PreDestroy
             public void close() {
                 executor.shutdown();
             }
@@ -146,6 +155,7 @@ public final class Dispatchers {
                 });
         return new DefaultDispatcher(errorHandler, executor, Executors.immediate()) {
             @Override
+            @PreDestroy
             public void close() {
                 executor.shutdown();
             }
@@ -203,6 +213,7 @@ public final class Dispatchers {
             }
         }, subscriberCompletionExecutor) {
             @Override
+            @PreDestroy
             public void close() {
                 publishingExecutor.shutdown();
                 subscriberExecutor.shutdown();
@@ -214,7 +225,7 @@ public final class Dispatchers {
 
         final Executor executor;
         CompletionService<Void> completionService;
-        int count = 0;
+        volatile int count = 0;
 
         SubscriberCompletionExecutor(Executor executor) {
             this.executor = executor;
@@ -269,10 +280,92 @@ public final class Dispatchers {
                 });
         return new DefaultDispatcher(errorHandler, executor, executor) {
             @Override
+            @PreDestroy
             public void close() {
                 executor.shutdown();
             }
         };
     }
 
+    private static final class Executors {
+
+        private static Executor immediate() {
+            return new Executor() {
+                public void execute(Runnable command) {
+                    command.run();
+                }
+            };
+        }
+
+        private static Executor blocking() {
+            return new Executor() {
+                public synchronized void execute(Runnable command) {
+                    command.run();
+                }
+            };
+        }
+
+        private static Executor blocking(final long blockingTimeout, final TimeUnit unit) {
+            return new Executor() {
+                private final Lock lock = new ReentrantLock();
+
+                public void execute(Runnable command) {
+                    boolean acquired;
+                    try {
+                        acquired = lock.tryLock(blockingTimeout, unit);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw SubscriberExecutionException.wrap(e);
+                    }
+                    if (acquired) {
+                        try {
+                            command.run();
+                        } finally {
+                            lock.unlock();
+                        }
+                    } else
+                        throw SubscriberExecutionException.wrap(new TimeoutException("Unable to acquire lock in " + blockingTimeout + " " + unit));
+                }
+            };
+        }
+    }
+
+    private static final class DefaultThreadFactory implements ThreadFactory {
+        private static final AtomicInteger poolNumber = new AtomicInteger(1);
+
+        private final AtomicInteger threadNumber = new AtomicInteger(1);
+        private final ThreadGroup group;
+        private final String namePrefix;
+        private final String poolPrefix;
+        private final boolean daemon;
+
+        public DefaultThreadFactory(String poolPrefix, String namePrefix, boolean daemon) {
+            notNull(poolPrefix, "Thread pool prefix");
+            notNull(namePrefix, "Thread name prefix");
+            this.daemon = daemon;
+            SecurityManager s = System.getSecurityManager();
+            group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+            this.poolPrefix = poolPrefix + "-" + poolNumber.getAndIncrement() + "-";
+            this.namePrefix = namePrefix;
+        }
+
+        @Override
+        public Thread newThread(final Runnable r) {
+            return newThread(namePrefix, r);
+        }
+
+        public Thread newThread(String name, final Runnable runnable) {
+            notNull(runnable, "Runnable");
+            final ClassLoader ccl = Thread.currentThread().getContextClassLoader();
+            final Thread t = new Thread(group, new Runnable() {
+                public void run() {
+                    Thread.currentThread().setContextClassLoader(ccl);
+                    runnable.run();
+                }
+            }, poolPrefix + name + "-" + threadNumber.getAndIncrement(), 0);
+            t.setDaemon(daemon);
+            t.setPriority(Thread.currentThread().getPriority());
+            return t;
+        }
+    }
 }

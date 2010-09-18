@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package com.mycila.event.internal;
+package com.mycila.event;
+
+import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Publisher<E> {
-    Topic[] getTopics();
+public interface EventRequest<T> {
+    List<?> getParameters();
 
-    void publish(E... events);
+    void replyError(Throwable error);
+
+    void reply(T reply);
 }

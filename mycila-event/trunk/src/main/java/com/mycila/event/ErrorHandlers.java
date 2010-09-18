@@ -14,12 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.event.internal;
-
-import com.mycila.event.ErrorHandler;
-import com.mycila.event.Event;
-import com.mycila.event.EventMessage;
-import com.mycila.event.Subscription;
+package com.mycila.event;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -33,21 +28,26 @@ public final class ErrorHandlers {
         return SILENT;
     }
 
+    public static ErrorHandler rethrow() {
+        return RETHROW;
+    }
+
     private static final ErrorHandler SILENT = new ErrorHandler() {
+        @Override
         public <E> void onError(Subscription<E> subscription, Event<E> event, Exception e) {
         }
     };
 
-    public static ErrorHandler rethrow() throws SubscriberExecutionException {
-        return new ErrorHandler() {
-            public <E> void onError(Subscription<E> subscription, Event<E> event, Exception e) {
-                SubscriberExecutionException ee = SubscriberExecutionException.wrap(e);
-                if (event.getSource() instanceof EventMessage)
-                    ((EventMessage) event.getSource()).replyError(ee.getCause());
-                else
-                    throw ee;
-            }
-        };
-    }
+
+    private static final ErrorHandler RETHROW = new ErrorHandler() {
+        @Override
+        public <E> void onError(Subscription<E> subscription, Event<E> event, Exception e) {
+            SubscriberExecutionException ee = SubscriberExecutionException.wrap(e);
+            if (event.getSource() instanceof EventRequest)
+                ((EventRequest) event.getSource()).replyError(ee.getCause());
+            else
+                throw ee;
+        }
+    };
 
 }

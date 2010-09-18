@@ -16,22 +16,26 @@
 
 package com.mycila.event.internal;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import com.mycila.event.Ref;
 import com.mycila.event.Subscription;
-import com.mycila.event.internal.FilterIterator;
 
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static com.google.common.collect.Iterators.*;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class SubscriptionList<E> implements Iterable<Subscription<E>> {
+final class SubscriptionList implements Iterable<Subscription<?>> {
 
-    private final CopyOnWriteArrayList<Ref<Subscription<E>>> subscriptions = new CopyOnWriteArrayList<Ref<Subscription<E>>>();
+    private final CopyOnWriteArrayList<Ref<? extends Subscription<?>>> subscriptions = new CopyOnWriteArrayList<Ref<? extends Subscription<?>>>();
 
-    public boolean add(Subscription<E> subscription) {
-        return subscriptions.add(subscription.getReachability().wrap(subscription));
+    public boolean add(Subscription<?> subscription) {
+        Ref<? extends Subscription<?>> ref = subscription.getReachability().wrap(subscription);
+        return subscriptions.add(ref);
     }
 
     public boolean isEmpty() {
@@ -42,20 +46,30 @@ final class SubscriptionList<E> implements Iterable<Subscription<E>> {
         return subscriptions.size();
     }
 
-    public Iterator<Subscription<E>> iterator() {
-        return new FilterIterator<Subscription<E>, Ref<Subscription<E>>>(subscriptions.iterator()) {
-            @Override
-            protected Subscription<E> filter(Ref<Subscription<E>> ref) {
-                Subscription<E> next = ref.get();
-                if (next == null) subscriptions.remove(ref);
-                return next;
-            }
-        };
+    public Iterator<Subscription<?>> iterator() {
+        return filter(transform(subscriptions.iterator(), TRANSFORMER), FILTER);
     }
 
-    public void remove(Subscription<E> subscription) {
-        for (Ref<Subscription<E>> ref : subscriptions)
+    public void remove(Subscription<?> subscription) {
+        for (Ref<? extends Subscription<?>> ref : subscriptions)
             if (subscription.equals(ref.get()))
                 subscriptions.remove(ref);
     }
+
+    private static final Predicate<Subscription<?>> FILTER = new Predicate<Subscription<?>>() {
+        @Override
+        public boolean apply(Subscription<?> input) {
+            return input != null;
+        }
+    };
+
+    private final Function<Ref<? extends Subscription<?>>, Subscription<?>> TRANSFORMER = new Function<Ref<? extends Subscription<?>>, Subscription<?>>() {
+        @Override
+        public Subscription<?> apply(Ref<? extends Subscription<?>> ref) {
+            Subscription<?> next = ref.get();
+            if (next == null)
+                subscriptions.remove(ref);
+            return next;
+        }
+    };
 }

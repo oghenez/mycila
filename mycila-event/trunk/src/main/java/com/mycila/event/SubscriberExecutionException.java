@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package com.mycila.event.internal;
-
-import com.mycila.event.DispatcherException;
+package com.mycila.event;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -30,7 +29,8 @@ public final class SubscriberExecutionException extends DispatcherException {
 
     public static SubscriberExecutionException wrap(Throwable throwable) {
         while (throwable instanceof InvocationTargetException
-                || throwable instanceof DispatcherException)
+                || throwable instanceof ExecutionException
+                || throwable instanceof SubscriberExecutionException)
             throwable = throwable instanceof InvocationTargetException ?
                     ((InvocationTargetException) throwable).getTargetException() :
                     throwable.getCause();

@@ -27,7 +27,7 @@ public final class EventQueue<T> implements BlockingQueue<T>, Subscriber<T>, Ref
     }
 
     @Override
-    public void onEvent(Event<? extends T> e) throws Exception {
+    public void onEvent(Event<T> e) throws Exception {
         offer(e.getSource());
     }
 

@@ -17,13 +17,13 @@
 package com.mycila.event.spi;
 
 import com.mycila.event.Dispatcher;
+import com.mycila.event.Dispatchers;
+import com.mycila.event.ErrorHandlers;
 import com.mycila.event.Event;
 import com.mycila.event.Reachability;
 import com.mycila.event.Subscriber;
 import com.mycila.event.annotation.Reference;
 import com.mycila.event.api.topic.Topic;
-import com.mycila.event.internal.Dispatchers;
-import com.mycila.event.internal.ErrorHandlers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

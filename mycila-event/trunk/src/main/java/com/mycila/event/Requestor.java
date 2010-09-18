@@ -21,10 +21,14 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface EventMessage<T> {
-    List<?> getParameters();
+public interface Requestor {
+    Topic getTopic();
 
-    void replyError(Throwable error);
+    <R> SendableRequest<R> createRequest();
 
-    void reply(T reply);
+    <R> SendableRequest<R> createRequest(Object parameter);
+
+    <R> SendableRequest<R> createRequest(Object... parameters);
+
+    <R> SendableRequest<R> createRequest(List<?> parameters);
 }

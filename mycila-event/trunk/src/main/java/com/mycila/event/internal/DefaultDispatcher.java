@@ -21,6 +21,8 @@ import com.mycila.event.ErrorHandler;
 import com.mycila.event.Event;
 import com.mycila.event.Subscriber;
 import com.mycila.event.Subscription;
+import com.mycila.event.Topic;
+import com.mycila.event.Topics;
 
 import java.util.Iterator;
 import java.util.concurrent.Executor;
@@ -45,12 +47,13 @@ public class DefaultDispatcher implements Dispatcher {
         this.subscriberExecutor = notNull(subscriberExecutor, "Subscriber executor");
     }
 
+    @Override
     public final <E> void publish(final Topic topic, final E source) {
         notNull(topic, "Topic");
         notNull(source, "Event source");
         publishExecutor.execute(new Runnable() {
             public void run() {
-                final Event<E> event = Events.event(topic, source);
+                final Event<E> event = event(topic, source);
                 final Iterator<Subscription<E>> subscriptionIterator = subscriptionManager.getSubscriptions(event);
                 while (subscriptionIterator.hasNext()) {
                     final Subscription<E> subscription = subscriptionIterator.next();
@@ -68,19 +71,50 @@ public class DefaultDispatcher implements Dispatcher {
         });
     }
 
-    public final <E> void subscribe(TopicMatcher matcher, Class<?> eventType, Subscriber<E> subscriber) {
+    @Override
+    public final <E> void subscribe(Topics matcher, Class<?> eventType, Subscriber<E> subscriber) {
         notNull(matcher, "TopicMatcher");
         notNull(eventType, "Event type");
         notNull(subscriber, "Subscriber");
-        subscriptionManager.addSubscription(Subscriptions.create(matcher, eventType, subscriber));
+        subscriptionManager.addSubscription(Subscription.create(matcher, eventType, subscriber));
     }
 
+    @Override
     public final <E> void unsubscribe(Subscriber<E> subscriber) {
         notNull(subscriber, "Subscriber");
         subscriptionManager.removeSubscriber(subscriber);
     }
 
+    @Override
     public void close() {
+    }
+
+    private static <E> Event<E> event(final Topic topic, final E source) {
+        notNull(topic, "Topic");
+        notNull(source, "Source");
+        return new Event<E>() {
+            private final long timestamp = System.nanoTime();
+
+            @Override
+            public Topic getTopic() {
+                return topic;
+            }
+
+            @Override
+            public E getSource() {
+                return source;
+            }
+
+            @Override
+            public long nanoTime() {
+                return timestamp;
+            }
+
+            @Override
+            public String toString() {
+                return "Event{timestamp=" + timestamp + ",topic=" + topic + ",source=" + source + "}";
+            }
+        };
     }
 
 }

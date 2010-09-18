@@ -16,11 +16,13 @@
 
 package com.mycila.event;
 
-import java.util.concurrent.Future;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface ListenableFuture<T> extends Future<T> {
-    void addListener(FutureListener<T> listener);
+public interface Publisher {
+    Topic[] getTopics();
+
+    void publish(Object event);
+
+    void publish(Object... events);
 }

@@ -20,5 +20,5 @@ package com.mycila.event;
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public interface Subscriber<E> {
-    void onEvent(Event<? extends E> event) throws Exception;
+    void onEvent(Event<E> event) throws Exception;
 }

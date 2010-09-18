@@ -22,9 +22,9 @@ package com.mycila.event;
 public interface Dispatcher {
     <E> void publish(Topic topic, E source);
 
-    <E> void subscribe(Topics matcher, Class<? extends E> eventType, Subscriber<? extends E> subscriber);
+    <E> void subscribe(Topics matcher, Class<?> eventType, Subscriber<E> subscriber);
 
-    <E> void unsubscribe(Subscriber<? extends E> subscriber);
+    <E> void unsubscribe(Subscriber<E> subscriber);
 
     void close();
 }

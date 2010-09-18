@@ -16,9 +16,15 @@
 
 package com.mycila.event;
 
+import java.util.List;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface ErrorHandler {
-    <E> void onError(Subscription<E> subscription, Event<E> event, Exception e);
+public interface SendableRequest<T> {
+    List<?> getParameters();
+
+    Topic getTopic();
+
+    FutureResponse<T> send();
 }

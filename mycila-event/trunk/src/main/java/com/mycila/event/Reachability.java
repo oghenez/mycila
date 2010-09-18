@@ -30,6 +30,7 @@ public enum Reachability {
         public <T> Ref<T> wrap(final T referencable) {
             notNull(referencable, "Referenced object");
             return new Ref<T>() {
+                @Override
                 public T get() {
                     return referencable;
                 }
@@ -64,6 +65,7 @@ public enum Reachability {
             this.reference = reference;
         }
 
+        @Override
         public T get() {
             return reference.get();
         }

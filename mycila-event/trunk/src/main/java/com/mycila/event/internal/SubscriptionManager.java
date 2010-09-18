@@ -16,59 +16,62 @@
 
 package com.mycila.event.internal;
 
+import com.google.common.base.Predicate;
 import com.mycila.event.Event;
 import com.mycila.event.Subscriber;
 import com.mycila.event.Subscription;
-import com.mycila.event.internal.FilterIterator;
+import com.mycila.event.Topic;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.google.common.collect.Iterators.*;
+
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class SubscriptionManager<E> {
+final class SubscriptionManager {
 
-    private final SubscriptionList<E> subscriptions = new SubscriptionList<E>();
-    private final ConcurrentHashMap<Topic, SubscriptionList<E>> mappedSubscriptions = new ConcurrentHashMap<Topic, SubscriptionList<E>>();
+    private final SubscriptionList subscriptions = new SubscriptionList();
+    private final ConcurrentHashMap<Topic, SubscriptionList> mappedSubscriptions = new ConcurrentHashMap<Topic, SubscriptionList>();
 
-    void addSubscription(Subscription<E> subscription) {
+    void addSubscription(Subscription<?> subscription) {
         subscriptions.add(subscription);
-        for (Map.Entry<Topic, SubscriptionList<E>> entry : mappedSubscriptions.entrySet())
+        for (Map.Entry<Topic, SubscriptionList> entry : mappedSubscriptions.entrySet())
             if (subscription.getTopicMatcher().matches(entry.getKey()))
                 entry.getValue().add(subscription);
     }
 
-    void removeSubscriber(Subscriber<E> subscriber) {
-        for (Subscription<E> subscription : subscriptions)
+    void removeSubscriber(Subscriber<?> subscriber) {
+        for (Subscription<?> subscription : subscriptions)
             if (subscription.getSubscriber().equals(subscriber)) {
                 subscriptions.remove(subscription);
-                for (Map.Entry<Topic, SubscriptionList<E>> entry : mappedSubscriptions.entrySet())
+                for (Map.Entry<Topic, SubscriptionList> entry : mappedSubscriptions.entrySet())
                     if (subscription.getTopicMatcher().matches(entry.getKey()))
                         entry.getValue().remove(subscription);
             }
     }
 
-    Iterator<Subscription<E>> getSubscriptions(final Event<E> event) {
+    <E> Iterator<Subscription<E>> getSubscriptions(final Event<E> event) {
         final Topic topic = event.getTopic();
-        SubscriptionList<E> subscriptionList = mappedSubscriptions.get(topic);
+        SubscriptionList subscriptionList = mappedSubscriptions.get(topic);
         if (subscriptionList == null) {
-            subscriptionList = new SubscriptionList<E>();
-            for (Subscription<E> subscription : this.subscriptions)
+            subscriptionList = new SubscriptionList();
+            for (Subscription<?> subscription : this.subscriptions)
                 if (subscription.getTopicMatcher().matches(topic))
                     subscriptionList.add(subscription);
-            final SubscriptionList<E> old = mappedSubscriptions.putIfAbsent(topic, subscriptionList);
+            final SubscriptionList old = mappedSubscriptions.putIfAbsent(topic, subscriptionList);
             if (old != null) subscriptionList = old;
         }
-        return new FilterIterator<Subscription<E>, Subscription<E>>(subscriptionList.iterator()) {
+        return (Iterator) filter(subscriptionList.iterator(), new Predicate<Subscription<?>>() {
             final Class<?> eventType = event.getSource().getClass();
 
             @Override
-            protected Subscription<E> filter(Subscription<E> subscription) {
-                return subscription.getEventType().isAssignableFrom(eventType) ? subscription : null;
+            public boolean apply(Subscription<?> input) {
+                return input.getEventType().isAssignableFrom(eventType);
             }
-        };
+        });
     }
 
 }

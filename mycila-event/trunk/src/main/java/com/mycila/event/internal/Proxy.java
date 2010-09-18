@@ -16,9 +16,7 @@
 
 package com.mycila.event.internal;
 
-import net.sf.cglib.core.DefaultGeneratorStrategy;
 import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.Factory;
 import net.sf.cglib.proxy.MethodProxy;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -28,8 +26,6 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -39,6 +35,25 @@ public final class Proxy {
     private Proxy() {
     }
 
+    @SuppressWarnings({"unchecked"})
+    public static <T> T proxy(Class<T> c, MethodInterceptor interceptor) {
+        if (c.isInterface()) {
+            return (T) java.lang.reflect.Proxy.newProxyInstance(
+                    c.getClassLoader(),
+                    new Class<?>[]{c},
+                    toJDK(interceptor));
+        }
+        Enhancer enhancer = BytecodeGen.newEnhancer(c, BytecodeGen.Visibility.PUBLIC);
+        enhancer.setCallback(toCGLIB(interceptor));
+        return (T) enhancer.create();
+    }
+
+    static MethodInvoker invoker(final Method method) {
+        return INVOKER_CACHE.get(method);
+    }
+
+    /* PRIVATE */
+
     private static final WeakCache<Method, MethodInvoker> INVOKER_CACHE = new WeakCache<Method, MethodInvoker>(new WeakCache.Provider<Method, MethodInvoker>() {
         @Override
         public MethodInvoker get(final Method method) {
@@ -47,6 +62,7 @@ public final class Proxy {
                 try {
                     final net.sf.cglib.reflect.FastMethod fastMethod = BytecodeGen.newFastClass(method.getDeclaringClass(), BytecodeGen.Visibility.forMember(method)).getMethod(method);
                     return new MethodInvoker() {
+                        @Override
                         public Object invoke(Object target, Object... parameters) throws IllegalAccessException, InvocationTargetException {
                             return fastMethod.invoke(target, parameters);
                         }
@@ -57,6 +73,7 @@ public final class Proxy {
                 method.setAccessible(true);
             }
             return new MethodInvoker() {
+                @Override
                 public Object invoke(Object target, Object... parameters) throws IllegalAccessException, InvocationTargetException {
                     return method.invoke(target, parameters);
                 }
@@ -64,45 +81,7 @@ public final class Proxy {
         }
     });
 
-    public static MethodInvoker invoker(final Method method) {
-        return INVOKER_CACHE.get(method);
-    }
-
-    public static <T> T proxy(Class<T> c, MethodInterceptor interceptor) {
-        return c.isInterface() ?
-                createJDKProxy(c, interceptor) :
-                createCglibProxy(c, interceptor);
-    }
-
-    @SuppressWarnings({"unchecked"})
-    static <T> T createJDKProxy(Class<T> c, MethodInterceptor interceptor) {
-        List<Class<?>> interfaces = new LinkedList<Class<?>>();
-        interfaces.add(ProxyMarker.class);
-        interfaces.add(c);
-        return (T) java.lang.reflect.Proxy.newProxyInstance(
-                c.getClassLoader(),
-                interfaces.toArray(new Class[interfaces.size()]),
-                toJDK(interceptor));
-    }
-
-    @SuppressWarnings({"unchecked"})
-    static <T> T createCglibProxy(Class<T> c, MethodInterceptor interceptor) {
-        BytecodeGen.newEnhancer()
-
-        Enhancer enhancer = new Enhancer();
-        enhancer.setStrategy(new DefaultGeneratorStrategy());
-        List<Class<?>> interfaces = new LinkedList<Class<?>>();
-        interfaces.add(ProxyMarker.class);
-        if (c.isInterface()) interfaces.add(c);
-        else enhancer.setSuperclass(c);
-        enhancer.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
-        enhancer.setNamingPolicy(NAMING_POLICY);
-        enhancer.setCallback(toCGLIB(interceptor));
-        enhancer.setUseFactory(true);
-        return (T) enhancer.create();
-    }
-
-    static InvocationHandler toJDK(final MethodInterceptor interceptor) {
+    private static InvocationHandler toJDK(final MethodInterceptor interceptor) {
         return new InvocationHandler() {
             public Object invoke(final Object proxy, final Method method, Object[] args) throws Throwable {
                 final Object[] arguments = args == null ? new Object[0] : args;
@@ -131,7 +110,7 @@ public final class Proxy {
         };
     }
 
-    static net.sf.cglib.proxy.MethodInterceptor toCGLIB(final MethodInterceptor interceptor) {
+    private static net.sf.cglib.proxy.MethodInterceptor toCGLIB(final MethodInterceptor interceptor) {
         return new net.sf.cglib.proxy.MethodInterceptor() {
             public Object intercept(final Object obj, final Method method, Object[] args, final MethodProxy proxy) throws Throwable {
                 final Object[] arguments = args == null ? new Object[0] : args;
@@ -160,20 +139,4 @@ public final class Proxy {
         };
     }
 
-    static boolean isProxy(Class<?> c) {
-        return c != null
-                && !c.isInterface()
-                && !c.equals(Object.class)
-                && (java.lang.reflect.Proxy.isProxyClass(c)
-                || Factory.class.isAssignableFrom(c)
-                || net.sf.cglib.proxy.Proxy.isProxyClass(c)
-                || isMycilaProxy(c));
-    }
-
-    public static boolean isMycilaProxy(Class<?> c) {
-        return ProxyMarker.class.isAssignableFrom(c);
-    }
-
-    public static interface ProxyMarker {
-    }
 }

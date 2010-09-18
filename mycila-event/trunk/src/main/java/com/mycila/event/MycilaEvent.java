@@ -16,20 +16,26 @@
 
 package com.mycila.event;
 
+import com.google.common.collect.Iterables;
 import com.mycila.event.annotation.Answers;
 import com.mycila.event.annotation.Subscribe;
 import com.mycila.event.internal.EventQueue;
+import com.mycila.event.internal.Message;
 import com.mycila.event.internal.Proxy;
 import com.mycila.event.internal.PublisherInterceptor;
-import com.mycila.event.internal.Subscriptions;
+import com.mycila.event.internal.Subscribers;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 
+import static com.google.common.base.Preconditions.*;
 import static com.google.common.collect.Iterables.*;
 import static com.mycila.event.internal.Ensure.*;
 import static com.mycila.event.internal.Reflect.*;
@@ -69,26 +75,119 @@ public final class MycilaEvent {
         return queue;
     }
 
+    public Requestor createRequestor(final Topic topic) {
+        return new Requestor() {
+            @Override
+            public Topic getTopic() {
+                return topic;
+            }
+
+            @Override
+            public <R> SendableRequest<R> createRequest() {
+                return createRequest(Collections.<Object>emptyList());
+            }
+
+            @Override
+            public <R> SendableRequest<R> createRequest(Object parameter) {
+                return createRequest(Arrays.asList(parameter));
+            }
+
+            @Override
+            public <R> SendableRequest<R> createRequest(Object... parameters) {
+                return createRequest(Arrays.asList(parameters));
+            }
+
+            @Override
+            public <R> SendableRequest<R> createRequest(final List<?> parameters) {
+                checkNotNull(topic, "Missing topic");
+                return new SendableRequest<R>() {
+                    @Override
+                    public List<?> getParameters() {
+                        return parameters;
+                    }
+
+                    @Override
+                    public Topic getTopic() {
+                        return topic;
+                    }
+
+                    @Override
+                    public FutureResponse<R> send() {
+                        Message<R> msg = new Message<R>(parameters);
+                        dispatcher.publish(topic, msg);
+                        return msg;
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "Request on " + topic;
+                    }
+                };
+            }
+
+            @Override
+            public String toString() {
+                return "Requestor on " + topic;
+            }
+        };
+    }
+
+    public Publisher createPublisher(final Iterable<Topic> topics) {
+        return createPublisher(Iterables.toArray(checkNotNull(topics, "Missing topics"), Topic.class));
+    }
+
+    public Publisher createPublisher(final Topic... topics) {
+        checkNotNull(topics, "Missing topics");
+        return new Publisher() {
+            @Override
+            public Topic[] getTopics() {
+                return topics;
+            }
+
+            @Override
+            public void publish(Object event) {
+                for (Topic topic : topics) {
+                    dispatcher.publish(topic, event);
+                }
+            }
+
+            @Override
+            public void publish(Object... events) {
+                for (Object event : events) {
+                    publish(events);
+                }
+            }
+
+            @Override
+            public String toString() {
+                return "Publisher on " + Arrays.toString(topics);
+            }
+        };
+    }
+
     public <T> T instanciate(Class<T> abstractClassOrInterface) {
         notNull(abstractClassOrInterface, "Abstract class or interface");
-        T t = Proxy.proxy(abstractClassOrInterface, new PublisherInterceptor(dispatcher, abstractClassOrInterface));
+        T t = Proxy.proxy(abstractClassOrInterface, new PublisherInterceptor(this, abstractClassOrInterface));
         register(t);
         return t;
     }
 
     public void register(Object instance) {
         notNull(instance, "Instance");
-        Proxy.isMycilaProxy(instance.getClass()) ?
-                instance :
-                registerInternal(instance);
         final Iterable<Method> methods = findMethods(getTargetClass(instance.getClass()));
         for (Method method : filter(methods, annotatedBy(Subscribe.class))) {
             Subscribe subscribe = method.getAnnotation(Subscribe.class);
-            dispatcher.subscribe(Topic.anyOf(subscribe.topics()), subscribe.eventType(), Subscriptions.createSubscriber(instance, method));
+            dispatcher.subscribe(
+                    Topic.anyOf(subscribe.topics()),
+                    subscribe.eventType(),
+                    Subscribers.createSubscriber(instance, method));
         }
         for (Method method : filter(methods, annotatedBy(Answers.class))) {
             Answers answers = method.getAnnotation(Answers.class);
-            dispatcher.subscribe(Topic.anyOf(answers.topics()), EventMessage.class, Subscriptions.createResponder(instance, method));
+            dispatcher.subscribe(
+                    Topic.anyOf(answers.topics()),
+                    EventRequest.class,
+                    Subscribers.createResponder(instance, method));
         }
     }
 

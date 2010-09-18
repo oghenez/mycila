@@ -16,11 +16,29 @@
 
 package com.mycila.event.integration.guice;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
+import com.google.inject.Module;
 import com.google.inject.Provider;
+import com.google.inject.Provides;
+import com.google.inject.TypeLiteral;
 import com.google.inject.binder.ScopedBindingBuilder;
+import com.google.inject.spi.InjectionListener;
+import com.google.inject.spi.TypeEncounter;
+import com.google.inject.spi.TypeListener;
+import com.mycila.event.Dispatcher;
+import com.mycila.event.MycilaEvent;
+import com.mycila.event.annotation.Answers;
+import com.mycila.event.annotation.Subscribe;
+
+import javax.inject.Singleton;
+
+import static com.google.common.base.Predicates.*;
+import static com.google.common.collect.Iterables.*;
+import static com.google.inject.matcher.Matchers.any;
+import static com.mycila.event.internal.Reflect.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -29,22 +47,50 @@ public final class MycilaEventGuice {
     private MycilaEventGuice() {
     }
 
-    public static <T> Provider<T> publisher(final Class<T> clazz) {
-        return new Provider<T>() {
-            @Inject
-            Provider<AnnotationProcessor> annotationProcessor;
-            @Inject
-            Provider<Injector> injector;
+    public static Module mycilaEventModule() {
+        return new AbstractModule() {
+            @Override
+            protected void configure() {
+                bindListener(any(), new TypeListener() {
+                    public <I> void hear(TypeLiteral<I> type, final TypeEncounter<I> encounter) {
+                        if (!isEmpty(filter(
+                                findMethods(getTargetClass(type.getRawType())),
+                                or(annotatedBy(Subscribe.class), annotatedBy(Answers.class))))) {
+                            final Provider<MycilaEvent> mycilaEventProvider = encounter.getProvider(MycilaEvent.class);
+                            encounter.register(new InjectionListener<I>() {
+                                public void afterInjection(I injectee) {
+                                    mycilaEventProvider.get().register(injectee);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
 
-            public T get() {
-                T proxy = annotationProcessor.get().proxy(clazz);
-                injector.get().injectMembers(proxy);
-                return proxy;
+            @Provides
+            @Singleton
+            public MycilaEvent mycilaEvent(Dispatcher dispatcher) {
+                return MycilaEvent.with(dispatcher);
             }
         };
     }
 
     public static <T> ScopedBindingBuilder bindPublisher(Binder binder, Class<T> clazz) {
         return binder.bind(clazz).toProvider(publisher(clazz));
+    }
+
+    public static <T> Provider<T> publisher(final Class<T> clazz) {
+        return new Provider<T>() {
+            @Inject
+            Provider<MycilaEvent> mycilaEventProvider;
+            @Inject
+            Provider<Injector> injectorProvider;
+
+            public T get() {
+                T proxy = mycilaEventProvider.get().instanciate(clazz);
+                injectorProvider.get().injectMembers(proxy);
+                return proxy;
+            }
+        };
     }
 }
