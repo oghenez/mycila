@@ -21,12 +21,15 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Singleton;
+import com.mycila.event.Dispatcher;
+import com.mycila.event.Dispatchers;
 import com.mycila.event.Event;
 import com.mycila.event.Reachability;
 import com.mycila.event.annotation.Multiple;
 import com.mycila.event.annotation.Publish;
 import com.mycila.event.annotation.Reference;
 import com.mycila.event.annotation.Subscribe;
+import com.mycila.event.integration.guice.MycilaEventGuice;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -42,6 +45,8 @@ import static com.mycila.event.integration.guice.MycilaEventGuice.*;
 public final class GuiceTest implements Module {
 
     public void configure(Binder binder) {
+        binder.bind(Dispatcher.class).toInstance(Dispatchers.asynchronousUnsafe());
+
         binder.bind(GuiceTest.class).toInstance(this);
         bindPublisher(binder, MyCustomPublisher.class).in(Singleton.class);
         bindPublisher(binder, MyCustomPublisher2.class).in(Singleton.class);
@@ -50,7 +55,7 @@ public final class GuiceTest implements Module {
 
     @Test
     public void test() throws Exception {
-        Module m = new MycilaEventModule();
+        Module m = MycilaEventGuice.mycilaEventModule();
         Injector injector = Guice.createInjector(this, m);
         injector.getInstance(MyCustomPublisher.class).send("A", "cut", "message", "containing", "bad words");
         injector.getInstance(MyCustomPublisher2.class).send(1, "A", "cut", "message", "containing", "bad words", "in varg");

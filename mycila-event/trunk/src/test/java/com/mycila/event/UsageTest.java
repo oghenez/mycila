@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package com.mycila.event.spi;
+package com.mycila.event;
 
-import com.mycila.event.Dispatcher;
-import com.mycila.event.Dispatchers;
-import com.mycila.event.ErrorHandlers;
-import com.mycila.event.Event;
-import com.mycila.event.Subscriber;
 import org.junit.Ignore;
 
-import static com.mycila.event.api.topic.Topic.*;
+import static com.mycila.event.Topic.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -35,7 +30,7 @@ final class UsageTest {
         Dispatcher dispatcher = Dispatchers.synchronousUnsafe(ErrorHandlers.rethrow());
 
         // then subscribe
-        TopicMatcher matcher = only("app/events/swing/button").or(matching("app/events/swing/fields/**"));
+        Topics matcher = only("app/events/swing/button").or(match("app/events/swing/fields/**"));
         dispatcher.subscribe(matcher, String.class, new Subscriber<String>() {
             public void onEvent(Event<String> event) throws Exception {
                 System.out.println("Received: " + event.getSource());

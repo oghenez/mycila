@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-package com.mycila.event.spi;
+package com.mycila.event;
 
-import com.mycila.event.Dispatcher;
-import com.mycila.event.Dispatchers;
-import com.mycila.event.ErrorHandlers;
-import com.mycila.event.Event;
-import com.mycila.event.Reachability;
-import com.mycila.event.Subscriber;
 import com.mycila.event.annotation.Reference;
 import com.mycila.event.api.topic.Topic;
 import org.junit.After;

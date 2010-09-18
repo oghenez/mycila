@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-package com.mycila.event.spi;
+package com.mycila.event;
 
-import com.mycila.event.Dispatcher;
-import com.mycila.event.Dispatchers;
-import com.mycila.event.ErrorHandlers;
-import com.mycila.event.Event;
 import com.mycila.event.annotation.Publish;
 import com.mycila.event.annotation.Reference;
 import com.mycila.event.annotation.Subscribe;
@@ -42,13 +38,13 @@ public final class AnnotationProcessorTest {
 
     private final List<Object> sequence = new ArrayList<Object>();
 
-    AnnotationProcessor processor;
+    MycilaEvent processor;
     Dispatcher dispatcher;
 
     @Before
     public void setup() {
         dispatcher = Dispatchers.synchronousUnsafe(ErrorHandlers.rethrow());
-        processor = AnnotationProcessors.create(dispatcher);
+        processor = MycilaEvent.with(dispatcher);
         sequence.clear();
     }
 
@@ -60,7 +56,7 @@ public final class AnnotationProcessorTest {
                 sequence.add(event.getSource());
             }
         };
-        processor.process(o);
+        processor.register(o);
         publish();
         assertEquals(sequence.toString(), "[Hello for a, Hello for a1, Hello for a1]");
     }
@@ -74,7 +70,7 @@ public final class AnnotationProcessorTest {
                 sequence.add(event.getSource());
             }
         };
-        processor.process(o);
+        processor.register(o);
 
         System.gc();
         System.gc();
@@ -92,14 +88,14 @@ public final class AnnotationProcessorTest {
                 sequence.add(event.getSource());
             }
         };
-        processor.process(o);
+        processor.register(o);
         publish();
         assertEquals(sequence.toString(), "[Hello for a, Hello for a1, Hello for a1]");
     }
 
     private void publish() {
-        B b = processor.proxy(B.class);
-        C c = processor.proxy(C.class);
+        B b = processor.instanciate(B.class);
+        C c = processor.instanciate(C.class);
         b.send("Hello for a", 1);
         c.send("Hello for a1", 4);
     }
