@@ -20,6 +20,8 @@ import com.mycila.event.Dispatcher;
 import com.mycila.event.Event;
 import com.mycila.event.Subscriber;
 import com.mycila.event.api.topic.Topic;
+import com.mycila.event.internal.Dispatchers;
+import com.mycila.event.internal.ErrorHandlers;
 import org.junit.Ignore;
 
 import java.util.LinkedHashMap;

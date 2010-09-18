@@ -22,7 +22,7 @@ import java.util.WeakHashMap;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public class WeakCache<K, V> {
+final class WeakCache<K, V> {
 
     private static final Object NULL = new Object();
 

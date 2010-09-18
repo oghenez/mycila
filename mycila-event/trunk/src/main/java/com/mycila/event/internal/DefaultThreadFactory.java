@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.event.spi;
+package com.mycila.event.internal;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;

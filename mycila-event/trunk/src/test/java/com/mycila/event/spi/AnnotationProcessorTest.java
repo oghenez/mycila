@@ -21,6 +21,8 @@ import com.mycila.event.Event;
 import com.mycila.event.annotation.Publish;
 import com.mycila.event.annotation.Reference;
 import com.mycila.event.annotation.Subscribe;
+import com.mycila.event.internal.Dispatchers;
+import com.mycila.event.internal.ErrorHandlers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

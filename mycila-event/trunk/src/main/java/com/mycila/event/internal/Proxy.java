@@ -17,19 +17,17 @@
 package com.mycila.event.internal;
 
 import net.sf.cglib.core.DefaultGeneratorStrategy;
-import net.sf.cglib.core.NamingPolicy;
-import net.sf.cglib.core.Predicate;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.Factory;
 import net.sf.cglib.proxy.MethodProxy;
-import net.sf.cglib.reflect.FastClass;
-import net.sf.cglib.reflect.FastMethod;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,39 +36,36 @@ import java.util.List;
  */
 public final class Proxy {
 
-    private static final NamingPolicy NAMING_POLICY = new NamingPolicy() {
-        public String getClassName(String prefix, String source, Object key, Predicate names) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(prefix != null ?
-                    prefix.startsWith("java") ?
-                            "$" + prefix :
-                            prefix :
-                    "net.sf.cglib.empty.Object");
-            sb.append("$$");
-            sb.append(source.substring(source.lastIndexOf('.') + 1));
-            sb.append("ByMycilaEvent$$");
-            sb.append(Integer.toHexString(key.hashCode()));
-            String base = sb.toString();
-            String attempt = base;
-            int index = 2;
-            while (names.evaluate(attempt))
-                attempt = base + "_" + index++;
-            return attempt;
-        }
-    };
-
     private Proxy() {
     }
 
-    static FastClass fastCLass(Class<?> type) {
-        FastClass.Generator generator = new FastClass.Generator();
-        generator.setType(type);
-        generator.setNamingPolicy(NAMING_POLICY);
-        return generator.create();
-    }
+    private static final WeakCache<Method, MethodInvoker> INVOKER_CACHE = new WeakCache<Method, MethodInvoker>(new WeakCache.Provider<Method, MethodInvoker>() {
+        @Override
+        public MethodInvoker get(final Method method) {
+            int modifiers = method.getModifiers();
+            if (!Modifier.isPrivate(modifiers) && !Modifier.isProtected(modifiers)) {
+                try {
+                    final net.sf.cglib.reflect.FastMethod fastMethod = BytecodeGen.newFastClass(method.getDeclaringClass(), BytecodeGen.Visibility.forMember(method)).getMethod(method);
+                    return new MethodInvoker() {
+                        public Object invoke(Object target, Object... parameters) throws IllegalAccessException, InvocationTargetException {
+                            return fastMethod.invoke(target, parameters);
+                        }
+                    };
+                } catch (net.sf.cglib.core.CodeGenerationException e) {/* fall-through */}
+            }
+            if (!Modifier.isPublic(modifiers) || !Modifier.isPublic(method.getDeclaringClass().getModifiers())) {
+                method.setAccessible(true);
+            }
+            return new MethodInvoker() {
+                public Object invoke(Object target, Object... parameters) throws IllegalAccessException, InvocationTargetException {
+                    return method.invoke(target, parameters);
+                }
+            };
+        }
+    });
 
-    static FastMethod fastMethod(Method m) {
-        return fastCLass(m.getDeclaringClass()).getMethod(m);
+    public static MethodInvoker invoker(final Method method) {
+        return INVOKER_CACHE.get(method);
     }
 
     public static <T> T proxy(Class<T> c, MethodInterceptor interceptor) {
@@ -92,6 +87,8 @@ public final class Proxy {
 
     @SuppressWarnings({"unchecked"})
     static <T> T createCglibProxy(Class<T> c, MethodInterceptor interceptor) {
+        BytecodeGen.newEnhancer()
+
         Enhancer enhancer = new Enhancer();
         enhancer.setStrategy(new DefaultGeneratorStrategy());
         List<Class<?>> interfaces = new LinkedList<Class<?>>();
