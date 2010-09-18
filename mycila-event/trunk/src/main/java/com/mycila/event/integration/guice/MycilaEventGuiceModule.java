@@ -29,8 +29,8 @@ import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 import com.mycila.event.Dispatcher;
 import com.mycila.event.ErrorHandler;
-import com.mycila.event.spi.Dispatchers;
-import com.mycila.event.spi.ErrorHandlers;
+import com.mycila.event.internal.Dispatchers;
+import com.mycila.event.internal.ErrorHandlers;
 
 import java.util.LinkedList;
 import java.util.Queue;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.event.spi;
+package com.mycila.event.internal;
 
 import com.mycila.event.DispatcherException;
 

@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package com.mycila.event.spi;
+package com.mycila.event.internal;
+
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Publisher<E> {
-    Topic[] getTopics();
+public interface Requestor<P, T> {
+    Topic getTopic();
 
-    void publish(E... events);
+    T request(P parameter) throws InterruptedException, TimeoutException;
 }

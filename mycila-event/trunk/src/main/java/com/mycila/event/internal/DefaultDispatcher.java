@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.event.spi;
+package com.mycila.event.internal;
 
 import com.mycila.event.Dispatcher;
 import com.mycila.event.ErrorHandler;
 import com.mycila.event.Event;
 import com.mycila.event.Subscriber;
 import com.mycila.event.Subscription;
-import com.mycila.event.internal.Events;
-import com.mycila.event.internal.Subscriptions;
 
 import java.util.Iterator;
 import java.util.concurrent.Executor;
