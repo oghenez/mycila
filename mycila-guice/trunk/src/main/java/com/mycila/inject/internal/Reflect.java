@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.inject.util;
+package com.mycila.inject.internal;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
@@ -22,8 +22,6 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
-import com.mycila.inject.internal.Signature;
-import com.mycila.inject.internal.WeakCache;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;

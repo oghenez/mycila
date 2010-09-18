@@ -28,14 +28,14 @@ import com.google.inject.spi.DefaultElementVisitor;
 import com.google.inject.spi.Element;
 import com.google.inject.spi.Elements;
 import com.mycila.inject.injector.MethodHandler;
-import com.mycila.inject.util.Reflect;
+import com.mycila.inject.internal.Reflect;
 
 import javax.annotation.PreDestroy;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import static com.google.common.collect.Iterables.*;
-import static com.mycila.inject.util.Reflect.*;
+import static com.mycila.inject.internal.Reflect.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

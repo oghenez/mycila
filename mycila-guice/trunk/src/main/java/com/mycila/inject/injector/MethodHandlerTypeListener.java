@@ -26,7 +26,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import static com.google.common.collect.Iterables.*;
-import static com.mycila.inject.util.Reflect.*;
+import static com.mycila.inject.internal.Reflect.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
