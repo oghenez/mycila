@@ -27,10 +27,13 @@ import com.mycila.event.internal.Subscribers;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
@@ -101,9 +104,17 @@ public final class MycilaEvent {
             public <R> SendableRequest<R> createRequest(final List<?> parameters) {
                 checkNotNull(topic, "Missing topic");
                 return new SendableRequest<R>() {
+                    final Collection<FutureListener<R>> listeners = new CopyOnWriteArrayList<FutureListener<R>>();
+
                     @Override
                     public List<?> getParameters() {
                         return parameters;
+                    }
+
+                    @Override
+                    public SendableRequest<R> addListener(FutureListener<R> listener) {
+                        listeners.add(listener);
+                        return this;
                     }
 
                     @Override
@@ -112,8 +123,8 @@ public final class MycilaEvent {
                     }
 
                     @Override
-                    public FutureResponse<R> send() {
-                        Message<R> msg = new Message<R>(parameters);
+                    public Future<R> send() {
+                        Message<R> msg = new Message<R>(listeners, parameters);
                         dispatcher.publish(topic, msg);
                         return msg;
                     }

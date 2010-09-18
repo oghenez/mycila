@@ -17,6 +17,7 @@
 package com.mycila.event;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -26,5 +27,7 @@ public interface SendableRequest<T> {
 
     Topic getTopic();
 
-    FutureResponse<T> send();
+    Future<T> send();
+
+    SendableRequest<T> addListener(FutureListener<T> listener);
 }

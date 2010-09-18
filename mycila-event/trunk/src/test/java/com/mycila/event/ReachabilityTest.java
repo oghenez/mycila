@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package com.mycila.event.api;
+package com.mycila.event;
 
-import com.mycila.event.Event;
-import com.mycila.event.Reachability;
-import com.mycila.event.Subscriber;
 import com.mycila.event.annotation.Reference;
 import org.junit.Test;
 import org.junit.runner.RunWith;

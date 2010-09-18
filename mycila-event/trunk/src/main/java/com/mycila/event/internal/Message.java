@@ -2,14 +2,13 @@ package com.mycila.event.internal;
 
 import com.mycila.event.EventRequest;
 import com.mycila.event.FutureListener;
-import com.mycila.event.FutureResponse;
 import com.mycila.event.SubscriberExecutionException;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,22 +18,23 @@ import static com.mycila.event.internal.Message.State.*;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Message<R> implements FutureResponse<R>, EventRequest<R> {
+public final class Message<R> implements Future<R>, EventRequest<R> {
 
     static enum State {
         WAITING, DONE, ERROR, CANCELLED
     }
 
-    private final Collection<FutureListener<R>> listeners = new CopyOnWriteArrayList<FutureListener<R>>();
     private final CountDownLatch answerLatch = new CountDownLatch(1);
     private final List<Object> parameters = new ArrayList<Object>();
     private final AtomicReference<State> state = new AtomicReference<State>(WAITING);
+    private final Collection<FutureListener<R>> listeners;
 
     private volatile R reply;
     private volatile SubscriberExecutionException error;
 
-    public Message(List<?> parameters) {
+    public Message(Collection<FutureListener<R>> listeners, List<?> parameters) {
         this.parameters.addAll(parameters);
+        this.listeners = listeners;
     }
 
     @Override
@@ -51,11 +51,6 @@ public final class Message<R> implements FutureResponse<R>, EventRequest<R> {
     @Override
     public List<?> getParameters() {
         return parameters;
-    }
-
-    @Override
-    public void addListener(FutureListener<R> listener) {
-        listeners.add(listener);
     }
 
     @Override
