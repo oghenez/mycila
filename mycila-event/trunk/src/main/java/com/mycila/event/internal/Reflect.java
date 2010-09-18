@@ -20,8 +20,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.inject.matcher.AbstractMatcher;
-import com.google.inject.matcher.Matcher;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -53,24 +51,6 @@ public final class Reflect {
 
     public static Class<?> getTargetClass(Object instance) {
         return getTargetClass(instance.getClass());
-    }
-
-    public static <T> Predicate<T> predicate(final Matcher<T> matcher) {
-        return new Predicate<T>() {
-            @Override
-            public boolean apply(T input) {
-                return matcher.matches(input);
-            }
-        };
-    }
-
-    public static <T> Matcher<T> matcher(final Predicate<T> predicate) {
-        return new AbstractMatcher<T>() {
-            @Override
-            public boolean matches(T t) {
-                return predicate.apply(t);
-            }
-        };
     }
 
     public static Predicate<Method> withParameterTypes(final Class<?>... classes) {
