@@ -15,7 +15,7 @@
  */
 
 import com.google.common.collect.Iterables;
-import com.mycila.inject.util.Reflect;
+import com.mycila.inject.internal.Reflect;
 
 import java.io.File;
 import java.util.Enumeration;

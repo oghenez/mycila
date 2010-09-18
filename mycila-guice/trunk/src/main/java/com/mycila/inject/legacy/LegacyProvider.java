@@ -22,7 +22,7 @@ import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
 import com.mycila.inject.internal.MethodInvokers;
-import com.mycila.inject.util.Reflect;
+import com.mycila.inject.internal.Reflect;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -32,7 +32,7 @@ import java.util.Iterator;
 
 import static com.google.common.base.Predicates.*;
 import static com.google.common.collect.Iterators.*;
-import static com.mycila.inject.util.Reflect.*;
+import static com.mycila.inject.internal.Reflect.*;
 
 public abstract class LegacyProvider<T> implements Provider<T> {
 

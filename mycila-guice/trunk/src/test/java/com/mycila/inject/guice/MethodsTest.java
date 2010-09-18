@@ -17,7 +17,7 @@
 package com.mycila.inject.guice;
 
 import com.google.common.collect.Iterables;
-import com.mycila.inject.util.Reflect;
+import com.mycila.inject.internal.Reflect;
 import org.junit.Test;
 
 import java.lang.reflect.Method;
