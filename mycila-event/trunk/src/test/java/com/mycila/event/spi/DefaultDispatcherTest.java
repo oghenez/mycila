@@ -16,13 +16,12 @@
 
 package com.mycila.event.spi;
 
-import com.mycila.event.api.Dispatcher;
-import com.mycila.event.api.ErrorHandlers;
-import com.mycila.event.api.Event;
-import com.mycila.event.api.Reachability;
-import com.mycila.event.api.Subscriber;
-import com.mycila.event.api.annotation.Reference;
-import com.mycila.event.api.topic.Topics;
+import com.mycila.event.Dispatcher;
+import com.mycila.event.Event;
+import com.mycila.event.Reachability;
+import com.mycila.event.Subscriber;
+import com.mycila.event.annotation.Reference;
+import com.mycila.event.api.topic.Topic;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +34,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.mycila.event.api.topic.Topics.*;
+import static com.mycila.event.api.topic.Topic.*;
 import static org.junit.Assert.*;
 
 /**
@@ -104,7 +103,7 @@ public final class DefaultDispatcherTest {
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
-                    dispatcher.publish(Topics.topic("a/b"), Thread.currentThread().getName());
+                    dispatcher.publish(Topic.topic("a/b"), Thread.currentThread().getName());
                     finished.countDown();
                 }
             }.start();
@@ -114,7 +113,7 @@ public final class DefaultDispatcherTest {
 
         for (int i = 0; i < 20; i++) {
             final int index = i;
-            dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
+            dispatcher.subscribe(Topic.only("a/b"), String.class, new Subscriber<String>() {
 
                 public void onEvent(Event<String> event) throws Exception {
                     if (inProcess.get())
@@ -148,7 +147,7 @@ public final class DefaultDispatcherTest {
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
-                    dispatcher.publish(Topics.topic("a/b"), Thread.currentThread().getName());
+                    dispatcher.publish(Topic.topic("a/b"), Thread.currentThread().getName());
                     finished.countDown();
                 }
             }.start();
@@ -159,7 +158,7 @@ public final class DefaultDispatcherTest {
 
         for (int i = 0; i < 20; i++) {
             final int index = i;
-            dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
+            dispatcher.subscribe(Topic.only("a/b"), String.class, new Subscriber<String>() {
 
                 public void onEvent(Event<String> event) throws Exception {
                     if (inProcess.get())
@@ -197,7 +196,7 @@ public final class DefaultDispatcherTest {
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
-                    dispatcher.publish(Topics.topic("a/b"), Thread.currentThread().getName());
+                    dispatcher.publish(Topic.topic("a/b"), Thread.currentThread().getName());
                     publish.countDown();
                 }
             }.start();
@@ -208,7 +207,7 @@ public final class DefaultDispatcherTest {
 
         for (int i = 0; i < 20; i++) {
             final int index = i;
-            dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
+            dispatcher.subscribe(Topic.only("a/b"), String.class, new Subscriber<String>() {
 
                 public void onEvent(Event<String> event) throws Exception {
                     if (inProcess.get())
@@ -251,7 +250,7 @@ public final class DefaultDispatcherTest {
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
-                    dispatcher.publish(Topics.topic("a/b"), Thread.currentThread().getName());
+                    dispatcher.publish(Topic.topic("a/b"), Thread.currentThread().getName());
                     publish.countDown();
                 }
             }.start();
@@ -262,7 +261,7 @@ public final class DefaultDispatcherTest {
 
         for (int i = 0; i < 20; i++) {
             final int index = i;
-            dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
+            dispatcher.subscribe(Topic.only("a/b"), String.class, new Subscriber<String>() {
 
                 public void onEvent(Event<String> event) throws Exception {
                     if (inProcess.get())
@@ -305,7 +304,7 @@ public final class DefaultDispatcherTest {
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
-                    dispatcher.publish(Topics.topic("a/b"), Thread.currentThread().getName());
+                    dispatcher.publish(Topic.topic("a/b"), Thread.currentThread().getName());
                     publish.countDown();
                 }
             }.start();
@@ -316,7 +315,7 @@ public final class DefaultDispatcherTest {
 
         for (int i = 0; i < 20; i++) {
             final int index = i;
-            dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
+            dispatcher.subscribe(Topic.only("a/b"), String.class, new Subscriber<String>() {
 
                 public void onEvent(Event<String> event) throws Exception {
                     if (inProcess.get())
@@ -359,7 +358,7 @@ public final class DefaultDispatcherTest {
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
-                    dispatcher.publish(Topics.topic("a/b"), Thread.currentThread().getName());
+                    dispatcher.publish(Topic.topic("a/b"), Thread.currentThread().getName());
                     publish.countDown();
                 }
             }.start();
@@ -370,7 +369,7 @@ public final class DefaultDispatcherTest {
 
         for (int i = 0; i < 20; i++) {
             final int index = i;
-            dispatcher.subscribe(Topics.only("a/b"), String.class, new Subscriber<String>() {
+            dispatcher.subscribe(Topic.only("a/b"), String.class, new Subscriber<String>() {
 
                 public void onEvent(Event<String> event) throws Exception {
                     if (inProcess.get())

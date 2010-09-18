@@ -16,9 +16,8 @@
 
 package com.mycila.event.spi;
 
-import com.mycila.event.api.Dispatcher;
-import com.mycila.event.api.ErrorHandler;
-import com.mycila.event.api.ErrorHandlers;
+import com.mycila.event.Dispatcher;
+import com.mycila.event.ErrorHandler;
 
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.Executor;

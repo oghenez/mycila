@@ -16,13 +16,24 @@
 
 package com.mycila.event.spi;
 
-import java.util.concurrent.TimeoutException;
+import com.mycila.event.DispatcherException;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Requestor<P, T> {
-    Topic getTopic();
+public final class SubscriberExecutionException extends DispatcherException {
+    private SubscriberExecutionException(Throwable cause) {
+        super(cause);
+    }
 
-    T request(P parameter) throws InterruptedException, TimeoutException;
+    public static SubscriberExecutionException wrap(Throwable throwable) {
+        while (throwable instanceof InvocationTargetException
+                || throwable instanceof DispatcherException)
+            throwable = throwable instanceof InvocationTargetException ?
+                    ((InvocationTargetException) throwable).getTargetException() :
+                    throwable.getCause();
+        return new SubscriberExecutionException(throwable);
+    }
 }

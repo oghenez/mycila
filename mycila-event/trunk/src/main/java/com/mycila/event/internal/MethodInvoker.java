@@ -1,11 +1,11 @@
 /**
- * Copyright (C) 2009 Mathieu Carbou <mathieu.carbou@gmail.com>
+ * Copyright (C) 2010 Mathieu Carbou <mathieu.carbou@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.event.spi;
+package com.mycila.event.internal;
 
-import java.util.concurrent.TimeoutException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Requestor<P, T> {
-    Topic getTopic();
-
-    T request(P parameter) throws InterruptedException, TimeoutException;
+public interface MethodInvoker {
+    Object invoke(Object target, Object... parameters) throws IllegalAccessException, InvocationTargetException;
 }

@@ -14,15 +14,27 @@
  * limitations under the License.
  */
 
-package com.mycila.event.spi;
+package com.mycila.event.annotation;
 
-import java.util.concurrent.TimeoutException;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Requestor<P, T> {
-    Topic getTopic();
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@Documented
+@Inherited
+public @interface Request {
+    String topic();
 
-    T request(P parameter) throws InterruptedException, TimeoutException;
+    long timeout() default -1;
+
+    TimeUnit unit() default TimeUnit.MILLISECONDS;
 }

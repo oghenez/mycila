@@ -16,9 +16,9 @@
 
 package com.mycila.event.spi;
 
-import com.mycila.event.api.FilterIterator;
-import com.mycila.event.api.Ref;
-import com.mycila.event.api.Subscription;
+import com.mycila.event.Ref;
+import com.mycila.event.Subscription;
+import com.mycila.event.internal.FilterIterator;
 
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;

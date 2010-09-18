@@ -16,12 +16,10 @@
 
 package com.mycila.event.spi;
 
-import com.mycila.event.api.topic.Topic;
-
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-interface Publisher<E> {
+public interface Publisher<E> {
     Topic[] getTopics();
 
     void publish(E... events);

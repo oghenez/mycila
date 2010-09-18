@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import static com.mycila.event.api.topic.Topics.*;
+import static com.mycila.event.api.topic.Topic.*;
 import static org.junit.Assert.*;
 
 /**
