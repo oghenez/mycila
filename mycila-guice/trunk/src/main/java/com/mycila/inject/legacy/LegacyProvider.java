@@ -21,7 +21,7 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
 import com.google.inject.ProvisionException;
-import com.mycila.inject.internal.MethodInvokers;
+import com.mycila.inject.internal.Proxy;
 import com.mycila.inject.internal.Reflect;
 
 import java.lang.reflect.Constructor;
@@ -178,7 +178,7 @@ public abstract class LegacyProvider<T> implements Provider<T> {
         public T get(Injector injector) {
             Object factory = Modifier.isStatic(method.getModifiers()) ? null : injector.getInstance(factoryKey);
             try {
-                return providedType.cast(MethodInvokers.invoker(method).invoke(factory, getParameterValues(injector)));
+                return providedType.cast(Proxy.invoker(method).invoke(factory, getParameterValues(injector)));
             } catch (IllegalAccessException e) {
                 throw new ProvisionException(e.getMessage(), e);
             } catch (InvocationTargetException e) {
@@ -201,7 +201,7 @@ public abstract class LegacyProvider<T> implements Provider<T> {
         public T get(Injector injector) {
             T target = instance.get(injector);
             try {
-                MethodInvokers.invoker(method).invoke(target, getParameterValues(injector));
+                Proxy.invoker(method).invoke(target, getParameterValues(injector));
                 return target;
             } catch (IllegalAccessException e) {
                 throw new ProvisionException(e.getMessage(), e);
