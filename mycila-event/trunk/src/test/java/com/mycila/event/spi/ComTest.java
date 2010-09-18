@@ -16,19 +16,15 @@
 
 package com.mycila.event.spi;
 
-import com.mycila.event.api.Dispatcher;
-import com.mycila.event.api.ErrorHandlers;
-import com.mycila.event.api.Event;
-import com.mycila.event.api.Subscriber;
-import com.mycila.event.api.SubscriberExecutionException;
-import com.mycila.event.api.annotation.AnnotationProcessor;
-import com.mycila.event.api.annotation.Answers;
-import com.mycila.event.api.annotation.Request;
-import com.mycila.event.api.annotation.Subscribe;
-import com.mycila.event.api.message.MessageListener;
-import com.mycila.event.api.message.MessageRequest;
-import com.mycila.event.api.message.MessageResponse;
-import com.mycila.event.api.message.Messages;
+import com.mycila.event.Dispatcher;
+import com.mycila.event.Event;
+import com.mycila.event.EventMessage;
+import com.mycila.event.FutureListener;
+import com.mycila.event.ListenableFuture;
+import com.mycila.event.Subscriber;
+import com.mycila.event.annotation.Answers;
+import com.mycila.event.annotation.Request;
+import com.mycila.event.annotation.Subscribe;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -37,7 +33,7 @@ import java.io.FileNotFoundException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static com.mycila.event.api.topic.Topics.*;
+import static com.mycila.event.api.topic.Topic.*;
 import static org.junit.Assert.*;
 
 /**
@@ -55,7 +51,7 @@ public final class ComTest {
         processor.proxy(DU.class);
 
         final CountDownLatch finished = new CountDownLatch(2);
-        MessageRequest req = Messages.<Integer>createRequest("my sum", new int[]{1, 2, 3, 4, 5}).addListener(new MessageListener<Integer>() {
+        ListenableFuture req = Messages.<Integer>createRequest("my sum", new int[]{1, 2, 3, 4, 5}).addListener(new FutureListener<Integer>() {
             public void onResponse(Integer value) {
                 assertEquals(15, value.intValue());
                 finished.countDown();
@@ -69,8 +65,8 @@ public final class ComTest {
         System.out.println(req);
         dispatcher.publish(topic("system/add"), req);
 
-        MessageRequest<Integer> req2 = Messages.createRequest("err");
-        req2.addListener(new MessageListener<Integer>() {
+        ListenableFuture<Integer> req2 = Messages.createRequest("err");
+        req2.addListener(new FutureListener<Integer>() {
             public void onResponse(Integer value) {
                 fail();
             }
@@ -103,8 +99,8 @@ public final class ComTest {
     public void test() throws Exception {
         Dispatcher dispatcher = Dispatchers.synchronousSafe(ErrorHandlers.rethrow());
 
-        dispatcher.subscribe(only("system/df"), MessageResponse.class, new Subscriber<MessageResponse<Integer>>() {
-            public void onEvent(Event<MessageResponse<Integer>> event) throws Exception {
+        dispatcher.subscribe(only("system/df"), EventMessage.class, new Subscriber<EventMessage<Integer>>() {
+            public void onEvent(Event<EventMessage<Integer>> event) throws Exception {
                 String folder = (String) event.getSource().getParameters().get(0);
                 System.out.println("df request on folder " + folder);
                 // call df -h <folder>
@@ -163,14 +159,14 @@ public final class ComTest {
         }
 
         // manually
-        MessageRequest<Integer> req1 = Messages.createRequest("home");
-        MessageRequest<Integer> req2 = Messages.createRequest("inexisting");
+        ListenableFuture<Integer> req1 = Messages.createRequest("home");
+        ListenableFuture<Integer> req2 = Messages.createRequest("inexisting");
         dispatcher.publish(topic("system/df"), req1);
         dispatcher.publish(topic("system/df"), req2);
 
-        assertEquals(45, req1.getResponse(5, TimeUnit.SECONDS).intValue());
+        assertEquals(45, req1.get(5, TimeUnit.SECONDS).intValue());
         try {
-            req2.getResponse();
+            req2.get();
             fail();
         } catch (Exception e) {
             assertEquals("df did not found folder inexisting", e.getMessage());
@@ -181,8 +177,8 @@ public final class ComTest {
         @Request(topic = "system/du", timeout = 5, unit = TimeUnit.SECONDS)
         abstract Integer getSize(String folder);
 
-        @Subscribe(topics = "system/du", eventType = MessageResponse.class)
-        void duRequest(Event<MessageResponse<Integer>> event) {
+        @Subscribe(topics = "system/du", eventType = EventMessage.class)
+        void duRequest(Event<EventMessage<Integer>> event) {
             String folder = (String) event.getSource().getParameters().get(0);
             System.out.println("du request on folder " + folder);
             // call du -h <folder>

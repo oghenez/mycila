@@ -27,12 +27,10 @@ import com.google.inject.binder.ScopedBindingBuilder;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
-import com.mycila.event.api.Dispatcher;
-import com.mycila.event.api.ErrorHandler;
-import com.mycila.event.api.ErrorHandlers;
-import com.mycila.event.api.annotation.AnnotationProcessor;
-import com.mycila.event.spi.AnnotationProcessors;
+import com.mycila.event.Dispatcher;
+import com.mycila.event.ErrorHandler;
 import com.mycila.event.spi.Dispatchers;
+import com.mycila.event.spi.ErrorHandlers;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -92,6 +90,7 @@ public class MycilaEventGuiceModule implements Module {
         return bindAnnotationProcessor.toProvider(new Provider<AnnotationProcessor>() {
             @Inject
             Provider<Dispatcher> dipatcher;
+
             public AnnotationProcessor get() {
                 return AnnotationProcessors.create(dipatcher.get());
             }

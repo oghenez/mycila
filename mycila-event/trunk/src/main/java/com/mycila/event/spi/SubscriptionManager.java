@@ -16,11 +16,10 @@
 
 package com.mycila.event.spi;
 
-import com.mycila.event.api.Event;
-import com.mycila.event.api.FilterIterator;
-import com.mycila.event.api.Subscriber;
-import com.mycila.event.api.Subscription;
-import com.mycila.event.api.topic.Topic;
+import com.mycila.event.Event;
+import com.mycila.event.Subscriber;
+import com.mycila.event.Subscription;
+import com.mycila.event.internal.FilterIterator;
 
 import java.util.Iterator;
 import java.util.Map;

@@ -16,18 +16,18 @@
 
 package com.mycila.event.spi;
 
-import com.mycila.event.api.Dispatcher;
-import com.mycila.event.api.ErrorHandler;
-import com.mycila.event.api.Event;
-import com.mycila.event.api.Subscriber;
-import com.mycila.event.api.Subscription;
-import com.mycila.event.api.topic.Topic;
-import com.mycila.event.api.topic.TopicMatcher;
+import com.mycila.event.Dispatcher;
+import com.mycila.event.ErrorHandler;
+import com.mycila.event.Event;
+import com.mycila.event.Subscriber;
+import com.mycila.event.Subscription;
+import com.mycila.event.internal.Events;
+import com.mycila.event.internal.Subscriptions;
 
 import java.util.Iterator;
 import java.util.concurrent.Executor;
 
-import static com.mycila.event.api.Ensure.*;
+import static com.mycila.event.internal.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -40,8 +40,8 @@ public class DefaultDispatcher implements Dispatcher {
     private final Executor subscriberExecutor;
 
     public DefaultDispatcher(ErrorHandler errorHandler,
-                      Executor publishExecutor,
-                      Executor subscriberExecutor) {
+                             Executor publishExecutor,
+                             Executor subscriberExecutor) {
         this.errorHandler = notNull(errorHandler, "ErrorHandler");
         this.publishExecutor = notNull(publishExecutor, "Publishing executor");
         this.subscriberExecutor = notNull(subscriberExecutor, "Subscriber executor");

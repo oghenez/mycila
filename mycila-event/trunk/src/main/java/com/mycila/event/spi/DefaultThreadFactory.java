@@ -19,7 +19,7 @@ package com.mycila.event.spi;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.mycila.event.api.Ensure.*;
+import static com.mycila.event.internal.Ensure.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

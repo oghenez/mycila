@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package com.mycila.event.spi;
+package com.mycila.event;
 
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.Future;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public interface Requestor<P, T> {
-    Topic getTopic();
-
-    T request(P parameter) throws InterruptedException, TimeoutException;
+public interface ListenableFuture<T> extends Future<T> {
+    void addListener(FutureListener<T> listener);
 }

@@ -16,14 +16,12 @@
 
 package com.mycila.event.spi;
 
-import com.mycila.event.api.Dispatcher;
-import com.mycila.event.api.ErrorHandlers;
-import com.mycila.event.api.Event;
-import com.mycila.event.api.Subscriber;
-import com.mycila.event.api.topic.TopicMatcher;
+import com.mycila.event.Dispatcher;
+import com.mycila.event.Event;
+import com.mycila.event.Subscriber;
 import org.junit.Ignore;
 
-import static com.mycila.event.api.topic.Topics.*;
+import static com.mycila.event.api.topic.Topic.*;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

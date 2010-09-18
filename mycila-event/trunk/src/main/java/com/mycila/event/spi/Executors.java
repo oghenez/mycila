@@ -16,7 +16,7 @@
 
 package com.mycila.event.spi;
 
-import com.mycila.event.api.DispatcherException;
+import com.mycila.event.DispatcherException;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -66,7 +66,8 @@ final class Executors {
                     } finally {
                         lock.unlock();
                     }
-                } else throw new DispatcherException(new TimeoutException("Unable to acquire lock in " + blockingTimeout + " " + unit));
+                } else
+                    throw new DispatcherException(new TimeoutException("Unable to acquire lock in " + blockingTimeout + " " + unit));
             }
         };
     }

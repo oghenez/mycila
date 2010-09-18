@@ -16,13 +16,11 @@
 
 package com.mycila.event.spi;
 
-import com.mycila.event.api.Dispatcher;
-import com.mycila.event.api.ErrorHandlers;
-import com.mycila.event.api.Event;
-import com.mycila.event.api.annotation.AnnotationProcessor;
-import com.mycila.event.api.annotation.Publish;
-import com.mycila.event.api.annotation.Reference;
-import com.mycila.event.api.annotation.Subscribe;
+import com.mycila.event.Dispatcher;
+import com.mycila.event.Event;
+import com.mycila.event.annotation.Publish;
+import com.mycila.event.annotation.Reference;
+import com.mycila.event.annotation.Subscribe;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +29,7 @@ import org.junit.runners.JUnit4;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mycila.event.api.Reachability.*;
+import static com.mycila.event.Reachability.*;
 import static org.junit.Assert.*;
 
 /**

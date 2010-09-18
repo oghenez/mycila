@@ -16,10 +16,8 @@
 
 package com.mycila.event.spi;
 
-import com.mycila.event.api.Dispatcher;
-import com.mycila.event.api.message.MessageRequest;
-import com.mycila.event.api.message.Messages;
-import com.mycila.event.api.topic.Topic;
+import com.mycila.event.Dispatcher;
+import com.mycila.event.ListenableFuture;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +26,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class Publishers {
+public final class Publishers {
 
     private Publishers() {
     }
@@ -59,11 +57,11 @@ final class Publishers {
             }
 
             public Object request(Object[] parameter) throws InterruptedException, TimeoutException {
-                MessageRequest<Object> req = Messages.createRequest(parameter);
+                ListenableFuture<Object> req = Messages.createRequest(parameter);
                 dispatcher.publish(topic, req);
                 return timeout < 0L ?
-                        req.getResponse() :
-                        req.getResponse(timeout, unit);
+                        req.get() :
+                        req.get(timeout, unit);
             }
 
             @Override

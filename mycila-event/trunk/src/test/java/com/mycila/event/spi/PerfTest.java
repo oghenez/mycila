@@ -16,11 +16,10 @@
 
 package com.mycila.event.spi;
 
-import com.mycila.event.api.Dispatcher;
-import com.mycila.event.api.ErrorHandlers;
-import com.mycila.event.api.Event;
-import com.mycila.event.api.Subscriber;
-import com.mycila.event.api.topic.Topics;
+import com.mycila.event.Dispatcher;
+import com.mycila.event.Event;
+import com.mycila.event.Subscriber;
+import com.mycila.event.api.topic.Topic;
 import org.junit.Ignore;
 
 import java.util.LinkedHashMap;
@@ -64,7 +63,7 @@ final class PerfTest {
             for (int i = 0, length = N_SUBS * 2; i < length; i++) {
                 final int index = i % N_SUBS;
                 System.out.println("Adding consumer to: stats" + index);
-                entry.getValue().subscribe(Topics.only("stats" + index), StatEvent.class, new Subscriber<StatEvent>() {
+                entry.getValue().subscribe(Topic.only("stats" + index), StatEvent.class, new Subscriber<StatEvent>() {
                     public void onEvent(Event<StatEvent> statEvent) throws Exception {
                         events.offer(statEvent.getSource().received());
                         consumed[index].incrementAndGet();
@@ -118,7 +117,7 @@ final class PerfTest {
                     try {
                         barrier.await();
                         for (int i = 0; i < nEvents; i++) {
-                            dispatcher.publish(Topics.topic("stats" + random.nextInt(N_SUBS)), new StatEvent());
+                            dispatcher.publish(Topic.topic("stats" + random.nextInt(N_SUBS)), new StatEvent());
                             published.getAndIncrement();
                         }
                         barrier.await();
