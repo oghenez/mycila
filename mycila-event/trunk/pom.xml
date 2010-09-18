@@ -15,7 +15,7 @@
     <packaging>jar</packaging>
 
     <name>Mycila Event</name>
-    <description>Event dispatcher</description>
+    <description>Myclia Event dispatcher</description>
     <url>http://code.mycila.com/</url>
     <inceptionYear>2009</inceptionYear>
 
@@ -85,11 +85,16 @@
                             com.mycila.event.internal
                         </Private-Package>
                         <Export-Package>
+                            !com.mycila.event.internal*,
                             com.mycila.event*;version="${project.version}";-noimport:=true
                         </Export-Package>
                         <Import-Package>
+                            !com.google.common*,
                             !net.sf.cglib*,
                             !org.objectweb.asm*,
+                            !org.aopalliance*,
+                            com.google.inject*;resolution:=optional,
+                            javax.inject*;resolution:=optional,
                             *
                         </Import-Package>
                         <_versionpolicy>[${version;===;${@}},${version;+;${@}})</_versionpolicy>
@@ -99,6 +104,12 @@
                             Ignore-Package,Bnd-LastModified
                         </_removeheaders>
                     </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <useDefaultManifestFile>true</useDefaultManifestFile>
                 </configuration>
             </plugin>
             <plugin>
@@ -128,9 +139,12 @@
                                     <zipfileset src="${project.build.directory}/dependency/asm-all-3.2.jar"/>
                                     <zipfileset src="${project.build.directory}/dependency/cglib-2.2.jar"/>
                                     <zipfileset src="${project.build.directory}/dependency/guava-r06.jar"/>
+                                    <zipfileset src="${project.build.directory}/dependency/aopalliance-1.0.jar"/>
                                     <rule pattern="net.sf.cglib.**" result="com.mycila.event.internal.cglib.@1"/>
                                     <rule pattern="org.objectweb.asm.**" result="com.mycila.event.internal.asm.@1"/>
                                     <rule pattern="com.google.common.**" result="com.mycila.event.internal.guava.@1"/>
+                                    <rule pattern="org.aopalliance.**"
+                                          result="com.mycila.event.internal.aopalliance.@1"/>
                                     <keep pattern="com.mycila.event.**"/>
                                 </jarjar>
                             </tasks>
@@ -171,6 +185,12 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>r06</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+            <version>1.0</version>
             <scope>provided</scope>
         </dependency>
         <!-- optional features -->
