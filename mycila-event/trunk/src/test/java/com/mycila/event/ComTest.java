@@ -67,22 +67,28 @@ public final class ComTest {
                     }
 
                     public void onError(Throwable t) {
-                        t.printStackTrace();
+                        //t.printStackTrace();
                         assertTrue(t instanceof FileNotFoundException);
                         finished.countDown();
                     }
                 });
+        try {
+            req2.send();
+        } catch (Exception e) {
+            assertEquals(e.getClass(), FileNotFoundException.class);
+            assertEquals("rm did not found folder err", e.getMessage());
+        }
 
-        finished.await(3, TimeUnit.SECONDS);
+        assertTrue(finished.await(3, TimeUnit.SECONDS));
     }
 
     @Test
     public void test_args() throws Exception {
         Dispatcher dispatcher = Dispatchers.synchronousSafe(ErrorHandlers.rethrow());
-        AnnotationProcessor processor = AnnotationProcessors.create(dispatcher);
+        MycilaEvent processor = MycilaEvent.with(dispatcher);
 
-        DU du = processor.proxy(DU.class);
-        DU2 du2 = processor.proxy(DU2.class);
+        DU du = processor.instanciate(DU.class);
+        DU2 du2 = processor.instanciate(DU2.class);
 
         assertEquals(30, du.mult(5, 6));
         //assertEquals(15, du.add(1, 2, 3, 4, 5));
@@ -107,9 +113,9 @@ public final class ComTest {
         });
 
         // through annotations
-        AnnotationProcessor processor = AnnotationProcessors.create(dispatcher);
-        DU du = processor.proxy(DU.class);
-        DU2 du2 = processor.proxy(DU2.class);
+        MycilaEvent processor = MycilaEvent.with(dispatcher);
+        DU du = processor.instanciate(DU.class);
+        DU2 du2 = processor.instanciate(DU2.class);
 
         System.out.println(Integer.toHexString(du.hashCode()));
         System.out.println(Integer.toHexString(du2.hashCode()));
@@ -154,14 +160,12 @@ public final class ComTest {
         }
 
         // manually
-        FutureResponse<Integer> req1 = Messages.createRequest("home");
-        FutureResponse<Integer> req2 = Messages.createRequest("inexisting");
-        dispatcher.publish(topic("system/df"), req1);
-        dispatcher.publish(topic("system/df"), req2);
+        SendableRequest<Integer> req1 = processor.createRequestor(topic("system/df")).createRequest("home");
+        SendableRequest<Integer> req2 = processor.createRequestor(topic("system/df")).createRequest("inexisting");
 
-        assertEquals(45, req1.get(5, TimeUnit.SECONDS).intValue());
+        assertEquals(45, req1.send().get(5, TimeUnit.SECONDS).intValue());
         try {
-            req2.get();
+            req2.send().get();
             fail();
         } catch (Exception e) {
             assertEquals("df did not found folder inexisting", e.getMessage());
