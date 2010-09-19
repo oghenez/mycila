@@ -16,7 +16,6 @@
 
 package com.mycila.event;
 
-import com.mycila.event.api.topic.Topic;
 import org.junit.Ignore;
 
 import java.util.LinkedHashMap;

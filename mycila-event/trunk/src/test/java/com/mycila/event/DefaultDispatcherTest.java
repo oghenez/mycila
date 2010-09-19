@@ -17,7 +17,6 @@
 package com.mycila.event;
 
 import com.mycila.event.annotation.Reference;
-import com.mycila.event.api.topic.Topic;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +29,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.mycila.event.api.topic.Topic.*;
+import static com.mycila.event.Topic.*;
 import static org.junit.Assert.*;
 
 /**
@@ -56,7 +55,7 @@ public final class DefaultDispatcherTest {
 
     @Test
     public void test_subscribe_strong() {
-        dispatcher.subscribe(only("prog/events/a").or(matching("prog/events/b/**")), String.class, new Subscriber<String>() {
+        dispatcher.subscribe(only("prog/events/a").or(match("prog/events/b/**")), String.class, new Subscriber<String>() {
             public void onEvent(Event<String> event) throws Exception {
                 sequence.add(event.getSource());
             }
@@ -73,7 +72,7 @@ public final class DefaultDispatcherTest {
                 sequence.add(event.getSource());
             }
         }
-        dispatcher.subscribe(only("prog/events/a").or(matching("prog/events/b/**")), String.class, new C());
+        dispatcher.subscribe(only("prog/events/a").or(match("prog/events/b/**")), String.class, new C());
 
         System.gc();
         System.gc();
@@ -116,7 +115,7 @@ public final class DefaultDispatcherTest {
                         fail();
                     inProcess.set(true);
                     Thread.sleep(50);
-                    System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.getSource());
+                    //System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.getSource());
                     inProcess.set(false);
                 }
             });
@@ -161,7 +160,7 @@ public final class DefaultDispatcherTest {
                         paralellCalls.incrementAndGet();
                     inProcess.set(true);
                     Thread.sleep(200);
-                    System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.getSource());
+                    //System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.getSource());
                     inProcess.set(false);
                 }
             });
@@ -210,7 +209,7 @@ public final class DefaultDispatcherTest {
                         paralellCalls.incrementAndGet();
                     inProcess.set(true);
                     Thread.sleep(10);
-                    System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.getSource());
+                    //System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.getSource());
                     inProcess.set(false);
                     consume.countDown();
                 }
@@ -264,7 +263,7 @@ public final class DefaultDispatcherTest {
                         paralellCalls.incrementAndGet();
                     inProcess.set(true);
                     Thread.sleep(100);
-                    System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.getSource());
+                    //System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.getSource());
                     inProcess.set(false);
                     consume.countDown();
                 }
@@ -318,7 +317,7 @@ public final class DefaultDispatcherTest {
                         paralellCalls.incrementAndGet();
                     inProcess.set(true);
                     Thread.sleep(100);
-                    System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.getSource());
+                    //System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.getSource());
                     inProcess.set(false);
                     consume.countDown();
                 }
@@ -372,7 +371,7 @@ public final class DefaultDispatcherTest {
                         paralellCalls.incrementAndGet();
                     inProcess.set(true);
                     Thread.sleep(100);
-                    System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.getSource());
+                    //System.out.println("[" + Thread.currentThread().getName() + "] " + " S" + index + " - " + event.getSource());
                     inProcess.set(false);
                     consume.countDown();
                 }
