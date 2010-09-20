@@ -68,3 +68,5 @@ You could just as easily support:
  - OSGI plugin
 
  - jndi mocks
+
+ - transactional scope (cf di page 161)
