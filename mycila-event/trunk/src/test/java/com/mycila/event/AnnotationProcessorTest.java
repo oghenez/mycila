@@ -16,6 +16,7 @@
 
 package com.mycila.event;
 
+import com.mycila.event.annotation.Group;
 import com.mycila.event.annotation.Publish;
 import com.mycila.event.annotation.Reference;
 import com.mycila.event.annotation.Subscribe;
@@ -27,8 +28,8 @@ import org.junit.runners.JUnit4;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mycila.event.Reachability.*;
-import static org.junit.Assert.*;
+import static com.mycila.event.Reachability.WEAK;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -93,6 +94,26 @@ public final class AnnotationProcessorTest {
         assertEquals(sequence.toString(), "[Hello for a, Hello for a1, Hello for a1]");
     }
 
+    @Test
+    public void test_group() {
+        final List<Object> events = new ArrayList<Object>();
+        Object o = new Object() {
+            @Subscribe(topics = "prog/events/group1")
+            private void handle1(String a, int b) {
+                events.add("handle1-" + a + b);
+            }
+
+            @Subscribe(topics = "prog/events/group2")
+            private void handle2(String a, int b) {
+                events.add("handle2-" + a + b);
+            }
+        };
+        processor.register(o);
+        C c = processor.instanciate(C.class);
+        c.send2("hello", 3);
+        assertEquals(events.toString(), "[handle1-hello3, handle2-hello3]");
+    }
+
     private void publish() {
         B b = processor.instanciate(B.class);
         C c = processor.instanciate(C.class);
@@ -108,5 +129,9 @@ public final class AnnotationProcessorTest {
     static abstract class C {
         @Publish(topics = {"prog/events/a/a1", "prog/events/a/allA"})
         abstract void send(String a, int b);
+
+        @Publish(topics = {"prog/events/group1", "prog/events/group2"})
+        @Group
+        abstract void send2(String a, int b);
     }
 }

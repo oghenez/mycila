@@ -20,6 +20,7 @@ import com.mycila.event.MycilaEvent;
 import com.mycila.event.Publisher;
 import com.mycila.event.Requestor;
 import com.mycila.event.Topic;
+import com.mycila.event.annotation.Group;
 import com.mycila.event.annotation.Multiple;
 import com.mycila.event.annotation.Publish;
 import com.mycila.event.annotation.Request;
@@ -31,9 +32,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import static com.google.common.collect.Iterables.*;
-import static com.mycila.event.internal.Ensure.*;
-import static com.mycila.event.internal.Reflect.*;
+import static com.google.common.collect.Iterables.filter;
+import static com.mycila.event.internal.Ensure.hasSomeArgs;
+import static com.mycila.event.internal.Reflect.annotatedBy;
+import static com.mycila.event.internal.Reflect.findMethods;
+import static com.mycila.event.internal.Reflect.getTargetClass;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -87,18 +90,23 @@ public final class PublisherInterceptor implements MethodInterceptor {
     }
 
     private static Object handlePublishing(Publisher publisher, MethodInvocation invocation) {
-        boolean requiresSplit = invocation.getMethod().isAnnotationPresent(Multiple.class);
-        for (Object arg : invocation.getArguments()) {
-            if (!requiresSplit)
-                publisher.publish(arg);
-            else if (arg.getClass().isArray())
-                for (Object event : (Object[]) arg)
-                    publisher.publish(event);
-            else if (arg instanceof Iterable)
-                for (Object event : (Iterable) arg)
-                    publisher.publish(event);
-            else
-                publisher.publish(arg);
+        boolean group = invocation.getMethod().isAnnotationPresent(Group.class);
+        if (group) {
+            publisher.publish(invocation.getArguments());
+        } else {
+            boolean requiresSplit = invocation.getMethod().isAnnotationPresent(Multiple.class);
+            for (Object arg : invocation.getArguments()) {
+                if (!requiresSplit)
+                    publisher.publish(arg);
+                else if (arg.getClass().isArray())
+                    for (Object event : (Object[]) arg)
+                        publisher.publish(event);
+                else if (arg instanceof Iterable)
+                    for (Object event : (Iterable) arg)
+                        publisher.publish(event);
+                else
+                    publisher.publish(arg);
+            }
         }
         return null;
     }

@@ -27,7 +27,8 @@ import com.mycila.event.annotation.Reference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import static com.mycila.event.internal.Ensure.*;
+import static com.mycila.event.internal.Ensure.hasSomeArgs;
+import static com.mycila.event.internal.Ensure.notNull;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -49,10 +50,12 @@ public final class Subscribers {
         final Reachability reachability;
         final Object target;
         final MethodInvoker invoker;
+        final Class<?>[] argTypes;
 
         ReferencableMethod(Object target, final Method method) {
             notNull(target, "Target object");
             notNull(method, "Method");
+            this.argTypes = method.getParameterTypes();
             this.target = target;
             this.invoker = Proxy.invoker(method);
             this.reachability = method.isAnnotationPresent(Reference.class) ?
@@ -69,13 +72,21 @@ public final class Subscribers {
     private static final class MethodSubscriber extends ReferencableMethod implements Subscriber<Object> {
         MethodSubscriber(Object target, Method method) {
             super(target, method);
-            hasOneArg(Event.class, method);
+            hasSomeArgs(method);
         }
 
         @Override
         public void onEvent(Event<Object> event) throws Exception {
             try {
-                invoker.invoke(target, event);
+                if (argTypes.length == 1 && argTypes[0].isAssignableFrom(Event.class))
+                    invoker.invoke(target, event);
+                else {
+                    Object o = event.getSource();
+                    if (argTypes.length == 1)
+                        invoker.invoke(target, o);
+                    else if (o.getClass().isArray())
+                        invoker.invoke(target, (Object[]) o);
+                }
             } catch (InvocationTargetException e) {
                 if (e.getTargetException() instanceof Exception)
                     throw (Exception) e.getTargetException();

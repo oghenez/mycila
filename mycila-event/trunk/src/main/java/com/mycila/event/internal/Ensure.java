@@ -31,19 +31,9 @@ public final class Ensure {
         return arg;
     }
 
-    public static void hasOneArg(Class<?> type, Method method) {
-        if (method.getParameterTypes().length != 1
-                || !method.getParameterTypes()[0].isAssignableFrom(type))
-            throw new IllegalArgumentException("Method " + method + " is not valid: must have one parameter only type " + type.getName());
-    }
-
     public static void hasSomeArgs(Method method) {
         if (method.getParameterTypes().length == 0)
             throw new IllegalArgumentException("Method " + method + " is not valid: must have one or many parameters matching all events types to publish");
     }
 
-    public static void hasAtMostOneArg(Method method) {
-        if (method.getParameterTypes().length > 1)
-            throw new IllegalArgumentException("Method " + method + " is not valid: must have zero or one argument");
-    }
 }
