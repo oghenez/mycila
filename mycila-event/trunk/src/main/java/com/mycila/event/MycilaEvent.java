@@ -38,10 +38,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.SynchronousQueue;
 
-import static com.google.common.base.Preconditions.*;
-import static com.google.common.collect.Iterables.*;
-import static com.mycila.event.internal.Ensure.*;
-import static com.mycila.event.internal.Reflect.*;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Iterables.filter;
+import static com.mycila.event.internal.Ensure.notNull;
+import static com.mycila.event.internal.Reflect.annotatedBy;
+import static com.mycila.event.internal.Reflect.findMethods;
+import static com.mycila.event.internal.Reflect.getTargetClass;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -159,13 +161,6 @@ public final class MycilaEvent {
             public void publish(Object event) {
                 for (Topic topic : topics) {
                     dispatcher.publish(topic, event);
-                }
-            }
-
-            @Override
-            public void publish(Object... events) {
-                for (Object event : events) {
-                    publish(events);
                 }
             }
 

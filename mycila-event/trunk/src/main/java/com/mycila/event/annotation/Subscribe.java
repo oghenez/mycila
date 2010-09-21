@@ -33,5 +33,5 @@ import java.lang.annotation.Target;
 public @interface Subscribe {
     String[] topics();
 
-    Class<?> eventType();
+    Class<?> eventType() default Object.class;
 }
