@@ -70,3 +70,9 @@ You could just as easily support:
  - jndi mocks
 
  - transactional scope (cf di page 161)
+
+ - cache scope (p 181), avec weak / soft / hard refs
+
+ - 
+
+ 
