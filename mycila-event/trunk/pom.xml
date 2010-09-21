@@ -43,6 +43,9 @@
                         <year>${project.inceptionYear}</year>
                         <email>mathieu.carbou@gmail.com</email>
                     </properties>
+                    <excludes>
+                        <exclude>dependency-reduced-pom.xml</exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>
@@ -120,42 +123,46 @@
                 </executions>
             </plugin>
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
+                <artifactId>maven-shade-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>standard</id>
                         <phase>package</phase>
-                        <configuration>
-                            <tasks>
-                                <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask"/>
-                                <jarjar destfile="${project.build.directory}/${project.build.finalName}.jar"
-                                        update="true">
-                                    <zipfileset src="${project.build.directory}/dependency/asm-all-3.2.jar"/>
-                                    <zipfileset src="${project.build.directory}/dependency/cglib-2.2.jar"/>
-                                    <zipfileset src="${project.build.directory}/dependency/guava-r06.jar"/>
-                                    <zipfileset src="${project.build.directory}/dependency/aopalliance-1.0.jar"/>
-                                    <rule pattern="net.sf.cglib.**" result="com.mycila.event.internal.cglib.@1"/>
-                                    <rule pattern="org.objectweb.asm.**" result="com.mycila.event.internal.asm.@1"/>
-                                    <rule pattern="com.google.common.**" result="com.mycila.event.internal.guava.@1"/>
-                                    <rule pattern="org.aopalliance.**"
-                                          result="com.mycila.event.internal.aopalliance.@1"/>
-                                    <keep pattern="com.mycila.event.**"/>
-                                </jarjar>
-                            </tasks>
-                        </configuration>
                         <goals>
-                            <goal>run</goal>
+                            <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <createSourcesJar>true</createSourcesJar>
+                            <artifactSet>
+                                <includes>
+                                    <include>aopalliance:aopalliance</include>
+                                    <include>asm:asm-all</include>
+                                    <include>cglib:cglib</include>
+                                    <include>com.google.guava:guava</include>
+                                </includes>
+                            </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>net.sf.cglib</pattern>
+                                    <shadedPattern>com.mycila.event.internal.cglib</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.aopalliance</pattern>
+                                    <shadedPattern>com.mycila.event.internal.aopalliance</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.objectweb.asm</pattern>
+                                    <shadedPattern>com.mycila.event.internal.asm</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.google.common</pattern>
+                                    <shadedPattern>com.mycila.event.internal.guava</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
                     </execution>
                 </executions>
-                <dependencies>
-                    <dependency>
-                        <groupId>jarjar</groupId>
-                        <artifactId>jarjar</artifactId>
-                        <version>1.0</version>
-                        <scope>system</scope>
-                        <systemPath>${basedir}/lib/jarjar-1.0.jar</systemPath>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>
@@ -166,25 +173,27 @@
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <version>2.2</version>
-            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>asm</groupId>
             <artifactId>asm-all</artifactId>
             <version>3.2</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>r06</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>aopalliance</groupId>
             <artifactId>aopalliance</artifactId>
             <version>1.0</version>
-            <scope>provided</scope>
         </dependency>
         <!-- optional features -->
         <dependency>
