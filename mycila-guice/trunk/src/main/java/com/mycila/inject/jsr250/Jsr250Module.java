@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.mycila.inject.BinderHelper.*;
+import static com.mycila.inject.BinderHelper.in;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -49,7 +49,7 @@ public final class Jsr250Module implements Module {
         binder.bind(Jsr250Injector.class).to(Jsr250InjectorImpl.class).in(Singleton.class);
         in(binder)
                 .bindAnnotationInjector(Resource.class, Jsr250KeyProvider.class)
-                .bindAfterInjection(PostConstruct.class, Jsr250PostConstructHandler.class)
+                .handleMethodAfterInjection(PostConstruct.class, Jsr250PostConstructHandler.class)
                 .bind(Jsr250Destroyer.class, new Jsr250Destroyer() {
                     @Inject
                     Injector injector;

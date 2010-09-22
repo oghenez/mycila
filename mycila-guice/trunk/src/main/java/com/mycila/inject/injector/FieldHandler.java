@@ -17,7 +17,7 @@
 package com.mycila.inject.injector;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 
-public interface MethodHandler<A extends Annotation> extends MemberHandler<A, Method> {
+public interface FieldHandler<A extends Annotation> extends MemberHandler<A, Field> {
 }

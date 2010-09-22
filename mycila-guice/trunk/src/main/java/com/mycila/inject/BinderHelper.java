@@ -21,6 +21,10 @@ import com.google.inject.BindingAnnotation;
 import com.google.inject.Scope;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.matcher.Matchers;
+import com.mycila.inject.injector.AnnotatedMemberHandler;
+import com.mycila.inject.injector.AnnotatedMemberHandlerTypeListener;
+import com.mycila.inject.injector.FieldHandler;
+import com.mycila.inject.injector.FieldHandlerTypeListener;
 import com.mycila.inject.injector.KeyProvider;
 import com.mycila.inject.injector.MemberInjectorTypeListener;
 import com.mycila.inject.injector.MethodHandler;
@@ -85,8 +89,18 @@ public final class BinderHelper {
         return this;
     }
 
-    public <A extends Annotation> BinderHelper bindAfterInjection(Class<A> annotationType, Class<? extends MethodHandler<A>> providerClass) {
+    public <A extends Annotation> BinderHelper handleMethodAfterInjection(Class<A> annotationType, Class<? extends MethodHandler<A>> providerClass) {
         binder.bindListener(Matchers.any(), inject(new MethodHandlerTypeListener<A>(annotationType, providerClass)));
+        return this;
+    }
+
+    public <A extends Annotation> BinderHelper handleFieldAfterInjection(Class<A> annotationType, Class<? extends FieldHandler<A>> providerClass) {
+        binder.bindListener(Matchers.any(), inject(new FieldHandlerTypeListener<A>(annotationType, providerClass)));
+        return this;
+    }
+
+    public <A extends Annotation> BinderHelper handleAfterInjection(Class<A> annotationType, Class<? extends AnnotatedMemberHandler<A>> providerClass) {
+        binder.bindListener(Matchers.any(), inject(new AnnotatedMemberHandlerTypeListener<A>(annotationType, providerClass)));
         return this;
     }
 

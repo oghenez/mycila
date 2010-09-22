@@ -16,8 +16,12 @@
 
 package com.mycila.inject.injector;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
+import com.google.inject.TypeLiteral;
 
-public interface MethodHandler<A extends Annotation> extends MemberHandler<A, Method> {
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Member;
+
+public interface MemberHandler<A extends Annotation, M extends Member & AnnotatedElement> {
+    <T> void handle(TypeLiteral<? extends T> type, T instance, M member, A annotation);
 }
