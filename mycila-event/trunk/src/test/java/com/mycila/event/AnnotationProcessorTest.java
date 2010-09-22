@@ -107,11 +107,17 @@ public final class AnnotationProcessorTest {
             private void handle2(String a, int b) {
                 events.add("handle2-" + a + b);
             }
+
+            @Subscribe(topics = "prog/events/group3")
+            private void handle3(String a) {
+                events.add("handle3-" + a);
+            }
         };
         processor.register(o);
         C c = processor.instanciate(C.class);
         c.send2("hello", 3);
-        assertEquals(events.toString(), "[handle1-hello3, handle2-hello3]");
+        c.send3("bonjour");
+        assertEquals(events.toString(), "[handle1-hello3, handle2-hello3, handle3-bonjour]");
     }
 
     private void publish() {
@@ -133,5 +139,9 @@ public final class AnnotationProcessorTest {
         @Publish(topics = {"prog/events/group1", "prog/events/group2"})
         @Group
         abstract void send2(String a, int b);
+
+        @Publish(topics = {"prog/events/group3"})
+        @Group
+        abstract void send3(String a);
     }
 }

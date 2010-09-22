@@ -82,10 +82,10 @@ public final class Subscribers {
                     invoker.invoke(target, event);
                 else {
                     Object o = event.getSource();
-                    if (argTypes.length == 1)
-                        invoker.invoke(target, o);
-                    else if (o.getClass().isArray())
+                    if (o.getClass().isArray())
                         invoker.invoke(target, (Object[]) o);
+                    else
+                        invoker.invoke(target, o);
                 }
             } catch (InvocationTargetException e) {
                 if (e.getTargetException() instanceof Exception)
