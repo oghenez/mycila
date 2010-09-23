@@ -186,12 +186,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <configuration>
-                    <updateReleaseInfo>true</updateReleaseInfo>
-                </configuration>
-            </plugin>
             <!-- automatically handle it tests -->
             <plugin>
                 <artifactId>maven-clean-plugin</artifactId>
