@@ -16,20 +16,47 @@
 
 package com.mycila.inject.jsr250;
 
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.ProvisionException;
 import com.google.inject.TypeLiteral;
 import com.mycila.inject.injector.MethodHandlerSkeleton;
+import com.mycila.inject.internal.Proxy;
+import com.mycila.inject.internal.Reflect;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.List;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 final class Jsr250PostConstructHandler extends MethodHandlerSkeleton<PostConstruct> {
+
+    @Inject
+    Provider<Injector> injector;
+
     @Override
     public <T> void handle(TypeLiteral<? extends T> type, T instance, Method method, PostConstruct annotation) {
-        if (!Modifier.isStatic(method.getModifiers()))
-            super.handle(type, instance, method, annotation);
+        if (!Modifier.isStatic(method.getModifiers())) {
+            List<Key<?>> parameterKeys = Reflect.getParameterKeys(type, method);
+            Object[] parameters = new Object[parameterKeys.size()];
+            for (int i = 0; i < parameters.length; i++)
+                parameters[i] = injector.get().getProvider(parameterKeys.get(i)).get();
+            try {
+                Proxy.invoker(method).invoke(instance, parameters);
+            }
+            catch (IllegalAccessException e) {
+                throw new ProvisionException("Failed to @PostConstruct method " + method + ". Reason: " + e.getMessage(), e);
+            }
+            catch (InvocationTargetException e) {
+                throw new ProvisionException("Failed to @PostConstruct method " + method + ". Reason: " + e.getTargetException().getMessage(), e.getTargetException());
+            }
+        }
     }
+
 }

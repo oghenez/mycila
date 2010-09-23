@@ -21,19 +21,21 @@ import com.google.inject.TypeLiteral;
 import com.mycila.inject.internal.Proxy;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public abstract class MethodHandlerSkeleton<A extends Annotation> implements MethodHandler<A> {
-
     @Override
     public <T> void handle(TypeLiteral<? extends T> type, T instance, Method method, A annotation) {
         try {
             Proxy.invoker(method).invoke(instance);
-        } catch (Exception e) {
-            throw new ProvisionException("" + e.getMessage(), e);
+        } catch (IllegalAccessException e) {
+            throw new ProvisionException(e.getMessage(), e);
+        } catch (InvocationTargetException e) {
+            throw new ProvisionException(String.valueOf(e.getTargetException().getMessage()), e.getTargetException());
         }
     }
 }

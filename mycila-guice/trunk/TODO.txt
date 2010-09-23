@@ -59,6 +59,8 @@ You could just as easily support:
 
 /////////////////
 
+ - refac MemberInjectorTypeListener
+
  - OSGI manifest: repackager cglib + asm + verifs + tests IT
 
  - testing

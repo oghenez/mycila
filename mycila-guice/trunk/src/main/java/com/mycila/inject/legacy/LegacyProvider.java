@@ -30,9 +30,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 
-import static com.google.common.base.Predicates.*;
-import static com.google.common.collect.Iterators.*;
-import static com.mycila.inject.internal.Reflect.*;
+import static com.google.common.base.Predicates.and;
+import static com.google.common.collect.Iterators.filter;
+import static com.mycila.inject.internal.Reflect.findMethods;
+import static com.mycila.inject.internal.Reflect.withParameterTypes;
 
 public abstract class LegacyProvider<T> implements Provider<T> {
 
@@ -155,7 +156,7 @@ public abstract class LegacyProvider<T> implements Provider<T> {
                     constructor.setAccessible(true);
                 return constructor.newInstance(getParameterValues(injector));
             } catch (InvocationTargetException e) {
-                throw new ProvisionException(e.getTargetException().getMessage(), e.getTargetException());
+                throw new ProvisionException(String.valueOf(e.getTargetException().getMessage()), e.getTargetException());
             } catch (InstantiationException e) {
                 throw new ProvisionException(e.getMessage(), e);
             } catch (IllegalAccessException e) {
@@ -182,7 +183,7 @@ public abstract class LegacyProvider<T> implements Provider<T> {
             } catch (IllegalAccessException e) {
                 throw new ProvisionException(e.getMessage(), e);
             } catch (InvocationTargetException e) {
-                throw new ProvisionException(e.getTargetException().getMessage(), e.getTargetException());
+                throw new ProvisionException(String.valueOf(e.getTargetException().getMessage()), e.getTargetException());
             }
         }
     }
@@ -206,7 +207,7 @@ public abstract class LegacyProvider<T> implements Provider<T> {
             } catch (IllegalAccessException e) {
                 throw new ProvisionException(e.getMessage(), e);
             } catch (InvocationTargetException e) {
-                throw new ProvisionException(e.getTargetException().getMessage(), e.getTargetException());
+                throw new ProvisionException(String.valueOf(e.getTargetException().getMessage()), e.getTargetException());
             }
         }
     }

@@ -20,8 +20,11 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.inject.Key;
+import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
+import com.mycila.inject.BinderHelper;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -29,17 +32,37 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.google.common.collect.Iterables.*;
-import static java.util.Arrays.*;
+import static com.google.common.collect.Iterables.concat;
+import static com.google.common.collect.Iterables.filter;
+import static com.google.common.collect.Iterables.transform;
+import static java.util.Arrays.asList;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
 public final class Reflect {
+
+
+    public static List<Key<?>> getParameterKeys(TypeLiteral<?> injectedType, Method injectedMember) {
+        Annotation[][] parameterAnnotations = injectedMember.getParameterAnnotations();
+        List<TypeLiteral<?>> parameterTypes = injectedType.getParameterTypes(injectedMember);
+        List<Key<?>> keys = new ArrayList<Key<?>>();
+        for (int i = 0; i < parameterTypes.size(); i++)
+            keys.add(buildKey(parameterTypes.get(i), parameterAnnotations[i]));
+        return keys;
+    }
+
+    public static Key<?> buildKey(TypeLiteral<?> type, Annotation[] annotations) {
+        for (Annotation annotation : annotations)
+            if (BinderHelper.isBindingAnnotation(annotation.annotationType()))
+                return Key.get(type, annotation);
+        return Key.get(type);
+    }
 
     public static Class<?> getTargetClass(Class<?> proxy) {
         if (proxy.getName().contains("$$")) {

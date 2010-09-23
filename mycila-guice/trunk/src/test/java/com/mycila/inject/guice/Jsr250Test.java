@@ -17,6 +17,7 @@
 package com.mycila.inject.guice;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Scope;
 import com.google.inject.Singleton;
@@ -51,7 +52,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.mycila.inject.BinderHelper.*;
+import static com.mycila.inject.BinderHelper.in;
 import static org.junit.Assert.*;
 
 /**
@@ -91,6 +92,34 @@ public final class Jsr250Test {
             assertSame(injector, provider.get());
             verified++;
         }
+    }
+
+    @Test
+    public void test_post_inject_param() throws Exception {
+        assertFalse(AAA.CALLED);
+        assertFalse(AAA.SECOND);
+        Guice.createInjector(new Jsr250Module()).getInstance(AAA.class);
+        assertTrue(AAA.CALLED);
+        assertTrue(AAA.SECOND);
+    }
+
+    static class AAA {
+        static boolean CALLED;
+        static boolean SECOND;
+
+        @PostConstruct
+        void init() {
+            SECOND = true;
+        }
+
+        @PostConstruct
+        void init(BBB bb) {
+            assertNotNull(bb);
+            CALLED = true;
+        }
+    }
+
+    static class BBB {
     }
 
     @Test

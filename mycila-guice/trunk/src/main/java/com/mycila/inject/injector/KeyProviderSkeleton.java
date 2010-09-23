@@ -19,11 +19,11 @@ package com.mycila.inject.injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import com.mycila.inject.BinderHelper;
+import com.mycila.inject.internal.Reflect;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,18 +41,7 @@ public abstract class KeyProviderSkeleton<A extends Annotation> implements KeyPr
 
     @Override
     public List<Key<?>> getParameterKeys(TypeLiteral<?> injectedType, Method injectedMember, A resourceAnnotation) {
-        Annotation[][] parameterAnnotations = injectedMember.getParameterAnnotations();
-        List<TypeLiteral<?>> parameterTypes = injectedType.getParameterTypes(injectedMember);
-        List<Key<?>> keys = new ArrayList<Key<?>>();
-        for (int i = 0; i < parameterTypes.size(); i++)
-            keys.add(buildKey(parameterTypes.get(i), parameterAnnotations[i]));
-        return keys;
+        return Reflect.getParameterKeys(injectedType, injectedMember);
     }
 
-    private Key<?> buildKey(TypeLiteral<?> type, Annotation[] annotations) {
-        for (Annotation annotation : annotations)
-            if (BinderHelper.isBindingAnnotation(annotation.annotationType()))
-                return Key.get(type, annotation);
-        return Key.get(type);
-    }
 }
