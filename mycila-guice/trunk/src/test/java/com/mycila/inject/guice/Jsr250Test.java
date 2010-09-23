@@ -96,29 +96,43 @@ public final class Jsr250Test {
 
     @Test
     public void test_post_inject_param() throws Exception {
-        assertFalse(AAA.CALLED);
-        assertFalse(AAA.SECOND);
-        Guice.createInjector(new Jsr250Module()).getInstance(AAA.class);
-        assertTrue(AAA.CALLED);
-        assertTrue(AAA.SECOND);
+        assertFalse(MyM.AAA.CALLED);
+        assertFalse(MyM.AAA.SECOND);
+        Guice.createInjector(Stage.PRODUCTION, new Jsr250Module(), new MyM());
+        assertTrue(MyM.AAA.CALLED);
+        assertTrue(MyM.AAA.SECOND);
     }
 
-    static class AAA {
-        static boolean CALLED;
-        static boolean SECOND;
-
-        @PostConstruct
-        void init() {
-            SECOND = true;
+    static class MyM extends AbstractModule {
+        @Override
+        protected void configure() {
+            bind(AAA.class);
         }
 
-        @PostConstruct
-        void init(BBB bb) {
-            assertNotNull(bb);
-            CALLED = true;
+        @Singleton
+        static class AAA {
+            static boolean CALLED;
+            static boolean SECOND;
+
+            @Inject
+            BBB bbb;
+
+            @PostConstruct
+            void init() {
+                SECOND = true;
+                assertNotNull(bbb);
+            }
+
+            @PostConstruct
+            void init(BBB bb) {
+                assertNotNull(bb);
+                assertNotNull(bbb);
+                CALLED = true;
+            }
         }
     }
 
+    @Singleton
     static class BBB {
     }
 
