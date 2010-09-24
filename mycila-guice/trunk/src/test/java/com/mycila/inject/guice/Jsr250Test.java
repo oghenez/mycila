@@ -17,7 +17,6 @@
 package com.mycila.inject.guice;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Scope;
 import com.google.inject.Singleton;
@@ -32,7 +31,6 @@ import com.mycila.inject.annotation.WeakSingleton;
 import com.mycila.inject.internal.Reflect;
 import com.mycila.inject.jsr250.Jsr250;
 import com.mycila.inject.jsr250.Jsr250Injector;
-import com.mycila.inject.jsr250.Jsr250Module;
 import com.mycila.inject.scope.ExtraScopeModule;
 import com.mycila.inject.scope.ResetScope;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -98,7 +96,7 @@ public final class Jsr250Test {
     public void test_post_inject_param() throws Exception {
         assertFalse(MyM.AAA.CALLED);
         assertFalse(MyM.AAA.SECOND);
-        Guice.createInjector(Stage.PRODUCTION, new Jsr250Module(), new MyM());
+        Jsr250.createInjector(Stage.PRODUCTION, new MyM());
         assertTrue(MyM.AAA.CALLED);
         assertTrue(MyM.AAA.SECOND);
     }
@@ -139,7 +137,7 @@ public final class Jsr250Test {
     @Test
     public void test_destroy() throws Exception {
         final Class[] cc = {AA.class, BB.class, CC.class, DD.class, EE.class, FF.class, GG.class};
-        Jsr250Injector injector = Jsr250.createInjector(Stage.PRODUCTION, new Jsr250Module(), new ExtraScopeModule(), new AbstractModule() {
+        Jsr250Injector injector = Jsr250.createInjector(Stage.PRODUCTION, Jsr250.newJsr250Module(), new ExtraScopeModule(), new AbstractModule() {
             @Override
             protected void configure() {
                 bindScope(ExpiringSingleton.class, in(binder()).expiringSingleton(10, TimeUnit.SECONDS));
@@ -246,7 +244,7 @@ public final class Jsr250Test {
     @Test
     public void test() throws Exception {
         B.calls.clear();
-        Jsr250Injector injector = Jsr250.createInjector(Stage.PRODUCTION, new Jsr250Module(), new ExtraScopeModule(), new AbstractModule() {
+        Jsr250Injector injector = Jsr250.createInjector(Stage.PRODUCTION, Jsr250.newJsr250Module(), new ExtraScopeModule(), new AbstractModule() {
             @Override
             protected void configure() {
                 bind(C.class);

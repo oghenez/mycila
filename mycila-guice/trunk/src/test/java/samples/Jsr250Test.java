@@ -24,14 +24,13 @@ import com.google.inject.Stage;
 import com.mycila.inject.jsr250.Jsr250;
 import com.mycila.inject.jsr250.Jsr250Destroyer;
 import com.mycila.inject.jsr250.Jsr250Injector;
-import com.mycila.inject.jsr250.Jsr250Module;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import javax.inject.Named;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -41,7 +40,7 @@ public final class Jsr250Test {
     @Test
     public void test() throws Exception {
         Jsr250Injector jsr250Injector = Jsr250.createInjector(Stage.PRODUCTION, new MyModule());
-        Injector injector = Guice.createInjector(Stage.PRODUCTION, new MyModule(), new Jsr250Module());
+        Injector injector = Guice.createInjector(Stage.PRODUCTION, new MyModule(), Jsr250.newJsr250Module());
 
         assertEquals("234", injector.getInstance(Account.class).getNumber());
 
