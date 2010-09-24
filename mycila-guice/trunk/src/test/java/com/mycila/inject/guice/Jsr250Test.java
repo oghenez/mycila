@@ -52,7 +52,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.mycila.inject.BinderHelper.in;
+import static com.mycila.inject.MycilaGuice.in;
 import static org.junit.Assert.*;
 
 /**

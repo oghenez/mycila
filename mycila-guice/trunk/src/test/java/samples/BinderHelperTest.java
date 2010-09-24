@@ -38,9 +38,11 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 
-import static com.mycila.inject.BinderHelper.*;
-import static java.lang.annotation.ElementType.*;
-import static java.lang.annotation.RetentionPolicy.*;
+import static com.mycila.inject.MycilaGuice.in;
+import static java.lang.annotation.ElementType.CONSTRUCTOR;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

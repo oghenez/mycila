@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.mycila.inject.BinderHelper.in;
+import static com.mycila.inject.MycilaGuice.in;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

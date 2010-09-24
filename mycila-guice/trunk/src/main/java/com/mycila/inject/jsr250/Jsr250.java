@@ -34,8 +34,9 @@ import javax.annotation.PreDestroy;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import static com.google.common.collect.Iterables.*;
-import static com.mycila.inject.internal.Reflect.*;
+import static com.google.common.collect.Iterables.filter;
+import static com.mycila.inject.internal.Reflect.annotatedBy;
+import static com.mycila.inject.internal.Reflect.findMethods;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

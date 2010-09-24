@@ -21,7 +21,6 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
-import com.google.inject.ProvisionException;
 import com.google.inject.Scope;
 import com.mycila.inject.annotation.Jsr250Singleton;
 import com.mycila.inject.jsr250.Jsr250;
@@ -397,10 +396,10 @@ final class ExtraScopes {
                 if (!isDone()) run();
                 return super.get();
             } catch (ExecutionException e) {
-                throw (RuntimeException) e.getCause();
+                throw MycilaGuiceException.runtime(e);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
-                throw new ProvisionException("Interrupted during provision");
+                throw MycilaGuiceException.runtime(e);
             }
         }
 

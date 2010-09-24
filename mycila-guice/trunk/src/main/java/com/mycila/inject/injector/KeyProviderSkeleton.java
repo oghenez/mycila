@@ -18,7 +18,7 @@ package com.mycila.inject.injector;
 
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
-import com.mycila.inject.BinderHelper;
+import com.mycila.inject.MycilaGuice;
 import com.mycila.inject.internal.Reflect;
 
 import java.lang.annotation.Annotation;
@@ -34,7 +34,7 @@ public abstract class KeyProviderSkeleton<A extends Annotation> implements KeyPr
     @Override
     public Key<?> getKey(TypeLiteral<?> injectedType, Field injectedMember, A resourceAnnotation) {
         for (Annotation annotation : injectedMember.getAnnotations())
-            if (BinderHelper.isBindingAnnotation(annotation.annotationType()))
+            if (MycilaGuice.isBindingAnnotation(annotation.annotationType()))
                 return Key.get(injectedType.getFieldType(injectedMember), annotation);
         return Key.get(injectedType.getFieldType(injectedMember));
     }

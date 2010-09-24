@@ -18,6 +18,7 @@ package com.mycila.inject;
 
 import com.google.inject.Binder;
 import com.google.inject.BindingAnnotation;
+import com.google.inject.Module;
 import com.google.inject.Scope;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.matcher.Matchers;
@@ -29,6 +30,7 @@ import com.mycila.inject.injector.KeyProvider;
 import com.mycila.inject.injector.MemberInjectorTypeListener;
 import com.mycila.inject.injector.MethodHandler;
 import com.mycila.inject.injector.MethodHandlerTypeListener;
+import com.mycila.inject.jsr250.Jsr250Module;
 import com.mycila.inject.scope.ResetScope;
 import org.aopalliance.intercept.MethodInterceptor;
 
@@ -40,16 +42,16 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class BinderHelper {
+public final class MycilaGuice {
     private final Binder binder;
 
-    private BinderHelper(Binder binder) {
+    private MycilaGuice(Binder binder) {
         this.binder = binder;
     }
 
-    public BinderHelper bindInterceptor(Matcher<? super Class<?>> classMatcher,
-                                        Matcher<? super Method> methodMatcher,
-                                        MethodInterceptor... interceptors) {
+    public MycilaGuice bindInterceptor(Matcher<? super Class<?>> classMatcher,
+                                       Matcher<? super Method> methodMatcher,
+                                       MethodInterceptor... interceptors) {
         for (MethodInterceptor interceptor : interceptors)
             inject(interceptor);
         binder.bindInterceptor(classMatcher, methodMatcher, interceptors);
@@ -84,29 +86,38 @@ public final class BinderHelper {
         return inject(ExtraScopes.resetSingleton());
     }
 
-    public <A extends Annotation> BinderHelper bindAnnotationInjector(Class<A> annotationType, Class<? extends KeyProvider<A>> providerClass) {
+    public <A extends Annotation> MycilaGuice bindAnnotationInjector(Class<A> annotationType, Class<? extends KeyProvider<A>> providerClass) {
         binder.bindListener(Matchers.any(), inject(new MemberInjectorTypeListener<A>(annotationType, providerClass)));
         return this;
     }
 
-    public <A extends Annotation> BinderHelper handleMethodAfterInjection(Class<A> annotationType, Class<? extends MethodHandler<A>> providerClass) {
+    public <A extends Annotation> MycilaGuice handleMethodAfterInjection(Class<A> annotationType, Class<? extends MethodHandler<A>> providerClass) {
         binder.bindListener(Matchers.any(), inject(new MethodHandlerTypeListener<A>(annotationType, providerClass)));
         return this;
     }
 
-    public <A extends Annotation> BinderHelper handleFieldAfterInjection(Class<A> annotationType, Class<? extends FieldHandler<A>> providerClass) {
+    public <A extends Annotation> MycilaGuice handleFieldAfterInjection(Class<A> annotationType, Class<? extends FieldHandler<A>> providerClass) {
         binder.bindListener(Matchers.any(), inject(new FieldHandlerTypeListener<A>(annotationType, providerClass)));
         return this;
     }
 
-    public <A extends Annotation> BinderHelper handleAfterInjection(Class<A> annotationType, Class<? extends AnnotatedMemberHandler<A>> providerClass) {
+    public <A extends Annotation> MycilaGuice handleAfterInjection(Class<A> annotationType, Class<? extends AnnotatedMemberHandler<A>> providerClass) {
         binder.bindListener(Matchers.any(), inject(new AnnotatedMemberHandlerTypeListener<A>(annotationType, providerClass)));
         return this;
     }
 
-    public <T> BinderHelper bind(Class<T> type, T instance) {
+    public <T> MycilaGuice bind(Class<T> type, T instance) {
         binder.bind(type).toInstance(inject(instance));
         return this;
+    }
+
+    public MycilaGuice install(Module module) {
+        binder.install(inject(module));
+        return this;
+    }
+
+    public MycilaGuice installJsr250Module() {
+        return install(newJsr250Module());
     }
 
     public <T> T inject(T object) {
@@ -116,8 +127,8 @@ public final class BinderHelper {
 
     /* static */
 
-    public static BinderHelper in(Binder binder) {
-        return new BinderHelper(binder);
+    public static MycilaGuice in(Binder binder) {
+        return new MycilaGuice(binder);
     }
 
     /**
@@ -127,5 +138,10 @@ public final class BinderHelper {
         return annotationType.isAnnotationPresent(BindingAnnotation.class)
                 || annotationType.isAnnotationPresent(Qualifier.class);
     }
+
+    public static Module newJsr250Module() {
+        return new Jsr250Module();
+    }
+
 
 }
