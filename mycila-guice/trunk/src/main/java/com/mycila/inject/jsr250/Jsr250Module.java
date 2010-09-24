@@ -39,7 +39,7 @@ import static com.mycila.inject.MycilaGuice.in;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class Jsr250Module implements Module {
+final class Jsr250Module implements Module {
 
     private final Set<Scope> scopes = new HashSet<Scope>();
     private final Set<Class<? extends Annotation>> scopeAnnotations = new HashSet<Class<? extends Annotation>>();

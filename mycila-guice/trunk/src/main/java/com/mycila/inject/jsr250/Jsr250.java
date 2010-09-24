@@ -112,6 +112,10 @@ public final class Jsr250 {
         return false;
     }
 
+    public static Module newJsr250Module() {
+        return new Jsr250Module();
+    }
+
     public static boolean hasJSR250Module(Injector injector) {
         return injector.getBindings().containsKey(Key.get(Jsr250Destroyer.class));
     }
