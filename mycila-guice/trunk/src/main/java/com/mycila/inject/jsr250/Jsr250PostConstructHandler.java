@@ -18,8 +18,8 @@ package com.mycila.inject.jsr250;
 
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import com.google.inject.ProvisionException;
 import com.google.inject.TypeLiteral;
+import com.mycila.inject.MycilaGuiceException;
 import com.mycila.inject.injector.MethodHandlerSkeleton;
 import com.mycila.inject.internal.Proxy;
 import com.mycila.inject.internal.Reflect;
@@ -27,7 +27,6 @@ import com.mycila.inject.internal.Reflect;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -50,11 +49,8 @@ final class Jsr250PostConstructHandler extends MethodHandlerSkeleton<PostConstru
             try {
                 Proxy.invoker(method).invoke(instance, parameters);
             }
-            catch (IllegalAccessException e) {
-                throw new ProvisionException("Failed to @PostConstruct method " + method + ". Reason: " + e.getMessage(), e);
-            }
-            catch (InvocationTargetException e) {
-                throw new ProvisionException("Failed to @PostConstruct method " + method + ". Reason: " + e.getTargetException().getMessage(), e.getTargetException());
+            catch (Exception e) {
+                throw MycilaGuiceException.runtime(e);
             }
         }
     }

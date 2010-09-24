@@ -24,7 +24,7 @@ import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
-import com.mycila.inject.BinderHelper;
+import com.mycila.inject.MycilaGuice;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -59,7 +59,7 @@ public final class Reflect {
 
     public static Key<?> buildKey(TypeLiteral<?> type, Annotation[] annotations) {
         for (Annotation annotation : annotations)
-            if (BinderHelper.isBindingAnnotation(annotation.annotationType()))
+            if (MycilaGuice.isBindingAnnotation(annotation.annotationType()))
                 return Key.get(type, annotation);
         return Key.get(type);
     }

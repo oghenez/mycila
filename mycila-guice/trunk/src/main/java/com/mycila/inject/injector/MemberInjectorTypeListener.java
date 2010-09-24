@@ -20,7 +20,6 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.MembersInjector;
 import com.google.inject.Provider;
-import com.google.inject.ProvisionException;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
@@ -28,12 +27,14 @@ import com.mycila.inject.internal.Proxy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import static com.google.common.collect.Iterables.*;
-import static com.mycila.inject.internal.Reflect.*;
+import static com.google.common.collect.Iterables.filter;
+import static com.mycila.inject.MycilaGuiceException.runtime;
+import static com.mycila.inject.internal.Reflect.annotatedBy;
+import static com.mycila.inject.internal.Reflect.findFields;
+import static com.mycila.inject.internal.Reflect.findMethods;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -64,7 +65,7 @@ public final class MemberInjectorTypeListener<A extends Annotation> implements T
                     try {
                         field.set(injectee, value);
                     } catch (IllegalAccessException e) {
-                        throw new ProvisionException("Failed to inject field " + field + ". Reason: " + e.getMessage(), e);
+                        throw new IllegalStateException("Failed to inject field " + field + ". Reason: " + e.getMessage(), e);
                     }
                 }
                 // inject methods
@@ -76,11 +77,8 @@ public final class MemberInjectorTypeListener<A extends Annotation> implements T
                     try {
                         Proxy.invoker(method).invoke(injectee, parameters);
                     }
-                    catch (IllegalAccessException e) {
-                        throw new ProvisionException("Failed to inject method " + method + ". Reason: " + e.getMessage(), e);
-                    }
-                    catch (InvocationTargetException e) {
-                        throw new ProvisionException("Failed to inject method " + method + ". Reason: " + e.getTargetException().getMessage(), e.getTargetException());
+                    catch (Exception e) {
+                        throw runtime(e);
                     }
                 }
             }

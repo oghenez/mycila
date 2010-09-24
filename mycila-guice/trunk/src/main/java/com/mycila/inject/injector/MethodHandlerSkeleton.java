@@ -16,12 +16,11 @@
 
 package com.mycila.inject.injector;
 
-import com.google.inject.ProvisionException;
 import com.google.inject.TypeLiteral;
+import com.mycila.inject.MycilaGuiceException;
 import com.mycila.inject.internal.Proxy;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -32,10 +31,8 @@ public abstract class MethodHandlerSkeleton<A extends Annotation> implements Met
     public <T> void handle(TypeLiteral<? extends T> type, T instance, Method method, A annotation) {
         try {
             Proxy.invoker(method).invoke(instance);
-        } catch (IllegalAccessException e) {
-            throw new ProvisionException(e.getMessage(), e);
-        } catch (InvocationTargetException e) {
-            throw new ProvisionException(String.valueOf(e.getTargetException().getMessage()), e.getTargetException());
+        } catch (Exception e) {
+            throw MycilaGuiceException.runtime(e);
         }
     }
 }

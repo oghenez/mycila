@@ -20,18 +20,18 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.Provider;
-import com.google.inject.ProvisionException;
 import com.mycila.inject.internal.Proxy;
 import com.mycila.inject.internal.Reflect;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Iterator;
 
 import static com.google.common.base.Predicates.and;
 import static com.google.common.collect.Iterators.filter;
+import static com.mycila.inject.MycilaGuiceException.exception;
+import static com.mycila.inject.MycilaGuiceException.runtime;
 import static com.mycila.inject.internal.Reflect.findMethods;
 import static com.mycila.inject.internal.Reflect.withParameterTypes;
 
@@ -103,7 +103,7 @@ public abstract class LegacyProvider<T> implements Provider<T> {
         } catch (NoSuchMethodException e) {
             Iterator<Method> methods = filter(findMethods(declaring).iterator(), and(Reflect.<Method>named(methodName), withParameterTypes(toClasses(paramTypes))));
             if (!methods.hasNext())
-                throw new ProvisionException("Unable to find method " + methodName + " in class " + declaring.getName() + " matching given parameter types");
+                throw exception("Unable to find method " + methodName + " in class " + declaring.getName() + " matching given parameter types", e);
             return methods.next();
         }
     }
@@ -155,12 +155,8 @@ public abstract class LegacyProvider<T> implements Provider<T> {
                 if (!constructor.isAccessible())
                     constructor.setAccessible(true);
                 return constructor.newInstance(getParameterValues(injector));
-            } catch (InvocationTargetException e) {
-                throw new ProvisionException(String.valueOf(e.getTargetException().getMessage()), e.getTargetException());
-            } catch (InstantiationException e) {
-                throw new ProvisionException(e.getMessage(), e);
-            } catch (IllegalAccessException e) {
-                throw new ProvisionException(e.getMessage(), e);
+            } catch (Exception e) {
+                throw runtime(e);
             }
         }
     }
@@ -180,10 +176,8 @@ public abstract class LegacyProvider<T> implements Provider<T> {
             Object factory = Modifier.isStatic(method.getModifiers()) ? null : injector.getInstance(factoryKey);
             try {
                 return providedType.cast(Proxy.invoker(method).invoke(factory, getParameterValues(injector)));
-            } catch (IllegalAccessException e) {
-                throw new ProvisionException(e.getMessage(), e);
-            } catch (InvocationTargetException e) {
-                throw new ProvisionException(String.valueOf(e.getTargetException().getMessage()), e.getTargetException());
+            } catch (Exception e) {
+                throw runtime(e);
             }
         }
     }
@@ -204,10 +198,8 @@ public abstract class LegacyProvider<T> implements Provider<T> {
             try {
                 Proxy.invoker(method).invoke(target, getParameterValues(injector));
                 return target;
-            } catch (IllegalAccessException e) {
-                throw new ProvisionException(e.getMessage(), e);
-            } catch (InvocationTargetException e) {
-                throw new ProvisionException(String.valueOf(e.getTargetException().getMessage()), e.getTargetException());
+            } catch (Exception e) {
+                throw runtime(e);
             }
         }
     }

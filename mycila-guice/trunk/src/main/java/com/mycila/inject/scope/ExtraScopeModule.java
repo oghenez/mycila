@@ -25,7 +25,7 @@ import com.mycila.inject.annotation.WeakSingleton;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.mycila.inject.BinderHelper.*;
+import static com.mycila.inject.MycilaGuice.in;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)

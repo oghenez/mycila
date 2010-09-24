@@ -33,9 +33,10 @@ import javax.inject.Provider;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.mycila.inject.BinderHelper.*;
+import static com.mycila.inject.MycilaGuice.in;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
