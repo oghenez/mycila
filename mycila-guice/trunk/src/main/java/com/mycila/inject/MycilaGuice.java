@@ -30,7 +30,6 @@ import com.mycila.inject.injector.KeyProvider;
 import com.mycila.inject.injector.MemberInjectorTypeListener;
 import com.mycila.inject.injector.MethodHandler;
 import com.mycila.inject.injector.MethodHandlerTypeListener;
-import com.mycila.inject.jsr250.Jsr250Module;
 import com.mycila.inject.scope.ResetScope;
 import org.aopalliance.intercept.MethodInterceptor;
 
@@ -116,10 +115,6 @@ public final class MycilaGuice {
         return this;
     }
 
-    public MycilaGuice installJsr250Module() {
-        return install(newJsr250Module());
-    }
-
     public <T> T inject(T object) {
         binder.requestInjection(object);
         return object;
@@ -138,10 +133,5 @@ public final class MycilaGuice {
         return annotationType.isAnnotationPresent(BindingAnnotation.class)
                 || annotationType.isAnnotationPresent(Qualifier.class);
     }
-
-    public static Module newJsr250Module() {
-        return new Jsr250Module();
-    }
-
 
 }
