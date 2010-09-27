@@ -3,7 +3,7 @@
 import java.util.concurrent.*;
 import static groovy.io.FileType.FILES
 
-def version = '20100907'
+def version = '20100927'
 
 def basedir = '/home/kha/data/workspace/perso/guice-upload' as File
 def dest = '/home/kha/system/mnt/mc-repo/releases' as File
