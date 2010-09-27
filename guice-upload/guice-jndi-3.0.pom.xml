@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mycila.com.google.inject.extensions</groupId>
     <artifactId>guice-jndi</artifactId>
-    <version>3.0-20100907</version>
+    <version>3.0-20100927</version>
     <dependencies>
         <dependency>
             <groupId>com.mycila.com.google.inject</groupId>
