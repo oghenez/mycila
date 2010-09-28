@@ -152,7 +152,7 @@
         <dependency>
             <groupId>com.mycila.com.google.inject</groupId>
             <artifactId>guice</artifactId>
-            <version>3.0-20100907</version>
+            <version>3.0-20100927</version>
         </dependency>
         <!-- internal dependencies, jarjar-ed -->
         <dependency>
