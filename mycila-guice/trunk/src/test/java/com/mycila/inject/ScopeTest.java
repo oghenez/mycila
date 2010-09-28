@@ -22,7 +22,10 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.util.Jsr330;
 import com.mycila.inject.annotation.RenewableSingleton;
+import com.mycila.inject.scope.ExpiringSingleton;
 import com.mycila.inject.scope.ResetScope;
+import com.mycila.inject.scope.ResetSingleton;
+import com.mycila.inject.scope.WeakSingleton;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -55,7 +58,7 @@ public final class ScopeTest {
                 return new Object();
             }
         });
-        ResetScope scope = ExtraScopes.resetSingleton();
+        ResetScope scope = new ResetSingleton();
         Provider<Object> provider = scope.scope(Key.get(Object.class), Jsr330.guicify(unscoped));
         assertEquals(0, counter.get());
         provider.get();
@@ -78,7 +81,7 @@ public final class ScopeTest {
                 return new Object();
             }
         });
-        Provider<Object> provider = ExtraScopes.expiringSingleton(500, TimeUnit.MILLISECONDS).scope(Key.get(Object.class), Jsr330.guicify(unscoped));
+        Provider<Object> provider = new ExpiringSingleton(500, TimeUnit.MILLISECONDS).scope(Key.get(Object.class), Jsr330.guicify(unscoped));
 
         Object o = provider.get();
         assertNotNull(o);
@@ -99,7 +102,7 @@ public final class ScopeTest {
             }
         });
 
-        Provider<Object> provider = ExtraScopes.weakSingleton().scope(null, Jsr330.guicify(unscoped));
+        Provider<Object> provider = new WeakSingleton().scope(null, Jsr330.guicify(unscoped));
 
         Object o = provider.get();
         int hash = o.hashCode();
@@ -126,7 +129,7 @@ public final class ScopeTest {
                 return new Object();
             }
         });
-        Provider<Object> provider = ExtraScopes.renewableSingleton(500, TimeUnit.MILLISECONDS).scope(Key.get(Object.class), Jsr330.guicify(unscoped));
+        Provider<Object> provider = new com.mycila.inject.scope.RenewableSingleton(500, TimeUnit.MILLISECONDS).scope(Key.get(Object.class), Jsr330.guicify(unscoped));
 
         Object o = provider.get();
         assertNotNull(o);

@@ -30,7 +30,13 @@ import com.mycila.inject.injector.KeyProvider;
 import com.mycila.inject.injector.MemberInjectorTypeListener;
 import com.mycila.inject.injector.MethodHandler;
 import com.mycila.inject.injector.MethodHandlerTypeListener;
+import com.mycila.inject.scope.ConcurrentSingleton;
+import com.mycila.inject.scope.ExpiringSingleton;
+import com.mycila.inject.scope.RenewableSingleton;
 import com.mycila.inject.scope.ResetScope;
+import com.mycila.inject.scope.ResetSingleton;
+import com.mycila.inject.scope.SoftSingleton;
+import com.mycila.inject.scope.WeakSingleton;
 import org.aopalliance.intercept.MethodInterceptor;
 
 import javax.inject.Qualifier;
@@ -58,31 +64,31 @@ public final class MycilaGuice {
     }
 
     public Scope expiringSingleton(long expirity, TimeUnit unit) {
-        return inject(ExtraScopes.expiringSingleton(expirity, unit));
+        return inject(new ExpiringSingleton(expirity, unit));
     }
 
     public Scope renewableSingleton(long expirity, TimeUnit unit) {
-        return inject(ExtraScopes.renewableSingleton(expirity, unit));
+        return inject(new RenewableSingleton(expirity, unit));
     }
 
     public Scope weakSingleton() {
-        return inject(ExtraScopes.weakSingleton());
+        return inject(new WeakSingleton());
     }
 
     public Scope softSingleton() {
-        return inject(ExtraScopes.softSingleton());
+        return inject(new SoftSingleton());
     }
 
     public Scope concurrentSingleton() {
-        return inject(ExtraScopes.concurrentSingleton());
+        return inject(new ConcurrentSingleton(10, TimeUnit.SECONDS));
     }
 
     public Scope concurrentSingleton(long expirity, TimeUnit unit) {
-        return inject(ExtraScopes.concurrentSingleton(expirity, unit));
+        return inject(new ConcurrentSingleton(expirity, unit));
     }
 
     public ResetScope resetSingleton() {
-        return inject(ExtraScopes.resetSingleton());
+        return inject(new ResetSingleton());
     }
 
     public <A extends Annotation> MycilaGuice bindAnnotationInjector(Class<A> annotationType, Class<? extends KeyProvider<A>> providerClass) {
