@@ -1,6 +1,5 @@
 package com.mycila.jdbc;
 
-import net.playtouch.jaxspot.repository.sql.SqlException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

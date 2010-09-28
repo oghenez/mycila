@@ -15,7 +15,6 @@
  */
 package com.mycila.jdbc;
 
-import net.playtouch.jaxspot.repository.sql.SqlException;
 
 import java.math.BigDecimal;
 import java.net.URL;

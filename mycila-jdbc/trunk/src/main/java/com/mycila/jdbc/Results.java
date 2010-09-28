@@ -16,7 +16,6 @@
 package com.mycila.jdbc;
 
 import com.google.common.base.Preconditions;
-import net.playtouch.jaxspot.repository.sql.SqlException;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
