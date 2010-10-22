@@ -11,7 +11,7 @@
 
     <groupId>com.mycila</groupId>
     <artifactId>mycila-event</artifactId>
-    <version>4.0-SNAPSHOT</version>
+    <version>4.0.ga-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Mycila Event</name>
