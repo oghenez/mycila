@@ -142,12 +142,13 @@
             <artifactId>objenesis</artifactId>
             <version>1.2</version>
         </dependency>
+        <!-- optional -->
         <dependency>
             <groupId>aopalliance</groupId>
             <artifactId>aopalliance</artifactId>
             <version>1.0</version>
+            <optional>true</optional>
         </dependency>
-        <!-- optional -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
@@ -158,6 +159,7 @@
             <groupId>javax.inject</groupId>
             <artifactId>javax.inject</artifactId>
             <version>1</version>
+            <optional>true</optional>
         </dependency>
         <!-- testing -->
         <dependency>
