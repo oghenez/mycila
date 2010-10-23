@@ -85,6 +85,7 @@
                             com.mycila.jms*;version="${project.version}";-noimport:=true
                         </Export-Package>
                         <Import-Package>
+                            org.apache.activemq*;resolution:=optional,
                             *
                         </Import-Package>
                         <_versionpolicy>[${version;===;${@}},${version;+;${@}})</_versionpolicy>
