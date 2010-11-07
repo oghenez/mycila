@@ -26,8 +26,13 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
-import static com.mycila.testing.core.introspect.Filters.*;
+import static com.mycila.testing.core.introspect.Filters.excludeOverridenMethods;
+import static com.mycila.testing.core.introspect.Filters.fieldsAnnotatedBy;
+import static com.mycila.testing.core.introspect.Filters.methodsAnnotatedBy;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -40,8 +45,17 @@ final class MycilaContextLoader extends GenericXmlContextLoader {
     }
 
     public String[] contextLocations() {
-        SpringContext ctx = mycilaContext.introspector().testClass().getAnnotation(SpringContext.class);
-        return ctx == null ? new String[0] : ctx.locations();
+        Set<String> contextLocations = new HashSet<String>();
+        Class<?> clazz = mycilaContext.introspector().testClass();
+        do {
+            SpringContext ctx = clazz.getAnnotation(SpringContext.class);
+            if (ctx != null) {
+                contextLocations.addAll(Arrays.asList(ctx.locations()));
+            }
+            clazz = clazz.getSuperclass();
+        }
+        while (!clazz.equals(Object.class));
+        return contextLocations.toArray(new String[contextLocations.size()]);
     }
 
     @Override
