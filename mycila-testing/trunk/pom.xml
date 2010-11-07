@@ -39,6 +39,7 @@
             <!-- for maven plugins -->
             <plugin>
                 <artifactId>maven-plugin-plugin</artifactId>
+                <version>2.6</version>
             </plugin>
             <plugin>
                 <inherited>false</inherited>
