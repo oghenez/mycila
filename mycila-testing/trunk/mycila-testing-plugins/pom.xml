@@ -39,6 +39,7 @@
         <module>mycila-testing-easymock</module>
         <module>mycila-testing-guice</module>
         <module>mycila-testing-guice2</module>
+        <module>mycila-testing-jetty</module>
         <module>mycila-testing-jmock</module>
         <module>mycila-testing-mockito</module>
         <module>mycila-testing-spring</module>
@@ -56,6 +57,16 @@
                     </archive>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-invoker-plugin</artifactId>
+                <!--
+                required to breaks mycila parent-pom maven-invoker-plugin
+                inheritance to mycila-testing-jetty which use invoker and failed
+                
+                TODO see impact if set mycila parent-pom maven-invoker-plugin inherited to false
+                -->
+                <inherited>false</inherited>
+            </plugin>            
         </plugins>
     </build>
 
