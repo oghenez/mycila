@@ -68,11 +68,9 @@ Will use '', 'reg:', 'sys:', 'ant:' prefix to distinguish WAR finding method.
 
 === Ant : 'ant:' ===
 
-*Under development*
-
 [http://ant.apache.org/manual/dirtasks.html Ant Path] are really much readable than Java Regular Expression even if there are less powerful.
 
-`@JettyRunWar("ant:webapp-*.war")` will find the WAR file that matches this ant path searching from the current directory and going through sub-directories.
+`@JettyRunWar("ant:**/webapp-*.war")` will find the WAR file that matches this ant path searching from the current directory and going through sub-directories.
 
   * matches ${currentdir}/target/webapp-1.0-SNAPSHOT.war
   * BUT ${currentdir}/target/web-1.0-SNAPSHOT.war
