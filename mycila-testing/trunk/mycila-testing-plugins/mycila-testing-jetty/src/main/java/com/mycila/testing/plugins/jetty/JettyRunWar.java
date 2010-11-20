@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2008 Mathieu Carbou <mathieu.carbou@gmail.com>
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -79,14 +79,20 @@ public @interface JettyRunWar {
      * <p>
      * WAR locator strategy :
      * <ul>
-     * <li>default path is either relative or absolute;
-     * <li>starts with "reg:" to enable the following to be java regular expression for this path;
+     * <li>default path is either relative or absolute
+     * <li>starts with "reg:" to enable the following to be java regular expression for this path
      * <ul>
      * <li>the regular expression should starts with the current directory {@code './'}, which translated in java
      * pattern is {@code '\\.\\/'}
      * </ul>
-     * <li>starts with "ant:" to enable the following to be ant path expression for this path;
-     * <li>starts with "sys:" to enable the following to be system property expression for this path.
+     * <li>starts with "ant:" to enable the following to be ant path expression for this path, ie:
+     * /path/&#42;&#42;/f*.?xt
+     * <ul>
+     * <li>? matches one character
+     * <li>* matches zero or more characters
+     * <li>** matches zero or more 'directories' in a path
+     * </ul>
+     * <li>starts with "sys:" to enable the following to be system property expression for this path
      * </ul>
      * 
      * @return path of the WAR file to load.
