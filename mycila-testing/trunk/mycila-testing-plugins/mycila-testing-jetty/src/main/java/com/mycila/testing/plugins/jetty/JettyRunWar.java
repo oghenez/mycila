@@ -44,6 +44,8 @@ import com.mycila.testing.junit.MycilaJunitRunner;
  * }
  * //
  * </pre>
+ * 
+ * @author amertum
  */
 @Target(TYPE)
 @Retention(RUNTIME)
