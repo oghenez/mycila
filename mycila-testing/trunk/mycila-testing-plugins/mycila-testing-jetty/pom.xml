@@ -200,6 +200,14 @@
                 <artifactId>jetty-webapp</artifactId>
                 <version>7.1.6.v20100715</version>
             </dependency>
+            <!-- JspServlet from org.apache.tomcat:jasper required because not provided by since jetty-7 due to licence -->
+            <!-- TODO ?
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>jasper</artifactId>
+                <version>6.0.29</version>
+            </dependency>
+            -->
 
             <dependency>
                 <groupId>commons-lang</groupId>

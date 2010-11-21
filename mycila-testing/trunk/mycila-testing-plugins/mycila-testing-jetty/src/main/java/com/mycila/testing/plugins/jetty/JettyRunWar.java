@@ -35,22 +35,12 @@ import com.mycila.testing.junit.MycilaJunitRunner;
  * 
  * <pre>
  * &#064;RunWith(MycilaJunitRunner.class)
- * &#064;RunWar
+ * &#064;JettyRunWar
  * public class ExampleTest {
  *     &#064;Test
  *      public void testSomething() {
  *          ...
  *      }
- * 
- * 
- *     // required to enable the JettyMycilaPlugin using RunWar annotation 
- *     &#064;ConfigureMycilaPlugins
- *     protected void configure(
- *             final PluginManager&lt;JettyMycilaPlugin&gt; pluginManager)
- *     {
- *         pluginManager.getCache().registerPlugin(&quot;jettyPlugin&quot;, new JettyMycilaPlugin());
- *     }
- * 
  * }
  * //
  * </pre>
@@ -62,7 +52,7 @@ import com.mycila.testing.junit.MycilaJunitRunner;
 public @interface JettyRunWar {
 
     /**
-     * alias for {@link #war()}.
+     * Alias for {@link #war()}.
      * 
      * @return alias for {@link #war()}.
      * 
@@ -86,7 +76,7 @@ public @interface JettyRunWar {
      * pattern is {@code '\\.\\/'}
      * </ul>
      * <li>starts with "ant:" to enable the following to be ant path expression for this path, ie:
-     * /path/&#42;&#42;/f*.?xt
+     * &#42;&#42;/webapp-*.war
      * <ul>
      * <li>? matches one character
      * <li>* matches zero or more characters
@@ -101,7 +91,8 @@ public @interface JettyRunWar {
 
 
     /**
-     * The web application context path.
+     * The web application context path. Must starts with a slash '/' but doesn't end with one except for root context
+     * path.
      * 
      * @return the web application context path.
      */
