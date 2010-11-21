@@ -42,6 +42,7 @@ public class PortAndContextPathJettyRunWarIT {
     @Test
     public void testHelloWorld()
     {
+        // TODO use JettyRunWarHelper
         this.webDriver.get("http://localhost:8888/test/hi.jsp");
         
         assertEquals("Hello World !", this.webDriver.getTitle());
