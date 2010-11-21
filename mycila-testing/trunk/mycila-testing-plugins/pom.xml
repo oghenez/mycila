@@ -60,13 +60,11 @@
             <plugin>
                 <artifactId>maven-invoker-plugin</artifactId>
                 <!--
-                required to breaks mycila parent-pom maven-invoker-plugin
-                inheritance to mycila-testing-jetty which use invoker and failed
-                
-                TODO see impact if set mycila parent-pom maven-invoker-plugin inherited to false
+                    required to breaks mycila parent-pom maven-invoker-plugin
+                    inheritance to mycila-testing-jetty which use invoker and failed
                 -->
                 <inherited>false</inherited>
-            </plugin>            
+            </plugin>
         </plugins>
     </build>
 

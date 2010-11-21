@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.mycila.testing.plugins</groupId>
@@ -8,11 +8,11 @@
         <version>2.6-SNAPSHOT</version>
     </parent>
 
-	<artifactId>jetty</artifactId>
-	<packaging>jar</packaging>
+    <artifactId>mycila-testing-jetty</artifactId>
+    <packaging>jar</packaging>
     <name>mycila-testing-jetty</name>
-	<description>Jetty plugin which run webapp before running JUnit functional test</description>
-	<url>http://code.google.com/p/mycila/wiki/PluginJetty</url>
+    <description>Jetty plugin which run webapp before running JUnit functional test</description>
+    <url>http://code.google.com/p/mycila/wiki/PluginJetty</url>
     <inceptionYear>2010</inceptionYear>
 
     <developers>
@@ -32,7 +32,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        
+
         <!--
         <jdk.version>1.6</jdk.version>
         -->
@@ -44,13 +44,13 @@
                 <directory>src/main/resources</directory>
             </resource>
         </resources>
-        
+
         <testResources>
             <testResource>
                 <directory>src/test/config</directory>
             </testResource>
         </testResources>
-        
+
         <plugins>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -59,7 +59,7 @@
                     <includeEmptyDirs>true</includeEmptyDirs>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -103,7 +103,7 @@
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
                     -->
-                    
+
                     <encoding>UTF-8</encoding>
                     <debug>true</debug>
                     <showDeprecation>true</showDeprecation>
@@ -119,7 +119,7 @@
                     </excludes>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <executions>
@@ -171,7 +171,7 @@
                 </executions>
             </plugin>
         </plugins>
-        
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -190,7 +190,7 @@
                     <version>2.6</version>
                 </plugin>
             </plugins>
-        </pluginManagement>        
+        </pluginManagement>
     </build>
 
     <dependencyManagement>
@@ -224,7 +224,7 @@
                 <artifactId>guava</artifactId>
                 <version>r07</version>
             </dependency>
-            
+
             <!-- TODO use mycila log -->
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -236,11 +236,11 @@
                 <artifactId>slf4j-log4j12</artifactId>
                 <version>1.6.1</version>
             </dependency>
-               
+
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-all</artifactId>
-                <version>1.8.5</version> 
+                <version>1.8.5</version>
             </dependency>
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
@@ -254,7 +254,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    
+
     <dependencies>
         <dependency>
             <groupId>com.mycila.testing</groupId>
@@ -276,7 +276,7 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
-    
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
