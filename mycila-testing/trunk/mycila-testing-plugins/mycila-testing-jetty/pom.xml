@@ -142,6 +142,19 @@
                 <artifactId>maven-invoker-plugin</artifactId>
                 <inherited>false</inherited>
                 <configuration>
+                    <!-- 
+                    ! build failed with maven3 if enabled !
+                    
+                    the dependency com.mycila.testing:mycila-testing-api:jar:2.6-SNAPSHOT
+                    is not found because the invoker:install copy the SNAPSHOT with
+                    the timestamp during deploy. And then after during the test,
+                    the dependency could not be found. The reason is because maven3
+                    always deploy using a timestamped version.
+                    
+                    @see https://cwiki.apache.org/MAVEN/maven-3x-compatibility-notes.html#Maven3.xCompatibilityNotes-NonuniqueSnapshotDeployments
+                    
+                    <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+                    -->
                     <cloneProjectsTo>${project.build.directory}/its</cloneProjectsTo>
                     <setupIncludes>
                         <setupInclude>parent-pom/pom.xml</setupInclude>
@@ -151,7 +164,6 @@
                         <pomInclude>*/pom.xml</pomInclude>
                     </pomIncludes>
                     <settingsFile>src/it/tests/settings.xml</settingsFile>
-                    <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
                     <goals>
                         <goal>clean</goal>
                         <goal>install</goal>
