@@ -18,6 +18,10 @@ public class MyWebAppIT {
     public void testSomething()
     {
         // do and assert things with my running web application
+
+        // you can use JettyRunWarHelper to automatically retrieve the webapp based URL
+        String basedUrl = JettyRunWarHelper.getWebappUrl(this.getClass());
+        Assert.assertEquals("http://localhost:9090", basedUrl);
     }
 }
 }}}
@@ -74,4 +78,3 @@ Will use '', 'reg:', 'sys:', 'ant:' prefix to distinguish WAR finding method.
 
   * matches ${currentdir}/target/webapp-1.0-SNAPSHOT.war
   * BUT ${currentdir}/target/web-1.0-SNAPSHOT.war
-
