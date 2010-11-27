@@ -27,7 +27,6 @@ class AntFileLocator
      * 
      * @see com.mycila.testing.plugins.jetty.FileLocator#locate(java.lang.String)
      */
-    @Override
     public File locate(
             final String path)
         throws FileNotFoundException
