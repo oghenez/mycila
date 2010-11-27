@@ -33,7 +33,6 @@ class BooleanSwitchFunction<F, T>
     }
 
 
-    @Override
     public T apply(
             final F input)
     {

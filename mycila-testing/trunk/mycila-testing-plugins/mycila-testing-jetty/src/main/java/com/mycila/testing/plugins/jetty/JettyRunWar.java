@@ -30,8 +30,8 @@ import com.mycila.testing.junit.MycilaJunitRunner;
  * This annotation enables the loading of a packaged web application (ie: a WAR file) by a Servlet Container when used
  * with junit runner {@link org.junit.runner.RunWith} and {@link MycilaJunitRunner}. This is useful to run functional
  * tests.
- * 
- * Here an example :
+ * <p>
+ * Here's an example which run webapp accessible by default at URL : {@code http://localhost:9090}
  * 
  * <pre>
  * &#064;RunWith(MycilaJunitRunner.class)
@@ -40,12 +40,18 @@ import com.mycila.testing.junit.MycilaJunitRunner;
  *     &#064;Test
  *      public void testSomething() {
  *          ...
+ *          // you can use JettyRunWarHelper to automatically retrieve the webapp based URL
+ *          String basedUrl = JettyRunWarHelper.getWebappUrl(this.getClass());
+ *          Assert.assertEquals(&quot;http://localhost:9090&quot;, basedUrl);
  *      }
  * }
  * //
  * </pre>
  * 
  * @author amertum
+ * 
+ * @see JettyRunWarHelper
+ * @see #war()
  */
 @Target(TYPE)
 @Retention(RUNTIME)

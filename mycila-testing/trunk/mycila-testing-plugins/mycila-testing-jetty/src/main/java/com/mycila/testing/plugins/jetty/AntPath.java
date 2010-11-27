@@ -60,7 +60,6 @@ class AntPath {
         final Iterable<String> splits = this.split();
 
         final String joined = Joiner.on("").skipNulls().join(transform(splits, new Function<String, String>() {
-            @Override
             public String apply(
                     final String input)
             {
@@ -123,7 +122,6 @@ class AntPath {
         }
 
 
-        @Override
         public Iterable<String> apply(
                 final String input)
         {
@@ -167,7 +165,6 @@ class AntPath {
         }
 
 
-        @Override
         public Iterable<String> apply(
                 final String input)
         {
@@ -201,7 +198,6 @@ class AntPath {
     static class InputAsIterableFunction
             implements Function<String, Iterable<String>> {
 
-        @Override
         public Iterable<String> apply(
                 final String input)
         {

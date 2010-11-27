@@ -91,7 +91,6 @@ public class JettyTestPlugin
 
         final Callable<Boolean> isReady = new Callable<Boolean>() {
 
-            @Override
             public Boolean call()
                 throws Exception
             {
