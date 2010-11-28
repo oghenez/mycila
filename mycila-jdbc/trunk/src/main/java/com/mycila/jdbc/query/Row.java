@@ -77,7 +77,7 @@ public final class Row {
     }
 
     public <T> Row convert(Class<T> type, Converter<T> converter) {
-        mapper.converters.put(type, converter);
+        mapper.customConverters.put(type, converter);
         return this;
     }
 

@@ -28,13 +28,14 @@ import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 final class Mapper {
 
     private final ObjenesisStd objenesis = new ObjenesisStd(true);
-    final Map<Class<?>, Converter<?>> converters = new HashMap<Class<?>, Converter<?>>() {
+    final Map<Class<?>, Converter<?>> customConverters = new LinkedHashMap<Class<?>, Converter<?>>();
+    private final Map<Class<?>, Converter<?>> converters = new LinkedHashMap<Class<?>, Converter<?>>() {
         {
             put(URL.class, Mapper.<URL>unconvertible());
             put(Blob.class, Mapper.<Blob>unconvertible());
@@ -69,10 +70,19 @@ final class Mapper {
 
     @SuppressWarnings({"unchecked"})
     private <T> Converter<T> converter(Class<T> type) {
-        if (Enum.class.isAssignableFrom(type))
-            return (Converter<T>) converters.get(Enum.class);
-        Converter<?> c = converters.get(type);
-        return (Converter<T>) (c == null ? NOT_CONVERTIBLE : c);
+        // try exact class first
+        Converter<?> c = customConverters.get(type);
+        if (c != null) return (Converter<T>) c;
+        c = converters.get(type);
+        if (c != null) return (Converter<T>) c;
+        // try matching
+        for (Map.Entry<Class<?>, Converter<?>> entry : customConverters.entrySet())
+            if (entry.getKey().isAssignableFrom(type))
+                return (Converter<T>) entry.getValue();
+        for (Map.Entry<Class<?>, Converter<?>> entry : converters.entrySet())
+            if (entry.getKey().isAssignableFrom(type))
+                return (Converter<T>) entry.getValue();
+        return (Converter<T>) NOT_CONVERTIBLE;
     }
 
     @SuppressWarnings({"unchecked"})
