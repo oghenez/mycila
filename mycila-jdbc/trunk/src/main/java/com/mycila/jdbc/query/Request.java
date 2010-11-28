@@ -211,7 +211,7 @@ abstract class Request<T extends Request> {
     }
 
     public <E> T convert(Class<E> type, Converter<E> converter) {
-        mapper.converters.put(type, converter);
+        mapper.customConverters.put(type, converter);
         return (T) this;
     }
 
