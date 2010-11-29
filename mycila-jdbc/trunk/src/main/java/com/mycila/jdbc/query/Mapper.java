@@ -92,7 +92,7 @@ final class Mapper {
 
     private static final Converter<Object> NOT_CONVERTIBLE = new Converter<Object>() {
         public Object convert(Cell cell, Class<Object> type, Object object) {
-            throw new IllegalArgumentException("Cannot convert object of type " + object.getClass().getName() + " to type " + type.getName());
+            throw new ConverterException("Cannot convert object of type " + object.getClass().getName() + " to type " + type.getName());
         }
     };
 
