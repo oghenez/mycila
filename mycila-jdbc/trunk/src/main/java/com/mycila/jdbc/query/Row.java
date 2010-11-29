@@ -60,6 +60,8 @@ public final class Row {
     }
 
     <T> T map(Class<T> type, Reflect reflect) {
+        if (cells.size() == 1)
+            return uniqueCell().as(type);
         T t = mapper.instanciate(type);
         for (Cell cell : cells) {
             Field f = reflect.findBest(cell.column.header.name);
