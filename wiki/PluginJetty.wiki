@@ -26,6 +26,17 @@ public class MyWebAppIT {
 }
 }}}
 
+Maven dependency configuration to add to your pom.xml
+
+{{{
+<dependency>
+    <groupId>com.mycila.testing.plugins</groupId>
+    <artifactId>mycila-testing-jetty</artifactId>
+    <version>2.6</version>
+    <scope>test</scope>
+</dependency>
+}}}
+
 = `@JettyRunWar` Configuration =
 
 == Default ==
