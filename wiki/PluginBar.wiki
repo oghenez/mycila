@@ -19,6 +19,7 @@
 *Plugins*
  * [PluginTesting Testing Plugin]
  * [PluginDB Database Plugin]
+ * [PluginJetty Jetty Plugin]
  * [PluginJMock2 JMock Plugin]
  * [PluginEasyMock2 EasyMock Plugin]
  * [PluginMockito Mockito Plugin]
@@ -28,7 +29,6 @@
  * [PluginAtUnit AtUnit]
 
 *TODOs*
- * [PluginJetty Jetty Plugin]
  * [PluginDbUnit DbUnit Plugin]
  * [PluginH2 Hypersonic 2 Plugin]
  * [PluginJMS JMS Plugin]
