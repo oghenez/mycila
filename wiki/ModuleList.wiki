@@ -31,6 +31,16 @@
 </dependency>
 }}}
 
+ * *[PluginJetty Jetty Plugin]*: Jetty integration
+
+{{{
+<dependency>
+    <groupId>com.mycila.testing.plugins</groupId>
+    <artifactId>mycila-testing-jetty</artifactId>
+    <version>X.Y</version>
+</dependency>
+}}}
+
  * *[PluginJMock2 JMock Plugin]*: JMock integration
 
 {{{
