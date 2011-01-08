@@ -23,9 +23,13 @@ import javax.inject.Singleton;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Singleton
 public final class JdbcConnectionFactory implements ConnectionFactory {
+
+    private static final Logger LOGGER = Logger.getLogger(JdbcConnectionFactory.class.getName());
 
     private final DataSource dataSource;
 
@@ -44,6 +48,8 @@ public final class JdbcConnectionFactory implements ConnectionFactory {
 
     @Override
     public Connection getNewConnection() {
+        if (LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("Getting new JDBC connection");
         try {
             return dataSource.getConnection();
         } catch (SQLException e) {

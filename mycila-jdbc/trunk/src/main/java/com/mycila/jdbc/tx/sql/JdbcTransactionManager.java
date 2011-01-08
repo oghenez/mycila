@@ -28,9 +28,13 @@ import javax.inject.Singleton;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Singleton
 public final class JdbcTransactionManager extends AbstractTransactionManager<TransactedObject> {
+
+    private static final Logger LOGGER = Logger.getLogger(JdbcTransactionManager.class.getName());
 
     private final DataSource dataSource;
 
@@ -46,15 +50,21 @@ public final class JdbcTransactionManager extends AbstractTransactionManager<Tra
 
     @Override
     protected boolean hasActiveTransaction(TransactedObject transactedResource) {
-        return transactedResource.hasConnectionHolder() && transactedResource.getConnectionHolder().isTransactionActive();
+        boolean b = transactedResource.hasConnectionHolder() && transactedResource.getConnectionHolder().isTransactionActive();
+        if (LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("hasActiveTransaction: " + b);
+        return b;
     }
 
     @Override
     protected void doBegin(TransactedObject transactedObject, TransactionDefinition definition) throws TransactionException {
         Connection con = null;
         try {
-            if (!transactedObject.hasConnectionHolder())
+            if (!transactedObject.hasConnectionHolder()) {
+                if (LOGGER.isLoggable(Level.FINE))
+                    LOGGER.fine("doBegin: Getting new JDBC connection");
                 transactedObject.newConnectionHolder(new ConnectionHolder(dataSource.getConnection()));
+            }
 
             con = transactedObject.getConnectionHolder().getConnection();
 
@@ -82,17 +92,23 @@ public final class JdbcTransactionManager extends AbstractTransactionManager<Tra
 
     @Override
     protected SuspendableResource doSuspend(TransactedObject transactedResource) throws TransactionException {
+        if (LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("doSuspend");
         transactedResource.removeConnectionHolder();
         return ConnectionHolder.unbind(dataSource);
     }
 
     @Override
     protected void doResume(TransactedObject transactedResource, SuspendableResource suspended) throws TransactionException {
+        if (LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("doResume");
         ConnectionHolder.bind(dataSource, (ConnectionHolder) suspended);
     }
 
     @Override
     protected void doCommit(TransactedObject transactedResource) throws TransactionException {
+        if (LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("doCommit");
         try {
             transactedResource.getConnectionHolder().getConnection().commit();
         } catch (SQLException ex) {
@@ -102,16 +118,19 @@ public final class JdbcTransactionManager extends AbstractTransactionManager<Tra
 
     @Override
     protected void doRollback(TransactedObject transactedResource) throws TransactionException {
+        if (LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("doRollback");
         try {
             transactedResource.getConnectionHolder().getConnection().rollback();
-        }
-        catch (SQLException ex) {
+        } catch (SQLException ex) {
             throw new TransactionSystemException("Could not commit JDBC transaction", ex);
         }
     }
 
     @Override
     protected void doCleanup(TransactedObject transactedResource) throws TransactionException {
+        if (LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("doCleanup");
         if (transactedResource.isNewConnectionHolder())
             ConnectionHolder.unbind(dataSource);
         Connection connection = transactedResource.getConnectionHolder().getConnection();
@@ -119,8 +138,7 @@ public final class JdbcTransactionManager extends AbstractTransactionManager<Tra
             if (transactedResource.mustRestoreAutoCommit())
                 connection.setAutoCommit(true);
             DataSourceUtils.resetConnectionAfterTransaction(connection, transactedResource.getPreviousIsolationLevel());
-        }
-        catch (Throwable ignored) {
+        } catch (Throwable ignored) {
         }
         if (transactedResource.isNewConnectionHolder())
             DataSourceUtils.releaseConnection(connection, this.dataSource);

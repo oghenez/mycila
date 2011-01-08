@@ -26,12 +26,15 @@ import java.sql.Savepoint;
 import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 final class ConnectionHolder implements SuspendableResource {
 
+    private static final Logger LOGGER = Logger.getLogger(ConnectionHolder.class.getName());
     private static final String SAVEPOINT_NAME_PREFIX = "SAVEPOINT_";
 
-    private static final ThreadLocal<Map<DataSource, ConnectionHolder>> conHolder = new ThreadLocal<Map<DataSource, ConnectionHolder>>() {
+    static final ThreadLocal<Map<DataSource, ConnectionHolder>> conHolder = new ThreadLocal<Map<DataSource, ConnectionHolder>>() {
         @Override
         protected Map<DataSource, ConnectionHolder> initialValue() {
             return new IdentityHashMap<DataSource, ConnectionHolder>();
@@ -83,11 +86,16 @@ final class ConnectionHolder implements SuspendableResource {
     }
 
     static void bind(DataSource ds, ConnectionHolder con) {
+        if (LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("Binding ConnectionHolder " + con + " to DataSource " + ds);
         conHolder.get().put(ds, con);
     }
 
     static ConnectionHolder unbind(DataSource ds) {
-        return conHolder.get().remove(ds);
+        ConnectionHolder holder = conHolder.get().remove(ds);
+        if (LOGGER.isLoggable(Level.FINE))
+            LOGGER.fine("Unbinding ConnectionHolder " + holder + " from DataSource " + ds);
+        return holder;
     }
 
     Savepoint createSavepoint() throws SQLException {
@@ -119,5 +127,11 @@ final class ConnectionHolder implements SuspendableResource {
 
     public void setConnection(Connection connection) {
         this.connection = connection;
+    }
+
+    public static void clean() {
+        if (!conHolder.get().isEmpty())
+            throw new IllegalStateException("Cleaning of ConneectionHolder failed: some connections are still there and have not been cleared: " + conHolder.get());
+        conHolder.remove();
     }
 }

@@ -22,8 +22,12 @@ import com.mycila.jdbc.tx.TransactionDefinition;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 final class DataSourceUtils {
+
+    private static final Logger LOGGER = Logger.getLogger(DataSourceUtils.class.getName());
 
     private DataSourceUtils() {
     }
@@ -31,6 +35,8 @@ final class DataSourceUtils {
     static Connection getConnection(DataSource dataSource) throws SQLException {
         ConnectionHolder conHolder = ConnectionHolder.find(dataSource);
         if (conHolder == null) {
+            if (LOGGER.isLoggable(Level.FINE))
+                LOGGER.fine("Getting new JDBC connection");
             ConnectionHolder.bind(dataSource, conHolder = new ConnectionHolder(dataSource.getConnection()));
         }
         if (!conHolder.hasConnection()) {
@@ -49,8 +55,7 @@ final class DataSourceUtils {
             // Reset read-only flag.
             if (con.isReadOnly())
                 con.setReadOnly(false);
-        }
-        catch (Throwable ignored) {
+        } catch (Throwable ignored) {
         }
     }
 
@@ -59,8 +64,7 @@ final class DataSourceUtils {
         if (definition.isReadOnly()) {
             try {
                 con.setReadOnly(true);
-            }
-            catch (SQLException ex) {
+            } catch (SQLException ex) {
                 Throwable exToCheck = ex;
                 while (exToCheck != null) {
                     if (exToCheck.getClass().getSimpleName().contains("Timeout")) {
@@ -70,8 +74,7 @@ final class DataSourceUtils {
                     exToCheck = exToCheck.getCause();
                 }
                 // "read-only not supported" SQLException -> ignore, it's just a hint anyway
-            }
-            catch (RuntimeException ex) {
+            } catch (RuntimeException ex) {
                 Throwable exToCheck = ex;
                 while (exToCheck != null) {
                     if (exToCheck.getClass().getSimpleName().contains("Timeout")) {
@@ -105,13 +108,16 @@ final class DataSourceUtils {
                 ConnectionHolder conHolder = ConnectionHolder.find(dataSource);
                 if (conHolder != null && conHolder.hasConnection() && con == conHolder.getConnection()) {
                     // It's the transactional Connection: Don't close it.
+                    if (LOGGER.isLoggable(Level.FINE))
+                        LOGGER.fine("Releasing usage of current JDBC connection");
                     conHolder.released();
                     return;
                 }
             }
+            if (LOGGER.isLoggable(Level.FINE))
+                LOGGER.fine("Closing JDBC connection");
             con.close();
-        }
-        catch (Throwable ignored) {
+        } catch (Throwable ignored) {
         }
     }
 
