@@ -134,4 +134,24 @@ final class ConnectionHolder implements SuspendableResource {
             throw new IllegalStateException("Cleaning of ConneectionHolder failed: some connections are still there and have not been cleared: " + conHolder.get());
         conHolder.remove();
     }
+
+    public void close() {
+        clear();
+        if (hasConnection()) {
+            if (LOGGER.isLoggable(Level.FINE))
+                LOGGER.fine("Closing JDBC connection");
+            try {
+                getConnection().close();
+            } catch (SQLException e) {
+                LOGGER.log(Level.FINE, "Error closing connection: " + e.getMessage(), e);
+            } finally {
+                connection = null;
+            }
+        }
+        for (Map.Entry<DataSource, ConnectionHolder> entry : new IdentityHashMap<DataSource, ConnectionHolder>(conHolder.get()).entrySet()) {
+            if (entry.getValue() == this) {
+                conHolder.get().remove(entry.getKey());
+            }
+        }
+    }
 }
