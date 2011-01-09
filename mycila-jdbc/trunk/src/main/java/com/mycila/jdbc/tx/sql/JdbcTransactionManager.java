@@ -64,6 +64,9 @@ public final class JdbcTransactionManager extends AbstractTransactionManager<Tra
                 if (LOGGER.isLoggable(Level.FINE))
                     LOGGER.fine("doBegin: Getting new JDBC connection");
                 transactedObject.newConnectionHolder(new ConnectionHolder(dataSource.getConnection()));
+            } else {
+                if (LOGGER.isLoggable(Level.FINE))
+                    LOGGER.fine("doBegin: Reusing previous JDBC connection");
             }
 
             con = transactedObject.getConnectionHolder().getConnection();
@@ -131,8 +134,9 @@ public final class JdbcTransactionManager extends AbstractTransactionManager<Tra
     protected void doCleanup(TransactedObject transactedResource) throws TransactionException {
         if (LOGGER.isLoggable(Level.FINE))
             LOGGER.fine("doCleanup");
-        if (transactedResource.isNewConnectionHolder())
-            ConnectionHolder.unbind(dataSource);
+        //TODO: not sure - because prevents the ConnectionHolder from being reused and we are using a UnitOfWork already to control connection closing
+        //if (transactedResource.isNewConnectionHolder())
+        //    ConnectionHolder.unbind(dataSource);
         Connection connection = transactedResource.getConnectionHolder().getConnection();
         try {
             if (transactedResource.mustRestoreAutoCommit())
@@ -140,7 +144,7 @@ public final class JdbcTransactionManager extends AbstractTransactionManager<Tra
             DataSourceUtils.resetConnectionAfterTransaction(connection, transactedResource.getPreviousIsolationLevel());
         } catch (Throwable ignored) {
         }
-        if (transactedResource.isNewConnectionHolder())
+        if (transactedResource.isNewConnectionHolder() && !transactedResource.getConnectionHolder().isTransactionActive())
             DataSourceUtils.releaseConnection(connection, this.dataSource);
         transactedResource.getConnectionHolder().clear();
     }
