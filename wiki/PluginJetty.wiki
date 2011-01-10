@@ -55,6 +55,12 @@ So the web application is accessible at this address : http://localhost:9090/
 
 `@JettyRunWar(contextPath = "/test")` will set the web application context path to "/test".
 
+== TargetWebapp ==
+
+`@JettyRunWar(targetWebapp = JettyRunWar.TargetWebapp.ALREADY_RUNNING)` won't deploy the webapp to test in Jetty but will still run the test. This will be useful to do test against already running webapp during development.
+
+Default is `JettyRunWar.TargetWebapp.AUTO_RUN`.
+
 == WAR Path ==
 
 Will use '', 'reg:', 'sys:', 'ant:' prefix to distinguish WAR finding method.
