@@ -113,7 +113,28 @@ public @interface JettyRunWar {
      * @return the web application server port.
      */
     int serverPort() default 9090;
+    
+
+    /**
+     * The target web application to test.
+     * 
+     * @return the target web application to test.
+     */
+    TargetWebapp targetWebapp() default TargetWebapp.AUTO_RUN;
+    
 
     // TODO Class<Config> config(); LifeCycleListener before, after
-
+    
+    public enum TargetWebapp {
+        /**
+         * Auto run the webapp before lauching the test.
+         */
+        AUTO_RUN,
+        
+        /**
+         * Launch the test knowing that the webapp is already running.
+         */
+        ALREADY_RUNNING,
+    }
+    
 }

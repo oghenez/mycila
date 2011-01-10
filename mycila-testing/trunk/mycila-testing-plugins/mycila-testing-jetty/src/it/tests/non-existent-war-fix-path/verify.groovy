@@ -30,4 +30,4 @@ def f = getLog()
 println "verify: " + f.absolutePath
 assert f.exists()
 assert f.text.matches( /(?s).*\QtestHelloWorld\E.+?\Q<<< FAILURE!\E.*/ )
-assert f.text.matches( /(?s).*\Qjava.lang.AssertionError: non-existent WAR :\E.+?\Qtarget\/its\/non-existent-war-fix-path\/target\/find-war-path-2.0.war\E.*/ )
+assert f.text.matches( /(?s).*\Qjava.lang.AssertionError: non-existent WAR :\E.+?\Qtarget\/its\/non-existent-war-fix-path\/target\/non-existent-war-v.0.war\E.*/ )

@@ -32,7 +32,7 @@ import com.mycila.testing.plugins.jetty.JettyRunWar;
  * Test that the WAR is found and loaded.
  */
 @RunWith(MycilaJunitRunner.class)
-@JettyRunWar("target/existent-war-many-path-type-1.0-SNAPSHOT.war")
+@JettyRunWar("target/jettyrunwar-its-existent-war-many-path-type-1.0-SNAPSHOT.war")
 public class FixWarPathJettyRunWarIT {
 
     /**

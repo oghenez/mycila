@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import com.mycila.testing.core.api.TestExecution;
 import com.mycila.testing.core.plugin.DefaultTestPlugin;
+import com.mycila.testing.plugins.jetty.JettyRunWar.TargetWebapp;
 
 /**
  * Testing plugin which load the web application specified by {@link JettyRunWar} annotation using jetty.
@@ -63,6 +64,11 @@ public class JettyTestPlugin
         final JettyRunWar runWar = testClass.getAnnotation(JettyRunWar.class);
         this.logger.info("@" + JettyRunWar.class + " configuration : " + runWar);
 
+        if (TargetWebapp.ALREADY_RUNNING.equals(runWar.targetWebapp())) {
+            this.logger.debug("skip running webapp with Jetty because targetWebapp is " + runWar.targetWebapp());
+            return;
+        }
+        
         // use default value if war not used
         final String warPath = (runWar.war().length() != 0)
                 ? runWar.war()
