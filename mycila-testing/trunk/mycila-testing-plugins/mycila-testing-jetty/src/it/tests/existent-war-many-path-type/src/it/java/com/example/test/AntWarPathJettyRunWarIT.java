@@ -33,7 +33,7 @@ import com.mycila.testing.plugins.jetty.JettyRunWar;
  * Test that the WAR is found by ant path expression and loaded.
  */
 @RunWith(MycilaJunitRunner.class)
-@JettyRunWar("ant:**/existent-war-many-path-type-*.war")
+@JettyRunWar("ant:**/jettyrunwar-its-existent-war-many-path-type-*.war")
 public class AntWarPathJettyRunWarIT {
 
     /**

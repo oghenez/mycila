@@ -32,7 +32,7 @@ import com.mycila.testing.plugins.jetty.JettyRunWar;
  * Test that the WAR is found by java regular expression and loaded.
  */
 @RunWith(MycilaJunitRunner.class)
-@JettyRunWar("reg:\\.\\/target\\/existent-war-many-path-type-.*\\.war")
+@JettyRunWar("reg:\\.\\/target\\/jettyrunwar-its-existent-war-many-path-type-.*\\.war")
 public class RegWarPathJettyRunWarIT {
 
     /**
