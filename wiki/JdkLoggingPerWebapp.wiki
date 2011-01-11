@@ -13,6 +13,9 @@ You can download / get with Maven the JAR and its sources directly in the offici
 
 http://repo2.maven.org/maven2/com/mycila/jdk-logging-perwebapp/
 
+They are also available here before getting into the official Maven Repository:
+
+http://mc-repo.googlecode.com/svn/maven2/releases/com/mycila/jdk-logging-perwebapp/
 
 == Installation ==
 
