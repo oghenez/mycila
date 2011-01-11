@@ -25,13 +25,17 @@ import javax.servlet.ServletContextListener;
 public final class ContextualLogManagerWebappListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        if (ContextualLogManager.isAvailable())
+        if (ContextualLogManager.isAvailable()) {
             ContextualLogManager.get().registerWebapp(Thread.currentThread().getContextClassLoader());
+        } else {
+            System.out.println("=== No ContextualLogManager available ===");
+        }
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        if (ContextualLogManager.isAvailable())
+        if (ContextualLogManager.isAvailable()) {
             ContextualLogManager.get().unregisterWebapp(Thread.currentThread().getContextClassLoader());
+        }
     }
 }
