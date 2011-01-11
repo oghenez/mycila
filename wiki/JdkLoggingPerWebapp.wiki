@@ -48,6 +48,8 @@ In your application server (JBoss, Jetty, Tomcat, Glassfich, ...) you must start
 
 I.e. in Jetty, the line must put in the start.ini file of Jetty's installation folder.
 
+*IMPORTANT*: the JAR must be in the common libraries of your application server so that the JDK LogManager can be setup correctly. But you can still also have the JAR in your WEB-INF/lib of your webapp to benefit of JDK Logging over Log4j
+
 == JDK Logging over Log4j ==
 
 If you have a lot of classes depending on the JDK logging to avoid commons-logging, slf4j, ... but still want to log using log4j at the end to benefits of log rotation, compression, etc, you can execute at the very startup of your application:
