@@ -61,17 +61,17 @@ public final class ContextualLogManager extends LogManager {
             throw new IllegalStateException("A ContextualLogManager has already been initialized !");
         }
         System.out.println("=== Initializing " + ContextualLogManager.class.getSimpleName() + " ===");
-        /*try {
-            readConfiguration();
-        } catch (IOException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }*/
+    }
+
+    public static boolean isAvailable() {
+        return INSTANCE.get() != null;
     }
 
     public static ContextualLogManager get() {
-        if (INSTANCE == null)
-            new ContextualLogManager();
-        return INSTANCE.get();
+        ContextualLogManager manager = INSTANCE.get();
+        if (manager == null)
+            throw new IllegalStateException("ContextualLogManager has not been initialized by JDK Logging system");
+        return manager;
     }
 
     public LogManager getContextualLogManager() {
