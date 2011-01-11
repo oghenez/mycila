@@ -25,11 +25,13 @@ import javax.servlet.ServletContextListener;
 public final class ContextualLogManagerWebappListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        ContextualLogManager.get().registerWebapp(Thread.currentThread().getContextClassLoader());
+        if (ContextualLogManager.isAvailable())
+            ContextualLogManager.get().registerWebapp(Thread.currentThread().getContextClassLoader());
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        ContextualLogManager.get().unregisterWebapp(Thread.currentThread().getContextClassLoader());
+        if (ContextualLogManager.isAvailable())
+            ContextualLogManager.get().unregisterWebapp(Thread.currentThread().getContextClassLoader());
     }
 }
