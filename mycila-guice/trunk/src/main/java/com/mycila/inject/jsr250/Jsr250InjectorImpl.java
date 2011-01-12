@@ -25,10 +25,12 @@ import com.google.inject.Module;
 import com.google.inject.Provider;
 import com.google.inject.Scope;
 import com.google.inject.TypeLiteral;
+import com.google.inject.spi.TypeConverterBinding;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -140,4 +142,10 @@ final class Jsr250InjectorImpl implements Jsr250Injector {
     public Map<Class<? extends Annotation>, Scope> getScopeBindings() {
         return injector().getScopeBindings();
     }
+
+    @Override
+    public Set<TypeConverterBinding> getTypeConverterBindings() {
+        return injector().getTypeConverterBindings();
+    }
+
 }

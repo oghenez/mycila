@@ -150,15 +150,15 @@
     <dependencies>
         <!-- guice -->
         <dependency>
-            <groupId>com.mycila.com.google.inject</groupId>
+            <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
-            <version>3.0-20100927</version>
+            <version>3.0-rc2</version>
         </dependency>
         <!-- internal dependencies, jarjar-ed -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>r06</version>
+            <version>r07</version>
         </dependency>
         <dependency>
             <groupId>cglib</groupId>
