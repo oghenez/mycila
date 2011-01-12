@@ -49,3 +49,9 @@ In your application server (JBoss, Jetty, Tomcat, Glassfich, ...) you must start
 I.e. in Jetty, the line must put in the start.ini file of Jetty's installation folder.
 
 *IMPORTANT*: the JAR must be in the common libraries of your application server so that the JDK LogManager can be setup correctly. Your must be sure the JAR is not in the WEB-INF/lib folder of your webapp
+
+== Redirecting to Log4j ==
+
+Then if you need to redirect JDK logging to Log4j, this is trivial and described here:
+
+http://blog.mycila.com/2011/01/jdk-logging-per-webapp.html
