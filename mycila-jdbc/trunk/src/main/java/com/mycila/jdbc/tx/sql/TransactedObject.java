@@ -84,8 +84,8 @@ final class TransactedObject implements Transacted {
     }
 
     @Override
-    public void setRollbackOnly() {
-        getConnectionHolder().setRollbackOnly();
+    public void setRollbackOnly(boolean b) {
+        getConnectionHolder().setRollbackOnly(b);
     }
 
     @Override
@@ -101,8 +101,7 @@ final class TransactedObject implements Transacted {
     public void rollbackToSavepoint(Object savepoint) throws TransactionException {
         try {
             getConnectionHolder().getConnection().rollback((Savepoint) savepoint);
-        }
-        catch (Throwable ex) {
+        } catch (Throwable ex) {
             throw new TransactionSystemException("Could not roll back to JDBC savepoint", ex);
         }
     }
@@ -111,8 +110,7 @@ final class TransactedObject implements Transacted {
     public void releaseSavepoint(Object savepoint) throws TransactionException {
         try {
             getConnectionHolder().getConnection().releaseSavepoint((Savepoint) savepoint);
-        }
-        catch (Throwable ignored) {
+        } catch (Throwable ignored) {
         }
     }
 }

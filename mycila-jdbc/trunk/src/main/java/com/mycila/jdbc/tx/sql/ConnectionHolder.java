@@ -23,6 +23,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -78,7 +79,7 @@ final class ConnectionHolder implements SuspendableResource {
     }
 
     static Collection<ConnectionHolder> listAll() {
-        return conHolder.get().values();
+        return new ArrayList<ConnectionHolder>(conHolder.get().values());
     }
 
     static ConnectionHolder find(DataSource dataSource) {
@@ -113,8 +114,8 @@ final class ConnectionHolder implements SuspendableResource {
         return rollbackOnly;
     }
 
-    void setRollbackOnly() {
-        this.rollbackOnly = true;
+    void setRollbackOnly(boolean b) {
+        this.rollbackOnly = b;
     }
 
     boolean isTransactionActive() {
@@ -131,13 +132,13 @@ final class ConnectionHolder implements SuspendableResource {
 
     public static void clean() {
         if (!conHolder.get().isEmpty())
-            throw new IllegalStateException("Cleaning of ConneectionHolder failed: some connections are still there and have not been cleared: " + conHolder.get());
+            throw new IllegalStateException("Cleaning of ConnectionHolder failed: some connections are still there and have not been cleared: " + conHolder.get());
         conHolder.remove();
     }
 
     public void close() {
-        clear();
         if (hasConnection()) {
+            clear();
             if (LOGGER.isLoggable(Level.FINE))
                 LOGGER.fine("Closing JDBC connection");
             try {
