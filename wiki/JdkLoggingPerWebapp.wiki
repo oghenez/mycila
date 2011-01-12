@@ -1,6 +1,8 @@
 #summary JDK Logging Per Webapp
 #labels Featured
 
+<wiki:toc max_depth="5" /> 
+
 == Introduction ==
 
 Enables to use JDK logging in a web environment where each web application have its own logging configuration.
