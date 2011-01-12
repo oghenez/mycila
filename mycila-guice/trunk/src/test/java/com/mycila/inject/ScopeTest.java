@@ -20,7 +20,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
-import com.google.inject.util.Jsr330;
+import com.google.inject.util.Providers;
 import com.mycila.inject.annotation.RenewableSingleton;
 import com.mycila.inject.scope.ExpiringSingleton;
 import com.mycila.inject.scope.ResetScope;
@@ -59,7 +59,7 @@ public final class ScopeTest {
             }
         });
         ResetScope scope = new ResetSingleton();
-        Provider<Object> provider = scope.scope(Key.get(Object.class), Jsr330.guicify(unscoped));
+        Provider<Object> provider = scope.scope(Key.get(Object.class), Providers.guicify(unscoped));
         assertEquals(0, counter.get());
         provider.get();
         assertEquals(1, counter.get());
@@ -81,7 +81,7 @@ public final class ScopeTest {
                 return new Object();
             }
         });
-        Provider<Object> provider = new ExpiringSingleton(500, TimeUnit.MILLISECONDS).scope(Key.get(Object.class), Jsr330.guicify(unscoped));
+        Provider<Object> provider = new ExpiringSingleton(500, TimeUnit.MILLISECONDS).scope(Key.get(Object.class), Providers.guicify(unscoped));
 
         Object o = provider.get();
         assertNotNull(o);
@@ -102,7 +102,7 @@ public final class ScopeTest {
             }
         });
 
-        Provider<Object> provider = new WeakSingleton().scope(null, Jsr330.guicify(unscoped));
+        Provider<Object> provider = new WeakSingleton().scope(null, Providers.guicify(unscoped));
 
         Object o = provider.get();
         int hash = o.hashCode();
@@ -129,7 +129,7 @@ public final class ScopeTest {
                 return new Object();
             }
         });
-        Provider<Object> provider = new com.mycila.inject.scope.RenewableSingleton(500, TimeUnit.MILLISECONDS).scope(Key.get(Object.class), Jsr330.guicify(unscoped));
+        Provider<Object> provider = new com.mycila.inject.scope.RenewableSingleton(500, TimeUnit.MILLISECONDS).scope(Key.get(Object.class), Providers.guicify(unscoped));
 
         Object o = provider.get();
         assertNotNull(o);
@@ -146,7 +146,7 @@ public final class ScopeTest {
             @Override
             protected void configure() {
                 bindScope(RenewableSingleton.class, in(binder()).renewableSingleton(500, TimeUnit.MILLISECONDS));
-                bind(Object.class).toProvider(Jsr330.guicify(new Provider<Object>() {
+                bind(Object.class).toProvider(Providers.guicify(new Provider<Object>() {
                     @Override
                     public Object get() {
                         return new Object();
