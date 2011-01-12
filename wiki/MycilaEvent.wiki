@@ -36,6 +36,10 @@ Mycila event is deployed in maven 2 Central Repository:
 
 http://repo2.maven.org/maven2/com/mycila/mycila-event/
 
+and also in:
+
+http://mc-repo.googlecode.com/svn/maven2/releases/
+
 {{{
 <dependency>
     <groupId>com.mycila</groupId>
