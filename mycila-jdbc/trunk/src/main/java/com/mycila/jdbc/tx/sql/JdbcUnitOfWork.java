@@ -40,7 +40,7 @@ public final class JdbcUnitOfWork implements UnitOfWork {
         if (LOGGER.isLoggable(Level.FINE))
             LOGGER.fine("Ending Unit of Work");
         for (ConnectionHolder holder : ConnectionHolder.listAll())
-            if (holder != null) {
+            if (holder.hasConnection()) {
                 holder.close();
             }
         // be sure to clean the thread local map

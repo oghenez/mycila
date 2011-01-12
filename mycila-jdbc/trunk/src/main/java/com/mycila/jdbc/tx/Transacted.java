@@ -19,7 +19,7 @@ package com.mycila.jdbc.tx;
 public interface Transacted {
     boolean isRollbackOnly();
 
-    void setRollbackOnly();
+    void setRollbackOnly(boolean b);
 
     /**
      * Create a new savepoint. You can roll back to a specific savepoint

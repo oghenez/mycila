@@ -136,7 +136,7 @@ public abstract class AbstractTransactionManager<T extends Transacted> implement
             else if (tx.isNew())
                 doRollback(tx.getTransactedResource());
             else if (tx.hasTransactedResource())
-                tx.getTransactedResource().setRollbackOnly();
+                tx.getTransactedResource().setRollbackOnly(true);
         } finally {
             cleanupAfterCompletion(tx);
         }
@@ -154,7 +154,7 @@ public abstract class AbstractTransactionManager<T extends Transacted> implement
         if (tx.isNew())
             doRollback(tx.getTransactedResource());
         else if (tx.hasTransactedResource())
-            tx.getTransactedResource().setRollbackOnly();
+            tx.getTransactedResource().setRollbackOnly(true);
     }
 
     protected boolean hasActiveTransaction(T transactedResource) {
