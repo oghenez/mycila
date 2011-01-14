@@ -56,7 +56,7 @@ final class ConnectionHolder implements SuspendableResource {
 
     @Override
     public String toString() {
-        return "ConnectionHolder: connection=" + connection + ", thread=" + thread + ", referenceCount=" + referenceCount + ", transactionActive=" + transactionActive;
+        return "ConnectionHolder[connection=" + connection + ",thread=" + thread + ",referenceCount=" + referenceCount + ",transactionActive=" + transactionActive + "]";
     }
 
     Connection getConnection() {
