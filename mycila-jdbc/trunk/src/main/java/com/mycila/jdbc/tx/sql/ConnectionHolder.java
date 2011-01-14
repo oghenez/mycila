@@ -42,6 +42,7 @@ final class ConnectionHolder implements SuspendableResource {
         }
     };
 
+    private final String thread;
     private Connection connection;
     private long referenceCount = 0;
     private boolean rollbackOnly;
@@ -50,6 +51,12 @@ final class ConnectionHolder implements SuspendableResource {
 
     ConnectionHolder(Connection connection) {
         this.connection = connection;
+        this.thread = Thread.currentThread().getName();
+    }
+
+    @Override
+    public String toString() {
+        return "ConnectionHolder: connection=" + connection + ", thread=" + thread + ", referenceCount=" + referenceCount + ", transactionActive=" + transactionActive;
     }
 
     Connection getConnection() {
