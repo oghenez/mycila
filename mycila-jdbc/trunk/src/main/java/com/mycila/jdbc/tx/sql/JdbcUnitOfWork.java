@@ -29,8 +29,9 @@ public final class JdbcUnitOfWork implements UnitOfWork {
 
     @Override
     public void begin() {
+        //TODO - commented becasuse i.e. shiro can call the filter after the auth. mecanism
         // be sure to start with a brand new thread local map
-        ConnectionHolder.clean();
+        //ConnectionHolder.clean();
         if (LOGGER.isLoggable(Level.FINE))
             LOGGER.fine("Beginning Unit of Work");
     }
