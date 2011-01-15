@@ -20,8 +20,6 @@ import com.mycila.jdbc.tx.IllegalTransactionStateException;
 import com.mycila.jdbc.tx.SuspendableResource;
 
 import javax.sql.DataSource;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
@@ -51,19 +49,14 @@ final class ConnectionHolder implements SuspendableResource {
     private long savepointCounter;
     private boolean transactionActive;
 
-    private final Throwable from;
-
     ConnectionHolder(Connection connection) {
         this.connection = connection;
         this.thread = Thread.currentThread().getName();
-        from = new Throwable();
     }
 
     @Override
     public String toString() {
-        StringWriter sw = new StringWriter();
-        from.printStackTrace(new PrintWriter(sw));
-        return "ConnectionHolder[connection=" + connection + ",thread=" + thread + ",referenceCount=" + referenceCount + ",transactionActive=" + transactionActive + "]\n" + sw.toString();
+        return "ConnectionHolder[connection=" + connection + ",thread=" + thread + ",referenceCount=" + referenceCount + ",transactionActive=" + transactionActive + "]";
     }
 
     Connection getConnection() {
