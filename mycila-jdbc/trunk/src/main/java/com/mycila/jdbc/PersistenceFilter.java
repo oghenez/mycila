@@ -17,15 +17,13 @@
 package com.mycila.jdbc;
 
 import javax.inject.Inject;
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public final class PersistenceFilter implements Filter {
+public final class PersistenceFilter extends OncePerRequestFilter {
 
     private final UnitOfWork unitOfWork;
 
@@ -39,14 +37,14 @@ public final class PersistenceFilter implements Filter {
     }
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init() throws ServletException {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             unitOfWork.begin();
-            filterChain.doFilter(servletRequest, servletResponse);
+            filterChain.doFilter(request, response);
         } finally {
             unitOfWork.end();
         }

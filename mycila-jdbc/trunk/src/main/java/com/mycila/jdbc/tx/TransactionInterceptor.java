@@ -58,7 +58,7 @@ public final class TransactionInterceptor implements MethodInterceptor {
             if (definition.rollbackOn(throwable)) {
                 try {
                     if (LOGGER.isLoggable(Level.FINE))
-                        LOGGER.fine("TX: " + invocation.getMethod() + " - rollback");
+                        LOGGER.fine("TX: " + invocation.getMethod() + " - rollback because of: " + throwable.getMessage());
                     transaction.rollback();
                 } catch (TransactionSystemException ex2) {
                     ex2.initApplicationException(throwable);
