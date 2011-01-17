@@ -93,8 +93,10 @@ public class JettyTestPlugin
         final AtomicBoolean ready = new AtomicBoolean();
 
         this.server = makeServer(testExecution, this.warFile, this.port, this.contextPath, ready);
-        this.server.start();
+        this.lifeCycleListener = runWar.serverLifeCycleListener().newInstance();
+        this.lifeCycleListener.beforeServerStarts(this.server);
 
+        this.server.start();
         final Callable<Boolean> isReady = new Callable<Boolean>() {
 
             public Boolean call()
@@ -104,6 +106,7 @@ public class JettyTestPlugin
             }
         };
         await().until(isReady, equalTo(true));
+        
         this.logger.info("jetty started");
     }
 
@@ -118,7 +121,7 @@ public class JettyTestPlugin
     {
         if (this.server != null) {
             this.logger.info("jetty stopping");
-
+            
             this.server.stop();
             this.server.destroy();
 
@@ -186,5 +189,7 @@ public class JettyTestPlugin
     private int port;
 
     private Server server;
+    
+    private ServerLifeCycleListener lifeCycleListener;
 
 }
