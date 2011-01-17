@@ -43,7 +43,7 @@
         <dependency>
             <groupId>com.mycila.testing.plugins</groupId>
             <artifactId>mycila-testing-mockito</artifactId>
-            <version>${pom.version}</version>
+            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
 
