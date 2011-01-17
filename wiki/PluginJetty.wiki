@@ -61,6 +61,14 @@ So the web application is accessible at this address : http://localhost:9090/
 
 Default is `JettyRunWar.TargetWebapp.AUTO_RUN`.
 
+== Server Life Cycle Listener ==
+
+`@JettyRunWar(serverLifeCycleListener = SomeServerLifeCycleListener.class)` can be used to be notified when the server is ready to start and overrides some init params.
+
+You need to provide an implementation class of `com.mycila.testing.plugins.jetty.ServerLifeCycleListener`.
+
+Default is `com.mycila.testing.plugins.jetty.NopServerLifeCycleListener.class`.
+
 == WAR Path ==
 
 Will use '', 'reg:', 'sys:', 'ant:' prefix to distinguish WAR finding method.
