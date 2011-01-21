@@ -186,12 +186,12 @@
                     <artifactId>maven-license-plugin</artifactId>
                     <version>1.9.0</version>
                     <configuration>
-                        <header>https://github.com/Ovea/testatoo-license/raw/master/LICENSE</header>
+                        <header>https://github.com/mathieucarbou/licenses/raw/master/APACHE-2</header>
                         <strictCheck>true</strictCheck>
                         <properties>
-                            <owner>Ovea</owner>
+                            <owner>Mathieu Carbou</owner>
                             <year>${project.inceptionYear}</year>
-                            <email>dev@testatoo.org</email>
+                            <email>mathieu.carbou@gmail.com</email>
                         </properties>
                         <excludes>
                             <exclude>README</exclude>
