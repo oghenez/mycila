@@ -21,12 +21,13 @@ import com.mycila.event.Event;
 import com.mycila.event.Subscriber;
 import com.mycila.event.Subscription;
 import com.mycila.event.Topic;
+import com.mycila.event.Topics;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.google.common.collect.Iterators.*;
+import static com.google.common.collect.Iterators.filter;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -46,6 +47,16 @@ final class SubscriptionManager {
     void removeSubscriber(Subscriber<?> subscriber) {
         for (Subscription<?> subscription : subscriptions)
             if (subscription.getSubscriber().equals(subscriber)) {
+                subscriptions.remove(subscription);
+                for (Map.Entry<Topic, SubscriptionList> entry : mappedSubscriptions.entrySet())
+                    if (subscription.getTopicMatcher().matches(entry.getKey()))
+                        entry.getValue().remove(subscription);
+            }
+    }
+
+    void removeSubscriber(Topics matcher, Subscriber<?> subscriber) {
+        for (Subscription<?> subscription : subscriptions)
+            if (subscription.getSubscriber().equals(subscriber) && subscription.getTopicMatcher().equals(matcher)) {
                 subscriptions.remove(subscription);
                 for (Map.Entry<Topic, SubscriptionList> entry : mappedSubscriptions.entrySet())
                     if (subscription.getTopicMatcher().matches(entry.getKey()))

@@ -26,5 +26,7 @@ public interface Dispatcher {
 
     <E> void unsubscribe(Subscriber<E> subscriber);
 
+    <E> void unsubscribe(Topics matcher, Subscriber<E> subscriber);
+
     void close();
 }
