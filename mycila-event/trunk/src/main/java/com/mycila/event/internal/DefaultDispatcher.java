@@ -27,7 +27,7 @@ import com.mycila.event.Topics;
 import java.util.Iterator;
 import java.util.concurrent.Executor;
 
-import static com.mycila.event.internal.Ensure.*;
+import static com.mycila.event.internal.Ensure.notNull;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -83,6 +83,13 @@ public class DefaultDispatcher implements Dispatcher {
     public final <E> void unsubscribe(Subscriber<E> subscriber) {
         notNull(subscriber, "Subscriber");
         subscriptionManager.removeSubscriber(subscriber);
+    }
+
+    @Override
+    public final <E> void unsubscribe(Topics matcher, Subscriber<E> subscriber) {
+        notNull(subscriber, "Subscriber");
+        notNull(matcher, "TopicMatcher");
+        subscriptionManager.removeSubscriber(matcher, subscriber);
     }
 
     @Override
