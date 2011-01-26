@@ -60,7 +60,7 @@ public final class JdbcTransactionManager extends AbstractTransactionManager<Tra
     protected void doBegin(TransactedObject transactedObject, TransactionDefinition definition) throws TransactionException {
         Connection con = null;
         try {
-            if (!transactedObject.hasConnectionHolder()) {
+            if (!transactedObject.hasConnectionHolder() || !transactedObject.getConnectionHolder().hasConnection()) {
                 if (LOGGER.isLoggable(Level.FINE))
                     LOGGER.fine("doBegin: Getting new JDBC connection");
                 transactedObject.newConnectionHolder(new ConnectionHolder(dataSource.getConnection()));
