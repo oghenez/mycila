@@ -36,6 +36,7 @@
         <!--
         <jdk.version>1.6</jdk.version>
         -->
+        <jetty-version>7.2.2.v20101205</jetty-version>
     </properties>
 
     <build>
@@ -210,7 +211,7 @@
             <dependency>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-webapp</artifactId>
-                <version>7.1.6.v20100715</version>
+                <version>${jetty-version}</version>
             </dependency>
             <!-- JspServlet from org.apache.tomcat:jasper required because not provided by since jetty-7 due to licence -->
             <!-- TODO ?
