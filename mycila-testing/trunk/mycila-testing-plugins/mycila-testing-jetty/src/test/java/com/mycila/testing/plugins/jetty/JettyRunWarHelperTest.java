@@ -23,22 +23,23 @@ import org.junit.Test;
  * Unit test of {@link JettyRunWarHelper}.
  */
 public class JettyRunWarHelperTest {
-
+    
     @Test
     public void testDefaultValues()
     {
-        Assert.assertEquals("", JettyRunWarHelper.getDefaultValue());
+        Assert.assertEquals("reg:.*\\.war", JettyRunWarHelper.getDefaultValue());
         Assert.assertEquals("", JettyRunWarHelper.getDefaultWar());
         Assert.assertEquals("/", JettyRunWarHelper.getDefaultContextPath());
         Assert.assertEquals(9090, JettyRunWarHelper.getDefaultServerPort());
-
+        
         Assert.assertEquals("http://localhost:9090", JettyRunWarHelper.getDefaultWebappUrl());
         Assert.assertEquals("http://localhost:8888/path/to", JettyRunWarHelper.getWebappUrl(WebappTest.class));
     }
+    
 
     @JettyRunWar(serverPort = 8888, contextPath = "/path/to")
     static class WebappTest {
         // nop
     }
-
+    
 }

@@ -28,7 +28,7 @@ import org.springframework.util.AntPathMatcher;
  * Unit test of {@link AntPath}.
  */
 public class AntPathTest {
-
+    
     @Test
     public void testRegex()
     {
@@ -42,7 +42,7 @@ public class AntPathTest {
         final String[] falseDatas = {
                 "com/atest.jsp", "com//test.jsp", "com/a/b/atest.jsp",
         };
-
+        
         final String[] patterns = {
                 "com/([^/]+/)*test.jsp", "com/([^/]+?/)*test.jsp", "com/([^/]++/)*test.jsp",
 
@@ -50,25 +50,25 @@ public class AntPathTest {
 
                 "com/([^/]+/)*+test.jsp", "com/([^/]+?/)*+test.jsp", "com/([^/]++/)*+test.jsp",
         };
-
+        
         for (final String pattern : patterns) {
-            System.out.println("for " + pattern);
-
+            //System.out.println("for " + pattern);
+            
             for (final String data : trueDatas) {
-                System.out.println("\t" + data);
+                //System.out.println("\t" + data);
                 Assert.assertTrue(data.matches(pattern));
             }
         }
         for (final String pattern : patterns) {
-            System.out.println("!for " + pattern);
-
+            //System.out.println("!for " + pattern);
+            
             for (final String data : falseDatas) {
-                System.out.println("\t" + data);
+                //System.out.println("\t" + data);
                 Assert.assertFalse(data.matches(pattern));
             }
         }
     }
-
+    
 
     @Test
     public void testSplitFunction()
@@ -81,7 +81,7 @@ public class AntPathTest {
                 newArrayList("", "**", "te", "**", "st", "**", "or", "**", ""),
                 new AntPath.SplitFunction("**").apply("**te**st**or**")));
     }
-
+    
 
     @Test
     public void testMultiSplitFunction()
@@ -94,7 +94,7 @@ public class AntPathTest {
                 newArrayList("te", "**", "st", "*", "or"),
                 new AntPath.MultiSplitFunction("**", "*").apply("te**st*or")));
     }
-
+    
 
     @Test
     public void testSpringAntPathMatcherAntPathZeroOrMoreCharacters()
@@ -103,14 +103,14 @@ public class AntPathTest {
             final Boolean expected = (Boolean) data[0];
             final String pattern = (String) data[1];
             final String path = (String) data[2];
-
+            
             Assert.assertEquals(
                     "expects " + expected + " path '" + path + "' matches '" + pattern + "'",
                     expected,
                     new AntPathMatcher().match(pattern, path));
         }
     }
-
+    
 
     @Test
     public void testSpringAntPathMatcherAntPathZeroOrMoreDirectories()
@@ -119,14 +119,14 @@ public class AntPathTest {
             final Boolean expected = (Boolean) data[0];
             final String pattern = (String) data[1];
             final String path = (String) data[2];
-
+            
             Assert.assertEquals(
                     "expects " + expected + " path '" + path + "' matches '" + pattern + "'",
                     expected,
                     new AntPathMatcher().match(pattern, path));
         }
     }
-
+    
 
     @Test
     public void testMatchesAntPathOneCharacter()
@@ -135,14 +135,14 @@ public class AntPathTest {
             final Boolean expected = (Boolean) data[0];
             final String pattern = (String) data[1];
             final String path = (String) data[2];
-
+            
             Assert.assertEquals(
                     "expects " + expected + " path '" + path + "' matches '" + pattern + "'",
                     expected,
                     new AntPath(pattern).matches(path));
         }
     }
-
+    
 
     @Test
     public void testMatchesAntPathZeroOrMoreCharacters()
@@ -151,14 +151,14 @@ public class AntPathTest {
             final Boolean expected = (Boolean) data[0];
             final String pattern = (String) data[1];
             final String path = (String) data[2];
-
+            
             Assert.assertEquals(
                     "expects " + expected + " path '" + path + "' matches '" + pattern + "'",
                     expected,
                     new AntPath(pattern).matches(path));
         }
     }
-
+    
 
     @Test
     public void testMatchesAntPathZeroOrMoreDirectories()
@@ -167,14 +167,14 @@ public class AntPathTest {
             final Boolean expected = (Boolean) data[0];
             final String pattern = (String) data[1];
             final String path = (String) data[2];
-
+            
             Assert.assertEquals(
                     "expects " + expected + " path '" + path + "' matches '" + pattern + "'",
                     expected,
                     new AntPath(pattern).matches(path));
         }
     }
-
+    
 
     private static Object[][] getAntPathOneCharacter()
     {
@@ -188,14 +188,14 @@ public class AntPathTest {
                 {false, "com/t?st.jsp", "com/t/st.jsp"},
         };
         //@formatter:on
-
+        
         return data;
     }
-
+    
 
     private static Object[][] getAntPathZeroOrMoreCharacters()
     {
-//@formatter:off
+        //@formatter:off
         final Object[][] data = {
                 // matches all .jsp files in the com directory
                 {true, "com/*.jsp", "com/.jsp"},
@@ -208,15 +208,15 @@ public class AntPathTest {
                 
                 {true, "com/f*p", "com/file.jsp"},
         };
-//@formatter:on
-
+        //@formatter:on
+        
         return data;
     }
-
+    
 
     private static Object[][] getAntPathZeroOrMoreDirectories()
     {
-//@formatter:off
+        //@formatter:off
         final Object[][] data = {
                 // matches all test.jsp files underneath the com path
                 {true, "com/**/test.jsp", "com/test.jsp"},
@@ -254,13 +254,13 @@ public class AntPathTest {
                 
                 {true, "com/**/", "com/"},
                 {true, "com/**/", "com/path/to/"},
-                // incompatibility between SpringAntPath and this {true, "com/**/", "com/path/to"},
-                // incompatibility between SpringAntPath and this {true, "com/**/", "com/test.jsp"},
-                // incompatibility between SpringAntPath and this {true, "com/**/", "com/path/to/test.jsp"},
+        // incompatibility between SpringAntPath and this {true, "com/**/", "com/path/to"},
+        // incompatibility between SpringAntPath and this {true, "com/**/", "com/test.jsp"},
+        // incompatibility between SpringAntPath and this {true, "com/**/", "com/path/to/test.jsp"},
         };
-//@formatter:on
-
+        //@formatter:on
+        
         return data;
     }
-
+    
 }
