@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
@@ -37,7 +36,7 @@ import com.mycila.testing.plugins.jetty.JettyRunWarConfig;
 @RunWith(MycilaJunitRunner.class)
 @JettyRunWar(startServer = false, deployWebapp = false)
 public class WebappJettyRunWarConfigIT {
-    
+
     /**
      * Test that HelloWorld page is accessible.
      */
@@ -45,41 +44,40 @@ public class WebappJettyRunWarConfigIT {
     public void testHelloWorld1()
     {
         this.webDriver.get(this.getPage("hi.jsp"));
-        
+
         assertEquals("Hello World !", this.webDriver.getTitle());
         assertEquals("0", this.webDriver.findElement(By.id("count")).getText());
     }
-    
+
 
     /**
      * Test that HelloWorld page is accessible.
      */
     @Test
-    @Ignore("enable when implemented")
     public void testHelloWorld2()
     {
         this.webDriver.get(this.getPage("hi.jsp"));
-        
+
         assertEquals("Hello World !", this.webDriver.getTitle());
         assertEquals("1", this.webDriver.findElement(By.id("count")).getText());
     }
-    
+
 
     @Before
     public final void initWebDriver()
     {
         final HtmlUnitDriver unitDriver = new HtmlUnitDriver();
-        
+
         this.webDriver = unitDriver;
     }
-    
+
 
     @After
     public final void quitWebDriver()
     {
         this.webDriver.quit();
     }
-    
+
 
     protected String getPage(
             final String page)
@@ -87,14 +85,13 @@ public class WebappJettyRunWarConfigIT {
         final String path = this.server + ":" + this.port + this.contextPath + page;
         return path;
     }
-    
 
     private WebDriver webDriver;
-    
+
     private final String server = "http://localhost";
-    
+
     private final int port = 9090;
-    
+
     private final String contextPath = "/";
-    
+
 }

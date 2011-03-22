@@ -17,6 +17,8 @@
 package com.mycila.testing.plugins.jetty;
 
 import static com.mycila.testing.plugins.jetty.AbstractDefaultJettyRunWarConfig.DEFAULT_CONTEXT_PATH;
+import static com.mycila.testing.plugins.jetty.AbstractDefaultJettyRunWarConfig.DEFAULT_DO_DEPLOY_WEBAPP;
+import static com.mycila.testing.plugins.jetty.AbstractDefaultJettyRunWarConfig.DEFAULT_DO_START_SERVER;
 import static com.mycila.testing.plugins.jetty.AbstractDefaultJettyRunWarConfig.DEFAULT_SERVER_PORT;
 import static com.mycila.testing.plugins.jetty.AbstractDefaultJettyRunWarConfig.DEFAULT_SKIP;
 import static com.mycila.testing.plugins.jetty.AbstractDefaultJettyRunWarConfig.DEFAULT_WAR_LOCATION;
@@ -113,26 +115,40 @@ public @interface JettyRunWar {
 
 
     /**
+     * True to skip starting server or deploying webapp. Default is {@link AbstractDefaultJettyRunWarConfig#DEFAULT_SKIP}.
+     * 
+     * @return if skip starting server or deploying webapp.
+     */
+    boolean skip() default DEFAULT_SKIP;
+
+
+    /**
+     * True to start a new server (and stop the old one), false to start a server only if there is no running
+     * one. If {@code true} then {@link #deployWebapp()} is logically force to true.
+     * 
+     * @return true to start a new server (and stop the old one), false to start a server only if there is no running
+     *         one.
+     */
+    boolean startServer() default DEFAULT_DO_START_SERVER;
+
+
+    /**
+     * True to deploy a new webapp (and undeploy the old one), false to deploy a webapp only if there is no
+     * deployed one.
+     * 
+     * @return true to deploy a new webapp (and undeploy the old one), false to deploy a webapp only if there is no
+     *         deployed one.
+     */
+    boolean deployWebapp() default DEFAULT_DO_DEPLOY_WEBAPP;
+
+
+    /**
      * The server lifecycle listener which allow customization of the server configuration. Default is
      * {@link NopServerLifeCycleListener}.
      * 
      * @return the server lifecycle listener.
      */
     Class<? extends ServerLifeCycleListener> serverLifeCycleListener() default NopServerLifeCycleListener.class;
-
-
-    boolean startServer() default AbstractDefaultJettyRunWarConfig.DEFAULT_DO_START_SERVER;
-
-
-    boolean deployWebapp() default AbstractDefaultJettyRunWarConfig.DEFAULT_DO_DEPLOY_WEBAPP;
-
-
-    /**
-     * If skip starting server or deploying webapp. Default is {@link AbstractDefaultJettyRunWarConfig#DEFAULT_SKIP}.
-     * 
-     * @return if skip starting server or deploying webapp.
-     */
-    boolean skip() default DEFAULT_SKIP;
 
 
     /**

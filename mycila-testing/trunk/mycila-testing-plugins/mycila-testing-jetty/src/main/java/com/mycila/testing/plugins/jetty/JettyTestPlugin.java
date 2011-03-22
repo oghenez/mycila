@@ -16,21 +16,10 @@
 
 package com.mycila.testing.plugins.jetty;
 
-import static com.jayway.awaitility.Awaitility.await;
-import static org.hamcrest.CoreMatchers.equalTo;
-
-import java.io.File;
-import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.eclipse.jetty.http.MimeTypes;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.util.component.AbstractLifeCycle;
-import org.eclipse.jetty.util.component.LifeCycle;
-import org.eclipse.jetty.webapp.WebAppContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mycila.testing.core.api.TestContext;
 import com.mycila.testing.core.api.TestExecution;
 import com.mycila.testing.core.plugin.DefaultTestPlugin;
 
@@ -44,7 +33,7 @@ import com.mycila.testing.core.plugin.DefaultTestPlugin;
  */
 public class JettyTestPlugin
         extends DefaultTestPlugin {
-    
+
     /**
      * @see com.mycila.testing.core.plugin.DefaultTestPlugin#beforeTest(com.mycila.testing.core.api.TestExecution)
      */
@@ -53,65 +42,50 @@ public class JettyTestPlugin
             final TestExecution testExecution)
         throws Exception
     {
-        final JettyRunWarConfig config;
+        final JettyRunWarConfig<JettyRunWar> config;
         {
-            final Class<?> testClass = testExecution.method().getDeclaringClass();
-            if (!testClass.isAnnotationPresent(JettyRunWar.class)) {
+            final JettyRunWar runWar = this.getJettyRunWar(testExecution);
+            this.logger.info("@" + JettyRunWar.class + " configuration : " + runWar);
+
+            if (runWar == null) {
                 this.logger.debug("skip " + JettyTestPlugin.class + " because there is no " + JettyRunWar.class
                         + " annotation on test class");
                 return;
             }
-            
-            final JettyRunWar runWar = testClass.getAnnotation(JettyRunWar.class);
-            this.logger.info("@" + JettyRunWar.class + " configuration : " + runWar);
-            
-            config = new OverrideJettyRunWarConfig(runWar.config().newInstance());
-            config.init(runWar);
-            
+
+            config = this.getJettyRunWarConfig(runWar);
             this.logger.info("jetty-config : " + config);
         }
-        
+
         if (config.isSkip()) {
             this.logger.debug("skip running webapp with Jetty");
             return;
         }
-        
-        this.warFile = new File(config.getWarLocation().toURI());
-        if (!this.warFile.exists()) {
-            throw new AssertionError("non-existent WAR : " + this.warFile.getAbsolutePath());
+
+        if (this.actions.hasWebAppContext() && config.isDoDeployWebapp()) {
+            this.actions.stopWebapp();
         }
-        this.contextPath = config.getContextPath();
-        if (!"/".equals(this.contextPath) && (!this.contextPath.startsWith("/") || this.contextPath.endsWith("/"))) {
-            throw new AssertionError("contextPath must starts with a slash '/' but doesn't end with one");
+        if (this.actions.hasServer() && config.isDoStartServer()) {
+            this.actions.stopServer();
         }
-        this.port = config.getServerPort();
-        
-        this.logger.info("jetty starting on localhost:{}{} with WAR:{}", new Object[] {
-                this.port, this.contextPath, this.warFile.getAbsolutePath()
-        });
-        final AtomicBoolean ready = new AtomicBoolean();
-        
-        this.server = makeServer(testExecution, this.warFile, this.port, this.contextPath, ready);
-        this.lifeCycleListener = config.getServerLifeCycleListener();
-        
-        this.logger.info("jetty starting");
-        this.lifeCycleListener.serverStarting(testExecution, this.server);
-        
-        this.server.start();
-        final Callable<Boolean> isReady = new Callable<Boolean>() {
-            
-            public Boolean call()
-                throws Exception
-            {
-                return ready.get();
-            }
-        };
-        await().until(isReady, equalTo(true));
-        
-        this.lifeCycleListener.serverStarted(testExecution, this.server);
-        this.logger.info("jetty started");
+
+        if (!this.actions.hasServer()) {
+            this.actions.createServer(testExecution, config);
+            this.actions.startServer(testExecution, config);
+        }
+        else {
+            this.logger.info("start server ? keep server running");
+        }
+
+        if (!this.actions.hasWebAppContext()) {
+            this.actions.createWebAppContext(testExecution, config);
+            this.actions.startWebApp();
+        }
+        else {
+            this.logger.info("start webapp ? keep webapp running");
+        }
     }
-    
+
 
     /**
      * @see com.mycila.testing.core.plugin.DefaultTestPlugin#afterTest(com.mycila.testing.core.api.TestExecution)
@@ -121,78 +95,80 @@ public class JettyTestPlugin
             final TestExecution testExecution)
         throws Exception
     {
-        if (this.server != null) {
-            this.logger.info("jetty stopping");
-            this.lifeCycleListener.serverStopping(testExecution, this.server);
-            
-            this.server.stop();
-            this.server.destroy();
-            
-            this.lifeCycleListener.serverStopped(testExecution, this.server);
-            this.logger.info("jetty stopped");
+        final JettyRunWar runWar = this.getJettyRunWar(testExecution);
+        if (runWar == null) {
+            this.logger.debug("skip " + JettyTestPlugin.class + " because there is no " + JettyRunWar.class
+                    + " annotation on test class");
+            return;
+        }
+
+        final JettyRunWarConfig<JettyRunWar> config = this.getJettyRunWarConfig(runWar);
+        this.logger.info("jetty-config : " + config);
+
+        if (config.isSkip()) {
+            this.logger.debug("skip stopping webapp");
+            return;
+        }
+
+        if (this.actions.hasWebAppContext() && config.isDoDeployWebapp()) {
+            this.actions.stopWebapp();
+        }
+        else {
+            this.logger.info("stop webapp ? keep webapp running");
+        }
+
+        if (this.actions.hasServer() && config.isDoStartServer()) {
+            this.actions.stopServer();
+        }
+        else {
+            this.logger.info("stop server ? keep server running");
         }
     }
-    
 
-    private static Server makeServer(
-            final TestExecution testExecution,
-            final File warFile,
-            final int port,
-            final String contextPath,
-            final AtomicBoolean ready)
+
+    @Override
+    public void shutdown(
+            final TestContext context)
+        throws Exception
     {
-        final WebAppContext webapp = new WebAppContext();
-        //webapp.addLocaleEncoding("fr_FR", "UTF-8");
-        webapp.setWar(warFile.getAbsolutePath());
-        webapp.setContextPath(contextPath);
-        webapp.setCopyWebDir(false);
-        webapp.setExtractWAR(false);
-        webapp.setLogUrlOnStart(true);
-        {
-            final MimeTypes mimeTypes = new MimeTypes();
-            mimeTypes.addMimeMapping("js", "application/javascript");
-            webapp.setMimeTypes(mimeTypes);
-        }
-        //        if (this.webdefaultFile != null) {
-        //            webapp.setDefaultsDescriptor(this.webdefaultFile.getAbsolutePath());
-        //        }
-        
-        final Server localServer = new Server(port);
-        localServer.setHandler(webapp);
-        
-        localServer.addLifeCycleListener(new AbstractLifeCycle.AbstractLifeCycleListener() {
-            
-            @Override
-            public void lifeCycleFailure(
-                    final LifeCycle event,
-                    final Throwable cause)
-            {
-                testExecution.setThrowable(cause);
-            }
-            
+        this.logger.info("JVM shutdown");
 
-            @Override
-            public void lifeCycleStarted(
-                    final LifeCycle event)
-            {
-                ready.set(true);
-            }
-        });
-        
-        return localServer;
+        if (this.actions.hasWebAppContext()) {
+            this.actions.stopWebapp();
+        }
+
+        if (this.actions.hasServer()) {
+            this.actions.stopServer();
+        }
     }
-    
+
+
+    private JettyRunWar getJettyRunWar(
+            final TestExecution testExecution)
+    {
+        final Class<?> testClass = testExecution.method().getDeclaringClass();
+        if (!testClass.isAnnotationPresent(JettyRunWar.class)) {
+            return null;
+        }
+
+        final JettyRunWar runWar = testClass.getAnnotation(JettyRunWar.class);
+
+        return runWar;
+    }
+
+
+    private JettyRunWarConfig<JettyRunWar> getJettyRunWarConfig(
+            final JettyRunWar runWar)
+        throws InstantiationException, IllegalAccessException
+    {
+        final JettyRunWarConfig<JettyRunWar> config = new OverrideJettyRunWarConfig(runWar.config().newInstance());
+        config.init(runWar);
+
+        return config;
+    }
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
-    private File warFile;
-    
-    private String contextPath;
-    
-    private int port;
-    
-    private Server server;
-    
-    private ServerLifeCycleListener lifeCycleListener;
-    
+
+    private final ServerWebappActions actions = new ServerWebappActions();
+
 }

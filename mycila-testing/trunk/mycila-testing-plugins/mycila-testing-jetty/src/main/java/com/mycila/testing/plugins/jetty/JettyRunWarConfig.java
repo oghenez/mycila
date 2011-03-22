@@ -51,27 +51,27 @@ public interface JettyRunWarConfig<DataType> {
 
 
     /**
-     * Returns true to to start a new server (and stop the old one), false to start a server only if there is no running
+     * True to start a new server (and stop the old one), false to start a server only if there is no running
      * one. If {@code true} then {@link #isDoDeployWebapp()} is logically force to true.
      * 
-     * @return true to to start a new server (and stop the old one), false to start a server only if there is no running
+     * @return true to start a new server (and stop the old one), false to start a server only if there is no running
      *         one.
      */
     boolean isDoStartServer();
 
 
     /**
-     * Returns true to to deploy a new webapp (and undeploy the old one), false to deploy a webapp only if there is no
+     * True to deploy a new webapp (and undeploy the old one), false to deploy a webapp only if there is no
      * deployed one.
      * 
-     * @return true to to deploy a new webapp (and undeploy the old one), false to deploy a webapp only if there is no
+     * @return true to deploy a new webapp (and undeploy the old one), false to deploy a webapp only if there is no
      *         deployed one.
      */
     boolean isDoDeployWebapp();
 
 
     /**
-     * Returns true to skip starting server or deploying webapp, false else.
+     * True to skip starting server or deploying webapp, false else.
      * 
      * @return true to skip starting server or deploying webapp, false else.
      */
