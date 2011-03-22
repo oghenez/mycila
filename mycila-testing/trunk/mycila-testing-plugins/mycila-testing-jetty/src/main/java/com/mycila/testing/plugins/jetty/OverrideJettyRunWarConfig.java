@@ -20,14 +20,14 @@ import java.net.URL;
 
 public class OverrideJettyRunWarConfig
         extends AbstractDefaultJettyRunWarConfig<JettyRunWar> {
-    
+
     public OverrideJettyRunWarConfig(
             final JettyRunWarConfig config)
     {
         this.overrideConfig = new AnnotationJettyRunWarConfig();
         this.config = config;
     }
-    
+
 
     public void init(
             final JettyRunWar data)
@@ -35,15 +35,15 @@ public class OverrideJettyRunWarConfig
         this.overrideConfig.init(data);
         this.override = data;
     }
-    
+
 
     public URL getWarLocation()
     {
-        return (!DEFAULT_WAR_LOCATION.equals(this.override.value()) || !this.override.war().isEmpty())
+        return !DEFAULT_WAR_LOCATION.equals(this.override.value())
                 ? this.overrideConfig.getWarLocation()
                 : this.config.getWarLocation();
     }
-    
+
 
     public int getServerPort()
     {
@@ -51,7 +51,7 @@ public class OverrideJettyRunWarConfig
                 ? this.overrideConfig.getServerPort()
                 : this.config.getServerPort();
     }
-    
+
 
     public String getContextPath()
     {
@@ -59,7 +59,7 @@ public class OverrideJettyRunWarConfig
                 ? this.overrideConfig.getContextPath()
                 : this.config.getContextPath();
     }
-    
+
 
     public ServerLifeCycleListener getServerLifeCycleListener()
     {
@@ -67,7 +67,7 @@ public class OverrideJettyRunWarConfig
                 ? this.overrideConfig.getServerLifeCycleListener()
                 : this.config.getServerLifeCycleListener();
     }
-    
+
 
     public boolean isDoStartServer()
     {
@@ -75,7 +75,7 @@ public class OverrideJettyRunWarConfig
                 ? this.overrideConfig.isDoStartServer()
                 : this.config.isDoStartServer();
     }
-    
+
 
     public boolean isDoDeployWebapp()
     {
@@ -83,7 +83,7 @@ public class OverrideJettyRunWarConfig
                 ? this.overrideConfig.isDoDeployWebapp()
                 : this.config.isDoDeployWebapp();
     }
-    
+
 
     public boolean isSkip()
     {
@@ -91,12 +91,11 @@ public class OverrideJettyRunWarConfig
                 ? this.overrideConfig.isSkip()
                 : this.config.isSkip();
     }
-    
 
     private final JettyRunWarConfig config;
-    
+
     private JettyRunWar override;
-    
+
     private final AnnotationJettyRunWarConfig overrideConfig;
-    
+
 }

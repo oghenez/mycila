@@ -16,9 +16,6 @@
 
 package com.mycila.testing.plugins.jetty;
 
-import static com.google.common.base.Objects.firstNonNull;
-import static com.google.common.base.Strings.emptyToNull;
-
 import java.net.URL;
 
 /**
@@ -37,7 +34,7 @@ public class AnnotationJettyRunWarConfig
     public URL getWarLocation()
     {
         // use default value if war not used
-        final String warPath = firstNonNull(emptyToNull(this.jettyRunWar.war()), emptyToNull(this.jettyRunWar.value()));
+        final String warPath = this.jettyRunWar.value();
         return this.getWarLocation(warPath);
     }
 

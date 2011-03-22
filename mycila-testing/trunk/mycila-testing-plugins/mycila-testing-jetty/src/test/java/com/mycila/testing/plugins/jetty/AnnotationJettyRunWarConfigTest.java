@@ -80,23 +80,6 @@ public class AnnotationJettyRunWarConfigTest {
 
 
     @Test
-    public final void testGetWarLocationFromWar()
-        throws Exception
-    {
-        @JettyRunWar(value = "fail", war = "pom.xml")
-        class Dummy {
-            // nop
-        }
-        final JettyRunWar jettyRunWar = Dummy.class.getAnnotation(JettyRunWar.class);
-        final AnnotationJettyRunWarConfig config = new AnnotationJettyRunWarConfig();
-        config.init(jettyRunWar);
-
-        final URL url = config.getWarLocation();
-        assertThat(url.getPath(), new EndsWith("/mycila-testing/mycila-testing-plugins/mycila-testing-jetty/pom.xml"));
-    }
-
-
-    @Test
     public final void testGetServerPort()
     {
         @JettyRunWar(serverPort = 1324)

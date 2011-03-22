@@ -32,10 +32,8 @@ import java.lang.annotation.Target;
 import com.mycila.testing.junit.MycilaJunitRunner;
 
 /**
- * This annotation enables the loading of a packaged web application (ie: a WAR file) by a Servlet
- * Container when used
- * with junit runner {@link org.junit.runner.RunWith} and {@link MycilaJunitRunner}. This is useful
- * to run functional
+ * This annotation enables the loading of a packaged web application (ie: a WAR file) by a Servlet Container when used
+ * with junit runner {@link org.junit.runner.RunWith} and {@link MycilaJunitRunner}. This is useful to run functional
  * tests.
  * <p>
  * Here's an example which run webapp accessible by default at URL : {@code http://localhost:9090}
@@ -59,7 +57,6 @@ import com.mycila.testing.junit.MycilaJunitRunner;
  * @author amertum
  * 
  * @see JettyRunWarHelper
- * @see #war()
  */
 @Target({
         TYPE, METHOD
@@ -70,20 +67,10 @@ import com.mycila.testing.junit.MycilaJunitRunner;
 public @interface JettyRunWar {
 
     /**
-     * Alias for {@link #war()}. Default is {@link AbstractDefaultJettyRunWarConfig#DEFAULT_WAR_LOCATION}.
-     * 
-     * @return alias for {@link #war()}.
-     * 
-     * @see #war()
-     */
-    String value() default DEFAULT_WAR_LOCATION;
-
-
-    /**
      * The path of the WAR file to load. The search is based on the current directory.
      * <p>
-     * Default is {@link #value()}. If there is more than one WAR file the test will fail, else the WAR file will be
-     * loaded and the test run.
+     * Default is {@link #DEFAULT_WAR_LOCATION}. If there is more than one WAR file the test will fail, else the WAR
+     * file will be loaded and the test run.
      * <p>
      * WAR locator strategy :
      * <ul>
@@ -105,8 +92,7 @@ public @interface JettyRunWar {
      * 
      * @return path of the WAR file to load.
      */
-    // TODO remove war, use only value
-    String war() default "";
+    String value() default DEFAULT_WAR_LOCATION;
 
 
     /**
@@ -152,7 +138,7 @@ public @interface JettyRunWar {
     /**
      * The {@link JettyRunWarConfig} class which define the WAR to deploy, how and when. This configuration is overriden
      * by
-     * specific values : {@link #value()}, {@link #war()}, {@link #serverPort()}, {@link #contextPath()},
+     * specific values : {@link #value()}, {@link #serverPort()}, {@link #contextPath()},
      * {@link #serverLifeCycleListener()}, {@link #skip()}.
      * 
      * @return the {@link JettyRunWarConfig} class.

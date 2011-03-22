@@ -33,7 +33,7 @@ import org.mockito.internal.matchers.EndsWith;
  * Unit test of {@link OverrideJettyRunWarConfig}.
  */
 public class OverrideJettyRunWarConfigTest {
-    
+
     @Test
     public final void testGetWarLocation()
         throws MalformedURLException
@@ -45,7 +45,7 @@ public class OverrideJettyRunWarConfigTest {
         final JettyRunWar jettyRunWar = Dummy.class.getAnnotation(JettyRunWar.class);
         final OverrideJettyRunWarConfig config = new OverrideJettyRunWarConfig(this.defaultConfig);
         config.init(jettyRunWar);
-        
+
         Assert.assertEquals(new URL("file://some/file"), config.getWarLocation());
         Assert.assertEquals(5345, config.getServerPort());
         Assert.assertEquals("/path/to", config.getContextPath());
@@ -55,7 +55,7 @@ public class OverrideJettyRunWarConfigTest {
         Assert.assertTrue(config.isDoDeployWebapp());
         Assert.assertFalse(config.isSkip());
     }
-    
+
 
     @Test
     public final void testGetWarLocationFromValue()
@@ -67,27 +67,11 @@ public class OverrideJettyRunWarConfigTest {
         final JettyRunWar jettyRunWar = Dummy.class.getAnnotation(JettyRunWar.class);
         final OverrideJettyRunWarConfig config = new OverrideJettyRunWarConfig(this.defaultConfig);
         config.init(jettyRunWar);
-        
-        assertThat(config.getWarLocation().getPath(), new EndsWith(
-                "/mycila-testing/mycila-testing-plugins/mycila-testing-jetty/pom.xml"));
-    }
-    
 
-    @Test
-    public final void testGetWarLocationFromWar()
-    {
-        @JettyRunWar(war = "pom.xml")
-        class Dummy {
-            // nop
-        }
-        final JettyRunWar jettyRunWar = Dummy.class.getAnnotation(JettyRunWar.class);
-        final OverrideJettyRunWarConfig config = new OverrideJettyRunWarConfig(this.defaultConfig);
-        config.init(jettyRunWar);
-        
         assertThat(config.getWarLocation().getPath(), new EndsWith(
                 "/mycila-testing/mycila-testing-plugins/mycila-testing-jetty/pom.xml"));
     }
-    
+
 
     @Test
     public final void testGetServerPort()
@@ -99,10 +83,10 @@ public class OverrideJettyRunWarConfigTest {
         final JettyRunWar jettyRunWar = Dummy.class.getAnnotation(JettyRunWar.class);
         final OverrideJettyRunWarConfig config = new OverrideJettyRunWarConfig(this.defaultConfig);
         config.init(jettyRunWar);
-        
+
         Assert.assertEquals(4567, config.getServerPort());
     }
-    
+
 
     @Test
     public final void testGetContextPath()
@@ -114,10 +98,10 @@ public class OverrideJettyRunWarConfigTest {
         final JettyRunWar jettyRunWar = Dummy.class.getAnnotation(JettyRunWar.class);
         final OverrideJettyRunWarConfig config = new OverrideJettyRunWarConfig(this.defaultConfig);
         config.init(jettyRunWar);
-        
+
         Assert.assertEquals("/source/to", config.getContextPath());
     }
-    
+
 
     @Test
     public final void testGetServerLifeCycleListener()
@@ -129,16 +113,15 @@ public class OverrideJettyRunWarConfigTest {
         final JettyRunWar jettyRunWar = Dummy.class.getAnnotation(JettyRunWar.class);
         final OverrideJettyRunWarConfig config = new OverrideJettyRunWarConfig(this.defaultConfig);
         config.init(jettyRunWar);
-        
+
         Assert.assertThat(config.getServerLifeCycleListener(), instanceOf(AnotherListener.class));
     }
-    
 
     public static class AnotherListener
             extends NopServerLifeCycleListener {
         // nop
     }
-    
+
 
     @Test
     public final void testIsDoStartServer()
@@ -150,10 +133,10 @@ public class OverrideJettyRunWarConfigTest {
         final JettyRunWar jettyRunWar = Dummy.class.getAnnotation(JettyRunWar.class);
         final OverrideJettyRunWarConfig config = new OverrideJettyRunWarConfig(this.defaultConfig);
         config.init(jettyRunWar);
-        
+
         Assert.assertFalse(config.isDoStartServer());
     }
-    
+
 
     @Test
     public final void testIsDoDeployWebapp()
@@ -165,10 +148,10 @@ public class OverrideJettyRunWarConfigTest {
         final JettyRunWar jettyRunWar = Dummy.class.getAnnotation(JettyRunWar.class);
         final OverrideJettyRunWarConfig config = new OverrideJettyRunWarConfig(this.defaultConfig);
         config.init(jettyRunWar);
-        
+
         Assert.assertFalse(config.isDoDeployWebapp());
     }
-    
+
 
     @Test
     public final void testIsSkip()
@@ -180,16 +163,16 @@ public class OverrideJettyRunWarConfigTest {
         final JettyRunWar jettyRunWar = Dummy.class.getAnnotation(JettyRunWar.class);
         final OverrideJettyRunWarConfig config = new OverrideJettyRunWarConfig(this.defaultConfig);
         config.init(jettyRunWar);
-        
+
         Assert.assertTrue(config.isSkip());
     }
-    
+
 
     @Before
     public void init()
     {
         this.defaultConfig = new DefaultJettyRunWarConfig() {
-            
+
             @Override
             public URL getWarLocation()
             {
@@ -200,53 +183,52 @@ public class OverrideJettyRunWarConfigTest {
                     throw new AssertionError(e);
                 }
             }
-            
+
 
             @Override
             public int getServerPort()
             {
                 return 5345;
             }
-            
+
 
             @Override
             public String getContextPath()
             {
                 return "/path/to";
             }
-            
+
 
             @Override
             public ServerLifeCycleListener getServerLifeCycleListener()
             {
                 return Mockito.mock(ServerLifeCycleListener.class);
             }
-            
+
 
             @Override
             public boolean isDoStartServer()
             {
                 return true;
             }
-            
+
 
             @Override
             public boolean isDoDeployWebapp()
             {
                 return true;
             }
-            
+
 
             @Override
             public boolean isSkip()
             {
                 return false;
             }
-            
+
         };
     }
-    
 
     private JettyRunWarConfig defaultConfig;
-    
+
 }
