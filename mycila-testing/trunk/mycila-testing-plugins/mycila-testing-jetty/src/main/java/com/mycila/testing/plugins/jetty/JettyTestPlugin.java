@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import com.mycila.testing.core.api.TestExecution;
 import com.mycila.testing.core.plugin.DefaultTestPlugin;
-import com.mycila.testing.plugins.jetty.JettyRunWar.TargetWebapp;
 
 /**
  * Testing plugin which load the web application specified by {@link JettyRunWar} annotation using jetty.
@@ -54,38 +53,37 @@ public class JettyTestPlugin
             final TestExecution testExecution)
         throws Exception
     {
-        final Class<?> testClass = testExecution.method().getDeclaringClass();
-        if (!testClass.isAnnotationPresent(JettyRunWar.class)) {
-            this.logger.debug("skip " + JettyTestPlugin.class + " because there is no " + JettyRunWar.class
-                    + " annotation on test class");
+        final AnnotationJettyRunWarConfig config = new AnnotationJettyRunWarConfig();
+        {
+            final Class<?> testClass = testExecution.method().getDeclaringClass();
+            if (!testClass.isAnnotationPresent(JettyRunWar.class)) {
+                this.logger.debug("skip " + JettyTestPlugin.class + " because there is no " + JettyRunWar.class
+                        + " annotation on test class");
+                return;
+            }
+
+            final JettyRunWar runWar = testClass.getAnnotation(JettyRunWar.class);
+            this.logger.info("@" + JettyRunWar.class + " configuration : " + runWar);
+            config.init(runWar);
+
+            // TODO final JettyRunWarConfig overrideConfig = new OverrideJettyRunWarConfig(runWar.config().newInstance());
+            // overrideConfig.init(runWar);
+        }
+
+        if (config.isSkip()) {
+            this.logger.debug("skip running webapp with Jetty");
             return;
         }
 
-        final JettyRunWar runWar = testClass.getAnnotation(JettyRunWar.class);
-        this.logger.info("@" + JettyRunWar.class + " configuration : " + runWar);
-
-        if (TargetWebapp.ALREADY_RUNNING.equals(runWar.targetWebapp())) {
-            this.logger.debug("skip running webapp with Jetty because targetWebapp is " + runWar.targetWebapp());
-            return;
-        }
-        
-        // use default value if war not used
-        final String warPath = (runWar.war().length() != 0)
-                ? runWar.war()
-                : runWar.value();
-        // use fix fallback locator if warPath is unspecified
-        final FileLocator fallbackFileLocator = (warPath.length() == 0)
-                ? new FallbackFileLocator(this.fileLocator, new FixPathFileLocator(new RegFileLocator(), ".*\\.war"))
-                : this.fileLocator;
-        this.warFile = fallbackFileLocator.locate(warPath);
+        this.warFile = new File(config.getWarLocation().toURI());
         if (!this.warFile.exists()) {
             throw new AssertionError("non-existent WAR : " + this.warFile.getAbsolutePath());
         }
-        this.contextPath = runWar.contextPath();
+        this.contextPath = config.getContextPath();
         if (!"/".equals(this.contextPath) && (!this.contextPath.startsWith("/") || this.contextPath.endsWith("/"))) {
             throw new AssertionError("contextPath must starts with a slash '/' but doesn't end with one");
         }
-        this.port = runWar.serverPort();
+        this.port = config.getServerPort();
 
         this.logger.info("jetty starting on localhost:{}{} with WAR:{}", new Object[] {
                 this.port, this.contextPath, this.warFile.getAbsolutePath()
@@ -93,8 +91,8 @@ public class JettyTestPlugin
         final AtomicBoolean ready = new AtomicBoolean();
 
         this.server = makeServer(testExecution, this.warFile, this.port, this.contextPath, ready);
-        this.lifeCycleListener = runWar.serverLifeCycleListener().newInstance();
-        this.lifeCycleListener.beforeServerStarts(this.server);
+        this.lifeCycleListener = config.getServerLifeCycleListener();
+        this.lifeCycleListener.serverStarting(this.server);
 
         this.server.start();
         final Callable<Boolean> isReady = new Callable<Boolean>() {
@@ -106,7 +104,7 @@ public class JettyTestPlugin
             }
         };
         await().until(isReady, equalTo(true));
-        
+
         this.logger.info("jetty started");
     }
 
@@ -121,7 +119,7 @@ public class JettyTestPlugin
     {
         if (this.server != null) {
             this.logger.info("jetty stopping");
-            
+
             this.server.stop();
             this.server.destroy();
 
@@ -180,8 +178,6 @@ public class JettyTestPlugin
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final FileLocator fileLocator = new StrategyFileLocator();
-
     private File warFile;
 
     private String contextPath;
@@ -189,7 +185,7 @@ public class JettyTestPlugin
     private int port;
 
     private Server server;
-    
+
     private ServerLifeCycleListener lifeCycleListener;
 
 }

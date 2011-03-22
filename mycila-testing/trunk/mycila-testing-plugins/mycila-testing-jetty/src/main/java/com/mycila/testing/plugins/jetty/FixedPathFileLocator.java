@@ -19,15 +19,15 @@ package com.mycila.testing.plugins.jetty;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-public class FixPathFileLocator
+public class FixedPathFileLocator
         implements FileLocator {
 
-    public FixPathFileLocator(
+    public FixedPathFileLocator(
             final FileLocator locator,
-            final String fixPath)
+            final String fixedPath)
     {
         this.locator = locator;
-        this.fixPath = fixPath;
+        this.fixedPath = fixedPath;
     }
 
 
@@ -35,11 +35,11 @@ public class FixPathFileLocator
             final String path)
         throws FileNotFoundException
     {
-        return this.locator.locate(this.fixPath);
+        return this.locator.locate(this.fixedPath);
     }
 
     private final FileLocator locator;
 
-    private final String fixPath;
+    private final String fixedPath;
 
 }

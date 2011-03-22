@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import org.junit.Test;
 
 /**
- * Unit test of {@link FixPathFileLocator}.
+ * Unit test of {@link FixedPathFileLocator}.
  */
 public class FixPathFileLocatorTest {
 
@@ -32,7 +32,7 @@ public class FixPathFileLocatorTest {
     {
         final FileLocator locator = mock(FileLocator.class);
 
-        new FixPathFileLocator(locator, "file").locate("any");
+        new FixedPathFileLocator(locator, "file").locate("any");
 
         verify(locator).locate("file");
     }
