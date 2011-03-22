@@ -38,6 +38,7 @@ public class JettyRunWarHelperTest {
 
     @JettyRunWar(serverPort = 8888, contextPath = "/path/to")
     static class WebappTest {
+        // nop
     }
 
 }

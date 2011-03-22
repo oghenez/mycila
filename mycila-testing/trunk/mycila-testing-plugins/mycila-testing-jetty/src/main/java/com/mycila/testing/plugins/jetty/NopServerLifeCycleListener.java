@@ -23,14 +23,32 @@ import org.eclipse.jetty.server.Server;
  */
 public class NopServerLifeCycleListener
         implements ServerLifeCycleListener {
-    
-    /**
-     * @see ServerLifeCycleListener#beforeServerStarts(Server)
-     */
-    public void beforeServerStarts(
+
+    public void serverStarting(
             final Server server)
     {
         // nop
     }
-    
+
+
+    public void serverStarted(
+            final Server server)
+    {
+        // nop
+    }
+
+
+    public void serverStopping(
+            final Server server)
+    {
+        // nop
+    }
+
+
+    public void serverStopped(
+            final Server server)
+    {
+        // nop
+    }
+
 }

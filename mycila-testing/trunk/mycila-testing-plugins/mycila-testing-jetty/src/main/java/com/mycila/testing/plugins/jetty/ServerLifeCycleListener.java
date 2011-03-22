@@ -22,14 +22,44 @@ import org.eclipse.jetty.server.Server;
  * The server lifecycle listener which allow customization of the server configuration.
  */
 public interface ServerLifeCycleListener {
-    
+
     /**
-     * Handler method which will be called before the server starts.
+     * Handler method which will be called before the {@code Server} starts.
      * 
      * @param server
-     *            the server which will start.
+     *        the server which will start.
      */
-    void beforeServerStarts(
+    void serverStarting(
             Server server);
-    
+
+
+    /**
+     * Handler method which will be called after the {@code Server} started.
+     * 
+     * @param server
+     *        the server which is started.
+     */
+    void serverStarted(
+            Server server);
+
+
+    /**
+     * Handler method which will be called before the {@code Server} stops.
+     * 
+     * @param server
+     *        the server which will stop.
+     */
+    void serverStopping(
+            Server server);
+
+
+    /**
+     * Handler method which will be called after the {@code Server} stopped.
+     * 
+     * @param server
+     *        the server which is stopped.
+     */
+    void serverStopped(
+            Server server);
+
 }
