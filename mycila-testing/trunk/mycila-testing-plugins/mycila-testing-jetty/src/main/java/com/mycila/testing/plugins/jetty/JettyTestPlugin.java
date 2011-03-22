@@ -93,7 +93,9 @@ public class JettyTestPlugin
         
         this.server = makeServer(testExecution, this.warFile, this.port, this.contextPath, ready);
         this.lifeCycleListener = config.getServerLifeCycleListener();
-        this.lifeCycleListener.serverStarting(this.server);
+        
+        this.logger.info("jetty starting");
+        this.lifeCycleListener.serverStarting(testExecution, this.server);
         
         this.server.start();
         final Callable<Boolean> isReady = new Callable<Boolean>() {
@@ -106,6 +108,7 @@ public class JettyTestPlugin
         };
         await().until(isReady, equalTo(true));
         
+        this.lifeCycleListener.serverStarted(testExecution, this.server);
         this.logger.info("jetty started");
     }
     
@@ -120,10 +123,12 @@ public class JettyTestPlugin
     {
         if (this.server != null) {
             this.logger.info("jetty stopping");
+            this.lifeCycleListener.serverStopping(testExecution, this.server);
             
             this.server.stop();
             this.server.destroy();
             
+            this.lifeCycleListener.serverStopped(testExecution, this.server);
             this.logger.info("jetty stopped");
         }
     }

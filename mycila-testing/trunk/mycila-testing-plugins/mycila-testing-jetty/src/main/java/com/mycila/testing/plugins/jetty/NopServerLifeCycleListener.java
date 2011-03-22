@@ -18,37 +18,43 @@ package com.mycila.testing.plugins.jetty;
 
 import org.eclipse.jetty.server.Server;
 
+import com.mycila.testing.core.api.TestExecution;
+
 /**
  * No-operation {@link ServerLifeCycleListener}.
  */
 public class NopServerLifeCycleListener
         implements ServerLifeCycleListener {
-
+    
     public void serverStarting(
+            final TestExecution testExecution,
             final Server server)
     {
         // nop
     }
-
+    
 
     public void serverStarted(
+            final TestExecution testExecution,
             final Server server)
     {
         // nop
     }
-
+    
 
     public void serverStopping(
+            final TestExecution testExecution,
             final Server server)
     {
         // nop
     }
-
+    
 
     public void serverStopped(
+            final TestExecution testExecution,
             final Server server)
     {
         // nop
     }
-
+    
 }
