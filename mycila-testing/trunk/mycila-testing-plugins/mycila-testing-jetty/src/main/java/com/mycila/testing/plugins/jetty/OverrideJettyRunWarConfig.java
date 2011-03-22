@@ -20,14 +20,14 @@ import java.net.URL;
 
 public class OverrideJettyRunWarConfig
         extends AbstractDefaultJettyRunWarConfig<JettyRunWar> {
-
+    
     public OverrideJettyRunWarConfig(
             final JettyRunWarConfig config)
     {
         this.overrideConfig = new AnnotationJettyRunWarConfig();
         this.config = config;
     }
-
+    
 
     public void init(
             final JettyRunWar data)
@@ -35,67 +35,68 @@ public class OverrideJettyRunWarConfig
         this.overrideConfig.init(data);
         this.override = data;
     }
-
+    
 
     public URL getWarLocation()
     {
-        return ((this.override.value() != DEFAULT_WAR_LOCATION) || !this.override.war().isEmpty())
+        return (!DEFAULT_WAR_LOCATION.equals(this.override.value()) || !this.override.war().isEmpty())
                 ? this.overrideConfig.getWarLocation()
                 : this.config.getWarLocation();
     }
-
+    
 
     public int getServerPort()
     {
-        return (this.override.serverPort() != DEFAULT_SERVER_PORT)
+        return (DEFAULT_SERVER_PORT != this.override.serverPort())
                 ? this.overrideConfig.getServerPort()
                 : this.config.getServerPort();
     }
-
+    
 
     public String getContextPath()
     {
-        return (this.override.contextPath() != DEFAULT_CONTEXT_PATH)
+        return !DEFAULT_CONTEXT_PATH.equals(this.override.contextPath())
                 ? this.overrideConfig.getContextPath()
                 : this.config.getContextPath();
     }
-
+    
 
     public ServerLifeCycleListener getServerLifeCycleListener()
     {
-        return (this.override.serverLifeCycleListener() != NopServerLifeCycleListener.class)
+        return !NopServerLifeCycleListener.class.equals(this.override.serverLifeCycleListener())
                 ? this.overrideConfig.getServerLifeCycleListener()
                 : this.config.getServerLifeCycleListener();
     }
-
+    
 
     public boolean isDoStartServer()
     {
-        return (this.override.startServer() != DEFAULT_DO_START_SERVER)
+        return (DEFAULT_DO_START_SERVER != this.override.startServer())
                 ? this.overrideConfig.isDoStartServer()
                 : this.config.isDoStartServer();
     }
-
+    
 
     public boolean isDoDeployWebapp()
     {
-        return (this.override.deployWebapp() != DEFAULT_DO_DEPLOY_WEBAPP)
+        return (DEFAULT_DO_DEPLOY_WEBAPP != this.override.deployWebapp())
                 ? this.overrideConfig.isDoDeployWebapp()
                 : this.config.isDoDeployWebapp();
     }
-
+    
 
     public boolean isSkip()
     {
-        return (this.override.skip() != DEFAULT_SKIP)
+        return (DEFAULT_SKIP != this.override.skip())
                 ? this.overrideConfig.isSkip()
                 : this.config.isSkip();
     }
+    
 
     private final JettyRunWarConfig config;
-
+    
     private JettyRunWar override;
-
+    
     private final AnnotationJettyRunWarConfig overrideConfig;
-
+    
 }

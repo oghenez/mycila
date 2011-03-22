@@ -44,7 +44,7 @@ import com.mycila.testing.core.plugin.DefaultTestPlugin;
  */
 public class JettyTestPlugin
         extends DefaultTestPlugin {
-
+    
     /**
      * @see com.mycila.testing.core.plugin.DefaultTestPlugin#beforeTest(com.mycila.testing.core.api.TestExecution)
      */
@@ -53,7 +53,7 @@ public class JettyTestPlugin
             final TestExecution testExecution)
         throws Exception
     {
-        final AnnotationJettyRunWarConfig config = new AnnotationJettyRunWarConfig();
+        final JettyRunWarConfig config;
         {
             final Class<?> testClass = testExecution.method().getDeclaringClass();
             if (!testClass.isAnnotationPresent(JettyRunWar.class)) {
@@ -61,20 +61,21 @@ public class JettyTestPlugin
                         + " annotation on test class");
                 return;
             }
-
+            
             final JettyRunWar runWar = testClass.getAnnotation(JettyRunWar.class);
             this.logger.info("@" + JettyRunWar.class + " configuration : " + runWar);
+            
+            config = new OverrideJettyRunWarConfig(runWar.config().newInstance());
             config.init(runWar);
-
-            // TODO final JettyRunWarConfig overrideConfig = new OverrideJettyRunWarConfig(runWar.config().newInstance());
-            // overrideConfig.init(runWar);
+            
+            this.logger.info("jetty-config : " + config);
         }
-
+        
         if (config.isSkip()) {
             this.logger.debug("skip running webapp with Jetty");
             return;
         }
-
+        
         this.warFile = new File(config.getWarLocation().toURI());
         if (!this.warFile.exists()) {
             throw new AssertionError("non-existent WAR : " + this.warFile.getAbsolutePath());
@@ -84,19 +85,19 @@ public class JettyTestPlugin
             throw new AssertionError("contextPath must starts with a slash '/' but doesn't end with one");
         }
         this.port = config.getServerPort();
-
+        
         this.logger.info("jetty starting on localhost:{}{} with WAR:{}", new Object[] {
                 this.port, this.contextPath, this.warFile.getAbsolutePath()
         });
         final AtomicBoolean ready = new AtomicBoolean();
-
+        
         this.server = makeServer(testExecution, this.warFile, this.port, this.contextPath, ready);
         this.lifeCycleListener = config.getServerLifeCycleListener();
         this.lifeCycleListener.serverStarting(this.server);
-
+        
         this.server.start();
         final Callable<Boolean> isReady = new Callable<Boolean>() {
-
+            
             public Boolean call()
                 throws Exception
             {
@@ -104,10 +105,10 @@ public class JettyTestPlugin
             }
         };
         await().until(isReady, equalTo(true));
-
+        
         this.logger.info("jetty started");
     }
-
+    
 
     /**
      * @see com.mycila.testing.core.plugin.DefaultTestPlugin#afterTest(com.mycila.testing.core.api.TestExecution)
@@ -119,14 +120,14 @@ public class JettyTestPlugin
     {
         if (this.server != null) {
             this.logger.info("jetty stopping");
-
+            
             this.server.stop();
             this.server.destroy();
-
+            
             this.logger.info("jetty stopped");
         }
     }
-
+    
 
     private static Server makeServer(
             final TestExecution testExecution,
@@ -150,12 +151,12 @@ public class JettyTestPlugin
         //        if (this.webdefaultFile != null) {
         //            webapp.setDefaultsDescriptor(this.webdefaultFile.getAbsolutePath());
         //        }
-
+        
         final Server localServer = new Server(port);
         localServer.setHandler(webapp);
-
+        
         localServer.addLifeCycleListener(new AbstractLifeCycle.AbstractLifeCycleListener() {
-
+            
             @Override
             public void lifeCycleFailure(
                     final LifeCycle event,
@@ -163,7 +164,7 @@ public class JettyTestPlugin
             {
                 testExecution.setThrowable(cause);
             }
-
+            
 
             @Override
             public void lifeCycleStarted(
@@ -172,20 +173,21 @@ public class JettyTestPlugin
                 ready.set(true);
             }
         });
-
+        
         return localServer;
     }
+    
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    
     private File warFile;
-
+    
     private String contextPath;
-
+    
     private int port;
-
+    
     private Server server;
-
+    
     private ServerLifeCycleListener lifeCycleListener;
-
+    
 }
