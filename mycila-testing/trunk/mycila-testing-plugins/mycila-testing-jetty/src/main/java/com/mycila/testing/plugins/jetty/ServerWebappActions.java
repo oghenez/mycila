@@ -37,14 +37,14 @@ import org.slf4j.LoggerFactory;
 import com.mycila.testing.core.api.TestExecution;
 
 public class ServerWebappActions {
-
+    
     public void createServer(
             final TestExecution testExecution,
             final JettyRunWarConfig config)
     {
         this.server = new Server(config.getServerPort());
         this.server.addLifeCycleListener(new AbstractLifeCycle.AbstractLifeCycleListener() {
-
+            
             @Override
             public void lifeCycleFailure(
                     final LifeCycle event,
@@ -52,7 +52,7 @@ public class ServerWebappActions {
             {
                 testExecution.setThrowable(cause);
             }
-
+            
 
             @Override
             public void lifeCycleStarted(
@@ -61,61 +61,71 @@ public class ServerWebappActions {
                 ServerWebappActions.this.ready.set(true);
             }
         });
-
+        
         final HandlerCollection handlerCollection = new HandlerCollection();
         this.contextHandlerCollection = new ContextHandlerCollection();
         handlerCollection.addHandler(this.contextHandlerCollection);
         this.server.setHandler(handlerCollection);
     }
-
+    
 
     public void startServer(
-            final TestExecution testExecution,
             final JettyRunWarConfig config)
         throws Exception
     {
-        this.logger.info("server starting on localhost:{}", Integer.toString(config.getServerPort()));
-        config.getServerLifeCycleListener().serverStarting(testExecution, this.server);
-
+        final String serverPortStr = (config == null)
+                ? "<null>"
+                : Integer.toString(config.getServerPort());
+        this.logger.info("server starting on localhost:{}", serverPortStr);
+        if (config != null) {
+            config.getServerLifeCycleListener().beforeServerStart(this.server);
+        }
+        
         this.server.start();
         final Callable<Boolean> isReady = new WaitUntilReadyCallable(this.ready);
         await().until(isReady, equalTo(true));
-
-        config.getServerLifeCycleListener().serverStarted(testExecution, this.server);
+        
+        if (config != null) {
+            config.getServerLifeCycleListener().afterServerStart(this.server);
+        }
         this.logger.info("server started");
     }
+    
 
-
-    public void stopServer()
+    public void stopServer(
+            final JettyRunWarConfig config)
         throws Exception
     {
         this.logger.info("server stopping");
-        //config.getServerLifeCycleListener().serverStopping(testExecution, this.server);
-
+        if (config != null) {
+            config.getServerLifeCycleListener().beforeServerStop(this.server);
+        }
+        
         this.server.stop();
         this.server.destroy();
-
-        //config.getServerLifeCycleListener().serverStopped(testExecution, this.server);
+        
+        if (config != null) {
+            config.getServerLifeCycleListener().afterServerStop(this.server);
+        }
         this.logger.info("server stopped");
-
+        
         this.server = null;
     }
-
+    
 
     public boolean hasServer()
     {
         return (this.server != null);
     }
-
+    
 
     public Server getServer()
     {
         return this.server;
     }
-
+    
 
     public void createWebAppContext(
-            final TestExecution testExecution,
             final JettyRunWarConfig config)
         throws URISyntaxException
     {
@@ -127,7 +137,7 @@ public class ServerWebappActions {
                 && (!config.getContextPath().startsWith("/") || config.getContextPath().endsWith("/"))) {
             throw new AssertionError("contextPath must starts with a slash '/' but doesn't end with one");
         }
-
+        
         this.webapp = new WebAppContext();
         //webapp.addLocaleEncoding("fr_FR", "UTF-8");
         this.webapp.setWar(config.getWarLocation().getFile());
@@ -143,77 +153,94 @@ public class ServerWebappActions {
         //        if (this.webdefaultFile != null) {
         //            webapp.setDefaultsDescriptor(this.webdefaultFile.getAbsolutePath());
         //        }
-
+        
         this.logger.info("webapp on localhost:{}{} with WAR:{}", new Object[] {
                 Integer.valueOf(config.getServerPort()), config.getContextPath(), config.getWarLocation()
         });
     }
+    
 
-
-    public void startWebApp()
+    public void startWebApp(
+            final JettyRunWarConfig config)
         throws Exception
     {
         this.logger.info("webapp starting");
-
+        if (config != null) {
+            config.getServerLifeCycleListener().beforeWebappStart(this.server, this.webapp);
+        }
+        
         this.contextHandlerCollection.addHandler(this.webapp);
         this.webapp.start();
-
+        
+        if (config != null) {
+            config.getServerLifeCycleListener().afterWebappStart(this.server, this.webapp);
+        }
         this.logger.info("webapp started");
     }
+    
 
-
-    public void stopWebapp()
+    public void stopWebapp(
+            final JettyRunWarConfig config)
         throws Exception
     {
         this.logger.info("webapp stopping");
-
+        if (config != null) {
+            config.getServerLifeCycleListener().beforeWebappStop(this.server, this.webapp);
+        }
+        
         this.webapp.stop();
         this.contextHandlerCollection.removeHandler(this.webapp);
-
+        
+        if (config != null) {
+            config.getServerLifeCycleListener().beforeWebappStop(this.server, this.webapp);
+        }
         this.logger.info("webapp stopped");
         this.webapp = null;
     }
-
+    
 
     public boolean hasWebAppContext()
     {
         return (this.webapp != null);
     }
-
+    
 
     public WebAppContext getWebAppContext()
     {
         return this.webapp;
     }
+    
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+    
     private final AtomicBoolean ready = new AtomicBoolean();
-
+    
     private ContextHandlerCollection contextHandlerCollection;
-
+    
     private Server server;
-
+    
     private WebAppContext webapp;
+    
 
     private static class WaitUntilReadyCallable
             implements Callable<Boolean> {
-
+        
         public WaitUntilReadyCallable(
                 final AtomicBoolean ready)
         {
             this.ready = ready;
         }
-
+        
 
         public Boolean call()
             throws Exception
         {
             return this.ready.get();
         }
+        
 
         private final AtomicBoolean ready;
-
+        
     }
-
+    
 }
