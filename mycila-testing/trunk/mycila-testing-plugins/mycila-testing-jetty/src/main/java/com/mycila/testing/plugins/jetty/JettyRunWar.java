@@ -115,7 +115,8 @@ public @interface JettyRunWar {
 
 
     /**
-     * True to skip starting server or deploying webapp. Default is {@link AbstractDefaultJettyRunWarConfig#DEFAULT_SKIP}.
+     * True to skip starting server or deploying webapp. Default is
+     * {@link AbstractDefaultJettyRunWarConfig#DEFAULT_SKIP}.
      * 
      * @return if skip starting server or deploying webapp.
      */
@@ -152,9 +153,8 @@ public @interface JettyRunWar {
 
 
     /**
-     * The {@link JettyRunWarConfig} class which define the WAR to deploy, how and when. This configuration is overriden
-     * by
-     * specific values : {@link #value()}, {@link #serverPort()}, {@link #contextPath()},
+     * The {@link JettyRunWarConfig} class which define how and when to deploy the WAR. This configuration is overriden
+     * by specific values : {@link #value()}, {@link #serverPort()}, {@link #contextPath()},
      * {@link #serverLifeCycleListener()}, {@link #skip()}.
      * 
      * @return the {@link JettyRunWarConfig} class.

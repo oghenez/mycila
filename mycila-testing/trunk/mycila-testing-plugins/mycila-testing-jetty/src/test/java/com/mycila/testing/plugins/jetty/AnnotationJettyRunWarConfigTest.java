@@ -48,8 +48,8 @@ public class AnnotationJettyRunWarConfigTest {
         Assert.assertEquals("/", config.getContextPath());
         Assert.assertThat(config.getServerLifeCycleListener(), notNullValue());
         Assert.assertThat(config.getServerLifeCycleListener(), instanceOf(NopServerLifeCycleListener.class));
-        // TODO Assert.assertTrue(config.isDoStartServer());
-        // TODO Assert.assertTrue(config.isDoDeployWebapp());
+        Assert.assertTrue(config.isDoStartServer());
+        Assert.assertTrue(config.isDoDeployWebapp());
         Assert.assertFalse(config.isSkip());
 
         try {
@@ -127,14 +127,30 @@ public class AnnotationJettyRunWarConfigTest {
     @Test
     public final void testIsDoStartServer()
     {
-        // TODO testIsDoStartServer
+        @JettyRunWar(startServer = true)
+        class Dummy {
+            // nop
+        }
+        final JettyRunWar jettyRunWar = Dummy.class.getAnnotation(JettyRunWar.class);
+        final AnnotationJettyRunWarConfig config = new AnnotationJettyRunWarConfig();
+        config.init(jettyRunWar);
+
+        Assert.assertTrue(config.isDoStartServer());
     }
 
 
     @Test
     public final void testIsDoDeployWebapp()
     {
-        // TODO testIsDoDeployWebapp
+        @JettyRunWar(deployWebapp = true)
+        class Dummy {
+            // nop
+        }
+        final JettyRunWar jettyRunWar = Dummy.class.getAnnotation(JettyRunWar.class);
+        final AnnotationJettyRunWarConfig config = new AnnotationJettyRunWarConfig();
+        config.init(jettyRunWar);
+
+        Assert.assertTrue(config.isDoDeployWebapp());
     }
 
 
