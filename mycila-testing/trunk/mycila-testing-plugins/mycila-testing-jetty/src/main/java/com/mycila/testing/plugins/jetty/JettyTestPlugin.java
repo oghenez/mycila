@@ -16,6 +16,8 @@
 
 package com.mycila.testing.plugins.jetty;
 
+import static com.mycila.testing.plugins.jetty.JettyRunWarHelper.getConfig;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +55,7 @@ public class JettyTestPlugin
                 return;
             }
             
-            config = this.getJettyRunWarConfig(runWar);
+            config = getConfig(runWar);
             this.logger.info("jetty-config : " + config);
         }
         
@@ -102,7 +104,7 @@ public class JettyTestPlugin
             return;
         }
         
-        final JettyRunWarConfig<JettyRunWar> config = this.getJettyRunWarConfig(runWar);
+        final JettyRunWarConfig<JettyRunWar> config = getConfig(runWar);
         this.logger.info("jetty-config : " + config);
         
         if (config.isSkip()) {
@@ -154,17 +156,6 @@ public class JettyTestPlugin
         final JettyRunWar runWar = testClass.getAnnotation(JettyRunWar.class);
         
         return runWar;
-    }
-    
-
-    private JettyRunWarConfig<JettyRunWar> getJettyRunWarConfig(
-            final JettyRunWar runWar)
-        throws InstantiationException, IllegalAccessException
-    {
-        final JettyRunWarConfig<JettyRunWar> config = new OverrideJettyRunWarConfig(runWar.config().newInstance());
-        config.init(runWar);
-        
-        return config;
     }
     
 

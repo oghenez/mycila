@@ -16,8 +16,13 @@
 
 package com.mycila.testing.plugins.jetty;
 
-public class JettyRunWarHelper {
+import static com.google.common.base.Throwables.propagate;
+import static com.mycila.testing.plugins.jetty.AbstractDefaultJettyRunWarConfig.DEFAULT_CONTEXT_PATH;
+import static com.mycila.testing.plugins.jetty.AbstractDefaultJettyRunWarConfig.DEFAULT_SERVER_PORT;
+import static com.mycila.testing.plugins.jetty.AbstractDefaultJettyRunWarConfig.DEFAULT_WAR_LOCATION;
 
+public class JettyRunWarHelper {
+    
     /**
      * Returns the default web application WAR file to run for class annotated with {@link JettyRunWar}.
      * 
@@ -25,20 +30,9 @@ public class JettyRunWarHelper {
      */
     public static String getDefaultValue()
     {
-        return getDefaultValue("value", "");
+        return DEFAULT_WAR_LOCATION;
     }
-
-
-    /**
-     * Returns the default web application WAR file to run for class annotated with {@link JettyRunWar}.
-     * 
-     * @return the default web application WAR file to run for class annotated with {@link JettyRunWar}.
-     */
-    public static String getDefaultWar()
-    {
-        return getDefaultValue("war", "");
-    }
-
+    
 
     /**
      * Returns the default web application context path value for class annotated with {@link JettyRunWar}.
@@ -47,20 +41,20 @@ public class JettyRunWarHelper {
      */
     public static String getDefaultContextPath()
     {
-        return getDefaultValue("contextPath", "");
+        return DEFAULT_CONTEXT_PATH;
     }
-
+    
 
     /**
-     * Returns the default web application server port value for class annotated with {@link JettyRunWar}.
+     * Returns the default web application server port valuegetWebappRoot for class annotated with {@link JettyRunWar}.
      * 
      * @return the default web application server port value for class annotated with {@link JettyRunWar}.
      */
     public static int getDefaultServerPort()
     {
-        return getDefaultValue("serverPort", Integer.valueOf(0)).intValue();
+        return DEFAULT_SERVER_PORT;
     }
-
+    
 
     /**
      * Returns the default web application URL for class annotated with {@link JettyRunWar}, doesn't end with slash '/'.
@@ -69,16 +63,16 @@ public class JettyRunWarHelper {
      */
     public static String getDefaultWebappUrl()
     {
-        return "http://localhost:" + getDefaultServerPort();
+        return "http://localhost:" + DEFAULT_SERVER_PORT;
     }
-
+    
 
     /**
      * Returns the web application URL from a the given test class which must be annotated with {@link JettyRunWar},
      * doesn't end with slash '/'.
      * 
      * @param testClass
-     *        the annotated with {@link JettyRunWar} test class.
+     *            the annotated with {@link JettyRunWar} test class.
      * 
      * @return the web application URL from a test class which must be annotated with {@link JettyRunWar}, doesn't end
      *         with slash '/'.
@@ -86,30 +80,62 @@ public class JettyRunWarHelper {
     public static String getWebappUrl(
             final Class<?> testClass)
     {
-        final JettyRunWar jettyRunWar = testClass.getAnnotation(JettyRunWar.class);
-        final String contextPath = "/".equals(jettyRunWar.contextPath())
+        final JettyRunWarConfig config = getConfig(testClass);
+        
+        final String contextPath = "/".equals(config.getContextPath())
                 ? ""
-                : jettyRunWar.contextPath();
-        final String url = "http://localhost:" + jettyRunWar.serverPort() + contextPath;
+                : config.getContextPath();
+        final String url = "http://localhost:" + config.getServerPort() + contextPath;
         return url;
     }
+    
 
-
-    private static <T> T getDefaultValue(
-            final String methodName,
-            final T defaultValue)
+    /**
+     * Returns a {@link JettyRunWarConfig} for the annotated {@code class}.
+     * 
+     * @param c
+     *            a {@code class} annotated with {@link JettyRunWar}.
+     * 
+     * @return a {@link JettyRunWarConfig} for the annotated {@code class}.
+     * 
+     * @throws IllegalArgumentException
+     *             if {@code class} is not annotated with {@link JettyRunWar}.
+     */
+    public static JettyRunWarConfig<JettyRunWar> getConfig(
+            final Class<?> c)
     {
-        T value;
-
-        try {
-            value = (T) JettyRunWar.class.getMethod(methodName).getDefaultValue();
+        if (!c.isAnnotationPresent(JettyRunWar.class)) {
+            throw new IllegalArgumentException(c + " must be annotated with " + JettyRunWar.class);
         }
-        catch (final NoSuchMethodException e) {
-            value = defaultValue;
-        }
-
-        return value;
-
+        
+        return getConfig(c.getAnnotation(JettyRunWar.class));
     }
+    
 
+    /**
+     * Returns a {@link JettyRunWarConfig} for the {@link JettyRunWar} annotation.
+     * 
+     * @param jettyRunWar
+     *            a {@link JettyRunWar} annotation.
+     * 
+     * @return a {@link JettyRunWarConfig} for the {@link JettyRunWar} annotation.
+     */
+    public static JettyRunWarConfig<JettyRunWar> getConfig(
+            final JettyRunWar jettyRunWar)
+    {
+        try {
+            final JettyRunWarConfig<JettyRunWar> config = new OverrideJettyRunWarConfig(
+                    jettyRunWar.config().newInstance());
+            config.init(jettyRunWar);
+            
+            return config;
+        }
+        catch (final InstantiationException e) {
+            throw propagate(e);
+        }
+        catch (final IllegalAccessException e) {
+            throw propagate(e);
+        }
+    }
+    
 }

@@ -16,7 +16,11 @@
 
 package com.mycila.testing.plugins.jetty;
 
-import org.junit.Assert;
+import static com.mycila.testing.plugins.jetty.AbstractDefaultJettyRunWarConfig.DEFAULT_CONTEXT_PATH;
+import static com.mycila.testing.plugins.jetty.AbstractDefaultJettyRunWarConfig.DEFAULT_SERVER_PORT;
+import static com.mycila.testing.plugins.jetty.AbstractDefaultJettyRunWarConfig.DEFAULT_WAR_LOCATION;
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 /**
@@ -27,19 +31,48 @@ public class JettyRunWarHelperTest {
     @Test
     public void testDefaultValues()
     {
-        Assert.assertEquals("reg:.*\\.war", JettyRunWarHelper.getDefaultValue());
-        Assert.assertEquals("", JettyRunWarHelper.getDefaultWar());
-        Assert.assertEquals("/", JettyRunWarHelper.getDefaultContextPath());
-        Assert.assertEquals(9090, JettyRunWarHelper.getDefaultServerPort());
+        assertEquals(DEFAULT_WAR_LOCATION, JettyRunWarHelper.getDefaultValue());
+        assertEquals(DEFAULT_CONTEXT_PATH, JettyRunWarHelper.getDefaultContextPath());
+        assertEquals(DEFAULT_SERVER_PORT, JettyRunWarHelper.getDefaultServerPort());
         
-        Assert.assertEquals("http://localhost:9090", JettyRunWarHelper.getDefaultWebappUrl());
-        Assert.assertEquals("http://localhost:8888/path/to", JettyRunWarHelper.getWebappUrl(WebappTest.class));
+        assertEquals("http://localhost:" + DEFAULT_SERVER_PORT, JettyRunWarHelper.getDefaultWebappUrl());
+    }
+    
+
+    @Test
+    public void testGetWebappUrl()
+    {
+        assertEquals("http://localhost:8888/path/to", JettyRunWarHelper.getWebappUrl(WebappTest.class));
+        assertEquals("http://localhost:1234/context", JettyRunWarHelper.getWebappUrl(AnotherWebappTest.class));
     }
     
 
     @JettyRunWar(serverPort = 8888, contextPath = "/path/to")
     static class WebappTest {
         // nop
+    }
+    
+    @JettyRunWar(config = AnotherConfig.class)
+    static class AnotherWebappTest {
+        // nop
+    }
+    
+    static class AnotherConfig
+            extends DefaultJettyRunWarConfig {
+        
+        @Override
+        public int getServerPort()
+        {
+            return 1234;
+        }
+        
+
+        @Override
+        public String getContextPath()
+        {
+            return "/context";
+        }
+        
     }
     
 }

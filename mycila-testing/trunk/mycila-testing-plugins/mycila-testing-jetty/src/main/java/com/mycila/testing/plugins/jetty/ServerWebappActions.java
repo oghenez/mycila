@@ -23,6 +23,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.server.Server;
@@ -42,8 +43,8 @@ public class ServerWebappActions {
             final TestExecution testExecution,
             final JettyRunWarConfig config)
     {
-        this.server = new Server(config.getServerPort());
-        this.server.addLifeCycleListener(new AbstractLifeCycle.AbstractLifeCycleListener() {
+        this.setServer(new Server(config.getServerPort()));
+        this.getServer().addLifeCycleListener(new AbstractLifeCycle.AbstractLifeCycleListener() {
             
             @Override
             public void lifeCycleFailure(
@@ -63,9 +64,9 @@ public class ServerWebappActions {
         });
         
         final HandlerCollection handlerCollection = new HandlerCollection();
-        this.contextHandlerCollection = new ContextHandlerCollection();
-        handlerCollection.addHandler(this.contextHandlerCollection);
-        this.server.setHandler(handlerCollection);
+        this.setContextHandlerCollection(new ContextHandlerCollection());
+        handlerCollection.addHandler(this.getContextHandlerCollection());
+        this.getServer().setHandler(handlerCollection);
     }
     
 
@@ -78,15 +79,15 @@ public class ServerWebappActions {
                 : Integer.toString(config.getServerPort());
         this.logger.info("server starting on localhost:{}", serverPortStr);
         if (config != null) {
-            config.getServerLifeCycleListener().beforeServerStart(this.server);
+            config.getServerLifeCycleListener().beforeServerStart(this.getServer());
         }
         
-        this.server.start();
+        this.getServer().start();
         final Callable<Boolean> isReady = new WaitUntilReadyCallable(this.ready);
         await().until(isReady, equalTo(true));
         
         if (config != null) {
-            config.getServerLifeCycleListener().afterServerStart(this.server);
+            config.getServerLifeCycleListener().afterServerStart(this.getServer());
         }
         this.logger.info("server started");
     }
@@ -98,30 +99,52 @@ public class ServerWebappActions {
     {
         this.logger.info("server stopping");
         if (config != null) {
-            config.getServerLifeCycleListener().beforeServerStop(this.server);
+            config.getServerLifeCycleListener().beforeServerStop(this.getServer());
         }
         
-        this.server.stop();
-        this.server.destroy();
+        this.getContextHandlerCollection().stop();
+        this.getServer().stop();
         
         if (config != null) {
-            config.getServerLifeCycleListener().afterServerStop(this.server);
+            config.getServerLifeCycleListener().afterServerStop(this.getServer());
         }
         this.logger.info("server stopped");
         
-        this.server = null;
+        this.getServer().destroy();
+        this.setContextHandlerCollection(null);
+        this.setServer(null);
     }
     
 
     public boolean hasServer()
     {
-        return (this.server != null);
+        return (this.getServer() != null);
     }
     
 
     public Server getServer()
     {
-        return this.server;
+        return this.server.get();
+    }
+    
+
+    public void setServer(
+            final Server server)
+    {
+        this.server.set(server);
+    }
+    
+
+    private ContextHandlerCollection getContextHandlerCollection()
+    {
+        return this.contextHandlerCollection.get();
+    }
+    
+
+    private void setContextHandlerCollection(
+            final ContextHandlerCollection contextHandlerCollection)
+    {
+        this.contextHandlerCollection.set(contextHandlerCollection);
     }
     
 
@@ -138,17 +161,17 @@ public class ServerWebappActions {
             throw new AssertionError("contextPath must starts with a slash '/' but doesn't end with one");
         }
         
-        this.webapp = new WebAppContext();
+        this.setWebAppContext(new WebAppContext());
         //webapp.addLocaleEncoding("fr_FR", "UTF-8");
-        this.webapp.setWar(config.getWarLocation().getFile());
-        this.webapp.setContextPath(config.getContextPath());
-        this.webapp.setCopyWebDir(false);
-        this.webapp.setExtractWAR(false);
-        this.webapp.setLogUrlOnStart(true);
+        this.getWebAppContext().setWar(config.getWarLocation().getFile());
+        this.getWebAppContext().setContextPath(config.getContextPath());
+        this.getWebAppContext().setCopyWebDir(false);
+        this.getWebAppContext().setExtractWAR(false);
+        this.getWebAppContext().setLogUrlOnStart(true);
         {
             final MimeTypes mimeTypes = new MimeTypes();
             mimeTypes.addMimeMapping("js", "application/javascript");
-            this.webapp.setMimeTypes(mimeTypes);
+            this.getWebAppContext().setMimeTypes(mimeTypes);
         }
         //        if (this.webdefaultFile != null) {
         //            webapp.setDefaultsDescriptor(this.webdefaultFile.getAbsolutePath());
@@ -166,14 +189,14 @@ public class ServerWebappActions {
     {
         this.logger.info("webapp starting");
         if (config != null) {
-            config.getServerLifeCycleListener().beforeWebappStart(this.server, this.webapp);
+            config.getServerLifeCycleListener().beforeWebappStart(this.getServer(), this.getWebAppContext());
         }
         
-        this.contextHandlerCollection.addHandler(this.webapp);
-        this.webapp.start();
+        this.getContextHandlerCollection().addHandler(this.getWebAppContext());
+        this.getWebAppContext().start();
         
         if (config != null) {
-            config.getServerLifeCycleListener().afterWebappStart(this.server, this.webapp);
+            config.getServerLifeCycleListener().afterWebappStart(this.getServer(), this.getWebAppContext());
         }
         this.logger.info("webapp started");
     }
@@ -185,29 +208,40 @@ public class ServerWebappActions {
     {
         this.logger.info("webapp stopping");
         if (config != null) {
-            config.getServerLifeCycleListener().beforeWebappStop(this.server, this.webapp);
+            config.getServerLifeCycleListener().beforeWebappStop(this.getServer(), this.getWebAppContext());
         }
         
-        this.webapp.stop();
-        this.contextHandlerCollection.removeHandler(this.webapp);
+        this.getWebAppContext().stop();
         
         if (config != null) {
-            config.getServerLifeCycleListener().beforeWebappStop(this.server, this.webapp);
+            config.getServerLifeCycleListener().beforeWebappStop(this.getServer(), this.getWebAppContext());
         }
+        
+        this.getContextHandlerCollection().removeHandler(this.getWebAppContext());
+        this.getWebAppContext().destroy();
+        this.getWebAppContext().setServer(null);
+        
         this.logger.info("webapp stopped");
-        this.webapp = null;
+        this.setWebAppContext(null);
     }
     
 
     public boolean hasWebAppContext()
     {
-        return (this.webapp != null);
+        return (this.getWebAppContext() != null);
     }
     
 
     public WebAppContext getWebAppContext()
     {
-        return this.webapp;
+        return this.webapp.get();
+    }
+    
+
+    public void setWebAppContext(
+            final WebAppContext webAppContext)
+    {
+        this.webapp.set(webAppContext);
     }
     
 
@@ -215,11 +249,11 @@ public class ServerWebappActions {
     
     private final AtomicBoolean ready = new AtomicBoolean();
     
-    private ContextHandlerCollection contextHandlerCollection;
+    private final AtomicReference<Server> server = new AtomicReference<Server>();
     
-    private Server server;
+    private final AtomicReference<ContextHandlerCollection> contextHandlerCollection = new AtomicReference<ContextHandlerCollection>();
     
-    private WebAppContext webapp;
+    private final AtomicReference<WebAppContext> webapp = new AtomicReference<WebAppContext>();
     
 
     private static class WaitUntilReadyCallable
