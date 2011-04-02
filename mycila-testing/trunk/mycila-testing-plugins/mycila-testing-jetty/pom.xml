@@ -72,8 +72,8 @@
         <plugins>
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
+                <version>2.5</version>
                 <configuration>
-                    <encoding>${project.build.sourceEncoding}</encoding>
                     <includeEmptyDirs>true</includeEmptyDirs>
                 </configuration>
             </plugin>
@@ -181,6 +181,9 @@
                     <pomIncludes>
                         <pomInclude>*/pom.xml</pomInclude>
                     </pomIncludes>
+                    <pomExcludes>
+                        <pomExclude>memory-leak/pom.xml</pomExclude>
+                    </pomExcludes>
                     <settingsFile>src/it/tests/settings.xml</settingsFile>
                     <goals>
                         <goal>clean</goal>

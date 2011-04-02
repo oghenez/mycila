@@ -26,6 +26,14 @@
         
         <plugins>
             <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <includeEmptyDirs>true</includeEmptyDirs>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
                 <version>1.5</version>
@@ -40,23 +48,6 @@
                             <sources>
                                 <source>src/it/java</source>
                             </sources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>add-it-resource</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>add-test-resource</goal>
-                        </goals>
-                        <configuration>
-                            <resources>
-                                <resource>
-                                    <directory>src/it/config</directory>
-                                </resource>
-                                <resource>
-                                    <directory>src/it/resources</directory>
-                                </resource>
-                            </resources>
                         </configuration>
                     </execution>
                 </executions>
