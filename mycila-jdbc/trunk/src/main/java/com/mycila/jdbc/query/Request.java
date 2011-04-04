@@ -18,13 +18,7 @@ package com.mycila.jdbc.query;
 
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.sql.*;
 
 abstract class Request<T extends Request> {
 
@@ -104,7 +98,10 @@ abstract class Request<T extends Request> {
 
     public final T setBigDecimal(int parameterIndex, BigDecimal x) {
         try {
-            getStatement().setBigDecimal(parameterIndex, x);
+            if (x == null)
+                setNull(parameterIndex);
+            else
+                getStatement().setBigDecimal(parameterIndex, x);
             return (T) this;
         } catch (SQLException e) {
             throw new SqlException(e.getMessage(), e);
@@ -113,7 +110,10 @@ abstract class Request<T extends Request> {
 
     public final T setString(int parameterIndex, String x) {
         try {
-            getStatement().setString(parameterIndex, x);
+            if (x == null)
+                setNull(parameterIndex);
+            else
+                getStatement().setString(parameterIndex, x);
             return (T) this;
         } catch (SQLException e) {
             throw new SqlException(e.getMessage(), e);
@@ -122,7 +122,10 @@ abstract class Request<T extends Request> {
 
     public final T setBytes(int parameterIndex, byte[] x) {
         try {
-            getStatement().setBytes(parameterIndex, x);
+            if (x == null)
+                setNull(parameterIndex);
+            else
+                getStatement().setBytes(parameterIndex, x);
             return (T) this;
         } catch (SQLException e) {
             throw new SqlException(e.getMessage(), e);
@@ -131,7 +134,10 @@ abstract class Request<T extends Request> {
 
     public final T setDate(int parameterIndex, Date x) {
         try {
-            getStatement().setDate(parameterIndex, x);
+            if (x == null)
+                setNull(parameterIndex);
+            else
+                getStatement().setDate(parameterIndex, x);
             return (T) this;
         } catch (SQLException e) {
             throw new SqlException(e.getMessage(), e);
@@ -140,7 +146,10 @@ abstract class Request<T extends Request> {
 
     public final T setTime(int parameterIndex, Time x) {
         try {
-            getStatement().setTime(parameterIndex, x);
+            if (x == null)
+                setNull(parameterIndex);
+            else
+                getStatement().setTime(parameterIndex, x);
             return (T) this;
         } catch (SQLException e) {
             throw new SqlException(e.getMessage(), e);
@@ -149,7 +158,10 @@ abstract class Request<T extends Request> {
 
     public final T setTimestamp(int parameterIndex, Timestamp x) {
         try {
-            getStatement().setTimestamp(parameterIndex, x);
+            if (x == null)
+                setNull(parameterIndex);
+            else
+                getStatement().setTimestamp(parameterIndex, x);
             return (T) this;
         } catch (SQLException e) {
             throw new SqlException(e.getMessage(), e);
@@ -158,7 +170,10 @@ abstract class Request<T extends Request> {
 
     public final T setObject(int parameterIndex, Object x) {
         try {
-            getStatement().setObject(parameterIndex, x);
+            if (x == null)
+                setNull(parameterIndex);
+            else
+                getStatement().setObject(parameterIndex, x);
             return (T) this;
         } catch (SQLException e) {
             throw new SqlException(e.getMessage(), e);
@@ -167,7 +182,10 @@ abstract class Request<T extends Request> {
 
     public T setObjects(int parameterIndex, Object[] x) {
         try {
-            getStatement().setObject(parameterIndex, x);
+            if (x == null)
+                setNull(parameterIndex);
+            else
+                getStatement().setObject(parameterIndex, x);
             return (T) this;
         } catch (SQLException e) {
             throw new SqlException(e.getMessage(), e);
@@ -176,7 +194,10 @@ abstract class Request<T extends Request> {
 
     public final T setBlob(int parameterIndex, Blob x) {
         try {
-            getStatement().setBlob(parameterIndex, x);
+            if (x == null)
+                setNull(parameterIndex);
+            else
+                getStatement().setBlob(parameterIndex, x);
             return (T) this;
         } catch (SQLException e) {
             throw new SqlException(e.getMessage(), e);
@@ -185,7 +206,10 @@ abstract class Request<T extends Request> {
 
     public final T setClob(int parameterIndex, Clob x) {
         try {
-            getStatement().setClob(parameterIndex, x);
+            if (x == null)
+                setNull(parameterIndex);
+            else
+                getStatement().setClob(parameterIndex, x);
             return (T) this;
         } catch (SQLException e) {
             throw new SqlException(e.getMessage(), e);
@@ -194,7 +218,10 @@ abstract class Request<T extends Request> {
 
     public final T setURL(int parameterIndex, URL x) {
         try {
-            getStatement().setURL(parameterIndex, x);
+            if (x == null)
+                setNull(parameterIndex);
+            else
+                getStatement().setURL(parameterIndex, x);
             return (T) this;
         } catch (SQLException e) {
             throw new SqlException(e.getMessage(), e);
