@@ -128,7 +128,7 @@ public @interface JettyRunWar {
      * one. If {@code true} then {@link #deployWebapp()} is logically force to true.
      * 
      * @return true to start a new server (and stop the old one), false to start a server only if there is no running
-     *         one.
+     *         one, default {@value #DEFAULT_DO_START_SERVER}.
      */
     boolean startServer() default DEFAULT_DO_START_SERVER;
 
@@ -138,7 +138,7 @@ public @interface JettyRunWar {
      * deployed one.
      * 
      * @return true to deploy a new webapp (and undeploy the old one), false to deploy a webapp only if there is no
-     *         deployed one.
+     *         deployed one, default {@value #DEFAULT_DO_DEPLOY_WEBAPP}.
      */
     boolean deployWebapp() default DEFAULT_DO_DEPLOY_WEBAPP;
 
