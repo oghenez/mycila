@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.testing.plugins.jetty;
+package com.mycila.testing.plugins.jetty.locator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 
 import com.mycila.testing.junit.MycilaJunitRunner;
 import com.mycila.testing.plugin.annotation.ExpectException;
+import com.mycila.testing.plugins.jetty.locator.SysFileLocator;
 
 /**
  * Unit test of {@link SysFileLocator}.

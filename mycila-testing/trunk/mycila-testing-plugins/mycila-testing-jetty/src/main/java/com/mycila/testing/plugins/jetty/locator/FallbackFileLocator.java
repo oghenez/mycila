@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package com.mycila.testing.plugins.jetty;
+package com.mycila.testing.plugins.jetty.locator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 
-public class FixedPathFileLocator
+class FallbackFileLocator
         implements FileLocator {
 
-    public FixedPathFileLocator(
+    public FallbackFileLocator(
             final FileLocator locator,
-            final String fixedPath)
+            final FileLocator fallbackLocator)
     {
         this.locator = locator;
-        this.fixedPath = fixedPath;
+        this.fallbackLocator = fallbackLocator;
     }
 
 
@@ -35,11 +35,17 @@ public class FixedPathFileLocator
             final String path)
         throws FileNotFoundException
     {
-        return this.locator.locate(this.fixedPath);
+        File file = this.locator.locate(path);
+
+        if ((file == null) || !file.exists()) {
+            file = this.fallbackLocator.locate(path);
+        }
+
+        return file;
     }
 
     private final FileLocator locator;
 
-    private final String fixedPath;
+    private final FileLocator fallbackLocator;
 
 }

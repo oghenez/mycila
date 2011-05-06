@@ -16,7 +16,7 @@
 
 package com.mycila.testing.plugins.jetty;
 
-import static com.mycila.testing.plugins.jetty.JettyRunWarHelper.getConfig;
+import static com.mycila.testing.plugins.jetty.config.DefaultConfig.hasJettyPlugin;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 import com.mycila.testing.core.api.TestContext;
 import com.mycila.testing.core.api.TestExecution;
 import com.mycila.testing.core.plugin.DefaultTestPlugin;
+import com.mycila.testing.plugins.jetty.config.Config;
+import com.mycila.testing.plugins.jetty.config.DefaultConfig;
 
 /**
  * Testing plugin which load the web application specified by {@link JettyRunWar} annotation using jetty.
@@ -35,7 +37,7 @@ import com.mycila.testing.core.plugin.DefaultTestPlugin;
  */
 public class JettyTestPlugin
         extends DefaultTestPlugin {
-    
+
     /**
      * @see com.mycila.testing.core.plugin.DefaultTestPlugin#beforeTest(com.mycila.testing.core.api.TestExecution)
      */
@@ -44,33 +46,25 @@ public class JettyTestPlugin
             final TestExecution testExecution)
         throws Exception
     {
-        final JettyRunWarConfig<JettyRunWar> config;
-        {
-            final JettyRunWar runWar = this.getJettyRunWar(testExecution);
-            this.logger.info("@" + JettyRunWar.class + " configuration : " + runWar);
-            
-            if (runWar == null) {
-                this.logger.debug("skip " + JettyTestPlugin.class + " because there is no " + JettyRunWar.class
-                        + " annotation on test class");
-                return;
-            }
-            
-            config = getConfig(runWar);
-            this.logger.info("jetty-config : " + config);
+        if (!hasJettyPlugin(testExecution.method())) {
+            return;
         }
-        
+
+        final Config config = DefaultConfig.configFrom(testExecution.method());
+        this.logger.info("jetty-config : " + config);
+
         if (config.isSkip()) {
             this.logger.debug("skip running webapp with Jetty");
             return;
         }
-        
-        if (this.actions.hasWebAppContext() && config.isDoDeployWebapp()) {
+
+        if (this.actions.hasWebAppContext() && config.isDeployWebapp()) {
             this.actions.stopWebapp(config);
         }
-        if (this.actions.hasServer() && config.isDoStartServer()) {
+        if (this.actions.hasServer() && config.isStartServer()) {
             this.actions.stopServer(config);
         }
-        
+
         if (!this.actions.hasServer()) {
             this.actions.createServer(testExecution, config);
             this.actions.startServer(config);
@@ -78,7 +72,7 @@ public class JettyTestPlugin
         else {
             this.logger.info("start server ? keep server running");
         }
-        
+
         if (!this.actions.hasWebAppContext()) {
             this.actions.createWebAppContext(config);
             this.actions.startWebApp(config);
@@ -87,7 +81,7 @@ public class JettyTestPlugin
             this.logger.info("start webapp ? keep webapp running");
         }
     }
-    
+
 
     /**
      * @see com.mycila.testing.core.plugin.DefaultTestPlugin#afterTest(com.mycila.testing.core.api.TestExecution)
@@ -97,36 +91,35 @@ public class JettyTestPlugin
             final TestExecution testExecution)
         throws Exception
     {
-        final JettyRunWar runWar = this.getJettyRunWar(testExecution);
-        if (runWar == null) {
+        if (!hasJettyPlugin(testExecution.method())) {
             this.logger.debug("skip " + JettyTestPlugin.class + " because there is no " + JettyRunWar.class
                     + " annotation on test class");
             return;
         }
-        
-        final JettyRunWarConfig<JettyRunWar> config = getConfig(runWar);
+
+        final Config config = DefaultConfig.configFrom(testExecution.method());
         this.logger.info("jetty-config : " + config);
-        
+
         if (config.isSkip()) {
             this.logger.debug("skip stopping webapp");
             return;
         }
-        
-        if (this.actions.hasWebAppContext() && config.isDoDeployWebapp()) {
+
+        if (this.actions.hasWebAppContext() && config.isDeployWebapp()) {
             this.actions.stopWebapp(config);
         }
         else {
             this.logger.info("stop webapp ? keep webapp running");
         }
-        
-        if (this.actions.hasServer() && config.isDoStartServer()) {
+
+        if (this.actions.hasServer() && config.isStartServer()) {
             this.actions.stopServer(config);
         }
         else {
             this.logger.info("stop server ? keep server running");
         }
     }
-    
+
 
     @Override
     public void shutdown(
@@ -134,33 +127,18 @@ public class JettyTestPlugin
         throws Exception
     {
         this.logger.debug("JVM shutdown");
-        
+
         if (this.actions.hasWebAppContext()) {
             this.actions.stopWebapp(null);
         }
-        
+
         if (this.actions.hasServer()) {
             this.actions.stopServer(null);
         }
     }
-    
-
-    private JettyRunWar getJettyRunWar(
-            final TestExecution testExecution)
-    {
-        final Class<?> testClass = testExecution.method().getDeclaringClass();
-        if (!testClass.isAnnotationPresent(JettyRunWar.class)) {
-            return null;
-        }
-        
-        final JettyRunWar runWar = testClass.getAnnotation(JettyRunWar.class);
-        
-        return runWar;
-    }
-    
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
-    
+
     private final ServerWebappActions actions = new ServerWebappActions();
-    
+
 }

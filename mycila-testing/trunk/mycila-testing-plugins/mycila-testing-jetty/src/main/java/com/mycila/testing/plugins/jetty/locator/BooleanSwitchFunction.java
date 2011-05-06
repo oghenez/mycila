@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.testing.plugins.jetty;
+package com.mycila.testing.plugins.jetty.locator;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;

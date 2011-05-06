@@ -14,32 +14,22 @@
  * limitations under the License.
  */
 
-package com.mycila.testing.plugins.jetty;
+package com.mycila.testing.plugins.jetty.locator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
-class SysFileLocator
+class PathFileLocator
         implements FileLocator {
 
     /**
      * {@inheritDoc}
      * 
-     * @throws FileNotFoundException
-     * 
-     * @see com.mycila.testing.plugins.jetty.FileLocator#locate(java.lang.String)
+     * @see com.mycila.testing.plugins.jetty.locator.FileLocator#locate(java.lang.String)
      */
     public File locate(
             final String path)
-        throws FileNotFoundException
     {
-        final String value = System.getProperty(path);
-        if (value == null) {
-            throw new FileNotFoundException("property '" + path + "' does not locate any file");
-        }
-
-        final File file = new File(value);
-        return file;
+        return new File(path);
     }
 
 }

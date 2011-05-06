@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.testing.plugins.jetty;
+package com.mycila.testing.plugins.jetty.locator;
 
 import static com.google.common.collect.Iterables.elementsEqual;
 import static com.google.common.collect.Lists.newArrayList;
@@ -23,6 +23,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.util.AntPathMatcher;
+
+import com.mycila.testing.plugins.jetty.locator.AntPath;
 
 /**
  * Unit test of {@link AntPath}.

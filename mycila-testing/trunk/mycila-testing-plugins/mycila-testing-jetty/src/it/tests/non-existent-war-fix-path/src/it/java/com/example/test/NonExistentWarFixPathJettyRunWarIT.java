@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2008 Mathieu Carbou <mathieu.carbou@gmail.com>
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 
 package com.example.test;
 
+import static com.mycila.testing.plugins.jetty.WebappHelper.getWebappUrl;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
@@ -25,14 +26,16 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
+import com.example.test.NonExistentWarFixPathJettyRunWarIT.ExternalConfig;
 import com.mycila.testing.junit.MycilaJunitRunner;
 import com.mycila.testing.plugins.jetty.JettyRunWar;
+import com.mycila.testing.plugins.jetty.config.DefaultConfig;
 
 /**
  * Test that the WAR is found and loaded.
  */
 @RunWith(MycilaJunitRunner.class)
-@JettyRunWar("target/non-existent-war-v.0.war")
+@JettyRunWar(ExternalConfig.class)
 public class NonExistentWarFixPathJettyRunWarIT {
 
     /**
@@ -41,7 +44,7 @@ public class NonExistentWarFixPathJettyRunWarIT {
     @Test
     public void testHelloWorld()
     {
-        this.webDriver.get(this.getPage("hi.jsp"));
+        this.webDriver.get(getWebappUrl(this) + "/hi.jsp");
 
         assertEquals("Hello World !", this.webDriver.getTitle());
     }
@@ -62,21 +65,17 @@ public class NonExistentWarFixPathJettyRunWarIT {
         this.webDriver.quit();
     }
 
-
-    protected String getPage(
-            final String page)
-    {
-        final String path = this.server + ":" + this.port + this.contextPath + page;
-        return path;
-    }
-
-
     private WebDriver webDriver;
 
-    private final String server = "http://localhost";
+    public static class ExternalConfig
+            extends DefaultConfig {
 
-    private final int port = 9090;
+        @Override
+        public String getWarLocation()
+        {
+            return "target/non-existent-war-v.0.war";
+        }
 
-    private final String contextPath = "/";
+    }
 
 }

@@ -16,7 +16,7 @@
 
 package com.example.test;
 
-import static com.mycila.testing.plugins.jetty.JettyRunWarHelper.getWebappUrl;
+import static com.mycila.testing.plugins.jetty.WebappHelper.getWebappUrl;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
@@ -27,14 +27,16 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
+import com.example.test.PortAndContextPathJettyRunWarIT.ExternalConfig;
 import com.mycila.testing.junit.MycilaJunitRunner;
 import com.mycila.testing.plugins.jetty.JettyRunWar;
+import com.mycila.testing.plugins.jetty.config.DefaultConfig;
 
 /**
  * Test that the WAR is found and loaded.
  */
 @RunWith(MycilaJunitRunner.class)
-@JettyRunWar(serverPort = 8888, contextPath = "/test")
+@JettyRunWar(ExternalConfig.class)
 public class PortAndContextPathJettyRunWarIT {
 
     /**
@@ -43,7 +45,7 @@ public class PortAndContextPathJettyRunWarIT {
     @Test
     public void testHelloWorld()
     {
-        this.webDriver.get(getWebappUrl(this.getClass()) + "/hi.jsp");
+        this.webDriver.get(getWebappUrl(this) + "/hi.jsp");
 
         assertEquals("Hello World !", this.webDriver.getTitle());
         assertEquals("0", this.webDriver.findElement(By.id("count")).getText());
@@ -66,5 +68,23 @@ public class PortAndContextPathJettyRunWarIT {
     }
 
     private WebDriver webDriver;
+
+    public static class ExternalConfig
+            extends DefaultConfig {
+
+        @Override
+        public int getServerPort()
+        {
+            return 8888;
+        }
+
+
+        @Override
+        public String getContextPath()
+        {
+            return "/test";
+        }
+
+    }
 
 }

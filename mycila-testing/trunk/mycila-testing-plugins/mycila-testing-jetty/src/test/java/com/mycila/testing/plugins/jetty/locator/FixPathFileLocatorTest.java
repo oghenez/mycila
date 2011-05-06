@@ -14,31 +14,30 @@
  * limitations under the License.
  */
 
-package com.mycila.testing.plugins.jetty;
+package com.mycila.testing.plugins.jetty.locator;
 
-import java.io.File;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
-import org.junit.Assert;
 import org.junit.Test;
 
+import com.mycila.testing.plugins.jetty.locator.FileLocator;
+import com.mycila.testing.plugins.jetty.locator.FixedPathFileLocator;
+
 /**
- * Unit test of {@link PathFileLocator}.
+ * Unit test of {@link FixedPathFileLocator}.
  */
-public class PathFileLocatorTest {
+public class FixPathFileLocatorTest {
 
     @Test
-    public final void testLocateRelativeFound()
+    public final void testLocate()
+        throws Exception
     {
-        final File file = new PathFileLocator().locate("src/test/resources/file-a.txt");
-        Assert.assertTrue(file.isFile());
-    }
+        final FileLocator locator = mock(FileLocator.class);
 
+        new FixedPathFileLocator(locator, "file").locate("any");
 
-    @Test
-    public final void testLocateAbsoluteNotFound()
-    {
-        final File file = new PathFileLocator().locate("/src/test/resources/file-a.txt");
-        Assert.assertFalse(file.isFile());
+        verify(locator).locate("file");
     }
 
 }
