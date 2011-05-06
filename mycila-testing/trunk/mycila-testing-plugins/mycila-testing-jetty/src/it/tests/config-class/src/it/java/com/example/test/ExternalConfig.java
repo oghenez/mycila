@@ -16,25 +16,33 @@
 
 package com.example.test;
 
+import static com.google.common.base.Throwables.propagate;
+
 import java.io.IOException;
 import java.util.Properties;
 
-import com.mycila.testing.plugins.jetty.PropertiesJettyRunWarConfig;
+import com.mycila.testing.plugins.jetty.config.DefaultConfig;
 
 public class ExternalConfig
-        extends PropertiesJettyRunWarConfig {
-    
+        extends DefaultConfig {
+
     public ExternalConfig()
+    {
+        super(getProperties());
+    }
+
+
+    private static Properties getProperties()
     {
         try {
             final Properties properties = new Properties();
-            properties.load(this.getClass().getResourceAsStream("/jetty-config.properties"));
-            
-            this.init(properties);
+            properties.load(ExternalConfig.class.getResourceAsStream("/jetty-config.properties"));
+
+            return properties;
         }
         catch (final IOException e) {
-            throw new IllegalStateException(e);
+            throw propagate(e);
         }
     }
-    
+
 }

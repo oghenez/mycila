@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.testing.plugins.jetty;
+package com.mycila.testing.plugins.jetty.locator;
 
 import static java.util.regex.Matcher.quoteReplacement;
 import static org.apache.commons.io.FileUtils.listFiles;
@@ -32,7 +32,7 @@ class RegFileLocator
     /**
      * {@inheritDoc}
      * 
-     * @see com.mycila.testing.plugins.jetty.FileLocator#locate(java.lang.String)
+     * @see com.mycila.testing.plugins.jetty.locator.FileLocator#locate(java.lang.String)
      */
     public File locate(
             final String path)

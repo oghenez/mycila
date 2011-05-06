@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.mycila.testing.plugins.jetty;
+package com.mycila.testing.plugins.jetty.locator;
 
-import static com.mycila.testing.plugins.jetty.StrategyFileLocator.Strategy.findStrategy;
+import static com.mycila.testing.plugins.jetty.locator.StrategyFileLocator.Strategy.findStrategy;
 import static java.util.EnumSet.complementOf;
 import static java.util.EnumSet.of;
 
@@ -26,13 +26,13 @@ import java.io.FileNotFoundException;
 /**
  * A {@link FileLocator} which delegate to another using a strategy to choose it.
  */
-class StrategyFileLocator
+public class StrategyFileLocator
         implements FileLocator {
 
     /**
      * {@inheritDoc}
      * 
-     * @see com.mycila.testing.plugins.jetty.FileLocator#locate(java.lang.String)
+     * @see com.mycila.testing.plugins.jetty.locator.FileLocator#locate(java.lang.String)
      */
     public File locate(
             final String path)

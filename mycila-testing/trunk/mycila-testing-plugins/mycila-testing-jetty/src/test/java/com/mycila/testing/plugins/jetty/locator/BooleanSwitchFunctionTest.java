@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.testing.plugins.jetty;
+package com.mycila.testing.plugins.jetty.locator;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.mycila.testing.plugins.jetty.locator.BooleanSwitchFunction;
 
 /**
  * Unit test of {@link BooleanSwitchFunction}.

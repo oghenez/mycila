@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.mycila.testing.plugins.jetty;
+package com.mycila.testing.plugins.jetty.locator;
 
-import static com.mycila.testing.plugins.jetty.StrategyFileLocator.Strategy.findStrategy;
+import static com.mycila.testing.plugins.jetty.locator.StrategyFileLocator.Strategy.findStrategy;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,7 +28,12 @@ import org.junit.runner.RunWith;
 
 import com.mycila.testing.junit.MycilaJunitRunner;
 import com.mycila.testing.plugin.annotation.ExpectException;
-import com.mycila.testing.plugins.jetty.StrategyFileLocator.Strategy;
+import com.mycila.testing.plugins.jetty.locator.AntFileLocator;
+import com.mycila.testing.plugins.jetty.locator.PathFileLocator;
+import com.mycila.testing.plugins.jetty.locator.RegFileLocator;
+import com.mycila.testing.plugins.jetty.locator.StrategyFileLocator;
+import com.mycila.testing.plugins.jetty.locator.SysFileLocator;
+import com.mycila.testing.plugins.jetty.locator.StrategyFileLocator.Strategy;
 
 /**
  * Unit test of {@link StrategyFileLocator}.

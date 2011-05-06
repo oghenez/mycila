@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2008 Mathieu Carbou <mathieu.carbou@gmail.com>
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,6 +16,7 @@
 
 package com.example.test;
 
+import static com.mycila.testing.plugins.jetty.WebappHelper.getWebappUrl;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
@@ -42,7 +43,7 @@ public class DefaultWarPathJettyRunWarIT {
     @Test
     public void testHelloWorld1()
     {
-        this.webDriver.get(this.getPage("hi.jsp"));
+        this.webDriver.get(getWebappUrl(this) + "/hi.jsp");
 
         assertEquals("Hello World !", this.webDriver.getTitle());
         assertEquals("0", this.webDriver.findElement(By.id("count")).getText());
@@ -55,7 +56,7 @@ public class DefaultWarPathJettyRunWarIT {
     @Test
     public void testHelloWorld2()
     {
-        this.webDriver.get(this.getPage("hi.jsp"));
+        this.webDriver.get(getWebappUrl(this) + "/hi.jsp");
 
         assertEquals("Hello World !", this.webDriver.getTitle());
         assertEquals("0", this.webDriver.findElement(By.id("count")).getText());
@@ -77,21 +78,6 @@ public class DefaultWarPathJettyRunWarIT {
         this.webDriver.quit();
     }
 
-
-    protected String getPage(
-            final String page)
-    {
-        final String path = this.server + ":" + this.port + this.contextPath + page;
-        return path;
-    }
-
-
     private WebDriver webDriver;
-
-    private final String server = "http://localhost";
-
-    private final int port = 9090;
-
-    private final String contextPath = "/";
 
 }

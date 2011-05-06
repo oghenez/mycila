@@ -16,6 +16,7 @@
 
 package com.example.test;
 
+import static com.mycila.testing.plugins.jetty.WebappHelper.getWebappUrl;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
@@ -26,15 +27,17 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
+import com.example.test.WebappJettyRunWarConfigIT.ExternalConfig;
 import com.mycila.testing.junit.MycilaJunitRunner;
 import com.mycila.testing.plugins.jetty.JettyRunWar;
-import com.mycila.testing.plugins.jetty.JettyRunWarConfig;
+import com.mycila.testing.plugins.jetty.config.Config;
+import com.mycila.testing.plugins.jetty.config.DefaultConfig;
 
 /**
- * Test the use of external {@link JettyRunWarConfig}.
+ * Test the use of external {@link Config}.
  */
 @RunWith(MycilaJunitRunner.class)
-@JettyRunWar(startServer = false, deployWebapp = false)
+@JettyRunWar(ExternalConfig.class)
 public class WebappJettyRunWarConfigIT {
 
     /**
@@ -43,7 +46,7 @@ public class WebappJettyRunWarConfigIT {
     @Test
     public void testHelloWorld1()
     {
-        this.webDriver.get(this.getPage("hi.jsp"));
+        this.webDriver.get(getWebappUrl(this) + "/hi.jsp");
 
         assertEquals("Hello World !", this.webDriver.getTitle());
         assertEquals("0", this.webDriver.findElement(By.id("count")).getText());
@@ -56,7 +59,7 @@ public class WebappJettyRunWarConfigIT {
     @Test
     public void testHelloWorld2()
     {
-        this.webDriver.get(this.getPage("hi.jsp"));
+        this.webDriver.get(getWebappUrl(this) + "/hi.jsp");
 
         assertEquals("Hello World !", this.webDriver.getTitle());
         assertEquals("1", this.webDriver.findElement(By.id("count")).getText());
@@ -78,20 +81,24 @@ public class WebappJettyRunWarConfigIT {
         this.webDriver.quit();
     }
 
-
-    protected String getPage(
-            final String page)
-    {
-        final String path = this.server + ":" + this.port + this.contextPath + page;
-        return path;
-    }
-
     private WebDriver webDriver;
 
-    private final String server = "http://localhost";
+    public static class ExternalConfig
+            extends DefaultConfig {
 
-    private final int port = 9090;
+        @Override
+        public boolean isStartServer()
+        {
+            return false;
+        }
 
-    private final String contextPath = "/";
+
+        @Override
+        public boolean isDeployWebapp()
+        {
+            return false;
+        }
+
+    }
 
 }

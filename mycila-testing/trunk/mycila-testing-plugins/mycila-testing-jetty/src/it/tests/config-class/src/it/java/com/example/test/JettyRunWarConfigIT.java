@@ -16,6 +16,7 @@
 
 package com.example.test;
 
+import static com.mycila.testing.plugins.jetty.WebappHelper.getWebappUrl;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
@@ -27,57 +28,42 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 
 import com.mycila.testing.junit.MycilaJunitRunner;
 import com.mycila.testing.plugins.jetty.JettyRunWar;
-import com.mycila.testing.plugins.jetty.JettyRunWarConfig;
+import com.mycila.testing.plugins.jetty.config.Config;
 
 /**
- * Test the use of external {@link JettyRunWarConfig}.
+ * Test the use of external {@link Config}.
  */
 @RunWith(MycilaJunitRunner.class)
-@JettyRunWar(config = ExternalConfig.class)
+@JettyRunWar(ExternalConfig.class)
 public class JettyRunWarConfigIT {
-    
+
     /**
      * Test that HelloWorld page is accessible.
      */
     @Test
     public void testHelloWorld()
     {
-        this.webDriver.get(this.getPage("hi.jsp"));
-        
+        this.webDriver.get(getWebappUrl(this) + "/hi.jsp");
+
         assertEquals("Hello World !", this.webDriver.getTitle());
     }
-    
+
 
     @Before
     public final void initWebDriver()
     {
         final HtmlUnitDriver unitDriver = new HtmlUnitDriver();
-        
+
         this.webDriver = unitDriver;
     }
-    
+
 
     @After
     public final void quitWebDriver()
     {
         this.webDriver.quit();
     }
-    
-
-    protected String getPage(
-            final String page)
-    {
-        final String path = this.server + ":" + this.port + this.contextPath + page;
-        return path;
-    }
-    
 
     private WebDriver webDriver;
-    
-    private final String server = "http://localhost";
-    
-    private final int port = 10001;
-    
-    private final String contextPath = "/test/";
-    
+
 }

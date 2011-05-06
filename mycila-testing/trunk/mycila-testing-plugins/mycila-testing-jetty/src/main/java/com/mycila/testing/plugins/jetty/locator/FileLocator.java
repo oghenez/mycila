@@ -14,24 +14,15 @@
  * limitations under the License.
  */
 
-package com.mycila.testing.plugins.jetty;
+package com.mycila.testing.plugins.jetty.locator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 
-class AntFileLocator
-        implements FileLocator {
+public interface FileLocator {
 
-    /**
-     * {@inheritDoc}
-     * 
-     * @see com.mycila.testing.plugins.jetty.FileLocator#locate(java.lang.String)
-     */
-    public File locate(
-            final String path)
-        throws FileNotFoundException
-    {
-        return new RegFileLocator().locate(new AntPath(path).toRegex());
-    }
+    File locate(
+            String path)
+        throws FileNotFoundException;
 
 }

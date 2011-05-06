@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mycila.testing.plugins.jetty;
+package com.mycila.testing.plugins.jetty.locator;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -25,6 +25,9 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 
 import org.junit.Test;
+
+import com.mycila.testing.plugins.jetty.locator.FallbackFileLocator;
+import com.mycila.testing.plugins.jetty.locator.FileLocator;
 
 /**
  * Unit test of {@link FallbackFileLocator}.
