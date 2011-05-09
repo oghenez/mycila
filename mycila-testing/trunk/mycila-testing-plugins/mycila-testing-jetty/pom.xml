@@ -39,20 +39,6 @@
         <jetty-version>7.2.2.v20101205</jetty-version>
     </properties>
 
-    <distributionManagement>
-        <repository>
-            <id>mc-release</id>
-            <name>Alternate Maven repository of releases</name>
-            <url>file:///home/lpraud/dev/tmp/mvn-repo</url>
-        </repository>
-        <snapshotRepository>
-            <id>mc-snapshot</id>
-            <name>Alternate Maven repository of snapshots</name>
-            <url>file:///home/lpraud/dev/tmp/mvn-repo</url>
-            <uniqueVersion>false</uniqueVersion>
-        </snapshotRepository>
-    </distributionManagement>
-
     <build>
         <resources>
             <resource>
