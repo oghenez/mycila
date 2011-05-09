@@ -16,7 +16,6 @@
 
 package com.example.test;
 
-import static com.mycila.testing.plugins.jetty.WebappHelper.getWebappUrl;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
@@ -43,7 +42,7 @@ public class JettyRunWarConfigIT {
     @Test
     public void testHelloWorld()
     {
-        this.webDriver.get(getWebappUrl(this) + "/hi.jsp");
+        this.webDriver.get("http://localhost:10001/test/hi.jsp");
 
         assertEquals("Hello World !", this.webDriver.getTitle());
     }
