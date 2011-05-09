@@ -32,9 +32,9 @@ import com.mycila.testing.plugins.jetty.config.RawConfig;
 /**
  * This annotation enables the loading of a packaged web application (ie: a WAR file) by a Servlet Container when used
  * with junit runner {@link org.junit.runner.RunWith} and {@link MycilaJunitRunner}. This is useful to run functional
- * tests.
+ * and integration tests (its).
  * <p>
- * Here's an example which run webapp accessible by default at URL : {@code http://localhost:9090}
+ * Here's an example which run webapp accessible by default at URL : {@code http://localhost:9090/its}
  * 
  * <pre>
  * &#064;RunWith(MycilaJunitRunner.class)
@@ -45,8 +45,8 @@ import com.mycila.testing.plugins.jetty.config.RawConfig;
  *      public void testSomething() {
  *          ...
  *          // you can use JettyRunWarHelper to automatically retrieve the webapp based URL
- *          String basedUrl = JettyRunWarHelper.getWebappUrl(this.getClass());
- *          Assert.assertEquals(&quot;http://localhost:9090&quot;, basedUrl);
+ *          String basedUrl = WebappHelper.getWebappUrl(this);
+ *          Assert.assertEquals(&quot;http://localhost:9090/its&quot;, basedUrl);
  *      }
  * }
  * //
@@ -64,6 +64,15 @@ import com.mycila.testing.plugins.jetty.config.RawConfig;
 @Documented
 public @interface JettyRunWar {
 
+    /**
+     * Returns the {@link RawConfig} {@code class} which defines how to deploy the webapp
+     * 
+     * @return the {@link RawConfig} {@code class} which defines how to deploy the webapp, default {@link DefaultConfig}
+     *         .
+     * 
+     * @see DefaultConfig
+     * @see RawConfig
+     */
     Class<? extends RawConfig> value() default DefaultConfig.class;
 
 }

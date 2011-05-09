@@ -16,7 +16,6 @@
 
 package com.example.test;
 
-import static com.mycila.testing.plugins.jetty.WebappHelper.getWebappUrl;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
@@ -29,21 +28,35 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import com.mycila.testing.junit.MycilaJunitRunner;
 import com.mycila.testing.plugins.jetty.JettyRunWar;
 import com.mycila.testing.plugins.jetty.config.Config;
+import com.mycila.testing.plugins.jetty.config.DefaultConfig;
 
 /**
  * Test the use of external {@link Config}.
  */
 @RunWith(MycilaJunitRunner.class)
-@JettyRunWar(ExternalConfig.class)
-public class OverrideJettyRunWarConfigIT {
+@JettyRunWar
+public class MethodJettyRunWarConfigIT {
 
     /**
      * Test that HelloWorld page is accessible.
      */
     @Test
-    public void testHelloWorld()
+    @JettyRunWar(MethodConfig.class)
+    public void testHelloWorld1()
     {
-        this.webDriver.get(getWebappUrl(this) + "/hi.jsp");
+        this.webDriver.get("http://localhost:10001/test/hi.jsp");
+
+        assertEquals("Hello World !", this.webDriver.getTitle());
+    }
+
+
+    /**
+     * Test that HelloWorld page is accessible.
+     */
+    @Test
+    public void testHelloWorld2()
+    {
+        this.webDriver.get("http://localhost:9090/its/hi.jsp");
 
         assertEquals("Hello World !", this.webDriver.getTitle());
     }
@@ -65,5 +78,27 @@ public class OverrideJettyRunWarConfigIT {
     }
 
     private WebDriver webDriver;
+
+    public static class ExternalConfig
+            extends DefaultConfig {
+
+    }
+
+    public static class MethodConfig
+            extends DefaultConfig {
+        @Override
+        public int getServerPort()
+        {
+            return 10001;
+        }
+
+
+        @Override
+        public String getContextPath()
+        {
+            return "/test";
+        }
+
+    }
 
 }

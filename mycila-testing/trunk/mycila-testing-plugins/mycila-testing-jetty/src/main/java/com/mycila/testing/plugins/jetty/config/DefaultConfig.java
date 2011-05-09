@@ -1,7 +1,25 @@
+/**
+ * Copyright (C) 2008 Mathieu Carbou <mathieu.carbou@gmail.com>
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mycila.testing.plugins.jetty.config;
 
 import static com.google.common.base.Objects.firstNonNull;
 import static com.google.common.base.Throwables.propagate;
+import static java.lang.Boolean.parseBoolean;
+import static java.lang.Integer.parseInt;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,21 +36,71 @@ import com.mycila.testing.plugins.jetty.ServerLifeCycleListener;
 import com.mycila.testing.plugins.jetty.locator.FileLocator;
 import com.mycila.testing.plugins.jetty.locator.StrategyFileLocator;
 
+/**
+ * The default implementation with default values of {@link RawConfig} and provides {@link Config}uration extension.
+ */
 public class DefaultConfig
         implements Config {
 
+    /**
+     * Instantiates.
+     */
     public DefaultConfig()
     {
     }
 
 
-    protected DefaultConfig(
+    /**
+     * Instantiates with a {@link Properties} configuration such as keys :
+     * <ul>
+     * <li>{@code warLocation} : String # {@link #getWarLocation()}, ie : <i>ant:*.war</i></li>
+     * <li>{@code serverPort} : int # {@link #getServerPort()}, ie : <i>9090</i></li>
+     * <li>{@code contextPath} : String # {@link #getContextPath()}, ie : <i>/test</i></li>
+     * <li>{@code startServer} : boolean (true|false) # {@link #isStartServer()}, ie : <i>true</i></li>
+     * <li>{@code deployWebapp} : boolean (true|false) # {@link #isDeployWebapp()}, ie : <i>false</i></li>
+     * <li>{@code skip} : boolean (true|false) # {@link #isSkip()}, ie : <i>true</i></li>
+     * <li>{@code lifeCycleListenerClass} : String classname # {@link #getServerLifeCycleListenerClass()}, ie :
+     * <i>com.mycila.testing.plugins.jetty.NopServerLifeCycleListener</i></li>
+     * </ul>
+     * 
+     * @param config
+     *        the {@link Properties} configuration.
+     * 
+     * @throws RuntimeException
+     *         if the {@link #setServerLifeCycleListenerClass(Class)} does not exist in the VM.
+     * @throws NumberFormatException
+     *         if the {@link #setServerPort(int)} is not an int.
+     */
+    public DefaultConfig(
             final Properties config)
     {
+        try {
+            this.setWarLocation(config.getProperty("warLocation", DEFAULT_WAR_LOCATION));
+            this.setServerPort(parseInt(config.getProperty("serverPort", DEFAULT_SERVER_PORT_AS_STRING)));
+            this.setContextPath(config.getProperty("contextPath", DEFAULT_CONTEXT_PATH));
+            this.setStartServer(parseBoolean(config.getProperty("startServer", DEFAULT_START_SERVER_AS_STRING)));
+            this.setDeployWebapp(parseBoolean(config.getProperty("deployWebapp", DEFAULT_DEPLOY_WEBAPP_AS_STRING)));
+            this.setSkip(parseBoolean(config.getProperty("skip", DEFAULT_SKIP_AS_STRING)));
+            this.setServerLifeCycleListenerClass((Class<? extends ServerLifeCycleListener>) Class.forName(config.getProperty(
+                    "lifeCycleListenerClass",
+                    DEFAULT_CYCLE_LISTENER_CLASS_AS_STRING)));
+        }
+        catch (final ClassNotFoundException e) {
+            throw propagate(e);
+        }
+        catch (final NumberFormatException e) {
+            throw propagate(e);
+        }
     }
 
 
-    protected DefaultConfig(
+    /**
+     * Instantiates with a {@link RawConfig}uration;
+     * 
+     * @param config
+     *        the raw configuration;
+     */
+    public DefaultConfig(
             final RawConfig config)
     {
         this.setWarLocation(config.getWarLocation());
@@ -45,6 +113,11 @@ public class DefaultConfig
     }
 
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see com.mycila.testing.plugins.jetty.config.Config#getWarLocationUrl()
+     */
     public URL getWarLocationUrl()
     {
         try {
@@ -74,6 +147,14 @@ public class DefaultConfig
     }
 
 
+    /**
+     * Sets the location of the WAR file to load.
+     * 
+     * @param warLocation
+     *        the location of the WAR file to load.
+     * 
+     * @see #getWarLocation()
+     */
     void setWarLocation(
             final String warLocation)
     {
@@ -81,6 +162,11 @@ public class DefaultConfig
     }
 
 
+    /**
+     * Returns true if {@link #getWarLocation()} value is default one, false else.
+     * 
+     * @return true if {@link #getWarLocation()} value is default one, false else.
+     */
     boolean isDefaultWarLocation()
     {
         return DEFAULT_WAR_LOCATION.equals(this.warLocation);
@@ -98,6 +184,12 @@ public class DefaultConfig
     }
 
 
+    /**
+     * Sets the web application server port.
+     * 
+     * @param serverPort
+     *        the web application server port.
+     */
     void setServerPort(
             final int serverPort)
     {
@@ -105,6 +197,11 @@ public class DefaultConfig
     }
 
 
+    /**
+     * Returns true if {@link #getServerPort()} value is default one, false else.
+     * 
+     * @return true if {@link #getServerPort()} value is default one, false else.
+     */
     boolean isDefaultServerPort()
     {
         return DEFAULT_SERVER_PORT == this.serverPort;
@@ -122,6 +219,12 @@ public class DefaultConfig
     }
 
 
+    /**
+     * Sets web application context path.
+     * 
+     * @param contextPath
+     *        the web application context path.
+     */
     void setContextPath(
             final String contextPath)
     {
@@ -129,6 +232,11 @@ public class DefaultConfig
     }
 
 
+    /**
+     * Returns true if {@link #getContextPath()} value is default one, false else.
+     * 
+     * @return true if {@link #getContextPath()} value is default one, false else.
+     */
     boolean isDefaultContextPath()
     {
         return DEFAULT_CONTEXT_PATH.equals(this.contextPath);
@@ -146,6 +254,13 @@ public class DefaultConfig
     }
 
 
+    /**
+     * Sets true to start a new server (and stop the old one), false to start a server only if there is no running one.
+     * 
+     * @param startServer
+     *        true to start a new server (and stop the old one), false to start a server only if there is no running
+     *        one.
+     */
     void setStartServer(
             final boolean startServer)
     {
@@ -153,6 +268,11 @@ public class DefaultConfig
     }
 
 
+    /**
+     * Returns true if {@link #isStartServer()} value is default one, false else.
+     * 
+     * @return true if {@link #isStartServer()} value is default one, false else.
+     */
     boolean isDefaultStartServer()
     {
         return DEFAULT_START_SERVER == this.startServer;
@@ -170,6 +290,14 @@ public class DefaultConfig
     }
 
 
+    /**
+     * Sets true to deploy a new webapp (and undeploy the old one), false to deploy a webapp only if there is no
+     * deployed one.
+     * 
+     * @param deployWebapp
+     *        true to deploy a new webapp (and undeploy the old one), false to deploy a webapp only if there is no
+     *        deployed one.
+     */
     void setDeployWebapp(
             final boolean deployWebapp)
     {
@@ -177,6 +305,11 @@ public class DefaultConfig
     }
 
 
+    /**
+     * Returns true if {@link #isDeployWebapp()} value is default one, false else.
+     * 
+     * @return true if {@link #isDeployWebapp()} value is default one, false else.
+     */
     boolean isDefaultDeployWebapp()
     {
         return DEFAULT_DEPLOY_WEBAPP == this.deployWebapp;
@@ -194,6 +327,12 @@ public class DefaultConfig
     }
 
 
+    /**
+     * Sets true to skip starting server or deploying webapp.
+     * 
+     * @param skip
+     *        true to skip starting server or deploying webapp.
+     */
     void setSkip(
             final boolean skip)
     {
@@ -201,6 +340,11 @@ public class DefaultConfig
     }
 
 
+    /**
+     * Returns true if {@link #isSkip()} value is default one, false else.
+     * 
+     * @return true if {@link #isSkip()} value is default one, false else.
+     */
     boolean isDefaultSkip()
     {
         return DEFAULT_SKIP == this.skip;
@@ -232,6 +376,12 @@ public class DefaultConfig
     }
 
 
+    /**
+     * Sets the ServerLifeCycleListener class which allow customization of the server configuration.
+     * 
+     * @param serverLifeCycleListenerClass
+     *        the ServerLifeCycleListener class which allow customization of the server configuration.
+     */
     void setServerLifeCycleListenerClass(
             final Class<? extends ServerLifeCycleListener> serverLifeCycleListenerClass)
     {
@@ -239,44 +389,34 @@ public class DefaultConfig
     }
 
 
+    /**
+     * Returns true if {@link #getServerLifeCycleListenerClass()} value is default one, false else.
+     * 
+     * @return true if {@link #getServerLifeCycleListenerClass()} value is default one, false else.
+     */
     boolean isDefaultServerLifeCycleListenerClass()
     {
         return DEFAULT_CYCLE_LISTENER_CLASS.equals(this.serverLifeCycleListenerClass);
     }
 
 
-    public Class<?> getSourceClass()
-    {
-        return this.sourceClass;
-    }
-
-
-    void setSourceClass(
-            final Class<?> sourceClass)
-    {
-        this.sourceClass = sourceClass;
-    }
-
-
-    public Method getSourceMethod()
-    {
-        return this.sourceMethod;
-    }
-
-
-    void setSourceMethod(
-            final Method sourceMethod)
-    {
-        this.sourceMethod = sourceMethod;
-    }
-
-
+    /**
+     * {@inheritDoc}
+     * 
+     * @see com.mycila.testing.plugins.jetty.config.Config#getSourceConfig()
+     */
     public JettyRunWar getSourceConfig()
     {
         return this.sourceConfig;
     }
 
 
+    /**
+     * Sets the {@link JettyRunWar} source configuration.
+     * 
+     * @param sourceConfig
+     *        the {@link JettyRunWar} source configuration.
+     */
     void setSourceConfig(
             final JettyRunWar sourceConfig)
     {
@@ -284,6 +424,59 @@ public class DefaultConfig
     }
 
 
+    /**
+     * {@inheritDoc}
+     * 
+     * @see com.mycila.testing.plugins.jetty.config.Config#getSourceMethod()
+     */
+    public Method getSourceMethod()
+    {
+        return this.sourceMethod;
+    }
+
+
+    /**
+     * Sets the {@link JettyRunWar} source method.
+     * 
+     * @param sourceMethod
+     *        the {@link JettyRunWar} source method.
+     */
+    void setSourceMethod(
+            final Method sourceMethod)
+    {
+        this.sourceMethod = sourceMethod;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see com.mycila.testing.plugins.jetty.config.Config#getSourceClass()
+     */
+    public Class<?> getSourceClass()
+    {
+        return this.sourceClass;
+    }
+
+
+    /**
+     * Sets the {@link JettyRunWar} source class.
+     * 
+     * @param sourceClass
+     *        the {@link JettyRunWar} source class.
+     */
+    void setSourceClass(
+            final Class<?> sourceClass)
+    {
+        this.sourceClass = sourceClass;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString()
     {
@@ -291,15 +484,23 @@ public class DefaultConfig
         toString.add("warLocation", this.getWarLocation());
         toString.add("serverPort", Integer.toString(this.getServerPort()));
         toString.add("contextPath", this.getContextPath());
-        toString.add("serverLifeCycleListenerClass", this.getServerLifeCycleListenerClass());
         toString.add("doStartServer", Boolean.toString(this.isStartServer()));
         toString.add("doDeployWebapp", Boolean.toString(this.isDeployWebapp()));
         toString.add("skip", Boolean.toString(this.isSkip()));
+        toString.add("serverLifeCycleListenerClass", this.getServerLifeCycleListenerClass());
 
         return toString.toString();
     }
 
 
+    /**
+     * Returns true if the {@code method} is annotation with {@link JettyRunWar}, false else.
+     * 
+     * @param method
+     *        the method to test if annotated with {@link JettyRunWar}.
+     * 
+     * @return true if the {@code method} is annotation with {@link JettyRunWar}, false else.
+     */
     public static boolean hasJettyPlugin(
             final Method method)
     {
@@ -311,6 +512,14 @@ public class DefaultConfig
     }
 
 
+    /**
+     * Returns true if the {@code klass} is annotation with {@link JettyRunWar}, false else.
+     * 
+     * @param klass
+     *        the class to test if annotated with {@link JettyRunWar}.
+     * 
+     * @return true if the {@code klass} is annotation with {@link JettyRunWar}, false else.
+     */
     public static boolean hasJettyPlugin(
             final Class<?> klass)
     {
@@ -320,7 +529,15 @@ public class DefaultConfig
     }
 
 
-    public static DefaultConfig configFrom(
+    /**
+     * Returns the {@link JettyRunWar} {@link Config}uration for the {@code method}.
+     * 
+     * @param method
+     *        the method for which returns the {@link JettyRunWar} {@link Config}uration.
+     * 
+     * @return the {@link JettyRunWar} {@link Config}uration.
+     */
+    public static Config configFrom(
             final Method method)
     {
         if (!hasJettyPlugin(method)) {
@@ -354,7 +571,15 @@ public class DefaultConfig
     }
 
 
-    public static DefaultConfig configFrom(
+    /**
+     * Returns the {@link JettyRunWar} {@link Config}uration for the {@code klass}.
+     * 
+     * @param klass
+     *        the class for which returns the {@link JettyRunWar} {@link Config}uration.
+     * 
+     * @return the {@link JettyRunWar} {@link Config}uration.
+     */
+    public static Config configFrom(
             final Class<?> klass)
     {
         if (!hasJettyPlugin(klass)) {
@@ -390,34 +615,70 @@ public class DefaultConfig
         }
     }
 
+    /**
+     * The default {@link JettyRunWar#value()} {@link RawConfig}uration class.
+     */
     public static final Class<? extends RawConfig> DEFAULT_CONFIG_CLASS = DefaultConfig.class;
 
+    /**
+     * The default value of {@link #getWarLocation()}.
+     */
     public static final String DEFAULT_WAR_LOCATION = "reg:.*\\.war";
 
+    /**
+     * The default value of {@link #getServerPort()}.
+     */
     public static final int DEFAULT_SERVER_PORT = 9090;
 
+    /**
+     * The default value of {@link #getServerPort()} as string.
+     */
     public static final String DEFAULT_SERVER_PORT_AS_STRING = Integer.toString(DEFAULT_SERVER_PORT);
 
     /**
-     * ITS (integration tests)
+     * The default value of {@link #getContextPath()}.
      */
     public static final String DEFAULT_CONTEXT_PATH = "/its";
 
+    /**
+     * The default value of {@link #isStartServer()}.
+     */
     public static final boolean DEFAULT_START_SERVER = true;
 
+    /**
+     * The default value of {@link #isStartServer()} as string.
+     */
     public static final String DEFAULT_START_SERVER_AS_STRING = Boolean.toString(DEFAULT_START_SERVER);
 
+    /**
+     * The default value of {@link #isDeployWebapp()}.
+     */
     public static final boolean DEFAULT_DEPLOY_WEBAPP = true;
 
+    /**
+     * The default value of {@link #isDeployWebapp()} as string.
+     */
     public static final String DEFAULT_DEPLOY_WEBAPP_AS_STRING = Boolean.toString(DEFAULT_DEPLOY_WEBAPP);
 
+    /**
+     * The default value of {@link #isSkip()}.
+     */
     public static final boolean DEFAULT_SKIP = false;
 
+    /**
+     * The default value of {@link #isSkip()} as string.
+     */
+    public static final String DEFAULT_SKIP_AS_STRING = Boolean.toString(DEFAULT_SKIP);
+
+    /**
+     * The default value of {@link #getServerLifeCycleListenerClass()}.
+     */
     public static final Class<? extends ServerLifeCycleListener> DEFAULT_CYCLE_LISTENER_CLASS = NopServerLifeCycleListener.class;
 
+    /**
+     * The default value of {@link #getServerLifeCycleListenerClass()} as string.
+     */
     public static final String DEFAULT_CYCLE_LISTENER_CLASS_AS_STRING = DEFAULT_CYCLE_LISTENER_CLASS.getName();
-
-    public static final String DEFAULT_SKIP_AS_STRING = Boolean.toString(DEFAULT_SKIP);
 
     private String warLocation = DEFAULT_WAR_LOCATION;
 
@@ -438,4 +699,5 @@ public class DefaultConfig
     private Method sourceMethod;
 
     private JettyRunWar sourceConfig;
+
 }

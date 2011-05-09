@@ -25,7 +25,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -44,6 +43,7 @@ public class ServerWebappActions {
             final TestExecution testExecution,
             final Config config)
     {
+        this.logger.debug("server creation...");
         this.setServer(new Server(config.getServerPort()));
         this.getServer().addLifeCycleListener(new AbstractLifeCycle.AbstractLifeCycleListener() {
 
@@ -68,6 +68,7 @@ public class ServerWebappActions {
         this.setContextHandlerCollection(new ContextHandlerCollection());
         handlerCollection.addHandler(this.getContextHandlerCollection());
         this.getServer().setHandler(handlerCollection);
+        this.logger.debug("server created");
     }
 
 
@@ -153,6 +154,7 @@ public class ServerWebappActions {
             final Config config)
         throws URISyntaxException
     {
+        this.logger.debug("webapp creation...");
         final File warFile = new File(config.getWarLocationUrl().toURI());
         if (!warFile.exists()) {
             throw new AssertionError("non-existent WAR : " + warFile.getAbsolutePath());
@@ -163,22 +165,13 @@ public class ServerWebappActions {
         }
 
         this.setWebAppContext(new WebAppContext());
-        //webapp.addLocaleEncoding("fr_FR", "UTF-8");
         this.getWebAppContext().setWar(config.getWarLocationUrl().getFile());
         this.getWebAppContext().setContextPath(config.getContextPath());
         this.getWebAppContext().setCopyWebDir(false);
         this.getWebAppContext().setExtractWAR(false);
         this.getWebAppContext().setLogUrlOnStart(true);
-        {
-            final MimeTypes mimeTypes = new MimeTypes();
-            mimeTypes.addMimeMapping("js", "application/javascript");
-            this.getWebAppContext().setMimeTypes(mimeTypes);
-        }
-        //        if (this.webdefaultFile != null) {
-        //            webapp.setDefaultsDescriptor(this.webdefaultFile.getAbsolutePath());
-        //        }
 
-        this.logger.info("webapp on localhost:{}{} with WAR:{}", new Object[] {
+        this.logger.info("webapp created on localhost:{}{} with WAR:{}", new Object[] {
                 Integer.valueOf(config.getServerPort()), config.getContextPath(), config.getWarLocation()
         });
     }

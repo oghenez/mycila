@@ -23,16 +23,19 @@ import java.lang.reflect.Method;
 
 import com.mycila.testing.plugins.jetty.config.Config;
 
+/**
+ * Some helper methods to deal with webapp context.
+ */
 public class WebappHelper {
 
     /**
-     * Returns the web application URL from a the given test class which must be annotated with {@link JettyRunWar},
-     * doesn't end with slash '/'.
+     * Returns the web application URL from a the given test class instance which must be annotated with
+     * {@link JettyRunWar} and doesn't end with slash '/'.
      * 
      * @param instance
      *        the test object.
-     * @return the web application URL from a test class which must be annotated with {@link JettyRunWar}, doesn't end
-     *         with slash '/'.
+     * 
+     * @return the web application URL.
      */
     public static String getWebappUrl(
             final Object instance)
@@ -42,16 +45,15 @@ public class WebappHelper {
 
 
     /**
-     * Returns the web application URL from a the given test class which must be annotated with {@link JettyRunWar},
-     * doesn't end with slash '/'.
+     * Returns the web application URL from a the given test method which should be annotated with {@link JettyRunWar}
+     * (or its {@link Method#getDeclaringClass()} at least) and doesn't end with slash '/'.
      * 
      * @param instance
      *        the test object.
      * @param methodName
      *        the test method name.
      * 
-     * @return the web application URL from a test class which must be annotated with {@link JettyRunWar}, doesn't end
-     *         with slash '/'.
+     * @return the web application URL.
      */
     public static String getWebappUrl(
             final Object instance,
@@ -70,14 +72,14 @@ public class WebappHelper {
 
 
     /**
-     * Returns the web application URL from a the given test class which must be annotated with {@link JettyRunWar},
-     * doesn't end with slash '/'.
+     * Returns the web application URL from a the given test method which should be annotated with {@link JettyRunWar}
+     * (or
+     * its {@link Method#getDeclaringClass()} at least) and doesn't end with slash '/'.
      * 
      * @param method
      *        the test method.
      * 
-     * @return the web application URL from a test class which must be annotated with {@link JettyRunWar}, doesn't end
-     *         with slash '/'.
+     * @return the web application URL.
      */
     public static String getWebappUrl(
             final Method method)
