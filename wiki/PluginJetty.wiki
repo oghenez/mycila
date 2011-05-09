@@ -20,8 +20,8 @@ public class MyWebAppIT {
         // do and assert things with my running web application
 
         // you can use JettyRunWarHelper to automatically retrieve the webapp based URL
-        String basedUrl = JettyRunWarHelper.getWebappUrl(this.getClass());
-        Assert.assertEquals("http://localhost:9090", basedUrl);
+        String basedUrl = WebappHelper.getWebappUrl(this);
+        Assert.assertEquals("http://localhost:9090/its", basedUrl);
     }
 }
 }}}
@@ -32,74 +32,66 @@ Maven dependency configuration to add to your pom.xml
 <dependency>
     <groupId>com.mycila.testing.plugins</groupId>
     <artifactId>mycila-testing-jetty</artifactId>
-    <version>2.7</version>
+    <version>2.8</version>
     <scope>test</scope>
 </dependency>
 }}}
 
-= `@JettyRunWar` Configuration =
+_*Backward compatibility is broken since 2.8*_
 
-== Default ==
+= `@JettyRunWar` Configuration =
 
 `@JettyRunWar` will find the WAR file searching from the current directory and going through sub-directories. *There must be only one matching WAR file else the test fails.*
 
-The WAR is loaded with Jetty, running on default port 9090 and defaut contextPath /.
+The WAR is loaded with Jetty, running on default port 9090 and defaut contextPath /its.
 
-So the web application is accessible at this address : http://localhost:9090/
+So the web application is accessible at this address : http://localhost:9090/its
 
-== Port ==
+== Config class ==
 
-`@JettyRunWar(serverPort = 8080)` will set the web application server port to 8080.
+`@JettyRunWar(MyConfig.class)` will set the web application config class.
 
-== Context Path ==
+Options :
 
-`@JettyRunWar(contextPath = "/test")` will set the web application context path to "/test".
+  * WAR location
+  * Server port
+  * Context path
+  * Start server
+  * Deploy webapp
+  * Skip
+  * Server life cycle listener
 
-== Target Webapp ==
-
-`@JettyRunWar(targetWebapp = JettyRunWar.TargetWebapp.ALREADY_RUNNING)` won't deploy the webapp to test in Jetty but will still run the test. This will be useful to do test against already running webapp during development.
-
-Default is `JettyRunWar.TargetWebapp.AUTO_RUN`.
-
-== Server Life Cycle Listener ==
-
-`@JettyRunWar(serverLifeCycleListener = SomeServerLifeCycleListener.class)` can be used to be notified when the server is ready to start and overrides some init params.
-
-You need to provide an implementation class of `com.mycila.testing.plugins.jetty.ServerLifeCycleListener`.
-
-Default is `com.mycila.testing.plugins.jetty.NopServerLifeCycleListener.class`.
-
-== WAR Path ==
+=== WAR Location ===
 
 Will use '', 'reg:', 'sys:', 'ant:' prefix to distinguish WAR finding method.
 
-=== Fixed ===
+==== Fixed ====
 
-`@JettyRunWar("target/webapp-1.0-SNAPSHOT.war")` will check for this WAR from the current directory.
+`warLocation : "target/webapp-1.0-SNAPSHOT.war"` will check for this WAR from the current directory.
 
   * matches ${currentdir}/target/webapp-1.0-SNAPSHOT.war
 
-`@JettyRunWar("/tmp/webapp-1.0-SNAPSHOT.war")` will check for this WAR from the root.
+`WarLocation : "/tmp/webapp-1.0-SNAPSHOT.war"` will check for this WAR from the root.
 
-=== Regular Expression  : 'reg:' ===
+==== Regular Expression  : 'reg:' ====
 
-`@JettyRunWar("reg:\\.\\/target\\/webapp-.*\\.war")` will find the WAR file that matches this Java Regular Expression searching from the current directory and going through sub-directories.
+`WarLocation : "reg:\\.\\/target\\/webapp-.*\\.war"` will find the WAR file that matches this Java Regular Expression searching from the current directory and going through sub-directories.
 
   * matches ${currentdir}/target/webapp-1.0-SNAPSHOT.war
   * BUT ${currentdir}/target/web-1.0-SNAPSHOT.war
   * BUT ${currentdir}/webapp-1.0-SNAPSHOT.war
 
-=== System Property : 'sys:' ===
+==== System Property : 'sys:' ====
 
-`@JettyRunWar("sys:warPath")` will find the WAR file that matches the _warPath_ system property.
+`WarLocation : "sys:warPath"` will find the WAR file that matches the _warPath_ system property.
 
   * matches ${currentdir}/target/webapp-1.0-SNAPSHOT.war if warPath = "target/webapp-1.0-SNAPSHOT.war"
 
-=== Ant : 'ant:' ===
+==== Ant : 'ant:' ====
 
 [http://ant.apache.org/manual/dirtasks.html Ant Path] are really much readable than Java Regular Expression even if there are less powerful.
 
-`@JettyRunWar("ant:**/webapp-*.war")` will find the WAR file that matches this ant path searching from the current directory and going through sub-directories.
+`WarLocation : "ant:**/webapp-*.war"` will find the WAR file that matches this ant path searching from the current directory and going through sub-directories.
 
   * matches ${currentdir}/target/webapp-1.0-SNAPSHOT.war
   * BUT ${currentdir}/target/web-1.0-SNAPSHOT.war
