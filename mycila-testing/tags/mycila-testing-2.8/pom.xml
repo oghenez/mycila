@@ -1,0 +1,139 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.mycila</groupId>
+        <artifactId>parent-pom</artifactId>
+        <version>5</version>
+    </parent>
+
+    <groupId>com.mycila.testing</groupId>
+    <artifactId>mycila-testing</artifactId>
+    <version>2.8</version>
+    <packaging>pom</packaging>
+
+    <name>mycila-testing</name>
+    <description>Mycila testing parent POM</description>
+    <url>http://code.mycila.com/</url>
+    <inceptionYear>2008</inceptionYear>
+
+    <properties>
+        <jdk.version>1.5</jdk.version>
+    </properties>
+
+    <scm>
+        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-testing/tags/mycila-testing-2.8</connection>
+        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-testing/tags/mycila-testing-2.8</developerConnection>
+        <url>https://mycila.googlecode.com/svn/mycila-testing/tags/mycila-testing-2.8</url>
+    </scm>
+
+    <modules>
+        <module>mycila-testing-api</module>
+        <module>mycila-testing-plugins</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <!-- for maven plugins -->
+            <plugin>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>2.6</version>
+            </plugin>
+            <plugin>
+                <inherited>false</inherited>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attached</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>${basedir}/etc/project.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <tagBase>https://mycila.googlecode.com/svn/mycila-testing/tags</tagBase>
+                </configuration>
+            </plugin>
+            <plugin>
+                <inherited>false</inherited>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.5.0</version>
+                <configuration>
+                    <header>${basedir}/etc/header.txt</header>
+                    <failIfMissing>true</failIfMissing>
+                    <aggregate>true</aggregate>
+                    <properties>
+                        <owner>Mathieu Carbou</owner>
+                        <year>${project.inceptionYear}</year>
+                        <email>mathieu.carbou@gmail.com</email>
+                    </properties>
+                    <excludes>
+                        <exclude>LICENSE.txt</exclude>
+                        <exclude>**/src/test/resources/**</exclude>
+                        <exclude>**/src/test/data/**</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>check-headers</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- mycila -->
+            <dependency>
+                <groupId>com.mycila.testing</groupId>
+                <artifactId>mycila-testing-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.mycila</groupId>
+                <artifactId>mycila-plugin</artifactId>
+                <version>1.10</version>
+            </dependency>
+            <dependency>
+                <groupId>com.mycila</groupId>
+                <artifactId>mycila-log</artifactId>
+                <version>2.12</version>
+            </dependency>
+            <!-- test frameworks -->
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>5.11</version>
+                <classifier>jdk15</classifier>
+                <exclusions>
+                    <exclusion>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.8.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
