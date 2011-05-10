@@ -1,0 +1,85 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <!--
+         POM settings
+     -->
+
+    <parent>
+        <groupId>com.mycila.testing</groupId>
+        <artifactId>mycila-testing</artifactId>
+        <version>2.8</version>
+    </parent>
+
+    <groupId>com.mycila.testing.plugins</groupId>
+    <artifactId>mycila-testing-plugins</artifactId>
+    <packaging>pom</packaging>
+
+    <name>mycila-testing-plugins</name>
+    <description>All Mycila testing plugins</description>
+    <url>http://old.mycila.com/p/mycila/mycila-testing/plugins/</url>
+
+    <!--
+        Distributions
+    -->
+
+    <distributionManagement>
+        <site>
+            <id>website</id>
+            <name>website</name>
+            <url>file://${basedir}/../target/dist/site/mycila-testing/plugins/</url>
+        </site>
+    </distributionManagement>
+
+    <modules>
+        <module>mycila-testing-atunit</module>
+        <module>mycila-testing-db</module>
+        <module>mycila-testing-dbunit</module>
+        <module>mycila-testing-easymock</module>
+        <module>mycila-testing-guice</module>
+        <module>mycila-testing-guice2</module>
+        <module>mycila-testing-jetty</module>
+        <module>mycila-testing-jmock</module>
+        <module>mycila-testing-mockito</module>
+        <module>mycila-testing-spring</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-invoker-plugin</artifactId>
+                <!--
+                    required to breaks mycila parent-pom maven-invoker-plugin
+                    inheritance to mycila-testing-jetty which use invoker and failed
+                -->
+                <inherited>false</inherited>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <classifier>jdk15</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
