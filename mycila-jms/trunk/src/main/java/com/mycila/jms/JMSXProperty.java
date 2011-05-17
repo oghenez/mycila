@@ -19,7 +19,7 @@ package com.mycila.jms;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class JMSXProperty {
+public final class JMSXProperty {
 
     private JMSXProperty() {
     }
