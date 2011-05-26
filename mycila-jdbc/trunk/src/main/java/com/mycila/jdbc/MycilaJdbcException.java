@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package com.mycila.jdbc.query;
-
-import com.mycila.jdbc.MycilaJdbcException;
+package com.mycila.jdbc;
 
 /**
  * @author Mathieu Carbou
  */
-public final class ConverterException extends MycilaJdbcException {
-    public ConverterException(String message) {
+public class MycilaJdbcException extends RuntimeException {
+    public MycilaJdbcException(String message) {
         super(message);
+    }
+    public MycilaJdbcException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
