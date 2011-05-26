@@ -65,7 +65,7 @@ final class Mapper {
 
     <T> T instanciate(Class<T> type) {
         try {
-            Constructor<T> ctor = type.getConstructor();
+            Constructor<T> ctor = type.getDeclaredConstructor();
             if (!ctor.isAccessible())
                 ctor.setAccessible(true);
             return ctor.newInstance();
