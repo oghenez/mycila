@@ -16,17 +16,16 @@
 
 package com.mycila.jdbc.query;
 
+import com.mycila.jdbc.MycilaJdbcException;
 import org.objenesis.ObjenesisStd;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -65,7 +64,32 @@ final class Mapper {
     }
 
     <T> T instanciate(Class<T> type) {
-        return type.cast(objenesis.newInstance(type));
+        try {
+            Constructor<T> ctor = type.getConstructor();
+            if (!ctor.isAccessible())
+                ctor.setAccessible(true);
+            return ctor.newInstance();
+        } catch (NoSuchMethodException e) {
+            // ignore - try objenesis
+        } catch (InstantiationException e) {
+            throw new MycilaJdbcException("Unable to instanciate " + type + " using reflection: " + e.getMessage(), e);
+        } catch (IllegalAccessException e) {
+            throw new MycilaJdbcException("Unable to instanciate " + type + " using reflection: " + e.getMessage(), e);
+        } catch (InvocationTargetException e) {
+            Throwable ee = e.getCause();
+            if (ee instanceof RuntimeException)
+                throw (RuntimeException) ee;
+            if (ee instanceof Error)
+                throw (Error) ee;
+            if (ee == null)
+                throw new MycilaJdbcException("Unable to instanciate " + type + " using reflection: " + e.getMessage(), e);
+            throw new MycilaJdbcException("Unable to instanciate " + type + " using reflection: " + e.getCause().getMessage(), e.getCause());
+        }
+        try {
+            return type.cast(objenesis.newInstance(type));
+        } catch (RuntimeException e) {
+            throw new MycilaJdbcException("Unable to instanciate " + type + " using Objenesis: " + e.getMessage(), e);
+        }
     }
 
     @SuppressWarnings({"unchecked"})
@@ -135,8 +159,8 @@ final class Mapper {
     private static final Converter<BigDecimal> BIGDECIMAL_CONVERTER = new Converter<BigDecimal>() {
         public BigDecimal convert(Cell cell, Class<BigDecimal> type, Object object) {
             return Float.class.equals(object.getClass()) || Double.class.equals(object.getClass()) ?
-                    BigDecimal.valueOf(toNumber(object).doubleValue()) :
-                    BigDecimal.valueOf(toNumber(object).longValue());
+                BigDecimal.valueOf(toNumber(object).doubleValue()) :
+                BigDecimal.valueOf(toNumber(object).longValue());
         }
     };
 

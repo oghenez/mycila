@@ -16,6 +16,8 @@
 
 package com.mycila.jdbc.query;
 
+import com.mycila.jdbc.MycilaJdbcException;
+
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
@@ -68,7 +70,7 @@ public final class Reflect<T> {
         try {
             return (R) field.get(target);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e.getMessage(), e);
+            throw new MycilaJdbcException("Error getting field " + field + " from type " + target.getClass() + " : " + e.getMessage(), e);
         }
     }
 
@@ -81,7 +83,7 @@ public final class Reflect<T> {
         try {
             field.set(target, value);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e.getMessage(), e);
+            throw new MycilaJdbcException("Error setting field " + field + " in type " + value.getClass() + " : " + e.getMessage(), e);
         }
     }
 }

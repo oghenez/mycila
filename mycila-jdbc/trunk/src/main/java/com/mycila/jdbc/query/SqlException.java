@@ -16,7 +16,9 @@
 
 package com.mycila.jdbc.query;
 
-public final class SqlException extends RuntimeException {
+import com.mycila.jdbc.MycilaJdbcException;
+
+public final class SqlException extends MycilaJdbcException {
     public SqlException(String message) {
         super(message);
     }

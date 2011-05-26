@@ -16,6 +16,8 @@
 
 package com.mycila.jdbc.query;
 
+import com.mycila.jdbc.MycilaJdbcException;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +73,7 @@ public final class Row {
                         f.setAccessible(true);
                     f.set(t, cell.as(f.getType().isPrimitive() ? ClassUtils.getWrapper(f.getType()) : f.getType()));
                 } catch (IllegalAccessException e) {
-                    throw new RuntimeException(e.getMessage(), e);
+                    throw new MycilaJdbcException("Error mapping field " + f + " in type " + type + " : " + e.getMessage(), e);
                 }
             }
         }
