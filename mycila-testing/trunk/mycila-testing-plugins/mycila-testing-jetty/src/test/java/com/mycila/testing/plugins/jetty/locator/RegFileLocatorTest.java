@@ -23,24 +23,24 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.google.common.collect.Iterables;
 import com.mycila.testing.junit.MycilaJunitRunner;
 import com.mycila.testing.plugin.annotation.ExpectException;
-import com.mycila.testing.plugins.jetty.locator.RegFileLocator;
 
 /**
  * Unit test of {@link RegFileLocator}.
  */
 @RunWith(MycilaJunitRunner.class)
 public class RegFileLocatorTest {
-
+    
     @Test
     public final void testLocateExistsOne()
         throws FileNotFoundException
     {
-        final File file = new RegFileLocator().locate(MATCH_ONE_REGEXP);
-        Assert.assertTrue(file.isFile());
+        final Iterable<File> files = new RegFileLocator().locate(MATCH_ONE_REGEXP);
+        Assert.assertTrue(Iterables.all(files, new ExistsFilePredicate()));
     }
-
+    
 
     @Test
     @ExpectException(type = FileNotFoundException.class, message = "regexp '" + MATCH_MORE_THAN_ONE_REGEXP_QUOTED
@@ -48,10 +48,10 @@ public class RegFileLocatorTest {
     public final void testLocateExistsMoreThanOne()
         throws FileNotFoundException
     {
-        final File file = new RegFileLocator().locate(MATCH_MORE_THAN_ONE_REGEXP);
-        Assert.assertTrue(file.isFile());
+        final Iterable<File> files = new RegFileLocator().locate(MATCH_MORE_THAN_ONE_REGEXP);
+        Assert.assertTrue(Iterables.all(files, new ExistsFilePredicate()));
     }
-
+    
 
     @Test
     @ExpectException(type = FileNotFoundException.class, message = "regexp '" + MATCH_LESS_THAN_ONE_REGEXP_QUOTED
@@ -59,20 +59,21 @@ public class RegFileLocatorTest {
     public final void testLocateExistsLessThanOne()
         throws FileNotFoundException
     {
-        final File file = new RegFileLocator().locate(MATCH_LESS_THAN_ONE_REGEXP);
-        Assert.assertTrue(file.isFile());
+        final Iterable<File> files = new RegFileLocator().locate(MATCH_LESS_THAN_ONE_REGEXP);
+        Assert.assertTrue(Iterables.all(files, new ExistsFilePredicate()));
     }
+    
 
     private static final String MATCH_ONE_REGEXP = "\\.\\/src\\/test\\/resources\\/file-a\\.txt";
-
+    
     // private static final String MATCH_ONE_REGEXP_QUOTED = "\\\\.\\\\/src\\\\/test\\\\/resources\\\\/file-a\\\\.txt";
-
+    
     private static final String MATCH_MORE_THAN_ONE_REGEXP = "\\.\\/src\\/test\\/resources\\/file-.*\\.txt";
-
+    
     private static final String MATCH_MORE_THAN_ONE_REGEXP_QUOTED = "\\\\.\\\\/src\\\\/test\\\\/resources\\\\/file-.*\\\\.txt";
-
+    
     private static final String MATCH_LESS_THAN_ONE_REGEXP = "\\.\\/src\\/test\\/resources\\/fil-.*\\.txt";
-
+    
     private static final String MATCH_LESS_THAN_ONE_REGEXP_QUOTED = "\\\\.\\\\/src\\\\/test\\\\/resources\\\\/fil-.*\\\\.txt";
-
+    
 }

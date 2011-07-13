@@ -19,9 +19,11 @@ package com.mycila.testing.plugins.jetty.locator;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import com.google.common.collect.Lists;
+
 class SysFileLocator
         implements FileLocator {
-
+    
     /**
      * {@inheritDoc}
      * 
@@ -29,7 +31,7 @@ class SysFileLocator
      * 
      * @see com.mycila.testing.plugins.jetty.locator.FileLocator#locate(java.lang.String)
      */
-    public File locate(
+    public Iterable<File> locate(
             final String path)
         throws FileNotFoundException
     {
@@ -37,9 +39,9 @@ class SysFileLocator
         if (value == null) {
             throw new FileNotFoundException("property '" + path + "' does not locate any file");
         }
-
+        
         final File file = new File(value);
-        return file;
+        return Lists.newArrayList(file);
     }
-
+    
 }

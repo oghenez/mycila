@@ -28,47 +28,48 @@ import java.io.FileNotFoundException;
  */
 public class StrategyFileLocator
         implements FileLocator {
-
+    
     /**
      * {@inheritDoc}
      * 
      * @see com.mycila.testing.plugins.jetty.locator.FileLocator#locate(java.lang.String)
      */
-    public File locate(
+    public Iterable<File> locate(
             final String path)
         throws FileNotFoundException
     {
         final Strategy strategy = findStrategy(path);
-        final File file = strategy.getLocator().locate(strategy.cleanPath(path));
-
-        return file;
+        final Iterable<File> files = strategy.getLocator().locate(strategy.cleanPath(path));
+        
+        return files;
     }
+    
 
     /**
      * Enumeration of available file locator strategy.
      */
     public enum Strategy {
-
+        
         /**
          * Default path is either relative or absolute.
          */
         DEFAULT("", new PathFileLocator()),
-
+        
         /**
          * Enable the following to be java regular expression for this path.
          */
         REG("reg:", new RegFileLocator()),
-
+        
         /**
          * Enable the following to be ant path expression for this path.
          */
         ANT("ant:", new AntFileLocator()),
-
+        
         /**
          * Enable the the following to be system property expression for this path.
          */
         SYS("sys:", new SysFileLocator());
-
+        
         Strategy(
                 final String code,
                 final FileLocator fileLocator)
@@ -76,7 +77,7 @@ public class StrategyFileLocator
             this.code = code;
             this.fileLocator = fileLocator;
         }
-
+        
 
         boolean matches(
                 final String path)
@@ -85,7 +86,7 @@ public class StrategyFileLocator
                     && ((!DEFAULT.equals(this) && path.startsWith(this.code)) || DEFAULT.equals(this));
             return matches;
         }
-
+        
 
         String cleanPath(
                 final String path)
@@ -96,21 +97,21 @@ public class StrategyFileLocator
             if (!this.matches(path)) {
                 throw new IllegalArgumentException("path should starts with " + this.code);
             }
-
+            
             final int from = this.code.length();
             final int to = path.length();
-
+            
             final String clean = path.substring(from, to);
-
+            
             return clean;
         }
-
+        
 
         FileLocator getLocator()
         {
             return this.fileLocator;
         }
-
+        
 
         static Strategy findStrategy(
                 final String path)
@@ -121,14 +122,15 @@ public class StrategyFileLocator
                     return strategy;
                 }
             }
-
+            
             return Strategy.DEFAULT;
         }
+        
 
         private final String code;
-
+        
         private final FileLocator fileLocator;
-
+        
     }
-
+    
 }

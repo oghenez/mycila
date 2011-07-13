@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2008 Mathieu Carbou <mathieu.carbou@gmail.com>
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,27 +26,26 @@ import java.io.File;
 
 import org.junit.Test;
 
-import com.mycila.testing.plugins.jetty.locator.FallbackFileLocator;
-import com.mycila.testing.plugins.jetty.locator.FileLocator;
+import com.google.common.collect.Lists;
 
 /**
  * Unit test of {@link FallbackFileLocator}.
  */
 public class FallbackFileLocatorTest {
-
+    
     @Test
     public final void testLocateNoFallback()
         throws Exception
     {
         final FileLocator locator = mock(FileLocator.class);
         final FileLocator fallbackLocator = mock(FileLocator.class);
-        when(locator.locate("some-file")).thenReturn(new File("."));
-
+        when(locator.locate("some-file")).thenReturn(Lists.newArrayList(new File(".")));
+        
         new FallbackFileLocator(locator, fallbackLocator).locate("some-file");
-
+        
         verify(fallbackLocator, never()).locate(anyString());
     }
-
+    
 
     @Test
     public final void testLocateFallback()
@@ -54,11 +53,11 @@ public class FallbackFileLocatorTest {
     {
         final FileLocator locator = mock(FileLocator.class);
         final FileLocator fallbackLocator = mock(FileLocator.class);
-        when(locator.locate("some-file")).thenReturn(new File("non-existent-file"));
-
+        when(locator.locate("some-file")).thenReturn(Lists.newArrayList(new File("non-existent-file")));
+        
         new FallbackFileLocator(locator, fallbackLocator).locate("some-file");
-
+        
         verify(fallbackLocator).locate("some-file");
     }
-
+    
 }
