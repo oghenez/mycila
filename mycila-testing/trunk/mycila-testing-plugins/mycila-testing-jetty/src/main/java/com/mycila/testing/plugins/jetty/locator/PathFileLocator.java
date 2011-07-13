@@ -18,18 +18,20 @@ package com.mycila.testing.plugins.jetty.locator;
 
 import java.io.File;
 
+import com.google.common.collect.Lists;
+
 class PathFileLocator
         implements FileLocator {
-
+    
     /**
      * {@inheritDoc}
      * 
      * @see com.mycila.testing.plugins.jetty.locator.FileLocator#locate(java.lang.String)
      */
-    public File locate(
+    public Iterable<File> locate(
             final String path)
     {
-        return new File(path);
+        return Lists.newArrayList(new File(path));
     }
-
+    
 }

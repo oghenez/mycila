@@ -28,39 +28,37 @@ import org.apache.commons.io.filefilter.IOFileFilter;
 
 class RegFileLocator
         implements FileLocator {
-
+    
     /**
      * {@inheritDoc}
      * 
      * @see com.mycila.testing.plugins.jetty.locator.FileLocator#locate(java.lang.String)
      */
-    public File locate(
+    public Iterable<File> locate(
             final String path)
         throws FileNotFoundException
     {
         final Collection<File> files = listFiles(new File("."), new RegExpFileFilter(path), trueFileFilter());
         if (files.size() < 1) {
-            throw new FileNotFoundException("regexp '" + quoteReplacement(path) + "' matches less than one file : "
-                    + files);
+            throw new FileNotFoundException("regexp '" + quoteReplacement(path) + "' matches less than one file : " + files);
         }
         else if (files.size() > 1) {
-            throw new FileNotFoundException("regexp '" + quoteReplacement(path) + "' matches more than one file : "
-                    + files);
+            //throw new FileNotFoundException("regexp '" + quoteReplacement(path) + "' matches more than one file : " + files);
         }
-
-        final File file = files.iterator().next();
-        return file;
+        
+        return files;
     }
+    
 
     static class RegExpFileFilter
             implements IOFileFilter {
-
+        
         RegExpFileFilter(
                 final String regexp)
         {
             this.regexp = regexp;
         }
-
+        
 
         public boolean accept(
                 final File dir,
@@ -68,7 +66,7 @@ class RegFileLocator
         {
             return this.accept(new File(dir, name));
         }
-
+        
 
         public boolean accept(
                 final File file)
@@ -76,9 +74,10 @@ class RegFileLocator
             final boolean matches = file.getPath().matches(this.regexp);
             return matches;
         }
+        
 
         private final String regexp;
-
+        
     }
-
+    
 }

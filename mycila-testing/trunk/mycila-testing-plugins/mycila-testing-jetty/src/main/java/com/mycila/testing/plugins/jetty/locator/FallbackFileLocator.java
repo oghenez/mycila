@@ -16,12 +16,16 @@
 
 package com.mycila.testing.plugins.jetty.locator;
 
+import static com.google.common.base.Predicates.not;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import com.google.common.collect.Iterables;
+
 class FallbackFileLocator
         implements FileLocator {
-
+    
     public FallbackFileLocator(
             final FileLocator locator,
             final FileLocator fallbackLocator)
@@ -29,23 +33,25 @@ class FallbackFileLocator
         this.locator = locator;
         this.fallbackLocator = fallbackLocator;
     }
+    
 
-
-    public File locate(
+    public Iterable<File> locate(
             final String path)
         throws FileNotFoundException
     {
-        File file = this.locator.locate(path);
-
-        if ((file == null) || !file.exists()) {
-            file = this.fallbackLocator.locate(path);
+        Iterable<File> files = this.locator.locate(path);
+        
+        final boolean useFallback = Iterables.any(files, not(new ExistsFilePredicate()));
+        if (useFallback) {
+            files = this.fallbackLocator.locate(path);
         }
-
-        return file;
+        
+        return files;
     }
+    
 
     private final FileLocator locator;
-
+    
     private final FileLocator fallbackLocator;
-
+    
 }

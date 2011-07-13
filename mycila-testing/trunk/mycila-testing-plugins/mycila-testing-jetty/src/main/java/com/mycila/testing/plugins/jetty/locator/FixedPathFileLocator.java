@@ -21,7 +21,7 @@ import java.io.FileNotFoundException;
 
 class FixedPathFileLocator
         implements FileLocator {
-
+    
     public FixedPathFileLocator(
             final FileLocator locator,
             final String fixedPath)
@@ -29,17 +29,18 @@ class FixedPathFileLocator
         this.locator = locator;
         this.fixedPath = fixedPath;
     }
+    
 
-
-    public File locate(
+    public Iterable<File> locate(
             final String path)
         throws FileNotFoundException
     {
         return this.locator.locate(this.fixedPath);
     }
+    
 
     private final FileLocator locator;
-
+    
     private final String fixedPath;
-
+    
 }

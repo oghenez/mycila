@@ -20,9 +20,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 public interface FileLocator {
-
-    File locate(
+    
+    Iterable<File> locate(
             String path)
         throws FileNotFoundException;
-
+    
 }
