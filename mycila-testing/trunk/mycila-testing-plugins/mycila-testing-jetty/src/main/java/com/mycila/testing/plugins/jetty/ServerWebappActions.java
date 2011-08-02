@@ -208,7 +208,7 @@ public class ServerWebappActions {
         this.getWebAppContext().stop();
 
         if (config != null) {
-            config.getServerLifeCycleListener().beforeWebappStop(this.getServer(), this.getWebAppContext());
+            config.getServerLifeCycleListener().afterWebappStop(this.getServer(), this.getWebAppContext());
         }
 
         this.getContextHandlerCollection().removeHandler(this.getWebAppContext());
