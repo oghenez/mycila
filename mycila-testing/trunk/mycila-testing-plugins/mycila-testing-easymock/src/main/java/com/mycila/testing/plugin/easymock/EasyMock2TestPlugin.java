@@ -44,7 +44,7 @@ public final class EasyMock2TestPlugin extends DefaultTestPlugin {
     }
 
     private Object mock(Field field) {
-        String name = field.getDeclaringClass().getName().replaceAll(".", "_") + "_" + field.getName();
+        String name = field.getDeclaringClass().getName().replace('.', '_') + "_" + field.getName();
         switch (field.getAnnotation(Mock.class).value()) {
             case STANDARD:
                 return EasyMock.createMock(name, field.getType());
