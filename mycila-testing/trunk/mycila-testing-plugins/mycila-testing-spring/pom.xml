@@ -9,7 +9,7 @@
     <parent>
         <groupId>com.mycila.testing.plugins</groupId>
         <artifactId>mycila-testing-plugins</artifactId>
-        <version>2.9-SNAPSHOT</version>
+        <version>2.9.ga</version>
     </parent>
 
     <artifactId>mycila-testing-spring</artifactId>
