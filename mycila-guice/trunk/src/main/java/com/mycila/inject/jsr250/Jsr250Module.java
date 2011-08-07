@@ -16,23 +16,16 @@
 
 package com.mycila.inject.jsr250;
 
-import com.google.inject.Binder;
-import com.google.inject.Binding;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Module;
-import com.google.inject.Scope;
-import com.google.inject.Scopes;
-import com.google.inject.Singleton;
+import com.google.inject.*;
 import com.google.inject.spi.BindingScopingVisitor;
+import com.google.inject.spi.InstanceBinding;
+import com.google.inject.spi.ProviderInstanceBinding;
 import com.mycila.inject.annotation.Jsr250Singleton;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static com.mycila.inject.MycilaGuice.in;
 
@@ -48,15 +41,18 @@ final class Jsr250Module implements Module {
     public void configure(Binder binder) {
         binder.bind(Jsr250Injector.class).to(Jsr250InjectorImpl.class).in(Singleton.class);
         in(binder)
-                .bindAnnotationInjector(Resource.class, Jsr250KeyProvider.class)
-                .handleMethodAfterInjection(PostConstruct.class, Jsr250PostConstructHandler.class)
-                .bind(Jsr250Destroyer.class, new Jsr250Destroyer() {
-                    @Inject
-                    Injector injector;
+            .bindAnnotationInjector(Resource.class, Jsr250KeyProvider.class)
+            .handleMethodAfterInjection(PostConstruct.class, Jsr250PostConstructHandler.class)
+            .bind(Jsr250Destroyer.class, new Jsr250Destroyer() {
+                @Inject
+                Injector injector;
 
-                    @Override
-                    public void preDestroy() {
-                        BindingScopingVisitor<Boolean> visitor = new BindingScopingVisitor<Boolean>() {
+                @Override
+                public void preDestroy() {
+                    Collection<Binding<?>> bindings = injector.getAllBindings().values();
+                    Map<Object, Object> identity = new IdentityHashMap<Object, Object>(bindings.size());
+                    for (final Binding<?> binding : bindings)
+                        if (Scopes.isSingleton(binding) || binding.acceptScopingVisitor(new BindingScopingVisitor<Boolean>() {
                             @Override
                             public Boolean visitEagerSingleton() {
                                 return true;
@@ -65,27 +61,32 @@ final class Jsr250Module implements Module {
                             @Override
                             public Boolean visitScope(Scope scope) {
                                 return scope.getClass().isAnnotationPresent(Jsr250Singleton.class)
-                                        || scopes.contains(scope);
+                                    || scopes.contains(scope);
                             }
 
                             @Override
                             public Boolean visitScopeAnnotation(Class<? extends Annotation> scopeAnnotation) {
                                 return scopeAnnotation.isAnnotationPresent(Jsr250Singleton.class)
-                                        || scopeAnnotations.contains(scopeAnnotation);
+                                    || scopeAnnotations.contains(scopeAnnotation);
                             }
 
                             @Override
                             public Boolean visitNoScoping() {
-                                return false;
+                                return binding instanceof ProviderInstanceBinding<?> || binding instanceof InstanceBinding<?>;
                             }
-                        };
-                        for (Binding<?> binding : injector.getAllBindings().values())
-                            if (Scopes.isSingleton(binding) || binding.acceptScopingVisitor(visitor))
+                        })) {
+                            if (binding instanceof ProviderInstanceBinding<?> && !identity.containsKey(((ProviderInstanceBinding) binding).getProviderInstance())) {
+                                Jsr250.preDestroy(((ProviderInstanceBinding) binding).getProviderInstance());
+                                identity.put(binding.getProvider(), Void.TYPE);
+                            } else if (!identity.containsKey(binding.getProvider().get())) {
                                 Jsr250.preDestroy(binding.getProvider().get());
-                        for (Scope scope : injector.getScopeBindings().values())
-                            Jsr250.preDestroy(scope);
-                    }
-                });
+                                identity.put(binding.getProvider().get(), Void.TYPE);
+                            }
+                        }
+                    for (Scope scope : injector.getScopeBindings().values())
+                        Jsr250.preDestroy(scope);
+                }
+            });
     }
 
     public Jsr250Module addCloseableScopes(Scope... scopes) {
