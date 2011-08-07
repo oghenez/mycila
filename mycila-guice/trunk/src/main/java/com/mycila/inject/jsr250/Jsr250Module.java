@@ -16,10 +16,11 @@
 
 package com.mycila.inject.jsr250;
 
+import com.google.common.base.Supplier;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import com.google.inject.*;
-import com.google.inject.spi.BindingScopingVisitor;
-import com.google.inject.spi.InstanceBinding;
-import com.google.inject.spi.ProviderInstanceBinding;
+import com.google.inject.spi.*;
 import com.mycila.inject.annotation.Jsr250Singleton;
 
 import javax.annotation.PostConstruct;
@@ -50,7 +51,20 @@ final class Jsr250Module implements Module {
                 @Override
                 public void preDestroy() {
                     Collection<Binding<?>> bindings = injector.getAllBindings().values();
-                    Map<Object, Object> identity = new IdentityHashMap<Object, Object>(bindings.size());
+                    Multimap<Binding<?>, Binding<?>> dependants = Multimaps.newSetMultimap(new IdentityHashMap<Binding<?>, Collection<Binding<?>>>(), new Supplier<Set<Binding<?>>>() {
+                        @Override
+                        public Set<Binding<?>> get() {
+                            return new HashSet<Binding<?>>();
+                        }
+                    });
+                    for (Binding<?> binding : bindings) {
+                        if (binding instanceof HasDependencies) {
+                            for (Dependency<?> dependency : ((HasDependencies) binding).getDependencies()) {
+                                dependants.put(injector.getBinding(dependency.getKey()), binding);
+                            }
+                        }
+                    }
+                    Map<Object, Object> done = new IdentityHashMap<Object, Object>(bindings.size());
                     for (final Binding<?> binding : bindings)
                         if (Scopes.isSingleton(binding) || binding.acceptScopingVisitor(new BindingScopingVisitor<Boolean>() {
                             @Override
@@ -75,16 +89,26 @@ final class Jsr250Module implements Module {
                                 return binding instanceof ProviderInstanceBinding<?> || binding instanceof InstanceBinding<?>;
                             }
                         })) {
-                            if (binding instanceof ProviderInstanceBinding<?> && !identity.containsKey(((ProviderInstanceBinding) binding).getProviderInstance())) {
-                                Jsr250.preDestroy(((ProviderInstanceBinding) binding).getProviderInstance());
-                                identity.put(binding.getProvider(), Void.TYPE);
-                            } else if (!identity.containsKey(binding.getProvider().get())) {
-                                Jsr250.preDestroy(binding.getProvider().get());
-                                identity.put(binding.getProvider().get(), Void.TYPE);
-                            }
+                            close(binding, done, dependants);
                         }
                     for (Scope scope : injector.getScopeBindings().values())
                         Jsr250.preDestroy(scope);
+                }
+
+                private void close(Binding<?> binding, Map<Object, Object> done, Multimap<Binding<?>, Binding<?>> dependants) {
+                    if (!done.containsKey(binding)) {
+                        done.put(binding, Void.TYPE);
+                        for (Binding<?> dependant : dependants.get(binding)) {
+                            close(dependant, done, dependants);
+                        }
+                        Object o;
+                        if ((binding instanceof ProviderInstanceBinding<?>
+                            && !done.containsKey(o = ((ProviderInstanceBinding) binding).getProviderInstance()))
+                            || !done.containsKey(o = binding.getProvider().get())) {
+                            Jsr250.preDestroy(o);
+                            done.put(o, Void.TYPE);
+                        }
+                    }
                 }
             });
     }
