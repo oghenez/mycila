@@ -17,13 +17,7 @@
 package com.mycila.inject.jsr250;
 
 import com.google.common.collect.Iterables;
-import com.google.inject.Binding;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.Module;
-import com.google.inject.Stage;
-import com.google.inject.TypeLiteral;
+import com.google.inject.*;
 import com.google.inject.spi.DefaultElementVisitor;
 import com.google.inject.spi.Element;
 import com.google.inject.spi.Elements;
@@ -45,56 +39,24 @@ public final class Jsr250 {
     private Jsr250() {
     }
 
-    /**
-     * Creates an injector for the given set of modules. To create an injector
-     * with a {@link com.google.inject.Stage} or other options, see {@link com.google.inject.InjectorBuilder}.
-     *
-     * @throws com.google.inject.CreationException
-     *          if one or more errors occur during injector
-     *          construction
-     */
     public static Jsr250Injector createInjector(Module... modules) {
         return createInjector(Arrays.asList(modules));
     }
 
-    /**
-     * Creates an injector for the given set of modules. To create an injector
-     * with a {@link com.google.inject.Stage} or other options, see {@link com.google.inject.InjectorBuilder}.
-     *
-     * @throws com.google.inject.CreationException
-     *          if one or more errors occur during injector
-     *          creation
-     */
     public static Jsr250Injector createInjector(Iterable<? extends Module> modules) {
         return createInjector(Stage.DEVELOPMENT, modules);
     }
 
-    /**
-     * Creates an injector for the given set of modules, in a given development
-     * stage. Use {@link com.google.inject.InjectorBuilder} for advanced injector creation.
-     *
-     * @throws com.google.inject.CreationException
-     *          if one or more errors occur during injector
-     *          creation.
-     */
     public static Jsr250Injector createInjector(Stage stage, Module... modules) {
         return createInjector(stage, Arrays.asList(modules));
     }
 
-    /**
-     * Creates an injector for the given set of modules, in a given development
-     * stage. Use {@link com.google.inject.InjectorBuilder} for advanced injector creation.
-     *
-     * @throws com.google.inject.CreationException
-     *          if one or more errors occur during injector
-     *          construction
-     */
     public static Jsr250Injector createInjector(Stage stage, Iterable<? extends Module> modules) {
 
         return Guice.createInjector(
-                stage,
-                hasJSR250Module(stage, modules) ? modules : Iterables.concat(modules, Arrays.asList(new Jsr250Module())))
-                .getInstance(Jsr250Injector.class);
+            stage,
+            hasJSR250Module(stage, modules) ? modules : Iterables.concat(modules, Arrays.asList(new Jsr250Module())))
+            .getInstance(Jsr250Injector.class);
     }
 
     private static boolean hasJSR250Module(Stage stage, Iterable<? extends Module> modules) {
