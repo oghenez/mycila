@@ -27,19 +27,13 @@ import com.google.inject.matcher.Matcher;
 import com.mycila.inject.MycilaGuice;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.google.common.collect.Iterables.concat;
-import static com.google.common.collect.Iterables.filter;
-import static com.google.common.collect.Iterables.transform;
+import static com.google.common.collect.Iterables.*;
 import static java.util.Arrays.asList;
 
 /**
@@ -148,7 +142,7 @@ public final class Reflect {
     private Reflect() {
     }
 
-    private static final Predicate<Method> METHOD_FILDER = new Predicate<Method>() {
+    private static final Predicate<Method> METHOD_FILTER = new Predicate<Method>() {
         @Override
         public boolean apply(Method member) {
             return !(member.isSynthetic() || member.isBridge());
@@ -178,7 +172,7 @@ public final class Reflect {
                 return Collections.emptyList();
             if (clazz == Object.class)
                 return OBJECT_METHODS;
-            final List<Signature> thisMethods = Lists.newArrayList(transform(filter(asList(clazz.isInterface() ? clazz.getMethods() : clazz.getDeclaredMethods()), METHOD_FILDER), TO_SIGNATURE));
+            final List<Signature> thisMethods = Lists.newArrayList(transform(filter(asList(clazz.isInterface() ? clazz.getMethods() : clazz.getDeclaredMethods()), METHOD_FILTER), TO_SIGNATURE));
             return concat(thisMethods, Iterables.filter(METHOD_CACHE.get(clazz.getSuperclass()), new Predicate<Signature>() {
                 @Override
                 public boolean apply(Signature input) {
