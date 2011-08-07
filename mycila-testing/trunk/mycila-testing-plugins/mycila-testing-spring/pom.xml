@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>2.5.6</version>
+            <version>3.0.5.RELEASE</version>
             <exclusions>
                 <exclusion>
                     <groupId>junit</groupId>
@@ -61,30 +61,19 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
-            <version>2.5.6</version>
+            <version>3.0.5.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
-            <version>2.5.6</version>
+            <version>3.0.5.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>2.5.6</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>aopalliance</groupId>
-                    <artifactId>aopalliance</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>3.0.5.RELEASE</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.javaconfig</groupId>
-            <artifactId>spring-javaconfig</artifactId>
-            <version>1.0.0.m3</version>
-            <scope>provided</scope>
-        </dependency>
+
         <!-- testing -->
         <dependency>
             <groupId>log4j</groupId>
@@ -95,25 +84,25 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
-            <version>2.5.6</version>
+            <version>3.0.5.RELEASE</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
-            <version>2.5.6</version>
+            <version>3.0.5.RELEASE</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
-            <version>2.5.6</version>
+            <version>3.0.5.RELEASE</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>2.5.6</version>
+            <version>3.0.5.RELEASE</version>
             <scope>test</scope>
         </dependency>
         <dependency>

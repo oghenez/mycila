@@ -16,7 +16,7 @@
 package com.mycila.testing.plugin.spring;
 
 import org.h2.Driver;
-import org.springframework.config.java.annotation.Configuration;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -29,17 +29,17 @@ import javax.sql.DataSource;
 @Configuration
 public class MyJavaConfig {
 
-    @org.springframework.config.java.annotation.Bean
+    @org.springframework.context.annotation.Bean
     public Dao dao() {
         return new DaoImpl();
     }
 
-    @org.springframework.config.java.annotation.Bean
+    @org.springframework.context.annotation.Bean
     public PlatformTransactionManager myTransactionManager() {
         return new DataSourceTransactionManager(dataSource());
     }
 
-    @org.springframework.config.java.annotation.Bean
+    @org.springframework.context.annotation.Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource(
                 "jdbc:h2:mem:",
