@@ -81,7 +81,8 @@ final class MycilaContextLoader extends GenericXmlContextLoader {
     }
 
     private void setupJavaConfig(GenericApplicationContext context, SpringContext ctx) {
-        context.setParent(new org.springframework.config.java.context.JavaConfigApplicationContext(ctx.classes()));
+        //context.setParent(new org.springframework.config.java.context.JavaConfigApplicationContext(ctx.classes()));
+        context.setParent(new org.springframework.context.annotation.AnnotationConfigApplicationContext(ctx.classes()));
     }
 
     protected String getBeanName(Member member, Bean annotation) {
