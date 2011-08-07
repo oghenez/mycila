@@ -22,6 +22,8 @@ import com.google.common.collect.Multimaps;
 import com.google.inject.*;
 import com.google.inject.spi.*;
 import com.mycila.inject.annotation.Jsr250Singleton;
+import com.mycila.inject.injector.KeyProvider;
+import com.mycila.inject.injector.MethodHandler;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -41,6 +43,8 @@ final class Jsr250Module implements Module {
     @Override
     public void configure(Binder binder) {
         binder.bind(Jsr250Injector.class).to(Jsr250InjectorImpl.class).in(Singleton.class);
+        binder.bind(Jsr250KeyProvider.class).in(Singleton.class);
+        binder.bind(Jsr250PostConstructHandler.class).in(Singleton.class);
         in(binder)
             .bindAnnotationInjector(Resource.class, Jsr250KeyProvider.class)
             .handleMethodAfterInjection(PostConstruct.class, Jsr250PostConstructHandler.class)
