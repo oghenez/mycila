@@ -16,8 +16,8 @@
 
 package com.mycila.junit.concurrent;
 
-import org.junit.rules.MethodRule;
-import org.junit.runners.model.FrameworkMethod;
+import org.junit.rules.TestRule;
+import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import java.util.concurrent.CountDownLatch;
@@ -25,21 +25,21 @@ import java.util.concurrent.CountDownLatch;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ConcurrentRule implements MethodRule {
+public final class ConcurrentRule implements TestRule {
     @Override
-    public Statement apply(final Statement statement, final FrameworkMethod frameworkMethod, final Object o) {
+    public Statement apply(final Statement base, final Description description) {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                Concurrency concurrency = frameworkMethod.getAnnotation(Concurrency.class);
+                Concurrency concurrency = description.getAnnotation(Concurrency.class);
                 if (concurrency == null)
-                    statement.evaluate();
+                    base.evaluate();
                 else {
                     int nThreads = Math.max(0, concurrency.value());
                     if (nThreads == 0)
                         nThreads = Runtime.getRuntime().availableProcessors();
                     ConcurrentRunnerScheduler scheduler = new ConcurrentRunnerScheduler(
-                            o.getClass().getSimpleName() + "." + frameworkMethod.getName(),
+                            description.getTestClass().getSimpleName() + "." + description.getMethodName(),
                             nThreads, nThreads);
                     final CountDownLatch go = new CountDownLatch(1);
                     Runnable runnable = new Runnable() {
@@ -47,7 +47,7 @@ public final class ConcurrentRule implements MethodRule {
                         public void run() {
                             try {
                                 go.await();
-                                statement.evaluate();
+                                base.evaluate();
                             } catch (InterruptedException e) {
                                 Thread.currentThread().interrupt();
                             } catch (Throwable throwable) {
