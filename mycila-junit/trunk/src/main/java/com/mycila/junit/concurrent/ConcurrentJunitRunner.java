@@ -37,6 +37,6 @@ public final class ConcurrentJunitRunner extends BlockJUnit4ClassRunner {
         setScheduler(new ConcurrentRunnerScheduler(
                 klass.getSimpleName(),
                 Math.min(Runtime.getRuntime().availableProcessors(), nThreads),
-                nThreads));
+                Math.max(Runtime.getRuntime().availableProcessors(), nThreads)));
     }
 }
