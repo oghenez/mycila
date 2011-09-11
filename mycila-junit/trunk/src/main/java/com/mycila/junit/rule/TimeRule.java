@@ -34,7 +34,7 @@ public final class TimeRule implements TestRule {
                     base.evaluate();
                 } finally {
                     time = System.currentTimeMillis() - time;
-                    System.out.println(String.format("[%s] %s.%s - %sns",
+                    System.out.println(String.format("[%s] %s.%s - %s ms",
                             Thread.currentThread().getName(),
                             description.getTestClass().getName(),
                             description.getMethodName(),
