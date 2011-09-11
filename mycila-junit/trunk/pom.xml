@@ -10,7 +10,7 @@
 
     <groupId>com.mycila</groupId>
     <artifactId>mycila-junit</artifactId>
-    <version>1.2.ga</version>
+    <version>1.3.ga-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Mycila Junit Extensions</name>
@@ -19,9 +19,9 @@
     <inceptionYear>2010</inceptionYear>
 
     <scm>
-        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-junit/tags/mycila-junit-1.2.ga</connection>
-        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-junit/tags/mycila-junit-1.2.ga</developerConnection>
-        <url>http://mycila.googlecode.com/svn/mycila-junit/tags/mycila-junit-1.2.ga</url>
+        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-junit/trunk</connection>
+        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-junit/trunk</developerConnection>
+        <url>http://mycila.googlecode.com/svn/mycila-junit/trunk</url>
     </scm>
 
     <build>
