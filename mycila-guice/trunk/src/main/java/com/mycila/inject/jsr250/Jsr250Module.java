@@ -22,8 +22,6 @@ import com.google.common.collect.Multimaps;
 import com.google.inject.*;
 import com.google.inject.spi.*;
 import com.mycila.inject.annotation.Jsr250Singleton;
-import com.mycila.inject.injector.KeyProvider;
-import com.mycila.inject.injector.MethodHandler;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -64,7 +62,7 @@ final class Jsr250Module implements Module {
                     for (Binding<?> binding : bindings.values()) {
                         if (binding instanceof HasDependencies) {
                             for (Dependency<?> dependency : ((HasDependencies) binding).getDependencies()) {
-                                if(bindings.containsKey(dependency.getKey())) {
+                                if (bindings.containsKey(dependency.getKey())) {
                                     dependants.put(injector.getBinding(dependency.getKey()), binding);
                                 }
                             }
@@ -72,29 +70,7 @@ final class Jsr250Module implements Module {
                     }
                     Map<Object, Object> done = new IdentityHashMap<Object, Object>(bindings.size());
                     for (final Binding<?> binding : bindings.values())
-                        if (Scopes.isSingleton(binding) || binding.acceptScopingVisitor(new BindingScopingVisitor<Boolean>() {
-                            @Override
-                            public Boolean visitEagerSingleton() {
-                                return true;
-                            }
-
-                            @Override
-                            public Boolean visitScope(Scope scope) {
-                                return scope.getClass().isAnnotationPresent(Jsr250Singleton.class)
-                                    || scopes.contains(scope);
-                            }
-
-                            @Override
-                            public Boolean visitScopeAnnotation(Class<? extends Annotation> scopeAnnotation) {
-                                return scopeAnnotation.isAnnotationPresent(Jsr250Singleton.class)
-                                    || scopeAnnotations.contains(scopeAnnotation);
-                            }
-
-                            @Override
-                            public Boolean visitNoScoping() {
-                                return binding instanceof ProviderInstanceBinding<?> || binding instanceof InstanceBinding<?>;
-                            }
-                        })) {
+                        if (new SingletonChecker(binding).isSingleton()) {
                             close(binding, done, dependants);
                         }
                     for (Scope scope : injector.getScopeBindings().values())
@@ -107,12 +83,18 @@ final class Jsr250Module implements Module {
                         for (Binding<?> dependant : dependants.get(binding)) {
                             close(dependant, done, dependants);
                         }
-                        Object o;
-                        if ((binding instanceof ProviderInstanceBinding<?>
-                            && !done.containsKey(o = ((ProviderInstanceBinding) binding).getProviderInstance()))
-                            || !done.containsKey(o = binding.getProvider().get())) {
-                            Jsr250.preDestroy(o);
-                            done.put(o, Void.TYPE);
+                        if (binding instanceof ProviderInstanceBinding<?>) {
+                            Object o = ((ProviderInstanceBinding) binding).getProviderInstance();
+                            if (!done.containsKey(o)) {
+                                Jsr250.preDestroy(o);
+                                done.put(o, Void.TYPE);
+                            }
+                        } else if (new SingletonChecker(binding).isSingleton()) {
+                            Object o = binding.getProvider().get();
+                            if (!done.containsKey(o)) {
+                                Jsr250.preDestroy(o);
+                                done.put(o, Void.TYPE);
+                            }
                         }
                     }
                 }
@@ -129,4 +111,38 @@ final class Jsr250Module implements Module {
         return this;
     }
 
+    private class SingletonChecker implements BindingScopingVisitor<Boolean> {
+
+        private final Binding<?> binding;
+
+        private SingletonChecker(Binding<?> binding) {
+            this.binding = binding;
+        }
+
+        boolean isSingleton() {
+            return Scopes.isSingleton(binding) || binding.acceptScopingVisitor(this);
+        }
+
+        @Override
+        public Boolean visitEagerSingleton() {
+            return true;
+        }
+
+        @Override
+        public Boolean visitScope(Scope scope) {
+            return scope.getClass().isAnnotationPresent(Jsr250Singleton.class) || scopes.contains(scope);
+        }
+
+        @Override
+        public Boolean visitScopeAnnotation(Class<? extends Annotation> scopeAnnotation) {
+            return scopeAnnotation.isAnnotationPresent(Jsr250Singleton.class)
+                || scopeAnnotations.contains(scopeAnnotation);
+        }
+
+        @Override
+        public Boolean visitNoScoping() {
+            return binding instanceof ProviderInstanceBinding<?> || binding instanceof InstanceBinding<?>;
+        }
+
+    }
 }
