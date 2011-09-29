@@ -54,22 +54,24 @@ final class Jsr250Module implements Module {
 
                 @Override
                 public void preDestroy() {
-                    Collection<Binding<?>> bindings = injector.getAllBindings().values();
+                    Map<Key<?>, Binding<?>> bindings = injector.getAllBindings();
                     Multimap<Binding<?>, Binding<?>> dependants = Multimaps.newSetMultimap(new IdentityHashMap<Binding<?>, Collection<Binding<?>>>(), new Supplier<Set<Binding<?>>>() {
                         @Override
                         public Set<Binding<?>> get() {
                             return new HashSet<Binding<?>>();
                         }
                     });
-                    for (Binding<?> binding : bindings) {
+                    for (Binding<?> binding : bindings.values()) {
                         if (binding instanceof HasDependencies) {
                             for (Dependency<?> dependency : ((HasDependencies) binding).getDependencies()) {
-                                dependants.put(injector.getBinding(dependency.getKey()), binding);
+                                if(bindings.containsKey(dependency.getKey())) {
+                                    dependants.put(injector.getBinding(dependency.getKey()), binding);
+                                }
                             }
                         }
                     }
                     Map<Object, Object> done = new IdentityHashMap<Object, Object>(bindings.size());
-                    for (final Binding<?> binding : bindings)
+                    for (final Binding<?> binding : bindings.values())
                         if (Scopes.isSingleton(binding) || binding.acceptScopingVisitor(new BindingScopingVisitor<Boolean>() {
                             @Override
                             public Boolean visitEagerSingleton() {
