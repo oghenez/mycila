@@ -38,7 +38,7 @@ public final class Insert {
             return Insert.this.statement;
         }
     };
-    private PreparedStatement statement;
+    PreparedStatement statement;
     private final String table;
     private Connection connection;
     private final Map<String, Param> inserts = new LinkedHashMap<String, Param>();
@@ -61,16 +61,7 @@ public final class Insert {
     }
 
     public Results executeAndReturns(String... columnNames) throws SqlException {
-        try {
-            buildStatement(columnNames);
-            statement.setFetchSize(1);
-            statement.executeUpdate();
-            return Results.build(statement.getGeneratedKeys(), mapper);
-        } catch (SQLException e) {
-            throw new SqlException(e.getMessage(), e);
-        } finally {
-            JdbcUtils.closeStatement(statement);
-        }
+        return Results.build(this, mapper, columnNames);
     }
 
     void buildStatement(String... columnNames) throws SQLException {

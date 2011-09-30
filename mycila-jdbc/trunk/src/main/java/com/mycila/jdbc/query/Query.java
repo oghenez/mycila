@@ -24,7 +24,7 @@ import java.util.NoSuchElementException;
 
 public final class Query extends Request<Query> {
 
-    private final PreparedStatement statement;
+    final PreparedStatement statement;
 
     Query(Connection connection, String query) {
         try {
@@ -48,13 +48,7 @@ public final class Query extends Request<Query> {
     }
 
     public Results execute() throws SqlException {
-        try {
-            return Results.build(statement.executeQuery(), mapper);
-        } catch (SQLException e) {
-            throw new SqlException(e.getMessage(), e);
-        } finally {
-            JdbcUtils.closeStatement(statement);
-        }
+        return Results.build(this, mapper);
     }
 
     @Override

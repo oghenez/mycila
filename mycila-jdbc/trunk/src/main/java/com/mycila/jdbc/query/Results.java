@@ -28,11 +28,11 @@ public final class Results {
     public final List<Column> columns;
     public final List<Row> rows;
 
-    private Results(ResultSet resultSet, Mapper mapper) {
+    private Results(ResultSet resultSet, Mapper mapper, int fetchSize) {
         try {
             final ResultSetMetaData metaData = resultSet.getMetaData();
             final int columnCount = resultSet.getMetaData().getColumnCount();
-            final int rowCount = Math.min(resultSet.getFetchSize(), 32); // guess - the value can be higher
+            final int rowCount = Math.min(fetchSize, 32); // guess - the value can be higher
             // headers and columns
             {
                 columns = new ArrayList<Column>(columnCount);
@@ -100,11 +100,43 @@ public final class Results {
         return list;
     }
 
-    static Results build(ResultSet resultSet, Mapper mapper) {
-        return new Results(resultSet, mapper);
-    }
-
     public boolean isEmpty() {
         return rows.isEmpty();
+    }
+
+    static Results build(Query query, Mapper mapper) {
+        try {
+            ResultSet resultSet = query.statement.executeQuery();
+            return new Results(resultSet, mapper, resultSet.getFetchSize());
+        } catch (SQLException e) {
+            throw new SqlException(e.getMessage(), e);
+        } finally {
+            JdbcUtils.closeStatement(query.statement);
+        }
+    }
+
+    public static Results build(Update update, Mapper mapper) {
+        try {
+            update.statement.executeUpdate();
+            update.statement.setFetchSize(1);
+            return new Results(update.statement.getGeneratedKeys(), mapper, 1);
+        } catch (SQLException e) {
+            throw new SqlException(e.getMessage(), e);
+        } finally {
+            JdbcUtils.closeStatement(update.statement);
+        }
+    }
+
+    public static Results build(Insert insert, Mapper mapper, String... columnNames) {
+        try {
+            insert.buildStatement(columnNames);
+            insert.statement.setFetchSize(1);
+            insert.statement.executeUpdate();
+            return new Results(insert.statement.getGeneratedKeys(), mapper, 1);
+        } catch (SQLException e) {
+            throw new SqlException(e.getMessage(), e);
+        } finally {
+            JdbcUtils.closeStatement(insert.statement);
+        }
     }
 }
