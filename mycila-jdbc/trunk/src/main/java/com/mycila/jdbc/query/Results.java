@@ -117,8 +117,8 @@ public final class Results {
 
     public static Results build(Update update, Mapper mapper) {
         try {
-            update.statement.executeUpdate();
             update.statement.setFetchSize(1);
+            update.statement.executeUpdate();
             return new Results(update.statement.getGeneratedKeys(), mapper, 1);
         } catch (SQLException e) {
             throw new SqlException(e.getMessage(), e);
