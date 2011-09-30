@@ -16,7 +16,6 @@
 
 package com.mycila.inject.injector;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.InjectionListener;
@@ -27,7 +26,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import static com.google.common.collect.Iterables.filter;
-import static com.google.common.collect.Iterables.reverse;
+import static com.google.common.collect.Lists.newLinkedList;
+import static com.google.common.collect.Lists.reverse;
 import static com.mycila.inject.internal.Reflect.annotatedBy;
 import static com.mycila.inject.internal.Reflect.findMethods;
 
@@ -50,7 +50,7 @@ public final class MethodHandlerTypeListener<A extends Annotation> implements Ty
             @Override
             public void afterInjection(I injectee) {
                 MethodHandler<A> handler = provider.get();
-                for (Method method : reverse(Lists.newLinkedList(filter(findMethods(type.getRawType()), annotatedBy(annotationType)))))
+                for (Method method : reverse(newLinkedList(filter(findMethods(type.getRawType()), annotatedBy(annotationType)))))
                     handler.handle(type, injectee, method, method.getAnnotation(annotationType));
             }
         });
