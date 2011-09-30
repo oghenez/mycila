@@ -22,7 +22,7 @@ import java.sql.SQLException;
 
 public final class Update extends Request<Update> {
 
-    private PreparedStatement statement;
+    PreparedStatement statement;
 
     private Update(Connection connection, String query, String... columnNames) {
         try {
@@ -43,15 +43,7 @@ public final class Update extends Request<Update> {
     }
 
     public Results executeAndReturnKeys() throws SqlException {
-        try {
-            statement.executeUpdate();
-            return Results.build(statement.getGeneratedKeys(), mapper);
-
-        } catch (SQLException e) {
-            throw new SqlException(e.getMessage(), e);
-        } finally {
-            JdbcUtils.closeStatement(statement);
-        }
+        return Results.build(this, mapper);
     }
 
     @Override
