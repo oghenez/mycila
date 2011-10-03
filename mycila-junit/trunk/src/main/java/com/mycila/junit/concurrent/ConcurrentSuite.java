@@ -34,18 +34,18 @@ public final class ConcurrentSuite extends Suite {
             @Override
             public Runner runnerForClass(Class<?> testClass) throws Throwable {
                 List<RunnerBuilder> builders = Arrays.asList(
-                        new RunnerBuilder() {
-                            @Override
-                            public Runner runnerForClass(Class<?> testClass) throws Throwable {
-                                Concurrency annotation = testClass.getAnnotation(Concurrency.class);
-                                return annotation != null ? new ConcurrentJunitRunner(testClass) : null;
-                            }
-                        },
-                        ignoredBuilder(),
-                        annotatedBuilder(),
-                        suiteMethodBuilder(),
-                        junit3Builder(),
-                        junit4Builder());
+                    new RunnerBuilder() {
+                        @Override
+                        public Runner runnerForClass(Class<?> testClass) throws Throwable {
+                            Concurrency annotation = testClass.getAnnotation(Concurrency.class);
+                            return annotation != null ? new ConcurrentJunitRunner(testClass) : null;
+                        }
+                    },
+                    ignoredBuilder(),
+                    annotatedBuilder(),
+                    suiteMethodBuilder(),
+                    junit3Builder(),
+                    junit4Builder());
                 for (RunnerBuilder each : builders) {
                     Runner runner = each.safeRunnerForClass(testClass);
                     if (runner != null)
@@ -61,9 +61,6 @@ public final class ConcurrentSuite extends Suite {
             SuiteClasses suiteClasses = klass.getAnnotation(SuiteClasses.class);
             nThreads = suiteClasses != null ? suiteClasses.value().length : Runtime.getRuntime().availableProcessors();
         }
-        setScheduler(new ConcurrentRunnerScheduler(
-                klass.getSimpleName(),
-                Math.min(Runtime.getRuntime().availableProcessors(), nThreads),
-                nThreads));
+        setScheduler(new ConcurrentRunnerScheduler(klass.getSimpleName(), nThreads));
     }
 }
