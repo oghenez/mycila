@@ -20,31 +20,31 @@ import org.junit.runners.model.RunnerScheduler;
 
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-final class ConcurrentRunnerScheduler implements RunnerScheduler {
+public final class ConcurrentRunnerScheduler implements RunnerScheduler {
+
+    private static final int CPUS = Runtime.getRuntime().availableProcessors();
 
     private final ExecutorService executorService;
     private final Queue<Future<Void>> tasks = new LinkedList<Future<Void>>();
     private final CompletionService<Void> completionService;
 
+    public ConcurrentRunnerScheduler(String name, int threads) {
+        this(name, Math.min(CPUS, threads), Math.max(CPUS, threads));
+    }
+
     public ConcurrentRunnerScheduler(String name, int nThreadsMin, int nThreadsMax) {
         executorService = new ThreadPoolExecutor(
-                nThreadsMin, nThreadsMax,
-                10L, TimeUnit.SECONDS,
-                new SynchronousQueue<Runnable>(),
-                new NamedThreadFactory(name),
-                new ThreadPoolExecutor.CallerRunsPolicy());
+            nThreadsMin, nThreadsMax,
+            10L, TimeUnit.SECONDS,
+            new SynchronousQueue<Runnable>(),
+            new NamedThreadFactory(name),
+            new ThreadPoolExecutor.CallerRunsPolicy());
         completionService = new ExecutorCompletionService<Void>(executorService);
     }
 
@@ -72,4 +72,18 @@ final class ConcurrentRunnerScheduler implements RunnerScheduler {
         }
     }
 
+    private static final class NamedThreadFactory implements ThreadFactory {
+        static final AtomicInteger poolNumber = new AtomicInteger(1);
+        final AtomicInteger threadNumber = new AtomicInteger(1);
+        final ThreadGroup group;
+
+        NamedThreadFactory(String poolName) {
+            group = new ThreadGroup(poolName + " Group-" + poolNumber.getAndIncrement());
+        }
+
+        @Override
+        public Thread newThread(Runnable r) {
+            return new Thread(group, r, group.getName() + "-Thread-" + threadNumber.getAndIncrement(), 0);
+        }
+    }
 }

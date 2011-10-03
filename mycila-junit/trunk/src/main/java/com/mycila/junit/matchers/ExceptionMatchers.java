@@ -3,6 +3,7 @@ package com.mycila.junit.matchers;
 import groovy.lang.Closure;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 
 import java.util.concurrent.Callable;
@@ -13,6 +14,20 @@ import java.util.concurrent.Callable;
 public final class ExceptionMatchers {
 
     private ExceptionMatchers() {
+    }
+
+    public static Matcher<Throwable> message(final String message) {
+        return new TypeSafeMatcher<Throwable>() {
+            @Override
+            protected boolean matchesSafely(Throwable item) {
+                return message == null && item.getMessage() == null || message != null && message.equals(item.getMessage());
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("message ").appendValue(message);
+            }
+        };
     }
 
     public static Expression expression(final Closure<?> c) {
@@ -33,34 +48,28 @@ public final class ExceptionMatchers {
         };
     }
 
-    public static Matcher<Throwable> message(final String message) {
-        return new TypeSafeMatcher<Throwable>() {
-            @Override
-            protected boolean matchesSafely(Throwable item) {
-                return message == null && item.getMessage() == null || message != null && message.equals(item.getMessage());
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("message ").appendValue(message);
-            }
-        };
+    public static Thrown thrown(Class<? extends Throwable> exceptionClass) {
+        return thrown(Matchers.<Throwable>instanceOf(exceptionClass));
     }
 
-    public static Thrown thrown(Class<? extends Throwable> exceptionClass) {
-        return new Thrown(exceptionClass);
+    public static Thrown thrown(Matcher<Throwable> typeMatcher) {
+        return new Thrown(typeMatcher);
     }
 
     public static final class Thrown extends TypeSafeMatcher<Expression> {
-        private final Class<? extends Throwable> exceptionClass;
-        private String message;
+        private final Matcher<Throwable> typeMatcher;
+        private Matcher<String> message;
 
-        private Thrown(Class<? extends Throwable> exceptionClass) {
-            this.exceptionClass = exceptionClass;
+        private Thrown(Matcher<Throwable> typeMatcher) {
+            this.typeMatcher = typeMatcher;
         }
 
-        public Matcher<Expression> withMessage(String msg) {
-            this.message = msg;
+        public Thrown withMessage(String msg) {
+            return withMessage(Matchers.equalTo(msg));
+        }
+
+        public Thrown withMessage(Matcher<String> message) {
+            this.message = message;
             return this;
         }
 
@@ -70,15 +79,16 @@ public final class ExceptionMatchers {
                 item.run();
                 return false;
             } catch (Throwable e) {
-                return exceptionClass.isInstance(e) && (message == null || message.equals(e.getMessage()));
+
+                return typeMatcher.matches(e) && (message == null || message.matches(e.getMessage()));
             }
         }
 
         @Override
         public void describeTo(Description description) {
-            description.appendText("expression throwing ").appendValue(exceptionClass.getName());
+            description.appendText("expression throwing ").appendDescriptionOf(typeMatcher);
             if (message != null) {
-                description.appendText(" with message ").appendValue(message);
+                description.appendText(" with message ").appendDescriptionOf(message);
             }
         }
     }

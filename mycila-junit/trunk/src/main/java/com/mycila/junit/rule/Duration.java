@@ -23,7 +23,7 @@ import org.junit.runners.model.Statement;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class TimeRule implements TestRule {
+public final class Duration implements TestRule {
     @Override
     public Statement apply(final Statement base, final Description description) {
         return new Statement() {
@@ -34,11 +34,20 @@ public final class TimeRule implements TestRule {
                     base.evaluate();
                 } finally {
                     time = System.currentTimeMillis() - time;
-                    System.out.println(String.format("[%s] %s.%s - %s ms",
+                    if (description.isTest()) {
+                        System.out.println(String.format("[%s] [%s] %s#%s - %s ms",
+                            Duration.this.getClass().getSimpleName(),
                             Thread.currentThread().getName(),
                             description.getTestClass().getName(),
                             description.getMethodName(),
                             time));
+                    } else {
+                        System.out.println(String.format("[%s] [%s] %s - %s ms",
+                            Duration.this.getClass().getSimpleName(),
+                            Thread.currentThread().getName(),
+                            description.getTestClass().getName(),
+                            time));
+                    }
                 }
             }
         };

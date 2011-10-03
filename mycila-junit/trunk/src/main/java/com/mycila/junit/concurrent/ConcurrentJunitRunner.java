@@ -34,9 +34,6 @@ public final class ConcurrentJunitRunner extends BlockJUnit4ClassRunner {
             nThreads = new TestClass(klass).getAnnotatedMethods(Test.class).size();
         if (nThreads == 0)
             nThreads = Runtime.getRuntime().availableProcessors();
-        setScheduler(new ConcurrentRunnerScheduler(
-                klass.getSimpleName(),
-                Math.min(Runtime.getRuntime().availableProcessors(), nThreads),
-                Math.max(Runtime.getRuntime().availableProcessors(), nThreads)));
+        setScheduler(new ConcurrentRunnerScheduler(klass.getSimpleName(), nThreads));
     }
 }

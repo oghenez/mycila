@@ -16,6 +16,7 @@
 
 package com.mycila.junit.concurrent;
 
+import com.mycila.junit.rule.TestExecution;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,7 +29,7 @@ import java.util.Random;
 public final class ConcurrentThrowingTest {
 
     @Rule
-    public ConcurrentRule concurrentRule = new ConcurrentRule();
+    public TestExecution testExecution = new TestExecution();
 
     @Test
     @Concurrency(10)
