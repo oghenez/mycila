@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
 /**
  * Set the number of threads.
  * <br>
- * If 0 or less, the number of thread will be the number of test methdds ot test classes in the suite.
+ * If 0 or less, the number of thread will be the number of test methods or test classes in the suite.
  * <br>
  * If the computation cannot be done, the default thread number will be the number of available cores.
  *

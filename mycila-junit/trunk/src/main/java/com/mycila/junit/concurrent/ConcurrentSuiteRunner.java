@@ -28,8 +28,8 @@ import java.util.List;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class ConcurrentSuite extends Suite {
-    public ConcurrentSuite(Class<?> klass) throws InitializationError {
+public final class ConcurrentSuiteRunner extends Suite {
+    public ConcurrentSuiteRunner(Class<?> klass) throws InitializationError {
         super(klass, new AllDefaultPossibilitiesBuilder(true) {
             @Override
             public Runner runnerForClass(Class<?> testClass) throws Throwable {
@@ -59,7 +59,7 @@ public final class ConcurrentSuite extends Suite {
             nThreads = Math.max(0, klass.getAnnotation(Concurrency.class).value());
         if (nThreads == 0) {
             SuiteClasses suiteClasses = klass.getAnnotation(SuiteClasses.class);
-            nThreads = suiteClasses != null ? suiteClasses.value().length : Runtime.getRuntime().availableProcessors();
+            nThreads = suiteClasses != null && suiteClasses.value().length > 0 ? suiteClasses.value().length : Runtime.getRuntime().availableProcessors();
         }
         setScheduler(new ConcurrentRunnerScheduler(klass.getSimpleName(), nThreads));
     }
