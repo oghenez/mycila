@@ -27,7 +27,7 @@ import java.util.concurrent.CountDownLatch;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-public final class TestExecution implements TestRule {
+public final class TestRepeater implements TestRule {
     @Override
     public Statement apply(final Statement base, final Description description) {
         return new Statement() {

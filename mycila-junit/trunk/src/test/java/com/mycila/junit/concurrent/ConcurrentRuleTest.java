@@ -16,7 +16,7 @@
 
 package com.mycila.junit.concurrent;
 
-import com.mycila.junit.rule.TestExecution;
+import com.mycila.junit.rule.TestRepeater;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -28,7 +28,7 @@ import java.util.Random;
 public final class ConcurrentRuleTest {
 
     @Rule
-    public TestExecution testExecution = new TestExecution();
+    public TestRepeater testRepeater = new TestRepeater();
 
     @Test
     @Concurrency(15)

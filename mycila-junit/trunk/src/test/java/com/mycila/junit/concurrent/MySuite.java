@@ -23,7 +23,7 @@ import org.junit.runners.Suite;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
-@RunWith(ConcurrentSuite.class)
+@RunWith(ConcurrentSuiteRunner.class)
 @Suite.SuiteClasses({ATest.class, ATest2.class, ATest3.class, ATest4.class})
 public class MySuite {
 
