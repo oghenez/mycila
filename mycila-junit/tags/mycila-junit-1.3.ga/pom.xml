@@ -1,0 +1,134 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.mycila</groupId>
+        <artifactId>parent-pom</artifactId>
+        <version>5</version>
+    </parent>
+
+    <groupId>com.mycila</groupId>
+    <artifactId>mycila-junit</artifactId>
+    <version>1.3.ga</version>
+    <packaging>jar</packaging>
+
+    <name>Mycila Junit Extensions</name>
+    <description>Contributions to Junit Framework</description>
+    <url>http://code.mycila.com/</url>
+    <inceptionYear>2010</inceptionYear>
+
+    <scm>
+        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-junit/tags/mycila-junit-1.3.ga</connection>
+        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-junit/tags/mycila-junit-1.3.ga</developerConnection>
+        <url>http://mycila.googlecode.com/svn/mycila-junit/tags/mycila-junit-1.3.ga</url>
+    </scm>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <configuration>
+                    <header>${basedir}/src/main/etc/header.txt</header>
+                    <failIfMissing>true</failIfMissing>
+                    <strictCheck>true</strictCheck>
+                    <properties>
+                        <owner>${project.organization.name}</owner>
+                        <year>${project.inceptionYear}</year>
+                        <email>mathieu.carbou@gmail.com</email>
+                    </properties>
+                    <excludes>
+                        <exclude>LICENSE.txt</exclude>
+                        <exclude>src/test/resources/**</exclude>
+                        <exclude>dependency-reduced-pom.xml</exclude>
+                        <exclude>tmp/**</exclude>
+                        <exclude>src/test/TODO.txt</exclude>
+                        <exclude>src/main/java/com/mycila/junit/internal/**</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>manifest</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <instructions>
+                        <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Name>${project.name}</Bundle-Name>
+                        <Bundle-Description>${project.description}</Bundle-Description>
+                        <Bundle-Version>${project.version}</Bundle-Version>
+                        <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                        <Bundle-DocURL>${project.url}</Bundle-DocURL>
+                        <Bundle-Copyright>Copyright (C) ${project.inceptionYear} ${project.organization.name}</Bundle-Copyright>
+                        <Private-Package>
+                            com.mycila.junit.internal
+                        </Private-Package>
+                        <Export-Package>
+                            !com.mycila.junit.internal*,
+                            com.mycila.junit*;version="${project.version}";-noimport:=true
+                        </Export-Package>
+                        <Import-Package>
+                            *
+                        </Import-Package>
+                        <_versionpolicy>[${version;===;${@}},${version;+;${@}})</_versionpolicy>
+                        <_removeheaders>
+                            Built-By,Tool,Created-By,
+                            Include-Resource,Private-Package,
+                            Ignore-Package,Bnd-LastModified
+                        </_removeheaders>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <useDefaultManifestFile>true</useDefaultManifestFile>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit-dep</artifactId>
+            <version>4.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>1.8.1</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>1.2.1</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <version>1.2.1</version>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+</project>
