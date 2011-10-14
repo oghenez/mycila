@@ -10,7 +10,7 @@
 
     <groupId>com.mycila</groupId>
     <artifactId>jdk-logging-perwebapp</artifactId>
-    <version>1.2.ga</version>
+    <version>1.3.ga-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>jdk-logging-perwebapp</name>
@@ -19,9 +19,9 @@
     <inceptionYear>2011</inceptionYear>
 
     <scm>
-        <connection>scm:svn:https://mycila.googlecode.com/svn/jdk-logging-perwebapp/tags/jdk-logging-perwebapp-1.2.ga</connection>
-        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/jdk-logging-perwebapp/tags/jdk-logging-perwebapp-1.2.ga</developerConnection>
-        <url>http://mycila.googlecode.com/svn/jdk-logging-perwebapp/tags/jdk-logging-perwebapp-1.2.ga</url>
+        <connection>scm:svn:https://mycila.googlecode.com/svn/jdk-logging-perwebapp/trunk</connection>
+        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/jdk-logging-perwebapp/trunk</developerConnection>
+        <url>http://mycila.googlecode.com/svn/jdk-logging-perwebapp/trunk</url>
     </scm>
 
     <build>
