@@ -39,18 +39,28 @@ public final class ContextualLogManager extends LogManager {
     private final Map<ClassLoader, LogManager> logManagers = new IdentityHashMap<ClassLoader, LogManager>();
 
     private static AtomicReference<ContextualLogManager> INSTANCE = new AtomicReference<ContextualLogManager>();
-    private static final Field loggerManagerField;
-    private static final Method initializeGlobalHandlers;
-    private static final Method readPrimordialConfiguration;
+    private static final Field Logger_manager;
+    private static final Field LogManager_rootLogger;
+    private static final Field LogManager_manager;
+    private static final Method LogManager_initializeGlobalHandlers;
+    private static final Method LogManager_readPrimordialConfiguration;
 
     static {
         try {
-            readPrimordialConfiguration = LogManager.class.getDeclaredMethod("readPrimordialConfiguration");
-            readPrimordialConfiguration.setAccessible(true);
-            initializeGlobalHandlers = LogManager.class.getDeclaredMethod("initializeGlobalHandlers");
-            initializeGlobalHandlers.setAccessible(true);
-            loggerManagerField = Logger.class.getDeclaredField("manager");
-            loggerManagerField.setAccessible(true);
+            LogManager_readPrimordialConfiguration = LogManager.class.getDeclaredMethod("readPrimordialConfiguration");
+            LogManager_readPrimordialConfiguration.setAccessible(true);
+
+            LogManager_initializeGlobalHandlers = LogManager.class.getDeclaredMethod("initializeGlobalHandlers");
+            LogManager_initializeGlobalHandlers.setAccessible(true);
+
+            LogManager_rootLogger = LogManager.class.getDeclaredField("rootLogger");
+            LogManager_rootLogger.setAccessible(true);
+
+            LogManager_manager = LogManager.class.getDeclaredField("manager");
+            LogManager_manager.setAccessible(true);
+
+            Logger_manager = Logger.class.getDeclaredField("manager");
+            Logger_manager.setAccessible(true);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -60,7 +70,7 @@ public final class ContextualLogManager extends LogManager {
         if (!INSTANCE.compareAndSet(null, this)) {
             throw new IllegalStateException("A ContextualLogManager has already been initialized !");
         }
-        System.out.println("=== Initializing " + ContextualLogManager.class.getSimpleName() + " ===");
+        LogManager.getLogManager().getLogger("").info("=== Initializing " + ContextualLogManager.class.getSimpleName() + " ===");
     }
 
     public static boolean isAvailable() {
@@ -74,53 +84,82 @@ public final class ContextualLogManager extends LogManager {
         return manager;
     }
 
-    public LogManager getContextualLogManager() {
-        ClassLoader webappClassLoader = Thread.currentThread().getContextClassLoader();
-        return logManagers.get(webappClassLoader);
+    public static ContextualLogManager replaceLogManager() {
+        if (!isAvailable()) {
+            final ContextualLogManager globalManager = new ContextualLogManager();
+            try {
+                LogManager_manager.set(null, globalManager);
+                Logger root = new Logger("", null) {
+                    {
+                        try {
+                            Logger_manager.set(this, globalManager);
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e.getMessage(), e);
+                        }
+                        setLevel(Level.INFO);
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "RootLogger for " + globalManager;
+                    }
+                };
+                LogManager_rootLogger.set(globalManager, root);
+                globalManager.addLogger(root);
+                LogManager_readPrimordialConfiguration.invoke(globalManager);
+                LogManager_initializeGlobalHandlers.invoke(globalManager);
+            } catch (Throwable e) {
+                throw new RuntimeException(e.getMessage(), e);
+            }
+        }
+        return get();
     }
 
-    public void unregisterWebapp(ClassLoader webappClassLoader) {
-        LogManager manager = logManagers.remove(webappClassLoader);
+    public LogManager getContextualLogManager() {
+        ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        return logManagers.get(contextClassLoader);
+    }
+
+    public void unregisterClassLoader(ClassLoader contextClassLoader) {
+        LogManager manager = logManagers.remove(contextClassLoader);
         if (manager != null) {
             manager.reset();
         }
     }
 
-    public void registerWebapp(ClassLoader webappClassLoader) {
-        final String name = webappClassLoader.toString();
-        final LogManager perWebapp = new LogManager() {
+    public void registerClassLoader(ClassLoader contextClassLoader) {
+        final String name = contextClassLoader.toString();
+        final LogManager perLoader = new LogManager() {
             @Override
             public String toString() {
-                return "LogManager for Webapp with classloader " + name;
+                return "LogManager for classloader " + name;
             }
         };
-        System.out.println("=== Creating " + perWebapp + " ===");
+        LogManager.getLogManager().getLogger("").info("=== Creating " + perLoader + " ===");
         try {
             Logger root = new Logger("", null) {
                 {
                     try {
-                        loggerManagerField.set(this, perWebapp);
+                        Logger_manager.set(this, perLoader);
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e.getMessage(), e);
                     }
-                    initializeGlobalHandlers.invoke(perWebapp);
                     setLevel(Level.INFO);
                 }
 
                 @Override
                 public String toString() {
-                    return "RootLogger for " + perWebapp;
+                    return "RootLogger for " + perLoader;
                 }
             };
-            Field rootLoggerField = LogManager.class.getDeclaredField("rootLogger");
-            rootLoggerField.setAccessible(true);
-            rootLoggerField.set(perWebapp, root);
-            perWebapp.addLogger(root);
-            readPrimordialConfiguration.invoke(perWebapp);
+            LogManager_rootLogger.set(perLoader, root);
+            perLoader.addLogger(root);
+            LogManager_readPrimordialConfiguration.invoke(perLoader);
+            LogManager_initializeGlobalHandlers.invoke(perLoader);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
-        logManagers.put(webappClassLoader, perWebapp);
+        logManagers.put(contextClassLoader, perLoader);
     }
 
     // DELEGATE METHODS
@@ -132,7 +171,7 @@ public final class ContextualLogManager extends LogManager {
             return super.addLogger(logger);
         } else {
             try {
-                loggerManagerField.set(logger, logManager);
+                Logger_manager.set(logger, logManager);
             } catch (IllegalAccessException e) {
                 throw new RuntimeException(e.getMessage(), e);
             }

@@ -18,6 +18,7 @@ package com.mycila.jdk.logging;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import java.util.logging.LogManager;
 
 /**
  * @author Mathieu Carbou
@@ -26,16 +27,16 @@ public final class ContextualLogManagerWebappListener implements ServletContextL
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         if (ContextualLogManager.isAvailable()) {
-            ContextualLogManager.get().registerWebapp(Thread.currentThread().getContextClassLoader());
+            ContextualLogManager.get().registerClassLoader(Thread.currentThread().getContextClassLoader());
         } else {
-            System.out.println("=== No ContextualLogManager available ===");
+            LogManager.getLogManager().getLogger("").info("=== No ContextualLogManager available ===");
         }
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         if (ContextualLogManager.isAvailable()) {
-            ContextualLogManager.get().unregisterWebapp(Thread.currentThread().getContextClassLoader());
+            ContextualLogManager.get().unregisterClassLoader(Thread.currentThread().getContextClassLoader());
         }
     }
 }
