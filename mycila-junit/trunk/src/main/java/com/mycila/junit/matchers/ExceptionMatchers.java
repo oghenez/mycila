@@ -73,6 +73,7 @@ public final class ExceptionMatchers {
     }
 
     public static final class Thrown extends TypeSafeMatcher<Expression> {
+
         private final Matcher<Throwable> typeMatcher;
         private Matcher<String> message;
 
@@ -91,13 +92,8 @@ public final class ExceptionMatchers {
 
         @Override
         protected boolean matchesSafely(Expression item) {
-            try {
-                item.run();
-                return false;
-            } catch (Throwable e) {
-
-                return typeMatcher.matches(e) && (message == null || message.matches(e.getMessage()));
-            }
+            item.execute();
+            return item.exception != null && typeMatcher.matches(item.exception) && (message == null || message.matches(item.exception.getMessage()));
         }
 
         @Override
@@ -110,11 +106,22 @@ public final class ExceptionMatchers {
     }
 
     public static abstract class Expression {
+
+        Throwable exception;
+
         abstract void run() throws Throwable;
+
+        final void execute() {
+            try {
+                run();
+            } catch (Throwable e) {
+                exception = e;
+            }
+        }
 
         @Override
         public String toString() {
-            return "working expression";
+            return exception == null ? "working expression" : "expression throwing " + exception.getClass().getName() + " with message: " + exception.getMessage();
         }
     }
 }
