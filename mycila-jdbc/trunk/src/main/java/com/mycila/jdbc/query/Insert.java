@@ -210,6 +210,14 @@ public final class Insert {
         return this;
     }
 
+    public final Insert setTimestamp(String column, Date time) {
+        return setTimestamp(column, time.getTime());
+    }
+
+    public final Insert setTimestamp(String column, long time) {
+        return setTimestamp(column, new Timestamp(time));
+    }
+    
     public final Insert setTimestamp(String column, final Timestamp x) {
         inserts.put(column, new Param() {
             @Override
