@@ -10,7 +10,7 @@
 
     <groupId>com.mycila</groupId>
     <artifactId>mycila-jdbc</artifactId>
-    <version>1.5.ga-SNAPSHOT</version>
+    <version>1.5.ga</version>
     <packaging>jar</packaging>
 
     <name>Mycila JDBC</name>
@@ -19,9 +19,9 @@
     <inceptionYear>2010</inceptionYear>
 
     <scm>
-        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-jdbc/trunk</connection>
-        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-jdbc/trunk</developerConnection>
-        <url>http://mycila.googlecode.com/svn/mycila-jdbc/trunk</url>
+        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-jdbc/tags/mycila-jdbc-1.5.ga</connection>
+        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-jdbc/tags/mycila-jdbc-1.5.ga</developerConnection>
+        <url>http://mycila.googlecode.com/svn/mycila-jdbc/tags/mycila-jdbc-1.5.ga</url>
     </scm>
 
     <build>
