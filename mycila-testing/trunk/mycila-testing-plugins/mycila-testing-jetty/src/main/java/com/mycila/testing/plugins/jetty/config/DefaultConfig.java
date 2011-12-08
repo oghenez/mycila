@@ -16,19 +16,6 @@
 
 package com.mycila.testing.plugins.jetty.config;
 
-import static com.google.common.base.Objects.firstNonNull;
-import static com.google.common.base.Throwables.propagate;
-import static com.google.common.collect.Iterables.get;
-import static java.lang.Boolean.parseBoolean;
-import static java.lang.Integer.parseInt;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Properties;
-
 import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;
 import com.mycila.testing.plugins.jetty.JettyRunWar;
@@ -36,6 +23,22 @@ import com.mycila.testing.plugins.jetty.NopServerLifeCycleListener;
 import com.mycila.testing.plugins.jetty.ServerLifeCycleListener;
 import com.mycila.testing.plugins.jetty.locator.FileLocator;
 import com.mycila.testing.plugins.jetty.locator.StrategyFileLocator;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
+import java.util.Properties;
+
+import static com.google.common.base.Objects.firstNonNull;
+import static com.google.common.base.Throwables.propagate;
+import static com.google.common.collect.Iterables.get;
+import static java.lang.Boolean.parseBoolean;
+import static java.lang.Integer.parseInt;
 
 /**
  * The default implementation with default values of {@link RawConfig} and provides {@link Config}uration extension.
@@ -352,15 +355,32 @@ public class DefaultConfig
     }
     
 
-    public ServerLifeCycleListener getServerLifeCycleListener()
+    public ServerLifeCycleListener getServerLifeCycleListener(
+            final Map context)
     {
         try {
-            return this.serverLifeCycleListenerClass.newInstance();
+            final Constructor[] constructors = this.serverLifeCycleListenerClass.getConstructors();
+            final ServerLifeCycleListener listener;
+            if (constructors.length == 1) {
+                listener = this.serverLifeCycleListenerClass.getConstructor().newInstance();
+            }
+            else {
+                final Constructor<? extends ServerLifeCycleListener> constructor = this.serverLifeCycleListenerClass.getConstructor(Map.class);
+                listener = constructor.newInstance(context);
+            }
+
+            return listener;
         }
         catch (final InstantiationException e) {
             throw propagate(e);
         }
         catch (final IllegalAccessException e) {
+            throw propagate(e);
+        }
+        catch (final NoSuchMethodException e) {
+            throw propagate(e);
+        }
+        catch (InvocationTargetException e) {
             throw propagate(e);
         }
     }

@@ -21,6 +21,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 import java.io.File;
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -38,6 +40,10 @@ import com.mycila.testing.core.api.TestExecution;
 import com.mycila.testing.plugins.jetty.config.Config;
 
 public class ServerWebappActions {
+
+    public ServerWebappActions() {
+        this.context.set(new HashMap());
+    }
 
     public void createServer(
             final TestExecution testExecution,
@@ -81,7 +87,7 @@ public class ServerWebappActions {
                 : Integer.toString(config.getServerPort());
         this.logger.info("server starting on localhost:{}", serverPortStr);
         if (config != null) {
-            config.getServerLifeCycleListener().beforeServerStart(this.getServer());
+            config.getServerLifeCycleListener(this.context.get()).beforeServerStart(this.getServer());
         }
 
         this.getServer().start();
@@ -89,7 +95,7 @@ public class ServerWebappActions {
         await().until(isReady, equalTo(true));
 
         if (config != null) {
-            config.getServerLifeCycleListener().afterServerStart(this.getServer());
+            config.getServerLifeCycleListener(this.context.get()).afterServerStart(this.getServer());
         }
         this.logger.info("server started");
     }
@@ -101,14 +107,14 @@ public class ServerWebappActions {
     {
         this.logger.info("server stopping");
         if (config != null) {
-            config.getServerLifeCycleListener().beforeServerStop(this.getServer());
+            config.getServerLifeCycleListener(this.context.get()).beforeServerStop(this.getServer());
         }
 
         this.getContextHandlerCollection().stop();
         this.getServer().stop();
 
         if (config != null) {
-            config.getServerLifeCycleListener().afterServerStop(this.getServer());
+            config.getServerLifeCycleListener(this.context.get()).afterServerStop(this.getServer());
         }
         this.logger.info("server stopped");
 
@@ -183,14 +189,14 @@ public class ServerWebappActions {
     {
         this.logger.info("webapp starting");
         if (config != null) {
-            config.getServerLifeCycleListener().beforeWebappStart(this.getServer(), this.getWebAppContext());
+            config.getServerLifeCycleListener(this.context.get()).beforeWebappStart(this.getServer(), this.getWebAppContext());
         }
 
         this.getContextHandlerCollection().addHandler(this.getWebAppContext());
         this.getWebAppContext().start();
 
         if (config != null) {
-            config.getServerLifeCycleListener().afterWebappStart(this.getServer(), this.getWebAppContext());
+            config.getServerLifeCycleListener(this.context.get()).afterWebappStart(this.getServer(), this.getWebAppContext());
         }
         this.logger.info("webapp started");
     }
@@ -202,13 +208,13 @@ public class ServerWebappActions {
     {
         this.logger.info("webapp stopping");
         if (config != null) {
-            config.getServerLifeCycleListener().beforeWebappStop(this.getServer(), this.getWebAppContext());
+            config.getServerLifeCycleListener(this.context.get()).beforeWebappStop(this.getServer(), this.getWebAppContext());
         }
 
         this.getWebAppContext().stop();
 
         if (config != null) {
-            config.getServerLifeCycleListener().afterWebappStop(this.getServer(), this.getWebAppContext());
+            config.getServerLifeCycleListener(this.context.get()).afterWebappStop(this.getServer(), this.getWebAppContext());
         }
 
         this.getContextHandlerCollection().removeHandler(this.getWebAppContext());
@@ -247,6 +253,8 @@ public class ServerWebappActions {
     private final AtomicReference<ContextHandlerCollection> contextHandlerCollection = new AtomicReference<ContextHandlerCollection>();
 
     private final AtomicReference<WebAppContext> webapp = new AtomicReference<WebAppContext>();
+
+    private final AtomicReference<Map> context = new AtomicReference<Map>();
 
     private static class WaitUntilReadyCallable
             implements Callable<Boolean> {
