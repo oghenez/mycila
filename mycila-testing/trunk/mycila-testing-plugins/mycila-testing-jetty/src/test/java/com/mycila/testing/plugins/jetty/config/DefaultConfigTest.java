@@ -26,6 +26,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.junit.Assert;
@@ -39,6 +41,118 @@ import com.mycila.testing.plugins.jetty.ServerLifeCycleListener;
  * Unit test of {@link DefaultConfig}.
  */
 public class DefaultConfigTest {
+
+    public static class DefaultConstructor {
+    }
+
+    public static class EmptyConstructor {
+        public EmptyConstructor() {}
+    }
+
+    public static class OneArgConstructor {
+        public OneArgConstructor(Map map) {}
+    }
+
+    public static class EmptyAndOneArgConstructor {
+        public EmptyAndOneArgConstructor() {}
+        public EmptyAndOneArgConstructor(Map map) {}
+    }
+
+    @Test
+    public void testConstructors()
+            throws NoSuchMethodException
+    {
+        assertEquals(1, DefaultConstructor.class.getConstructors().length);
+        DefaultConstructor.class.getConstructor();
+        assertEquals(1, DefaultConstructor.class.getDeclaredConstructors().length);
+        DefaultConstructor.class.getDeclaredConstructors();
+
+        assertEquals(1, EmptyConstructor.class.getConstructors().length);
+        EmptyConstructor.class.getConstructor();
+        assertEquals(1, EmptyConstructor.class.getDeclaredConstructors().length);
+        EmptyConstructor.class.getDeclaredConstructors();
+
+        assertEquals(1, OneArgConstructor.class.getConstructors().length);
+        OneArgConstructor.class.getConstructor(Map.class);
+        assertEquals(1, OneArgConstructor.class.getDeclaredConstructors().length);
+        OneArgConstructor.class.getDeclaredConstructor(Map.class);
+
+        assertEquals(2, EmptyAndOneArgConstructor.class.getConstructors().length);
+        EmptyAndOneArgConstructor.class.getConstructor();
+        EmptyAndOneArgConstructor.class.getConstructor(Map.class);
+        assertEquals(2, EmptyAndOneArgConstructor.class.getDeclaredConstructors().length);
+        EmptyAndOneArgConstructor.class.getDeclaredConstructors();
+        EmptyAndOneArgConstructor.class.getDeclaredConstructor(Map.class);
+    }
+
+    static class NoConstructorConfig extends DefaultConfig {
+        public Class<? extends ServerLifeCycleListener> getServerLifeCycleListenerClass()
+        {
+            return NoConstructorContextListener.class;
+        }
+    }
+    static class NoConstructorContextListener
+            extends NopServerLifeCycleListener {
+    }
+
+    @Test
+    public void testNoConstructorContextListener() {
+        final NoConstructorConfig config = new NoConstructorConfig();
+        assertThat(config.getServerLifeCycleListener(null), instanceOf(NopServerLifeCycleListener.class));
+    }
+
+    static class DefaultConstructorConfig extends DefaultConfig {
+        public Class<? extends ServerLifeCycleListener> getServerLifeCycleListenerClass()
+        {
+            return DefaultConstructorContextListener.class;
+        }
+    }
+    static class DefaultConstructorContextListener
+            extends NopServerLifeCycleListener {
+        public DefaultConstructorContextListener() {}
+    }
+
+    @Test
+    public void testDefaultConstructorContextListener() {
+        final DefaultConstructorConfig config = new DefaultConstructorConfig();
+        assertThat(config.getServerLifeCycleListener(null), instanceOf(NopServerLifeCycleListener.class));
+    }
+
+    static class OneArgConstructorConfig extends DefaultConfig {
+        public Class<? extends ServerLifeCycleListener> getServerLifeCycleListenerClass()
+        {
+            return OneArgConstructorContextListener.class;
+        }
+    }
+    static class OneArgConstructorContextListener
+            extends NopServerLifeCycleListener {
+        public OneArgConstructorContextListener(Map context) {}
+    }
+
+    @Test
+    public void testOneArgConstructorContextListener() {
+        final OneArgConstructorConfig config = new OneArgConstructorConfig();
+        assertThat(config.getServerLifeCycleListener(null), instanceOf(NopServerLifeCycleListener.class));
+    }
+
+    static class DefaultAndOneArgConstructorConfig extends DefaultConfig {
+        public Class<? extends ServerLifeCycleListener> getServerLifeCycleListenerClass()
+        {
+            return DefaultAndOneArgConstructorContextListener.class;
+        }
+    }
+    static class DefaultAndOneArgConstructorContextListener
+            extends NopServerLifeCycleListener {
+        public DefaultAndOneArgConstructorContextListener() {}
+        public DefaultAndOneArgConstructorContextListener(Map context) {}
+    }
+
+    @Test
+    public void testDefaultAndOneArgConstructorContextListener() {
+        final DefaultAndOneArgConstructorConfig config = new DefaultAndOneArgConstructorConfig();
+        assertThat(config.getServerLifeCycleListener(null), instanceOf(NopServerLifeCycleListener.class));
+    }
+
 
     @Test
     public final void testRawConfig()
@@ -147,7 +261,7 @@ public class DefaultConfigTest {
 
         final DefaultConfig config = new DefaultConfig(rawConfig);
         assertThat(config.getWarLocationUrl().toString(), endsWith("/pom.xml"));
-        assertThat(config.getServerLifeCycleListener(), instanceOf(NopServerLifeCycleListener.class));
+        assertThat(config.getServerLifeCycleListener(null), instanceOf(NopServerLifeCycleListener.class));
     }
 
 

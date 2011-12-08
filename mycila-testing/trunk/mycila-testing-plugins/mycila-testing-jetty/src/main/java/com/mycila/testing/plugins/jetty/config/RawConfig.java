@@ -105,7 +105,7 @@ public interface RawConfig {
 
     /**
      * The {@link ServerLifeCycleListener} class which allow customization of the server configuration. Default is
-     * {@value DefaultConfig#DEFAULT_CYCLE_LISTENER_CLASS}.
+     * {@link DefaultConfig#DEFAULT_CYCLE_LISTENER_CLASS}.
      * 
      * @return the server lifecycle listener class.
      */
