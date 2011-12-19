@@ -42,6 +42,10 @@ public final class SpringTestPlugin extends DefaultTestPlugin {
             setupContextLoader(ctx, new MycilaContextLoader(context));
             manager.prepareTestInstance(context.introspector().instance());
             context.attributes().set(APPLICATIONCONTEXT, manager.testContext().getApplicationContext());
+            if ( isSpring31() ) {
+                //Changed in http://www.swiftmind.com/de/2011/06/22/spring-3-1-m2-testing-with-configuration-classes-and-profiles/ "ApplicationContext Caching" - so force a refresh here
+                ctx.markApplicationContextDirty();
+            }
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -101,11 +105,6 @@ public final class SpringTestPlugin extends DefaultTestPlugin {
             Field contextLoaderField = mergedContextConfiguration.getClass().getDeclaredField("contextLoader");
             contextLoaderField.setAccessible(true);
             contextLoaderField.set(mergedContextConfiguration, loader);
-            
-            /*refresh context here - but how?
-            / see: http://www.swiftmind.com/de/2011/06/22/spring-3-1-m2-testing-with-configuration-classes-and-profiles/ "ApplicationContext Caching"
-             *
-             */
         }
     }
 
