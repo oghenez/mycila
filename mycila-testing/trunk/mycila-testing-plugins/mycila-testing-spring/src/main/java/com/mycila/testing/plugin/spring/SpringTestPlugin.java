@@ -86,7 +86,7 @@ public final class SpringTestPlugin extends DefaultTestPlugin {
             
             Field contextCache = ctx.getClass().getDeclaredField("contextCache");
             contextCache.setAccessible(true);
-            Constructor ctor = Class.forName("org.springframework.test.context.ContextCache").getDeclaredConstructor();
+            Constructor<?> ctor = Class.forName("org.springframework.test.context.ContextCache").getDeclaredConstructor();
             ctor.setAccessible(true);
             contextCache.set(ctx, ctor.newInstance());
         }
