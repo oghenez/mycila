@@ -19,6 +19,8 @@ package com.mycila.testing.plugin.spring;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
+import org.springframework.util.ClassUtils;
+
 import com.mycila.testing.core.api.TestContext;
 import com.mycila.testing.core.api.TestExecution;
 import com.mycila.testing.core.plugin.DefaultTestPlugin;
@@ -69,13 +71,7 @@ public final class SpringTestPlugin extends DefaultTestPlugin {
     }
     
     private boolean isSpring31() {
-        try {
-            Class.forName( "org.springframework.test.context.MergedContextConfiguration" );
-            return true;
-        }
-        catch ( ClassNotFoundException e ) {
-            return false;
-        }
+        return ClassUtils.isPresent( "org.springframework.test.context.MergedContextConfiguration", getClass().getClassLoader() );
     }
     
     private void setupContextLoader(org.springframework.test.context.TestContext ctx, MycilaContextLoader loader) throws Exception {
