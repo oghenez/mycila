@@ -16,12 +16,12 @@
 
 package com.mycila.testing.plugin.spring;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+
 import com.mycila.testing.core.api.TestContext;
 import com.mycila.testing.core.api.TestExecution;
 import com.mycila.testing.core.plugin.DefaultTestPlugin;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -63,19 +63,50 @@ public final class SpringTestPlugin extends DefaultTestPlugin {
                 testExecution.context().introspector().instance(),
                 testExecution.method());
     }
-
+    
+    private boolean isSpring31() {
+        try {
+            Class.forName( "org.springframework.test.context.MergedContextConfiguration" );
+            return true;
+        }
+        catch ( ClassNotFoundException e ) {
+            return false;
+        }
+    }
+    
     private void setupContextLoader(org.springframework.test.context.TestContext ctx, MycilaContextLoader loader) throws Exception {
-        Field locations = ctx.getClass().getDeclaredField("locations");
-        locations.setAccessible(true);
-        locations.set(ctx, loader.contextLocations());
-        Field contextLoader = ctx.getClass().getDeclaredField("contextLoader");
-        contextLoader.setAccessible(true);
-        contextLoader.set(ctx, loader);
-        Field contextCache = ctx.getClass().getDeclaredField("contextCache");
-        contextCache.setAccessible(true);
-        Constructor ctor = Class.forName("org.springframework.test.context.ContextCache").getDeclaredConstructor();
-        ctor.setAccessible(true);
-        contextCache.set(ctx, ctor.newInstance());
+        if ( !isSpring31() ) {
+            Field locations = ctx.getClass().getDeclaredField("locations");
+            locations.setAccessible(true);
+            locations.set(ctx, loader.contextLocations());
+
+            Field contextLoader = ctx.getClass().getDeclaredField("contextLoader");
+            contextLoader.setAccessible(true);
+            contextLoader.set(ctx, loader);
+            
+            Field contextCache = ctx.getClass().getDeclaredField("contextCache");
+            contextCache.setAccessible(true);
+            Constructor ctor = Class.forName("org.springframework.test.context.ContextCache").getDeclaredConstructor();
+            ctor.setAccessible(true);
+            contextCache.set(ctx, ctor.newInstance());
+        }
+        else {
+            Field mergedContextConfigurationField = ctx.getClass().getDeclaredField("mergedContextConfiguration");
+            mergedContextConfigurationField.setAccessible(true);
+            Object mergedContextConfiguration = mergedContextConfigurationField.get(ctx);
+            Field locations = mergedContextConfiguration.getClass().getDeclaredField("locations");
+            locations.setAccessible(true);
+            locations.set(mergedContextConfiguration, loader.contextLocations());
+            
+            Field contextLoaderField = mergedContextConfiguration.getClass().getDeclaredField("contextLoader");
+            contextLoaderField.setAccessible(true);
+            contextLoaderField.set(mergedContextConfiguration, loader);
+            
+            /*refresh context here - but how?
+            / see: http://www.swiftmind.com/de/2011/06/22/spring-3-1-m2-testing-with-configuration-classes-and-profiles/ "ApplicationContext Caching"
+             *
+             */
+        }
     }
 
     private static class TestContextManager extends org.springframework.test.context.TestContextManager {

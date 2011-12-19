@@ -19,7 +19,7 @@
     <description>Spring plugin</description>
     <url>http://old.mycila.com/p/mycila/mycila-testing/plugins/mycila-testing-spring/</url>
     <properties>
-    	<spring.fw.version>3.0.5.RELEASE</spring.fw.version>
+    	<spring.fw.version>3.1.0.RELEASE</spring.fw.version>
     </properties>
 
     <!--
