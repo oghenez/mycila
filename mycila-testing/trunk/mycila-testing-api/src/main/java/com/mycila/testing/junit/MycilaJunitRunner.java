@@ -65,7 +65,9 @@ public class MycilaJunitRunner extends BlockJUnit4ClassRunner {
                 try {
                     statement.evaluate();
                 } finally {
-                    testNotifier.fireAfterClass();
+                    if (testNotifier != null) {
+                        testNotifier.fireAfterClass();
+                    }
                 }
             }
         };
