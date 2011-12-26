@@ -83,18 +83,22 @@ final class Jsr250Module implements Module {
                         for (Binding<?> dependant : dependants.get(binding)) {
                             close(dependant, done, dependants);
                         }
-                        if (binding instanceof ProviderInstanceBinding<?>) {
-                            Object o = ((ProviderInstanceBinding) binding).getProviderInstance();
-                            if (!done.containsKey(o)) {
-                                Jsr250.preDestroy(o);
-                                done.put(o, Void.TYPE);
+                        try {
+                            if (binding instanceof ProviderInstanceBinding<?>) {
+                                Object o = ((ProviderInstanceBinding) binding).getProviderInstance();
+                                if (!done.containsKey(o)) {
+                                    Jsr250.preDestroy(o);
+                                    done.put(o, Void.TYPE);
+                                }
+                            } else if (new SingletonChecker(binding).isSingleton()) {
+                                Object o = binding.getProvider().get();
+                                if (!done.containsKey(o)) {
+                                    Jsr250.preDestroy(o);
+                                    done.put(o, Void.TYPE);
+                                }
                             }
-                        } else if (new SingletonChecker(binding).isSingleton()) {
-                            Object o = binding.getProvider().get();
-                            if (!done.containsKey(o)) {
-                                Jsr250.preDestroy(o);
-                                done.put(o, Void.TYPE);
-                            }
+                        } catch (Exception e) {
+                            // just ignore close errors
                         }
                     }
                 }
