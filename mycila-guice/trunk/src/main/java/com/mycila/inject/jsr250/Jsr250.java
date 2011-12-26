@@ -51,12 +51,33 @@ public final class Jsr250 {
         return createInjector(stage, Arrays.asList(modules));
     }
 
-    public static Jsr250Injector createInjector(Stage stage, Iterable<? extends Module> modules) {
+    private static class DestroyModule implements Module {
+        @Inject
+        private Jsr250Injector injector;
 
-        return Guice.createInjector(
-            stage,
-            hasJSR250Module(stage, modules) ? modules : Iterables.concat(modules, Arrays.asList(new Jsr250Module())))
-            .getInstance(Jsr250Injector.class);
+        @Override
+        public void configure(Binder binder) {
+            binder.requestInjection(this);
+        }
+
+        void destroy() {
+            if (injector != null)
+                injector.destroy();
+        }
+    }
+
+    public static Jsr250Injector createInjector(Stage stage, Iterable<? extends Module> modules) {
+        DestroyModule destroyModule = new DestroyModule();
+        modules = Iterables.concat(Arrays.asList(destroyModule), modules);
+        try {
+            return Guice.createInjector(
+                stage,
+                hasJSR250Module(stage, modules) ? modules : Iterables.concat(modules, Arrays.asList(new Jsr250Module())))
+                .getInstance(Jsr250Injector.class);
+        } catch (RuntimeException e) {
+            destroyModule.destroy();
+            throw e;
+        }
     }
 
     private static boolean hasJSR250Module(Stage stage, Iterable<? extends Module> modules) {
