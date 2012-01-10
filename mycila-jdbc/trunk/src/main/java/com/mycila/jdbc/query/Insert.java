@@ -74,7 +74,9 @@ public final class Insert {
         for (int i = 1; i < inserts.size(); i++)
             sb.append(",?");
         sb.append(")");
-        statement = connection.prepareStatement(sb.toString(), columnNames);
+        statement = columnNames == null || columnNames.length == 0 ?
+            connection.prepareStatement(sb.toString()) :
+            connection.prepareStatement(sb.toString(), columnNames);
         int i = 1;
         for (Param param : inserts.values())
             param.set(i++);
