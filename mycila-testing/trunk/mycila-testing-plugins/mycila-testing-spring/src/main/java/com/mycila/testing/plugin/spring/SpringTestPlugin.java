@@ -40,14 +40,16 @@ public final class SpringTestPlugin extends DefaultTestPlugin {
             final TestContextManager manager = new TestContextManager(context.introspector().testClass());
             final org.springframework.test.context.TestContext ctx = manager.testContext();
             context.attributes().set(TESTCONTEXTMANAGER, manager);
-            context.attributes().set(TESTCONTEXT, ctx);
-            setupContextLoader(ctx, new MycilaContextLoader(context));
-            manager.prepareTestInstance(context.introspector().instance());
-            context.attributes().set(APPLICATIONCONTEXT, manager.testContext().getApplicationContext());
+            
             if ( isSpring31() ) {
                 //Changed in http://www.swiftmind.com/de/2011/06/22/spring-3-1-m2-testing-with-configuration-classes-and-profiles/ "ApplicationContext Caching" - so force a refresh here
                 ctx.markApplicationContextDirty();
             }
+            
+            context.attributes().set(TESTCONTEXT, ctx);
+            setupContextLoader(ctx, new MycilaContextLoader(context));
+            context.attributes().set(APPLICATIONCONTEXT, manager.testContext().getApplicationContext());
+            manager.prepareTestInstance(context.introspector().instance());
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
         }
