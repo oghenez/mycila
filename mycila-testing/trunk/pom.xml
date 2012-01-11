@@ -88,6 +88,7 @@
                                 <exclude>LICENSE.txt</exclude>
                                 <exclude>**/src/test/resources/**</exclude>
                                 <exclude>**/src/test/data/**</exclude>
+                                <exclude>mycila-testing-plugins/mycila-testing-powermock/**</exclude>
                             </excludes>
                         </configuration>
                     </execution>

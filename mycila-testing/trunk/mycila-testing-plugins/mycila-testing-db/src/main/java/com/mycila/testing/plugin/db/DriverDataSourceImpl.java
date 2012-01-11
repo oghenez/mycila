@@ -24,7 +24,9 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -130,4 +132,7 @@ final class DriverDataSourceImpl implements DataSource {
         return dataSource;
     }
 
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        return Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    }
 }
