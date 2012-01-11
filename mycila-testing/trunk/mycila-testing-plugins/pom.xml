@@ -43,6 +43,7 @@
         <module>mycila-testing-jmock</module>
         <module>mycila-testing-mockito</module>
         <module>mycila-testing-spring</module>
+        <!--<module>mycila-testing-powermock</module>-->
     </modules>
 
     <build>
