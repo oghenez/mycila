@@ -18,12 +18,15 @@ package com.mycila.testing.plugins.jetty.locator;
 
 import static java.util.regex.Matcher.quoteReplacement;
 import static org.apache.commons.io.FileUtils.listFiles;
+import static org.apache.commons.io.FilenameUtils.separatorsToUnix;
 import static org.apache.commons.io.filefilter.FileFilterUtils.trueFileFilter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Collection;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.IOFileFilter;
 
 class RegFileLocator
@@ -71,7 +74,7 @@ class RegFileLocator
         public boolean accept(
                 final File file)
         {
-            final boolean matches = file.getPath().matches(this.regexp);
+            final boolean matches = separatorsToUnix(file.getPath()).matches(this.regexp);
             return matches;
         }
         
