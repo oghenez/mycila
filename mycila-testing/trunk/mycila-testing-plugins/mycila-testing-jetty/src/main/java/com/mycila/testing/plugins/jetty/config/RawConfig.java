@@ -38,6 +38,7 @@ public interface RawConfig {
      * <li>starts with "reg:" to enable the following to be java regular expression for this path, ie :
      * <code>'reg:\\.\\/webapp-.*\\.war'</code>;
      * <ul>
+     * <li>only unix path is supported, mean using slash '/' path separator</li>
      * <li>the regular expression should starts with the current directory {@code './'}, which translated in java
      * pattern is {@code '\\.\\/'}
      * </ul>
