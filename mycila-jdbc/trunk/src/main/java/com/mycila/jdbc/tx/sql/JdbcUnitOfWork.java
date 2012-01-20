@@ -19,6 +19,7 @@ package com.mycila.jdbc.tx.sql;
 import com.mycila.jdbc.UnitOfWork;
 
 import javax.inject.Singleton;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,5 +45,45 @@ public final class JdbcUnitOfWork implements UnitOfWork {
             holder.close();
         // be sure to clean the thread local map
         ConnectionHolder.clean();
+    }
+
+    @Override
+    public Runnable associateWith(final Runnable runnable) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    begin();
+                    runnable.run();
+                } finally {
+                    end();
+                }
+            }
+        };
+    }
+
+    @Override
+    public <V> Callable<V> associateWith(final Callable<V> callable) {
+        return new Callable<V>() {
+            @Override
+            public V call() throws Exception {
+                try {
+                    begin();
+                    return callable.call();
+                } finally {
+                    end();
+                }
+            }
+        };
+    }
+
+    @Override
+    public void run(Runnable runnable) {
+        associateWith(runnable).run();
+    }
+
+    @Override
+    public <V> V run(Callable<V> callable) throws Exception {
+        return associateWith(callable).call();
     }
 }
