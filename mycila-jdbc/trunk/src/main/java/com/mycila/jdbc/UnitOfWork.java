@@ -16,8 +16,19 @@
 
 package com.mycila.jdbc;
 
+import java.util.concurrent.Callable;
+
 public interface UnitOfWork {
     void begin();
 
     void end();
+
+    Runnable associateWith(Runnable runnable);
+
+    <V> Callable<V> associateWith(Callable<V> callable);
+
+    void run(Runnable runnable);
+
+    <V> V run(Callable<V> callable) throws Exception;
+
 }
