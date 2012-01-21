@@ -160,6 +160,12 @@
             <version>1</version>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>3.0</version>
+            <optional>true</optional>
+        </dependency>
         <!-- testing -->
         <dependency>
             <groupId>junit</groupId>
