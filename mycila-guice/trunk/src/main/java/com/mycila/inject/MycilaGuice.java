@@ -16,28 +16,13 @@
 
 package com.mycila.inject;
 
-import com.google.inject.Binder;
-import com.google.inject.BindingAnnotation;
-import com.google.inject.Module;
-import com.google.inject.Scope;
+import com.google.inject.*;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.matcher.Matchers;
-import com.mycila.inject.injector.AnnotatedMemberHandler;
-import com.mycila.inject.injector.AnnotatedMemberHandlerTypeListener;
-import com.mycila.inject.injector.FieldHandler;
-import com.mycila.inject.injector.FieldHandlerTypeListener;
-import com.mycila.inject.injector.KeyProvider;
-import com.mycila.inject.injector.MemberInjectorTypeListener;
-import com.mycila.inject.injector.MethodHandler;
-import com.mycila.inject.injector.MethodHandlerTypeListener;
-import com.mycila.inject.scope.ConcurrentSingleton;
-import com.mycila.inject.scope.ExpiringSingleton;
-import com.mycila.inject.scope.RenewableSingleton;
-import com.mycila.inject.scope.ResetScope;
-import com.mycila.inject.scope.ResetSingleton;
-import com.mycila.inject.scope.SoftSingleton;
-import com.mycila.inject.scope.WeakSingleton;
+import com.mycila.inject.injector.*;
+import com.mycila.inject.scope.*;
 import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.Annotation;
@@ -58,72 +43,81 @@ public final class MycilaGuice {
                                        Matcher<? super Method> methodMatcher,
                                        MethodInterceptor... interceptors) {
         for (MethodInterceptor interceptor : interceptors)
-            inject(interceptor);
+            requestInjection(interceptor);
         binder.bindInterceptor(classMatcher, methodMatcher, interceptors);
         return this;
     }
 
     public Scope expiringSingleton(long expirity, TimeUnit unit) {
-        return inject(new ExpiringSingleton(expirity, unit));
+        return requestInjection(new ExpiringSingleton(expirity, unit));
     }
 
     public Scope renewableSingleton(long expirity, TimeUnit unit) {
-        return inject(new RenewableSingleton(expirity, unit));
+        return requestInjection(new RenewableSingleton(expirity, unit));
     }
 
     public Scope weakSingleton() {
-        return inject(new WeakSingleton());
+        return requestInjection(new WeakSingleton());
     }
 
     public Scope softSingleton() {
-        return inject(new SoftSingleton());
+        return requestInjection(new SoftSingleton());
     }
 
     public Scope concurrentSingleton() {
-        return inject(new ConcurrentSingleton(10, TimeUnit.SECONDS));
+        return requestInjection(new ConcurrentSingleton(10, TimeUnit.SECONDS));
     }
 
     public Scope concurrentSingleton(long expirity, TimeUnit unit) {
-        return inject(new ConcurrentSingleton(expirity, unit));
+        return requestInjection(new ConcurrentSingleton(expirity, unit));
     }
 
     public ResetScope resetSingleton() {
-        return inject(new ResetSingleton());
+        return requestInjection(new ResetSingleton());
     }
 
     public <A extends Annotation> MycilaGuice bindAnnotationInjector(Class<A> annotationType, Class<? extends KeyProvider<A>> providerClass) {
-        binder.bindListener(Matchers.any(), inject(new MemberInjectorTypeListener<A>(annotationType, providerClass)));
+        binder.bindListener(Matchers.any(), requestInjection(new MemberInjectorTypeListener<A>(annotationType, providerClass)));
         return this;
     }
 
     public <A extends Annotation> MycilaGuice handleMethodAfterInjection(Class<A> annotationType, Class<? extends MethodHandler<A>> providerClass) {
-        binder.bindListener(Matchers.any(), inject(new MethodHandlerTypeListener<A>(annotationType, providerClass)));
+        binder.bindListener(Matchers.any(), requestInjection(new MethodHandlerTypeListener<A>(annotationType, providerClass)));
         return this;
     }
 
     public <A extends Annotation> MycilaGuice handleFieldAfterInjection(Class<A> annotationType, Class<? extends FieldHandler<A>> providerClass) {
-        binder.bindListener(Matchers.any(), inject(new FieldHandlerTypeListener<A>(annotationType, providerClass)));
+        binder.bindListener(Matchers.any(), requestInjection(new FieldHandlerTypeListener<A>(annotationType, providerClass)));
         return this;
     }
 
     public <A extends Annotation> MycilaGuice handleAfterInjection(Class<A> annotationType, Class<? extends AnnotatedMemberHandler<A>> providerClass) {
-        binder.bindListener(Matchers.any(), inject(new AnnotatedMemberHandlerTypeListener<A>(annotationType, providerClass)));
+        binder.bindListener(Matchers.any(), requestInjection(new AnnotatedMemberHandlerTypeListener<A>(annotationType, providerClass)));
         return this;
     }
 
     public <T> MycilaGuice bind(Class<T> type, T instance) {
-        binder.bind(type).toInstance(inject(instance));
+        binder.bind(type).toInstance(requestInjection(instance));
         return this;
     }
 
     public MycilaGuice install(Module module) {
-        binder.install(inject(module));
+        binder.install(requestInjection(module));
         return this;
     }
 
-    public <T> T inject(T object) {
+    public <T> T requestInjection(T object) {
         binder.requestInjection(object);
         return object;
+    }
+
+    public MethodInterceptor createDelegatingInterceptor(Class<? extends MethodInterceptor> type) {
+        return createDelegatingInterceptor(Key.get(type));
+    }
+
+    public MethodInterceptor createDelegatingInterceptor(Key<? extends MethodInterceptor> type) {
+        Provider<? extends MethodInterceptor> provider = binder.getProvider(type);
+        return new DelegatingInterceptor(provider);
     }
 
     /* static */
@@ -137,7 +131,25 @@ public final class MycilaGuice {
      */
     public static boolean isBindingAnnotation(Class<? extends Annotation> annotationType) {
         return annotationType.isAnnotationPresent(BindingAnnotation.class)
-                || annotationType.isAnnotationPresent(Qualifier.class);
+            || annotationType.isAnnotationPresent(Qualifier.class);
     }
 
+    private static final class DelegatingInterceptor implements MethodInterceptor {
+
+        private final Provider<? extends MethodInterceptor> provider;
+
+        private DelegatingInterceptor(Provider<? extends MethodInterceptor> provider) {
+            this.provider = provider;
+        }
+
+        @Override
+        public Object invoke(MethodInvocation invocation) throws Throwable {
+            return provider.get().invoke(invocation);
+        }
+
+        @Override
+        public String toString() {
+            return provider.get().toString();
+        }
+    }
 }
