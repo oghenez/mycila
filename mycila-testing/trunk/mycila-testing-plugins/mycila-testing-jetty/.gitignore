@@ -6,3 +6,7 @@ target/
 .classpath
 .settings
 
+*.iml
+*.ipr
+*.iws
+
