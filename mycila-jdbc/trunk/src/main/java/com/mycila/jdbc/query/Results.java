@@ -73,8 +73,10 @@ public final class Results {
     }
 
     public Row uniqueRow() {
+        if (rows.isEmpty())
+            throw new NoSuchElementException("No unique row returned: got no row");
         if (rows.size() != 1)
-            throw new NoSuchElementException("No unique row returned: got " + rows.size() + " row(s)");
+            throw new NoUniqueElementException("No unique row returned: got " + rows.size() + " row(s)");
         return rows.get(0);
     }
 
@@ -87,9 +89,7 @@ public final class Results {
     }
 
     public <T> T unique(Class<T> type) throws NoSuchElementException {
-        if (rows.isEmpty())
-            throw new NoSuchElementException(type.getName());
-        return rows.get(0).map(type);
+        return uniqueRow().map(type);
     }
 
     public <T> List<T> list(Class<T> type) {

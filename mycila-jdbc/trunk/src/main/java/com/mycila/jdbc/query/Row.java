@@ -56,8 +56,10 @@ public final class Row {
     }
 
     public Cell uniqueCell() {
+        if (cells.isEmpty())
+            throw new NoSuchElementException("No unique cell returned: got no cell");
         if (cells.size() != 1)
-            throw new NoSuchElementException("No unique cell returned: got " + cells.size() + " cell(s)");
+            throw new NoUniqueElementException("No unique cell returned: got " + cells.size() + " cell(s)");
         return cells.get(0);
     }
 
