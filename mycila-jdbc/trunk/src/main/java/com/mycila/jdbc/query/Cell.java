@@ -30,7 +30,7 @@ public final class Cell {
 
     public final Row row;
     public final Column column;
-    public final Object data;
+    private final Object data;
     private final Mapper mapper;
 
     Cell(Row row, Column column, ResultSet resultSet, Mapper mapper) {
