@@ -10,7 +10,7 @@
 
     <groupId>com.mycila</groupId>
     <artifactId>mycila-jms</artifactId>
-    <version>1.1.ga-SNAPSHOT</version>
+    <version>1.1.ga</version>
     <packaging>jar</packaging>
 
     <name>Mycila JMS</name>
@@ -19,9 +19,9 @@
     <inceptionYear>2010</inceptionYear>
 
     <scm>
-        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-jms/trunk</connection>
-        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-jms/trunk</developerConnection>
-        <url>http://mycila.googlecode.com/svn/mycila-jms/trunk</url>
+        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-jms/tags/mycila-jms-1.1.ga</connection>
+        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-jms/tags/mycila-jms-1.1.ga</developerConnection>
+        <url>http://mycila.googlecode.com/svn/mycila-jms/tags/mycila-jms-1.1.ga</url>
     </scm>
 
     <build>
