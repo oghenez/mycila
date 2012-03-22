@@ -89,6 +89,9 @@
                             !net.sf.cglib*,
                             !org.objectweb.asm*,
                             !sun.reflect.annotation*,
+                            redis.clients*;resolution:=optional,
+                            org.quartz*;resolution:=optional,
+                            com.mycila.jms*;resolution:=optional,
                             *
                         </Import-Package>
                         <_versionpolicy>[${version;===;${@}},${version;+;${@}})</_versionpolicy>
