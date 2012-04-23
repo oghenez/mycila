@@ -22,11 +22,11 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public final class Query extends Request<Query> {
+public final class Select extends Request<Select> {
 
     final PreparedStatement statement;
 
-    Query(Connection connection, String query) {
+    Select(Connection connection, String query) {
         try {
             statement = connection.prepareStatement(query);
         } catch (SQLException e) {

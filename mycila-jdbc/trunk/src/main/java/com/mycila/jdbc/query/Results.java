@@ -104,18 +104,18 @@ public final class Results {
         return rows.isEmpty();
     }
 
-    static Results build(Query query, Mapper mapper) {
+    static Results build(Select select, Mapper mapper) {
         try {
-            ResultSet resultSet = query.statement.executeQuery();
+            ResultSet resultSet = select.statement.executeQuery();
             return new Results(resultSet, mapper, resultSet.getFetchSize());
         } catch (SQLException e) {
             throw new SqlException(e.getMessage(), e);
         } finally {
-            JdbcUtils.closeStatement(query.statement);
+            JdbcUtils.closeStatement(select.statement);
         }
     }
 
-    public static Results build(Update update, Mapper mapper) {
+    static Results build(Update update, Mapper mapper) {
         try {
             update.statement.setFetchSize(1);
             update.statement.executeUpdate();
@@ -127,11 +127,8 @@ public final class Results {
         }
     }
 
-    public static Results build(Insert insert, Mapper mapper, String... columnNames) {
+    static Results build(Insert insert, Mapper mapper) {
         try {
-            insert.buildStatement(columnNames);
-            insert.statement.setFetchSize(1);
-            insert.statement.executeUpdate();
             return new Results(insert.statement.getGeneratedKeys(), mapper, 1);
         } catch (SQLException e) {
             throw new SqlException(e.getMessage(), e);
