@@ -18,14 +18,7 @@ package com.mycila.jdbc.query;
 
 import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -48,20 +41,59 @@ public final class Insert {
         this.connection = connection;
     }
 
+    public int[] executeBatch() throws SqlException {
+        return exec();
+    }
+
     public int execute() throws SqlException {
-        try {
-            buildStatement();
-            statement.setFetchSize(1);
-            return statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new SqlException(e.getMessage(), e);
-        } finally {
-            JdbcUtils.closeStatement(statement);
-        }
+        return executeBatch()[0];
     }
 
     public Results executeAndReturns(String... columnNames) throws SqlException {
-        return Results.build(this, mapper, columnNames);
+        exec(columnNames);
+        return Results.build(this, mapper);
+    }
+
+    int[] exec(String... columnNames) {
+        try {
+            boolean batchMode = statement != null;
+            if (!batchMode) {
+                buildStatement(columnNames);
+                setParameters();
+            } else if (!this.inserts.isEmpty()) {
+                addBatch();
+            }
+            statement.setFetchSize(1);
+            if (batchMode) {
+                return statement.executeBatch();
+            } else {
+                return new int[]{statement.executeUpdate()};
+            }
+        } catch (SQLException e) {
+            JdbcUtils.closeStatement(statement);
+            throw new SqlException(e.getMessage(), e);
+        }
+    }
+
+    public Insert addBatch() throws SqlException {
+        try {
+            if (statement == null) {
+                buildStatement();
+            }
+            setParameters();
+            statement.addBatch();
+            this.inserts.clear();
+            return this;
+        } catch (SQLException e) {
+            JdbcUtils.closeStatement(statement);
+            throw new SqlException(e.getMessage(), e);
+        }
+    }
+
+    void setParameters() {
+        int i = 1;
+        for (Param param : this.inserts.values())
+            param.set(i++);
     }
 
     void buildStatement(String... columnNames) throws SQLException {
@@ -77,9 +109,6 @@ public final class Insert {
         statement = columnNames == null || columnNames.length == 0 ?
             connection.prepareStatement(sb.toString()) :
             connection.prepareStatement(sb.toString(), columnNames);
-        int i = 1;
-        for (Param param : inserts.values())
-            param.set(i++);
     }
 
     public final Insert setNull(String column) {
@@ -219,7 +248,7 @@ public final class Insert {
     public final Insert setTimestamp(String column, long time) {
         return setTimestamp(column, new Timestamp(time));
     }
-    
+
     public final Insert setTimestamp(String column, final Timestamp x) {
         inserts.put(column, new Param() {
             @Override

@@ -30,8 +30,8 @@ public final class Sql {
         return connection;
     }
 
-    public Query query(String query) {
-        return new Query(connection, query);
+    public Select query(String query) {
+        return new Select(connection, query);
     }
 
     public Insert insert(String table) {
