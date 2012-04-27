@@ -27,6 +27,7 @@ import com.mycila.jms.JMSClient;
 import com.mycila.jms.JMSListener;
 import com.mycila.jms.SimpleClient;
 import com.mycila.jms.annotation.Destination;
+import com.mycila.jms.annotation.Destinations;
 
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
@@ -35,6 +36,9 @@ import javax.inject.Singleton;
 import javax.jms.ConnectionFactory;
 import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,29 +65,37 @@ public final class JMSClientModule extends AbstractModule {
         bind(Init.class);
         requireBinding(ConnectionFactory.class);
         bindListener(new AbstractMatcher<TypeLiteral<?>>() {
-                @Override
-                public boolean matches(TypeLiteral<?> type) {
-                    return type.getRawType().isAnnotationPresent(Destination.class) && JMSListener.class.isAssignableFrom(type.getRawType());
-                }
-            }, new TypeListener() {
-            @Override
-            public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-                final Provider<JMSClient> client = encounter.getProvider(JMSClient.class);
-                encounter.register(new InjectionListener<I>() {
-                    @Override
-                    public void afterInjection(I injectee) {
-                        Destination destination = injectee.getClass().getAnnotation(Destination.class);
-                        if (LOGGER.isLoggable(Level.INFO)) {
-                            LOGGER.info("Registering JMS subscriber " + injectee.getClass().getName() + " to " + destination.value());
-                        }
-                        client.get().subscribe(
-                            destination.value(),
-                            destination.selector().length() > 0 ? destination.selector() : null,
-                            (JMSListener) injectee);
-                    }
-                });
-            }
-        }
+                         @Override
+                         public boolean matches(TypeLiteral<?> type) {
+                             return JMSListener.class.isAssignableFrom(type.getRawType()) && (type.getRawType().isAnnotationPresent(Destination.class) || type.getRawType().isAnnotationPresent(Destinations.class));
+                         }
+                     }, new TypeListener() {
+                         @Override
+                         public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
+                             final Provider<JMSClient> client = encounter.getProvider(JMSClient.class);
+                             encounter.register(new InjectionListener<I>() {
+                                 @Override
+                                 public void afterInjection(I injectee) {
+                                     List<Destination> destinations = new LinkedList<Destination>();
+                                     if (injectee.getClass().isAnnotationPresent(Destinations.class)) {
+                                         destinations.addAll(Arrays.asList(injectee.getClass().getAnnotation(Destinations.class).value()));
+                                     }
+                                     if (injectee.getClass().isAnnotationPresent(Destination.class)) {
+                                         destinations.add(injectee.getClass().getAnnotation(Destination.class));
+                                     }
+                                     for (Destination destination : destinations) {
+                                         if (LOGGER.isLoggable(Level.INFO)) {
+                                             LOGGER.info("Registering JMS subscriber " + injectee.getClass().getName() + " to " + destination.value());
+                                         }
+                                         client.get().subscribe(
+                                             destination.value(),
+                                             destination.selector().length() > 0 ? destination.selector() : null,
+                                             (JMSListener) injectee);
+                                     }
+                                 }
+                             });
+                         }
+                     }
         );
     }
 
