@@ -17,12 +17,15 @@
 package com.mycila.inject;
 
 import com.google.inject.*;
+import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
 import com.google.inject.matcher.Matchers;
 import com.mycila.inject.injector.*;
 import com.mycila.inject.scope.*;
+import net.sf.cglib.core.Signature;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.objectweb.asm.Type;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.Annotation;
@@ -37,6 +40,14 @@ public final class MycilaGuice {
 
     private MycilaGuice(Binder binder) {
         this.binder = binder;
+    }
+
+    public MycilaGuice bindInterceptor(Class<?> interf, String methodName, Class<?> params, MethodInterceptor... interceptors) {
+        try {
+            return bindInterceptor(Matchers.subclassesOf(interf), new SignatureMatcher(interf.getMethod(methodName, params)), interceptors);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException(e.getMessage(), e);
+        }
     }
 
     public MycilaGuice bindInterceptor(Matcher<? super Class<?>> classMatcher,
@@ -150,6 +161,19 @@ public final class MycilaGuice {
         @Override
         public String toString() {
             return provider.get().toString();
+        }
+    }
+
+    static final class SignatureMatcher extends AbstractMatcher<Method> {
+        private final Signature signature;
+
+        private SignatureMatcher(Method method) {
+            this.signature = new Signature(method.getName(), Type.getReturnType(method), Type.getArgumentTypes(method));
+        }
+
+        @Override
+        public boolean matches(Method method) {
+            return this.signature.equals(new Signature(method.getName(), Type.getReturnType(method), Type.getArgumentTypes(method)));
         }
     }
 }
