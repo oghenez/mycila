@@ -42,7 +42,7 @@ public final class MycilaGuice {
         this.binder = binder;
     }
 
-    public MycilaGuice bindInterceptor(Class<?> interf, String methodName, Class<?> params, MethodInterceptor... interceptors) {
+    public MycilaGuice bindInterceptor(Class<?> interf, String methodName, Class<?>[] params, MethodInterceptor... interceptors) {
         try {
             return bindInterceptor(Matchers.subclassesOf(interf), new SignatureMatcher(interf.getMethod(methodName, params)), interceptors);
         } catch (NoSuchMethodException e) {
