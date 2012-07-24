@@ -10,7 +10,7 @@
 
     <groupId>com.mycila</groupId>
     <artifactId>mycila-guice</artifactId>
-    <version>2.10.ga-SNAPSHOT</version>
+    <version>2.10.ga</version>
     <packaging>jar</packaging>
 
     <name>Mycila Guice Extensions</name>
@@ -19,9 +19,9 @@
     <inceptionYear>2010</inceptionYear>
 
     <scm>
-        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-guice/trunk</connection>
-        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-guice/trunk</developerConnection>
-        <url>http://mycila.googlecode.com/svn/mycila-guice/trunk</url>
+        <connection>scm:svn:https://mycila.googlecode.com/svn/mycila-guice/tags/mycila-guice-2.10.ga</connection>
+        <developerConnection>scm:svn:https://mycila.googlecode.com/svn/mycila-guice/tags/mycila-guice-2.10.ga</developerConnection>
+        <url>http://mycila.googlecode.com/svn/mycila-guice/tags/mycila-guice-2.10.ga</url>
     </scm>
 
     <build>
