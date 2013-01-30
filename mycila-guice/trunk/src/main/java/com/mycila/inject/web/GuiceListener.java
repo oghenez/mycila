@@ -20,7 +20,6 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.Stage;
 import com.google.inject.servlet.GuiceServletContextListener;
-import com.google.inject.servlet.ServletModule;
 import com.google.inject.util.Modules;
 import com.mycila.inject.jsr250.Jsr250;
 import com.mycila.inject.jsr250.Jsr250Injector;
@@ -38,12 +37,7 @@ public class GuiceListener extends GuiceServletContextListener {
 
     @Override
     protected Injector getInjector() {
-        return Jsr250.createInjector(Stage.PRODUCTION, Modules.override(ServiceModules.loadFromClasspath(Module.class), new ServletModule() {
-            @Override
-            protected void configureServlets() {
-                filter("/*").through(HttpContextFilter.class);
-            }
-        }).with(HttpContext.MODULE));
+        return Jsr250.createInjector(Stage.PRODUCTION, Modules.override(ServiceModules.loadFromClasspath(Module.class)).with(HttpContext.MODULE));
     }
 
     @Override
