@@ -1,0 +1,78 @@
+====
+    Copyright (C) 2010 Mycila <mathieu.carbou@gmail.com>
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+====
+
+Sam,
+
+Would having code like this in your modules be acceptable?
+
+  install(service(MyService.class));
+
+If so, you could implement something like this:
+
+  /**
+   * Installs a service given its type.
+   */
+  static <T> Module install(Class<T extends Service> serviceType) {
+    return new Module() {
+      public void configure(Binder binder) {
+        final Provider<T> serviceProvider = binder.getProvider(serviceType);
+        binder.requestInjection(new Object() {
+          @Inject
+          void registerService(ServiceRegistry registry) {
+            registry.register(serviceProvider);
+          }
+        });
+      }
+    };
+  }
+
+Then, you'd have something like this:
+
+  interface ServiceRegistry {
+    void register(Provider<? extends Service> serviceProvider);
+    void start();
+    void stop();
+  }
+
+You could just as easily support:
+
+  install(services(
+    ServiceA.class,
+    ServiceB.class,
+    ...
+  ));
+
+
+
+/////////////////
+
+ - OSGI manifest: repackager cglib + asm + verifs + tests IT
+
+ - testing
+
+ - asm CP scanner + service loader to scan modules
+
+ - OSGI plugin
+
+ - jndi mocks
+
+ - transactional scope (cf di page 161)
+
+ - cache scope (p 181), avec weak / soft / hard refs
+
+ - 
+
+ 
