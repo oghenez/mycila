@@ -20,6 +20,7 @@ import org.apache.shiro.web.mgt.WebSecurityManager;
 import org.apache.shiro.web.servlet.AbstractShiroFilter;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -31,6 +32,7 @@ import java.io.IOException;
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
  */
+@Singleton
 public final class GuiceShiroFilter extends AbstractShiroFilter {
 
     @Inject
