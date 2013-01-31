@@ -60,6 +60,8 @@ public class GuiceListener extends GuiceServletContextListener {
             modifiersField.setInt(queueField, queueField.getModifiers() & ~Modifier.FINAL);
             // set it to null
             queueField.set(null, null);
+            // provoque a GC to clean the thread
+            System.gc();System.gc();System.gc();System.gc();System.gc();
         } catch (Exception ignored) {
         }
     }
