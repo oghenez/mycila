@@ -16,6 +16,7 @@
 
 package com.mycila.inject.injector;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.MembersInjector;
@@ -53,35 +54,38 @@ public final class MemberInjectorTypeListener<A extends Annotation> implements T
     public <I> void hear(final TypeLiteral<I> injectableType, TypeEncounter<I> encounter) {
         final Provider<? extends KeyProvider<A>> provider = encounter.getProvider(providerClass);
         final Provider<Injector> injectorProvider = encounter.getProvider(Injector.class);
-        encounter.register(new MembersInjector<I>() {
-            @Override
-            public void injectMembers(I injectee) {
-                KeyProvider<A> keyProvider = provider.get();
-                // inject fields
-                for (Field field : findFields(injectableType.getRawType(), annotatedBy(annotationType))) {
-                    Object value = injectorProvider.get().getProvider(keyProvider.getKey(injectableType, field, field.getAnnotation(annotationType))).get();
-                    if (!field.isAccessible())
-                        field.setAccessible(true);
-                    try {
-                        field.set(injectee, value);
-                    } catch (IllegalAccessException e) {
-                        throw new IllegalStateException("Failed to inject field " + field + ". Reason: " + e.getMessage(), e);
+        final List<Field> fields = Lists.newLinkedList(findFields(injectableType.getRawType(), annotatedBy(annotationType)));
+        final List<Method> methods = Lists.newLinkedList(filter(findMethods(injectableType.getRawType()), annotatedBy(annotationType)));
+        if (!fields.isEmpty() || !methods.isEmpty()) {
+            encounter.register(new MembersInjector<I>() {
+                @Override
+                public void injectMembers(I injectee) {
+                    KeyProvider<A> keyProvider = provider.get();
+                    // inject fields
+                    for (Field field : fields) {
+                        Object value = injectorProvider.get().getProvider(keyProvider.getKey(injectableType, field, field.getAnnotation(annotationType))).get();
+                        if (!field.isAccessible())
+                            field.setAccessible(true);
+                        try {
+                            field.set(injectee, value);
+                        } catch (IllegalAccessException e) {
+                            throw new IllegalStateException("Failed to inject field " + field + ". Reason: " + e.getMessage(), e);
+                        }
+                    }
+                    // inject methods
+                    for (Method method : methods) {
+                        List<Key<?>> parameterKeys = keyProvider.getParameterKeys(injectableType, method, method.getAnnotation(annotationType));
+                        Object[] parameters = new Object[parameterKeys.size()];
+                        for (int i = 0; i < parameters.length; i++)
+                            parameters[i] = injectorProvider.get().getProvider(parameterKeys.get(i)).get();
+                        try {
+                            Proxy.invoker(method).invoke(injectee, parameters);
+                        } catch (Exception e) {
+                            throw runtime(e);
+                        }
                     }
                 }
-                // inject methods
-                for (Method method : filter(findMethods(injectableType.getRawType()), annotatedBy(annotationType))) {
-                    List<Key<?>> parameterKeys = keyProvider.getParameterKeys(injectableType, method, method.getAnnotation(annotationType));
-                    Object[] parameters = new Object[parameterKeys.size()];
-                    for (int i = 0; i < parameters.length; i++)
-                        parameters[i] = injectorProvider.get().getProvider(parameterKeys.get(i)).get();
-                    try {
-                        Proxy.invoker(method).invoke(injectee, parameters);
-                    }
-                    catch (Exception e) {
-                        throw runtime(e);
-                    }
-                }
-            }
-        });
+            });
+        }
     }
 }
