@@ -16,6 +16,7 @@
 
 package com.mycila.inject.injector;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.InjectionListener;
@@ -25,6 +26,7 @@ import com.google.inject.spi.TypeListener;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import static com.google.common.collect.Iterables.filter;
 import static com.mycila.inject.internal.Reflect.annotatedBy;
@@ -46,15 +48,19 @@ public final class AnnotatedMemberHandlerTypeListener<A extends Annotation> impl
     @Override
     public <I> void hear(final TypeLiteral<I> type, TypeEncounter<I> encounter) {
         final Provider<? extends AnnotatedMemberHandler<A>> provider = encounter.getProvider(handlerClass);
-        encounter.register(new InjectionListener<I>() {
-            @Override
-            public void afterInjection(I injectee) {
-                AnnotatedMemberHandler<A> handler = provider.get();
-                for (Field field : findFields(type.getRawType(), annotatedBy(annotationType)))
-                    handler.handle(type, injectee, new AnnotatedMember<Field>(field), field.getAnnotation(annotationType));
-                for (Method method : filter(findMethods(type.getRawType()), annotatedBy(annotationType)))
-                    handler.handle(type, injectee, new AnnotatedMember<Method>(method), method.getAnnotation(annotationType));
-            }
-        });
+        final List<Field> fields = Lists.newLinkedList(findFields(type.getRawType(), annotatedBy(annotationType)));
+        final List<Method> methods = Lists.newLinkedList(filter(findMethods(type.getRawType()), annotatedBy(annotationType)));
+        if (!fields.isEmpty() || !methods.isEmpty()) {
+            encounter.register(new InjectionListener<I>() {
+                @Override
+                public void afterInjection(I injectee) {
+                    AnnotatedMemberHandler<A> handler = provider.get();
+                    for (Field field : fields)
+                        handler.handle(type, injectee, new AnnotatedMember<Field>(field), field.getAnnotation(annotationType));
+                    for (Method method : methods)
+                        handler.handle(type, injectee, new AnnotatedMember<Method>(method), method.getAnnotation(annotationType));
+                }
+            });
+        }
     }
 }

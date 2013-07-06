@@ -51,7 +51,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static com.mycila.inject.MycilaGuice.in;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -137,7 +141,7 @@ public final class Jsr250Test {
     @Test
     public void test_destroy() throws Exception {
         final Class[] cc = {AA.class, BB.class, CC.class, DD.class, EE.class, FF.class, GG.class};
-        Jsr250Injector injector = Jsr250.createInjector(Stage.PRODUCTION, Jsr250.newJsr250Module(), new ExtraScopeModule(), new AbstractModule() {
+        Jsr250Injector injector = Jsr250.createInjector(Stage.PRODUCTION, new ExtraScopeModule(), new AbstractModule() {
             @Override
             protected void configure() {
                 bindScope(ExpiringSingleton.class, in(binder()).expiringSingleton(10, TimeUnit.SECONDS));
@@ -244,7 +248,7 @@ public final class Jsr250Test {
     @Test
     public void test() throws Exception {
         B.calls.clear();
-        Jsr250Injector injector = Jsr250.createInjector(Stage.PRODUCTION, Jsr250.newJsr250Module(), new ExtraScopeModule(), new AbstractModule() {
+        Jsr250Injector injector = Jsr250.createInjector(Stage.PRODUCTION, new ExtraScopeModule(), new AbstractModule() {
             @Override
             protected void configure() {
                 bind(C.class);

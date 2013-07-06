@@ -24,6 +24,7 @@ import com.google.inject.spi.TypeListener;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import static com.google.common.collect.Iterables.filter;
 import static com.google.common.collect.Lists.newLinkedList;
@@ -46,13 +47,16 @@ public final class MethodHandlerTypeListener<A extends Annotation> implements Ty
     @Override
     public <I> void hear(final TypeLiteral<I> type, TypeEncounter<I> encounter) {
         final Provider<? extends MethodHandler<A>> provider = encounter.getProvider(handlerClass);
-        encounter.register(new InjectionListener<I>() {
-            @Override
-            public void afterInjection(I injectee) {
-                MethodHandler<A> handler = provider.get();
-                for (Method method : reverse(newLinkedList(filter(findMethods(type.getRawType()), annotatedBy(annotationType)))))
-                    handler.handle(type, injectee, method, method.getAnnotation(annotationType));
-            }
-        });
+        final List<Method> methods = reverse(newLinkedList(filter(findMethods(type.getRawType()), annotatedBy(annotationType))));
+        if (!methods.isEmpty()) {
+            encounter.register(new InjectionListener<I>() {
+                @Override
+                public void afterInjection(I injectee) {
+                    MethodHandler<A> handler = provider.get();
+                    for (Method method : methods)
+                        handler.handle(type, injectee, method, method.getAnnotation(annotationType));
+                }
+            });
+        }
     }
 }
