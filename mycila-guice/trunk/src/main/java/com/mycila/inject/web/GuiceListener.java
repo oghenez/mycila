@@ -28,6 +28,8 @@ import com.mycila.inject.service.ServiceModules;
 import javax.servlet.ServletContextEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.LinkedList;
 
 /**
  * @author Mathieu Carbou (mathieu.carbou@gmail.com)
@@ -35,9 +37,18 @@ import java.lang.reflect.Modifier;
  */
 public class GuiceListener extends GuiceServletContextListener {
 
+    private final Collection<Module> modules = new LinkedList<Module>();
+
+    public GuiceListener() {
+    }
+
+    public GuiceListener(Collection<? extends Module> modules) {
+        this.modules.addAll(modules);
+    }
+
     @Override
     protected Injector getInjector() {
-        return Jsr250.createInjector(Stage.PRODUCTION, Modules.override(ServiceModules.loadFromClasspath(Module.class)).with(HttpContext.MODULE));
+        return Jsr250.createInjector(Stage.PRODUCTION, Modules.override(Modules.override(this.modules).with(ServiceModules.loadFromClasspath(Module.class))).with(HttpContext.MODULE));
     }
 
     @Override
@@ -61,8 +72,13 @@ public class GuiceListener extends GuiceServletContextListener {
             // set it to null
             queueField.set(null, null);
             // provoque a GC to clean the thread
-            System.gc();System.gc();System.gc();System.gc();System.gc();
+            System.gc();
+            System.gc();
+            System.gc();
+            System.gc();
+            System.gc();
         } catch (Exception ignored) {
         }
     }
+
 }
