@@ -1,5 +1,4 @@
 #summary Mycila Unnecessary Jar Detector
-#labels Featured
 
 = Introduction =
 
