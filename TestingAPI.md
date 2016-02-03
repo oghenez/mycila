@@ -1,0 +1,33 @@
+# Mycila Testing API #
+
+Mycila is composed of several APIs serving different users:
+  * Those using Mycila testing framework on a day to day basis to write test,
+  * Those writing test plugins
+  * Those integrating Mycila in other test frameworks
+
+## For Mycila users ##
+
+You are lucky, you don't have to know anything except how to use the plugins you want to use and also which class to extend / use as a runner for your test:
+
+  * `MycilaTestNGTest`
+  * `MycilaJunit3Test`
+  * `MycilaJunit4Test`
+  * `@MycilaJunitRunner`
+
+See corresponding entries on the left menu.
+
+**Advanced usage**
+
+If you want to configure the PluginManager (i.e. you only want to load for a test the PluginA), you will have to annotate your test with `@MycilaPlugins` and a method with `@ConfigureMycilaPlugins`.
+
+Basically, `@MycilaPlugins` enables you to control which plugin descriptor to use (to isolate your plugin when testing) and this annotation enables you to configure per-test the PluginManager.
+
+If you want to define your own plugin at runtime like [this example](http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/test/java/com/mycila/testing/junit/Junit4FlowTest.java), you'll have to annotate your configuration method with `@ConfigureMycilaPlugins`.
+
+## For integration in test frameworks ##
+
+To integrate Mycila in another testing framework, you can have a look on the [integration wiki page](MycilaCustom.md).
+
+## For Plugin developers ##
+
+Please see the section [How to Create Plugins](PluginDevelopment.md)

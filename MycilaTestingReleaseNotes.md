@@ -1,0 +1,37 @@
+Issues are logged at http://code.google.com/p/mycila/issues/list?can=1
+
+# Mycila Testing Framework #
+
+## 2.0-rc1 (2009-05-09) ##
+
+| **ID** | **Description** |
+|:-------|:----------------|
+| 2      | Fixed Junit integration |
+| 3      | Added support for beforeTest and after Test callback methods in plugins  |
+| 4      |  Database plugin |
+| 6      | Added Extended Assertions |
+| 7      | Upgraded dependencies |
+| 8      | Added some Javadoc  |
+| 10     | Review of all wiki pages |
+| 11     |  Fixing google guice 2 dependency |
+| -      | Big API refactoring and improvement |
+
+## 1.2 (2009-01-24) ##
+
+| **ID** | **Description** |
+|:-------|:----------------|
+| -      | added guice 2 plugin which supports binding overrids |
+
+## 1.0 (2009-01-14) ##
+
+| **ID** | **Description** |
+|:-------|:----------------|
+| -      | added guice injection in binded instance |
+| -      | fixed packaging |
+
+## 1.0-rc1 (2008-12-09) ##
+
+| **ID** | **Description** |
+|:-------|:----------------|
+| -      | release candidate |
+

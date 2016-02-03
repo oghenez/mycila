@@ -1,0 +1,195 @@
+
+
+## Introduction ##
+
+Mycila Plugin Framework is a really little (4 classes) plugin framework that enables you to build quickly a plugin architecture in your application, supporting dependencies.
+
+**Release notes:** MycilaPluginReleaseNotes
+
+## Download ##
+
+Versions can downloaded from Maven Repositories here:
+
+**Releases**: http://repo2.maven.org/maven2/com/mycila/mycila-plugin/
+
+**Snapshots**: http://mc-repo.googlecode.com/svn/maven2/snapshots/com/mycila/mycila-plugin/
+
+## Maven dependency ##
+
+To add mycila-plugin in your pom, just add this dependency (with of course the good version number your want):
+
+```
+<dependency>
+    <groupId>com.mycila</groupId>
+    <artifactId>mycila-plugin</artifactId>
+    <version>X.Y</version>
+</dependency>
+```
+
+## Reports ##
+
+Javadoc, Source XREF, Test reports, Coverages, ...
+
+http://old.mycila.com/p/mycila/mycila-plugin/
+
+## Manual ##
+
+First you need to define what is a plugin in your project. The abstract class or interface should extend the Plugin interface.
+
+```
+package my.sample;
+import com.mycila.plugin.api.Plugin;
+public interface MyPlugin extends Plugin {
+    void execute();
+}
+```
+
+The usage is very easy. It works nearly like the JDK [ServiceLoader](http://java.sun.com/javase/6/docs/api/index.html?java/util/ServiceLoader.html) class:
+
+```
+PluginManager<MyPlugin> manager = new PluginManager<MyPlugin>(MyPlugin.class, "META-INF/myapp/plugins.properties");
+
+for (PluginBinding<TestPlugin> binding : getPluginResolver().getResolvedPlugins()) {
+    System.out.printl("Plugin name: " + binding.getName());
+    binding.getPlugin().execute();
+}
+```
+
+You just have to provide your plugin type (which implement the Plugin interface as we will see later), and also provide the resources to check on the classpath. The PluginManager will load all the plugins found in all `META-INF/myapp/plugins.properties` resources.
+
+And is you want to control your self which plugin to add, you could also use this way of buidling a plugin manager:
+
+```
+PluginManager<MyPlugin> manager = new PluginManager<MyPlugin>(MyPlugin.class);
+
+manager.getCache().registerPlugin("myPlugin1", new MyPluginInstance1());
+manager.getCache().registerPlugin("myPlugin2", new MyPluginInstance2());
+
+for (PluginBinding<TestPlugin> binding : manager.getResolver().getResolvedPlugins()) {
+    System.out.printl("Plugin name: " + binding.getName());
+    binding.getPlugin().execute();
+}
+```
+
+At runtime, you can add, remove plugins, reload all plugins, ...
+
+### [PluginManager](http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/spi/PluginManager.java) ###
+
+From the [PluginManager](http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/spi/PluginManager.java), you have access to three components:
+
+  * The [PluginLoader](http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginLoader.java): responsible of loading the plugins
+  * The [PluginCache](http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginCache.java): responsible of caching in memory available plugins
+  * The [PluginResolver](http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginResolver.java): responsible of resolving the plugins and their order of execution
+
+### [PluginLoader](http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginLoader.java) ###
+
+The plugin loader enables you to reload all plugins from the descriptor you specified in the plugin manager. You can also exclude some plugins from loading: this is useful if a third party provides a plugin that crashes. The PluginLoader also accept a classloader to use for loading the plugins. This can be useful for example if the jars are not in your classpath but online for exemple ;) Otherwise. if you want to isolate the plugin classloader from your application classloader...
+
+### [PluginCache](http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginCache.java) ###
+
+When you retreive the list of plugins, you get it from the plugin cache, which lazily load them with a laoder. Once loaded, you can add / remove / clear plugins loaded in memory with the PluginCache.
+
+### [PluginResolver](http://mycila.googlecode.com/svn/mycila-plugin/trunk/src/main/java/com/mycila/plugin/api/PluginResolver.java) ###
+
+The plugin resolver is the access point of your plugins. It contains basic getters (get, getAll, contains, ...) methods.
+
+The main interest of this interface is to resolve **plugin dependencies** and returns you the list of plugin names of plugin dependencies in order of execution. See methods `getResolvedPluginsName` and `getResolvedPlugins`
+
+## Plugin dependencies ##
+
+Mycila Plugin Frameowrk supports plugin dependencies. When you declare a plugin, you have to implement the Plugin interface:
+
+```
+package com.mycila.plugin.api;
+
+import java.util.List;
+
+/**
+ * Defines a plugin and its dependencies / order of execution
+ *
+ * @author Mathieu Carbou (mathieu.carbou@gmail.com)
+ */
+public interface Plugin {
+
+    /**
+     * Get the list of plugins that should be executed before this one
+     *
+     * @return empty list, or a list of plugin names
+     */
+    List<String> getBefore();
+
+    /**
+     * Get the list of plugins that should be executed after this one
+     *
+     * @return empty list, or a list of plugin names
+     */
+    List<String> getAfter();
+}
+```
+
+Your implementation has to return two lists of dependencies:
+  * Through `getBefore`, this is the list of dependencies that should be executed before this plugin. You can return en empty list of you do not have such dependency.
+  * Through `getAfter`, this is the list of dependencies that should be executed after this plugin. You can return en empty list of you do not have such dependency.
+
+The PluginResolver resolves all the dependencies of all plugins and returns an execution list. If cyclic dependencies are found, an exception is thrown.
+
+## Complete Sample Usage ##
+
+Supposed you developed or you were provided with the following `MyPlugin` API:
+
+```
+import com.mycila.plugin.api.Plugin;
+
+public interface MyPlugin extends Plugin {
+    void execute();
+}
+```
+
+Then you want to provide a library with your two plugins:
+
+```
+public class MyPluginA implements MyPlugin {
+    public void execute() {
+        Systen.out.println("Executing Plugin A...");
+    }
+
+    public List<String> getBefore() {
+        return Arrays.asList("pluginB");
+    }
+
+    public List<String> getAfter() {return null;}
+}
+
+public class MyPluginB implements MyPlugin {
+    public void execute() {
+        Systen.out.println("Executing Plugin B...");
+    }
+
+    public List<String> getBefore() {return null;}
+    public List<String> getAfter() {return null;}
+}
+```
+
+In your jar, you have to package with your two files the resource that is checked by the plugin manager. I.E `META-INF/mycompany/plugins.properties`
+
+```
+pluginA=MyPluginA
+pluginB=MyPluginB
+```
+
+Now in the code where the plugins are loaded used, we could probably find:
+
+```
+PluginManager<MyPlugin> manager = new PluginManager<MyPlugin>(MyPlugin.class, "META-INF/mycompany/plugins.properties");
+
+for (PluginBinding<TestPlugin> binding : manager.getResolver().getResolvedPlugins()) {
+    binding.getPlugin().execute();
+}
+```
+
+which will give as output:
+
+```
+Executing Plugin B...
+Executing Plugin A...
+```

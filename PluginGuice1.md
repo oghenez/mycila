@@ -1,0 +1,212 @@
+**Google Guice [official website](http://code.google.com/p/google-guice/)**
+
+Guice integration enables you to automatically create the injector with the module and even with the bindings you provide.
+
+There is two version of Google Guice Plugin: one for Guice 1 and one for Guice 2. But the annotations works the same for both. [Guice 2 Plugin](PluginGuice2.md) supports new features such as binding overrides. So with Guice 2 you will be able to bind your mocks directly in the runtime modules even if a binding already exist.
+
+**Annotations**
+
+  * [@GuiceContext](http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-plugins/mycila-testing-guice/src/main/java/com/mycila/testing/plugin/guice/GuiceContext.java): Used on a test class to specify a list of Guice modules
+  * [@ModuleProvider](http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-plugins/mycila-testing-guice/src/main/java/com/mycila/testing/plugin/guice/ModuleProvider.java): Used on some methods that provides Guice modules
+  * [@Bind](http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-plugins/mycila-testing-guice/src/main/java/com/mycila/testing/plugin/guice/Bind.java): Used on fields or methods to add specific bindings.
+
+**Example 1: loading Guice modules and injecting dependencies**
+
+```
+@GuiceContext(AModule.class)
+public final class GuiceContextTest extends MycilaTestNGTest {
+
+    @Inject
+    @Named("service1")
+    Service service1;
+
+    @Inject
+    Provider<Service2> service2;
+
+    @Inject
+    Injector injector;
+
+    @Test
+    public void test_something() {
+        //...
+    }
+}
+```
+
+**Example 2: providing some additional modules**
+
+Provider methods are really useful when your module do not have a default constructor to be automatically instantiated.
+
+Methods returning modules must have one of the following return types: Module, Module[.md](.md) or Iterable`<Module>` or any subtypes of these.
+
+```
+public final class ModuleProviderTest extends MycilaTestNGTest {
+
+    @Inject
+    Injector injector;
+
+    @ModuleProvider
+    private Module providesOneModule() {
+        return new MyModule1WithParams("hello", 6);
+    }
+
+    @ModuleProvider
+    Module[] providesAnArrayOfModules() {
+        return new Module[]{new MyModule2WithParams("hello", 6), new MyModule3WithParams("hello", 6)};
+    }
+
+    @ModuleProvider
+    public Iterable<Module> provides3() {
+        return new ArrayList<Module>() {{
+            add(new MyModule4WithParams("hello", 6));
+            add(new MyModule5WithParams("hello", 6));
+        }};
+    }
+
+}
+```
+
+**Example 3: providing some additional bindings**
+
+You can add specific bindings directly by annotating fields or method. A provider is used to access there value or execute them.
+
+The @Bind annotation supports two optional parameters:
+
+  * An annotation used to precise the binding (used for bind(...).annotatedBy(...))
+  * A scope if you want for example to precise the scope
+
+Here is an example using @Bind on fields. As you can see, you can use a trick: since bindings by default are not singletons, you can change the value of the field, and it will change the binding. But if you put the Singleton scope, the first value is always returned.
+
+```
+public final class BindFieldTest extends MycilaTestNGTest {
+
+    @Bind
+    String a = "helloa";
+
+    @Bind(annotatedBy = Named.class, scope = Singleton.class)
+    String b = "hellob";
+
+    @Inject
+    Injector injector;
+
+    @Test
+    public void test_bind() {
+        assertEquals(injector.getInstance(String.class), "helloa");
+        assertEquals(injector.getInstance(Key.get(String.class, Named.class)), "hellob");
+        b = "changedb";
+        a = "changeda";
+        assertEquals(injector.getInstance(String.class), "changeda");
+        assertEquals(injector.getInstance(Key.get(String.class, Named.class)), "hellob");
+    }
+}
+```
+
+Here is now an example using method. Like before, the returned values of the methods that are binded can change.
+
+```
+public final class BindMethodTest extends MycilaTestNGTest {
+
+    String a = "helloa";
+    String b = "hellob";
+
+    @Inject
+    Injector injector;
+
+    @Bind
+    String a() {
+        return a;
+    }
+
+    @Bind(annotatedBy = Named.class, scope = Singleton.class)
+    String b() {
+        return b;
+    }
+
+    @Test
+    public void test_bind() {
+        assertEquals(injector.getInstance(String.class), "helloa");
+        assertEquals(injector.getInstance(Key.get(String.class, Named.class)), "hellob");
+        b = "changedb";
+        a = "changeda";
+        assertEquals(injector.getInstance(String.class), "changeda");
+        assertEquals(injector.getInstance(Key.get(String.class, Named.class)), "hellob");
+    }
+}
+```
+
+**Example 4: Getting newly created instances injected automatically**
+
+Inject in binded instances automatically. Suppose you want to create bindings: the only way is to provide direct instances through fields (like A and B) or methods (like C in the test below).
+
+When you provide instances to bind like this, Mycila Guice Plugin will inject guice bindings on them when they are requested. Thus, instead of being forced to write your test like this:
+
+```
+bind(D.class).toInstance(new D(new C(new A())));
+```
+
+and be forced to setup yourself dependencies, you can instead provide your dependencies as bindings with @Bind and they will be automatically added to the injector and their members injected.
+
+```
+// You can optionnaly specify some modules to be loaded, with a stage
+@GuiceContext(InjectInBeanTest.MyModule.class)
+public final class InjectInBeanTest extends MycilaTestNGTest {
+
+    // you can provide bindings in your tests
+    @Bind
+    A a = new A();
+
+    // You can specify annoated bindings
+    @Bind(annotatedBy = Named.class)
+    B b = new B();
+
+    // You can even bind a method, and you can specify scopes
+    @Bind(scope = Singleton.class)
+    C create() {return new C();}
+
+    // You can inject all what is binded, thus the injector
+    @Inject Injector injector;
+    @Inject D d;
+
+    @Test
+    public void test_bind() {
+        assertEquals(b.a, a);
+
+        assertEquals(d.a, a);
+        assertEquals(d.b, b);
+        assertNotNull(d.c);
+
+        B b = injector.getInstance(B.class);
+        assertEquals(b.a, a);
+
+        C c = injector.getInstance(C.class);
+        assertEquals(c.a, a);
+        assertEquals(c.b, this.b);
+    }
+
+    // You can also
+    // - Provide Modules by methods using @ModuleProvider
+    // - Make your test implement Module, to add and configure quickly a module to add to the injector
+    // - Integrate with other Mycila Plugins, like JMock, EasyMock, Mockito, ... to be able to Bind mocked objects in the injector
+    // - ... and many more ;)
+
+    static class MyModule extends AbstractModule {
+        protected void configure() {
+            binder().bind(D.class).toInstance(new D());
+        }
+    }
+
+    static class A {}
+    static class B {
+        @Inject A a;
+    }
+    static class C {
+        @Inject A a;
+        @Inject @Named("") B b;
+    }
+    static class D {
+        @Inject A a;
+        @Inject @Named("") B b;
+        @Inject C c;
+    }
+}
+```

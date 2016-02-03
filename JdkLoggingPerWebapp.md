@@ -1,0 +1,56 @@
+
+
+## Introduction ##
+
+Enables to use JDK logging in a web environment where each web application have its own logging configuration.
+
+In your application, simply use the JDK loggers as usual.
+
+## Download & Maven ##
+
+You can download / get with Maven the JAR and its sources directly in the official Maven Repository at:
+
+http://repo2.maven.org/maven2/com/mycila/jdk-logging-perwebapp/
+
+They are also available here before getting into the official Maven Repository:
+
+http://mc-repo.googlecode.com/svn/maven2/releases/com/mycila/jdk-logging-perwebapp/
+
+## Installation ##
+
+In your `web.xml` file, you have to put this context listener AT THE VERY FIRST POSITION:
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5">
+
+    [...]
+
+    <listener>
+        <listener-class>com.mycila.jdk.logging.ContextualLogManagerWebappListener</listener-class>
+    </listener>
+
+    [...]
+
+    <!-- other listeners here -->
+
+    <!-- filters and servlets here -->
+    
+</web-app>
+```
+
+In your application server (JBoss, Jetty, Tomcat, Glassfich, ...) you must start it with the following system property:
+
+`-Djava.util.logging.manager=com.mycila.jdk.logging.ContextualLogManager`
+
+I.e. in Jetty, the line must put in the start.ini file of Jetty's installation folder.
+
+**IMPORTANT**: the JAR must be in the common libraries of your application server so that the JDK LogManager can be setup correctly. Your must be sure the JAR is not in the WEB-INF/lib folder of your webapp
+
+## Redirecting to Log4j ##
+
+Then if you need to redirect JDK logging to Log4j, this is trivial and described here:
+
+http://blog.mycila.com/2011/01/jdk-logging-per-webapp.html

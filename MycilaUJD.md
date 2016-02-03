@@ -1,0 +1,98 @@
+# Introduction #
+
+Mycila Unnecessary Jar Detector is a runtime classpath analyzer enabling you to see what classes and jars are used and not used when running an application. It takes a different and modern approach to give reliable results and also aiming at being efficient.
+
+It is not a static analyzer parsing your java classes (this technique is so much unreliable). Instead, it used the Java 5 Instrumentation API to regularly update used classes and classloader.
+
+Mycila UJD's API is able to represent and parse a whole Classloading hierarchy, going to parent classlaoder, navigating into child classloaders, getting classloader's classpath, getting classes contained in a classpath entry without loading them, getting loaded classes, ...
+
+It also has advanced analyzing API enabling filtering, i.e. to only see classes for a specific classlaoder, classpath for a specific classloader, to only get classes starting with a specific package, ...
+
+**Performance**
+
+Event if it is using the instrumentation API, Mycila UJD does not tranform classes or crate classes, and does not plug any hook when classes are loaded. The instrumentation API is only used to get all classes loaded by the JVM at a regular interval time. Thus, your program does not suffer from any point when installing this agent.
+
+# Download #
+
+MycilaUJD is deployed in maven 2 Central Repository:
+
+http://repo2.maven.org/maven2/com/mycila/mycila-ujd/
+
+```
+<dependency>
+    <groupId>com.mycila</groupId>
+    <artifactId>mycila-ujd</artifactId>
+    <version>X.Y</version>
+</dependency>
+```
+
+  * [Browse source code](http://code.google.com/p/mycila/source/browse/#svn/mycila-ujd/trunk)
+  * [Checkout URL](http://mycila.googlecode.com/svn/mycila-ujd/trunk/)
+
+Snapshots are available at https://mc-repo.googlecode.com/svn/maven2/snapshots/com/mycila/mycila-ujd/
+
+# Usage #
+
+`-javaagent:path/to/mycila-ujd-1.1.jar`
+
+Note: If you are analyzing a Main application, you probably want to use:
+
+`-javaagent:path/to/mycila-ujd-1.1.jar=autostart=true,interval=5`
+
+The application won't exit until you stop the analyzing thread from the JMX console, or if you kill it. This way, the application can be run entirely and when finished, you have time to open your JMX Console (i.e. [Visual VM](https://visualvm.dev.java.net/) or jvisualvm from the JDK) and analyze.
+
+**If you do not specify autostart=true** (i.e. often the case when you run Mycila UJD in an application server), you will need to start it automatically when needed.
+
+**When running on an application Server**
+
+DO NOT FORGET TO STOP THE UPDATER THREAD WHEN YOU HAVE FINISHED ! Analyzing requires having strong references on classes, classloaders, .. which prevent them to be garbaged collected during the time of the analysis.
+
+http://mycila.googlecode.com/files/updater.JPG
+
+When the application starts, you should see the following output:
+
+```
+[Mycila UJD Agent] Mycila Unnecessary JAR Detector loaded !
+[Mycila UJD Agent] Please visit http://code.mycila.com/wiki/MycilaUJD
+[Mycila UJD Agent] - autostart = false
+[Mycila UJD Agent] - update interval = 20 seconds
+```
+
+autostart (false) and interval (20) are the default values but you should see the ones your provided if you put some parameters.
+
+**Example: JBoss**
+
+Configure JBoss to use the default plateform MBeanServer:
+
+```
+JAVA_OPTS=$JAVA_OPTS" -javaagent:/path/to/mycila-ujd-1.1.jar"
+JAVA_OPTS=$JAVA_OPTS" -Dcom.sun.management.jmxremote.port=4456"
+JAVA_OPTS=$JAVA_OPTS" -Dcom.sun.management.jmxremote.authenticate=false"
+JAVA_OPTS=$JAVA_OPTS" -Dcom.sun.management.jmxremote.ssl=false"
+JAVA_OPTS=$JAVA_OPTS" -Djboss.platform.mbeanserver"
+JAVA_OPTS=$JAVA_OPTS" -Djavax.management.builder.initial=org.jboss.system.server.jmx.MBeanServerBuilderImpl"
+```
+
+# Parameters #
+
+  * autostart: whether the update thread should start immediately, or manually. Default to false
+  * interval: interval in seconds before getting each time the loaded classes by the JVM. It does not clear and refresh: it just appends newly classed to the analyzer. Default to 20 seconds.
+
+# Analysis #
+
+Analysis is done through the Mycila UJD Analyzer Mbean. You have access to the following methods:
+
+  * **HTMLOutput**: wheter the output is in plain text or html (line feeds or BRs)
+  * **ClassCount**: number of classes
+  * **LoaderCount**: number of classlaoders (not that some classloaders are skipped, in example bootstrap classloader, delegating classloaders used when creating proxies, ...)
+
+  * **String getLoaderNames()**: get all the list of classloaders
+  * **String getLoaderNames(String packagePrefix)**: get all the list of classloaders containing classes starting with packagePrefix
+  * **String getClasses(String loaderName, String packagePrefix)**: shows all available classes in a classloader
+  * **String getUsedClasses(String loaderName, String packagePrefix)**: shows all classes loaded by the JVM from a classloader
+  * **String getUnusedClasses(String loaderName, String packagePrefix)**
+  * **String getClassPath(String loaderName)**
+  * **String getUsedClassPath(String loaderName)**
+  * **String getUnusedClassPath(String loaderName)**
+  * **String getContainers(String packagePrefix)**: shows all classpath resources containing this package or class name, loaded or not.
+  * **String getUsedContainers(String packagePrefix)**: shows all classpath ressources containing this package or class name AND where the package or class has been loaded by the JVM

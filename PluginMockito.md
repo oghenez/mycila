@@ -1,0 +1,26 @@
+**Mockito [official website](http://code.google.com/p/mockito/)**
+
+Here is a sample test using Mockito Plugin:
+
+```
+import static org.mockito.MockitoAnnotations.*;
+import static org.testng.Assert.*;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import com.mycila.testing.core.TestSetup;
+
+public final class MyTest extends MycilaTestNGTest {
+
+    @Mock
+    Service standardMock;
+
+    @Test
+    public void test() {
+        // test here
+    }
+}
+```
+
+With Mockito, the integration is really easy. Mockito already provides a @Mock annotation and a test setup tool with `MockitoAnnotations.initMocks(this);`. Mycila Framework does a simple delegation of Mockito internals to create and inject mocks.
+
+So for users already using Mockito, no new things there ! Appart that it is now much easier to interact with Spring IOC and Google Guice IOC thanks to Spring and Google Guice plugins.

@@ -1,0 +1,127 @@
+## Introduction ##
+
+This plugin enables you to setup quickly datasources, connections and transactions in tests. It also provides a way to quickly execute queries and SQL statements to check your BD.
+
+## API ##
+
+  * `@DbDataSource`: Inject a datasource in your test. This annotation can be put in any field of type `DataSource` or any field of type `Db`.
+  * `Db`: Db is a wrapper to quickly execute requests. You can put any Db fiels as you want and annotate them with @DbDataSource so that a connection can be injected automatically with specified parameters.
+
+From a `Db` object, you can run SQL scripts, create statements and create batches.
+
+**Batch** gives you access to all what you need to create batch executions of statements. This features is enabled, but for unit test you would prefer using db.prepare() to create prepared statements and execute them in a transaction.
+
+```
+db.newBatch()
+	.add("INSERT INTO PERSON VALUES('5', 'jello', 'M')")
+	.add("INSERT INTO PERSON VALUES('6', 'jelly', 'F')")
+	.addScript("/insert.sql")
+	.commit()
+```
+
+**Statement** object, returned when you create statements through `Db.prepare(...)` enables you to set parameters to your request if you need and then:
+  * either `push` the request (will execute it, but not commit the transaction yet)
+  * either `commit` all what's done and return to our previous Db instance
+  * either `rollback` all what's done and then return to our previous Db instance
+  * either run directly an SQL `query` and returns the `SqlResults`
+
+```
+db.prepare("INSERT INTO PERSON VALUES(?, ?, ?)")
+    .setInt(1, 10).setString(2, "complex1").setString(3, "F").push()
+	.setInt(1, 11).setString(2, "complex2").setString(3, "M").commit()
+```
+
+**SqlResults** returned when you create a query represents the table of results. You have access to  methods to navigates in rows, columns, etc... exactly like if you were in matrix.
+
+```
+SqlResults results2 = db2.prepare("SELECT * FROM TESTTYPES").query();
+System.out.println("All results:\n" + results2);
+System.out.println("columns: " + results2.columnCount());
+System.out.println("rows: " + results2.columnCount());
+System.out.println("9th element of row 5: " + results2.row(4).column(8));
+System.out.println("name of column 4: " + results2.columnHeader(3).name());
+```
+
+This is a short excerpt of what you can do but you have access of plenty other methods to navigate, check column's metadata, convert data to string, int, decimals, dates, time, ...
+
+## Example ##
+
+```
+public final class DatabasePluginUsage extends MycilaTestNGTest {
+
+    @DbDataSource(driver = Driver.class, url = "jdbc:h2:file:./target/db")
+    DataSource dataSource;
+
+    @DbDataSource(driver = Driver.class, url = "jdbc:h2:file:./target/db")
+    Db db;
+
+    @DbDataSource(driver = Driver.class, url = "jdbc:h2:file:./target/types2")
+    Db db2;
+
+    @DbDataSource(driver = Driver.class, url = "jdbc:h2:file:./target/types3")
+    Db db3;
+
+    @BeforeClass
+    public void setup() throws Exception {
+        db.runScript("/create.sql");
+        System.out.println(db.prepare("SELECT ID, NAME, SEX as S FROM PERSON").query());
+
+        db2.runScript("/types.sql").runScript("/types-insert.sql");
+        SqlResults results2 = db2.prepare("SELECT * FROM TESTTYPES").query();
+        System.out.println(results2);
+        System.out.println(results2.column("column21"));
+
+        db3.runScript("/types.sql");
+        System.out.println(db3.prepare("SELECT * FROM TESTTYPES").query());
+    }
+
+    @Test
+    public void insert_some_data() throws Exception {
+        db
+                .prepare("INSERT INTO PERSON VALUES('1', 'math', 'M')").commit()
+                .prepare("INSERT INTO PERSON VALUES('2', 'cassie', 'F')").commit();
+        System.out.println(db.prepare("select * from person;").query());
+    }
+
+    @Test
+    public void complex_requests() throws Exception {
+        db.prepare("INSERT INTO PERSON VALUES(?, ?, ?)")
+                .setInt(1, 10).setString(2, "complex1").setString(3, "F").push()
+                .setInt(1, 11).setString(2, "complex2").setString(3, "M").commit()
+                .prepare("INSERT INTO PERSON VALUES(?, ?, ?)")
+                .setInt(1, 13).setString(2, "complex3").setString(3, "F").push()
+                .rollback();
+        System.out.println(db.prepare("select * from person;").query());
+    }
+
+    @Test
+    public void complex_types() throws Exception {
+        db3.prepare("INSERT INTO TESTTYPES(c13) VALUES(?)").setBytes(1, "hello".getBytes()).commit();                    // byte arrays
+        db3.prepare("INSERT INTO TESTTYPES(c14) VALUES(?)").setObject(1, UUID.randomUUID()).commit();                    // java object seralized
+        db3.prepare("INSERT INTO TESTTYPES(c18) VALUES(?)").setBlob(1, new SerialBlob("hello".getBytes())).commit();     // blob
+        db3.prepare("INSERT INTO TESTTYPES(c19) VALUES(?)").setClob(1, new SerialClob("hello".toCharArray())).commit();  // clob
+        db3.prepare("INSERT INTO TESTTYPES(column21) VALUES(?)").setObjects(1, new Object[]{1, "h", 'R'}).commit();           // array
+        System.out.println(db3.prepare("SELECT * FROM TESTTYPES").query());
+    }
+
+    @Test
+    public void batch() throws Exception {
+        db.newBatch()
+                .add("INSERT INTO PERSON VALUES('5', 'jello', 'M')")
+                .add("INSERT INTO PERSON VALUES('6', 'jelly', 'F')")
+                .addScript("/insert.sql")
+                .commit()
+                .newBatch()
+                .add("INSERT INTO PERSON VALUES('7', 'jella', 'F')")
+                .rollback();
+        System.out.println(db.prepare("select * from person;").query());
+    }
+
+    @Test
+    public void select() throws Exception {
+        SqlResults sqlResults = db.prepare("SELECT ID, NAME, SEX as S FROM PERSON").query();
+        System.out.println(sqlResults);
+    }
+
+}
+```

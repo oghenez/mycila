@@ -1,0 +1,123 @@
+## Custom integration ##
+
+You can integrate Mycila in any testing Framework. We suggest you first have a look on existing integration to see how it is done.
+
+  * [TestNG](http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/testng)
+  * [JUnit](http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/main/java/com/mycila/testing/junit)
+
+The flow of a test is usually the same:
+
+  1. Prepare the test
+  1. Run Befores (class and test)
+  1. Run Tests
+  1. Run Afters (test and class)
+
+### Preparing a test ###
+
+The goal of the integraton is to fire events by calling methods on Mycila API at each step. In example for TestNG, here is how we integrated it:
+
+```
+@BeforeClass(alwaysRun = true)
+protected final void prepareTestInstance() {
+    testNotifier = MycilaTesting.from(getClass()).configure(this).createNotifier(this);
+    testNotifier.prepare();
+}
+```
+
+**Create the PluginManager**
+
+Before all other methods run, we create a new MycilaTesting instance based on this test class.
+
+`MycilaTesting.from(getClass())`
+
+Has the effect to create a PluginManager to read MycilaPlugins. If the annotation **@MycilaPlugins** is on the test class, it is used to specify if the PluginManager should be reused (static PluginManager) or if we create a new instance for this test. By default, the PluginManager is shared amongst all test.
+
+If you want to defined new plugins at runtime, or test plugins amongst several tests, you would probably use the annotation to use a shared instance of the PluginManager.
+
+**@MycilaPlugins** can also take another parameter which is the descriptor to read plugins from. See [MycilaPlugin](MycilaPlugin.md) wiki page for details.
+
+**Configure the PluginManager**
+
+`MycilaTesting.from(getClass()).configure(this)`
+
+The **configure** call is not mandatory but can be used to configure the PluginManager in your tests. This method will call all methods in your test class annotated by **@ConfigureMycilaPlugins** having one parameter of type `PluginManager<TestPlugin>`. In example in our [unit test sample](http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-api/src/test/java/com/mycila/testing/junit/Junit4FlowTest.java) we have:
+
+```
+@ConfigureMycilaPlugins
+void configure(PluginManager<TestPlugin> pluginManager) {
+    pluginManager.getCache().registerPlugin("myPlugin", new TestPlugin() {
+        [...]
+    });
+}
+```
+
+**Create the TestNotifier**
+
+`MycilaTesting.from(getClass()).configure(this).createNotifier(this)`
+
+The **createNotifier** call will create a TestNotifier for this test. The test notifier is responsible of firing events to Mycila system. There is only 4 methods, which match all steps in a usual test flow:
+
+  * `prepare`
+  * `fireBeforeTest`
+  * `fireAfterTest`
+  * `fireAfterClass`
+
+### Fire test events ###
+
+The two simple cases are `prepare` and `fireAfterClass`. We will see later for the two other ones.
+
+### prepare ###
+
+Now that the TestNotifier is created, you will need to fire events according to the test flow.
+
+In our example above, we are in the @BeforeClass method of TestNG, so as soon as we created our TestNotifier, we call `testNotifier.prepare();` to call Mycila Plugins so that they can enhance the test instance before all tests run.
+
+### fireAfterClass ###
+
+```
+@AfterClass(alwaysRun = true)
+protected final void end() {
+    testNotifier.fireAfterClass();
+}
+```
+
+The end of a test is marked in TestNG with @AfterClass annotation. So we use it to fire the event to plugins.
+
+### fireBeforeTest and fireAfterTest ###
+
+These two methods surrounds the real execution of the test method. The event firing will call methods on plugins so that they can change the behavior of the execution and react when a test failed or throw an exception.
+
+This part is the most complex part of the integration. Here it is for TestNG:
+
+```
+public final void run(IHookCallBack callBack, ITestResult testResult) {
+    testNotifier.fireBeforeTest(testResult.getMethod().getMethod());
+    TestExecution testExecution = (TestExecution) Mycila.currentExecution();
+    if (testExecution.mustSkip()) {
+        testResult.setStatus(ITestResult.SKIP);
+    } else {
+        LOGGER.debug("Calling test method {0}.{1}", testExecution.method().getDeclaringClass().getName(), testExecution.method().getName());
+        try {
+            Field field = callBack.getClass().getDeclaredField("val$instance");
+            field.setAccessible(true);
+            MethodHelper.invokeMethod(testResult.getMethod().getMethod(), field.get(callBack), testResult.getParameters());
+        } catch (Throwable e) {
+            testExecution.setThrowable(e);
+        }
+    }
+    try {
+        testNotifier.fireAfterTest();
+    } catch (TestPluginException e) {
+        testExecution.setThrowable(e);
+    }
+    //noinspection ThrowableResultOfMethodCallIgnored
+    testResult.setThrowable(testExecution.throwable());
+}
+```
+
+We won't enter in the details of TestNG internals, but the big picture is here:
+
+  1. First, we call `testNotifier.fireBeforeTest(testResult.getMethod().getMethod());` to create a **TestExecution** context for this test method. The context is available in plugins through the static method `Mycila.currentExecution()` only when a test is executing. This mean only for beforeTest and afterTest callbacks.
+  1. Then we check in the context if a plugin marked this test to be skipped. We skip it if necessary, or we run it
+  1. Then we always call `testNotifier.fireAfterTest();` on plugins so that they can react on a test failure.
+  1. And finally we give back the control to the test framework, with the test exception that could have been changed by plugins.

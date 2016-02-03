@@ -1,0 +1,1 @@
+**MOVED TO GITHUB: http://mycila.github.io/pubsub**

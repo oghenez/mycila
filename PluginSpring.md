@@ -1,0 +1,179 @@
+**Spring Framework [official website](http://www.springframework.org/)**
+
+Spring integration reuses Spring Test module (spring-test) and is compatible with it. You can inject and create beans within your test to replace or create your application context.
+
+**Annotations**
+
+  * [@SpringContext](http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-plugins/mycila-testing-spring/src/main/java/com/mycila/testing/plugin/spring/SpringContext.java): Used on a test class to specify a list of Spring XMl files to load. This annotation is optional, since you can construct your application context thank to @Bean annotation.
+  * [@Bean](http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-plugins/mycila-testing-spring/src/main/java/com/mycila/testing/plugin/spring/Bean.java): Optional also, used on fields and methods to create a bean in the application context.
+
+**Example 1: loading Spring context file**
+
+```
+@SpringContext(locations = "/ctx.xml")
+public final class ContextConfigTest {
+
+    @Autowired
+    ApplicationContext beanFactory;
+
+    @Autowired
+    TestContext testContext;
+
+    @Autowired
+    @Qualifier("myBean1")
+    MyBean a;
+
+    @Autowired
+    Service b;
+
+    @BeforeClass
+    public void setup() {
+        TestSetup.setup(this);
+    }
+    
+    @Test
+    public void test() {
+        // ...
+    }
+}
+```
+
+**Example 2: providing beans to your application context**
+
+You can add specific beans directly by annotating fields or method by @Bean. A factory bean is used to access there value or execute them. This enables the use of scopes (singleton, prototype, ...)
+
+The @Bean annotation supports two parameters:
+
+  * name: the bean name
+  * scope: the scope of the bean
+
+The bean is representing by the field or method. It means that if you put a bean in the prototype scope, if the returned value of the method or teh value of the field change, the bean will be created with the new wvalue.
+
+Here is an example using @Bean on fields.
+
+```
+public final class BeanFieldTest {
+
+    @Bean(name = "abean")
+    String a = "helloa";
+
+    @Bean(name = "bbean", scope = PROTOTYPE)
+    String b = "hellob";
+
+    @Autowired
+    ApplicationContext injector;
+
+    @Test
+    public void test_bind() {
+        TestSetup.setup(this);
+        assertEquals(injector.getBean("abean"), "helloa");
+        assertEquals(injector.getBean("bbean"), "hellob");
+        a = "changeda";
+        b = "changedb";
+        assertEquals(injector.getBean("abean"), "helloa");
+        assertEquals(injector.getBean("bbean"), "changedb");
+    }
+}
+```
+
+As you can see, changing the value of a field binded in the prototype scope changes also the value of the created bean.
+
+Here is now an example using method. Like before, the returned values of the methods that are binded can change.
+
+```
+public final class BeanMethodTest {
+
+    String a = "helloa";
+    String b = "hellob";
+
+    @Autowired
+    ApplicationContext injector;
+
+    @Bean(name = "abean")
+    String a() {
+        return a;
+    }
+
+    @Bean(name = "bbean", scope = PROTOTYPE)
+    String b() {
+        return b;
+    }
+
+    @Test
+    public void test_bind() {
+        TestSetup.setup(this);
+        assertEquals(injector.getBean("abean"), "helloa");
+        assertEquals(injector.getBean("bbean"), "hellob");
+        a = "changeda";
+        b = "changedb";
+        assertEquals(injector.getBean("abean"), "helloa");
+        assertEquals(injector.getBean("bbean"), "changedb");
+    }
+}
+```
+
+**Bean autowiring and overriding**
+
+Autowiring and bean overriding also works. Overriding is really usefull for example if you do not have access of the Spring context files. You can then bind a field or method with @Bean with the same name as the bean in the context file. It will then be overriden by yours.
+
+In the following example, ctx.xml declares the two beans 'myBean1' and 'myBean2' with a toString() value being 'myBean1' and 'myBean1'. Since we override these beans, the implementation changed for the one we provided.
+
+```
+@SpringContext(locations = "/ctx.xml")
+public final class BeanOverrideTest {
+
+    @Bean(name = "myBean1")
+    MyBean myBean1 = new MyBean("toto");
+
+    @Bean(name = "myBean2", scope = PROTOTYPE)
+    MyBean myBean = new MyBean("tata");
+
+    @Autowired
+    ApplicationContext injector;
+
+    @Test
+    public void test_bind() {
+        TestSetup.setup(this);
+        assertEquals(injector.getBean("myBean1").toString(), "toto");
+        assertEquals(injector.getBean("myBean2").toString(), "tata");
+    }
+}
+```
+
+Autowiring also works when injecting or creating beans. In example, we use an existing application context and we want to replace beans injected to AutowiredBean by our implementations from our test. AutowiredBean is declared like this:
+
+```
+public final class AutowiredBean {
+
+    @Autowired
+    MyBean mybean;
+
+    @Autowired
+    @Qualifier("bbean")
+    String bbean;
+
+}
+```
+
+So in our test, we can use it like this:
+
+```
+@SpringContext(locations = "/ctx-autowired.xml")
+public final class BeanAutowiredTest {
+
+    @Bean(name = "myBean")
+    MyBean myBean = new MyBean("toto");
+
+    @Bean(name = "bbean", scope = PROTOTYPE)
+    String b = "hellob";
+
+    @Autowired
+    AutowiredBean bean ;
+
+    @Test
+    public void test_bind() {
+        TestSetup.setup(this);
+        // use bean with the new injections
+    }
+}
+```

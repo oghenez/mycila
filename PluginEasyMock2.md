@@ -1,0 +1,33 @@
+**EasyMock [official website](http://www.easymock.org/)**
+
+Here is a sample test using EasyMock Plugin:
+
+```
+import com.mycila.testing.core.TestSetup;
+import static org.easymock.classextension.EasyMock.*;
+import static org.testng.Assert.*;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+public final class Usage1 extends MycilaTestNGTest {
+
+    @Mock
+    Service standardMock;
+
+    @Mock(Mock.TYPE.NICE)
+    Service niceMock;
+
+    @Mock(Mock.TYPE.STRICT)
+    Service strictMock;
+
+    @Test
+    public void test_mock_standard() {
+        expect(service1.go()).andReturn("Hello World !");
+        replay(service1);
+        assertEquals(service1.go(), "Hello World !");
+        verify(service1);
+    }
+}
+```
+
+**[@Mock](http://mycila.googlecode.com/svn/mycila-testing/trunk/mycila-testing-plugins/mycila-testing-easymock/src/main/java/com/mycila/testing/plugin/easymock/Mock.java)** defines a mock to be created and injected. The mock can be an interface or a class. You can also give as a parameter the type of mock to create. By default, a standard mock is created. You can also create nice mocks and strict mocks as you need. [Please read EasyMock documentation](http://www.easymock.org/EasyMock2_4_Documentation.html) to have more details about when nice and strict modes can be used.

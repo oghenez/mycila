@@ -1,0 +1,188 @@
+## Introduction ##
+
+Mycila Log Wrapper in **NOT a logging API**: it is a **Wrapper API** that enables you to use any logging API behind.
+
+Such an API is not very useful in final applications such as UIs, Webapps, ... But when you are developing core libraries used in several context, you cannot force your clients to use a specific logging API. Thus the need of a wrapping API, to let the clients the choice of using any existing logging API.
+
+## Downloads ##
+
+Versions can downloaded from Maven Repositories here:
+
+**Releases**: http://repo2.maven.org/maven2/com/mycila/mycila-log/
+
+**Snapshots**: http://mc-repo.googlecode.com/svn/maven2/snapshots/com/mycila/mycila-log/
+
+For Maven, use:
+
+```
+<dependency>
+    <groupId>com.mycila</groupId>
+    <artifactId>mycila-log</artifactId>
+    <version>X.Y</version>
+</dependency>
+```
+
+## Why using Mycila Log ? ##
+
+  * **Drop it, use it !**: No configuration needed, no specific implementations to add **unlike SLF4J**: it just works without anything but the library !
+
+  * **Small**: Only 1 very small jar file: **unlike SLF4J**, does not come in your project with a few libraries
+
+  * **Simple**: No magic / complex code: **unlike commons-logging**, the code is simple and does not magic with classloaders causing issues in applications
+
+  * **Fast**: code is very fast: simply delegates to existing loggers. Also, the API is designed to avoid doing string concatenations and unneeded calls.
+
+  * **Small memory**: loggers are cached to be reused at most, in a `SoftHashMap`. Thus the JDK will be able to automatically garbage entries if memory is needed, causing a re-creation of the logger if it is needed elsewhere.
+
+  * **Vargs**: allow you to pass a message plus a list of vargs to be used for replacing tokens, as with `String.format()`
+
+  * **Improvements**: the library add some improvements to the JDK Logging API such as:
+    * InvocationHandler: to setup hooks in handlers
+    * Asynchronous logging
+    * Thresolds
+
+  * **Log when needed**: Logging is often used to output useful information only readable by developers. It is often the case where you need to log when developing, troubleshooting, but when you are in production, you do not want to decrease your performance by logging. This library enables just that: **the default logger is a NOP logger**, which does not log. You only enable logging as needed by calling `Loggers.useJDK()` or `Loggers.useLog4j()`, or you can use your own logging system.
+
+## How to use ##
+
+The usage is exactly like any other logging API. You also have checks like isDebug, isInfo, ... Like SLF4J, you have the ability to use message formatting options. They will be applied only if you can log with the wanted level, to not decrease performance.
+
+```
+import com.mycila.log.Logger;
+import com.mycila.log.Loggers;
+
+[...]
+
+private static final Logger LOGGER = Loggers.get(MyClass.class);
+
+[...]
+
+LOGGER.debug("My log entry with MessageFormat parameters %s and %s", "one", 2);
+```
+
+## Examples ##
+
+### Using No logging ###
+
+**This is the default behavior, to achieve maximum performance and to only log when requested.**
+
+```
+Loggers.useNone();
+```
+
+This will register a No-Op `LoggerProvider` which will return a shared empty Logger each time, doing nothing at all.
+
+### Using Log4J ###
+
+When you put the library in your project, it defaults to JDK logging API. To use another one, you can simply issue:
+
+```
+Loggers.useLog4j();
+```
+
+### Using JDK logging ###
+
+```
+Loggers.useJDK();
+```
+
+Several improvements are provided for JDK logging. In example, here is a logging configuration file that use them:
+
+```
+handlers=com.mycila.log.jdk.handler.StdoutHandler,com.mycila.log.jdk.handler.StderrHandler
+
+com.mycila.log.jdk.handler.StdoutHandler.level=ALL
+com.mycila.log.jdk.handler.StdoutHandler.max=INFO
+com.mycila.log.jdk.handler.StdoutHandler.formatter=com.mycila.log.jdk.format.ClassFormatter
+com.mycila.log.jdk.handler.StdoutHandler.hook=com.mycila.log.jdk.hook.AsyncInvocationHandler
+
+com.mycila.log.jdk.handler.StderrHandler.level=WARNING
+com.mycila.log.jdk.handler.StderrHandler.max=SEVERE
+com.mycila.log.jdk.handler.StderrHandler.formatter=com.mycila.log.jdk.format.ClassFormatter
+com.mycila.log.jdk.handler.StderrHandler.hook=com.mycila.log.jdk.hook.AsyncInvocationHandler
+
+.level=WARNING
+com.mycila.level=ALL
+```
+
+If you have a logging.properties file in your classpath, it will automatically be loaded. Otherwise, you can configure JDK logging like this somewhere in your code:
+
+```
+LogManager.getLogManager().reset();
+LogManager.getLogManager().readConfiguration(getClass().getResourceAsStream("/mylogging.properties"));
+```
+
+**Note:** You can only configure the logger through the Java API. Check here for more details:
+
+  * http://www.crazysquirrel.com/computing/java/logging.jspx
+  * http://www.vogella.de/articles/Logging/article.html
+
+The hook API enabled you to modify the behavior of a handler. Here, we add a hook to add Asynchronous logging capabilities to console handlers. We also define the maximum level for each handler, to push errors in System.err and logs to System.out
+
+## Supported Logging API ##
+
+Currently, Mycila Log already supports
+
+  * Log4j
+  * JDK Logging support.
+  * No Op logger (to log nothing at all)
+
+## Extending ##
+
+Extending Mycila Log Wrapper is failry simple. Supposing the Log4j support was not there, Here is how we would have added it:
+
+```
+Loggers.use(new LoggerProvider() {
+    public Logger get(String name) {
+        final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getLogger(name);
+        return new AbstractLogger() {
+            public boolean canLog(com.mycila.log.Level level) {
+                switch (level) {
+                    case TRACE:
+                        return logger.isEnabledFor(org.apache.log4j.Level.TRACE);
+                    case DEBUG:
+                        return logger.isEnabledFor(org.apache.log4j.Level.DEBUG);
+                    case INFO:
+                        return logger.isEnabledFor(org.apache.log4j.Level.INFO);
+                    case WARN:
+                        return logger.isEnabledFor(org.apache.log4j.Level.WARN);
+                    case ERROR:
+                        return logger.isEnabledFor(org.apache.log4j.Level.ERROR);
+                    default:
+                        return false;
+                }
+            }
+            @Override
+            protected void doLog(com.mycila.log.Level level, Throwable throwable, String message, Object... args) {
+                switch (level) {
+                    case TRACE:
+                        logger.log(org.apache.log4j.Level.TRACE, MessageFormat.format(message, args), throwable);
+                        break;
+                    case DEBUG:
+                        logger.log(org.apache.log4j.Level.DEBUG, MessageFormat.format(message, args), throwable);
+                        break;
+                    case INFO:
+                        logger.log(org.apache.log4j.Level.INFO, MessageFormat.format(message, args), throwable);
+                        break;
+                    case WARN:
+                        logger.log(org.apache.log4j.Level.WARN, MessageFormat.format(message, args), throwable);
+                        break;
+                    case ERROR:
+                        logger.log(org.apache.log4j.Level.ERROR, MessageFormat.format(message, args), throwable);
+                        break;
+                    default:
+
+                }
+            }
+        };
+    }
+});
+```
+
+## Caching ##
+
+By default, all loggers are cached in a `SoftHashMap`. You can cache your own `LoggerProvider` instance by doing:
+
+`Loggers.use(LoggerProviders.cache(myProvider))`
+
+The `LoggerProviders` class has a lot of methods to get all supported providers and decorate them.

@@ -1,0 +1,39 @@
+## Introduction ##
+
+Just put in your test:
+
+```
+import static com.mycila.testing.ea.ExtendedAssert.*;
+```
+
+and you will have access to these additional methods:
+
+| **Method** | **Description** |
+|:-----------|:----------------|
+| assertSameXml | Check that two xml documents are equals, ignoring spaces and line breaks |
+| assertEmpty | for Strings, Collections and Arrays |
+| assertBlank | for Strings     |
+| assertNotEquals |                 |
+| resource   | get a classpath resource |
+| asString, asBytes | reads a resource or file |
+| assertThrow... withMessage... containingMessage... | asserts that a code throws an exception. You can also check its message |
+
+## Examples ##
+
+```
+assertThrow(RuntimeException.class).whenRunning(new Code() {
+    public void run() throws Throwable {
+        throw new RuntimeException("hello");
+    }
+});
+assertThrow(RuntimeException.class).withMessage("hello").whenRunning(new Code() {
+    public void run() throws Throwable {
+        throw new RuntimeException("hello");
+    }
+});
+assertThrow(RuntimeException.class).containingMessage("hello").whenRunning(new Code() {
+    public void run() throws Throwable {
+        throw new RuntimeException("hello world");
+    }
+});
+```
